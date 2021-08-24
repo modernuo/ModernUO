@@ -49,7 +49,7 @@ namespace Server
 
         public static void ConfigureTimerPool()
         {
-            _poolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.intialPoolCapacity", 1024);
+            _poolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.initialPoolCapacity", 1024);
             _maxPoolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolCapacity", _poolCapacity * 16);
 
             RefillPool(_poolCapacity, out var head, out var tail);

@@ -110,7 +110,11 @@ namespace Server.Engines.Spawners
             {
                 m_Count = value;
 
-                if (m_Timer != null && (!IsFull && !m_Timer.Running || IsFull && m_Timer.Running))
+                if (IsFull)
+                {
+                    m_Timer?.Stop();
+                }
+                else if (m_Timer?.Running != true)
                 {
                     DoTimer();
                 }
@@ -372,11 +376,8 @@ namespace Server.Engines.Spawners
 
         public void Stop()
         {
-            if (m_Running)
-            {
-                m_Timer?.Stop();
-                m_Running = false;
-            }
+            m_Timer?.Stop();
+            m_Running = false;
         }
 
         public void Defrag()

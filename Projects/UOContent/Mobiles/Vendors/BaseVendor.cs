@@ -30,6 +30,17 @@ namespace Server.Mobiles
         private readonly List<IBuyItemInfo> _buyInfo = new();
         private readonly List<IShopSellInfo> _sellInfo = new();
 
+        private static bool EnableVendorBuyOPL;
+
+        public static void Configure()
+        {
+            // Turn off to remove tooltips while buying items
+            // CUO is not compatible with this turned off
+            // Also items may require a string description for their name to show up properly.
+            // See SBAnimalTrainer for an example
+            EnableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
+        }
+
         public static void Initialize()
         {
             // This is technically more work than making timers, but we don't to deplete the timer pool immediately.
@@ -865,7 +876,7 @@ namespace Server.Mobiles
             var list = new List<BuyItemState>(buyInfo.Length);
             var cont = BuyPack;
 
-            var opls = ObjectPropertyList.Enabled ? new List<ObjectPropertyList>(buyInfo.Length) : null;
+            var opls = EnableVendorBuyOPL ? new List<ObjectPropertyList>(buyInfo.Length) : null;
 
             for (var idx = 0; idx < buyInfo.Length; idx++)
             {

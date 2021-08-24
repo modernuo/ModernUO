@@ -74,22 +74,28 @@ namespace Server
                 }
 
                 var timer = _rings[i][ringIndex];
-
                 if (timer != null)
                 {
                     events = true;
 
-                    if (i > 0 && timer._remaining > 0)
+                    do
                     {
-                        Promote(timer);
-                    }
-                    else
-                    {
-                        Execute(timer);
-                    }
+                        var next = _rings[i][ringIndex] = timer._nextTimer;
 
-                    // Clear the slot
-                    _rings[i][ringIndex] = null;
+                        timer.Detach();
+
+                        if (i > 0 && timer._remaining > 0)
+                        {
+                            // Promote
+                            AddTimer(timer, timer._remaining);
+                        }
+                        else
+                        {
+                            Execute(timer);
+                        }
+
+                        timer = next;
+                    } while (timer != null);
                 }
 
                 if (!turnNextWheel)
@@ -103,50 +109,29 @@ namespace Server
 
         private static void Execute(Timer timer)
         {
-            do
+            var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
+
+            var version = timer.Version;
+
+            var prof = timer.GetProfile();
+            prof?.Start();
+            timer.OnTick();
+            prof?.Finish();
+
+            // If the timer has not been stopped, and it has not been altered (restarted, returned etc)
+            if (timer.Running && timer.Version == version)
             {
-                var next = timer._nextTimer;
-                var prof = timer.GetProfile();
-                var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
-
-                // We remove it before `OnTick()` so time references can be nulled and returned to cache safely from within OnTick.
-                // This can be done in OnTick by checking if Index < Count - 1 (still more iterations left)
-                RemoveTimer(timer);
-
-                var version = timer.Version;
-
-                prof?.Start();
-                timer.OnTick();
-                prof?.Finish();
-
-                // If the timer has not been stopped, and it has not been altered (shared timers)
-                if (timer.Running && timer.Version == version)
+                if (finished)
                 {
-                    if (finished)
-                    {
-                        timer.Stop();
-                    }
-                    else
-                    {
-                        timer.Delay = timer.Interval;
-                        timer.Next = Core.Now + timer.Interval;
-                        AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
-                    }
+                    timer.Stop();
                 }
-
-                timer = next;
-            } while (timer != null);
-        }
-
-        private static void Promote(Timer timer)
-        {
-            do
-            {
-                var next = timer._nextTimer;
-                RemoveTimer(timer);
-                AddTimer(timer, timer._remaining);
-                timer = next;
-            } while (timer != null);
+                else
+                {
+                    timer.Delay = timer.Interval;
+                    timer.Next = Core.Now + timer.Interval;
+                    AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+                }
+            }
         }
 
         private static void AddTimer(Timer timer, long delay)
@@ -182,6 +167,7 @@ namespace Server
                     timer._slot = (int)slot;
 
                     _rings[i][slot] = timer;
+
                     break;
                 }
 
@@ -189,16 +175,6 @@ namespace Server
                 delay -= resolution * (_ringSize - _ringIndexes[i]);
                 resolutionPowerOf2 = nextResolutionPowerOf2;
             }
-        }
-
-        private static void RemoveTimer(Timer timer)
-        {
-            if (timer._prevTimer == null)
-            {
-                _rings[timer._ring][timer._slot] = timer._nextTimer;
-            }
-
-            timer.Detach();
         }
 
         public static void DumpInfo(TextWriter tw)
