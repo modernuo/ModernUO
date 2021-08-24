@@ -262,7 +262,7 @@ namespace Server
             Load();
         }
 
-        private unsafe static void Load()
+        private static unsafe void Load()
         {
             var filePath = Core.FindDataFile("tiledata.mul");
 
