@@ -49,7 +49,7 @@ namespace Server.Commands.Generic
 
                 foreach (var obj in eable)
                 {
-                    if ((!mobiles || obj is Mobile) && BaseCommand.IsAccessible(from, obj) && ext.IsValid(obj))
+                    if ((!mobiles || obj is not Mobile || BaseCommand.IsAccessible(from, obj)) && ext.IsValid(obj))
                     {
                         objs.Add(obj);
                     }
