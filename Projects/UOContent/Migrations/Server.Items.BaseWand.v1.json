@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "type": "Server.Items.BaseWand",
+  "properties": [
+    {
+      "name": "WandEffect",
+      "type": "Server.Items.WandEffect",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
