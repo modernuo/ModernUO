@@ -254,7 +254,7 @@ namespace Server
                 if (string.IsNullOrWhiteSpace(input) || input.InsensitiveStartsWith("n"))
                 {
                     Utility.PushColor(ConsoleColor.Yellow);
-                    Console.WriteLine("New Haven chosen with no map diffs.");
+                    Console.WriteLine("Client >= 6.0.0.0 chosen.");
                     Utility.PopColor();
                     return;
                 }
@@ -262,10 +262,9 @@ namespace Server
                 if (input.InsensitiveStartsWith("y"))
                 {
                     SetSetting("maps.enablePre6000Trammel", true.ToString());
-                    SetSetting("maps.enableMapDiffPatches", true.ToString());
 
                     Utility.PushColor(ConsoleColor.Yellow);
-                    Console.WriteLine("Old Haven chosen with map diffs.");
+                    Console.WriteLine("Client <= 5.0.9.1 chosen.");
                     Utility.PopColor();
                     return;
                 }

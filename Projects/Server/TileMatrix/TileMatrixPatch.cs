@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -41,9 +42,8 @@ namespace Server
 
         public static void Configure()
         {
-            // Using this requires the old mapDif files to be present. Only needed to support Clients < 6.0.0.0
-            PatchLandEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableMapDiffPatches", false);
-            PatchStaticsEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableStaticsDiffPatches", false);
+            PatchLandEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableMapDiffPatches", !Core.HS);
+            PatchStaticsEnabled = ServerConfiguration.GetOrUpdateSetting("maps.enableStaticsDiffPatches", true);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -51,15 +51,14 @@ namespace Server
         {
             using var fsData = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var fsIndex = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var indexReader = new BinaryReader(fsIndex);
+            using var indexReader = new BinaryReader(fsIndex);
 
             var count = (int)(indexReader.BaseStream.Length / 4);
 
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < count; i++)
             {
                 var blockID = indexReader.ReadInt32();
-                var x = blockID / matrix.BlockHeight;
-                var y = blockID % matrix.BlockHeight;
+                var x = Math.DivRem(blockID, matrix.BlockHeight, out var y);
 
                 fsData.Seek(4, SeekOrigin.Current);
 
@@ -72,8 +71,6 @@ namespace Server
 
                 matrix.SetLandBlock(x, y, tiles);
             }
-
-            indexReader.Close();
 
             return count;
         }
