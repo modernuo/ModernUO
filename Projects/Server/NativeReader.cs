@@ -57,6 +57,6 @@ namespace Server
             InternalRead(source, buffer, bufferIndex, length);
 
         internal unsafe int InternalRead(FileStream source, void* buffer, int bufferIndex, int length) =>
-            UnsafeNativeMethods.read(source.SafeFileHandle.DangerousGetHandle(), (byte*)buffer + bufferIndex, length);
+            UnsafeNativeMethods.read(source.SafeFileHandle!.DangerousGetHandle(), (byte*)buffer + bufferIndex, length);
     }
 }
