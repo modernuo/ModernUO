@@ -7,7 +7,7 @@
       "type": "Server.Timer",
       "rule": "TimerMigrationRule",
       "ruleArguments": [
-        ""
+        "@TimerDrift"
       ]
     }
   ]

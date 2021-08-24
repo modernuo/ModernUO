@@ -974,7 +974,6 @@ namespace Server.Items
                     if (map != null && map != Map.Internal)
                     {
                         robe.MoveToWorld(from.Location, map);
-                        robe.BeginDecay();
                     }
                 }
 
