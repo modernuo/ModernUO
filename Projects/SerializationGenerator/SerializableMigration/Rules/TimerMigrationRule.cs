@@ -63,7 +63,8 @@ namespace SerializableMigration
             var driftTimer = ruleArguments![0].Contains("@TimerDrift");
 
             var readTimer = driftTimer ? "reader.ReadDeltaTime()" : "reader.ReadDateTime()";
-            source.AppendLine($"{indent}var {propertyName}Delay = {readTimer} - Core.Now;");
+            source.AppendLine($"{indent}var {propertyName}Next = {readTimer};");
+            source.AppendLine($"{indent}var {propertyName}Delay = {propertyName}Next == System.DateTime.MinValue ? System.TimeSpan.MinValue : {propertyName}Next - Core.Now;");
         }
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
@@ -80,7 +81,7 @@ namespace SerializableMigration
             var driftTimer = ruleArguments![0].Contains("@TimerDrift");
 
             var writerMethod = driftTimer ? "WriteDeltaTime" : "Write";
-            source.AppendLine($"{indent}writer.{writerMethod}({propertyName}.Next);");
+            source.AppendLine($"{indent}writer.{writerMethod}({propertyName}?.Next ?? System.DateTime.MinValue);");
         }
 
         public void PostDeserializeMethod(
