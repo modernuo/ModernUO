@@ -33,7 +33,7 @@ namespace Server.Items
     }
 
     [Flippable(0x2FC3, 0x3179)]
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenPants : BasePants
     {
         [Constructible]

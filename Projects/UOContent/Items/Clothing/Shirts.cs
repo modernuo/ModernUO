@@ -36,7 +36,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenShirt : BaseShirt
     {
         [Constructible]
@@ -45,7 +45,7 @@ namespace Server.Items
         public override Race RequiredRace => Race.Elf;
     }
 
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenDarkShirt : BaseShirt
     {
         [Constructible]
