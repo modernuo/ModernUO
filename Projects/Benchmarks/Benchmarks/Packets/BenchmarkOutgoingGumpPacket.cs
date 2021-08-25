@@ -79,7 +79,7 @@ namespace Benchmarks
             writer.Write((byte)(packed ? 0xDD : 0xB0)); // Packet ID
             writer.Seek(2, SeekOrigin.Current);
 
-            writer.Write((uint)gump.Serial);
+            writer.Write(gump.Serial);
             writer.Write(gump.TypeID);
             writer.Write(gump.X);
             writer.Write(gump.Y);
