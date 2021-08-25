@@ -16,6 +16,7 @@ namespace Server.Tests
         void AppendLayout(bool val);
         void AppendLayout(int val);
         void AppendLayout(uint val);
+        void AppendLayout(Serial serial);
         void AppendLayoutNS(int val);
         void AppendLayout(string text);
         void AppendLayoutNS(string text);
@@ -88,6 +89,8 @@ namespace Server.Tests
 
             m_Layout.Write(m_Buffer, 0, bytes);
         }
+
+        public void AppendLayout(Serial serial) => AppendLayout(serial.Value);
 
         public void AppendLayoutNS(int val)
         {
@@ -231,6 +234,8 @@ namespace Server.Tests
             Stream.Write(m_Buffer, 0, bytes);
             m_LayoutLength += bytes;
         }
+
+        public void AppendLayout(Serial serial) => AppendLayout(serial.Value);
 
         public void AppendLayoutNS(int val)
         {
