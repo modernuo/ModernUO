@@ -11,7 +11,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestVendorSellList()
         {
-            var vendor = new Mobile(0x1024u);
+            var vendor = new Mobile((Serial)0x1024u);
             vendor.DefaultMobileInit();
 
             var item1 = new Item(World.NewItem);
@@ -37,7 +37,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestEndVendorSell()
         {
-            var vendor = new Mobile(0x1024u);
+            var vendor = new Mobile((Serial)0x1024u);
             vendor.DefaultMobileInit();
 
             var expected = new EndVendorBuy(vendor.Serial).Compile();

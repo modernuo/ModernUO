@@ -1029,7 +1029,7 @@ namespace Server.Accounting
                     try
                     {
                         var index = Utility.GetXMLInt32(Utility.GetAttribute(ele, "index", "0"), 0);
-                        var serial = Utility.GetXMLUInt32(Utility.GetText(ele, "0"), 0);
+                        var serial = (Serial)Utility.GetXMLUInt32(Utility.GetText(ele, "0"), 0);
 
                         if (index >= 0 && index < list.Length)
                         {

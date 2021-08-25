@@ -31,7 +31,7 @@ namespace Server.Network
         {
             var from = state.Mobile;
 
-            Serial serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
             int unk = reader.ReadByte();
             var lang = reader.ReadAscii(3);
 
@@ -70,7 +70,7 @@ namespace Server.Network
                 }
                 else
                 {
-                    Serial s = value;
+                    Serial s = (Serial)value;
 
                     if (s.IsMobile)
                     {
@@ -104,7 +104,7 @@ namespace Server.Network
         {
             var from = state.Mobile;
 
-            Serial s = reader.ReadUInt32();
+            Serial s = (Serial)reader.ReadUInt32();
 
             if (s.IsMobile)
             {
@@ -167,7 +167,7 @@ namespace Server.Network
 
             while (reader.Remaining > 0)
             {
-                Serial s = reader.ReadUInt32();
+                Serial s = (Serial)reader.ReadUInt32();
 
                 if (s.IsMobile)
                 {

@@ -39,7 +39,7 @@ namespace Server.Tests.Network
         [InlineData(100000, 100000)]
         public void TestCancelArrowHS(int x, int y)
         {
-            Serial serial = 0x1024;
+            Serial serial = (Serial)0x1024;
 
             var expected = new CancelArrowHS(x, y, serial).Compile();
 
@@ -57,7 +57,7 @@ namespace Server.Tests.Network
         [InlineData(100000, 100000)]
         public void TestSetArrowHS(int x, int y)
         {
-            Serial serial = 0x1024;
+            Serial serial = (Serial)0x1024;
 
             var expected = new SetArrowHS(x, y, serial).Compile();
 

@@ -81,7 +81,7 @@ namespace Server.Tests.Network
         [InlineData(true, true)]
         public void TestDisplayContextMenu(bool newHaven, bool newPacket)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var item = new ContextMenuItem(World.NewItem, newPacket);

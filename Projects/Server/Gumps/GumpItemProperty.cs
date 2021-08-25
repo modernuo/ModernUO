@@ -22,18 +22,18 @@ namespace Server.Gumps
     {
         public static readonly byte[] LayoutName = Gump.StringToBuffer("itemproperty");
 
-        public GumpItemProperty(uint serial) => Serial = serial;
+        public GumpItemProperty(Serial serial) => Serial = serial;
 
-        public uint Serial { get; set; }
+        public Serial Serial { get; set; }
 
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ itemproperty {Serial} }}";
+        public override string Compile(OrderedHashSet<string> strings) => $"{{ itemproperty {Serial.Value} }}";
 
         public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
         {
             writer.Write((ushort)0x7B20); // "{ "
             writer.Write(LayoutName);
             writer.WriteAscii(' ');
-            writer.WriteAscii(Serial.ToString());
+            writer.WriteAscii(Serial.Value.ToString());
             writer.Write((ushort)0x207D); // " }"
         }
     }

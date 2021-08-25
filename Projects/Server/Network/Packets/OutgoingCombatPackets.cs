@@ -30,8 +30,8 @@ namespace Server.Network
             var writer = new SpanWriter(stackalloc byte[10]);
             writer.Write((byte)0x2F); // Packet ID
             writer.Write((byte)0);
-            writer.Write(attacker);
-            writer.Write(defender);
+            writer.Write((uint)attacker);
+            writer.Write((uint)defender);
 
             ns.Send(writer.Span);
         }
