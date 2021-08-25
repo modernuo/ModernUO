@@ -35,12 +35,18 @@ namespace Server.Items
         [SerializableFieldSaveFlag(1)]
         private bool ShouldSerializeAttributes() => !_attributes.IsEmpty;
 
+        [SerializableFieldDefault(1)]
+        private AosAttributes AttributesDefaultValue() => new(this);
+
         [SerializableField(2, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
         private AosArmorAttributes _clothingAttributes;
 
         [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializeClothingAttributes() => !_clothingAttributes.IsEmpty;
+
+        [SerializableFieldDefault(2)]
+        private AosArmorAttributes ClothingAttributesDefaultValue() => new(this);
 
         [SerializableField(3, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
@@ -49,12 +55,18 @@ namespace Server.Items
         [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
 
+        [SerializableFieldDefault(3)]
+        private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
+
         [SerializableField(4, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
         private AosElementAttributes _resistances;
 
         [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializeResistances() => !_resistances.IsEmpty;
+
+        [SerializableFieldDefault(4)]
+        private AosElementAttributes ResistancesDefaultValue() => new(this);
 
         [EncodedInt]
         [InvalidateProperties]
