@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "type": "Server.Items.ThighBoots",
+  "properties": [
+    {
+      "name": "CurArcaneCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "MaxArcaneCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}
