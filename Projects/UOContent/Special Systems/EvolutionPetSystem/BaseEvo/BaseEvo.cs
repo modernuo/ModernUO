@@ -30,8 +30,8 @@ namespace EvolutionPetSystem
 
 
         // Ability System
-        protected int m_AbilityCount;
-        protected List<BaseAbility> m_Abilities;
+        protected int m_AbilityCount = 0;
+        protected List<BaseAbility> m_Abilities = new List<BaseAbility>();
 
         public delegate void OnAlterMeleeDamageToHandler(Mobile to, int damage);
 
@@ -76,12 +76,7 @@ namespace EvolutionPetSystem
 
         protected virtual void Init()
         {
-            // Abililities
-            m_AbilityCount = 0;
-            m_Abilities = new List<BaseAbility>();
-
-            //new RageAbility(this);
-
+            
             BaseEvoSpec spec = GetEvoSpec();
 
             if (null != spec && null != spec.Stages)
@@ -124,6 +119,7 @@ namespace EvolutionPetSystem
         protected override BaseAI ForcedAI { get { return m_ForcedAI; } }
 
         public List<BaseAbility> Abilities { get => m_Abilities; set => m_Abilities = value; }
+        public int AbilityCount { get => m_Abilities.Count;}
 
         private void InitAI()
         {
@@ -364,17 +360,15 @@ namespace EvolutionPetSystem
             writer.Write((int)m_Stage);
 
             // Ability System
-            writer.Write((int)m_AbilityCount);
-            if (m_Abilities != null)
+            writer.Write((int)AbilityCount);
+            if (AbilityCount > 0 && m_Abilities != null)
             {
                 foreach (var item in m_Abilities)
                 {
                     item.Serialize(writer);
                 }
             }
-            
-
-
+          
 
         }
 
@@ -387,11 +381,30 @@ namespace EvolutionPetSystem
 
             // Ability System
             m_AbilityCount = reader.ReadInt();
-            for (int i = 0; i < m_AbilityCount; i++)
+            if (m_AbilityCount > 0)
             {
-                m_Abilities[i].Deserialize(reader);
-            }
+                
+                for (int i = 0; i < m_AbilityCount; i++)
+                {
+                    var ability = new BaseAbility(reader);
+                    switch (ability.AbilityType)
+                    {
+                        case AbilityType.Rage:
+                            m_Abilities.Add(new RageAbility(this));
+                            break;
+                        case AbilityType.Nox:
+                            m_Abilities.Add(new BaseAbility());
+                            break;
+                        default:
+                            m_Abilities.Add(new BaseAbility());
+                            break;
+                    }
 
+                    //m_Abilities.Add(new BaseAbility(reader));
+
+                    //m_Abilities[i].Deserialize(reader);
+                }
+            }            
 
             LoadSpecValues();
         }

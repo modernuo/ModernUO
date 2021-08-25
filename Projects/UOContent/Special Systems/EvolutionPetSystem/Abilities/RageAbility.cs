@@ -1,4 +1,5 @@
 using Server;
+using Server.Mobiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,11 @@ namespace EvolutionPetSystem.Abilities
 {
     public class RageAbility : BaseAbility
     {
-        private int m_MinXP;
-        private int m_MaxXP;
+        
         private BaseEvo m_Evo;
-        private bool m_IsRunning;
+        private bool m_IsRunning = false;
 
-
-
-        public int MinXP { get => m_MinXP; set => m_MinXP = value; }
-        public int MaxXP { get => m_MaxXP; set => m_MaxXP = value; }
+        
         public BaseEvo Evo { get => m_Evo; set => m_Evo = value; }
         public bool IsRunning { get => m_IsRunning; set => m_IsRunning = value; }
 
@@ -25,27 +22,21 @@ namespace EvolutionPetSystem.Abilities
         {
             Icon = 39852;
             AbilityType = AbilityType.Rage;
-            MinXP = 0;
-            MaxXP = 3000000;
             Evo = evo;
             Stage = SetStage();
+            MaxXP = 3000000;
 
             // Events
             Evo.OnAlterMeleeDamageToEvent += Evo_OnAlterMeleeDamageToEvent;
+
         }
 
-
-
+        
         public RageAbility(IGenericReader reader) : base(reader)
         {
+            
         }
 
-
-        public override void Init()
-        {
-
-            base.Init();
-        }
 
         public TimeSpan Duration()
         {
@@ -89,13 +80,14 @@ namespace EvolutionPetSystem.Abilities
 
             var oldDex = Evo.Dex;
             var oldHue = Evo.Hue;
-            Evo.SetDex(3000);
+            Evo.SetDex(2000);
             Evo.Hue = 1161;
+            
             Timer.DelayCall(Duration(), () =>
             {
                 Evo.SetDex(oldDex);
                 Evo.Hue = oldHue;
-                IsRunning = false;
+                
             });
 
 
@@ -107,9 +99,26 @@ namespace EvolutionPetSystem.Abilities
             {
                 IsRunning = true;
                 ProcessAbility();
+                AddPoints(to);
                 Timer.DelayCall(TimeSpan.FromMinutes(3), () => IsRunning = false);
             }
            
+        }
+
+        private void AddPoints(Mobile defender)
+        {
+            if (defender == null || defender.Deleted)
+                return;
+
+            else if (defender is BaseCreature)
+            {
+                BaseCreature bc = (BaseCreature)defender;
+
+                if (bc.Controlled != true)
+                    XP += Utility.RandomMinMax(5 + (bc.HitsMax) / m_Evo.Stage +1 * 50, 5 + (bc.HitsMax) / m_Evo.Stage+1 * 20);
+
+                
+            }
         }
 
 

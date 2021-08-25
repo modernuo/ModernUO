@@ -8,6 +8,7 @@ namespace EvolutionPetSystem.Abilities
 {
     public enum AbilityType
     {
+        None,
         Rage,
         Nox,
 

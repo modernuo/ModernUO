@@ -26,6 +26,16 @@ namespace Server.Items
         [CommandProperty(AccessLevel.Administrator)]
         public BaseEvo BoundEvoPet { get => m_BoundEvoPet; set => m_BoundEvoPet = value; }
 
+        public override void AddNameProperties(ObjectPropertyList list)
+        {
+            base.AddNameProperties(list);
+
+            if (m_BoundEvoPet != null)
+            {
+                list.Add($"Bound to: {m_BoundEvoPet.Name}");
+            }
+        }
+
         public override void OnDoubleClick(Mobile from) 
         {
             if (!IsChildOf(from.Backpack)) // Make sure its in their pack
@@ -45,7 +55,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    from.SendGump(new PetTokenGump(from, m_BoundEvoPet));
+                    from.SendGump(new PetTokenGump(from, m_BoundEvoPet, this));
                 }
 
             }

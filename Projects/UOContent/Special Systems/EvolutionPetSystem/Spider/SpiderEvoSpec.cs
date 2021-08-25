@@ -54,7 +54,7 @@ namespace EvolutionPetSystem
 			EvolutionMessage = "has evolved";
 			NextEpThreshold = 5000000; EpMinDivisor = 20; EpMaxDivisor = 10; DustMultiplier = 20000;
             BaseSoundID = 387; BodyValue = 21; ControlSlots = 2; MinTameSkill = 60.0; VirtualArmor = 40;
-			Hue = 157;
+			Hue = 1175;
 		
 			DamagesTypes = new ResistanceType[1] { ResistanceType.Physical };
 			MinDamages = new int[1] { 10 };
