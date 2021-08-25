@@ -111,14 +111,18 @@ namespace Server.Gumps
         {
             
 
-            if (m_EvoPet.Abilities != null && m_EvoPet.Abilities[0] != null)
+            if (m_EvoPet.Abilities != null && m_EvoPet.Abilities.Count > 0) 
             {
-                AddImage(252, 340, m_EvoPet.Abilities[0].Icon);
-                AddLabel(299, 339, 1152, Enum.GetName(m_EvoPet.Abilities[0].AbilityType));
-                AddLabel(299, 354, 1152, "");
-                AddLabel(299, 372, 1152, $"{m_EvoPet.Abilities[0].XP}/{m_EvoPet.Abilities[0].MaxXP}");
-                AddImageTiled(256, 394, 118, 16, 30008);
-                AddImageTiled(256, 394, 0 + m_EvoPet.Abilities[0].Stage * 12, 16, 30009);
+                if (m_EvoPet.Abilities[0] != null)
+                {
+                    AddImage(252, 340, m_EvoPet.Abilities[0].Icon);
+                    AddLabel(299, 339, 1152, Enum.GetName(m_EvoPet.Abilities[0].AbilityType));
+                    AddLabel(299, 354, 1152, "");
+                    AddLabel(299, 372, 1152, $"{m_EvoPet.Abilities[0].XP}/{m_EvoPet.Abilities[0].MaxXP}");
+                    AddImageTiled(256, 394, 118, 16, 30008);
+                    AddImageTiled(256, 394, 0 + m_EvoPet.Abilities[0].Stage * 12, 16, 30009);
+                }
+                
 
             }
             else
