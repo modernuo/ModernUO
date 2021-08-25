@@ -54,7 +54,7 @@ namespace Server.Network
 
             int packetID = reader.ReadByte();
 
-            if (World.FindItem(reader.ReadUInt32()) is not BaseBulletinBoard board || !board.CheckRange(from))
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BaseBulletinBoard board || !board.CheckRange(from))
             {
                 return;
             }
@@ -78,7 +78,7 @@ namespace Server.Network
 
         public static void BBRequestContent(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
                 return;
             }
@@ -88,7 +88,7 @@ namespace Server.Network
 
         public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
                 return;
             }
@@ -98,7 +98,7 @@ namespace Server.Network
 
         public static void BBPostMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            var thread = World.FindItem(reader.ReadUInt32()) as BulletinMessage;
+            var thread = World.FindItem((Serial)reader.ReadUInt32()) as BulletinMessage;
 
             if (thread != null && thread.Parent != board)
             {
@@ -153,7 +153,7 @@ namespace Server.Network
 
         public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
                 return;
             }

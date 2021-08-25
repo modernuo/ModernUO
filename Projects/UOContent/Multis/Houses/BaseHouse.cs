@@ -3002,7 +3002,7 @@ namespace Server.Multis
                         for (var i = 0; i < relocatedCount; i++)
                         {
                             var relLocation = reader.ReadPoint3D();
-                            var entity = World.FindEntity(reader.ReadUInt());
+                            var entity = reader.ReadEntity<IEntity>();
 
                             if (entity != null)
                             {

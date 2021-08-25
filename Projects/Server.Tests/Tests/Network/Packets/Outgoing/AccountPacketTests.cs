@@ -35,11 +35,11 @@ namespace Server.Tests.Network
         [Fact]
         public void TestChangeCharacter()
         {
-            var firstMobile = new Mobile(0x1);
+            var firstMobile = new Mobile((Serial)0x1);
             firstMobile.DefaultMobileInit();
             firstMobile.RawName = "Test Mobile";
 
-            var secondMobile = new Mobile(0x2);
+            var secondMobile = new Mobile((Serial)0x2);
             secondMobile.DefaultMobileInit();
             secondMobile.RawName = null;
 
@@ -98,7 +98,7 @@ namespace Server.Tests.Network
         [Theory, InlineData(ProtocolChanges.Version70610), InlineData(ProtocolChanges.Version6000)]
         public void TestSupportedFeatures(ProtocolChanges protocolChanges)
         {
-            var firstMobile = new Mobile(0x1);
+            var firstMobile = new Mobile((Serial)0x1);
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
@@ -123,7 +123,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestLoginConfirm()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Body = 0x100;
             m.X = 100;
@@ -156,7 +156,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestCharacterListUpdate()
         {
-            var firstMobile = new Mobile(0x1);
+            var firstMobile = new Mobile((Serial)0x1);
             firstMobile.DefaultMobileInit();
             firstMobile.RawName = "Test Mobile";
 
@@ -179,7 +179,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestCharacterList70130()
         {
-            var firstMobile = new Mobile(0x1);
+            var firstMobile = new Mobile((Serial)0x1);
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 
@@ -211,7 +211,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestCharacterListOld()
         {
-            var firstMobile = new Mobile(0x1);
+            var firstMobile = new Mobile((Serial)0x1);
             firstMobile.DefaultMobileInit();
             firstMobile.Name = "Test Mobile";
 

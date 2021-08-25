@@ -39,7 +39,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.HighSeas)]
         public void TestDisplayBuyList(ProtocolChanges protocolChanges)
         {
-            var vendor = new Mobile(0x1);
+            var vendor = new Mobile((Serial)0x1);
             vendor.DefaultMobileInit();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -56,7 +56,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestVendorBuyList()
         {
-            var vendor = new Mobile(0x1);
+            var vendor = new Mobile((Serial)0x1);
             vendor.DefaultMobileInit();
 
             var cont = new Container(World.NewItem);
@@ -80,7 +80,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestEndVendorBuy()
         {
-            var vendor = new Mobile(0x1);
+            var vendor = new Mobile((Serial)0x1);
             vendor.DefaultMobileInit();
 
             var expected = new EndVendorBuy(vendor.Serial).Compile();

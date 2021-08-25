@@ -43,7 +43,7 @@ namespace UOContent.Tests
 
             var list = new List<IEntity> { item1, beholder.Object };
             var notContained = new List<IEntity> { item2 };
-            var boat = new TestBoat(0x3000, list, notContained)
+            var boat = new TestBoat((Serial)0x3000, list, notContained)
             {
                 Location = new Point3D(10, 20, 15),
                 Facing = Direction.Right,
@@ -87,7 +87,7 @@ namespace UOContent.Tests
 
             var list = new List<IEntity> { item1, beholder.Object };
             var notContained = new List<IEntity> { item2 };
-            var boat = new TestBoat(0x3000, list, notContained)
+            var boat = new TestBoat((Serial)0x3000, list, notContained)
             {
                 Location = new Point3D(10, 20, 15),
                 Facing = Direction.Right

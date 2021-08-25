@@ -39,10 +39,10 @@ namespace UOContent.Tests
         [InlineData("🅵🅰🅽🅲🆈 🆃🅴🆇🆃 Author", "🅵🅰🅽🅲🆈 🆃🅴🆇🆃 Title")]
         public void TestBookCover(string author, string title)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
-            Serial serial = 0x1001;
+            Serial serial = (Serial)0x1001;
             var book = new TestBook(serial) { Author = author, Title = title };
 
             var expected = new BookHeader(m, book).Compile();
@@ -57,10 +57,10 @@ namespace UOContent.Tests
         [Fact]
         public void TestBookContent()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
-            Serial serial = 0x1001;
+            Serial serial = (Serial)0x1001;
             var book = new TestBook(serial) { Author = "Some Author", Title = "Some Title" };
             book.Pages[0].Lines = new[]
             {

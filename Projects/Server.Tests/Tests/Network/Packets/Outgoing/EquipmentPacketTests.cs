@@ -13,7 +13,7 @@ namespace Server.Tests.Network
         [InlineData("", true)]
         public void TestDisplayEquipmentInfo(string name, bool unidentified)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.RawName = name;
 
@@ -49,7 +49,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestEquipUpdate()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var item = new Item(World.NewItem) { Parent = m };

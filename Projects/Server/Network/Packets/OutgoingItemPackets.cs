@@ -32,7 +32,7 @@ namespace Server.Network
             var itemID = item is BaseMulti ? item.ItemID | 0x4000 : item.ItemID & 0x3FFF;
             var amount = item.Amount;
             var hasAmount = amount != 0;
-            var serial = hasAmount ? item.Serial | 0x80000000 : item.Serial & 0x7FFFFFFF;
+            var serial = hasAmount ? item.Serial.Value | 0x80000000 : item.Serial.Value & 0x7FFFFFFF;
             var loc = item.Location;
             var hue = item.Hue;
             var flags = item.GetPacketFlags();

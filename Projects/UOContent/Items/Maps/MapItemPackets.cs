@@ -29,7 +29,7 @@ namespace Server.Network
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem(reader.ReadUInt32()) is MapItem map))
+            if (!(World.FindItem((Serial)reader.ReadUInt32()) is MapItem map))
             {
                 return;
             }

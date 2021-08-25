@@ -5,7 +5,7 @@ namespace Server.Items
 {
     public abstract class Food : Item
     {
-        public Food(int itemID, int amount) : base(itemID)
+        public Food(int itemID, int amount = 1) : base(itemID)
         {
             Stackable = true;
             Amount = amount;

@@ -535,7 +535,7 @@ namespace Server.Engines.MLQuests
             var quest = MLQuestSystem.ReadQuestRef(reader);
 
             // TODO: Serialize quester TYPE too, the quest giver reference then becomes optional (only for escorts)
-            var quester = World.FindEntity(reader.ReadUInt()) as IQuestGiver;
+            var quester = reader.ReadEntity<IEntity>() as IQuestGiver;
 
             var claimReward = reader.ReadBool();
             var objectives = reader.ReadInt();

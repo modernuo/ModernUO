@@ -32,7 +32,7 @@ namespace Server.Network
 
         public static void LiftReq(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            Serial serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
             int amount = reader.ReadUInt16();
             var item = World.FindItem(serial);
 
@@ -54,7 +54,7 @@ namespace Server.Network
             }
 
             reader.Seek(5, SeekOrigin.Current);
-            var to = World.FindMobile(reader.ReadUInt32()) ?? from;
+            var to = World.FindMobile((Serial)reader.ReadUInt32()) ?? from;
 
             if (!to.AllowEquipFrom(from) || !to.EquipItem(item))
             {
@@ -79,7 +79,7 @@ namespace Server.Network
                 packetLength -= 1;
             }
 
-            Serial dest = reader.ReadUInt32();
+            Serial dest = (Serial)reader.ReadUInt32();
 
             var loc = new Point3D(x, y, z);
 
@@ -117,7 +117,7 @@ namespace Server.Network
             int y = reader.ReadInt16();
             int z = reader.ReadSByte();
             reader.ReadByte(); // Grid Location?
-            Serial dest = reader.ReadUInt32();
+            Serial dest = (Serial)reader.ReadUInt32();
 
             var loc = new Point3D(x, y, z);
 
@@ -154,7 +154,7 @@ namespace Server.Network
             var serialList = new List<Serial>(count);
             for (var i = 0; i < count; ++i)
             {
-                serialList.Add(reader.ReadUInt32());
+                serialList.Add((Serial)reader.ReadUInt32());
             }
 
             EventSink.InvokeEquipMacro(state.Mobile, serialList);

@@ -37,7 +37,7 @@ namespace UOContent.Tests
         [InlineData("🅵🅰🅽🅲🆈 🆃🅴🆇🆃", true, "First Line", "Second Line")]
         public void TestSendBBHeaderMessage(string subject, bool content, params string[] lines)
         {
-            var poster = new Mobile(0x1024u) { Name = "Kamron" };
+            var poster = new Mobile((Serial)0x1024u) { Name = "Kamron" };
             poster.DefaultMobileInit();
 
             var bb = new TestBulletinBoard(0x234);
