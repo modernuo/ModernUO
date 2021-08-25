@@ -27,7 +27,7 @@ namespace Benchmarks
             var writer = new CircularBufferWriter(buffer);
             writer.Write((byte)0xAE);
             writer.Write((ushort)(50 + text.Length * 2));
-            writer.Write(serial);
+            writer.Write(serial.Value);
             writer.Write((short)graphic);
             writer.Write((byte)type);
             writer.Write((short)hue);

@@ -10,7 +10,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMessageLocalized()
         {
-            Serial serial = 0x1;
+            Serial serial = (Serial)0x1024;
             var graphic = 0x100;
             var messageType = MessageType.Label;
             var hue = 1024;
@@ -49,7 +49,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMessageLocalizedAffix()
         {
-            Serial serial = 0x1;
+            Serial serial = (Serial)0x1024;
             var graphic = 0x100;
             var messageType = MessageType.Label;
             var hue = 1024;
@@ -94,7 +94,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestAsciiMessage()
         {
-            Serial serial = 0x1;
+            Serial serial = (Serial)0x1024;
             var graphic = 0x100;
             var messageType = MessageType.Label;
             var hue = 1024;
@@ -132,7 +132,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestUnicodeMessage()
         {
-            Serial serial = 0x1;
+            Serial serial = (Serial)0x1024;
             var graphic = 0x100;
             var messageType = MessageType.Label;
             var hue = 1024;
@@ -172,8 +172,8 @@ namespace Server.Tests.Network
         [Fact]
         public void TestFollowMessage()
         {
-            Serial serial = 0x1;
-            Serial serial2 = 0x2;
+            Serial serial = (Serial)0x1024;
+            Serial serial2 = (Serial)0x2;
 
             var expected = new FollowMessage(serial, serial2).Compile();
 
@@ -187,7 +187,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestObjectHelpResponse()
         {
-            Serial s = 0x100;
+            Serial s = (Serial)0x100;
             var text = "This is some testing text";
 
             var expected = new ObjectHelpResponse(s, text).Compile();

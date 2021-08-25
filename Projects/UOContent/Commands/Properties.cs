@@ -34,7 +34,7 @@ namespace Server.Commands
         {
             if (e.Length == 1)
             {
-                var ent = World.FindEntity(e.GetUInt32(0));
+                var ent = World.FindEntity((Serial)e.GetUInt32(0));
 
                 if (ent == null)
                 {

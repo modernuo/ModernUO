@@ -499,7 +499,7 @@ namespace Server.Commands
             {
                 try
                 {
-                    var ser = e.GetUInt32(0);
+                    var ser = (Serial)e.GetUInt32(0);
 
                     var ent = World.FindEntity(ser);
 

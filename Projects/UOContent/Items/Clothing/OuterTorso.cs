@@ -1,88 +1,50 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    public abstract class BaseOuterTorso : BaseClothing
+    [Serializable(0, false)]
+    public abstract partial class BaseOuterTorso : BaseClothing
     {
         public BaseOuterTorso(int itemID, int hue = 0) : base(itemID, Layer.OuterTorso, hue)
         {
         }
-
-        public BaseOuterTorso(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x230E, 0x230D)]
-    public class GildedDress : BaseOuterTorso
+    public partial class GildedDress : BaseOuterTorso
     {
         [Constructible]
         public GildedDress(int hue = 0) : base(0x230E, hue) => Weight = 3.0;
-
-        public GildedDress(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1F00, 0x1EFF)]
-    public class FancyDress : BaseOuterTorso
+    public partial class FancyDress : BaseOuterTorso
     {
         [Constructible]
         public FancyDress(int hue = 0) : base(0x1F00, hue) => Weight = 3.0;
-
-        public FancyDress(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class DeathRobe : Robe
+    [Serializable(3, false)]
+    public partial class DeathRobe : Robe
     {
         private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
-        private DateTime m_DecayTime;
-        private Timer m_DecayTimer;
+
+        [TimerDrift]
+        [SerializableField(0)]
+        private Timer _decayTimer;
+
+        [DeserializeTimerField(0)]
+        private void DeserializeDecayTimer(TimeSpan delay)
+        {
+            if (delay != TimeSpan.MinValue)
+            {
+                BeginDecay(delay);
+            }
+        }
 
         [Constructible]
         public DeathRobe()
@@ -90,10 +52,6 @@ namespace Server.Items
             LootType = LootType.Newbied;
             Hue = 2301;
             BeginDecay(m_DefaultDecayTime);
-        }
-
-        public DeathRobe(Serial serial) : base(serial)
-        {
         }
 
         public override bool DisplayLootType => false;
@@ -109,14 +67,18 @@ namespace Server.Items
             BeginDecay(m_DefaultDecayTime);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void StopTimer()
+        {
+            _decayTimer?.Stop();
+            _decayTimer = null;
+        }
+
         private void BeginDecay(TimeSpan delay)
         {
-            m_DecayTimer?.Stop();
-
-            m_DecayTime = Core.Now + delay;
-
-            m_DecayTimer = new InternalTimer(this, delay);
-            m_DecayTimer.Start();
+            StopTimer();
+            _decayTimer = new InternalTimer(this, delay);
+            _decayTimer.Start();
         }
 
         public override bool OnDroppedToWorld(Mobile from, Point3D p)
@@ -126,101 +88,70 @@ namespace Server.Items
             return true;
         }
 
-        public override bool OnDroppedToMobile(Mobile from, Mobile target)
+        public override bool OnDroppedInto(Mobile from, Container target, Point3D p)
         {
-            if (m_DecayTimer != null)
+            if (base.OnDroppedInto(from, target, p))
             {
-                m_DecayTimer.Stop();
-                m_DecayTimer = null;
+                StopTimer();
+                return true;
             }
 
+            return false;
+        }
+
+        public override bool OnDroppedToMobile(Mobile from, Mobile target)
+        {
+            StopTimer();
             return true;
         }
 
         public override void OnAfterDelete()
         {
-            m_DecayTimer?.Stop();
-
-            m_DecayTimer = null;
+            StopTimer();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(2); // version
-
-            writer.Write(m_DecayTimer != null);
-
-            if (m_DecayTimer != null)
+            if (reader.ReadBool())
             {
-                writer.WriteDeltaTime(m_DecayTime);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 2:
-                    {
-                        if (reader.ReadBool())
-                        {
-                            m_DecayTime = reader.ReadDeltaTime();
-                            BeginDecay(m_DecayTime - Core.Now);
-                        }
-
-                        break;
-                    }
-                case 1:
-                case 0:
-                    {
-                        if (Parent == null)
-                        {
-                            BeginDecay(m_DefaultDecayTime);
-                        }
-
-                        break;
-                    }
-            }
-
-            if (version < 1 && Hue == 0)
-            {
-                Hue = 2301;
+                var delay = reader.ReadDeltaTime();
+                BeginDecay(delay - Core.Now);
             }
         }
 
         private class InternalTimer : Timer
         {
-            private readonly DeathRobe m_Robe;
+            private readonly DeathRobe _robe;
 
-            public InternalTimer(DeathRobe c, TimeSpan delay) : base(delay)
-            {
-                m_Robe = c;
-            }
+            public InternalTimer(DeathRobe c, TimeSpan delay) : base(delay) => _robe = c;
 
             protected override void OnTick()
             {
-                if (m_Robe.Parent != null || m_Robe.IsLockedDown)
+                if (_robe.Parent != null || _robe.IsLockedDown)
                 {
                     Stop();
+                    _robe._decayTimer = null;
                 }
                 else
                 {
-                    m_Robe.Delete();
+                    _robe.Delete();
                 }
             }
         }
     }
 
     [Flippable]
-    public class RewardRobe : BaseOuterTorso, IRewardItem
+    [Serializable(0, false)]
+    public partial class RewardRobe : BaseOuterTorso, IRewardItem
     {
-        private int m_LabelNumber;
+        [InvalidateProperties]
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _number;
+
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _isRewardItem;
 
         [Constructible]
         public RewardRobe(int hue = 0, int labelNumber = 0) : base(0x1F03, hue)
@@ -228,41 +159,12 @@ namespace Server.Items
             Weight = 3.0;
             LootType = LootType.Blessed;
 
-            m_LabelNumber = labelNumber;
+            _number = labelNumber;
         }
 
-        public RewardRobe(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Number
-        {
-            get => m_LabelNumber;
-            set
-            {
-                m_LabelNumber = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override int LabelNumber
-        {
-            get
-            {
-                if (m_LabelNumber > 0)
-                {
-                    return m_LabelNumber;
-                }
-
-                return base.LabelNumber;
-            }
-        }
+        public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 
         public override int BasePhysicalResistance => 3;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsRewardItem { get; set; }
 
         public override void OnAdded(IEntity parent)
         {
@@ -296,51 +198,23 @@ namespace Server.Items
 
             if (Core.ML && IsRewardItem)
             {
+                // X Year Veteran Reward
                 list.Add(
                     RewardSystem.GetRewardYearLabel(
                         this,
-                        new object[] { Hue, m_LabelNumber }
+                        new object[] { Hue, _number }
                     )
-                ); // X Year Veteran Reward
+                );
             }
         }
 
-        public override bool CanEquip(Mobile m)
+        public override bool CanEquip(Mobile m) =>
+            base.CanEquip(m) &&
+            (!IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, _number }));
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            if (!base.CanEquip(m))
-            {
-                return false;
-            }
-
-            return !IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, m_LabelNumber });
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_LabelNumber);
-            writer.Write(IsRewardItem);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_LabelNumber = reader.ReadInt();
-                        IsRewardItem = reader.ReadBool();
-                        break;
-                    }
-            }
-
             if (Parent is Mobile mobile)
             {
                 mobile.VirtualArmorMod += 2;
@@ -349,9 +223,17 @@ namespace Server.Items
     }
 
     [Flippable]
-    public class RewardDress : BaseOuterTorso, IRewardItem
+    [Serializable(0, false)]
+    public partial class RewardDress : BaseOuterTorso, IRewardItem
     {
-        private int m_LabelNumber;
+        [InvalidateProperties]
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _number;
+
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _isRewardItem;
 
         [Constructible]
         public RewardDress(int hue = 0, int labelNumber = 0) : base(0x1F01, hue)
@@ -359,41 +241,12 @@ namespace Server.Items
             Weight = 2.0;
             LootType = LootType.Blessed;
 
-            m_LabelNumber = labelNumber;
+            _number = labelNumber;
         }
 
-        public RewardDress(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Number
-        {
-            get => m_LabelNumber;
-            set
-            {
-                m_LabelNumber = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override int LabelNumber
-        {
-            get
-            {
-                if (m_LabelNumber > 0)
-                {
-                    return m_LabelNumber;
-                }
-
-                return base.LabelNumber;
-            }
-        }
+        public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 
         public override int BasePhysicalResistance => 3;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsRewardItem { get; set; }
 
         public override void OnAdded(IEntity parent)
         {
@@ -425,53 +278,25 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (IsRewardItem)
+            if (_isRewardItem)
             {
+                // X Year Veteran Reward
                 list.Add(
                     RewardSystem.GetRewardYearLabel(
                         this,
-                        new object[] { Hue, m_LabelNumber }
+                        new object[] { Hue, _number }
                     )
-                ); // X Year Veteran Reward
+                );
             }
         }
 
-        public override bool CanEquip(Mobile m)
+        public override bool CanEquip(Mobile m) =>
+            base.CanEquip(m) &&
+            (!_isRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, _number }));
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            if (!base.CanEquip(m))
-            {
-                return false;
-            }
-
-            return !IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, m_LabelNumber });
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_LabelNumber);
-            writer.Write(IsRewardItem);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_LabelNumber = reader.ReadInt();
-                        IsRewardItem = reader.ReadBool();
-                        break;
-                    }
-            }
-
             if (Parent is Mobile mobile)
             {
                 mobile.VirtualArmorMod += 2;
@@ -480,85 +305,54 @@ namespace Server.Items
     }
 
     [Flippable]
-    public class Robe : BaseOuterTorso, IArcaneEquip
+    [Serializable(2, false)]
+    public partial class Robe : BaseOuterTorso, IArcaneEquip
     {
-        private int m_MaxArcaneCharges, m_CurArcaneCharges;
+        private int _curArcaneCharges;
+        private int _maxArcaneCharges;
 
         [Constructible]
         public Robe(int hue = 0) : base(0x1F03, hue) => Weight = 3.0;
 
-        public Robe(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxArcaneCharges
-        {
-            get => m_MaxArcaneCharges;
-            set
-            {
-                m_MaxArcaneCharges = value;
-                InvalidateProperties();
-                Update();
-            }
-        }
-
+        [EncodedInt]
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurArcaneCharges
         {
-            get => m_CurArcaneCharges;
+            get => _curArcaneCharges;
             set
             {
-                m_CurArcaneCharges = value;
+                _curArcaneCharges = value;
                 InvalidateProperties();
                 Update();
+                this.MarkDirty();
+            }
+        }
+
+        [EncodedInt]
+        [SerializableField(1)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int MaxArcaneCharges
+        {
+            get => _maxArcaneCharges;
+            set
+            {
+                _maxArcaneCharges = value;
+                InvalidateProperties();
+                Update();
+                this.MarkDirty();
             }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsArcane => m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0;
+        public bool IsArcane => _maxArcaneCharges > 0 && _curArcaneCharges >= 0;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            if (IsArcane)
+            if (reader.ReadBool())
             {
-                writer.Write(true);
-                writer.Write(m_CurArcaneCharges);
-                writer.Write(m_MaxArcaneCharges);
-            }
-            else
-            {
-                writer.Write(false);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        if (reader.ReadBool())
-                        {
-                            m_CurArcaneCharges = reader.ReadInt();
-                            m_MaxArcaneCharges = reader.ReadInt();
-
-                            if (Hue == 2118)
-                            {
-                                Hue = ArcaneGem.DefaultArcaneHue;
-                            }
-                        }
-
-                        break;
-                    }
+                _curArcaneCharges = reader.ReadInt();
+                _maxArcaneCharges = reader.ReadInt();
             }
         }
 
@@ -585,7 +379,7 @@ namespace Server.Items
 
             if (IsArcane)
             {
-                list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+                list.Add(1061837, "{0}\t{1}", _curArcaneCharges, _maxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
             }
         }
 
@@ -595,34 +389,29 @@ namespace Server.Items
 
             if (IsArcane)
             {
-                LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+                LabelTo(from, 1061837, $"{_curArcaneCharges}\t{_maxArcaneCharges}");
             }
         }
 
         public void Flip()
         {
-            if (ItemID == 0x1F03)
+            ItemID = ItemID switch
             {
-                ItemID = 0x1F04;
-            }
-            else if (ItemID == 0x1F04)
-            {
-                ItemID = 0x1F03;
-            }
+                0x1F03 => 0x1F04,
+                0x1F04 => 0x1F03,
+                _      => ItemID
+            };
         }
     }
 
-    public class MonkRobe : BaseOuterTorso
+    [Serializable(0, false)]
+    public partial class MonkRobe : BaseOuterTorso
     {
         [Constructible]
         public MonkRobe(int hue = 0x21E) : base(0x2687, hue)
         {
             Weight = 1.0;
             StrRequirement = 0;
-        }
-
-        public MonkRobe(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1076584; // A monk's robe
@@ -633,209 +422,65 @@ namespace Server.Items
             from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x1f01, 0x1f02)]
-    public class PlainDress : BaseOuterTorso
+    [Serializable(0, false)]
+    public partial class PlainDress : BaseOuterTorso
     {
         [Constructible]
         public PlainDress(int hue = 0) : base(0x1F01, hue) => Weight = 2.0;
-
-        public PlainDress(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 3.0)
-            {
-                Weight = 2.0;
-            }
-        }
     }
 
     [Flippable(0x2799, 0x27E4)]
-    public class Kamishimo : BaseOuterTorso
+    [Serializable(0, false)]
+    public partial class Kamishimo : BaseOuterTorso
     {
         [Constructible]
         public Kamishimo(int hue = 0) : base(0x2799, hue) => Weight = 3.0;
-
-        public Kamishimo(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x279C, 0x27E7)]
-    public class HakamaShita : BaseOuterTorso
+    [Serializable(0, false)]
+    public partial class HakamaShita : BaseOuterTorso
     {
         [Constructible]
         public HakamaShita(int hue = 0) : base(0x279C, hue) => Weight = 3.0;
-
-        public HakamaShita(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x2782, 0x27CD)]
-    public class MaleKimono : BaseOuterTorso
+    [Serializable(0, false)]
+    public partial class MaleKimono : BaseOuterTorso
     {
         [Constructible]
         public MaleKimono(int hue = 0) : base(0x2782, hue) => Weight = 3.0;
-
-        public MaleKimono(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool AllowFemaleWearer => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x2783, 0x27CE)]
-    public class FemaleKimono : BaseOuterTorso
+    [Serializable(0, false)]
+    public partial class FemaleKimono : BaseOuterTorso
     {
         [Constructible]
         public FemaleKimono(int hue = 0) : base(0x2783, hue) => Weight = 3.0;
-
-        public FemaleKimono(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool AllowMaleWearer => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x2FB9, 0x3173)]
-    public class MaleElvenRobe : BaseOuterTorso
+    [Serializable(0)]
+    public partial class MaleElvenRobe : BaseOuterTorso
     {
         [Constructible]
         public MaleElvenRobe(int hue = 0) : base(0x2FB9, hue) => Weight = 2.0;
-
-        public MaleElvenRobe(Serial serial) : base(serial)
-        {
-        }
-
-        public override Race RequiredRace => Race.Elf;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
     [Flippable(0x2FBA, 0x3174)]
-    public class FemaleElvenRobe : BaseOuterTorso
+    [Serializable(0)]
+    public partial class FemaleElvenRobe : BaseOuterTorso
     {
         [Constructible]
         public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue) => Weight = 2.0;
 
-        public FemaleElvenRobe(Serial serial) : base(serial)
-        {
-        }
-
         public override Race RequiredRace => Race.Elf;
 
         public override bool AllowMaleWearer => false;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

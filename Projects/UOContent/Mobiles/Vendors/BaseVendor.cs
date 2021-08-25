@@ -845,6 +845,8 @@ namespace Server.Mobiles
             PackGold(100, 200);
         }
 
+        private static readonly Serial _COFFEE = (Serial)0x7FC0FFEE;
+
         public virtual void VendorBuy(Mobile from)
         {
             if (!IsActiveSeller)
@@ -898,7 +900,7 @@ namespace Server.Mobiles
                     new BuyItemState(
                         buyItem.Name,
                         cont.Serial,
-                        disp?.Serial ?? 0x7FC0FFEE,
+                        disp?.Serial ?? _COFFEE,
                         buyItem.Price,
                         buyItem.Amount,
                         buyItem.ItemID,

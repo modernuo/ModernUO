@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseHat",
+  "properties": [
+    {
+      "name": "IsShipwreckedItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

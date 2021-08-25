@@ -137,6 +137,8 @@ namespace Server.Network
             UnderlyingStream.Write(m_Buffer, 0, 4);
         }
 
+        public void Write(Serial serial) => Write(serial.Value);
+
         /// <summary>
         ///     Writes a sequence of bytes to the underlying stream
         /// </summary>

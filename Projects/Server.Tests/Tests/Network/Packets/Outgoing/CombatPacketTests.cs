@@ -9,8 +9,8 @@ namespace Server.Tests.Network
         [Fact]
         public void TestSwing()
         {
-            Serial attacker = 0x1000;
-            Serial defender = 0x2000;
+            Serial attacker = (Serial)0x1024;
+            Serial defender = (Serial)0x2048;
 
             var expected = new Swing(attacker, defender).Compile();
 
@@ -36,7 +36,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestChangeCombatant()
         {
-            Serial serial = 0x1024;
+            Serial serial = (Serial)0x1024;
 
             var expected = new ChangeCombatant(serial).Compile();
 

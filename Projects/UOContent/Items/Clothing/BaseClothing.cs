@@ -22,27 +22,100 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    public abstract class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
+    [Serializable(6, false)]
+    public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
-        private Mobile m_Crafter;
+        // Field 0
+        private CraftResource _resource;
 
-        private FactionItem m_FactionState;
-        private int m_HitPoints;
+        [SerializableField(1, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosAttributes _attributes;
 
-        private int m_MaxHitPoints;
-        private ClothingQuality m_Quality;
-        protected CraftResource m_Resource;
-        private int m_StrReq = -1;
+        [SerializableFieldSaveFlag(1)]
+        private bool ShouldSerializeAttributes() => !_attributes.IsEmpty;
+
+        [SerializableFieldDefault(1)]
+        private AosAttributes AttributesDefaultValue() => new(this);
+
+        [SerializableField(2, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosArmorAttributes _clothingAttributes;
+
+        [SerializableFieldSaveFlag(2)]
+        private bool ShouldSerializeClothingAttributes() => !_clothingAttributes.IsEmpty;
+
+        [SerializableFieldDefault(2)]
+        private AosArmorAttributes ClothingAttributesDefaultValue() => new(this);
+
+        [SerializableField(3, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosSkillBonuses _skillBonuses;
+
+        [SerializableFieldSaveFlag(3)]
+        private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
+
+        [SerializableFieldDefault(3)]
+        private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
+
+        [SerializableField(4, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        private AosElementAttributes _resistances;
+
+        [SerializableFieldSaveFlag(4)]
+        private bool ShouldSerializeResistances() => !_resistances.IsEmpty;
+
+        [SerializableFieldDefault(4)]
+        private AosElementAttributes ResistancesDefaultValue() => new(this);
+
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(5)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _maxHitPoints;
+
+        [SerializableFieldSaveFlag(5)]
+        private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
+
+        // Field 6
+        private int _hitPoints;
+
+        [SerializableField(7)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _playerConstructed;
+
+        [SerializableFieldSaveFlag(7)]
+        private bool ShouldSerializePlayerConstructed() => _playerConstructed;
+
+        [InvalidateProperties]
+        [SerializableField(8)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private Mobile _crafter;
+
+        [SerializableFieldSaveFlag(8)]
+        private bool ShouldSerializeCrafter() => _crafter != null;
+
+        [InvalidateProperties]
+        [SerializableField(9)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private ClothingQuality _quality = ClothingQuality.Regular;
+
+        [SerializableFieldSaveFlag(9)]
+        private bool ShouldSerializeQuality() => _quality != ClothingQuality.Regular;
+
+        // Field 10
+        private int _strReq = -1;
+
+        private FactionItem _factionState;
 
         public BaseClothing(int itemID, Layer layer, int hue = 0) : base(itemID)
         {
             Layer = layer;
             Hue = hue;
 
-            m_Resource = DefaultResource;
-            m_Quality = ClothingQuality.Regular;
+            _resource = DefaultResource;
 
-            m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+            _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
             Attributes = new AosAttributes(this);
             ClothingAttributes = new AosArmorAttributes(this);
@@ -50,71 +123,40 @@ namespace Server.Items
             Resistances = new AosElementAttributes(this);
         }
 
-        public BaseClothing(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Crafter
-        {
-            get => m_Crafter;
-            set
-            {
-                m_Crafter = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int StrRequirement
-        {
-            get => m_StrReq == -1 ? Core.AOS ? AosStrReq : OldStrReq : m_StrReq;
-            set
-            {
-                m_StrReq = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ClothingQuality Quality
-        {
-            get => m_Quality;
-            set
-            {
-                m_Quality = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool PlayerConstructed { get; set; }
-
-        public virtual CraftResource DefaultResource => CraftResource.None;
-
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => m_Resource;
+            get => _resource;
             set
             {
-                m_Resource = value;
-                Hue = CraftResources.GetHue(m_Resource);
+                _resource = value;
+                Hue = CraftResources.GetHue(_resource);
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosAttributes Attributes { get; private set; }
+        [SerializableFieldSaveFlag(0)]
+        private bool ShouldSerializeResource() => _resource != DefaultResource;
 
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosArmorAttributes ClothingAttributes { get; private set; }
+        [SerializableField(10)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int StrRequirement
+        {
+            get => _strReq == -1 ? Core.AOS ? AosStrReq : OldStrReq : _strReq;
+            set
+            {
+                _strReq = value;
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
 
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosSkillBonuses SkillBonuses { get; private set; }
+        [SerializableFieldSaveFlag(10)]
+        private bool ShouldSerializeStrReq() => _strReq != -1;
 
-        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public AosElementAttributes Resistances { get; private set; }
+        public virtual CraftResource DefaultResource => CraftResource.None;
 
         public virtual int BasePhysicalResistance => 0;
         public virtual int BaseFireResistance => 0;
@@ -197,17 +239,17 @@ namespace Server.Items
 
         public FactionItem FactionItemState
         {
-            get => m_FactionState;
+            get => _factionState;
             set
             {
-                m_FactionState = value;
+                _factionState = value;
 
-                if (m_FactionState == null)
+                if (_factionState == null)
                 {
                     Hue = 0;
                 }
 
-                LootType = m_FactionState == null ? LootType.Regular : LootType.Blessed;
+                LootType = _factionState == null ? LootType.Regular : LootType.Blessed;
             }
         }
 
@@ -233,7 +275,7 @@ namespace Server.Items
             {
                 try
                 {
-                    var info = CraftResources.GetInfo(m_Resource);
+                    var info = CraftResources.GetInfo(_resource);
 
                     var resourceType = info.ResourceTypes?[0] ?? item.Resources[0].ItemType;
 
@@ -257,40 +299,35 @@ namespace Server.Items
 
         public virtual bool CanFortify => true;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxHitPoints
-        {
-            get => m_MaxHitPoints;
-            set
-            {
-                m_MaxHitPoints = value;
-                InvalidateProperties();
-            }
-        }
-
+        [EncodedInt]
+        [SerializableField(6)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
-            get => m_HitPoints;
+            get => _hitPoints;
             set
             {
-                if (value != m_HitPoints && MaxHitPoints > 0)
+                if (value != _hitPoints && MaxHitPoints > 0)
                 {
-                    m_HitPoints = value;
+                    _hitPoints = value;
 
-                    if (m_HitPoints < 0)
+                    if (_hitPoints < 0)
                     {
                         Delete();
                     }
-                    else if (m_HitPoints > MaxHitPoints)
+                    else if (_hitPoints > MaxHitPoints)
                     {
-                        m_HitPoints = MaxHitPoints;
+                        _hitPoints = MaxHitPoints;
                     }
 
                     InvalidateProperties();
+                    this.MarkDirty();
                 }
             }
         }
+
+        [SerializableFieldSaveFlag(6)]
+        private bool ShouldSerializeHitPoints() => _hitPoints != 0;
 
         public virtual int InitMinHits => 0;
         public virtual int InitMaxHits => 0;
@@ -321,9 +358,9 @@ namespace Server.Items
                         wear = Utility.Random(2);
                     }
 
-                    if (wear > 0 && m_MaxHitPoints > 0)
+                    if (wear > 0 && _maxHitPoints > 0)
                     {
-                        if (m_HitPoints >= wear)
+                        if (_hitPoints >= wear)
                         {
                             HitPoints -= wear;
                             wear = 0;
@@ -336,7 +373,7 @@ namespace Server.Items
 
                         if (wear > 0)
                         {
-                            if (m_MaxHitPoints > wear)
+                            if (_maxHitPoints > wear)
                             {
                                 MaxHitPoints -= wear;
 
@@ -362,20 +399,22 @@ namespace Server.Items
         {
             var scale = 100 + ClothingAttributes.DurabilityBonus;
 
-            m_HitPoints = (m_HitPoints * 100 + (scale - 1)) / scale;
-            m_MaxHitPoints = (m_MaxHitPoints * 100 + (scale - 1)) / scale;
+            _hitPoints = (_hitPoints * 100 + (scale - 1)) / scale;
+            _maxHitPoints = (_maxHitPoints * 100 + (scale - 1)) / scale;
 
             InvalidateProperties();
+            this.MarkDirty();
         }
 
         public void ScaleDurability()
         {
             var scale = 100 + ClothingAttributes.DurabilityBonus;
 
-            m_HitPoints = (m_HitPoints * scale + 99) / 100;
-            m_MaxHitPoints = (m_MaxHitPoints * scale + 99) / 100;
+            _hitPoints = (_hitPoints * scale + 99) / 100;
+            _maxHitPoints = (_maxHitPoints * scale + 99) / 100;
 
             InvalidateProperties();
+            this.MarkDirty();
         }
 
         public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) =>
@@ -445,15 +484,7 @@ namespace Server.Items
             return base.CanEquip(from);
         }
 
-        public int ComputeStatReq(StatType type)
-        {
-            int v;
-
-            // if (type == StatType.Str)
-            v = StrRequirement;
-
-            return AOS.Scale(v, 100 - GetLowerStatReq());
-        }
+        public int ComputeStatReq(StatType type) => AOS.Scale(StrRequirement, 100 - GetLowerStatReq());
 
         public int ComputeStatBonus(StatType type) =>
             type switch
@@ -553,15 +584,7 @@ namespace Server.Items
             }
         }
 
-        public int GetLowerStatReq()
-        {
-            if (!Core.AOS)
-            {
-                return 0;
-            }
-
-            return ClothingAttributes.LowerStatReq;
-        }
+        public int GetLowerStatReq() => !Core.AOS ? 0 : ClothingAttributes.LowerStatReq;
 
         public override void OnAdded(IEntity parent)
         {
@@ -635,7 +658,7 @@ namespace Server.Items
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
-            var oreType = m_Resource switch
+            var oreType = _resource switch
             {
                 CraftResource.DullCopper    => 1053108,
                 CraftResource.ShadowIron    => 1053107,
@@ -675,17 +698,17 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (m_Crafter != null)
+            if (_crafter != null)
             {
-                list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
             }
 
-            if (m_FactionState != null)
+            if (_factionState != null)
             {
                 list.Add(1041350); // faction item
             }
 
-            if (m_Quality == ClothingQuality.Exceptional)
+            if (_quality == ClothingQuality.Exceptional)
             {
                 list.Add(1060636); // exceptional
             }
@@ -851,9 +874,9 @@ namespace Server.Items
                 list.Add(1061170, prop.ToString()); // strength requirement ~1_val~
             }
 
-            if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
+            if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, "{0}\t{1}", _hitPoints, _maxHitPoints); // durability ~1_val~ / ~2_val~
             }
         }
 
@@ -880,7 +903,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, m_Crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -897,14 +920,14 @@ namespace Server.Items
                 }
             }
 
-            if (m_FactionState != null)
+            if (_factionState != null)
             {
                 attrs.Add(new EquipInfoAttribute(1041350)); // faction item
             }
 
-            if (m_Quality == ClothingQuality.Exceptional)
+            if (_quality == ClothingQuality.Exceptional)
             {
-                attrs.Add(new EquipInfoAttribute(1018305 - (int)m_Quality));
+                attrs.Add(new EquipInfoAttribute(1018305 - (int)_quality));
             }
         }
 
@@ -935,240 +958,91 @@ namespace Server.Items
             InvalidateProperties();
         }
 
-        private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
+        private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
+
+        private void Deserialize(IGenericReader reader, int version)
         {
-            if (setIf)
+            var flags = (OldSaveFlag)reader.ReadEncodedInt();
+
+            if (GetSaveFlag(flags, OldSaveFlag.Resource))
             {
-                flags |= toSet;
+                _resource = (CraftResource)reader.ReadEncodedInt();
             }
+            else
+            {
+                _resource = DefaultResource;
+            }
+
+            Attributes = new AosAttributes(this);
+
+            if (GetSaveFlag(flags, OldSaveFlag.Attributes))
+            {
+                Attributes.Deserialize(reader);
+            }
+
+            ClothingAttributes = new AosArmorAttributes(this);
+
+            if (GetSaveFlag(flags, OldSaveFlag.ClothingAttributes))
+            {
+                ClothingAttributes.Deserialize(reader);
+            }
+
+            SkillBonuses = new AosSkillBonuses(this);
+
+            if (GetSaveFlag(flags, OldSaveFlag.SkillBonuses))
+            {
+                SkillBonuses.Deserialize(reader);
+            }
+
+            Resistances = new AosElementAttributes(this);
+
+            if (GetSaveFlag(flags, OldSaveFlag.Resistances))
+            {
+                Resistances.Deserialize(reader);
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
+            {
+                _maxHitPoints = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.HitPoints))
+            {
+                _hitPoints = reader.ReadEncodedInt();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Crafter))
+            {
+                _crafter = reader.ReadEntity<Mobile>();
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.Quality))
+            {
+                _quality = (ClothingQuality)reader.ReadEncodedInt();
+            }
+            else
+            {
+                _quality = ClothingQuality.Regular;
+            }
+
+            if (GetSaveFlag(flags, OldSaveFlag.StrReq))
+            {
+                _strReq = reader.ReadEncodedInt();
+            }
+            else
+            {
+                _strReq = -1;
+            }
+
+            PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
         }
 
-        private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
-
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(5); // version
-
-            var flags = SaveFlag.None;
-
-            SetSaveFlag(ref flags, SaveFlag.Resource, m_Resource != DefaultResource);
-            SetSaveFlag(ref flags, SaveFlag.Attributes, !Attributes.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.ClothingAttributes, !ClothingAttributes.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !SkillBonuses.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.Resistances, !Resistances.IsEmpty);
-            SetSaveFlag(ref flags, SaveFlag.MaxHitPoints, m_MaxHitPoints != 0);
-            SetSaveFlag(ref flags, SaveFlag.HitPoints, m_HitPoints != 0);
-            SetSaveFlag(ref flags, SaveFlag.PlayerConstructed, PlayerConstructed);
-            SetSaveFlag(ref flags, SaveFlag.Crafter, m_Crafter != null);
-            SetSaveFlag(ref flags, SaveFlag.Quality, m_Quality != ClothingQuality.Regular);
-            SetSaveFlag(ref flags, SaveFlag.StrReq, m_StrReq != -1);
-
-            writer.WriteEncodedInt((int)flags);
-
-            if (GetSaveFlag(flags, SaveFlag.Resource))
+            if (_maxHitPoints == 0 && _hitPoints == 0)
             {
-                writer.WriteEncodedInt((int)m_Resource);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Attributes))
-            {
-                Attributes.Serialize(writer);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
-            {
-                ClothingAttributes.Serialize(writer);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-            {
-                SkillBonuses.Serialize(writer);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Resistances))
-            {
-                Resistances.Serialize(writer);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
-            {
-                writer.WriteEncodedInt(m_MaxHitPoints);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.HitPoints))
-            {
-                writer.WriteEncodedInt(m_HitPoints);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Crafter))
-            {
-                writer.Write(m_Crafter);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.Quality))
-            {
-                writer.WriteEncodedInt((int)m_Quality);
-            }
-
-            if (GetSaveFlag(flags, SaveFlag.StrReq))
-            {
-                writer.WriteEncodedInt(m_StrReq);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 5:
-                    {
-                        var flags = (SaveFlag)reader.ReadEncodedInt();
-
-                        if (GetSaveFlag(flags, SaveFlag.Resource))
-                        {
-                            m_Resource = (CraftResource)reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_Resource = DefaultResource;
-                        }
-
-                        Attributes = new AosAttributes(this);
-
-                        if (GetSaveFlag(flags, SaveFlag.Attributes))
-                        {
-                            Attributes.Deserialize(reader);
-                        }
-
-                        ClothingAttributes = new AosArmorAttributes(this);
-
-                        if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
-                        {
-                            ClothingAttributes.Deserialize(reader);
-                        }
-
-                        SkillBonuses = new AosSkillBonuses(this);
-
-                        if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-                        {
-                            SkillBonuses.Deserialize(reader);
-                        }
-
-                        Resistances = new AosElementAttributes(this);
-
-                        if (GetSaveFlag(flags, SaveFlag.Resistances))
-                        {
-                            Resistances.Deserialize(reader);
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
-                        {
-                            m_MaxHitPoints = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.HitPoints))
-                        {
-                            m_HitPoints = reader.ReadEncodedInt();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Crafter))
-                        {
-                            m_Crafter = reader.ReadEntity<Mobile>();
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.Quality))
-                        {
-                            m_Quality = (ClothingQuality)reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_Quality = ClothingQuality.Regular;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.StrReq))
-                        {
-                            m_StrReq = reader.ReadEncodedInt();
-                        }
-                        else
-                        {
-                            m_StrReq = -1;
-                        }
-
-                        if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-                        {
-                            PlayerConstructed = true;
-                        }
-
-                        break;
-                    }
-                case 4:
-                    {
-                        m_Resource = (CraftResource)reader.ReadInt();
-
-                        goto case 3;
-                    }
-                case 3:
-                    {
-                        Attributes = new AosAttributes(this);
-                        Attributes.Deserialize(reader);
-
-                        ClothingAttributes = new AosArmorAttributes(this);
-                        ClothingAttributes.Deserialize(reader);
-
-                        SkillBonuses = new AosSkillBonuses(this);
-                        SkillBonuses.Deserialize(reader);
-
-                        Resistances = new AosElementAttributes(this);
-                        Resistances.Deserialize(reader);
-
-                        goto case 2;
-                    }
-                case 2:
-                    {
-                        PlayerConstructed = reader.ReadBool();
-                        goto case 1;
-                    }
-                case 1:
-                    {
-                        m_Crafter = reader.ReadEntity<Mobile>();
-                        m_Quality = (ClothingQuality)reader.ReadInt();
-                        break;
-                    }
-                case 0:
-                    {
-                        m_Crafter = null;
-                        m_Quality = ClothingQuality.Regular;
-                        break;
-                    }
-            }
-
-            if (version < 2)
-            {
-                PlayerConstructed = true; // we don't know, so, assume it's crafted
-            }
-
-            if (version < 3)
-            {
-                Attributes = new AosAttributes(this);
-                ClothingAttributes = new AosArmorAttributes(this);
-                SkillBonuses = new AosSkillBonuses(this);
-                Resistances = new AosElementAttributes(this);
-            }
-
-            if (version < 4)
-            {
-                m_Resource = DefaultResource;
-            }
-
-            if (m_MaxHitPoints == 0 && m_HitPoints == 0)
-            {
-                m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+                _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
             }
 
             if (Parent is Mobile parent)
@@ -1184,7 +1058,7 @@ namespace Server.Items
         }
 
         [Flags]
-        private enum SaveFlag
+        private enum OldSaveFlag
         {
             None = 0x00000000,
             Resource = 0x00000001,

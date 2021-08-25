@@ -37,7 +37,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMovementRej()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             const byte seq = 100;
@@ -54,7 +54,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMovementAck()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             const byte seq = 100;

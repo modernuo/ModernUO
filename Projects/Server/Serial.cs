@@ -67,28 +67,64 @@ namespace Server
         public static bool operator ==(Serial l, Serial r) => l.Value == r.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Serial l, uint r) => l.Value == r;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Serial l, Serial r) => l.Value != r.Value;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Serial l, uint r) => l.Value != r;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(Serial l, Serial r) => l.Value > r.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator >(Serial l, uint r) => l.Value > r;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(Serial l, Serial r) => l.Value < r.Value;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator <(Serial l, uint r) => l.Value < r;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(Serial l, Serial r) => l.Value >= r.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator >=(Serial l, uint r) => l.Value >= r;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(Serial l, Serial r) => l.Value <= r.Value;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator <=(Serial l, uint r) => l.Value <= r;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Serial operator +(Serial l, Serial r) => (Serial)(l.Value + r.Value);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Serial operator +(Serial l, uint r) => (Serial)(l.Value + r);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Serial operator ++(Serial l) => (Serial)(l.Value + 1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Serial operator -(Serial l, Serial r) => (Serial)(l.Value - r.Value);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Serial operator -(Serial l, uint r) => (Serial)(l.Value - r);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Serial operator --(Serial l) => (Serial)(l.Value - 1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString() => $"0x{Value:X8}";
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator uint(Serial a) => a.Value;
+        public static explicit operator uint(Serial a) => a.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Serial(uint a) => new(a);
+        public static explicit operator Serial(uint a) => new(a);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Serial other) => Value == other.Value;

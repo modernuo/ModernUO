@@ -227,8 +227,6 @@ namespace Server.Items
             writer.WriteEncodedInt(TriggerRange);
         }
 
-        private IEntity ReadEntity(IGenericReader reader) => World.FindEntity(reader.ReadUInt());
-
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
@@ -243,8 +241,8 @@ namespace Server.Items
                         TriggerDelay = reader.ReadTimeSpan();
                         SoundDelay = reader.ReadTimeSpan();
 
-                        m_Source = ReadEntity(reader);
-                        m_Target = ReadEntity(reader);
+                        m_Source = reader.ReadEntity<IEntity>();
+                        m_Target = reader.ReadEntity<IEntity>();
                         Sequence = reader.ReadEntity<EffectController>();
 
                         FixedDirection = reader.ReadBool();
