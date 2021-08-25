@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [Serializable(0, false)]
     public abstract partial class BaseShoes : BaseClothing
     {
         public BaseShoes(int itemID, int hue = 0) : base(itemID, Layer.Shoes, hue)
