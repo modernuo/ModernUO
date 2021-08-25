@@ -21,6 +21,6 @@ namespace Server
 
         public EntityTypeIndex(string typeName) => TypeName = typeName;
 
-        public Serial CreateIndex(uint num) => num;
+        public Serial CreateIndex(uint num) => (Serial)num;
     }
 }

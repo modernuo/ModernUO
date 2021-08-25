@@ -14,7 +14,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestCorpseEquipPacket()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var weapon = new VikingSword();
@@ -36,7 +36,7 @@ namespace UOContent.Tests
         [InlineData(ProtocolChanges.ContainerGridLines)]
         public void TestCorpseContainerPacket(ProtocolChanges changes)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var weapon = new VikingSword();

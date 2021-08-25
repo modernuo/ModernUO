@@ -114,22 +114,7 @@ namespace Server
                 var loc = reader.ReadPoint3D();
                 var worldLoc = reader.ReadPoint3D();
 
-                IEntity parent;
-
-                Serial serial = reader.ReadUInt();
-
-                if (serial.IsItem)
-                {
-                    parent = World.FindItem(serial);
-                }
-                else if (serial.IsMobile)
-                {
-                    parent = World.FindMobile(serial);
-                }
-                else
-                {
-                    parent = null;
-                }
+                IEntity parent = reader.ReadEntity<IEntity>();
 
                 return new BounceInfo(map, loc, worldLoc, parent);
             }
@@ -2651,7 +2636,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
                         {
-                            Serial parent = reader.ReadUInt();
+                            Serial parent = reader.ReadSerial();
 
                             if (parent.IsMobile)
                             {
@@ -2812,7 +2797,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
                         {
-                            Serial parent = reader.ReadUInt();
+                            Serial parent = reader.ReadSerial();
 
                             if (parent.IsMobile)
                             {
@@ -2930,7 +2915,7 @@ namespace Server
                             AcquireCompactInfo().m_Name = name;
                         }
 
-                        Serial parent = reader.ReadUInt();
+                        Serial parent = reader.ReadSerial();
 
                         if (parent.IsMobile)
                         {

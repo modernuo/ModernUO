@@ -27,7 +27,7 @@ namespace Server.Network
 
         public static void VendorBuyReply(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            var vendor = World.FindMobile(reader.ReadUInt32());
+            var vendor = World.FindMobile((Serial)reader.ReadUInt32());
 
             if (vendor == null)
             {
@@ -49,7 +49,7 @@ namespace Server.Network
                 while (msgSize > 0)
                 {
                     var layer = reader.ReadByte();
-                    Serial serial = reader.ReadUInt32();
+                    var serial = (Serial)reader.ReadUInt32();
                     int amount = reader.ReadInt16();
 
                     buyList.Add(new BuyItemResponse(serial, amount));
@@ -67,7 +67,7 @@ namespace Server.Network
 
         public static void VendorSellReply(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            Serial serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
             var vendor = World.FindMobile(serial);
 
             if (vendor == null)
@@ -92,7 +92,7 @@ namespace Server.Network
 
             for (var i = 0; i < count; i++)
             {
-                var item = World.FindItem(reader.ReadUInt32());
+                var item = World.FindItem((Serial)reader.ReadUInt32());
                 int amount = reader.ReadInt16();
 
                 if (item != null && amount > 0)

@@ -10,7 +10,7 @@ namespace Server.Tests
         [Fact]
         public void TestSendVirtualHairUpdate()
         {
-            var m = new Mobile(0x1024u);
+            var m = new Mobile((Serial)0x1024u);
             m.DefaultMobileInit();
             m.HairHue = 0x1000;
             m.HairItemID = 0x2000;
@@ -27,7 +27,7 @@ namespace Server.Tests
         [Fact]
         public void TestSendRemoveVirtualHair()
         {
-            var m = new Mobile(0x1024u);
+            var m = new Mobile((Serial)0x1024u);
             m.DefaultMobileInit();
 
             var expected = new RemoveHair(m).Compile();

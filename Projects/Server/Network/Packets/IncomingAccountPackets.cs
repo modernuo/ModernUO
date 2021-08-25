@@ -350,12 +350,12 @@ namespace Server.Network
                 var oldestID = 0;
                 var oldest = DateTime.MaxValue;
 
-                foreach (var kvp in m_AuthIDWindow)
+                foreach (var (key, authId) in m_AuthIDWindow)
                 {
-                    if (kvp.Value.Age < oldest)
+                    if (authId.Age < oldest)
                     {
-                        oldestID = kvp.Key;
-                        oldest = kvp.Value.Age;
+                        oldestID = key;
+                        oldest = authId.Age;
                     }
                 }
 

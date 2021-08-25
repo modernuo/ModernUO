@@ -23,7 +23,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestDisplaySignGump()
         {
-            Serial gumpSerial = 0x1000;
+            Serial gumpSerial = (Serial)0x1000;
             var gumpId = 100;
             var unknownString = "This is an unknown string";
             var caption = "This is a caption";
@@ -60,7 +60,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.Unpack)]
         public void TestGumpPacketAdmin(ProtocolChanges changes)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.RawName = "Test Mobile";
             m.AccessLevel = AccessLevel.Administrator;

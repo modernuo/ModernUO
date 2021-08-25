@@ -35,6 +35,7 @@ namespace Server
         void Write(byte value);
         void Write(sbyte value);
         void Write(bool value);
+        void Write(Serial serial);
 
         void Write(DateTime value)
         {

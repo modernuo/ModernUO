@@ -12,7 +12,7 @@ namespace Server.Tests.Network
         [InlineData("this is a really long name that is more than 30 characters, probably")]
         public void TestDisplaySecureTrade(string name)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var firstCont = new Container(World.NewItem);
@@ -77,7 +77,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestSecureTradeEquip()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var cont = new Container(World.NewItem);
@@ -95,7 +95,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestSecureTradeEquip6017()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var cont = new Container(World.NewItem);

@@ -1770,7 +1770,7 @@ namespace Server.Multis
         {
             var from = state.Mobile;
 
-            if (World.FindItem(reader.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map &&
+            if (World.FindItem((Serial)reader.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map &&
                 from.InRange(foundation.GetWorldLocation(), 24) &&
                 from.CanSee(foundation))
             {

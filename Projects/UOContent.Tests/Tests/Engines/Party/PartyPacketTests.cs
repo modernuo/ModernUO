@@ -12,7 +12,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestPartyEmptyList()
         {
-            Serial m = 0x1024u;
+            Serial m = (Serial)0x1024u;
 
             var expected = new PartyEmptyList(m).Compile();
 
@@ -26,10 +26,10 @@ namespace UOContent.Tests
         [Fact]
         public void TestPartyRemoveMember()
         {
-            var leader = new Mobile(0x1024u);
+            var leader = new Mobile((Serial)0x1024u);
             leader.DefaultMobileInit();
 
-            var member = new Mobile(0x2048u);
+            var member = new Mobile((Serial)0x2048u);
             member.DefaultMobileInit();
 
             var p = new Party(leader);
@@ -47,10 +47,10 @@ namespace UOContent.Tests
         [Fact]
         public void TestPartyMemberList()
         {
-            var leader = new Mobile(0x1024u);
+            var leader = new Mobile((Serial)0x1024u);
             leader.DefaultMobileInit();
 
-            var member = new Mobile(0x2048u);
+            var member = new Mobile((Serial)0x2048u);
             member.DefaultMobileInit();
 
             var p = new Party(leader);
@@ -70,7 +70,7 @@ namespace UOContent.Tests
         [InlineData(false)]
         public void TestPartyTextMessage(bool toAll)
         {
-            Serial serial = 0x1024u;
+            Serial serial = (Serial)0x1024u;
             var text = "[Party] Stuff Happens";
 
             var expected = new PartyTextMessage(toAll, serial, text).Compile();
@@ -85,7 +85,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestPartyInvitation()
         {
-            Serial m = 0x1024u;
+            Serial m = (Serial)0x1024u;
 
             var expected = new PartyInvitation(m).Compile();
 

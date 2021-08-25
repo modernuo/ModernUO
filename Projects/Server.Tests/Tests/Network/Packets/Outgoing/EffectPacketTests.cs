@@ -24,9 +24,9 @@ namespace Server.Tests.Network
         public void TestParticleEffect()
         {
             var effectType = EffectType.Moving;
-            Serial serial = 0x4000;
-            Serial from = 0x1000;
-            Serial to = 0x2000;
+            Serial serial = (Serial)0x4000;
+            Serial from = (Serial)0x1000;
+            Serial to = (Serial)0x2000;
             var itemId = 0x100;
             var fromPoint = new Point3D(1000, 100, -10);
             var toPoint = new Point3D(1500, 500, 0);
@@ -63,8 +63,8 @@ namespace Server.Tests.Network
         public void TestHuedEffect()
         {
             var effectType = EffectType.Moving;
-            Serial from = 0x1000;
-            Serial to = 0x2000;
+            Serial from = (Serial)0x1000;
+            Serial to = (Serial)0x2000;
             var itemId = 0x100;
             var fromPoint = new Point3D(1000, 100, -10);
             var toPoint = new Point3D(1500, 500, 0);
@@ -105,7 +105,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestBoltEffect()
         {
-            IEntity entity = new Entity(0x1000, new Point3D(1000, 100, -10), Map.Felucca);
+            IEntity entity = new Entity((Serial)0x1000, new Point3D(1000, 100, -10), Map.Felucca);
             var hue = 0x1024;
             var expected = new BoltEffect(entity, hue).Compile();
 

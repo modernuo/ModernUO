@@ -928,7 +928,7 @@ namespace Server.Guilds
             else
             {
                 var g = uint.TryParse(arg, out var id)
-                    ? World.FindGuild(id) as Guild
+                    ? World.FindGuild((Serial)id) as Guild
                     : FindByAbbrev(arg) as Guild ?? FindByName(arg) as Guild;
 
                 if (g != null)

@@ -7,7 +7,7 @@ namespace Server.Gumps
 {
     public class Gump
     {
-        private static uint m_NextSerial = 1;
+        private static Serial _nextSerial = (Serial)1;
 
         public static readonly byte[] NoMove = StringToBuffer("{ nomove }");
         public static readonly byte[] NoClose = StringToBuffer("{ noclose }");
@@ -20,7 +20,7 @@ namespace Server.Gumps
         {
             do
             {
-                Serial = m_NextSerial++;
+                Serial = _nextSerial++;
             } while (Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
 
             X = x;
@@ -186,7 +186,7 @@ namespace Server.Gumps
             Add(new GumpTextEntryLimited(x, y, width, height, hue, entryID, initialText, size));
         }
 
-        public void AddItemProperty(uint serial)
+        public void AddItemProperty(Serial serial)
         {
             Add(new GumpItemProperty(serial));
         }

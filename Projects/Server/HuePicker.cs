@@ -4,13 +4,13 @@ namespace Server.HuePickers
 {
     public class HuePicker
     {
-        private static Serial m_NextSerial = 1;
+        private static Serial _nextSerial = (Serial)1;
 
         public HuePicker(int itemID)
         {
             do
             {
-                Serial = m_NextSerial++;
+                Serial = _nextSerial++;
             } while (Serial == 0);
 
             ItemID = itemID;

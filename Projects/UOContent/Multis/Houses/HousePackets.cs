@@ -91,7 +91,7 @@ namespace Server.Multis
         private const int maxPerPlaneOffsetBuffer = 750;
         private static readonly int maxPackedPlaneOffsetBuffer = Zlib.MaxPackSize(maxPerPlaneOffsetBuffer * 5);
 
-        public static byte[] CreateHouseDesignStateDetailed(uint serial, int revision, MultiComponentList components)
+        public static byte[] CreateHouseDesignStateDetailed(Serial serial, int revision, MultiComponentList components)
         {
             var xMin = components.Min.X;
             var yMin = components.Min.Y;

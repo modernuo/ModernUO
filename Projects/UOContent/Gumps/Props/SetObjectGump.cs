@@ -231,7 +231,7 @@ namespace Server.Gumps
             {
                 try
                 {
-                    var serial = Utility.ToUInt32(text);
+                    var serial = (Serial)Utility.ToUInt32(text);
 
                     var toSet = World.FindEntity(serial);
 
