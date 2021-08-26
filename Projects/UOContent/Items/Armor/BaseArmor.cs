@@ -1134,15 +1134,17 @@ namespace Server.Items
         {
             var flags = (OldSaveFlag)reader.ReadEncodedInt();
 
+            Attributes = new AosAttributes(this);
+
             if (GetSaveFlag(flags, OldSaveFlag.Attributes))
             {
-                Attributes = new AosAttributes(this);
                 Attributes.Deserialize(reader);
             }
 
+            ArmorAttributes = new AosArmorAttributes(this);
+
             if (GetSaveFlag(flags, OldSaveFlag.ArmorAttributes))
             {
-                ArmorAttributes = new AosArmorAttributes(this);
                 ArmorAttributes.Deserialize(reader);
             }
 
