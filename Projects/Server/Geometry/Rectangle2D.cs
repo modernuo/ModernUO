@@ -15,7 +15,9 @@
 
 namespace Server
 {
-    [NoSort, Parsable, PropertyObject]
+    [NoSort]
+    [Parsable]
+    [PropertyObject]
     public struct Rectangle2D
     {
         private Point2D m_Start;

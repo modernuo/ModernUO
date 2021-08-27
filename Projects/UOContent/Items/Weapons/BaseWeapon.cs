@@ -123,7 +123,8 @@ namespace Server.Items
 
         public virtual int VirtualDamageBonus => 0;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
