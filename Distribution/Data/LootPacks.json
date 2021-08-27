@@ -1,0 +1,86 @@
+{
+  "Skeleton": {
+    "LootItems": [
+      {
+        "TypeName": "gold",
+        "AtSpawnTime": false,
+        "DropChance": 100,
+        "Quantity": "5d50+10",
+        "maxProps": 0,
+        "minIntensity": 0,
+        "maxIntensity": 0,
+        "Idx": 0,
+        "IsDestPack": false,
+        "CreateDT": "2021-08-27T14:50:45.2090601+05:00"
+      },
+      {
+        "TypeName": "test1",
+        "AtSpawnTime": false,
+        "DropChance": 0,
+        "Quantity": "1",
+        "maxProps": 0,
+        "minIntensity": 0,
+        "maxIntensity": 0,
+        "Idx": 1,
+        "IsDestPack": true,
+        "CreateDT": "2021-08-27T14:38:12.2884619+05:00"
+      }
+    ],
+    "Stats": {
+      "minStr": -1,
+      "maxStr": -1,
+      "minDex": -1,
+      "maxDex": -1,
+      "minInt": -1,
+      "maxInt": -1,
+      "minDmg": -1,
+      "maxDmg": -1,
+      "minHits": -1,
+      "maxHits": -1,
+      "ActiveSpeed": -1,
+      "PassiveSpeed": -1,
+      "AgrRange": -1,
+      "atkSkill": -1,
+      "FightMode": -1,
+      "VirtualArmor": -1,
+      "HitPoisonChance": -1,
+      "HitPoison": -1
+    }
+  },
+  "test1": {
+    "LootItems": [
+      {
+        "TypeName": "kryss",
+        "AtSpawnTime": false,
+        "DropChance": 100,
+        "Quantity": "1",
+        "maxProps": 0,
+        "minIntensity": 0,
+        "maxIntensity": 0,
+        "Idx": 0,
+        "IsDestPack": false,
+        "CreateDT": "2021-08-27T14:40:45.2525338+05:00"
+      }
+    ],
+    "Stats": {
+      "minStr": -1,
+      "maxStr": -1,
+      "minDex": -1,
+      "maxDex": -1,
+      "minInt": -1,
+      "maxInt": -1,
+      "minDmg": -1,
+      "maxDmg": -1,
+      "minHits": -1,
+      "maxHits": -1,
+      "ActiveSpeed": -1,
+      "PassiveSpeed": -1,
+      "AgrRange": -1,
+      "atkSkill": -1,
+      "FightMode": -1,
+      "VirtualArmor": -1,
+      "HitPoisonChance": -1,
+      "HitPoison": -1
+    }
+  }
+}

@@ -39,37 +39,73 @@ namespace Server.Lootpack
          
         
         }
-       
+
+        private static List<packLoader.LootItem> getIncludedItems(List<packLoader.LootItem> packItems)
+        {
+            var includedItems = new List<packLoader.LootItem>();
+
+            for (int i = 0; i < packItems.Count; i++)
+            {
+                var pack = packItems[i];
+                if (pack.IsDestPack && packLoader.GetPackLootByName(pack.Name)
+                    is List<packLoader.LootItem> itemsInPack)
+                {
+                    includedItems.AddRange(itemsInPack);
+                }
+            }
+            return includedItems;
+        }
+        private static LootPackEntry[] createPack(List<packLoader.LootItem> packItems)
+        {
+            var lootPackEntry = new List<LootPackEntry>();
+            for (int i = 0; i < packItems.Count; i++)
+            {
+                var item = packItems[i];
+                if (!item.IsDestPack)
+                {
+                    lootPackEntry.Add(new LootPackEntry(
+                        atSpawnTime: item.AtSpawnTime,
+                        chance: item.DropChance,
+                        quantity: item.Quantity,
+                        minIntensity: item.minIntensity,
+                        maxIntensity: item.maxIntensity,
+                        maxProps: item.maxProps,
+                        items: new LootPackItem[]
+                        {
+                            new(AssemblyHandler.FindTypeByName(item.TypeName), 1)
+                        }));
+                }
+            }
+
+            return lootPackEntry.ToArray();
+        }
         public static void TryToCreatePack(string Name, out LootPack _pack, out packLoader.InitStats _stat)
         {
             _stat = null;
             _pack = null;
-            var fPack = packLoader.GetPackByName(Name);
-            if (fPack is not null)
+            if (packLoader.GetPackByName(Name) is packLoader.Pack fPack)
             {
                 try
                 {
                     //copy list
                     var Pack = fPack.LootItems?.ToList();
+
                     if (Pack != null)
                     {
-                        //include another pack to stack
-                        var DestPack = Pack.Where(_ => _.IsDestPack)
-                              .Select(_ => packLoader.GetPackLootByName(_.Name)).SelectMany(_ => _).ToList();
-                        Pack.AddRange(DestPack);
-                        //create a loot pack
-                        var Items = Pack.Where(_ => !_.IsDestPack).Select(_ => new LootPackEntry(_.AtSpawnTime,
-                       new LootPackItem[] { new(AssemblyHandler.FindTypeByName(_.TypeName), 1) },
-                       _.DropChance, _.Quantity
-                       , _.maxProps, _.minIntensity,
-                       _.maxIntensity)).ToArray();
+                        //include items from another packs
+                        Pack.AddRange(getIncludedItems(Pack));
 
-                        if(Items?.Length>0)
+
+                        //create a loot pack
+                        var Items = createPack(Pack);
+
+                        if (Items?.Length > 0)
                             _pack = new LootPack(Items);
                     }
+
                     if (fPack?.Stats != null)
                         _stat = fPack.Stats;
-                   
+
                 }
                 catch (Exception e)
                 {
@@ -77,7 +113,7 @@ namespace Server.Lootpack
                     Console.WriteLine(e.Message);
                 }
             }
-           
+
         }
     }
 }

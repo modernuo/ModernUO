@@ -3108,7 +3108,8 @@ namespace Server.Mobiles
             if (!Summoned && !NoKillAwards && !m_HasGeneratedLoot)
             {
                 m_HasGeneratedLoot = true;
-                GenerateLoot(false);
+                if (m_CustomPack != null) GenerateCustomLoot(false);
+                else GenerateLoot(false);
             }
 
             if (!NoKillAwards && Region.IsPartOf("Doom"))
