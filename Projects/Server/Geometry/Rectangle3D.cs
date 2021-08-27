@@ -15,7 +15,8 @@
 
 namespace Server
 {
-    [NoSort, PropertyObject]
+    [NoSort]
+    [PropertyObject]
     public struct Rectangle3D
     {
         private Point3D m_Start;

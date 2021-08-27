@@ -1281,7 +1281,8 @@ namespace Server
 
         public virtual int Luck => 0;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public int HueMod
         {
             get => m_HueMod;
@@ -1296,7 +1297,8 @@ namespace Server
             }
         }
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
             get => m_HueMod != -1 ? m_HueMod : m_Hue;
@@ -1700,18 +1702,11 @@ namespace Server
             }
         }
 
-        [Body, CommandProperty(AccessLevel.GameMaster)]
+        [Body]
+        [CommandProperty(AccessLevel.GameMaster)]
         public Body Body
         {
-            get
-            {
-                if (IsBodyMod)
-                {
-                    return m_BodyMod;
-                }
-
-                return m_Body;
-            }
+            get => IsBodyMod ? m_BodyMod : m_Body;
             set
             {
                 if (m_Body != value && !IsBodyMod)
@@ -1726,7 +1721,8 @@ namespace Server
             }
         }
 
-        [Body, CommandProperty(AccessLevel.GameMaster)]
+        [Body]
+        [CommandProperty(AccessLevel.GameMaster)]
         public int BodyValue
         {
             get => Body.BodyID;

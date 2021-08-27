@@ -42,7 +42,8 @@ namespace Server.Items
 
         public virtual bool ShareHue => true;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
