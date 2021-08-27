@@ -142,7 +142,6 @@ namespace Server.Spells.Necromancy
 
             public InternalTimer(Mobile target, Mobile from) : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1))
             {
-                Priority = TimerPriority.FiftyMS;
 
                 m_Target = target;
                 m_From = from;

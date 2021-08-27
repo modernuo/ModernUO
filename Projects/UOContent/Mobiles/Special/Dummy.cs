@@ -151,7 +151,6 @@ namespace Server.Mobiles
             public AutokillTimer(Dummy owner) : base(TimeSpan.FromMinutes(5.0))
             {
                 m_Owner = owner;
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

@@ -16,11 +16,11 @@ namespace UOContent.Tests
         {
             var timeSpan = new TimeSpan(ts);
             var expected = new AddBuffPacket(
-                mob, iconID, titleCliloc, secondaryCliloc, args, timeSpan
+                (Serial)mob, iconID, titleCliloc, secondaryCliloc, args, timeSpan
             ).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            BuffInfo.SendAddBuffPacket(ns, mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
+            BuffInfo.SendAddBuffPacket(ns, (Serial)mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
@@ -29,7 +29,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestRemoveBuffIcon()
         {
-            Serial m = 0x1024;
+            Serial m = (Serial)0x1024;
             var buffIcon = BuffIcon.Disguised;
             var expected = new RemoveBuffPacket(m, buffIcon).Compile();
 

@@ -63,8 +63,6 @@ namespace Server.Engines.Quests.Collector
             Y = y;
         }
 
-        public ImageType Image { get; }
-
         public int Figurine { get; }
 
         public Type Type { get; }

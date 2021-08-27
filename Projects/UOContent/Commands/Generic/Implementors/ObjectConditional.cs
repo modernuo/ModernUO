@@ -21,9 +21,9 @@ namespace Server.Commands.Generic
 
         public Type Type { get; }
 
-        public bool IsItem => Type == null || Type.IsAssignableTo(OfItem);
+        public bool IsItem => Type?.IsAssignableTo(OfItem) != false;
 
-        public bool IsMobile => Type == null || Type.IsAssignableTo(OfMobile);
+        public bool IsMobile => Type?.IsAssignableTo(OfMobile) != false;
 
         public bool HasCompiled => m_Conditionals != null;
 

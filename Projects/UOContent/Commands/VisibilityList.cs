@@ -75,7 +75,7 @@ namespace Server.Commands
                     {
                         var m = list[i];
 
-                        if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
+                        if (!m.CanSee(pm) && Utility.InUpdateRange(m.Location, pm.Location))
                         {
                             OutgoingEntityPackets.CreateRemoveEntity(removeEntity, pm.Serial);
                             m.NetState?.Send(removeEntity);
@@ -110,7 +110,7 @@ namespace Server.Commands
                             pm.SendMessage("{0} has been added to your visibility list.", targ.Name);
                         }
 
-                        if (Utility.InUpdateRange(targ, from))
+                        if (Utility.InUpdateRange(targ.Location, from.Location))
                         {
                             var ns = targ.NetState;
 

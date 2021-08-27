@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class AxeOfTheHeavens : DoubleAxe
+    [Serializable(0, false)]
+    public partial class AxeOfTheHeavens : DoubleAxe
     {
         [Constructible]
         public AxeOfTheHeavens()
@@ -12,28 +13,10 @@ namespace Server.Items
             Attributes.WeaponDamage = 50;
         }
 
-        public AxeOfTheHeavens(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1061106; // Axe of the Heavens
         public override int ArtifactRarity => 11;
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

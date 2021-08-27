@@ -38,7 +38,7 @@ namespace Server.Mobiles
         {
             base.InitOutfit();
 
-            AddItem(Utility.RandomBool() ? new QuarterStaff() : (Item)new ShepherdsCrook());
+            AddItem(Utility.RandomBool() ? new QuarterStaff() : new ShepherdsCrook());
         }
 
         public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
@@ -181,7 +181,7 @@ namespace Server.Mobiles
             Container bank = from.FindBankNoCreate();
 
             if (!(from.Backpack?.GetAmount(typeof(Gold)) >= 30) &&
-                !(bank?.GetAmount(typeof(Gold)) >= 30))
+                !(Banker.GetBalance(from) >= 30))
             {
                 SayTo(from, 1042556); // Thou dost not have enough gold, not even in thy bank account.
             }
@@ -246,8 +246,7 @@ namespace Server.Mobiles
             {
                 Container bank = from.FindBankNoCreate();
 
-                if (from.Backpack?.ConsumeTotal(typeof(Gold), 30) == true ||
-                    bank?.ConsumeTotal(typeof(Gold), 30) == true)
+                if (from.Backpack?.ConsumeTotal(typeof(Gold), 30) == true || Banker.Withdraw(from, 30))
                 {
                     pet.ControlTarget = null;
                     pet.ControlOrder = OrderType.Stay;

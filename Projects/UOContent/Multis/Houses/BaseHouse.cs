@@ -592,7 +592,7 @@ namespace Server.Multis
         {
             if (!Deleted && DecayLevel == DecayLevel.Collapsed)
             {
-                Timer.DelayCall(Decay_Sandbox);
+                Timer.StartTimer(Decay_Sandbox);
                 return true;
             }
 
@@ -707,13 +707,23 @@ namespace Server.Multis
             return fromSecures + fromVendors + fromLockdowns + fromMovingCrate;
         }
 
-        public override bool InRange(IPoint2D from, int range)
+        public bool InRange(Point2D from, int range)
         {
-            return Region?.Area.Any(
-                rect =>
-                    from.X >= rect.Start.X - range && from.Y >= rect.Start.Y - range && from.X < rect.End.X + range &&
-                    from.Y < rect.End.Y + range
-            ) == true;
+            if (Region == null)
+            {
+                return false;
+            }
+
+            foreach (var rect in Region.Area)
+            {
+                // TODO: Convert this to 3D - https://github.com/modernuo/ModernUO/issues/29
+                if (from.X >= rect.Start.X - range && from.Y >= rect.Start.Y - range && from.X < rect.End.X + range && from.Y < rect.End.Y + range)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public virtual int GetNewVendorSystemMaxVendors()
@@ -766,8 +776,18 @@ namespace Server.Multis
         public List<Mobile> AvailableVendorsFor(Mobile m) =>
             PlayerVendors.Where(vendor => vendor.CanInteractWith(m, false)).ToList<Mobile>();
 
-        public bool AreThereAvailableVendorsFor(Mobile m) =>
-            PlayerVendors.Any(vendor => vendor.CanInteractWith(m, false));
+        public bool AreThereAvailableVendorsFor(Mobile m)
+        {
+            foreach (var vendor in PlayerVendors)
+            {
+                if (vendor.CanInteractWith(m, false))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public void MoveAllToCrate()
         {
@@ -2937,7 +2957,7 @@ namespace Server.Multis
                         if (child.Decays && !child.IsLockedDown && !child.IsSecure &&
                             child.LastMoved + child.DecayTime <= Core.Now)
                         {
-                            Timer.DelayCall(child.Delete);
+                            Timer.StartTimer(child.Delete);
                         }
                     }
                 }
@@ -2982,7 +3002,7 @@ namespace Server.Multis
                         for (var i = 0; i < relocatedCount; i++)
                         {
                             var relLocation = reader.ReadPoint3D();
-                            var entity = World.FindEntity(reader.ReadUInt());
+                            var entity = reader.ReadEntity<IEntity>();
 
                             if (entity != null)
                             {
@@ -3171,7 +3191,7 @@ namespace Server.Multis
 
             if (version < 10)
             {
-                Timer.DelayCall(FixLockdowns_Sandbox);
+                Timer.StartTimer(FixLockdowns_Sandbox);
             }
 
             if (version < 11)
@@ -3195,12 +3215,12 @@ namespace Server.Multis
             {
                 if (RelocatedEntities.Count > 0)
                 {
-                    Timer.DelayCall(RestoreRelocatedEntities);
+                    Timer.StartTimer(RestoreRelocatedEntities);
                 }
 
                 if (m_Owner == null && Friends.Count == 0 && CoOwners.Count == 0)
                 {
-                    Timer.DelayCall(TimeSpan.FromSeconds(10.0), Delete);
+                    Timer.StartTimer(TimeSpan.FromSeconds(10.0), Delete);
                 }
             }
         }
@@ -3249,7 +3269,7 @@ namespace Server.Multis
 
                 if (trans == null && house.CoOwners.Count == 0)
                 {
-                    Timer.DelayCall(house.Delete);
+                    Timer.StartTimer(house.Delete);
                 }
                 else
                 {
@@ -3446,8 +3466,23 @@ namespace Server.Multis
             AllHouses.Remove(this);
         }
 
-        public static bool HasHouse(Mobile m) =>
-            m != null && m_Table.TryGetValue(m, out var list) && list.Any(h => !h.Deleted);
+        public static bool HasHouse(Mobile m)
+        {
+            if (m == null || !m_Table.TryGetValue(m, out var list))
+            {
+                return false;
+            }
+
+            foreach (var h in list)
+            {
+                if (!h.Deleted)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public static bool HasAccountHouse(Mobile m)
         {
@@ -4327,7 +4362,7 @@ namespace Server.Multis
 
             m_RegionOwner = regionowner;
 
-            Timer.DelayCall(house.RestrictedPlacingTime, Unregister);
+            Timer.StartTimer(house.RestrictedPlacingTime, Unregister);
         }
 
         public override bool AllowHousing(Mobile from, Point3D p) =>

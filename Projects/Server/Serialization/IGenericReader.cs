@@ -33,10 +33,20 @@ namespace Server
         byte ReadByte();
         sbyte ReadSByte();
         bool ReadBool();
+        Serial ReadSerial();
 
         DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
         TimeSpan ReadTimeSpan() => new(ReadLong());
-        DateTime ReadDeltaTime() => new(ReadLong() + DateTime.UtcNow.Ticks, DateTimeKind.Utc);
+
+        DateTime ReadDeltaTime()
+        {
+            return ReadLong() switch
+            {
+                long.MinValue => DateTime.MinValue,
+                long.MaxValue => DateTime.MaxValue,
+                var delta     => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
+            };
+        }
         decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
         int ReadEncodedInt()
         {

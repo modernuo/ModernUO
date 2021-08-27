@@ -78,6 +78,7 @@ namespace Server.Commands
             {
                 using var sw = new StreamWriter("timerdump.log", true);
                 Timer.DumpInfo(sw);
+                e.Mobile.SendMessage("Timers dumped to timerdump.log");
             }
             catch
             {

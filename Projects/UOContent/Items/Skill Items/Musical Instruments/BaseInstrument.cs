@@ -403,7 +403,7 @@ namespace Server.Items
 
             if (m_UsesRemaining != oldUses)
             {
-                Timer.DelayCall(InvalidateProperties);
+                Timer.StartTimer(InvalidateProperties);
             }
         }
 
@@ -567,8 +567,8 @@ namespace Server.Items
             {
                 SetInstrument(from, this);
 
-                // Delay of 7 second before being able to play another instrument again
-                new InternalTimer(from).Start();
+                // Delay of 6 second before being able to play another instrument again
+                Timer.StartTimer(TimeSpan.FromSeconds(6), from.EndAction<BaseInstrument>);
 
                 if (CheckMusicianship(from))
                 {
@@ -600,22 +600,6 @@ namespace Server.Items
         public void PlayInstrumentBadly(Mobile from)
         {
             from.PlaySound(FailureSound);
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_From;
-
-            public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(6.0))
-            {
-                m_From = from;
-                Priority = TimerPriority.TwoFiftyMS;
-            }
-
-            protected override void OnTick()
-            {
-                m_From.EndAction<BaseInstrument>();
-            }
         }
     }
 }

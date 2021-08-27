@@ -39,7 +39,7 @@ namespace Server.Items
 
             if (!e.Handled && from.InRange(this, 10) && e.Speech.ToLower() == Word)
             {
-                var boat = BaseBoat.FindBoatAt(from, from.Map);
+                var boat = BaseBoat.FindBoatAt(from.Location, from.Map);
 
                 if (boat == null)
                 {

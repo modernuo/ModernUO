@@ -121,7 +121,7 @@ namespace Server.Mobiles
             {
                 activate = false;
             }
-            else if (m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m).Active)
+            else if (m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m.Location).Active)
             {
                 activate = false;
             }
@@ -2688,7 +2688,7 @@ namespace Server.Mobiles
                     !m_Mobile.InRange(spawner.HomeLocation, spawner.HomeRange)
                 ))
                 {
-                    Timer.DelayCall(ReturnToHome);
+                    Timer.StartTimer(ReturnToHome);
                 }
             }
         }
@@ -3022,8 +3022,6 @@ namespace Server.Mobiles
                 m_Owner = owner;
 
                 m_Owner.m_NextDetectHidden = Core.TickCount;
-
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()
@@ -3042,7 +3040,7 @@ namespace Server.Mobiles
 
                 if (m_Owner.m_Mobile.PlayerRangeSensitive) // have to check this in the timer....
                 {
-                    var sect = m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile);
+                    var sect = m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile.Location);
                     if (!sect.Active)
                     {
                         m_Owner.Deactivate();

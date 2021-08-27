@@ -41,7 +41,7 @@ namespace Server.Mobiles
 
             if (Items.Count == 0 && Gold == 0)
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
             }
             else
             {
@@ -108,8 +108,6 @@ namespace Server.Mobiles
             public ExpireTimer(VendorInventory inventory, TimeSpan delay) : base(delay)
             {
                 m_Inventory = inventory;
-
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

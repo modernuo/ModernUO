@@ -280,15 +280,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override bool HandlesOnSpeech(Mobile from)
-        {
-            if (from.InRange(Location, 12))
-            {
-                return true;
-            }
-
-            return base.HandlesOnSpeech(from);
-        }
+        public override bool HandlesOnSpeech(Mobile from) => from.InRange(Location, 12) || base.HandlesOnSpeech(from);
 
         public override void OnSpeech(SpeechEventArgs e)
         {
@@ -441,11 +433,11 @@ namespace Server.Mobiles
                                         else
                                         {
                                             Say(
-                                                1042673,
+                                                1042673, // Into your bank box I have placed a check in the amount of:
                                                 AffixType.Append,
                                                 amount.ToString(),
                                                 ""
-                                            ); // Into your bank box I have placed a check in the amount of:
+                                            );
                                         }
                                     }
                                 }
@@ -463,7 +455,7 @@ namespace Server.Mobiles
         {
             if (from.Alive)
             {
-                list.Add(new OpenBankEntry(from, this));
+                list.Add(new OpenBankEntry(this));
             }
 
             base.AddCustomContextEntries(from, list);

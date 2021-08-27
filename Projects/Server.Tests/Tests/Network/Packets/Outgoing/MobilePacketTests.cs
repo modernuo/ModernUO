@@ -4,13 +4,14 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
+    [Collection("Sequential Tests")]
     public class MobilePacketTests : IClassFixture<ServerFixture>
     {
         [Fact]
         public void TestDeathAnimation()
         {
-            Serial killed = 0x1;
-            Serial corpse = 0x1000;
+            Serial killed = (Serial)0x1;
+            Serial corpse = (Serial)0x1000;
 
             var expected = new DeathAnimation(killed, corpse).Compile();
 
@@ -24,7 +25,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestBondStatus()
         {
-            Serial petSerial = 0x1;
+            Serial petSerial = (Serial)0x1;
             const bool bonded = true;
 
             var expected = new BondedStatus(petSerial, bonded).Compile();
@@ -41,7 +42,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.None)]
         public void TestMobileMoving(ProtocolChanges protocolChanges)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var noto = 10;
@@ -62,7 +63,7 @@ namespace Server.Tests.Network
         [InlineData("Some Really Long Mobile Name That Gets Cut off")]
         public void TestMobileName(string name)
         {
-            var m = new Mobile(0x1) { Name = name };
+            var m = new Mobile((Serial)0x1) { Name = name };
             m.DefaultMobileInit();
 
             var expected = new MobileName(m).Compile();
@@ -79,7 +80,7 @@ namespace Server.Tests.Network
         [InlineData(10, 100, 25, true, false, 0)]
         public void TestMobileAnimation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, byte delay)
         {
-            Serial mobile = 0x1;
+            Serial mobile = (Serial)0x1;
 
             var expected = new MobileAnimation(
                 mobile,
@@ -111,7 +112,7 @@ namespace Server.Tests.Network
         [InlineData(10, 100, 20)]
         public void TestNewMobileAnimation(int action, int frameCount, byte delay)
         {
-            Serial mobile = 0x1;
+            Serial mobile = (Serial)0x1;
 
             var expected = new NewMobileAnimation(
                 mobile,
@@ -139,7 +140,7 @@ namespace Server.Tests.Network
         public void TestHealthbarPoison(string pName)
         {
             var p = Poison.GetPoison(pName);
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Poison = p;
 
@@ -159,7 +160,7 @@ namespace Server.Tests.Network
         [InlineData(true, true)]
         public void TestYellowBar(bool isBlessed, bool isYellowHealth)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Blessed = isBlessed;
             m.YellowHealthbar = isYellowHealth;
@@ -178,7 +179,7 @@ namespace Server.Tests.Network
         [InlineData(false)]
         public void TestMobileStatusCompact(bool canBeRenamed)
         {
-            var m = new Mobile(0x1) { Name = "Random Mobile 1" };
+            var m = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
             m.DefaultMobileInit();
             m.Str = 50;
             m.Hits = 100;
@@ -202,7 +203,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.Version502b)]
         public void TestMobileStatus(ProtocolChanges changes)
         {
-            var beholder = new Mobile(0x1) { Name = "Random Mobile 1" };
+            var beholder = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
             beholder.DefaultMobileInit();
             beholder.Str = 50;
             beholder.Hits = 100;
@@ -211,7 +212,7 @@ namespace Server.Tests.Network
             beholder.Dex = 25;
             beholder.Stam = 100;
 
-            var beheld = new Mobile(0x2) { Name = "Random Mobile 2" };
+            var beheld = new Mobile((Serial)0x2) { Name = "Random Mobile 2" };
             beheld.DefaultMobileInit();
             beheld.Str = 50;
             beheld.Hits = 100;
@@ -236,7 +237,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.Version502b)]
         public void TestMobileStatusExtendedSelf(ProtocolChanges changes)
         {
-            var m = new Mobile(0x1) { Name = "Random Mobile 1" };
+            var m = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
             m.DefaultMobileInit();
             m.Str = 50;
             m.Hits = 100;
@@ -260,7 +261,7 @@ namespace Server.Tests.Network
         [InlineData(ProtocolChanges.StygianAbyss, 100)]
         public void TestMobileUpdate(ProtocolChanges changes, int solidHueOverride)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.SolidHueOverride = solidHueOverride;
 
@@ -288,13 +289,13 @@ namespace Server.Tests.Network
             ProtocolChanges changes, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue
         )
         {
-            var beholder = new Mobile(0x1)
+            var beholder = new Mobile((Serial)0x1)
             {
                 Name = "Random Mobile 1"
             };
             beholder.DefaultMobileInit();
 
-            var beheld = new Mobile(0x2)
+            var beheld = new Mobile((Serial)0x2)
             {
                 Name = "Random Mobile 2"
             };
@@ -328,15 +329,11 @@ namespace Server.Tests.Network
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
-    }
 
-    [Collection("Sequential Tests")]
-    public class SequentialMobilePacketTests : IClassFixture<ServerFixture>
-    {
         [Fact]
         public void TestMobileHits()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Str = 100;
             m.Hits = 100;
@@ -353,7 +350,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileHitsN()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Str = 100;
             m.Hits = 100;
@@ -370,7 +367,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileMana()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Int = 75;
             m.Mana = 100;
@@ -387,7 +384,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileManaN()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Int = 75;
             m.Mana = 100;
@@ -404,7 +401,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileStam()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Dex = 75;
             m.Stam = 100;
@@ -421,7 +418,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileStamN()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Dex = 75;
             m.Stam = 100;
@@ -438,7 +435,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileAttributes()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Str = 50;
             m.Hits = 100;
@@ -459,7 +456,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestMobileAttributesN()
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
             m.Str = 50;
             m.Hits = 100;
@@ -480,7 +477,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestRemoveEntity()
         {
-            Serial e = 0x1000;
+            Serial e = (Serial)0x1000;
             var expected = new RemoveEntity(e).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();

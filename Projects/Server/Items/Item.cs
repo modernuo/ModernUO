@@ -114,22 +114,7 @@ namespace Server
                 var loc = reader.ReadPoint3D();
                 var worldLoc = reader.ReadPoint3D();
 
-                IEntity parent;
-
-                Serial serial = reader.ReadUInt();
-
-                if (serial.IsItem)
-                {
-                    parent = World.FindItem(serial);
-                }
-                else if (serial.IsMobile)
-                {
-                    parent = World.FindMobile(serial);
-                }
-                else
-                {
-                    parent = null;
-                }
+                IEntity parent = reader.ReadEntity<IEntity>();
 
                 return new BounceInfo(map, loc, worldLoc, parent);
             }
@@ -1606,23 +1591,9 @@ namespace Server
             set => Location = new Point3D(m_Location.m_X, m_Location.m_Y, value);
         }
 
-        public virtual bool InRange(Point2D p, int range) =>
-            p.m_X >= Location.m_X - range
-            && p.m_X <= Location.m_X + range
-            && p.m_Y >= Location.m_Y - range
-            && p.m_Y <= Location.m_Y + range;
+        public virtual bool InRange(Point2D p, int range) => Utility.InRange(p.X, p.Y, X, Y, range);
 
-        public virtual bool InRange(Point3D p, int range) =>
-            p.m_X >= Location.m_X - range
-            && p.m_X <= Location.m_X + range
-            && p.m_Y >= Location.m_Y - range
-            && p.m_Y <= Location.m_Y + range;
-
-        public virtual bool InRange(IPoint2D p, int range) =>
-            p.X >= Location.m_X - range
-            && p.X <= Location.m_X + range
-            && p.Y >= Location.m_Y - range
-            && p.Y <= Location.m_Y + range;
+        public virtual bool InRange(Point3D p, int range) => Utility.InRange(p.X, p.Y, X, Y, range);
 
         public ExpandFlag GetExpandFlags()
         {
@@ -2665,7 +2636,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
                         {
-                            Serial parent = reader.ReadUInt();
+                            Serial parent = reader.ReadSerial();
 
                             if (parent.IsMobile)
                             {
@@ -2826,7 +2797,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
                         {
-                            Serial parent = reader.ReadUInt();
+                            Serial parent = reader.ReadSerial();
 
                             if (parent.IsMobile)
                             {
@@ -2944,7 +2915,7 @@ namespace Server
                             AcquireCompactInfo().m_Name = name;
                         }
 
-                        Serial parent = reader.ReadUInt();
+                        Serial parent = reader.ReadSerial();
 
                         if (parent.IsMobile)
                         {
@@ -3027,7 +2998,7 @@ namespace Server
 
             if (HeldBy != null)
             {
-                Timer.DelayCall(FixHolding_Sandbox);
+                Timer.StartTimer(FixHolding_Sandbox);
             }
 
             // if (version < 9)
@@ -3553,8 +3524,7 @@ namespace Server
             var landTile = map.Tiles.GetLandTile(x, y);
             var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
 
-            int landZ = 0, landAvg = 0, landTop = 0;
-            map.GetAverageZ(x, y, ref landZ, ref landAvg, ref landTop);
+            map.GetAverageZ(x, y, out var landZ, out var landAvg, out _);
 
             if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
             {

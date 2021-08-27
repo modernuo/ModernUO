@@ -1,13 +1,17 @@
-using System;
 using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Items
 {
-    public class SHTeleComponent : AddonComponent
+    [Serializable(0, false)]
+    public partial class SHTeleComponent : AddonComponent
     {
-        private bool m_Active;
-        private SHTeleComponent m_TeleDest;
+        private bool _active;
+        private SHTeleComponent _teleDest;
+
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private Point3D _teleOffset;
 
         [Constructible]
         public SHTeleComponent(int itemID = 0x1775) : this(itemID, new Point3D(0, 0, 0))
@@ -20,21 +24,22 @@ namespace Server.Items
             Movable = false;
             Hue = 1;
 
-            m_Active = true;
+            _active = true;
             TeleOffset = offset;
         }
 
-        public SHTeleComponent(Serial serial) : base(serial)
-        {
-        }
-
+        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Active
         {
-            get => m_Active;
+            get => _active;
             set
             {
-                m_Active = value;
+                if (value != _active)
+                {
+                    _active = value;
+                    this.MarkDirty();
+                }
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -43,23 +48,18 @@ namespace Server.Items
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D TeleOffset { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D TelePoint
-        {
-            get => new(Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z);
-            set => TeleOffset = new Point3D(value.X - Location.X, value.Y - Location.Y, value.Z - Location.Z);
-        }
-
+        [SerializableField(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public SHTeleComponent TeleDest
         {
-            get => m_TeleDest;
+            get => _teleDest;
             set
             {
-                m_TeleDest = value;
+                if (value != _teleDest)
+                {
+                    _teleDest = value;
+                    this.MarkDirty();
+                }
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -68,19 +68,26 @@ namespace Server.Items
             }
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Point3D TelePoint
+        {
+            get => new(Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z);
+            set => TeleOffset = new Point3D(value.X - Location.X, value.Y - Location.Y, value.Z - Location.Z);
+        }
+
         public override string DefaultName => "a hole";
 
         public override void OnDoubleClick(Mobile m)
         {
-            if (!m_Active || m_TeleDest?.Deleted != false || m_TeleDest.Map == Map.Internal)
+            if (!_active || _teleDest?.Deleted != false || _teleDest.Map == Map.Internal)
             {
                 return;
             }
 
             if (m.InRange(this, 3))
             {
-                var map = m_TeleDest.Map;
-                var p = m_TeleDest.TelePoint;
+                var map = _teleDest.Map;
+                var p = _teleDest.TelePoint;
 
                 BaseCreature.TeleportPets(m, p, map);
 
@@ -96,39 +103,37 @@ namespace Server.Items
         {
             OnDoubleClick(m);
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Active);
-            writer.Write(m_TeleDest);
-            writer.Write(TeleOffset);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Active = reader.ReadBool();
-            m_TeleDest = reader.ReadEntity<SHTeleComponent>();
-            TeleOffset = reader.ReadPoint3D();
-        }
     }
 
-    public class SHTeleporter : BaseAddon
+    [Serializable(0, false)]
+    public partial class SHTeleporter : BaseAddon
     {
         private bool m_Changing;
+
+        [SerializableField(0, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _external;
+
+        [SerializableField(1, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private SHTeleComponent _upTele;
+
+        [SerializableField(2, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private SHTeleComponent _rightTele;
+
+        [SerializableField(3, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private SHTeleComponent _downTele;
+
+        [SerializableField(4, setter: "private")]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private SHTeleComponent _leftTele;
 
         [Constructible]
         public SHTeleporter(bool external = true)
         {
-            m_Changing = false;
-            External = external;
+            _external = external;
 
             if (external)
             {
@@ -166,19 +171,6 @@ namespace Server.Items
             LeftTele = new SHTeleComponent(external ? 0x1775 : 0x495, leftOS);
             AddComponent(LeftTele, 0, 1, 0);
         }
-
-        public SHTeleporter(Serial serial) : base(serial) => m_Changing = false;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool External { get; private set; }
-
-        public SHTeleComponent UpTele { get; private set; }
-
-        public SHTeleComponent RightTele { get; private set; }
-
-        public SHTeleComponent DownTele { get; private set; }
-
-        public SHTeleComponent LeftTele { get; private set; }
 
         public override bool ShareHue => false;
 
@@ -278,34 +270,6 @@ namespace Server.Items
             }
 
             m_Changing = false;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(External);
-
-            writer.Write(UpTele);
-            writer.Write(RightTele);
-            writer.Write(DownTele);
-            writer.Write(LeftTele);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            External = reader.ReadBool();
-
-            UpTele = (SHTeleComponent)reader.ReadEntity<Item>();
-            RightTele = (SHTeleComponent)reader.ReadEntity<Item>();
-            DownTele = (SHTeleComponent)reader.ReadEntity<Item>();
-            LeftTele = (SHTeleComponent)reader.ReadEntity<Item>();
         }
 
         public class SHTeleporterCreator

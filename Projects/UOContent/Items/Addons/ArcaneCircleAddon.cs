@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class ArcaneCircleAddon : BaseAddon
+    [Serializable(1)]
+    public partial class ArcaneCircleAddon : BaseAddon
     {
         [Constructible]
         public ArcaneCircleAddon()
@@ -16,25 +17,10 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x307B), 1, 1, 0);
         }
 
-        public ArcaneCircleAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new ArcaneCircleDeed();
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
             if (version == 0)
             {
                 ValidationQueue<ArcaneCircleAddon>.Add(this);
@@ -54,32 +40,15 @@ namespace Server.Items
         }
     }
 
-    public class ArcaneCircleDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class ArcaneCircleDeed : BaseAddonDeed
     {
         [Constructible]
         public ArcaneCircleDeed()
         {
         }
 
-        public ArcaneCircleDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new ArcaneCircleAddon();
         public override int LabelNumber => 1072703; // arcane circle
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

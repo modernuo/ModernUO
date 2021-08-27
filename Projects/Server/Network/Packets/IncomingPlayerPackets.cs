@@ -73,7 +73,7 @@ namespace Server.Network
                 return;
             }
 
-            var m = World.FindMobile(reader.ReadUInt32());
+            var m = World.FindMobile((Serial)reader.ReadUInt32());
 
             if (m != null)
             {
@@ -161,7 +161,7 @@ namespace Server.Network
                     {
                         var tokenizer = command.Tokenize(' ');
                         var spellID = (tokenizer.MoveNext() ? Utility.ToInt32(tokenizer.Current) : 0) - 1;
-                        var serial = tokenizer.MoveNext() ? Utility.ToUInt32(tokenizer.Current) : (uint)Serial.MinusOne;
+                        var serial = tokenizer.MoveNext() ? (Serial)Utility.ToUInt32(tokenizer.Current) : Serial.MinusOne;
 
                         EventSink.InvokeCastSpellRequest(from, spellID, World.FindItem(serial));
 
@@ -340,7 +340,7 @@ namespace Server.Network
 
         public static void DisplayGumpResponse(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            var serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
             var typeID = reader.ReadInt32();
             var buttonID = reader.ReadInt32();
 
@@ -461,7 +461,7 @@ namespace Server.Network
 
                 if (buttonID == 1 && switchCount > 0)
                 {
-                    var beheld = World.FindMobile(reader.ReadUInt32());
+                    var beheld = World.FindMobile((Serial)reader.ReadUInt32());
 
                     if (beheld != null)
                     {
@@ -523,7 +523,7 @@ namespace Server.Network
 
             reader.ReadInt32(); // 0xEDEDEDED
             int type = reader.ReadByte();
-            var m = World.FindMobile(reader.ReadUInt32());
+            var m = World.FindMobile((Serial)reader.ReadUInt32());
 
             if (m == null)
             {
@@ -601,7 +601,7 @@ namespace Server.Network
 
         public static void EncodedCommand(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            var e = World.FindEntity(reader.ReadUInt32());
+            var e = World.FindEntity((Serial)reader.ReadUInt32());
             int packetId = reader.ReadUInt16();
 
             var ph = IncomingPackets.GetEncodedHandler(packetId);

@@ -235,7 +235,7 @@ namespace Server.Misc
                                 if (sb.Length + 1 + v.Length >= 256)
                                 {
                                     sender.SendMessage(
-                                        Server.Serial.MinusOne,
+                                        Serial.MinusOne,
                                         -1,
                                         MessageType.Label,
                                         0x35,
@@ -259,7 +259,7 @@ namespace Server.Misc
                             if (sb.Length > 0)
                             {
                                 sender.SendMessage(
-                                    Server.Serial.MinusOne,
+                                    Serial.MinusOne,
                                     -1,
                                     MessageType.Label,
                                     0x35,

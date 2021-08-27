@@ -39,6 +39,7 @@ namespace SerializationGenerator
             var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions();
             // List of types that _will_ become ISerializable
             var serializableList = receiver.SerializableList;
+            var embeddedSerializableList = receiver.EmbeddedSerializableList;
 
             foreach (var (classSymbol, (serializableAttr, fieldsList)) in receiver.ClassAndFields)
             {
@@ -50,9 +51,34 @@ namespace SerializationGenerator
                 string classSource = context.GenerateSerializationPartialClass(
                     classSymbol,
                     serializableAttr,
+                    false,
                     fieldsList.ToImmutableArray(),
                     jsonOptions,
-                    serializableList
+                    serializableList,
+                    embeddedSerializableList
+                );
+
+                if (classSource != null)
+                {
+                    context.AddSource($"{classSymbol.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
+                }
+            }
+
+            foreach (var (classSymbol, (embeddedSerializableAttr, fieldsList)) in receiver.EmbeddedClassAndFields)
+            {
+                if (embeddedSerializableAttr == null)
+                {
+                    continue;
+                }
+
+                string classSource = context.GenerateSerializationPartialClass(
+                    classSymbol,
+                    embeddedSerializableAttr,
+                    true,
+                    fieldsList.ToImmutableArray(),
+                    jsonOptions,
+                    serializableList,
+                    embeddedSerializableList
                 );
 
                 if (classSource != null)

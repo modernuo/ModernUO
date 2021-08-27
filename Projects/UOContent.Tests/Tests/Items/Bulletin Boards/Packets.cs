@@ -101,8 +101,8 @@ namespace Server.Network
             {
                 var eq = msg.PostedEquip[i];
 
-                Stream.Write((short)eq.itemID);
-                Stream.Write((short)eq.hue);
+                Stream.Write((short)eq._itemID);
+                Stream.Write((short)eq._hue);
             }
 
             len = msg.Lines.Length;

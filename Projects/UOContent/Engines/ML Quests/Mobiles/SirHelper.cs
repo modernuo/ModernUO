@@ -76,7 +76,7 @@ namespace Server.Engines.MLQuests.Mobiles
             if (from.CanBeginAction(this))
             {
                 from.BeginAction(this);
-                Timer.DelayCall(m_ShoutCooldown, EndLock, from);
+                Timer.StartTimer(m_ShoutCooldown, () => EndLock(from));
             }
 
             MLQuestSystem.TurnToFace(this, from);

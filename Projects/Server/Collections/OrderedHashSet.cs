@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +23,7 @@ using Microsoft.Collections.Extensions;
 namespace Server.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
-    public partial class OrderedHashSet<TValue> : IList<TValue>, IReadOnlyList<TValue>, ISet<TValue>, IReadOnlySet<TValue>
+    public class OrderedHashSet<TValue> : IList<TValue>
     {
         private struct Entry
         {
@@ -33,38 +32,20 @@ namespace Server.Collections
             public int Next; // the index of the next item in the same bucket, -1 if last
         }
 
-        private const string ArgumentOutOfRange_Index =
-            "Index was out of range. Must be non-negative and less than the size of the collection.";
-
-        private const string ArgumentOutOfRange_NeedNonNegNum =
-            "Non-negative number required.";
-
-        private const string Argument_InvalidOffLen =
-            "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.";
-
-        private const string Argument_AddingDuplicate = "An item with the same value has already been added. Value: {0}";
-
-        private const string Arg_ArrayPlusOffTooSmall =
-            "Destination array is not long enough to copy all the items in the collection. Check array index and length.";
-
-        private const string InvalidOperation_ConcurrentOperationsNotSupported =
-            "Operations that change non-concurrent collections must have exclusive access. A concurrent update was performed on this collection and corrupted its state. The collection's state is no longer correct.";
-
-        private const string InvalidOperation_EnumFailedVersion =
-            "Collection was modified; enumeration operation may not execute.";
-
         private static readonly Entry[] InitialEntries = new Entry[1];
         private int[] _buckets = HashHelpers.SizeOneIntArray;
         private Entry[] _entries = InitialEntries;
         private ulong _fastModMultiplier;
         private int _count;
         private int _version;
-        private readonly IEqualityComparer<TValue> _comparer;
-        private ValueCollection _values;
+#nullable enable
+        private readonly IEqualityComparer<TValue>? _comparer;
+#nullable disable
 
         public int Count => _count;
-        public IEqualityComparer<TValue> Comparer => _comparer ?? EqualityComparer<TValue>.Default;
-        public ValueCollection Values => _values ??= new ValueCollection(this);
+#nullable enable
+        public IEqualityComparer<TValue>? Comparer => _comparer;
+#nullable disable
 
         public OrderedHashSet()
             : this(0)
@@ -111,47 +92,7 @@ namespace Server.Collections
             }
         }
 
-        public void ExceptWith(IEnumerable<TValue> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void IntersectWith(IEnumerable<TValue> other)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Contains(TValue item) => TryGetValue(item, out var value) && EqualityComparer<TValue>.Default.Equals(value);
-
-        // TODO: Implement IReadOnlySet and ISet
-
-        bool IReadOnlySet<TValue>.IsProperSubsetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool IReadOnlySet<TValue>.IsProperSupersetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool IReadOnlySet<TValue>.IsSubsetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool IReadOnlySet<TValue>.IsSupersetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool IReadOnlySet<TValue>.Overlaps(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool IReadOnlySet<TValue>.SetEquals(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool ISet<TValue>.IsProperSubsetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool ISet<TValue>.IsProperSupersetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool ISet<TValue>.IsSubsetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool ISet<TValue>.IsSupersetOf(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool ISet<TValue>.Overlaps(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        bool ISet<TValue>.SetEquals(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        public void SymmetricExceptWith(IEnumerable<TValue> other) => throw new NotImplementedException();
-
-        public void UnionWith(IEnumerable<TValue> other) => throw new NotImplementedException();
 
         public void Clear()
         {
@@ -195,112 +136,10 @@ namespace Server.Collections
         {
             if ((uint)index > (uint)Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), ArgumentOutOfRange_Index);
+                throw new ArgumentOutOfRangeException(nameof(index), CollectionThrowStrings.ArgumentOutOfRange_Index);
             }
 
             TryInsert(index, value);
-        }
-
-        public void Move(int fromIndex, int toIndex)
-        {
-            if ((uint)fromIndex >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(fromIndex), ArgumentOutOfRange_Index);
-            }
-            if ((uint)toIndex >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(toIndex), ArgumentOutOfRange_Index);
-            }
-
-            if (fromIndex == toIndex)
-            {
-                return;
-            }
-
-            Entry[] entries = _entries;
-            Entry temp = entries[fromIndex];
-            RemoveEntryFromBucket(fromIndex);
-            int direction = fromIndex < toIndex ? 1 : -1;
-            for (int i = fromIndex; i != toIndex; i += direction)
-            {
-                entries[i] = entries[i + direction];
-                UpdateBucketIndex(i + direction, -direction);
-            }
-            AddEntryToBucket(ref temp, toIndex, _buckets);
-            entries[toIndex] = temp;
-            ++_version;
-        }
-
-        public void MoveRange(int fromIndex, int toIndex, int count)
-        {
-            if (count == 1)
-            {
-                Move(fromIndex, toIndex);
-                return;
-            }
-
-            if ((uint)fromIndex >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(fromIndex), ArgumentOutOfRange_Index);
-            }
-            if ((uint)toIndex >= (uint)Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(toIndex), ArgumentOutOfRange_Index);
-            }
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), ArgumentOutOfRange_NeedNonNegNum);
-            }
-            if (fromIndex + count > Count)
-            {
-                throw new ArgumentException(Argument_InvalidOffLen);
-            }
-            if (toIndex + count > Count)
-            {
-                throw new ArgumentException(Argument_InvalidOffLen);
-            }
-
-            if (fromIndex == toIndex || count == 0)
-            {
-                return;
-            }
-
-            Entry[] entries = _entries;
-            Entry[] entriesToMove = ArrayPool<Entry>.Shared.Rent(count);
-            for (int i = 0; i < count; ++i)
-            {
-                entriesToMove[i] = entries[fromIndex + i];
-                RemoveEntryFromBucket(fromIndex + i);
-            }
-
-            // Move entries in between
-            int direction = 1;
-            int amount = count;
-            int start = fromIndex;
-            int end = toIndex;
-            if (fromIndex > toIndex)
-            {
-                direction = -1;
-                amount = -count;
-                start = fromIndex + count - 1;
-                end = toIndex + count - 1;
-            }
-            for (int i = start; i != end; i += direction)
-            {
-                entries[i] = entries[i + amount];
-                UpdateBucketIndex(i + amount, -amount);
-            }
-
-            int[] buckets = _buckets;
-            // Copy entries to destination
-            for (int i = 0; i < count; ++i)
-            {
-                Entry temp = entriesToMove[i];
-                AddEntryToBucket(ref temp, toIndex + i, buckets);
-                entries[toIndex + i] = temp;
-            }
-            ++_version;
-            ArrayPool<Entry>.Shared.Return(entriesToMove);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -327,7 +166,7 @@ namespace Server.Collections
             int count = Count;
             if ((uint)index >= (uint)count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), ArgumentOutOfRange_Index);
+                throw new ArgumentOutOfRangeException(nameof(index), CollectionThrowStrings.ArgumentOutOfRange_Index);
             }
 
             // Remove the entry from the bucket
@@ -344,8 +183,6 @@ namespace Server.Collections
             entries[_count] = default;
             ++_version;
         }
-
-        public void TrimExcess() => TrimExcess(Count);
 
         public void TrimExcess(int capacity)
         {
@@ -383,7 +220,7 @@ namespace Server.Collections
             {
                 if ((uint)index >= (uint)Count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(index), ArgumentOutOfRange_Index);
+                    throw new ArgumentOutOfRangeException(nameof(index), CollectionThrowStrings.ArgumentOutOfRange_Index);
                 }
 
                 return _entries[index].Value;
@@ -392,7 +229,7 @@ namespace Server.Collections
             {
                 if ((uint)index >= (uint)Count)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(index), ArgumentOutOfRange_Index);
+                    throw new ArgumentOutOfRangeException(nameof(index), CollectionThrowStrings.ArgumentOutOfRange_Index);
                 }
 
                 TValue v = value;
@@ -412,7 +249,7 @@ namespace Server.Collections
                 }
                 else
                 {
-                    throw new ArgumentException(string.Format(Argument_AddingDuplicate, v.ToString()));
+                    throw new ArgumentException(string.Format(CollectionThrowStrings.Argument_AddingDuplicate, v.ToString()));
                 }
             }
         }
@@ -432,13 +269,13 @@ namespace Server.Collections
 
             if ((uint)arrayIndex > (uint)array.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex), ArgumentOutOfRange_NeedNonNegNum);
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum);
             }
 
             int count = Count;
             if (array.Length - arrayIndex < count)
             {
-                throw new ArgumentException(Arg_ArrayPlusOffTooSmall);
+                throw new ArgumentException(CollectionThrowStrings.Arg_ArrayPlusOffTooSmall);
             }
 
             Entry[] entries = _entries;
@@ -470,38 +307,108 @@ namespace Server.Collections
             return newEntries;
         }
 
+#nullable enable
         private int IndexOf(TValue value, out uint hashCode)
         {
-            IEqualityComparer<TValue> comparer = _comparer;
-            hashCode = (uint)(comparer?.GetHashCode(value) ?? value?.GetHashCode() ?? 0);
-            ref int bucket = ref GetBucketRef(hashCode);
-            int i = bucket - 1;
-            if (i >= 0)
+            ref int bucket = ref Unsafe.NullRef<int>();
+            int i;
+
+            IEqualityComparer<TValue>? comparer = _comparer;
+            if (comparer == null)
             {
-                comparer ??= EqualityComparer<TValue>.Default;
-                Entry[] entries = _entries;
-                int collisionCount = 0;
-                do
+                hashCode = (uint)(value?.GetHashCode() ?? 0);
+                bucket = ref GetBucketRef(hashCode);
+                i = bucket - 1;
+
+                if (i >= 0)
                 {
-                    Entry entry = entries[i];
-                    if (entry.HashCode == hashCode && comparer.Equals(entry.Value, value))
+                    if (typeof(TValue).IsValueType)
                     {
-                        break;
+                        // ValueType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
+                        Entry[] entries = _entries;
+                        int collisionCount = 0;
+                        do
+                        {
+                            Entry entry = entries[i];
+                            if (entry.HashCode == hashCode && EqualityComparer<TValue>.Default.Equals(entry.Value, value))
+                            {
+                                break;
+                            }
+
+                            i = entry.Next;
+                            if (collisionCount >= entries.Length)
+                            {
+                                // The chain of entries forms a loop; which means a concurrent update has happened.
+                                // Break out of the loop and throw, rather than looping forever.
+                                throw new InvalidOperationException(
+                                    CollectionThrowStrings.InvalidOperation_ConcurrentOperationsNotSupported
+                                );
+                            }
+
+                            ++collisionCount;
+                        } while (i >= 0);
                     }
-                    i = entry.Next;
-                    if (collisionCount >= entries.Length)
+                    else
                     {
-                        // The chain of entries forms a loop; which means a concurrent update has happened.
-                        // Break out of the loop and throw, rather than looping forever.
-                        throw new InvalidOperationException(InvalidOperation_ConcurrentOperationsNotSupported);
+                        // Object type: Shared Generic, EqualityComparer<TValue>.Default won't devirtualize (https://github.com/dotnet/runtime/issues/10050),
+                        // so cache in a local rather than get EqualityComparer per loop iteration.
+                        var defaultComparer = EqualityComparer<TValue>.Default;
+                        Entry[] entries = _entries;
+                        int collisionCount = 0;
+                        do
+                        {
+                            Entry entry = entries[i];
+                            if (entry.HashCode == hashCode && defaultComparer.Equals(entry.Value, value))
+                            {
+                                break;
+                            }
+
+                            i = entry.Next;
+                            if (collisionCount >= entries.Length)
+                            {
+                                // The chain of entries forms a loop; which means a concurrent update has happened.
+                                // Break out of the loop and throw, rather than looping forever.
+                                throw new InvalidOperationException(
+                                    CollectionThrowStrings.InvalidOperation_ConcurrentOperationsNotSupported
+                                );
+                            }
+
+                            ++collisionCount;
+                        } while (i >= 0);
                     }
-                    ++collisionCount;
-                } while (i >= 0);
+                }
             }
+            else
+            {
+                hashCode = (uint)comparer.GetHashCode(value);
+                bucket = ref GetBucketRef(hashCode);
+                i = bucket - 1;
+                if (i >= 0)
+                {
+                    Entry[] entries = _entries;
+                    int collisionCount = 0;
+                    do
+                    {
+                        Entry entry = entries[i];
+                        if (entry.HashCode == hashCode && comparer.Equals(entry.Value, value))
+                        {
+                            break;
+                        }
+                        i = entry.Next;
+                        if (collisionCount >= entries.Length)
+                        {
+                            // The chain of entries forms a loop; which means a concurrent update has happened.
+                            // Break out of the loop and throw, rather than looping forever.
+                            throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_ConcurrentOperationsNotSupported);
+                        }
+                        ++collisionCount;
+                    } while (i >= 0);
+                }
+            }
+
             return i;
         }
 
-#nullable enable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int TryInsert(int? index, TValue value)
         {
@@ -574,7 +481,7 @@ namespace Server.Collections
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
-                        throw new InvalidOperationException(InvalidOperation_ConcurrentOperationsNotSupported);
+                        throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_ConcurrentOperationsNotSupported);
                     }
                     ++collisionCount;
                 }
@@ -609,7 +516,7 @@ namespace Server.Collections
                     {
                         // The chain of entries forms a loop; which means a concurrent update has happened.
                         // Break out of the loop and throw, rather than looping forever.
-                        throw new InvalidOperationException(InvalidOperation_ConcurrentOperationsNotSupported);
+                        throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_ConcurrentOperationsNotSupported);
                     }
                     ++collisionCount;
                 }
@@ -643,7 +550,7 @@ namespace Server.Collections
             {
                 if (_version != _orderedHashSet._version)
                 {
-                    throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
+                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 if (_index < _orderedHashSet.Count)
@@ -661,7 +568,7 @@ namespace Server.Collections
             {
                 if (_version != _orderedHashSet._version)
                 {
-                    throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
+                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 _index = 0;

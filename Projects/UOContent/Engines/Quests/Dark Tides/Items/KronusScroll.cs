@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Necro
                 }
                 else if (qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
                 {
-                    if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm))
+                    if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm.Location))
                     {
                         QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
 
@@ -111,7 +111,6 @@ namespace Server.Engines.Quests.Necro
 
             public CallingTimer(PlayerMobile player) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), 6)
             {
-                Priority = TimerPriority.TwentyFiveMS;
 
                 m_Player = player;
                 m_Step = 0;

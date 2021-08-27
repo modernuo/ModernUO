@@ -24,9 +24,12 @@ namespace SerializationGenerator
     {
 #pragma warning disable RS1024
         public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> EmbeddedClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
         public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
+
+        public ImmutableArray<INamedTypeSymbol> EmbeddedSerializableList => EmbeddedClassAndFields.Keys.ToImmutableArray();
 
         public void OnVisitSyntaxNode(SyntaxNode node, SemanticModel semanticModel)
         {
@@ -39,7 +42,19 @@ namespace SerializationGenerator
                     return;
                 }
 
-                if (classSymbol.WillBeSerializable(compilation, out var attrData))
+                if (classSymbol.IsEmbeddedSerializable(compilation, out var attrData))
+                {
+                    if (EmbeddedClassAndFields.TryGetValue(classSymbol, out var value))
+                    {
+                        var (_, fieldsList) = value;
+                        EmbeddedClassAndFields[classSymbol] = (attrData, fieldsList);
+                    }
+                    else
+                    {
+                        EmbeddedClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
+                    }
+                }
+                else if (classSymbol.WillBeSerializable(compilation, out attrData))
                 {
                     if (ClassAndFields.TryGetValue(classSymbol, out var value))
                     {
@@ -64,8 +79,11 @@ namespace SerializationGenerator
                         AddFieldOrProperty(fieldSymbol, compilation);
                     }
                 }
+
+                return;
             }
-            else if (node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
+
+            if (node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
             {
                 if (semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
                 {
@@ -80,8 +98,9 @@ namespace SerializationGenerator
         private void AddFieldOrProperty(ISymbol symbol, Compilation compilation)
         {
             var serializableFieldAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
+            var parentAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
 
-            if (symbol.GetAttribute(serializableFieldAttr) == null)
+            if (symbol.GetAttribute(serializableFieldAttr) == null && symbol.GetAttribute(parentAttr) == null)
             {
                 return;
             }
@@ -94,9 +113,20 @@ namespace SerializationGenerator
                 return;
             }
 
+            if (EmbeddedClassAndFields.TryGetValue(classSymbol, out value))
+            {
+                var (_, fieldsList) = value;
+                fieldsList.Add(symbol);
+                return;
+            }
+
             if (classSymbol.WillBeSerializable(compilation, out var attrData))
             {
                 ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
+            }
+            else if (classSymbol.IsEmbeddedSerializable(compilation, out attrData))
+            {
+                EmbeddedClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
             }
         }
     }

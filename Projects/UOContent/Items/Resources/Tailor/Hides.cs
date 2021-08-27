@@ -1,8 +1,12 @@
 namespace Server.Items
 {
-    public abstract class BaseHides : Item, ICommodity
+    [Serializable(2, false)]
+    public abstract partial class BaseHides : Item, ICommodity
     {
-        private CraftResource m_Resource;
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(0)]
+        private CraftResource _resource;
 
         public BaseHides(CraftResource resource, int amount = 1) : base(0x1079)
         {
@@ -11,31 +15,16 @@ namespace Server.Items
             Amount = amount;
             Hue = CraftResources.GetHue(resource);
 
-            m_Resource = resource;
-        }
-
-        public BaseHides(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => m_Resource;
-            set
-            {
-                m_Resource = value;
-                InvalidateProperties();
-            }
+            _resource = resource;
         }
 
         public override int LabelNumber
         {
             get
             {
-                if (m_Resource >= CraftResource.SpinedLeather && m_Resource <= CraftResource.BarbedLeather)
+                if (_resource >= CraftResource.SpinedLeather && _resource <= CraftResource.BarbedLeather)
                 {
-                    return 1049687 + (m_Resource - CraftResource.SpinedLeather);
+                    return 1049687 + (_resource - CraftResource.SpinedLeather);
                 }
 
                 return 1047023;
@@ -45,33 +34,20 @@ namespace Server.Items
         int ICommodity.DescriptionNumber => LabelNumber;
         bool ICommodity.IsDeedable => true;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write((int)m_Resource);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             switch (version)
             {
                 case 1:
                     {
-                        m_Resource = (CraftResource)reader.ReadInt();
+                        _resource = (CraftResource)reader.ReadInt();
                         break;
                     }
                 case 0:
                     {
                         var info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
 
-                        m_Resource = CraftResources.GetFromOreInfo(info);
+                        _resource = CraftResources.GetFromOreInfo(info);
                         break;
                     }
             }
@@ -93,9 +69,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(m_Resource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                var num = CraftResources.GetLocalizationNumber(m_Resource);
+                var num = CraftResources.GetLocalizationNumber(_resource);
 
                 if (num > 0)
                 {
@@ -103,21 +79,18 @@ namespace Server.Items
                 }
                 else
                 {
-                    list.Add(CraftResources.GetName(m_Resource));
+                    list.Add(CraftResources.GetName(_resource));
                 }
             }
         }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1079, 0x1078)]
-    public class Hides : BaseHides, IScissorable
+    public partial class Hides : BaseHides, IScissorable
     {
         [Constructible]
         public Hides(int amount = 1) : base(CraftResource.RegularLeather, amount)
-        {
-        }
-
-        public Hides(Serial serial) : base(serial)
         {
         }
 
@@ -138,31 +111,14 @@ namespace Server.Items
 
             return true;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1079, 0x1078)]
-    public class SpinedHides : BaseHides, IScissorable
+    public partial class SpinedHides : BaseHides, IScissorable
     {
         [Constructible]
         public SpinedHides(int amount = 1) : base(CraftResource.SpinedLeather, amount)
-        {
-        }
-
-        public SpinedHides(Serial serial) : base(serial)
         {
         }
 
@@ -183,31 +139,14 @@ namespace Server.Items
 
             return true;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1079, 0x1078)]
-    public class HornedHides : BaseHides, IScissorable
+    public partial class HornedHides : BaseHides, IScissorable
     {
         [Constructible]
         public HornedHides(int amount = 1) : base(CraftResource.HornedLeather, amount)
-        {
-        }
-
-        public HornedHides(Serial serial) : base(serial)
         {
         }
 
@@ -228,31 +167,14 @@ namespace Server.Items
 
             return true;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1079, 0x1078)]
-    public class BarbedHides : BaseHides, IScissorable
+    public partial class BarbedHides : BaseHides, IScissorable
     {
         [Constructible]
         public BarbedHides(int amount = 1) : base(CraftResource.BarbedLeather, amount)
-        {
-        }
-
-        public BarbedHides(Serial serial) : base(serial)
         {
         }
 
@@ -272,20 +194,6 @@ namespace Server.Items
             ScissorHelper(from, new BarbedLeather(), 1);
 
             return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

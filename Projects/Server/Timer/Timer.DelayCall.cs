@@ -14,284 +14,224 @@
  *************************************************************************/
 
 using System;
+#if DEBUG_TIMERS
+using System.Collections.Generic;
+#endif
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
-    public delegate void TimerCallback();
-
-    public delegate void TimerStateCallback<in T>(T state);
-
-    public delegate void TimerStateCallback<in T1, in T2>(T1 t1, T2 t2);
-
-    public delegate void TimerStateCallback<in T1, in T2, in T3>(T1 t1, T2 t2, T3 t3);
-
-    public delegate void TimerStateCallback<in T1, in T2, in T3, in T4>(T1 t1, T2 t2, T3 t3, T4 t4);
-
     public partial class Timer
     {
-        public static Timer DelayCall(TimerCallback callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
+        private static string FormatDelegate(Delegate callback) =>
+            callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
 
-        public static Timer DelayCall(TimeSpan delay, TimerCallback callback) =>
-            DelayCall(delay, TimeSpan.Zero, 1, callback);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer DelayCall(Action callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
-        public static Timer DelayCall(TimeSpan delay, TimeSpan interval, TimerCallback callback) =>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer DelayCall(TimeSpan delay, Action callback) => DelayCall(delay, TimeSpan.Zero, 1, callback);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer DelayCall(TimeSpan delay, TimeSpan interval, Action callback) =>
             DelayCall(delay, interval, 0, callback);
 
-        public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback)
-        {
-            Timer t = new DelayCallTimer(delay, interval, count, callback);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer DelayCall(TimeSpan interval, int count, Action callback) =>
+            DelayCall(TimeSpan.Zero, interval, count, callback);
 
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback)
+        {
+            DelayCallTimer t = new DelayCallTimer(delay, interval, count, callback);
             t.Start();
+#if DEBUG_TIMERS
+            t._allowFinalization = true;
+#endif
 
             return t;
         }
 
-        public static Timer DelayCall<T>(TimerStateCallback<T> callback, T state) =>
-            DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, state);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(Action callback) => StartTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
-        public static Timer DelayCall<T>(TimeSpan delay, TimerStateCallback<T> callback, T state) =>
-            DelayCall(delay, TimeSpan.Zero, 1, callback, state);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, Action callback) => StartTimer(delay, TimeSpan.Zero, 1, callback);
 
-        public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, TimerStateCallback<T> callback, T state) =>
-            DelayCall(delay, interval, 0, callback, state);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, Action callback) =>
+            StartTimer(delay, interval, 0, callback);
 
-        public static Timer DelayCall<T>(
-            TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback,
-            T state
-        )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan interval, int count, Action callback) =>
+            StartTimer(TimeSpan.Zero, interval, count, callback);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
-            Timer t = new DelayStateCallTimer<T>(delay, interval, count, callback, state);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
+            DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+            t._selfReturn = true;
             t.Start();
 
-            return t;
+#if DEBUG_TIMERS
+            DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
+#endif
         }
 
-        public static Timer DelayCall<T1, T2>(TimerStateCallback<T1, T2> callback, T1 t1, T2 t2) =>
-            DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(Action callback, out TimerExecutionToken token) =>
+            StartTimer(TimeSpan.Zero, TimeSpan.Zero, 1, callback, out token);
 
-        public static Timer DelayCall<T1, T2>(TimeSpan delay, TimerStateCallback<T1, T2> callback, T1 t1, T2 t2) =>
-            DelayCall(delay, TimeSpan.Zero, 1, callback, t1, t2);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, Action callback, out TimerExecutionToken token) =>
+            StartTimer(delay, TimeSpan.Zero, 1, callback, out token);
 
-        public static Timer DelayCall<T1, T2>(
-            TimeSpan delay, TimeSpan interval, TimerStateCallback<T1, T2> callback,
-            T1 t1, T2 t2
-        ) => DelayCall(delay, interval, 0, callback, t1, t2);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, Action callback, out TimerExecutionToken token) =>
+            StartTimer(delay, interval, 0, callback, out token);
 
-        public static Timer DelayCall<T1, T2>(
-            TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T1, T2> callback,
-            T1 t1, T2 t2
-        )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan interval, int count, Action callback, out TimerExecutionToken token) =>
+            StartTimer(TimeSpan.Zero, interval, count, callback, out token);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback, out TimerExecutionToken token)
         {
-            Timer t = new DelayStateCallTimer<T1, T2>(delay, interval, count, callback, t1, t2);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
+            DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
             t.Start();
 
-            return t;
+#if DEBUG_TIMERS
+            DelayCallTimer._stackTraces[t.GetHashCode()] = new StackTrace().ToString();
+#endif
+            token = new TimerExecutionToken(t);
         }
 
-        public static Timer DelayCall<T1, T2, T3>(TimerStateCallback<T1, T2, T3> callback, T1 t1, T2 t2, T3 t3) =>
-            DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2, t3);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer Pause(TimeSpan ms) => new(ms);
 
-        public static Timer DelayCall<T1, T2, T3>(
-            TimeSpan delay, TimerStateCallback<T1, T2, T3> callback, T1 t1, T2 t2, T3 t3
-        ) =>
-            DelayCall(delay, TimeSpan.Zero, 1, callback, t1, t2, t3);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DelayCallTimer Pause(int ms) => Pause(TimeSpan.FromMilliseconds(ms));
 
-        public static Timer DelayCall<T1, T2, T3>(
-            TimeSpan delay, TimeSpan interval, TimerStateCallback<T1, T2, T3> callback,
-            T1 t1, T2 t2, T3 t3
-        ) => DelayCall(delay, interval, 0, callback, t1, t2, t3);
-
-        public static Timer DelayCall<T1, T2, T3>(
-            TimeSpan delay, TimeSpan interval, int count,
-            TimerStateCallback<T1, T2, T3> callback, T1 t1, T2 t2, T3 t3
-        )
+        public sealed class DelayCallTimer : Timer, INotifyCompletion
         {
-            Timer t = new DelayStateCallTimer<T1, T2, T3>(delay, interval, count, callback, t1, t2, t3);
+            internal bool _selfReturn;
+#if DEBUG_TIMERS
+            internal bool _allowFinalization;
+#endif
+            private Action _continuation;
+            private bool _complete;
 
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
-            t.Start();
-
-            return t;
-        }
-
-        public static Timer DelayCall<T1, T2, T3, T4>(
-            TimerStateCallback<T1, T2, T3, T4> callback, T1 t1, T2 t2, T3 t3, T4 t4
-        ) =>
-            DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2, t3, t4);
-
-        public static Timer DelayCall<T1, T2, T3, T4>(
-            TimeSpan delay, TimerStateCallback<T1, T2, T3, T4> callback,
-            T1 t1, T2 t2, T3 t3, T4 t4
-        ) => DelayCall(delay, TimeSpan.Zero, 1, callback, t1, t2, t3, t4);
-
-        public static Timer DelayCall<T1, T2, T3, T4>(
-            TimeSpan delay, TimeSpan interval,
-            TimerStateCallback<T1, T2, T3, T4> callback, T1 t1, T2 t2, T3 t3, T4 t4
-        ) =>
-            DelayCall(delay, interval, 0, callback, t1, t2, t3, t4);
-
-        public static Timer DelayCall<T1, T2, T3, T4>(
-            TimeSpan delay, TimeSpan interval, int count,
-            TimerStateCallback<T1, T2, T3, T4> callback, T1 t1, T2 t2, T3 t3, T4 t4
-        )
-        {
-            Timer t = new DelayStateCallTimer<T1, T2, T3, T4>(delay, interval, count, callback, t1, t2, t3, t4);
-
-            t.Priority = ComputePriority(count == 1 ? delay : interval);
-
-            t.Start();
-
-            return t;
-        }
-
-        private class DelayCallTimer : Timer
-        {
-            public DelayCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback) : base(
+            internal DelayCallTimer(TimeSpan delay, TimeSpan interval, int count, Action callback) : base(
                 delay,
                 interval,
                 count
-            )
+            ) =>
+                _continuation = callback;
+
+            internal DelayCallTimer(TimeSpan delay) : base(delay)
             {
-                Callback = callback;
-                RegCreation();
+#if DEBUG_TIMERS
+                _allowFinalization = true;
+#endif
+                Start();
             }
-
-            public TimerCallback Callback { get; }
-
-            public override bool DefRegCreation => false;
 
             protected override void OnTick()
             {
-                Callback?.Invoke();
+                _complete = true;
+                _continuation?.Invoke();
             }
 
-            public override string ToString() => $"DelayCallTimer[{FormatDelegate(Callback)}]";
-        }
-
-        private class DelayStateCallTimer<T> : Timer
-        {
-            private readonly T m_State;
-
-            public DelayStateCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state)
-                : base(delay, interval, count)
+            public override void Stop()
             {
-                Callback = callback;
-                m_State = state;
+                base.Stop();
 
-                RegCreation();
+                if (_selfReturn)
+                {
+                    Return();
+                }
             }
 
-            public TimerStateCallback<T> Callback { get; }
-
-            public override bool DefRegCreation => false;
-
-            protected override void OnTick()
+            internal void Return()
             {
-                Callback?.Invoke(m_State);
+                if (Running)
+                {
+                    logger.Error($"Timer is returned while still running! {new StackTrace()}");
+                    return;
+                }
+
+                Version++; // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
+
+#if DEBUG_TIMERS
+                _stackTraces.Remove(GetHashCode());
+#endif
+
+                if (_poolCount >= _poolCapacity)
+                {
+#if DEBUG_TIMERS
+                    logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
+                    _allowFinalization = true;
+#endif
+                    return;
+                }
+
+                _continuation = null;
+                ReturnToPool(1, this, this);
             }
 
-            public override string ToString() => $"DelayStateCall[{FormatDelegate(Callback)}]";
-        }
-
-        private class DelayStateCallTimer<T1, T2> : Timer
-        {
-            private readonly T1 m_T1;
-            private readonly T2 m_T2;
-
-            public DelayStateCallTimer(
-                TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T1, T2> callback,
-                T1 t1, T2 t2
-            ) : base(delay, interval, count)
+            public static DelayCallTimer GetTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
             {
-                Callback = callback;
-                m_T1 = t1;
-                m_T2 = t2;
+                if (_poolHead != null)
+                {
+                    _poolCount--;
+#if DEBUG_TIMERS
+                    logger.Information($"Pool count: {_poolCount} / {_poolCapacity}");
+#endif
 
-                RegCreation();
+                    var timer = GetFromPool();
+
+                    timer.Init(delay, interval, count);
+                    timer._continuation = callback;
+                    timer._selfReturn = false;
+#if DEBUG_TIMERS
+                    timer._allowFinalization = false;
+#endif
+
+                    return timer;
+                }
+
+                _timerPoolDepletionAmount++;
+
+#if DEBUG_TIMERS
+                logger.Warning($"Timer pool depleted and timer was allocated.\n{new StackTrace()}");
+#endif
+                return new DelayCallTimer(delay, interval, count, callback);
             }
 
-            public TimerStateCallback<T1, T2> Callback { get; }
+            public override string ToString() => $"DelayCallTimer[{FormatDelegate(_continuation)}]";
 
-            public override bool DefRegCreation => false;
+#if DEBUG_TIMERS
+            internal static Dictionary<int, string> _stackTraces = new();
 
-            protected override void OnTick()
+            ~DelayCallTimer()
             {
-                Callback?.Invoke(m_T1, m_T2);
+                if (!_allowFinalization)
+                {
+                    logger.Warning($"Pooled timer was not returned to the pool.\n{_stackTraces[GetHashCode()]}");
+                }
             }
+#endif
 
-            public override string ToString() => $"DelayStateCall[{FormatDelegate(Callback)}]";
-        }
+            public DelayCallTimer GetAwaiter() => this;
 
-        private class DelayStateCallTimer<T1, T2, T3> : Timer
-        {
-            private readonly T1 m_T1;
-            private readonly T2 m_T2;
-            private readonly T3 m_T3;
+            public bool IsCompleted => _complete;
 
-            public DelayStateCallTimer(
-                TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T1, T2, T3> callback,
-                T1 t1, T2 t2, T3 t3
-            ) : base(delay, interval, count)
+            public void OnCompleted(Action continuation) => _continuation = continuation;
+
+            public void GetResult()
             {
-                Callback = callback;
-                m_T1 = t1;
-                m_T2 = t2;
-                m_T3 = t3;
-
-                RegCreation();
             }
-
-            public TimerStateCallback<T1, T2, T3> Callback { get; }
-
-            public override bool DefRegCreation => false;
-
-            protected override void OnTick()
-            {
-                Callback?.Invoke(m_T1, m_T2, m_T3);
-            }
-
-            public override string ToString() => $"DelayStateCall[{FormatDelegate(Callback)}]";
-        }
-
-        private class DelayStateCallTimer<T1, T2, T3, T4> : Timer
-        {
-            private readonly T1 m_T1;
-            private readonly T2 m_T2;
-            private readonly T3 m_T3;
-            private readonly T4 m_T4;
-
-            public DelayStateCallTimer(
-                TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T1, T2, T3, T4> callback,
-                T1 t1, T2 t2, T3 t3, T4 t4
-            ) : base(delay, interval, count)
-            {
-                Callback = callback;
-                m_T1 = t1;
-                m_T2 = t2;
-                m_T3 = t3;
-                m_T4 = t4;
-
-                RegCreation();
-            }
-
-            public TimerStateCallback<T1, T2, T3, T4> Callback { get; }
-
-            public override bool DefRegCreation => false;
-
-            protected override void OnTick()
-            {
-                Callback?.Invoke(m_T1, m_T2, m_T3, m_T4);
-            }
-
-            public override string ToString() => $"DelayStateCall[{FormatDelegate(Callback)}]";
         }
     }
 }

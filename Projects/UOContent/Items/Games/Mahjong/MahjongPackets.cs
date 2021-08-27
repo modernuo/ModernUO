@@ -63,7 +63,7 @@ namespace Server.Engines.Mahjong
 
         public static void OnPacket(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            var game = World.FindItem(reader.ReadUInt32()) as MahjongGame;
+            var game = World.FindItem((Serial)reader.ReadUInt32()) as MahjongGame;
 
             game?.Players.CheckPlayers();
 

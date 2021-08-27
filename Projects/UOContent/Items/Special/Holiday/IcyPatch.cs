@@ -52,7 +52,7 @@ namespace Server.Items
             if (freeze)
             {
                 m.Frozen = true;
-                Timer.DelayCall(TimeSpan.FromSeconds(message == 1095162 ? 2.0 : 1.25), EndFall_Callback, m);
+                Timer.StartTimer(TimeSpan.FromSeconds(message == 1095162 ? 2.0 : 1.25), () => m.Frozen = false);
             }
 
             m.SendLocalizedMessage(message);
@@ -68,10 +68,11 @@ namespace Server.Items
                 }
 
                 var p = new Point3D(Location);
+                var map = Map;
 
-                if (SpellHelper.FindValidSpawnLocation(Map, ref p, true))
+                if (SpellHelper.FindValidSpawnLocation(map, ref p, true))
                 {
-                    Timer.DelayCall(TimeSpan.FromSeconds(0), m.MoveToWorld, p, m.Map);
+                    Timer.StartTimer(TimeSpan.FromSeconds(0), () => m.MoveToWorld(p, map));
                 }
 
                 action = 21 + Utility.Random(2);
@@ -85,23 +86,18 @@ namespace Server.Items
 
             if (action > 0)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(0.4), BeginFall_Callback, m, action, sound);
+                Timer.StartTimer(TimeSpan.FromSeconds(0.4),
+                    () =>
+                    {
+                        if (!m.Mounted)
+                        {
+                            m.Animate(action, 1, 1, false, true, 0);
+                        }
+
+                        m.PlaySound(sound);
+                    }
+                );
             }
-        }
-
-        private static void BeginFall_Callback(Mobile m, int action, int sound)
-        {
-            if (!m.Mounted)
-            {
-                m.Animate(action, 1, 1, false, true, 0);
-            }
-
-            m.PlaySound(sound);
-        }
-
-        private static void EndFall_Callback(Mobile m)
-        {
-            m.Frozen = false;
         }
 
         public override void Serialize(IGenericWriter writer)

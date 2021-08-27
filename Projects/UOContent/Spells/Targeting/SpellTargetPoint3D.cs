@@ -1,4 +1,3 @@
-using System;
 using Server.Targeting;
 
 namespace Server.Spells
@@ -8,7 +7,7 @@ namespace Server.Spells
         void Target(IPoint3D p);
     }
 
-    public class SpellTargetPoint3D : Target
+    public class SpellTargetPoint3D : Target, ISpellTarget
     {
         private readonly bool m_CheckLOS;
         private ISpellTargetingPoint3D m_Spell;

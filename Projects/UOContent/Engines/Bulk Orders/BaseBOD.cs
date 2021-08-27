@@ -113,7 +113,7 @@ namespace Server.Engines.BulkOrders
             }
         }
 
-        [AfterDeserialization]
+        [AfterDeserialization(false)]
         private void AfterDeserialization()
         {
             if (Parent == null && Map == Map.Internal && Location == Point3D.Zero)
@@ -128,7 +128,7 @@ namespace Server.Engines.BulkOrders
             RequireExceptional = reader.ReadBool();
             Material = (BulkMaterialType)reader.ReadInt();
 
-            Timer.DelayCall(AfterDeserialization);
+            Timer.StartTimer(AfterDeserialization);
         }
     }
 }

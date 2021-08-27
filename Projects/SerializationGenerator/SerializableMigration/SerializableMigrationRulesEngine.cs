@@ -38,6 +38,8 @@ namespace SerializableMigration
                 new PrimitiveUOTypeMigrationRule(),
                 new SerializableInterfaceMigrationRule(),
                 new SerializationMethodSignatureMigrationRule(),
+                new RawSerializableMigrationRule(),
+                new TimerMigrationRule()
             };
 
             foreach (var rule in rules)
@@ -52,7 +54,9 @@ namespace SerializableMigration
             int order,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ISymbol? parentSymbol = default
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+            ISymbol? parentSymbol,
+            SerializableFieldSaveFlagMethods? serializableFieldSaveFlagMethods
         )
         {
             string propertyName;
@@ -80,7 +84,9 @@ namespace SerializableMigration
                 order,
                 attributes,
                 serializableTypes,
-                parentSymbol
+                embeddedSerializableTypes,
+                parentSymbol,
+                serializableFieldSaveFlagMethods
             );
         }
 
@@ -91,7 +97,9 @@ namespace SerializableMigration
             int order,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ISymbol? parentSymbol = default
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+            ISymbol? parentSymbol,
+            SerializableFieldSaveFlagMethods? serializableFieldSaveFlagMethods
         )
         {
             foreach (var rule in Rules.Values)
@@ -101,6 +109,7 @@ namespace SerializableMigration
                     propertyType,
                     attributes,
                     serializableTypes,
+                    embeddedSerializableTypes,
                     parentSymbol,
                     out var ruleArguments
                 ))
@@ -110,8 +119,9 @@ namespace SerializableMigration
                         Name = propertyName,
                         Type = propertyType.ToDisplayString(),
                         Order = order,
+                        UsesSaveFlag = serializableFieldSaveFlagMethods?.DetermineFieldShouldSerialize != null ? true : null,
                         Rule = rule.RuleName,
-                        RuleArguments = ruleArguments
+                        RuleArguments = ruleArguments.Length > 0 ? ruleArguments : null
                     };
                 }
             }

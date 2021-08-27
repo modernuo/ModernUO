@@ -43,24 +43,8 @@ namespace Server.Spells.Seventh
                 var rx = (dx - dy) * 44;
                 var ry = (dx + dy) * 44;
 
-                bool eastToWest;
+                bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
-                if (rx >= 0 && ry >= 0)
-                {
-                    eastToWest = false;
-                }
-                else if (rx >= 0)
-                {
-                    eastToWest = true;
-                }
-                else if (ry >= 0)
-                {
-                    eastToWest = true;
-                }
-                else
-                {
-                    eastToWest = false;
-                }
 
                 Effects.PlaySound(new Point3D(p), Caster.Map, 0x20B);
 
@@ -191,7 +175,6 @@ namespace Server.Spells.Seventh
 
                 public InternalTimer(InternalItem item, TimeSpan duration) : base(duration)
                 {
-                    Priority = TimerPriority.OneSecond;
                     m_Item = item;
                 }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Network;
 
@@ -37,7 +38,6 @@ namespace Server
         private List<Item> m_Items;
         private List<Mobile> m_Mobiles;
         private List<BaseMulti> m_Multis;
-        private List<Mobile> m_Players;
         private List<RegionRect> m_RegionRects;
 
         public Sector(int x, int y, Map owner)
@@ -58,8 +58,6 @@ namespace Server
 
         public List<NetState> Clients => m_Clients ?? m_DefaultClientList;
 
-        public List<Mobile> Players => m_Players ?? m_DefaultMobileList;
-
         public bool Active => m_Active && Owner != Map.Internal;
 
         public Map Owner { get; }
@@ -68,109 +66,48 @@ namespace Server
 
         public int Y { get; }
 
-        private static void Add<T>(ref List<T> list, T value)
-        {
-            list ??= new List<T>();
-
-            list.Add(value);
-        }
-
-        private void Remove<T>(ref List<T> list, T value)
-        {
-            if (list != null)
-            {
-                list.Remove(value);
-
-                if (list.Count == 0)
-                {
-                    list = null;
-                }
-            }
-        }
-
-        private void Replace<T>(ref List<T> list, T oldValue, T newValue)
-        {
-            if (oldValue != null && newValue != null)
-            {
-                var index = list?.IndexOf(oldValue) ?? -1;
-
-                if (index >= 0)
-                {
-                    list![index] = newValue;
-                }
-                else
-                {
-                    Add(ref list, newValue);
-                }
-            }
-            else if (oldValue != null)
-            {
-                Remove(ref list, oldValue);
-            }
-            else if (newValue != null)
-            {
-                Add(ref list, newValue);
-            }
-        }
-
         public void OnClientChange(NetState oldState, NetState newState)
         {
-            Replace(ref m_Clients, oldState, newState);
+            Utility.Replace(ref m_Clients, oldState, newState);
         }
 
         public void OnEnter(Item item)
         {
-            Add(ref m_Items, item);
+            Utility.Add(ref m_Items, item);
         }
 
         public void OnLeave(Item item)
         {
-            Remove(ref m_Items, item);
+            Utility.Remove(ref m_Items, item);
         }
 
         public void OnEnter(Mobile mob)
         {
-            Add(ref m_Mobiles, mob);
+            Utility.Add(ref m_Mobiles, mob);
 
             if (mob.NetState != null)
             {
-                Add(ref m_Clients, mob.NetState);
-            }
+                Utility.Add(ref m_Clients, mob.NetState);
 
-            if (mob.Player)
-            {
-                if (m_Players == null)
-                {
-                    Owner.ActivateSectors(X, Y);
-                }
-
-                Add(ref m_Players, mob);
+                Owner.ActivateSectors(X, Y);
             }
         }
 
         public void OnLeave(Mobile mob)
         {
-            Remove(ref m_Mobiles, mob);
+            Utility.Remove(ref m_Mobiles, mob);
 
             if (mob.NetState != null)
             {
-                Remove(ref m_Clients, mob.NetState);
-            }
+                Utility.Remove(ref m_Clients, mob.NetState);
 
-            if (mob.Player && m_Players != null)
-            {
-                Remove(ref m_Players, mob);
-
-                if (m_Players == null)
-                {
-                    Owner.DeactivateSectors(X, Y);
-                }
+                Owner.DeactivateSectors(X, Y);
             }
         }
 
         public void OnEnter(Region region, Rectangle3D rect)
         {
-            Add(ref m_RegionRects, new RegionRect(region, rect));
+            Utility.Add(ref m_RegionRects, new RegionRect(region, rect));
 
             m_RegionRects.Sort();
 
@@ -204,28 +141,32 @@ namespace Server
         {
             if (m_Mobiles != null)
             {
-                var sandbox = new List<Mobile>(m_Mobiles);
-
-                foreach (var mob in sandbox)
+                using var queue = PooledRefQueue<Mobile>.Create(m_Mobiles.Count);
+                foreach (var mob in m_Mobiles)
                 {
-                    mob.UpdateRegion();
+                    queue.Enqueue(mob);
+                }
+
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().UpdateRegion();
                 }
             }
         }
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            Add(ref m_Multis, multi);
+            Utility.Add(ref m_Multis, multi);
         }
 
         public void OnMultiLeave(BaseMulti multi)
         {
-            Remove(ref m_Multis, multi);
+            Utility.Remove(ref m_Multis, multi);
         }
 
         public void Activate()
         {
-            if (!Active && Owner != Map.Internal)
+            if (!Active)
             {
                 if (m_Items != null)
                 {

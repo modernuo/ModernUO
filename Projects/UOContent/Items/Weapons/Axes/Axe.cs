@@ -1,14 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0xF49, 0xF4a)]
-    public class Axe : BaseAxe
+    [Serializable(0, false)]
+    public partial class Axe : BaseAxe
     {
         [Constructible]
         public Axe() : base(0xF49) => Weight = 4.0;
-
-        public Axe(Serial serial) : base(serial)
-        {
-        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;
@@ -26,19 +23,5 @@ namespace Server.Items
 
         public override int InitMinHits => 31;
         public override int InitMaxHits => 110;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

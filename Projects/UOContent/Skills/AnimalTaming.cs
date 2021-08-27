@@ -37,8 +37,9 @@ namespace Server.SkillHandlers
         }
 
         public static bool CheckMastery(Mobile tamer, BaseCreature creature) =>
-            SummonFamiliarSpell.Table.TryGetValue(tamer, out var bc) && bc is DarkWolfFamiliar familiar &&
-            !familiar.Deleted && creature is DireWolf or GreyWolf or TimberWolf or WhiteWolf or BakeKitsune;
+            SummonFamiliarSpell.Table.TryGetValue(tamer, out var bc)
+            && bc is DarkWolfFamiliar { Deleted: false }
+            && creature is DireWolf or GreyWolf or TimberWolf or WhiteWolf or BakeKitsune;
 
         public static bool MustBeSubdued(BaseCreature bc) =>
             bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
@@ -262,7 +263,7 @@ namespace Server.SkillHandlers
 
                     if (creature.BardPacified && Utility.RandomDouble() > .24)
                     {
-                        Timer.DelayCall(TimeSpan.FromSeconds(2.0), Pacify, creature);
+                        Timer.StartTimer(TimeSpan.FromSeconds(2.0), () => Pacify(creature));
                     }
                     else
                     {
@@ -323,7 +324,6 @@ namespace Server.SkillHandlers
                     m_MaxCount = count;
                     m_Paralyzed = creature.Paralyzed;
                     m_StartTime = Core.Now;
-                    Priority = TimerPriority.TwoFiftyMS;
                 }
 
                 protected override void OnTick()

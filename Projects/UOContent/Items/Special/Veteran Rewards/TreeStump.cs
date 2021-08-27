@@ -9,17 +9,15 @@ namespace Server.Items
     public class TreeStump : BaseAddon, IRewardItem
     {
         private bool m_IsRewardItem;
-
         private int m_Logs;
-
-        private Timer m_Timer;
+        private TimerExecutionToken _timerToken;
 
         [Constructible]
         public TreeStump(int itemID)
         {
             AddComponent(new AddonComponent(itemID), 0, 0, 0);
 
-            m_Timer = Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveLogs);
+            Timer.StartTimer(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveLogs, out _timerToken);
         }
 
         public TreeStump(Serial serial) : base(serial)
@@ -65,6 +63,11 @@ namespace Server.Items
             m_Logs = Math.Min(100, m_Logs + 10);
         }
 
+        public override void OnAfterDelete()
+        {
+            _timerToken.Cancel();
+        }
+
         public override void OnComponentUsed(AddonComponent c, Mobile from)
         {
             var house = BaseHouse.FindHouseAt(this);
@@ -104,12 +107,10 @@ namespace Server.Items
                         3 => new YewLog(),
                         4 => new HeartwoodLog(),
                         5 => new BloodwoodLog(),
-                        6 => new FrostwoodLog(),
-                        _ => null
+                        _ => new FrostwoodLog()
                     };
 
                     var amount = Math.Min(10, m_Logs);
-                    // ReSharper disable once PossibleNullReferenceException
                     logs.Amount = amount;
 
                     if (!from.PlaceInBackpack(logs))
@@ -143,9 +144,9 @@ namespace Server.Items
             writer.Write(m_IsRewardItem);
             writer.Write(m_Logs);
 
-            if (m_Timer != null)
+            if (_timerToken.Running)
             {
-                writer.Write(m_Timer.Next);
+                writer.Write(_timerToken.Next);
             }
             else
             {
@@ -169,7 +170,7 @@ namespace Server.Items
                 next = Core.Now;
             }
 
-            m_Timer = Timer.DelayCall(next - Core.Now, TimeSpan.FromDays(1), GiveLogs);
+            Timer.StartTimer(next - Core.Now, TimeSpan.FromDays(1), GiveLogs, out _timerToken);
         }
     }
 

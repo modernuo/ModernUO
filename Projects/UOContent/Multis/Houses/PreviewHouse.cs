@@ -126,7 +126,7 @@ namespace Server.Multis
                     }
             }
 
-            Timer.DelayCall(Delete);
+            Timer.StartTimer(Delete);
         }
 
         private class DecayTimer : Timer
@@ -136,7 +136,6 @@ namespace Server.Multis
             public DecayTimer(Item item) : base(TimeSpan.FromSeconds(20.0))
             {
                 m_Item = item;
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

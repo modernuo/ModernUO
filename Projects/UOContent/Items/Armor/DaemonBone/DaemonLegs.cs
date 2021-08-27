@@ -1,7 +1,8 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1452, 0x1457)]
-    public class DaemonLegs : BaseArmor
+    public partial class DaemonLegs : BaseArmor
     {
         [Constructible]
         public DaemonLegs() : base(0x1452)
@@ -10,10 +11,6 @@ namespace Server.Items
             Hue = 0x648;
 
             ArmorAttributes.SelfRepair = 1;
-        }
-
-        public DaemonLegs(Serial serial) : base(serial)
-        {
         }
 
         public override int BasePhysicalResistance => 6;
@@ -36,22 +33,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override int LabelNumber => 1041375; // daemon bone leggings
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (ArmorAttributes.SelfRepair == 0)
-            {
-                ArmorAttributes.SelfRepair = 1;
-            }
-        }
     }
 }

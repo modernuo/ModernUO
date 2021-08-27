@@ -118,7 +118,7 @@ namespace Server.Items
                 }
             }
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnSpikeExtended);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), OnSpikeExtended);
 
             from.LocalOverheadMessage(MessageType.Regular, 0x22, 500852); // You stepped onto a spike trap!
         }
@@ -126,7 +126,7 @@ namespace Server.Items
         public virtual void OnSpikeExtended()
         {
             Extended = true;
-            Timer.DelayCall(TimeSpan.FromSeconds(5.0), OnSpikeRetracted);
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), OnSpikeRetracted);
         }
 
         public virtual void OnSpikeRetracted()

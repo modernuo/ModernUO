@@ -6,42 +6,15 @@ using Server.Network;
 
 namespace Server.Items
 {
-    public abstract class BaseHat : BaseClothing, IShipwreckedItem
+    [Serializable(0, false)]
+    public abstract partial class BaseHat : BaseClothing, IShipwreckedItem
     {
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private bool _isShipwreckedItem;
+
         public BaseHat(int itemID, int hue = 0) : base(itemID, Layer.Helm, hue)
         {
-        }
-
-        public BaseHat(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsShipwreckedItem { get; set; }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(IsShipwreckedItem);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        IsShipwreckedItem = reader.ReadBool();
-                        break;
-                    }
-            }
         }
 
         public override void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -84,15 +57,12 @@ namespace Server.Items
     }
 
     [Flippable(0x2798, 0x27E3)]
-    public class Kasa : BaseHat
+    [Serializable(0, false)]
+    public partial class Kasa : BaseHat
     {
         [Constructible]
         public Kasa(int hue = 0) : base(0x2798, hue) => Weight = 3.0;
 
-        public Kasa(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -101,32 +71,15 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x278F, 0x27DA)]
-    public class ClothNinjaHood : BaseHat
+    [Serializable(0, false)]
+    public partial class ClothNinjaHood : BaseHat
     {
         [Constructible]
         public ClothNinjaHood(int hue = 0) : base(0x278F, hue) => Weight = 2.0;
 
-        public ClothNinjaHood(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
         public override int BaseColdResistance => 6;
@@ -135,32 +88,15 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [Flippable(0x2306, 0x2305)]
-    public class FlowerGarland : BaseHat
+    [Serializable(0, false)]
+    public partial class FlowerGarland : BaseHat
     {
         [Constructible]
         public FlowerGarland(int hue = 0) : base(0x2306, hue) => Weight = 1.0;
 
-        public FlowerGarland(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
         public override int BaseColdResistance => 6;
@@ -169,31 +105,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class FloppyHat : BaseHat
+    [Serializable(0, false)]
+    public partial class FloppyHat : BaseHat
     {
         [Constructible]
         public FloppyHat(int hue = 0) : base(0x1713, hue) => Weight = 1.0;
 
-        public FloppyHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -202,31 +121,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class WideBrimHat : BaseHat
+    [Serializable(0, false)]
+    public partial class WideBrimHat : BaseHat
     {
         [Constructible]
         public WideBrimHat(int hue = 0) : base(0x1714, hue) => Weight = 1.0;
 
-        public WideBrimHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -235,31 +137,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class Cap : BaseHat
+    [Serializable(0, false)]
+    public partial class Cap : BaseHat
     {
         [Constructible]
         public Cap(int hue = 0) : base(0x1715, hue) => Weight = 1.0;
 
-        public Cap(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -268,30 +153,13 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class SkullCap : BaseHat
+    [Serializable(0, false)]
+    public partial class SkullCap : BaseHat
     {
         [Constructible]
         public SkullCap(int hue = 0) : base(0x1544, hue) => Weight = 1.0;
-
-        public SkullCap(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 3;
@@ -301,30 +169,13 @@ namespace Server.Items
 
         public override int InitMinHits => Core.ML ? 14 : 7;
         public override int InitMaxHits => Core.ML ? 28 : 12;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class Bandana : BaseHat
+    [Serializable(0, false)]
+    public partial class Bandana : BaseHat
     {
         [Constructible]
         public Bandana(int hue = 0) : base(0x1540, hue) => Weight = 1.0;
-
-        public Bandana(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 3;
@@ -334,30 +185,13 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class BearMask : BaseHat
+    [Serializable(0, false)]
+    public partial class BearMask : BaseHat
     {
         [Constructible]
         public BearMask(int hue = 0) : base(0x1545, hue) => Weight = 5.0;
-
-        public BearMask(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;
@@ -373,30 +207,13 @@ namespace Server.Items
             from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class DeerMask : BaseHat
+    [Serializable(0, false)]
+    public partial class DeerMask : BaseHat
     {
         [Constructible]
         public DeerMask(int hue = 0) : base(0x1547, hue) => Weight = 4.0;
-
-        public DeerMask(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 6;
@@ -412,30 +229,13 @@ namespace Server.Items
             from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class HornedTribalMask : BaseHat
+    [Serializable(0, false)]
+    public partial class HornedTribalMask : BaseHat
     {
         [Constructible]
         public HornedTribalMask(int hue = 0) : base(0x1549, hue) => Weight = 2.0;
-
-        public HornedTribalMask(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 6;
         public override int BaseFireResistance => 9;
@@ -451,30 +251,13 @@ namespace Server.Items
             from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class TribalMask : BaseHat
+    [Serializable(0, false)]
+    public partial class TribalMask : BaseHat
     {
         [Constructible]
         public TribalMask(int hue = 0) : base(0x154B, hue) => Weight = 2.0;
-
-        public TribalMask(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 0;
@@ -490,31 +273,14 @@ namespace Server.Items
             from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class TallStrawHat : BaseHat
+    [Serializable(0, false)]
+    public partial class TallStrawHat : BaseHat
     {
         [Constructible]
         public TallStrawHat(int hue = 0) : base(0x1716, hue) => Weight = 1.0;
 
-        public TallStrawHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -523,31 +289,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class StrawHat : BaseHat
+    [Serializable(0, false)]
+    public partial class StrawHat : BaseHat
     {
         [Constructible]
         public StrawHat(int hue = 0) : base(0x1717, hue) => Weight = 1.0;
 
-        public StrawHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -556,30 +305,13 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class OrcishKinMask : BaseHat
+    [Serializable(0, false)]
+    public partial class OrcishKinMask : BaseHat
     {
         [Constructible]
         public OrcishKinMask(int hue = 0x8A4) : base(0x141B, hue) => Weight = 2.0;
-
-        public OrcishKinMask(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 1;
         public override int BaseFireResistance => 1;
@@ -623,26 +355,10 @@ namespace Server.Items
                 Titles.AwardKarma(mobile, -20, true);
             }
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            /*if (Hue != 0x8A4)
-              Hue = 0x8A4;*/
-        }
     }
 
-    public class SavageMask : BaseHat
+    [Serializable(0, false)]
+    public partial class SavageMask : BaseHat
     {
         [Constructible]
         public SavageMask() : this(GetRandomHue())
@@ -651,10 +367,6 @@ namespace Server.Items
 
         [Constructible]
         public SavageMask(int hue) : base(0x154B, hue) => Weight = 2.0;
-
-        public SavageMask(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 0;
@@ -682,33 +394,13 @@ namespace Server.Items
             from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            /*if (Hue != 0 && (Hue < 2101 || Hue > 2130))
-              Hue = GetRandomHue();*/
-        }
     }
 
-    public class WizardsHat : BaseHat
+    [Serializable(0, false)]
+    public partial class WizardsHat : BaseHat
     {
         [Constructible]
         public WizardsHat(int hue = 0) : base(0x1718, hue) => Weight = 1.0;
-
-        public WizardsHat(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -718,30 +410,13 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class MagicWizardsHat : BaseHat
+    [Serializable(0, false)]
+    public partial class MagicWizardsHat : BaseHat
     {
         [Constructible]
         public MagicWizardsHat(int hue = 0) : base(0x1718, hue) => Weight = 1.0;
-
-        public MagicWizardsHat(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -757,31 +432,14 @@ namespace Server.Items
         public override int BaseStrBonus => -5;
         public override int BaseDexBonus => -5;
         public override int BaseIntBonus => +5;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class Bonnet : BaseHat
+    [Serializable(0, false)]
+    public partial class Bonnet : BaseHat
     {
         [Constructible]
         public Bonnet(int hue = 0) : base(0x1719, hue) => Weight = 1.0;
 
-        public Bonnet(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -790,31 +448,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class FeatheredHat : BaseHat
+    [Serializable(0, false)]
+    public partial class FeatheredHat : BaseHat
     {
         [Constructible]
         public FeatheredHat(int hue = 0) : base(0x171A, hue) => Weight = 1.0;
 
-        public FeatheredHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -823,31 +464,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class TricorneHat : BaseHat
+    [Serializable(0, false)]
+    public partial class TricorneHat : BaseHat
     {
         [Constructible]
         public TricorneHat(int hue = 0) : base(0x171B, hue) => Weight = 1.0;
 
-        public TricorneHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -856,31 +480,14 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class JesterHat : BaseHat
+    [Serializable(0, false)]
+    public partial class JesterHat : BaseHat
     {
         [Constructible]
         public JesterHat(int hue = 0) : base(0x171C, hue) => Weight = 1.0;
 
-        public JesterHat(Serial serial) : base(serial)
-        {
-        }
-
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
         public override int BaseColdResistance => 9;
@@ -889,19 +496,5 @@ namespace Server.Items
 
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

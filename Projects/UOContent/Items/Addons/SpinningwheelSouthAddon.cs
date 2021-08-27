@@ -2,7 +2,8 @@ using System;
 
 namespace Server.Items
 {
-    public class SpinningwheelSouthAddon : BaseAddon, ISpinningWheel
+    [Serializable(0, false)]
+    public partial class SpinningwheelSouthAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
 
@@ -10,10 +11,6 @@ namespace Server.Items
         public SpinningwheelSouthAddon()
         {
             AddComponent(new AddonComponent(0x1015), 0, 0, 0);
-        }
-
-        public SpinningwheelSouthAddon(Serial serial) : base(serial)
-        {
         }
 
         public override BaseAddonDeed Deed => new SpinningwheelSouthDeed();
@@ -37,20 +34,6 @@ namespace Server.Items
                         break;
                 }
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override void OnComponentLoaded(AddonComponent c)
@@ -103,7 +86,6 @@ namespace Server.Items
                 m_Callback = callback;
                 m_From = from;
                 m_Hue = hue;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
@@ -113,32 +95,15 @@ namespace Server.Items
         }
     }
 
-    public class SpinningwheelSouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class SpinningwheelSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public SpinningwheelSouthDeed()
         {
         }
 
-        public SpinningwheelSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new SpinningwheelSouthAddon();
         public override int LabelNumber => 1044342; // spining wheel (south)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

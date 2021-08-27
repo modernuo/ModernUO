@@ -22,13 +22,6 @@ namespace Server.Engines.MLQuests.Definitions
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 4, "Drithen"), new Point3D(1983, 1364, -80), Map.Malas);
-        }
     }
 
     [QuesterName("Drithen (Umbra)")]

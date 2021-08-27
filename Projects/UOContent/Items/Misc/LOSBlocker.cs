@@ -50,7 +50,7 @@ namespace Server.Items
             else
             {
                 length = OutgoingItemPackets.CreateWorldItem(buffer, this);
-                BinaryPrimitives.WriteUInt16BigEndian(buffer[7..2], GMItemId);
+                BinaryPrimitives.WriteUInt16BigEndian(buffer[7..9], GMItemId);
             }
 
             ns.Send(buffer[..length]);

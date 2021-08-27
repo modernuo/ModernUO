@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "type": "Server.Items.AddonComponent",
+  "properties": [
+    {
+      "name": "Addon",
+      "type": "Server.Items.BaseAddon",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Offset",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    }
+  ]
+}

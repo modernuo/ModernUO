@@ -2,10 +2,19 @@ using System;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1070, 0x1074)]
-    public class TrainingDummy : AddonComponent
+    public partial class TrainingDummy : AddonComponent
     {
         private Timer m_Timer;
+
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private double _minSkill;
+
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private double _maxSkill;
 
         [Constructible]
         public TrainingDummy(int itemID = 0x1074) : base(itemID)
@@ -13,16 +22,6 @@ namespace Server.Items
             MinSkill = -25.0;
             MaxSkill = +25.0;
         }
-
-        public TrainingDummy(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MinSkill { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MaxSkill { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Swinging => m_Timer != null;
@@ -100,39 +99,9 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(MinSkill);
-            writer.Write(MaxSkill);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        MinSkill = reader.ReadDouble();
-                        MaxSkill = reader.ReadDouble();
-
-                        if (MinSkill == 0.0 && MaxSkill == 30.0)
-                        {
-                            MinSkill = -25.0;
-                            MaxSkill = +25.0;
-                        }
-
-                        break;
-                    }
-            }
-
             UpdateItemID();
         }
 
@@ -144,7 +113,6 @@ namespace Server.Items
             public InternalTimer(TrainingDummy dummy) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(2.75))
             {
                 m_Dummy = dummy;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()
@@ -163,7 +131,8 @@ namespace Server.Items
         }
     }
 
-    public class TrainingDummyEastAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class TrainingDummyEastAddon : BaseAddon
     {
         [Constructible]
         public TrainingDummyEastAddon()
@@ -171,57 +140,23 @@ namespace Server.Items
             AddComponent(new TrainingDummy(), 0, 0, 0);
         }
 
-        public TrainingDummyEastAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new TrainingDummyEastDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class TrainingDummyEastDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class TrainingDummyEastDeed : BaseAddonDeed
     {
         [Constructible]
         public TrainingDummyEastDeed()
         {
         }
 
-        public TrainingDummyEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new TrainingDummyEastAddon();
         public override int LabelNumber => 1044335; // training dummy (east)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class TrainingDummySouthAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class TrainingDummySouthAddon : BaseAddon
     {
         [Constructible]
         public TrainingDummySouthAddon()
@@ -229,53 +164,18 @@ namespace Server.Items
             AddComponent(new TrainingDummy(0x1070), 0, 0, 0);
         }
 
-        public TrainingDummySouthAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new TrainingDummySouthDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class TrainingDummySouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class TrainingDummySouthDeed : BaseAddonDeed
     {
         [Constructible]
         public TrainingDummySouthDeed()
         {
         }
 
-        public TrainingDummySouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new TrainingDummySouthAddon();
         public override int LabelNumber => 1044336; // training dummy (south)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

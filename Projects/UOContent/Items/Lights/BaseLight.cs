@@ -220,7 +220,6 @@ namespace Server.Items
             public InternalTimer(BaseLight light, TimeSpan delay) : base(delay)
             {
                 m_Light = light;
-                Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()

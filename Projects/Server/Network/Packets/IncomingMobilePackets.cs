@@ -30,7 +30,7 @@ namespace Server.Network
         public static void RenameRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
-            var targ = World.FindMobile(reader.ReadUInt32());
+            var targ = World.FindMobile((Serial)reader.ReadUInt32());
 
             if (targ != null)
             {
@@ -40,9 +40,9 @@ namespace Server.Network
 
         public static void MobileNameRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            var m = World.FindMobile(reader.ReadUInt32());
+            var m = World.FindMobile((Serial)reader.ReadUInt32());
 
-            if (m != null && Utility.InUpdateRange(state.Mobile, m) && state.Mobile.CanSee(m))
+            if (m != null && Utility.InUpdateRange(state.Mobile.Location, m.Location) && state.Mobile.CanSee(m))
             {
                 state.SendMobileName(m);
             }
@@ -51,7 +51,7 @@ namespace Server.Network
         public static void ProfileReq(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             int type = reader.ReadByte();
-            Serial serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
 
             var beholder = state.Mobile;
             var beheld = World.FindMobile(serial);
@@ -94,7 +94,7 @@ namespace Server.Network
             {
                 case 1: // Cancel
                     {
-                        Serial serial = reader.ReadUInt32();
+                        var serial = (Serial)reader.ReadUInt32();
 
                         if (World.FindItem(serial) is SecureTradeContainer cont && cont.Trade != null &&
                             (cont.Trade.From.Mobile == state.Mobile || cont.Trade.To.Mobile == state.Mobile))
@@ -106,7 +106,7 @@ namespace Server.Network
                     }
                 case 2: // Check
                     {
-                        Serial serial = reader.ReadUInt32();
+                        var serial = (Serial)reader.ReadUInt32();
 
                         if (World.FindItem(serial) is SecureTradeContainer cont)
                         {
@@ -133,7 +133,7 @@ namespace Server.Network
                     }
                 case 3: // Update Gold
                     {
-                        Serial serial = reader.ReadUInt32();
+                        var serial = (Serial)reader.ReadUInt32();
 
                         if (World.FindItem(serial) is SecureTradeContainer cont)
                         {

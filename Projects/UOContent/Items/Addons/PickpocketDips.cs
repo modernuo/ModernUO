@@ -2,26 +2,25 @@ using System;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x1EC0, 0x1EC3)]
-    public class PickpocketDip : AddonComponent
+    public partial class PickpocketDip : AddonComponent
     {
         private Timer m_Timer;
+
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private double _minSkill;
+
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private double _maxSkill;
 
         public PickpocketDip(int itemID) : base(itemID)
         {
             MinSkill = -25.0;
             MaxSkill = +25.0;
         }
-
-        public PickpocketDip(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MinSkill { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MaxSkill { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Swinging => m_Timer != null;
@@ -84,10 +83,8 @@ namespace Server.Items
             }
             else if (from.Skills.Stealing.Base >= MaxSkill)
             {
-                SendLocalizedMessageTo(
-                    from,
-                    501830
-                ); // Your ability to steal cannot improve any further by simply practicing on a dummy.
+                // Your ability to steal cannot improve any further by simply practicing on a dummy.
+                SendLocalizedMessageTo(from, 501830);
             }
             else if (from.Mounted)
             {
@@ -99,39 +96,9 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(MinSkill);
-            writer.Write(MaxSkill);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        MinSkill = reader.ReadDouble();
-                        MaxSkill = reader.ReadDouble();
-
-                        if (MinSkill == 0.0 && MaxSkill == 30.0)
-                        {
-                            MinSkill = -25.0;
-                            MaxSkill = +25.0;
-                        }
-
-                        break;
-                    }
-            }
-
             UpdateItemID();
         }
 
@@ -142,7 +109,6 @@ namespace Server.Items
             public InternalTimer(PickpocketDip dip) : base(TimeSpan.FromSeconds(3.0))
             {
                 m_Dip = dip;
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()
@@ -152,65 +118,30 @@ namespace Server.Items
         }
     }
 
-    public class PickpocketDipEastAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class PickpocketDipEastAddon : BaseAddon
     {
         [Constructible]
         public PickpocketDipEastAddon()
         {
             AddComponent(new PickpocketDip(0x1EC3), 0, 0, 0);
         }
-
-        public PickpocketDipEastAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new PickpocketDipEastDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PickpocketDipEastDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class PickpocketDipEastDeed : BaseAddonDeed
     {
         [Constructible]
         public PickpocketDipEastDeed()
         {
         }
 
-        public PickpocketDipEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new PickpocketDipEastAddon();
         public override int LabelNumber => 1044337; // pickpocket dip (east)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PickpocketDipSouthAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class PickpocketDipSouthAddon : BaseAddon
     {
         [Constructible]
         public PickpocketDipSouthAddon()
@@ -218,53 +149,18 @@ namespace Server.Items
             AddComponent(new PickpocketDip(0x1EC0), 0, 0, 0);
         }
 
-        public PickpocketDipSouthAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new PickpocketDipSouthDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PickpocketDipSouthDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class PickpocketDipSouthDeed : BaseAddonDeed
     {
         [Constructible]
         public PickpocketDipSouthDeed()
         {
         }
 
-        public PickpocketDipSouthDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new PickpocketDipSouthAddon();
         public override int LabelNumber => 1044338; // pickpocket dip (south)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

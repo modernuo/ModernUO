@@ -227,8 +227,6 @@ namespace Server.Items
             writer.WriteEncodedInt(TriggerRange);
         }
 
-        private IEntity ReadEntity(IGenericReader reader) => World.FindEntity(reader.ReadUInt());
-
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
@@ -243,8 +241,8 @@ namespace Server.Items
                         TriggerDelay = reader.ReadTimeSpan();
                         SoundDelay = reader.ReadTimeSpan();
 
-                        m_Source = ReadEntity(reader);
-                        m_Target = ReadEntity(reader);
+                        m_Source = reader.ReadEntity<IEntity>();
+                        m_Target = reader.ReadEntity<IEntity>();
                         Sequence = reader.ReadEntity<EffectController>();
 
                         FixedDirection = reader.ReadBool();
@@ -286,24 +284,24 @@ namespace Server.Items
                 return;
             }
 
-            if (trigger is Mobile mobile && mobile.Hidden && mobile.AccessLevel > AccessLevel.Player)
+            if (trigger is Mobile { Hidden: true } mobile && mobile.AccessLevel > AccessLevel.Player)
             {
                 return;
             }
 
             if (SoundID > 0)
             {
-                Timer.DelayCall(SoundDelay, PlaySound, trigger);
+                Timer.StartTimer(SoundDelay, () => PlaySound(trigger));
             }
 
             if (Sequence != null)
             {
-                Timer.DelayCall(TriggerDelay, Sequence.DoEffect, trigger);
+                Timer.StartTimer(TriggerDelay, () => Sequence.DoEffect(trigger));
             }
 
             if (EffectType != ECEffectType.None)
             {
-                Timer.DelayCall(EffectDelay, InternalDoEffect, trigger);
+                Timer.StartTimer(EffectDelay, () => InternalDoEffect(trigger));
             }
         }
 

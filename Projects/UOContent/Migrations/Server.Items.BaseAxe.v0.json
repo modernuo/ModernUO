@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseAxe",
+  "properties": [
+    {
+      "name": "ShowUsesRemaining",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

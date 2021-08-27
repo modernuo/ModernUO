@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.PickpocketDip",
+  "properties": [
+    {
+      "name": "MinSkill",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxSkill",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

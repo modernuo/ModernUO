@@ -2,33 +2,20 @@ using System;
 
 namespace Server.Items
 {
-    public class BigFish : Item, ICarvable
+    [Serializable(1, false)]
+    public partial class BigFish : Item, ICarvable
     {
-        private Mobile m_Fisher;
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(0)]
+        private Mobile _fisher;
 
         [Constructible]
         public BigFish() : base(0x09CC)
         {
-            Weight = Utility.RandomMinMax(
-                3,
-                200
-            ); // TODO: Find correct formula.  max on OSI currently 200, OSI dev says it's not 200 as max, and ~ 1/1,000,000 chance to get highest
+            // TODO: Find correct formula.  max on OSI currently 200, OSI dev says it's not 200 as max, and ~ 1/1,000,000 chance to get highest
+            Weight = Utility.RandomMinMax(3, 200);
             Hue = Utility.RandomBool() ? 0x847 : 0x58C;
-        }
-
-        public BigFish(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Fisher
-        {
-            get => m_Fisher;
-            set
-            {
-                m_Fisher = value;
-                InvalidateProperties();
-            }
         }
 
         public override int LabelNumber => 1041112; // a big fish
@@ -44,43 +31,18 @@ namespace Server.Items
 
             if (Weight >= 20)
             {
-                if (m_Fisher != null)
+                if (_fisher != null)
                 {
-                    list.Add(1070857, m_Fisher.Name); // Caught by ~1_fisherman~
+                    list.Add(1070857, _fisher.Name); // Caught by ~1_fisherman~
                 }
 
                 list.Add(1070858, ((int)Weight).ToString()); // ~1_weight~ stones
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(m_Fisher);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        m_Fisher = reader.ReadEntity<Mobile>();
-                        break;
-                    }
-                case 0:
-                    {
-                        Weight = Utility.RandomMinMax(3, 200);
-                        break;
-                    }
-            }
+            Weight = Utility.RandomMinMax(3, 200);
         }
     }
 }

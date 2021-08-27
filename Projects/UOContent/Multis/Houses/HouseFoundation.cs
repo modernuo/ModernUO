@@ -1,9 +1,6 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -1773,7 +1770,7 @@ namespace Server.Multis
         {
             var from = state.Mobile;
 
-            if (World.FindItem(reader.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map &&
+            if (World.FindItem((Serial)reader.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map &&
                 from.InRange(foundation.GetWorldLocation(), 24) &&
                 from.CanSee(foundation))
             {

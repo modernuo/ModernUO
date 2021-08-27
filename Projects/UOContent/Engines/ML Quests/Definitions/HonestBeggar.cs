@@ -28,14 +28,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(ReginasThanks);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 4, "Evan"), new Point3D(1486, 1706, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 4, "Evan"), new Point3D(1486, 1706, 0), Map.Felucca);
-        }
     }
 
     public class ReginasThanks : MLQuest
@@ -59,14 +51,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override bool IsChainTriggered => true;
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Regina"), new Point3D(1362, 1622, 50), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Regina"), new Point3D(1422, 1621, 20), Map.Felucca);
-        }
     }
 
     public class Evan : BaseCreature

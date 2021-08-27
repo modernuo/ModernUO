@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Naturalist
             }
         }
 
-        public static NestArea Find(IPoint2D p)
+        public static NestArea Find(Point3D p)
         {
             return m_Areas.FirstOrDefault(area => area.Contains(p));
         }
@@ -73,9 +73,19 @@ namespace Server.Engines.Quests.Naturalist
             return null;
         }
 
-        public bool Contains(IPoint2D p)
+        public bool Contains(Point3D p)
         {
-            return m_Rects.Any(rect => rect.Contains(p));
+            var x = p.X;
+            var y = p.Y;
+            foreach (var rect in m_Rects)
+            {
+                if (rect.Contains(x, y))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

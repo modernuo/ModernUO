@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.Engines.PartySystem;
 using Server.Spells.Second;
 using Server.Targeting;
@@ -53,15 +53,26 @@ namespace Server.Spells.Fourth
                     return;
                 }
 
-                var targets = Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3)
-                    .Where(m => Caster.CanBeBeneficial(m, false));
+                var eable = Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3);
+                using var targets = PooledRefQueue<Mobile>.Create();
+
+                foreach (var m in eable)
+                {
+                    if (Caster.CanBeBeneficial(m, false))
+                    {
+                        targets.Enqueue(m);
+                    }
+                }
+
+                eable.Free();
 
                 if (Core.AOS)
                 {
                     var party = Party.Get(Caster);
 
-                    foreach (var m in targets)
+                    while (targets.Count > 0)
                     {
+                        var m = targets.Dequeue();
                         if (m == Caster || party?.Contains(m) == true)
                         {
                             Caster.DoBeneficial(m);
@@ -73,8 +84,9 @@ namespace Server.Spells.Fourth
                 {
                     var val = (int)(Caster.Skills.Magery.Value / 10.0 + 1);
 
-                    foreach (var m in targets)
+                    while (targets.Count > 0)
                     {
+                        var m = targets.Dequeue();
                         if (m.BeginAction<ArchProtectionSpell>())
                         {
                             Caster.DoBeneficial(m);
@@ -125,7 +137,6 @@ namespace Server.Spells.Fourth
                 }
 
                 Delay = TimeSpan.FromSeconds(time);
-                Priority = TimerPriority.OneSecond;
 
                 m_Owner = target;
             }

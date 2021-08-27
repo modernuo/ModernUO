@@ -84,7 +84,7 @@ namespace Server.Engines.Craft
 
         public override void InitCraftList()
         {
-            var index = -1;
+            int index;
 
             // Other Items
             if (Core.Expansion == Expansion.AOS || Core.Expansion == Expansion.SE)

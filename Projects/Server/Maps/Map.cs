@@ -54,7 +54,7 @@ namespace Server
 
         public static IEnumerable<NetState> SelectClients(Sector s, Rectangle2D bounds)
         {
-            return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile));
+            return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile.Location));
         }
 
         public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds) =>
@@ -73,18 +73,18 @@ namespace Server
                 eable = eable.Union(s.Items.Where(o => o?.Deleted == false && o.Parent == null));
             }
 
-            return eable.Where(bounds.Contains);
+            return eable.Where(o => bounds.Contains(o.Location));
         }
 
         public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
         {
-            return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
+            return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o.Location));
         }
 
         public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
         {
             return s.Items.OfType<T>()
-                .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o));
+                .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o.Location));
         }
 
         public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
@@ -435,14 +435,11 @@ namespace Server
 
         public int GetAverageZ(int x, int y)
         {
-            int z = 0, avg = 0, top = 0;
-
-            GetAverageZ(x, y, ref z, ref avg, ref top);
-
+            GetAverageZ(x, y, out _, out var avg, out _);
             return avg;
         }
 
-        public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
+        public void GetAverageZ(int x, int y, out int z, out int avg, out int top)
         {
             var zTop = Tiles.GetLandTile(x, y).Z;
             var zLeft = Tiles.GetLandTile(x, y + 1).Z;
@@ -556,8 +553,7 @@ namespace Server
             var landTile = Tiles.GetLandTile(x, y);
             var tiles = Tiles.GetStaticTiles(x, y, true);
 
-            int landZ = 0, landAvg = 0, landTop = 0;
-            GetAverageZ(x, y, ref landZ, ref landAvg, ref landTop);
+            GetAverageZ(x, y, out _, out var landAvg, out _);
 
             var items = AcquireFixItems(this, x, y);
 
@@ -796,7 +792,7 @@ namespace Server
                 for (var y = sect.Y - range; y <= sect.Y + range; ++y)
                 {
                     var check = GetRealSector(x, y);
-                    if (check != InvalidSector && check.Players.Count > 0)
+                    if (check != InvalidSector && check.Clients.Count > 0)
                     {
                         return true;
                     }
@@ -810,7 +806,7 @@ namespace Server
         {
             if (this != Internal)
             {
-                GetSector(m).OnClientChange(oldState, newState);
+                GetSector(m.Location).OnClientChange(oldState, newState);
             }
         }
 
@@ -818,7 +814,7 @@ namespace Server
         {
             if (this != Internal)
             {
-                GetSector(m).OnEnter(m);
+                GetSector(m.Location).OnEnter(m);
             }
         }
 
@@ -829,7 +825,7 @@ namespace Server
                 return;
             }
 
-            GetSector(item).OnEnter(item);
+            GetSector(item.Location).OnEnter(item);
 
             if (item is BaseMulti m)
             {
@@ -846,7 +842,7 @@ namespace Server
         {
             if (this != Internal)
             {
-                GetSector(m).OnLeave(m);
+                GetSector(m.Location).OnLeave(m);
             }
         }
 
@@ -857,7 +853,7 @@ namespace Server
                 return;
             }
 
-            GetSector(item).OnLeave(item);
+            GetSector(item.Location).OnLeave(item);
 
             if (item is BaseMulti m)
             {
@@ -1010,8 +1006,7 @@ namespace Server
             {
                 p = target.Location;
 
-                int low = 0, avg = 0, top = 0;
-                GetAverageZ(p.X, p.Y, ref low, ref avg, ref top);
+                GetAverageZ(p.X, p.Y, out _, out _, out var top);
 
                 p.Z = top + 1;
             }
@@ -1108,9 +1103,7 @@ namespace Server
             var hasSurface = false;
 
             var lt = Tiles.GetLandTile(x, y);
-            int lowZ = 0, avgZ = 0, topZ = 0;
-
-            GetAverageZ(x, y, ref lowZ, ref avgZ, ref topZ);
+            GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
             var landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
 
             if ((landFlags & TileFlag.Impassable) != 0 && avgZ > z && z + height > lowZ)
@@ -1199,7 +1192,7 @@ namespace Server
 
         public Sector GetSector(Point2D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
-        public Sector GetSector(IPoint2D p) => InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
+        // public Sector GetSector(IPoint2D p) => InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
 
         public Sector GetSector(int x, int y) => InternalGetSector(x >> SectorShift, y >> SectorShift);
 
@@ -1327,8 +1320,7 @@ namespace Server
                 var pointTop = point.m_Z + 1;
 
                 var landTile = Tiles.GetLandTile(point.X, point.Y);
-                int landZ = 0, landAvg = 0, landTop = 0;
-                GetAverageZ(point.m_X, point.m_Y, ref landZ, ref landAvg, ref landTop);
+                GetAverageZ(point.m_X, point.m_Y, out var landZ, out _, out var landTop);
 
                 if (landZ <= pointTop && landTop >= point.m_Z &&
                     (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > endTop || landTop < end.m_Z) &&
@@ -1357,7 +1349,14 @@ namespace Server
                 {
                     var eable = GetItemsInRange(point, 0);
 
-                    contains = !eable.Any(item => item.Visible);
+                    foreach (Item item in eable)
+                    {
+                        if (item.Visible)
+                        {
+                            contains = false;
+                            break;
+                        }
+                    }
 
                     eable.Free();
 

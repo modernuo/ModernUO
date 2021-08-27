@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class MidnightBracers : BoneArms
+    [Serializable(0, false)]
+    public partial class MidnightBracers : BoneArms
     {
         [Constructible]
         public MidnightBracers()
@@ -11,10 +12,6 @@ namespace Server.Items
             ArmorAttributes.MageArmor = 1;
         }
 
-        public MidnightBracers(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1061093; // Midnight Bracers
         public override int ArtifactRarity => 11;
 
@@ -22,24 +19,5 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                PhysicalBonus = 0;
-            }
-        }
     }
 }

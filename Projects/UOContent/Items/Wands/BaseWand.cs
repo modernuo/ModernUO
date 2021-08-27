@@ -21,11 +21,18 @@ namespace Server.Items
         ManaDraining
     }
 
-    public abstract class BaseWand : BaseBashing
+    [Serializable(1, false)]
+    public abstract partial class BaseWand : BaseBashing
     {
-        private int m_Charges;
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(0)]
+        private WandEffect _wandEffect;
 
-        private WandEffect m_WandEffect;
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(1)]
+        private int _charges;
 
         public BaseWand(WandEffect effect, int minCharges, int maxCharges) : base(
             Utility.RandomList(
@@ -37,15 +44,11 @@ namespace Server.Items
         )
         {
             Weight = 1.0;
-            Effect = effect;
-            Charges = Utility.RandomMinMax(minCharges, maxCharges);
+            _wandEffect = effect;
+            _charges = Utility.RandomMinMax(minCharges, maxCharges);
             Attributes.SpellChanneling = 1;
             Attributes.CastSpeed = -1;
             WeaponAttributes.MageWeapon = Utility.RandomMinMax(1, 10);
-        }
-
-        public BaseWand(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
@@ -67,33 +70,11 @@ namespace Server.Items
 
         public virtual TimeSpan GetUseDelay => TimeSpan.FromSeconds(4.0);
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public WandEffect Effect
-        {
-            get => m_WandEffect;
-            set
-            {
-                m_WandEffect = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Charges
-        {
-            get => m_Charges;
-            set
-            {
-                m_Charges = value;
-                InvalidateProperties();
-            }
-        }
-
         public void ConsumeCharge(Mobile from)
         {
             --Charges;
 
-            if (Charges == 0)
+            if (_charges == 0)
             {
                 from.SendLocalizedMessage(1019073); // This item is out of charges.
             }
@@ -104,12 +85,17 @@ namespace Server.Items
         public virtual void ApplyDelayTo(Mobile from)
         {
             from.BeginAction<BaseWand>();
-            Timer.DelayCall(GetUseDelay, ReleaseWandLock_Callback, from);
+            Timer.StartTimer(GetUseDelay,
+                () =>
+                {
+                    from.EndAction<BaseWand>();
+                    ReleaseWandLock_Callback(from);
+                }
+            );
         }
 
         public virtual void ReleaseWandLock_Callback(Mobile state)
         {
-            state.EndAction<BaseWand>();
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -122,7 +108,7 @@ namespace Server.Items
 
             if (Parent == from)
             {
-                if (Charges > 0)
+                if (_charges > 0)
                 {
                     OnWandUse(from);
                 }
@@ -137,72 +123,50 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write((int)m_WandEffect);
-            writer.Write(m_Charges);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_WandEffect = (WandEffect)reader.ReadInt();
-                        m_Charges = reader.ReadInt();
-
-                        break;
-                    }
-            }
+            _wandEffect = (WandEffect)reader.ReadInt();
+            _charges = reader.ReadInt();
         }
 
         public override void GetProperties(ObjectPropertyList list)
         {
             base.GetProperties(list);
 
-            switch (m_WandEffect)
+            switch (_wandEffect)
             {
                 case WandEffect.Clumsiness:
-                    list.Add(1017326, m_Charges.ToString());
+                    list.Add(1017326, _charges.ToString());
                     break; // clumsiness charges: ~1_val~
                 case WandEffect.Identification:
-                    list.Add(1017350, m_Charges.ToString());
+                    list.Add(1017350, _charges.ToString());
                     break; // identification charges: ~1_val~
                 case WandEffect.Healing:
-                    list.Add(1017329, m_Charges.ToString());
+                    list.Add(1017329, _charges.ToString());
                     break; // healing charges: ~1_val~
                 case WandEffect.Feeblemindedness:
-                    list.Add(1017327, m_Charges.ToString());
+                    list.Add(1017327, _charges.ToString());
                     break; // feeblemind charges: ~1_val~
                 case WandEffect.Weakness:
-                    list.Add(1017328, m_Charges.ToString());
+                    list.Add(1017328, _charges.ToString());
                     break; // weakness charges: ~1_val~
                 case WandEffect.MagicArrow:
-                    list.Add(1060492, m_Charges.ToString());
+                    list.Add(1060492, _charges.ToString());
                     break; // magic arrow charges: ~1_val~
                 case WandEffect.Harming:
-                    list.Add(1017334, m_Charges.ToString());
+                    list.Add(1017334, _charges.ToString());
                     break; // harm charges: ~1_val~
                 case WandEffect.Fireball:
-                    list.Add(1060487, m_Charges.ToString());
+                    list.Add(1060487, _charges.ToString());
                     break; // fireball charges: ~1_val~
                 case WandEffect.GreaterHealing:
-                    list.Add(1017330, m_Charges.ToString());
+                    list.Add(1017330, _charges.ToString());
                     break; // greater healing charges: ~1_val~
                 case WandEffect.Lightning:
-                    list.Add(1060491, m_Charges.ToString());
+                    list.Add(1060491, _charges.ToString());
                     break; // lightning charges: ~1_val~
                 case WandEffect.ManaDraining:
-                    list.Add(1017339, m_Charges.ToString());
+                    list.Add(1017339, _charges.ToString());
                     break; // mana drain charges: ~1_val~
             }
         }
@@ -229,7 +193,7 @@ namespace Server.Items
             }
             else
             {
-                var num = m_WandEffect switch
+                var num = _wandEffect switch
                 {
                     WandEffect.Clumsiness       => 3002011,
                     WandEffect.Identification   => 1044063,
@@ -247,7 +211,7 @@ namespace Server.Items
 
                 if (num > 0)
                 {
-                    attrs.Add(new EquipInfoAttribute(num, m_Charges));
+                    attrs.Add(new EquipInfoAttribute(num, _charges));
                 }
             }
 
@@ -287,7 +251,7 @@ namespace Server.Items
 
         public virtual void DoWandTarget(Mobile from, object o)
         {
-            if (Deleted || Charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
+            if (Deleted || _charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
             {
                 return;
             }

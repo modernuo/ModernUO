@@ -84,7 +84,7 @@ namespace Server.Network
             var length = 8;
             for (int i = 0; i < list.Count; i++)
             {
-                length += 5 + list[i].Description?.Length ?? 0;
+                length += 6 + list[i].Description?.Length ?? 0;
             }
 
             var writer = new SpanWriter(stackalloc byte[length]);
@@ -101,8 +101,8 @@ namespace Server.Network
 
                 var desc = bis.Description ?? "";
 
-                writer.Write((byte)desc.Length);
-                writer.WriteAscii(desc); // Doesn't look like it is used anymore
+                writer.Write((byte)(desc.Length + 1));
+                writer.WriteAsciiNull(desc);
             }
 
             ns.Send(writer.Span);

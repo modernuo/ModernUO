@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -27,7 +28,8 @@ namespace SerializationGenerator
             IFieldSymbol fieldSymbol,
             Accessibility getter,
             Accessibility? setter,
-            bool isVirtual
+            bool isVirtual,
+            ISymbol? parentFieldOrProperty
         )
         {
             var fieldName = fieldSymbol.Name;
@@ -43,6 +45,7 @@ namespace SerializationGenerator
                 );
 
             const string indent = "        ";
+            const string innerIndent = "                ";
             const string propertyIndent = "            ";
 
             var propertyAccessor = setter > getter ? setter : getter;
@@ -53,17 +56,18 @@ namespace SerializationGenerator
             // Getter
             source.GeneratePropertyGetterReturnsField(propertyIndent, fieldSymbol, getterAccessor);
 
-            if (setter != null)
+            if (setter != null && setter != Accessibility.NotApplicable)
             {
                 var setterAccessor = setter == propertyAccessor ? Accessibility.NotApplicable : setter;
 
+                var parentSymbol = parentFieldOrProperty?.Name ?? "this";
+
                 // Setter
                 source.GeneratePropertySetterStart(propertyIndent, false, setterAccessor.Value);
-                const string innerIndent = "                ";
                 source.AppendLine($"{innerIndent}if (value != {fieldName})");
                 source.AppendLine($"{innerIndent}{{");
                 source.AppendLine($"{innerIndent}    {fieldName} = value;");
-                source.AppendLine($"{innerIndent}    ((ISerializable)this).MarkDirty();");
+                source.AppendLine($"{innerIndent}    {parentSymbol}.MarkDirty();");
 
                 if (invalidatePropertiesAttribute != null)
                 {

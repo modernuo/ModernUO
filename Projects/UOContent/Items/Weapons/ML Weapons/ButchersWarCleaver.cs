@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class ButchersWarCleaver : WarCleaver
+    [Serializable(0)]
+    public partial class ButchersWarCleaver : WarCleaver
     {
         [Constructible]
         public ButchersWarCleaver()
-        {
-        }
-
-        public ButchersWarCleaver(Serial serial) : base(serial)
         {
         }
 
@@ -18,20 +15,6 @@ namespace Server.Items
             base.AppendChildNameProperties(list);
 
             list.Add(1072512); // Bovine Slayer
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

@@ -184,14 +184,14 @@ namespace Server.Network
 
         public static void PartyMessage_RemoveMember(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            PartyCommands.Handler?.OnRemove(state.Mobile, World.FindMobile(reader.ReadUInt32()));
+            PartyCommands.Handler?.OnRemove(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
         }
 
         public static void PartyMessage_PrivateMessage(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             PartyCommands.Handler?.OnPrivateMessage(
                 state.Mobile,
-                World.FindMobile(reader.ReadUInt32()),
+                World.FindMobile((Serial)reader.ReadUInt32()),
                 reader.ReadBigUniSafe()
             );
         }
@@ -208,12 +208,12 @@ namespace Server.Network
 
         public static void PartyMessage_Accept(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            PartyCommands.Handler?.OnAccept(state.Mobile, World.FindMobile(reader.ReadUInt32()));
+            PartyCommands.Handler?.OnAccept(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
         }
 
         public static void PartyMessage_Decline(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile(reader.ReadUInt32()));
+            PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
         }
 
         public static void Animate(NetState state, CircularBufferReader reader, ref int packetLength)
@@ -249,7 +249,7 @@ namespace Server.Network
                 return;
             }
 
-            Item spellbook = reader.ReadInt16() == 1 ? World.FindItem(reader.ReadUInt32()) : null;
+            Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
 
             var spellID = reader.ReadInt16() - 1;
             EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
@@ -317,7 +317,7 @@ namespace Server.Network
 
         public static void CloseStatus(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            Serial serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
         }
 
         public static void Language(NetState state, CircularBufferReader reader, ref int packetLength)
@@ -341,13 +341,13 @@ namespace Server.Network
 
             var from = state.Mobile;
 
-            Serial s = reader.ReadUInt32();
+            Serial s = (Serial)reader.ReadUInt32();
 
             if (s.IsMobile)
             {
                 var m = World.FindMobile(s);
 
-                if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
+                if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
                 {
                     m.SendPropertiesTo(from);
                 }
@@ -379,7 +379,7 @@ namespace Server.Network
 
             if (menu != null && from == menu.From)
             {
-                var entity = World.FindEntity(reader.ReadUInt32());
+                var entity = World.FindEntity((Serial)reader.ReadUInt32());
 
                 if (entity != null && entity == menu.Target && from.CanSee(entity))
                 {
@@ -423,7 +423,7 @@ namespace Server.Network
         public static void ContextMenuRequest(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var from = state.Mobile;
-            var target = World.FindEntity(reader.ReadUInt32());
+            var target = World.FindEntity((Serial)reader.ReadUInt32());
 
             if (from != null && target != null && from.Map == target.Map && from.CanSee(target))
             {
@@ -466,14 +466,14 @@ namespace Server.Network
 
             if (from.AccessLevel >= AccessLevel.Counselor || Core.TickCount - from.NextActionTime >= 0)
             {
-                var bandage = World.FindItem(reader.ReadUInt32());
+                var bandage = World.FindItem((Serial)reader.ReadUInt32());
 
                 if (bandage == null)
                 {
                     return;
                 }
 
-                var target = World.FindMobile(reader.ReadUInt32());
+                var target = World.FindMobile((Serial)reader.ReadUInt32());
 
                 if (target == null)
                 {
@@ -494,19 +494,19 @@ namespace Server.Network
         {
             var spellId = (short)(reader.ReadInt16() - 1); // zero based;
 
-            EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity(reader.ReadUInt32()), spellId);
+            EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
         }
 
         public static void TargetedSkillUse(NetState state, CircularBufferReader reader, ref int packetLength)
         {
             var skillId = reader.ReadInt16();
 
-            EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity(reader.ReadUInt32()), skillId);
+            EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
         }
 
         public static void TargetByResourceMacro(NetState state, CircularBufferReader reader, ref int packetLength)
         {
-            Serial serial = reader.ReadUInt32();
+            var serial = (Serial)reader.ReadUInt32();
 
             if (serial.IsItem)
             {

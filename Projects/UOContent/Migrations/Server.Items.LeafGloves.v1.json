@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "type": "Server.Items.LeafGloves",
+  "properties": [
+    {
+      "name": "CurArcaneCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "MaxArcaneCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}

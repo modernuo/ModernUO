@@ -4,8 +4,9 @@ using Server.Network;
 
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [FlippableAttribute(0x100A /*East*/, 0x100B /*South*/)]
-    public class ArcheryButte : AddonComponent
+    public partial class ArcheryButte : AddonComponent
     {
         private static readonly TimeSpan UseDelay = TimeSpan.FromSeconds(2.0);
 
@@ -14,19 +15,17 @@ namespace Server.Items
         [Constructible]
         public ArcheryButte(int itemID = 0x100A) : base(itemID)
         {
-            MinSkill = -25.0;
-            MaxSkill = +25.0;
+            _minSkill = -25.0;
+            _maxSkill = +25.0;
         }
 
-        public ArcheryButte(Serial serial) : base(serial)
-        {
-        }
+        [SerializableField(0)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private double _minSkill;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MinSkill { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MaxSkill { get; set; }
+        [SerializableField(1)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private double _maxSkill;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime LastUse { get; set; }
@@ -38,15 +37,17 @@ namespace Server.Items
             set => ItemID = value ? 0x100A : 0x100B;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Arrows { get; set; }
+        [SerializableField(2)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _arrows;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Bolts { get; set; }
+        [SerializableField(3)]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _bolts;
 
         public override void OnDoubleClick(Mobile from)
         {
-            if ((Arrows > 0 || Bolts > 0) && from.InRange(GetWorldLocation(), 1))
+            if ((_arrows > 0 || _bolts > 0) && from.InRange(GetWorldLocation(), 1))
             {
                 Gather(from);
             }
@@ -60,14 +61,14 @@ namespace Server.Items
         {
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500592); // You gather the arrows and bolts.
 
-            if (Arrows > 0)
+            if (_arrows > 0)
             {
-                from.AddToBackpack(new Arrow(Arrows));
+                from.AddToBackpack(new Arrow(_arrows));
             }
 
-            if (Bolts > 0)
+            if (_bolts > 0)
             {
-                from.AddToBackpack(new Bolt(Bolts));
+                from.AddToBackpack(new Bolt(_bolts));
             }
 
             Arrows = 0;
@@ -90,7 +91,7 @@ namespace Server.Items
 
         public void Fire(Mobile from)
         {
-            if (!(from.Weapon is BaseRanged bow))
+            if (from.Weapon is not BaseRanged bow)
             {
                 SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
                 return;
@@ -180,7 +181,7 @@ namespace Server.Items
 
             var se = GetEntryFor(from);
 
-            if (!from.CheckSkill(bow.Skill, MinSkill, MaxSkill))
+            if (!from.CheckSkill(bow.Skill, _minSkill, _maxSkill))
             {
                 from.PlaySound(bow.MissSound);
 
@@ -231,7 +232,7 @@ namespace Server.Items
                 splitScore = 5;
             }
 
-            var split = isKnown && (Arrows + Bolts) * 0.02 > Utility.RandomDouble();
+            var split = isKnown && (_arrows + _bolts) * 0.02 > Utility.RandomDouble();
 
             if (split)
             {
@@ -268,41 +269,13 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(MinSkill);
-            writer.Write(MaxSkill);
-            writer.Write(Arrows);
-            writer.Write(Bolts);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            if (_minSkill == 0.0 && _maxSkill == 30.0)
             {
-                case 0:
-                    {
-                        MinSkill = reader.ReadDouble();
-                        MaxSkill = reader.ReadDouble();
-                        Arrows = reader.ReadInt();
-                        Bolts = reader.ReadInt();
-
-                        if (MinSkill == 0.0 && MaxSkill == 30.0)
-                        {
-                            MinSkill = -25.0;
-                            MaxSkill = +25.0;
-                        }
-
-                        break;
-                    }
+                _minSkill = -25.0;
+                _maxSkill = +25.0;
             }
         }
 
@@ -320,7 +293,8 @@ namespace Server.Items
         }
     }
 
-    public class ArcheryButteAddon : BaseAddon
+    [Serializable(0, false)]
+    public partial class ArcheryButteAddon : BaseAddon
     {
         [Constructible]
         public ArcheryButteAddon()
@@ -328,53 +302,18 @@ namespace Server.Items
             AddComponent(new ArcheryButte(), 0, 0, 0);
         }
 
-        public ArcheryButteAddon(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddonDeed Deed => new ArcheryButteDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class ArcheryButteDeed : BaseAddonDeed
+    [Serializable(0, false)]
+    public partial class ArcheryButteDeed : BaseAddonDeed
     {
         [Constructible]
         public ArcheryButteDeed()
         {
         }
 
-        public ArcheryButteDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new ArcheryButteAddon();
         public override int LabelNumber => 1024106; // archery butte
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

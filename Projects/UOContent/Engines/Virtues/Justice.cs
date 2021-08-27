@@ -29,25 +29,10 @@ namespace Server
             return GetMapRegion(map, first.Location) == GetMapRegion(map, second.Location);
         }
 
-        public static int GetMapRegion(Map map, Point3D loc)
-        {
-            if (map == null || map.MapID >= 2)
-            {
-                return 0;
-            }
-
-            if (loc.X < 5120)
-            {
-                return 0;
-            }
-
-            if (loc.Y < 2304)
-            {
-                return 1;
-            }
-
-            return 2;
-        }
+        public static int GetMapRegion(Map map, Point3D loc) =>
+            map is not { MapID: < 2 } ? 0 :
+            loc.X < 5120 ? 0 :
+            loc.Y < 2304 ? 1 : 2;
 
         public static void OnVirtueUsed(Mobile from)
         {
@@ -56,7 +41,7 @@ namespace Server
                 return;
             }
 
-            if (!(from is PlayerMobile protector))
+            if (from is not PlayerMobile protector)
             {
                 return;
             }
@@ -186,13 +171,13 @@ namespace Server
 
             if (protector.BeginAction<JusticeVirtue>())
             {
-                Timer.DelayCall(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
+                Timer.StartTimer(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
             }
         }
 
         public static void CheckAtrophy(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }
@@ -240,9 +225,9 @@ namespace Server
                 20,
                 360,
                 25,
-                1049365,
+                1049365, // Another player is offering you their <a href="?ForceTopic88">protection</a>:
                 0x7FFF
-            ); // Another player is offering you their <a href="?ForceTopic88">protection</a>:
+            );
             AddLabel(90, 55, 1153, protector.Name);
 
             AddImage(50, 45, 9005);

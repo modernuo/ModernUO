@@ -3,19 +3,19 @@ using Server.Multis;
 
 namespace Server.Items
 {
-    public abstract class BaseAddonContainer : BaseContainer, IChoppable, IAddon
+    [Serializable(2, false)]
+    public abstract partial class BaseAddonContainer : BaseContainer, IChoppable, IAddon
     {
-        private CraftResource m_Resource;
+        [SerializableField(0, setter: "private")]
+        private List<AddonContainerComponent> _components;
+
+        private CraftResource _resource;
 
         public BaseAddonContainer(int itemID) : base(itemID)
         {
             AddonComponent.ApplyLightTo(this);
 
-            Components = new List<AddonContainerComponent>();
-        }
-
-        public BaseAddonContainer(Serial serial) : base(serial)
-        {
+            _components = new List<AddonContainerComponent>();
         }
 
         public override bool DisplayWeight => false;
@@ -41,18 +41,20 @@ namespace Server.Items
             }
         }
 
+        [SerializableField(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => m_Resource;
+            get => _resource;
             set
             {
-                if (m_Resource != value)
+                if (_resource != value)
                 {
-                    m_Resource = value;
-                    Hue = CraftResources.GetHue(m_Resource);
+                    _resource = value;
+                    Hue = CraftResources.GetHue(_resource);
 
                     InvalidateProperties();
+                    this.MarkDirty();
                 }
             }
         }
@@ -62,8 +64,6 @@ namespace Server.Items
         public virtual bool ShareHue => true;
         public virtual Point3D WallPosition => Point3D.Zero;
         public virtual BaseAddonContainerDeed Deed => null;
-
-        public List<AddonContainerComponent> Components { get; private set; }
 
         Item IAddon.Deed => Deed;
 
@@ -170,9 +170,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(m_Resource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                list.Add(CraftResources.GetLocalizationNumber(m_Resource));
+                list.Add(CraftResources.GetLocalizationNumber(_resource));
             }
         }
 
@@ -186,25 +186,16 @@ namespace Server.Items
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        // Handles v0 with old Enum -> Int casting
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Components);
-            writer.Write((int)m_Resource);
+            _components = reader.ReadEntityList<AddonContainerComponent>();
+            _resource = version == 1 ? reader.ReadEnum<CraftResource>() : (CraftResource)reader.ReadInt();
         }
 
-        public override void Deserialize(IGenericReader reader)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            Components = reader.ReadEntityList<AddonContainerComponent>();
-            m_Resource = (CraftResource)reader.ReadInt();
-
             AddonComponent.ApplyLightTo(this);
         }
 
@@ -223,7 +214,7 @@ namespace Server.Items
                 return;
             }
 
-            Components.Add(c);
+            this.Add(Components, c);
 
             c.Addon = this;
             c.Offset = new Point3D(x, y, z);
@@ -246,7 +237,7 @@ namespace Server.Items
                     return AddonFitResult.Blocked;
                 }
 
-                if (!BaseAddon.CheckHouse(from, p3D, map, c.ItemData.Height, ref house))
+                if (!BaseAddon.CheckHouse(from, p3D, map, c.ItemData.Height, out house))
                 {
                     return AddonFitResult.NotInHouse;
                 }
@@ -269,7 +260,7 @@ namespace Server.Items
                 return AddonFitResult.Blocked;
             }
 
-            if (!BaseAddon.CheckHouse(from, p3, map, ItemData.Height, ref house))
+            if (!BaseAddon.CheckHouse(from, p3, map, ItemData.Height, out house))
             {
                 return AddonFitResult.NotInHouse;
             }

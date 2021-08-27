@@ -47,18 +47,18 @@ namespace Server.Spells.Bushido
             {
                 var args = $"{RequiredSkill:0.#}\t{CastSkill.ToString()}\t ";
                 Caster.SendLocalizedMessage(
-                    1063013,
+                    1063013, // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
                     args
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                );
                 return false;
             }
 
             if (Caster.Mana < mana)
             {
                 Caster.SendLocalizedMessage(
-                    1060174,
+                    1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                     mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                );
                 return false;
             }
 
@@ -72,18 +72,18 @@ namespace Server.Spells.Bushido
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
                 Caster.SendLocalizedMessage(
-                    1070768,
+                    1070768, // You need ~1_SKILL_REQUIREMENT~ Bushido skill to perform that attack!
                     RequiredSkill.ToString("F1")
-                ); // You need ~1_SKILL_REQUIREMENT~ Bushido skill to perform that attack!
+                );
                 return false;
             }
 
             if (Caster.Mana < mana)
             {
                 Caster.SendLocalizedMessage(
-                    1060174,
+                    1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                     mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                );
                 return false;
             }
 
@@ -107,20 +107,9 @@ namespace Server.Spells.Bushido
 
         public virtual void OnCastSuccessful(Mobile caster)
         {
-            if (Evasion.IsEvading(caster))
-            {
-                Evasion.EndEvasion(caster);
-            }
-
-            if (Confidence.IsConfident(caster))
-            {
-                Confidence.EndConfidence(caster);
-            }
-
-            if (CounterAttack.IsCountering(caster))
-            {
-                CounterAttack.StopCountering(caster);
-            }
+            Evasion.EndEvasion(caster);
+            Confidence.EndConfidence(caster);
+            CounterAttack.StopCountering(caster);
 
             var spellID = SpellRegistry.GetRegistryNumber(this);
 

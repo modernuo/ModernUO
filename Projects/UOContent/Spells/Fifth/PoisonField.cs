@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -43,24 +44,7 @@ namespace Server.Spells.Fifth
                 var rx = (dx - dy) * 44;
                 var ry = (dx + dy) * 44;
 
-                bool eastToWest;
-
-                if (rx >= 0 && ry >= 0)
-                {
-                    eastToWest = false;
-                }
-                else if (rx >= 0)
-                {
-                    eastToWest = true;
-                }
-                else if (ry >= 0)
-                {
-                    eastToWest = true;
-                }
-                else
-                {
-                    eastToWest = false;
-                }
+                bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
                 Effects.PlaySound(new Point3D(p), Caster.Map, 0x20B);
 
@@ -169,24 +153,13 @@ namespace Server.Spells.Fifth
 
                 if (Core.AOS)
                 {
-                    var total = (m_Caster.Skills.Magery.Fixed + m_Caster.Skills.Poisoning.Fixed) / 2;
-
-                    if (total >= 1000)
+                    p = ((m_Caster.Skills.Magery.Fixed + m_Caster.Skills.Poisoning.Fixed) / 2) switch
                     {
-                        p = Poison.Deadly;
-                    }
-                    else if (total > 850)
-                    {
-                        p = Poison.Greater;
-                    }
-                    else if (total > 650)
-                    {
-                        p = Poison.Regular;
-                    }
-                    else
-                    {
-                        p = Poison.Lesser;
-                    }
+                        >= 1000 => Poison.Deadly,
+                        > 850   => Poison.Greater,
+                        > 650   => Poison.Regular,
+                        _       => Poison.Lesser
+                    };
                 }
                 else
                 {
@@ -220,7 +193,6 @@ namespace Server.Spells.Fifth
 
             private class InternalTimer : Timer
             {
-                private static readonly Queue<Mobile> m_Queue = new();
                 private readonly bool m_CanFit;
                 private readonly bool m_InLOS;
                 private readonly InternalItem m_Item;
@@ -233,8 +205,6 @@ namespace Server.Spells.Fifth
                     m_Item = item;
                     m_InLOS = inLOS;
                     m_CanFit = canFit;
-
-                    Priority = TimerPriority.FiftyMS;
                 }
 
                 protected override void OnTick()
@@ -289,20 +259,21 @@ namespace Server.Spells.Fifth
                                 )
                             );
 
+                            using var queue = PooledRefQueue<Mobile>.Create();
                             foreach (var m in eable)
                             {
                                 if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                     SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
                                 {
-                                    m_Queue.Enqueue(m);
+                                    queue.Enqueue(m);
                                 }
                             }
 
                             eable.Free();
 
-                            while (m_Queue.Count > 0)
+                            while (queue.Count > 0)
                             {
-                                var m = m_Queue.Dequeue();
+                                var m = queue.Dequeue();
 
                                 caster.DoHarmful(m);
 

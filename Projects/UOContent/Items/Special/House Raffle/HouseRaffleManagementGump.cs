@@ -160,7 +160,6 @@ namespace Server.Gumps
                 x += 150;
 
                 AddHtml(x, 140 + idx * 20, 60, 20, Color(Center("1"), color));
-                x += 60;
             }
         }
 

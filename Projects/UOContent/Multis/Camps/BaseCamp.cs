@@ -9,7 +9,7 @@ namespace Server.Multis
     {
         private TimeSpan m_DecayDelay;
         private DateTime m_DecayTime;
-        private Timer m_DecayTimer;
+        private Timer _decayTimer;
         private List<Item> m_Items;
         private List<Mobile> m_Mobiles;
 
@@ -20,7 +20,7 @@ namespace Server.Multis
             m_DecayDelay = TimeSpan.FromMinutes(30.0);
             RefreshDecay(true);
 
-            Timer.DelayCall(CheckAddComponents);
+            Timer.StartTimer(CheckAddComponents);
         }
 
         public BaseCamp(Serial serial) : base(serial)
@@ -55,6 +55,12 @@ namespace Server.Multis
         {
         }
 
+        public override void OnDelete()
+        {
+            _decayTimer?.Stop();
+            _decayTimer = null;
+        }
+
         public virtual void RefreshDecay(bool setDecayTime)
         {
             if (Deleted)
@@ -62,14 +68,13 @@ namespace Server.Multis
                 return;
             }
 
-            m_DecayTimer?.Stop();
-
             if (setDecayTime)
             {
                 m_DecayTime = Core.Now + DecayDelay;
             }
 
-            m_DecayTimer = Timer.DelayCall(DecayDelay, Delete);
+            _decayTimer?.Stop();
+            _decayTimer = Timer.DelayCall(DecayDelay, Delete);
         }
 
         public virtual void AddItem(Item item, int xOffset, int yOffset, int zOffset)

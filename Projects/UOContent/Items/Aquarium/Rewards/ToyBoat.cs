@@ -1,14 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [Flippable(0x14F3, 0x14F4)]
-    public class ToyBoat : Item
+    public partial class ToyBoat : Item
     {
         [Constructible]
         public ToyBoat() : base(0x14F4)
-        {
-        }
-
-        public ToyBoat(Serial serial) : base(serial)
         {
         }
 
@@ -20,20 +17,6 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             list.Add(1073634); // An aquarium decoration
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

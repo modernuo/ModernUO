@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class TanBook : BaseBook
+    [Serializable(0, false)]
+    public partial class TanBook : BaseBook
     {
         [Constructible]
         public TanBook() : base(0xFF0)
@@ -26,24 +27,6 @@ namespace Server.Items
         // Intended for defined books only
         public TanBook(bool writable) : base(0xFF0, writable)
         {
-        }
-
-        public TanBook(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
         }
     }
 }

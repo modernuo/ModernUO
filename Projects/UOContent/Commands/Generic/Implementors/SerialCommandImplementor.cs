@@ -15,7 +15,7 @@ namespace Server.Commands.Generic
         {
             if (e.Length >= 2)
             {
-                Serial serial = e.GetUInt32(0);
+                Serial serial = (Serial)e.GetUInt32(0);
 
                 object obj = null;
 

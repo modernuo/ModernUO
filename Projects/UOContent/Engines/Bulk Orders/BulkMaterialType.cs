@@ -35,7 +35,7 @@ namespace Server.Engines.BulkOrders
                 return BulkGenericType.Iron;
             }
 
-            return itemType == null || itemType.IsSubclassOf(typeof(BaseArmor)) || itemType.IsSubclassOf(typeof(BaseShoes))
+            return itemType?.IsSubclassOf(typeof(BaseArmor)) != false || itemType.IsSubclassOf(typeof(BaseShoes))
                 ? BulkGenericType.Leather
                 : BulkGenericType.Cloth;
         }

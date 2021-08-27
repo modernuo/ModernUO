@@ -281,18 +281,11 @@ namespace Server
 
     public sealed class AosAttributes : BaseAttributes
     {
-        public AosAttributes(Item owner)
-            : base(owner)
+        public AosAttributes(Item owner) : base(owner)
         {
         }
 
-        public AosAttributes(Item owner, AosAttributes other)
-            : base(owner, other)
-        {
-        }
-
-        public AosAttributes(Item owner, IGenericReader reader)
-            : base(owner, reader)
+        public AosAttributes(Item owner, AosAttributes other) : base(owner, other)
         {
         }
 
@@ -637,18 +630,11 @@ namespace Server
 
     public sealed class AosWeaponAttributes : BaseAttributes
     {
-        public AosWeaponAttributes(Item owner)
-            : base(owner)
+        public AosWeaponAttributes(Item owner) : base(owner)
         {
         }
 
-        public AosWeaponAttributes(Item owner, AosWeaponAttributes other)
-            : base(owner, other)
-        {
-        }
-
-        public AosWeaponAttributes(Item owner, IGenericReader reader)
-            : base(owner, reader)
+        public AosWeaponAttributes(Item owner, AosWeaponAttributes other) : base(owner, other)
         {
         }
 
@@ -858,7 +844,7 @@ namespace Server
                 }
                 else if (obj is ElvenGlasses glasses)
                 {
-                    var attrs = glasses.WeaponAttributes;
+                    var attrs = glasses._weaponAttributes;
 
                     if (attrs != null)
                     {
@@ -884,18 +870,11 @@ namespace Server
 
     public sealed class AosArmorAttributes : BaseAttributes
     {
-        public AosArmorAttributes(Item owner)
-            : base(owner)
+        public AosArmorAttributes(Item owner) : base(owner)
         {
         }
 
-        public AosArmorAttributes(Item owner, IGenericReader reader)
-            : base(owner, reader)
-        {
-        }
-
-        public AosArmorAttributes(Item owner, AosArmorAttributes other)
-            : base(owner, other)
+        public AosArmorAttributes(Item owner, AosArmorAttributes other) : base(owner, other)
         {
         }
 
@@ -977,18 +956,11 @@ namespace Server
     {
         private List<SkillMod> m_Mods;
 
-        public AosSkillBonuses(Item owner)
-            : base(owner)
+        public AosSkillBonuses(Item owner) : base(owner)
         {
         }
 
-        public AosSkillBonuses(Item owner, IGenericReader reader)
-            : base(owner, reader)
-        {
-        }
-
-        public AosSkillBonuses(Item owner, AosSkillBonuses other)
-            : base(owner, other)
+        public AosSkillBonuses(Item owner, AosSkillBonuses other) : base(owner, other)
         {
         }
 
@@ -1230,30 +1202,14 @@ namespace Server
                 }
             }
 
-            if (!m.CanBeginAction<PolymorphSpell>() && m.Skills.Magery.Value < 66.1)
+            if (m.Skills.Magery.Value < 66.1)
             {
-                m.BodyMod = 0;
-                m.HueMod = -1;
-                m.NameMod = null;
-                m.EndAction<PolymorphSpell>();
-                BaseArmor.ValidateMobile(m);
-                BaseClothing.ValidateMobile(m);
+                PolymorphSpell.EndPolymorph(m);
             }
 
-            if (!m.CanBeginAction<IncognitoSpell>() && m.Skills.Magery.Value < 38.1)
+            if (m.Skills.Magery.Value < 38.1)
             {
-                if (m is PlayerMobile mobile)
-                {
-                    mobile.SetHairMods(-1, -1);
-                }
-
-                m.BodyMod = 0;
-                m.HueMod = -1;
-                m.NameMod = null;
-                m.EndAction<IncognitoSpell>();
-                BaseArmor.ValidateMobile(m);
-                BaseClothing.ValidateMobile(m);
-                BuffInfo.RemoveBuff(m, BuffIcon.Incognito);
+                IncognitoSpell.EndIncognito(m);
             }
         }
     }
@@ -1272,18 +1228,11 @@ namespace Server
 
     public sealed class AosElementAttributes : BaseAttributes
     {
-        public AosElementAttributes(Item owner)
-            : base(owner)
+        public AosElementAttributes(Item owner) : base(owner)
         {
         }
 
-        public AosElementAttributes(Item owner, AosElementAttributes other)
-            : base(owner, other)
-        {
-        }
-
-        public AosElementAttributes(Item owner, IGenericReader reader)
-            : base(owner, reader)
+        public AosElementAttributes(Item owner, AosElementAttributes other) : base(owner, other)
         {
         }
 
@@ -1346,76 +1295,36 @@ namespace Server
     }
 
     [PropertyObject]
-    public abstract class BaseAttributes
+    [EmbeddedSerializable(0)]
+    public abstract partial class BaseAttributes
     {
-        private static readonly int[] m_Empty = Array.Empty<int>();
-        private uint m_Names;
-        private int[] m_Values;
+        [SerializableField(0, setter: "private")]
+        private uint _names;
+
+        [EncodedInt]
+        [SerializableField(1, setter: "private")]
+        private int[] _values;
 
         public BaseAttributes(Item owner)
         {
-            Owner = owner;
-            m_Values = m_Empty;
+            _owner = owner;
+            _values = Array.Empty<int>();
         }
 
         public BaseAttributes(Item owner, BaseAttributes other)
         {
-            Owner = owner;
-            m_Values = new int[other.m_Values.Length];
-            other.m_Values.CopyTo(m_Values, 0);
-            m_Names = other.m_Names;
+            _owner = owner;
+            _values = new int[other._values.Length];
+            other._values.CopyTo(_values, 0);
+            _names = other._names;
         }
 
-        public BaseAttributes(Item owner, IGenericReader reader)
-        {
-            Owner = owner;
+        public bool IsEmpty => _names == 0;
 
-            int version = reader.ReadByte();
+        [SerializableParent]
+        private readonly Item _owner;
 
-            switch (version)
-            {
-                case 1:
-                    {
-                        m_Names = reader.ReadUInt();
-                        m_Values = new int[reader.ReadEncodedInt()];
-
-                        for (var i = 0; i < m_Values.Length; ++i)
-                        {
-                            m_Values[i] = reader.ReadEncodedInt();
-                        }
-
-                        break;
-                    }
-                case 0:
-                    {
-                        m_Names = reader.ReadUInt();
-                        m_Values = new int[reader.ReadInt()];
-
-                        for (var i = 0; i < m_Values.Length; ++i)
-                        {
-                            m_Values[i] = reader.ReadInt();
-                        }
-
-                        break;
-                    }
-            }
-        }
-
-        public bool IsEmpty => m_Names == 0;
-        public Item Owner { get; }
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.Write((byte)1); // version;
-
-            writer.Write(m_Names);
-            writer.WriteEncodedInt(m_Values.Length);
-
-            for (var i = 0; i < m_Values.Length; ++i)
-            {
-                writer.WriteEncodedInt(m_Values[i]);
-            }
-        }
+        public Item Owner => _owner;
 
         public int GetValue(int bitmask)
         {
@@ -1426,16 +1335,16 @@ namespace Server
 
             var mask = (uint)bitmask;
 
-            if ((m_Names & mask) == 0)
+            if ((_names & mask) == 0)
             {
                 return 0;
             }
 
             var index = GetIndex(mask);
 
-            if (index >= 0 && index < m_Values.Length)
+            if (index >= 0 && index < _values.Length)
             {
-                return m_Values[index];
+                return _values[index];
             }
 
             return 0;
@@ -1466,65 +1375,65 @@ namespace Server
 
             if (value != 0)
             {
-                if ((m_Names & mask) != 0)
+                if ((_names & mask) != 0)
                 {
                     var index = GetIndex(mask);
 
-                    if (index >= 0 && index < m_Values.Length)
+                    if (index >= 0 && index < _values.Length)
                     {
-                        m_Values[index] = value;
+                        _values[index] = value;
                     }
                 }
                 else
                 {
                     var index = GetIndex(mask);
 
-                    if (index >= 0 && index <= m_Values.Length)
+                    if (index >= 0 && index <= _values.Length)
                     {
-                        var old = m_Values;
-                        m_Values = new int[old.Length + 1];
+                        var old = _values;
+                        _values = new int[old.Length + 1];
 
                         for (var i = 0; i < index; ++i)
                         {
-                            m_Values[i] = old[i];
+                            _values[i] = old[i];
                         }
 
-                        m_Values[index] = value;
+                        _values[index] = value;
 
                         for (var i = index; i < old.Length; ++i)
                         {
-                            m_Values[i + 1] = old[i];
+                            _values[i + 1] = old[i];
                         }
 
-                        m_Names |= mask;
+                        _names |= mask;
                     }
                 }
             }
-            else if ((m_Names & mask) != 0)
+            else if ((_names & mask) != 0)
             {
                 var index = GetIndex(mask);
 
-                if (index >= 0 && index < m_Values.Length)
+                if (index >= 0 && index < _values.Length)
                 {
-                    m_Names &= ~mask;
+                    _names &= ~mask;
 
-                    if (m_Values.Length == 1)
+                    if (_values.Length == 1)
                     {
-                        m_Values = m_Empty;
+                        _values = Array.Empty<int>();
                     }
                     else
                     {
-                        var old = m_Values;
-                        m_Values = new int[old.Length - 1];
+                        var old = _values;
+                        _values = new int[old.Length - 1];
 
                         for (var i = 0; i < index; ++i)
                         {
-                            m_Values[i] = old[i];
+                            _values[i] = old[i];
                         }
 
                         for (var i = index + 1; i < old.Length; ++i)
                         {
-                            m_Values[i - 1] = old[i];
+                            _values[i - 1] = old[i];
                         }
                     }
                 }
@@ -1571,7 +1480,7 @@ namespace Server
         private int GetIndex(uint mask)
         {
             var index = 0;
-            var ourNames = m_Names;
+            var ourNames = _names;
             uint currentBit = 1;
 
             while (currentBit != mask)

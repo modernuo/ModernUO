@@ -67,11 +67,11 @@ namespace Server.Multis
         private DateTime m_DecayTime;
 
         private Direction m_Facing;
-        private Timer m_MoveTimer;
+        private TimerExecutionToken _moveTimerToken;
 
         private string m_ShipName;
 
-        private Timer m_TurnTimer;
+        private TimerExecutionToken _turnTimerToken;
 
         public BaseBoat() : base(0x0)
         {
@@ -125,7 +125,7 @@ namespace Server.Multis
         public Direction Moving { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsMoving => m_MoveTimer != null;
+        public bool IsMoving => _moveTimerToken.Running;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int Speed { get; set; }
@@ -239,7 +239,7 @@ namespace Server.Multis
 
         public override bool AllowsRelativeDrop => true;
 
-        public static BaseBoat FindBoatAt(IPoint2D loc, Map map)
+        public static BaseBoat FindBoatAt(Point3D loc, Map map)
         {
             var sector = map.GetSector(loc);
 
@@ -453,10 +453,8 @@ namespace Server.Multis
             Hold?.Delete();
             PPlank?.Delete();
             SPlank?.Delete();
-            m_TurnTimer?.Stop();
-            m_TurnTimer = null;
-            m_MoveTimer?.Stop();
-            m_MoveTimer = null;
+            _turnTimerToken.Cancel();
+            _moveTimerToken.Cancel();
 
             Boats.Remove(this);
         }
@@ -1087,10 +1085,8 @@ namespace Server.Multis
             Speed = FastSpeed;
             Order = single ? BoatOrder.Single : BoatOrder.Course;
 
-            m_MoveTimer?.Stop();
-
-            m_MoveTimer = new MoveTimer(this, FastInterval, false);
-            m_MoveTimer.Start();
+            _moveTimerToken.Cancel();
+            Timer.StartTimer(FastInterval, FastInterval, StopBoat, out _moveTimerToken);
 
             if (message)
             {
@@ -1098,6 +1094,14 @@ namespace Server.Multis
             }
 
             return true;
+        }
+
+        private void StopBoat()
+        {
+            if (!DoMovement(true))
+            {
+                StopMove(false);
+            }
         }
 
         public override void OnSpeech(SpeechEventArgs e)
@@ -1267,16 +1271,13 @@ namespace Server.Multis
                 return false;
             }
 
-            if (m_MoveTimer != null && Order != BoatOrder.Move)
+            if (Order != BoatOrder.Move)
             {
-                m_MoveTimer.Stop();
-                m_MoveTimer = null;
+                _moveTimerToken.Cancel();
             }
 
-            m_TurnTimer?.Stop();
-
-            m_TurnTimer = Timer.DelayCall(TimeSpan.FromMilliseconds(500), Turn, offset);
-            m_TurnTimer.Start();
+            _turnTimerToken.Cancel();
+            Timer.StartTimer(TimeSpan.FromMilliseconds(500), () => Turn(offset), out _turnTimerToken);
 
             if (message)
             {
@@ -1286,15 +1287,9 @@ namespace Server.Multis
             return true;
         }
 
-        public void Turn(int offset) => Turn(offset, true);
-
-        public bool Turn(int offset, bool message)
+        public bool Turn(int offset, bool message = true)
         {
-            if (m_TurnTimer != null)
-            {
-                m_TurnTimer.Stop();
-                m_TurnTimer = null;
-            }
+            _turnTimerToken.Cancel();
 
             if (CheckDecay())
             {
@@ -1346,10 +1341,8 @@ namespace Server.Multis
             m_ClientSpeed = clientSpeed;
             Order = BoatOrder.Move;
 
-            m_MoveTimer?.Stop();
-
-            m_MoveTimer = new MoveTimer(this, interval, single);
-            m_MoveTimer.Start();
+            _moveTimerToken.Cancel();
+            Timer.StartTimer(interval, StopBoat, out _moveTimerToken);
 
             return true;
         }
@@ -1361,7 +1354,7 @@ namespace Server.Multis
                 return false;
             }
 
-            if (m_MoveTimer == null)
+            if (!_moveTimerToken.Running)
             {
                 if (message)
                 {
@@ -1374,8 +1367,7 @@ namespace Server.Multis
             Moving = Direction.North;
             Speed = 0;
             m_ClientSpeed = 0;
-            m_MoveTimer.Stop();
-            m_MoveTimer = null;
+            _moveTimerToken.Cancel();
 
             if (message)
             {
@@ -1520,7 +1512,7 @@ namespace Server.Multis
             var adx = dx.Abs();
             var ady = dy.Abs();
 
-            var dir = Utility.GetDirection(this, new Point2D(x, y));
+            var dir = Utility.GetDirection(Location.X, Location.Y, x, y);
             var iDir = (int)dir;
 
             // Compute the maximum distance we can travel without going too far away
@@ -1624,12 +1616,12 @@ namespace Server.Multis
 
                 if (dir == Left || dir == BackwardLeft || dir == Backward)
                 {
-                    return Turn(-2, true);
+                    return Turn(-2);
                 }
 
                 if (dir == Right || dir == BackwardRight)
                 {
-                    return Turn(2, true);
+                    return Turn(2);
                 }
 
                 speed = Math.Min(Speed, maxSpeed);
@@ -2057,8 +2049,6 @@ namespace Server.Multis
             public DecayTimer(BaseBoat boat) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(5.0))
             {
                 m_Boat = boat;
-
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()
@@ -2075,25 +2065,6 @@ namespace Server.Multis
                     m_Boat.TillerMan?.Say(1007168 + m_Count);
 
                     ++m_Count;
-                }
-            }
-        }
-
-        private class MoveTimer : Timer
-        {
-            private readonly BaseBoat m_Boat;
-
-            public MoveTimer(BaseBoat boat, TimeSpan interval, bool single) : base(interval, interval, single ? 1 : 0)
-            {
-                m_Boat = boat;
-                Priority = TimerPriority.TwentyFiveMS;
-            }
-
-            protected override void OnTick()
-            {
-                if (!m_Boat.DoMovement(true))
-                {
-                    m_Boat.StopMove(false);
                 }
             }
         }

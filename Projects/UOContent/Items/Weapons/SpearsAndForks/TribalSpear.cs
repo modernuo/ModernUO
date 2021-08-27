@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0xF62, 0xF63)]
-    public class TribalSpear : BaseSpear
+    [Serializable(0, false)]
+    public partial class TribalSpear : BaseSpear
     {
         [Constructible]
         public TribalSpear() : base(0xF62)
         {
             Weight = 7.0;
             Hue = 837;
-        }
-
-        public TribalSpear(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
@@ -34,19 +31,5 @@ namespace Server.Items
         public override int VirtualDamageBonus => 25;
 
         public override string DefaultName => "a tribal spear";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -22,7 +22,7 @@ namespace Server.Spells.Second
         {
         }
 
-        public static Dictionary<Mobile, double> Registry { get; } = new();
+        public static Dictionary<Mobile, int> Registry { get; } = new();
 
         public override SpellCircle Circle => SpellCircle.Second;
 
@@ -48,6 +48,7 @@ namespace Server.Spells.Second
             return false;
         }
 
+        // AOS+ only
         public static void Toggle(Mobile caster, Mobile target)
         {
             /* Players under the protection spell effect can no longer have their spells "disrupted" when hit.
@@ -89,7 +90,7 @@ namespace Server.Spells.Second
                 );
 
                 m_Table[target] = mods;
-                Registry[target] = 100.0;
+                Registry[target] = 1000; // 100.0% protection from disruption
 
                 target.AddResistanceMod(mods.Item1);
                 target.AddSkillMod(mods.Item2);
@@ -141,12 +142,11 @@ namespace Server.Spells.Second
                 {
                     if (Caster.BeginAction<DefensiveSpell>())
                     {
-                        double value = (int)(Caster.Skills.EvalInt.Value +
-                                             Caster.Skills.Meditation.Value +
-                                             Caster.Skills.Inscribe.Value);
-                        value /= 4;
+                        int value = (Caster.Skills.EvalInt.Fixed +
+                                     Caster.Skills.Meditation.Fixed +
+                                     Caster.Skills.Inscribe.Fixed) / 4;
 
-                        Registry.Add(Caster, Math.Clamp(value, 0.0, 75.0));
+                        Registry.Add(Caster, Math.Clamp(value, 0, 750)); // 75.0% protection from disruption
                         new InternalTimer(Caster).Start();
 
                         Caster.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
@@ -172,7 +172,6 @@ namespace Server.Spells.Second
 
                 m_Caster = caster;
                 Delay = TimeSpan.FromSeconds(val);
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

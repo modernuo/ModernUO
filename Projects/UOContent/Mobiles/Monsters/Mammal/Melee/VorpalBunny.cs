@@ -64,7 +64,7 @@ namespace Server.Mobiles
 
         public virtual void DelayBeginTunnel()
         {
-            Timer.DelayCall(TimeSpan.FromMinutes(3.0), BeginTunnel);
+            Timer.StartTimer(TimeSpan.FromMinutes(3.0), BeginTunnel);
         }
 
         public virtual void BeginTunnel()
@@ -80,7 +80,7 @@ namespace Server.Mobiles
             Say("* The bunny begins to dig a tunnel back to its underground lair *");
             PlaySound(0x247);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(5.0), Delete);
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
         }
 
         public override int GetAttackSound() => 0xC9;
@@ -112,7 +112,7 @@ namespace Server.Mobiles
                 Movable = false;
                 Hue = 1;
 
-                Timer.DelayCall(TimeSpan.FromSeconds(40.0), Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(40.0), Delete);
             }
 
             public BunnyHole(Serial serial) : base(serial)

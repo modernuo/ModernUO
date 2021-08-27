@@ -84,10 +84,13 @@ namespace Server.Spells
         public virtual void OnCasterHurt()
         {
             // Confirm: Monsters and pets cannot be disturbed.
-            if (Caster.Player && IsCasting && ProtectionSpell.Registry.TryGetValue(Caster, out var d) &&
-                d <= Utility.RandomDouble() * 100.0)
+            if (Caster.Player && IsCasting)
             {
-                Disturb(DisturbType.Hurt, false, true);
+                var hasProtection = ProtectionSpell.Registry.TryGetValue(Caster, out var d);
+                if (!hasProtection || d < 1000 && d < Utility.Random(1000))
+                {
+                    Disturb(DisturbType.Hurt, false, true);
+                }
             }
         }
 
@@ -704,7 +707,7 @@ namespace Server.Spells
             {
                 DoFizzle();
             }
-            else if (Scroll != null && !(Scroll is Runebook) &&
+            else if (Scroll != null && Scroll is not Runebook &&
                      (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand baseWand &&
                          (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
             {
@@ -860,8 +863,6 @@ namespace Server.Spells
             public AnimTimer(Spell spell, int count) : base(TimeSpan.Zero, AnimateDelay, count)
             {
                 m_Spell = spell;
-
-                Priority = TimerPriority.FiftyMS;
             }
 
             protected override void OnTick()
@@ -898,8 +899,6 @@ namespace Server.Spells
             public CastTimer(Spell spell, TimeSpan castDelay) : base(castDelay)
             {
                 m_Spell = spell;
-
-                Priority = TimerPriority.TwentyFiveMS;
             }
 
             protected override void OnTick()

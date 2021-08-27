@@ -15,10 +15,10 @@ namespace UOContent.Tests
         [InlineData(0x1001u)]
         public void TestBeginHouseCustomization(uint serial)
         {
-            var expected = new BeginHouseCustomization(serial).Compile();
+            var expected = new BeginHouseCustomization((Serial)serial).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendBeginHouseCustomization(serial);
+            ns.SendBeginHouseCustomization((Serial)serial);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
@@ -28,10 +28,10 @@ namespace UOContent.Tests
         [InlineData(0x1001u)]
         public void TestEndHouseCustomization(uint serial)
         {
-            var expected = new EndHouseCustomization(serial).Compile();
+            var expected = new EndHouseCustomization((Serial)serial).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendEndHouseCustomization(serial);
+            ns.SendEndHouseCustomization((Serial)serial);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
@@ -42,10 +42,10 @@ namespace UOContent.Tests
         [InlineData(0x1001u, 100)]
         public void TestDesignStateGeneral(uint serial, int revision)
         {
-            var expected = new DesignStateGeneral(serial, revision).Compile();
+            var expected = new DesignStateGeneral((Serial)serial, revision).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendDesignStateGeneral(serial, revision);
+            ns.SendDesignStateGeneral((Serial)serial, revision);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
@@ -54,7 +54,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestHouseDesignStateDetailed()
         {
-            Serial serial = 0x40000001;
+            Serial serial = (Serial)0x40000001;
             var revision = 10;
             var tiles = new MultiTileEntry[250];
             for (var i = 0; i < tiles.Length; i++)

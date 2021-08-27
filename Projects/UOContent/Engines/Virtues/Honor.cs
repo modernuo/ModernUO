@@ -24,7 +24,7 @@ namespace Server
             }
         }
 
-        private static int GetHonorDuration(PlayerMobile from)
+        private static int GetHonorDuration(Mobile from)
         {
             return VirtueHelper.GetLevel(from, VirtueName.Honor) switch
             {
@@ -56,9 +56,9 @@ namespace Server
                 var remainingMinutes = (int)Math.Ceiling(remainingTime.TotalMinutes);
 
                 pm.SendLocalizedMessage(
-                    1063240,
+                    1063240, // You must wait ~1_HONOR_WAIT~ minutes before embracing honor again
                     remainingMinutes.ToString()
-                ); // You must wait ~1_HONOR_WAIT~ minutes before embracing honor again
+                );
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace Server
             pm.HonorActive = true;
             pm.SendLocalizedMessage(1063235); // You embrace your honor
 
-            Timer.DelayCall(
+            Timer.StartTimer(
                 TimeSpan.FromSeconds(duration),
                 () =>
                 {
@@ -130,7 +130,7 @@ namespace Server
                 return;
             }
 
-            if (target.Body.IsHuman && (!(target is BaseCreature cret) || !cret.AlwaysAttackable && !cret.AlwaysMurderer))
+            if (target.Body.IsHuman && (target is not BaseCreature cret || !cret.AlwaysAttackable && !cret.AlwaysMurderer))
             {
                 if (reg?.IsDisabled() != true)
                 {
@@ -143,7 +143,7 @@ namespace Server
                 else
                 {
                     source.SendLocalizedMessage(1001018); // You cannot perform negative acts
-                    return;                               // cannot honor in trammel town on blue
+                    return; // cannot honor in trammel town on blue
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Server
 
             source.SentHonorContext?.Cancel();
 
-            new HonorContext(source, target);
+            _ = new HonorContext(source, target);
 
             source.Direction = source.GetDirectionTo(target);
 
@@ -171,7 +171,7 @@ namespace Server
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (!(from is PlayerMobile pm))
+                if (from is not PlayerMobile pm)
                 {
                     return;
                 }
@@ -227,7 +227,7 @@ namespace Server
             m_Timer.Start();
             source.m_hontime = Core.Now + TimeSpan.FromMinutes(40);
 
-            Timer.DelayCall(
+            Timer.StartTimer(
                 TimeSpan.FromMinutes(40),
                 () =>
                 {

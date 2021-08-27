@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -31,12 +32,15 @@ namespace SerializationGenerator
             int version,
             bool encodedVersion,
             ImmutableArray<SerializableMetadata> migrations,
-            ImmutableArray<SerializableProperty> properties
+            ImmutableArray<SerializableProperty> properties,
+            ISymbol parentFieldOrProperty,
+            SortedDictionary<int, SerializableFieldSaveFlagMethods> serializableFieldSaveFlagMethodsDictionary
         )
         {
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
 
             source.GenerateMethodStart(
+                "        ",
                 "Deserialize",
                 Accessibility.Public,
                 isOverride,
@@ -45,6 +49,7 @@ namespace SerializationGenerator
             );
 
             const string indent = "            ";
+            const string innerIndent = $"{indent}    ";
 
             if (isOverride)
             {
@@ -52,11 +57,33 @@ namespace SerializationGenerator
                 source.AppendLine();
             }
 
+            var afterDeserialization = classSymbol
+                .GetMembers()
+                .OfType<IMethodSymbol>()
+                .Select(
+                    m =>
+                    {
+                        if (!m.ReturnsVoid || m.Parameters.Length != 0)
+                        {
+                            return (m, null);
+                        }
+
+                        return (m, m.GetAttributes()
+                            .FirstOrDefault(
+                                attr => SymbolEqualityComparer.Default.Equals(
+                                    attr.AttributeClass,
+                                    compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
+                                )
+                            ));
+                    }
+                ).Where(m => m.Item2 != null).ToList();
+
             // Version
             source.AppendLine($"{indent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
 
             if (version > 0)
             {
+                var parent = parentFieldOrProperty?.Name ?? "this";
                 var nextVersion = 0;
 
                 for (var i = 0; i < migrations.Length; i++)
@@ -70,8 +97,9 @@ namespace SerializationGenerator
                     source.AppendLine();
                     source.AppendLine($"{indent}if (version == {migrationVersion})");
                     source.AppendLine($"{indent}{{");
-                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader));");
-                    source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader, this));");
+                    source.AppendLine($"{indent}    {parent}.MarkDirty();");
+                    source.GenerateAfterDeserialization($"{indent}    ", afterDeserialization);
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
@@ -82,45 +110,89 @@ namespace SerializationGenerator
                     source.AppendLine($"{indent}if (version < _version)");
                     source.AppendLine($"{indent}{{");
                     source.AppendLine($"{indent}    Deserialize(reader, version);");
-                    source.AppendLine($"{indent}    ((Server.ISerializable)this).MarkDirty();");
+                    source.AppendLine($"{indent}    {parent}.MarkDirty();");
+                    source.GenerateAfterDeserialization($"{indent}    ", afterDeserialization);
                     source.AppendLine($"{indent}    return;");
                     source.AppendLine($"{indent}}}");
                 }
             }
 
+            if (serializableFieldSaveFlagMethodsDictionary.Count > 0)
+            {
+                source.AppendLine();
+                source.AppendLine($"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();");
+            }
+
             foreach (var property in properties)
             {
-                source.AppendLine();
-                SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
-                    source,
-                    indent,
-                    property
-                );
+                var rule = SerializableMigrationRulesEngine.Rules[property.Rule];
+
+
+                if (serializableFieldSaveFlagMethodsDictionary.TryGetValue(
+                    property.Order,
+                    out var serializableFieldSaveFlagMethods
+                ))
+                {
+                    source.AppendLine();
+                    // Special case
+                    if (property.Type == "bool")
+                    {
+                        source.AppendLine($"{indent}{property.Name} = (saveFlags & SaveFlag.{property.Name}) != 0;");
+                    }
+                    else
+                    {
+                        source.AppendLine($"{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
+                        rule.GenerateDeserializationMethod(
+                            source,
+                            innerIndent,
+                            property,
+                            parentFieldOrProperty?.Name ?? "this"
+                        );
+                        (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, innerIndent, property, compilation, classSymbol);
+
+                        if (serializableFieldSaveFlagMethods.GetFieldDefaultValue != null)
+                        {
+                            source.AppendLine($"{indent}}}\n{indent}else\n{indent}{{");
+                            source.AppendLine(
+                                $"{indent}    {property.Name} = {serializableFieldSaveFlagMethods.GetFieldDefaultValue.Name}();"
+                            );
+                        }
+
+                        source.AppendLine($"{indent}}}");
+                    }
+                }
+                else
+                {
+                    source.AppendLine();
+                    rule.GenerateDeserializationMethod(
+                        source,
+                        indent,
+                        property,
+                        parentFieldOrProperty?.Name ?? "this"
+                    );
+                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
+                }
             }
 
-            var afterDeserialization = classSymbol
-                .GetMembers()
-                .OfType<IMethodSymbol>()
-                .FirstOrDefault(
-                    m =>
-                        m.ReturnsVoid &&
-                        m.Parameters.Length == 0 &&
-                        m.GetAttributes()
-                            .Any(
-                                attr => SymbolEqualityComparer.Default.Equals(
-                                    attr.AttributeClass,
-                                    compilation.GetTypeByMetadataName(SymbolMetadata.AFTERDESERIALIZATION_ATTRIBUTE)
-                                )
-                            )
-                );
+            source.GenerateAfterDeserialization($"{indent}", afterDeserialization);
+            source.GenerateMethodEnd("        ");
+        }
 
-            if (afterDeserialization != null)
+        private static void GenerateAfterDeserialization(
+            this StringBuilder source, string indent, IList<(IMethodSymbol, AttributeData?)> afterDeserialization
+        )
+        {
+            foreach (var (method, attr) in afterDeserialization)
             {
-                source.AppendLine();
-                source.AppendLine($"{indent}Timer.DelayCall({afterDeserialization.Name});");
+                if ((bool)attr.ConstructorArguments[0].Value!)
+                {
+                    source.AppendLine($"{indent}{method.Name}();");
+                }
+                else
+                {
+                    source.AppendLine($"{indent}Timer.DelayCall({method.Name});");
+                }
             }
-
-            source.GenerateMethodEnd();
         }
     }
 }

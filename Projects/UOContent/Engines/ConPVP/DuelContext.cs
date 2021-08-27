@@ -30,9 +30,10 @@ namespace Server.Engines.ConPVP
 
         private readonly List<Item> m_Walls = new();
 
-        private Timer m_AutoTieTimer;
-
-        private Timer m_Countdown;
+        private TimerExecutionToken _autoTieTimerToken;
+        private TimerExecutionToken _countdownTimerToken;
+        private TimerExecutionToken _SdWarnTimerToken;
+        private TimerExecutionToken _SdActivateTimerToken;
 
         public EventGame m_EventGame;
         private Map m_GateFacet;
@@ -42,7 +43,6 @@ namespace Server.Engines.ConPVP
 
         public Arena m_OverrideArena;
 
-        private Timer m_SDWarnTimer, m_SDActivateTimer;
         public Tournament m_Tournament;
 
         private bool m_Yielding;
@@ -109,7 +109,7 @@ namespace Server.Engines.ConPVP
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
         {
-            Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
+            Timer.StartTimer(ts, () => DelayBounce_Callback(mob, corpse));
         }
 
         public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move) =>
@@ -766,7 +766,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            EndAutoTie();
+            _autoTieTimerToken.Cancel();
             StopSDTimers();
 
             Finished = true;
@@ -844,7 +844,7 @@ namespace Server.Engines.ConPVP
 
             m_EventGame?.OnStop();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(9.0), UnregisterRematch);
+            Timer.StartTimer(TimeSpan.FromSeconds(9.0), UnregisterRematch);
         }
 
         public void Award(Mobile us, Mobile them, bool won)
@@ -1057,23 +1057,20 @@ namespace Server.Engines.ConPVP
 
         public void StartCountdown(int count, CountdownCallback cb)
         {
-            cb(count);
-            m_Countdown = Timer.DelayCall(
-                TimeSpan.FromSeconds(1.0),
+            Timer.StartTimer(
                 TimeSpan.FromSeconds(1.0),
                 count,
-                () => Countdown_Callback(--count, cb)
+                () => Countdown_Callback(cb),
+                out _countdownTimerToken
             );
         }
 
-        public void StopCountdown()
-        {
-            m_Countdown?.Stop();
-            m_Countdown = null;
-        }
+        public void StopCountdown() => _countdownTimerToken.Cancel();
 
-        private void Countdown_Callback(int count, CountdownCallback cb)
+        private void Countdown_Callback(CountdownCallback cb)
         {
+            var count = _countdownTimerToken.RemainingCount;
+
             if (count == 0)
             {
                 StopCountdown();
@@ -1084,24 +1081,17 @@ namespace Server.Engines.ConPVP
 
         public void StopSDTimers()
         {
-            m_SDWarnTimer?.Stop();
-
-            m_SDWarnTimer = null;
-
-            m_SDActivateTimer?.Stop();
-
-            m_SDActivateTimer = null;
+            _SdWarnTimerToken.Cancel();
+            _SdActivateTimerToken.Cancel();
         }
 
         public void StartSuddenDeath(TimeSpan timeUntilActive)
         {
-            m_SDWarnTimer?.Stop();
+            _SdWarnTimerToken.Cancel();
+            Timer.StartTimer(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath, out _SdWarnTimerToken);
 
-            m_SDWarnTimer = Timer.DelayCall(TimeSpan.FromMinutes(timeUntilActive.TotalMinutes * 0.9), WarnSuddenDeath);
-
-            m_SDActivateTimer?.Stop();
-
-            m_SDActivateTimer = Timer.DelayCall(timeUntilActive, ActivateSuddenDeath);
+            _SdActivateTimerToken.Cancel();
+            Timer.StartTimer(timeUntilActive, ActivateSuddenDeath, out _SdActivateTimerToken);
         }
 
         public void WarnSuddenDeath()
@@ -1127,9 +1117,7 @@ namespace Server.Engines.ConPVP
 
             m_Tournament?.Alert(Arena, "Sudden death will be active soon!");
 
-            m_SDWarnTimer?.Stop();
-
-            m_SDWarnTimer = null;
+            _SdWarnTimerToken.Cancel();
         }
 
         public static bool CheckSuddenDeath(Mobile mob) => mob is PlayerMobile pm && pm.DuelPlayer?.Eliminated == false &&
@@ -1163,32 +1151,22 @@ namespace Server.Engines.ConPVP
 
             IsSuddenDeath = true;
 
-            m_SDActivateTimer?.Stop();
-
-            m_SDActivateTimer = null;
+            _SdActivateTimerToken.Cancel();
         }
 
         public void BeginAutoTie()
         {
-            m_AutoTieTimer?.Stop();
-
             var ts = m_Tournament == null || m_Tournament.TourneyType == TourneyType.Standard
                 ? AutoTieDelay
                 : TimeSpan.FromMinutes(90.0);
 
-            m_AutoTieTimer = Timer.DelayCall(ts, InvokeAutoTie);
-        }
-
-        public void EndAutoTie()
-        {
-            m_AutoTieTimer?.Stop();
-
-            m_AutoTieTimer = null;
+            _autoTieTimerToken.Cancel();
+            Timer.StartTimer(ts, InvokeAutoTie, out _autoTieTimerToken);
         }
 
         public void InvokeAutoTie()
         {
-            m_AutoTieTimer = null;
+            _autoTieTimerToken.Cancel();
 
             if (!Started || Finished)
             {
@@ -1258,7 +1236,7 @@ namespace Server.Engines.ConPVP
 
             m_Tournament?.HandleTie(Arena, m_Match, remaining);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(10.0), Unregister);
+            Timer.StartTimer(TimeSpan.FromSeconds(10.0), Unregister);
         }
 
         public static void Initialize()
@@ -1640,9 +1618,7 @@ namespace Server.Engines.ConPVP
                         }
                         else
                         {
-                            pm.DuelContext.m_Countdown?.Stop();
-                            pm.DuelContext.m_Countdown = null;
-
+                            pm.DuelContext.StopCountdown();
                             pm.DuelContext.StartedReadyCountdown = false;
                             p.Broadcast(0x22, null, "{0} has yielded.", "You have yielded.");
 
@@ -1924,24 +1900,7 @@ namespace Server.Engines.ConPVP
             var rx = dx - dy;
             var ry = dx + dy;
 
-            bool eastToWest;
-
-            if (rx >= 0 && ry >= 0)
-            {
-                eastToWest = false;
-            }
-            else if (rx >= 0)
-            {
-                eastToWest = true;
-            }
-            else if (ry >= 0)
-            {
-                eastToWest = true;
-            }
-            else
-            {
-                eastToWest = false;
-            }
+            bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
             Effects.PlaySound(wall, Arena.Facet, 0x1F6);
 
@@ -2794,7 +2753,7 @@ namespace Server.Engines.ConPVP
                 TitleColor = 0x7800;
                 TitleNumber = 1062051; // Gate Warning
 
-                Timer.DelayCall(TimeSpan.FromSeconds(10.0), Delete);
+                Timer.StartTimer(TimeSpan.FromSeconds(10.0), Delete);
             }
 
             public ArenaMoongate(Serial serial) : base(serial)

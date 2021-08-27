@@ -119,12 +119,12 @@ namespace Server.Misc
         {
             var r = m.Region;
 
-            if (r.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(m, m.Map) != null)
+            if (r.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(m.Location, m.Map) != null)
             {
                 return false;
             }
-            // TODO: a CanReach of something check as opposed to above?
 
+            // TODO: a CanReach of something check as opposed to above?
             if (r.IsPartOf("Yomotsu Mines") || r.IsPartOf("Fan Dancer's Dojo"))
             {
                 return true;
@@ -331,7 +331,7 @@ namespace Server.Gumps
         public ItemTileButtonInfo(Item i) : base(
             i.ItemID,
             i.Hue,
-            i.Name == null || i.Name.Length <= 0 ? (TextDefinition)i.LabelNumber : (TextDefinition)i.Name
+            i.Name == null || i.Name.Length <= 0 ? i.LabelNumber : i.Name
         ) =>
             Item = i;
 

@@ -1,13 +1,10 @@
 namespace Server.Items
 {
-    public class LeatherJingasa : BaseArmor
+    [Serializable(0, false)]
+    public partial class LeatherJingasa : BaseArmor
     {
         [Constructible]
         public LeatherJingasa() : base(0x2776) => Weight = 3.0;
-
-        public LeatherJingasa(Serial serial) : base(serial)
-        {
-        }
 
         public override int BasePhysicalResistance => 4;
         public override int BaseFireResistance => 3;
@@ -27,17 +24,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

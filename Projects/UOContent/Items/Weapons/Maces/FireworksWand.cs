@@ -2,39 +2,28 @@ using System;
 
 namespace Server.Items
 {
-    public class FireworksWand : MagicWand
+    [Serializable(0, false)]
+    public partial class FireworksWand : MagicWand
     {
-        private int m_Charges;
+        [SerializableField(0)]
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        private int _charges;
 
         [Constructible]
         public FireworksWand(int charges = 100)
         {
-            m_Charges = charges;
+            Charges = charges;
             LootType = LootType.Blessed;
         }
 
-        public FireworksWand(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1041424; // a fireworks wand
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Charges
-        {
-            get => m_Charges;
-            set
-            {
-                m_Charges = value;
-                InvalidateProperties();
-            }
-        }
 
         public override void AddNameProperties(ObjectPropertyList list)
         {
             base.AddNameProperties(list);
 
-            list.Add(1060741, m_Charges.ToString()); // charges: ~1_val~
+            list.Add(1060741, _charges.ToString()); // charges: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -83,37 +72,20 @@ namespace Server.Items
                 0
             );
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), FinishLaunch, endLoc, map);
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => FinishLaunch(endLoc, map));
         }
 
         private static void FinishLaunch(Point3D endLoc, Map map)
         {
-            var hue = Utility.Random(40);
-
-            if (hue < 8)
+            var hue = Utility.Random(40) switch
             {
-                hue = 0x66D;
-            }
-            else if (hue < 10)
-            {
-                hue = 0x482;
-            }
-            else if (hue < 12)
-            {
-                hue = 0x47E;
-            }
-            else if (hue < 16)
-            {
-                hue = 0x480;
-            }
-            else if (hue < 20)
-            {
-                hue = 0x47F;
-            }
-            else
-            {
-                hue = 0;
-            }
+                < 8  => 0x66D,
+                < 10 => 0x482,
+                < 12 => 0x47E,
+                < 16 => 0x480,
+                < 20 => 0x47F,
+                _    => 0
+            };
 
             if (Utility.RandomBool())
             {
@@ -124,31 +96,6 @@ namespace Server.Items
 
             Effects.PlaySound(endLoc, map, Utility.Random(0x11B, 4));
             Effects.SendLocationEffect(endLoc, map, 0x373A + 0x10 * Utility.Random(4), 16, 10, hue, renderMode);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Charges);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Charges = reader.ReadInt();
-                        break;
-                    }
-            }
         }
     }
 }

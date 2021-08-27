@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SerializationGenerator;
@@ -67,6 +66,7 @@ namespace SerializationSchemaGenerator
                     };
 
                     var serializableTypes = syntaxReceiver.SerializableList;
+                    var embeddedSerializableTypes = syntaxReceiver.EmbeddedSerializableList;
 
                     foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.ClassAndFields)
                     {
@@ -74,9 +74,25 @@ namespace SerializationSchemaGenerator
                             classSymbol,
                             attributeData,
                             migrationPath,
+                            false,
                             jsonOptions,
                             fieldsList.ToImmutableArray(),
-                            serializableTypes
+                            serializableTypes,
+                            embeddedSerializableTypes
+                        );
+                    }
+
+                    foreach (var (classSymbol, (attributeData, fieldsList)) in syntaxReceiver.EmbeddedClassAndFields)
+                    {
+                        var source = compilation.GenerateSerializationPartialClass(
+                            classSymbol,
+                            attributeData,
+                            migrationPath,
+                            true,
+                            jsonOptions,
+                            fieldsList.ToImmutableArray(),
+                            serializableTypes,
+                            embeddedSerializableTypes
                         );
                     }
                 }

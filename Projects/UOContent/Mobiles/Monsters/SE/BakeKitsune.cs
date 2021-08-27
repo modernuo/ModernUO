@@ -9,7 +9,7 @@ namespace Server.Mobiles
     {
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
-        private Timer m_DisguiseTimer;
+        private TimerExecutionToken _disguiseTimerToken;
 
         [Constructible]
         public BakeKitsune() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -76,9 +76,9 @@ namespace Server.Mobiles
 
         public override void OnCombatantChange()
         {
-            if (Combatant == null && !IsBodyMod && !Controlled && m_DisguiseTimer == null && Utility.RandomBool())
+            if (Combatant == null && !IsBodyMod && !Controlled && !_disguiseTimerToken.Running && Utility.RandomBool())
             {
-                m_DisguiseTimer = Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(15, 30)), Disguise);
+                Timer.StartTimer(TimeSpan.FromSeconds(Utility.RandomMinMax(15, 30)), Disguise, out _disguiseTimerToken);
             }
         }
 
@@ -151,7 +151,7 @@ namespace Server.Mobiles
                 SetResistance(ResistanceType.Energy, 40, 60);
             }
 
-            Timer.DelayCall(RemoveDisguise);
+            Timer.StartTimer(RemoveDisguise, out _disguiseTimerToken);
         }
 
         public void Disguise()
@@ -202,11 +202,14 @@ namespace Server.Mobiles
 
             AddItem(new Robe(Utility.RandomNondyedHue()));
 
-            m_DisguiseTimer = Timer.DelayCall(TimeSpan.FromSeconds(75), RemoveDisguise);
+            _disguiseTimerToken.Cancel();
+            Timer.StartTimer(TimeSpan.FromSeconds(75), RemoveDisguise, out _disguiseTimerToken);
         }
 
         public void RemoveDisguise()
         {
+            _disguiseTimerToken.Cancel();
+
             if (!IsBodyMod)
             {
                 return;
@@ -223,8 +226,6 @@ namespace Server.Mobiles
 
             DeleteItemOnLayer(Layer.OuterTorso);
             DeleteItemOnLayer(Layer.Shoes);
-
-            m_DisguiseTimer = null;
         }
 
         public void DeleteItemOnLayer(Layer layer)
@@ -242,7 +243,6 @@ namespace Server.Mobiles
             {
                 m_Mobile = m;
                 m_From = from;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

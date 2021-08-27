@@ -110,7 +110,11 @@ namespace Server.Engines.Spawners
             {
                 m_Count = value;
 
-                if (m_Timer != null && (!IsFull && !m_Timer.Running || IsFull && m_Timer.Running))
+                if (IsFull)
+                {
+                    m_Timer?.Stop();
+                }
+                else if (m_Timer?.Running != true)
                 {
                     DoTimer();
                 }
@@ -188,7 +192,7 @@ namespace Server.Engines.Spawners
         [CommandProperty(AccessLevel.Developer)]
         public TimeSpan NextSpawn
         {
-            get => m_Running && m_Timer?.Running == true ? End - Core.Now : TimeSpan.FromSeconds(0);
+            get => m_Running && m_Timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
             set
             {
                 Start();
@@ -372,11 +376,8 @@ namespace Server.Engines.Spawners
 
         public void Stop()
         {
-            if (m_Running)
-            {
-                m_Timer?.Stop();
-                m_Running = false;
-            }
+            m_Timer?.Stop();
+            m_Running = false;
         }
 
         public void Defrag()
@@ -1006,12 +1007,7 @@ namespace Server.Engines.Spawners
                         m_HomeRange = reader.ReadInt();
                         m_Running = reader.ReadBool();
 
-                        var ts = TimeSpan.Zero;
-
-                        if (m_Running)
-                        {
-                            ts = reader.ReadDeltaTime() - Core.Now;
-                        }
+                        var ts = m_Running ? reader.ReadDeltaTime() - Core.Now : TimeSpan.Zero;
 
                         if (version < 7)
                         {
@@ -1086,12 +1082,7 @@ namespace Server.Engines.Spawners
         {
             private readonly BaseSpawner m_Spawner;
 
-            public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay)
-            {
-                Priority = spawner.IsFull ? TimerPriority.FiveSeconds : TimerPriority.OneSecond;
-
-                m_Spawner = spawner;
-            }
+            public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay) => m_Spawner = spawner;
 
             protected override void OnTick()
             {

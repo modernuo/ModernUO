@@ -96,7 +96,7 @@ namespace Server.Engines.Doom
         private static readonly int[] ms2 = { 0x13F, 0x14B };
         private static readonly int[] cs1 = { 0x244 };
         private static readonly int[] exp = { 0x307 };
-        private Timer l_Timer;
+        private TimerExecutionToken _resetTimerToken;
         private LampRoomBox m_Box;
         private Region m_LampRoom;
 
@@ -123,7 +123,7 @@ namespace Server.Engines.Doom
             m_Tiles = new List<LeverPuzzleRegion>();
             for (; i < 9; i++)
             {
-                m_Tiles.Add(new LeverPuzzleRegion(this, TA[i]));
+                m_Tiles.Add(new LeverPuzzleRegion(TA[i]));
             }
 
             m_Teles = new List<Item>();
@@ -331,15 +331,8 @@ namespace Server.Engines.Doom
 
         public virtual void KillTimers()
         {
-            if (l_Timer?.Running == true)
-            {
-                l_Timer.Stop();
-            }
-
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
+            _resetTimerToken.Cancel();
+            m_Timer?.Stop();
         }
 
         public virtual void RemoveSuccessful()
@@ -357,7 +350,7 @@ namespace Server.Engines.Doom
 
             if ((TheirKey = (ushort)(code | (TheirKey <<= 4))) < 0x0FFF)
             {
-                l_Timer = Timer.DelayCall(TimeSpan.FromSeconds(30.0), ResetPuzzle);
+                Timer.StartTimer(TimeSpan.FromSeconds(30.0), ResetPuzzle, out _resetTimerToken);
                 return;
             }
 
@@ -400,7 +393,7 @@ namespace Server.Engines.Doom
                     {
                         if ((player = GetOccupant(i)) != null)
                         {
-                            new RockTimer(player, this).Start();
+                            new RockTimer(player).Start();
                         }
                     }
                 }
@@ -570,7 +563,7 @@ namespace Server.Engines.Doom
             m_Tiles = new List<LeverPuzzleRegion>();
             for (var i = 4; i < 9; i++)
             {
-                m_Tiles.Add(new LeverPuzzleRegion(this, TA[i]));
+                m_Tiles.Add(new LeverPuzzleRegion(TA[i]));
             }
 
             m_LampRoom = new LampRoomRegion(this);
@@ -584,14 +577,12 @@ namespace Server.Engines.Doom
         {
             private readonly Mobile m_Player;
             private int Count;
-            private LeverPuzzleController m_Controller;
 
-            public RockTimer(Mobile player, LeverPuzzleController controller)
+            public RockTimer(Mobile player)
                 : base(TimeSpan.Zero, TimeSpan.FromSeconds(.25))
             {
                 Count = 0;
                 m_Player = player;
-                m_Controller = controller;
             }
 
             private int Rock() => 0x1363 + Utility.Random(0, 11);

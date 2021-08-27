@@ -12,7 +12,7 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            Timer.DelayCall(TimeSpan.FromSeconds(2.5), Run);
+            Timer.StartTimer(TimeSpan.FromSeconds(2.5), Run);
         }
 
         public static void Run()
@@ -76,7 +76,7 @@ namespace Server.Misc
 
                     continue;
                 }
-                else if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair)
+                else if (item.Layer is Layer.Hair or Layer.FacialHair)
                 {
                     if (item.RootParent is Mobile rootMobile)
                     {
@@ -159,36 +159,13 @@ namespace Server.Misc
                 return false;
             }
 
-            if (item is ICommodity || item is BaseBoat
-                                   || item is Fish || item is BigFish || item is Food || item is CookableFood
-                                   || item is SpecialFishingNet || item is BaseMagicFish
-                                   || item is Shoes || item is Sandals
-                                   || item is Boots || item is ThighBoots
-                                   || item is TreasureMap || item is MessageInABottle
-                                   || item is BaseArmor || item is BaseWeapon
-                                   || item is BaseClothing
-                                   || item is BaseJewel && Core.AOS || item is SkullPole
-                                   || item is EvilIdolSkull
-                                   || item is MonsterStatuette
-                                   || item is Pier
-                                   || item is ArtifactLargeVase
-                                   || item is ArtifactVase
-                                   || item is MinotaurStatueDeed
-                                   || item is SwampTile
-                                   || item is WallBlood
-                                   || item is TatteredAncientMummyWrapping
-                                   || item is LavaTile
-                                   || item is DemonSkull
-                                   || item is Web
-                                   || item is WaterTile
-                                   || item is WindSpirit
-                                   || item is DirtPatch
-                                   || item is Futon)
-            {
-                return true;
-            }
-
-            return false;
+            return item is BaseJewel && Core.AOS ||
+                   item is ICommodity or BaseBoat or Fish or BigFish or Food or CookableFood or SpecialFishingNet or
+                       BaseMagicFish or Shoes or Sandals or Boots or ThighBoots or TreasureMap or MessageInABottle or
+                       BaseArmor or BaseWeapon or BaseClothing or SkullPole or EvilIdolSkull or MonsterStatuette or Pier or
+                       ArtifactLargeVase or ArtifactVase or MinotaurStatueDeed or SwampTile or WallBlood or
+                       TatteredAncientMummyWrapping or LavaTile or DemonSkull or Web or WaterTile or WindSpirit or DirtPatch
+                       or Futon;
         }
     }
 }

@@ -29,20 +29,19 @@ namespace Server.Mobiles
                         20,
                         0x1ED0,
                         0,
-                        new object[] { 500 }
+                        new object[] { 500 } // 500 charges
                     )
-                ); // 500 charges
-                Add(
-                    new GenericBuyInfo(
+                );
+                Add(new GenericBuyInfo(
                         "1060740",
                         typeof(BroadcastCrystal),
                         131,
                         20,
                         0x1ED0,
                         0,
-                        new object[] { 1000 }
+                        new object[] { 1000 } // 1000 charges
                     )
-                ); // 1000 charges
+                );
                 Add(
                     new GenericBuyInfo(
                         "1060740",
@@ -51,9 +50,9 @@ namespace Server.Mobiles
                         20,
                         0x1ED0,
                         0,
-                        new object[] { 2000 }
+                        new object[] { 2000 } // 2000 charges
                     )
-                ); // 2000 charges
+                );
 
                 Add(new GenericBuyInfo("1060740", typeof(ReceiverCrystal), 6, 20, 0x1ED0, 0));
 

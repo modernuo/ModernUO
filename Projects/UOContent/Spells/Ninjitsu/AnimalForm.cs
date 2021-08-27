@@ -486,9 +486,9 @@ namespace Server.Spells.Ninjitsu
                 if (mana > m_Caster.Mana)
                 {
                     m_Caster.SendLocalizedMessage(
-                        1060174,
+                        1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                         mana.ToString()
-                    ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                    );
                 }
                 else if (m_Caster is PlayerMobile mobile && mobile.MountBlockReason != BlockMountType.None)
                 {
@@ -552,8 +552,6 @@ namespace Server.Spells.Ninjitsu
             m_Body = body;
             m_Hue = hue;
             m_Counter = 0;
-
-            Priority = TimerPriority.FiftyMS;
         }
 
         protected override void OnTick()
@@ -562,51 +560,50 @@ namespace Server.Spells.Ninjitsu
             {
                 AnimalForm.RemoveContext(m_Mobile, true);
                 Stop();
+                return;
             }
-            else
+
+            if (m_Body == 0x115) // Cu Sidhe
             {
-                if (m_Body == 0x115) // Cu Sidhe
+                if (m_Counter++ >= 8)
                 {
-                    if (m_Counter++ >= 8)
+                    if (m_Mobile.Hits < m_Mobile.HitsMax && m_Mobile.Backpack != null)
                     {
-                        if (m_Mobile.Hits < m_Mobile.HitsMax && m_Mobile.Backpack != null)
+                        var b = m_Mobile.Backpack.FindItemByType<Bandage>();
+
+                        if (b != null)
                         {
-                            var b = m_Mobile.Backpack.FindItemByType<Bandage>();
-
-                            if (b != null)
-                            {
-                                m_Mobile.Hits += Utility.RandomMinMax(20, 50);
-                                b.Consume();
-                            }
+                            m_Mobile.Hits += Utility.RandomMinMax(20, 50);
+                            b.Consume();
                         }
-
-                        m_Counter = 0;
                     }
+
+                    m_Counter = 0;
                 }
-                else if (m_Body == 0x114) // Reptalon
+            }
+            else if (m_Body == 0x114) // Reptalon
+            {
+                if (m_Mobile.Combatant != null && m_Mobile.Combatant != m_LastTarget)
                 {
-                    if (m_Mobile.Combatant != null && m_Mobile.Combatant != m_LastTarget)
+                    m_Counter = 1;
+                    m_LastTarget = m_Mobile.Combatant;
+                }
+
+                if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
+                    m_Counter-- <= 0)
+                {
+                    if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&
+                        m_LastTarget.InRange(m_Mobile.Location, BaseCreature.DefaultRangePerception) &&
+                        m_Mobile.InLOS(m_LastTarget))
                     {
-                        m_Counter = 1;
-                        m_LastTarget = m_Mobile.Combatant;
+                        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_LastTarget);
+                        m_Mobile.Freeze(TimeSpan.FromSeconds(1));
+                        m_Mobile.PlaySound(0x16A);
+
+                        StartTimer(TimeSpan.FromSeconds(1.3), () => BreathEffect_Callback(m_LastTarget));
                     }
 
-                    if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
-                        m_Counter-- <= 0)
-                    {
-                        if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&
-                            m_LastTarget.InRange(m_Mobile.Location, BaseCreature.DefaultRangePerception) &&
-                            m_Mobile.InLOS(m_LastTarget))
-                        {
-                            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_LastTarget);
-                            m_Mobile.Freeze(TimeSpan.FromSeconds(1));
-                            m_Mobile.PlaySound(0x16A);
-
-                            DelayCall(TimeSpan.FromSeconds(1.3), BreathEffect_Callback, m_LastTarget);
-                        }
-
-                        m_Counter = Math.Min((int)m_Mobile.GetDistanceToSqrt(m_LastTarget), 10);
-                    }
+                    m_Counter = Math.Min((int)m_Mobile.GetDistanceToSqrt(m_LastTarget), 10);
                 }
             }
         }
@@ -619,7 +616,7 @@ namespace Server.Spells.Ninjitsu
                 m_Mobile.PlaySound(0x227);
                 Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0);
 
-                DelayCall(TimeSpan.FromSeconds(1), BreathDamage_Callback, target);
+                StartTimer(TimeSpan.FromSeconds(1), () => BreathDamage_Callback(target));
             }
         }
 

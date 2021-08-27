@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class PhantomStaff : WildStaff
+    [Serializable(0)]
+    public partial class PhantomStaff : WildStaff
     {
         [Constructible]
         public PhantomStaff()
@@ -12,10 +13,6 @@ namespace Server.Items
             Attributes.WeaponDamage = 60;
         }
 
-        public PhantomStaff(Serial serial) : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1072919; // Phantom Staff
 
         public override void GetDamageTypes(
@@ -25,20 +22,6 @@ namespace Server.Items
         {
             phys = fire = nrgy = chaos = direct = 0;
             cold = pois = 50;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }

@@ -1,5 +1,4 @@
 {
   "version": 0,
-  "type": "Server.Items.CupidStatue",
-  "properties": []
+  "type": "Server.Items.CupidStatue"
 }

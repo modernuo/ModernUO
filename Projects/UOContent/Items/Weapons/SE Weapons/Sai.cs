@@ -1,17 +1,14 @@
 namespace Server.Items
 {
     [Flippable(0x27AF, 0x27FA)]
-    public class Sai : BaseKnife
+    [Serializable(0, false)]
+    public partial class Sai : BaseKnife
     {
         [Constructible]
         public Sai() : base(0x27AF)
         {
             Weight = 7.0;
             Layer = Layer.TwoHanded;
-        }
-
-        public Sai(Serial serial) : base(serial)
-        {
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Block;
@@ -37,19 +34,5 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Fencing;
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

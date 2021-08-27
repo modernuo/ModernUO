@@ -26,7 +26,7 @@ namespace Server.Engines.Quests.Naturalist
             {
                 var nest = m_CurrentNest;
 
-                if ((from.Map == Map.Trammel || from.Map == Map.Felucca) && nest.Contains(from))
+                if ((from.Map == Map.Trammel || from.Map == Map.Felucca) && nest.Contains(from.Location))
                 {
                     if (m_StudyState != StudyState.Inactive)
                     {
@@ -39,16 +39,14 @@ namespace Server.Engines.Quests.Naturalist
 
                             if (m_CurrentNest.Special)
                             {
-                                from.SendLocalizedMessage(
-                                    1054057
-                                ); // You complete your examination of this bizarre Egg Nest. The Naturalist will undoubtedly be quite interested in these notes!
+                                // You complete your examination of this bizarre Egg Nest. The Naturalist will undoubtedly be quite interested in these notes!
+                                from.SendLocalizedMessage(1054057);
                                 StudiedSpecialNest = true;
                             }
                             else
                             {
-                                from.SendLocalizedMessage(
-                                    1054054
-                                ); // You have completed your study of this Solen Egg Nest. You put your notes away.
+                                // You have completed your study of this Solen Egg Nest. You put your notes away.
+                                from.SendLocalizedMessage(1054054);
                                 CurProgress++;
                             }
                         }
@@ -56,9 +54,8 @@ namespace Server.Engines.Quests.Naturalist
                         {
                             if (!nest.Special)
                             {
-                                from.SendLocalizedMessage(
-                                    1054058
-                                ); // You begin recording your completed notes on a bit of parchment.
+                                // You begin recording your completed notes on a bit of parchment.
+                                from.SendLocalizedMessage(1054058);
                             }
 
                             m_StudyState = StudyState.SecondStep;
@@ -69,9 +66,8 @@ namespace Server.Engines.Quests.Naturalist
                 {
                     if (m_StudyState != StudyState.Inactive)
                     {
-                        from.SendLocalizedMessage(
-                            1054046
-                        ); // You abandon your study of the Solen Egg Nest without gathering the needed information.
+                        // You abandon your study of the Solen Egg Nest without gathering the needed information.
+                        from.SendLocalizedMessage(1054046);
                     }
 
                     m_CurrentNest = null;
@@ -79,7 +75,7 @@ namespace Server.Engines.Quests.Naturalist
             }
             else if (from.Map == Map.Trammel || from.Map == Map.Felucca)
             {
-                var nest = NestArea.Find(from);
+                var nest = NestArea.Find(from.Location);
 
                 if (nest != null)
                 {
@@ -90,9 +86,8 @@ namespace Server.Engines.Quests.Naturalist
                     {
                         m_StudyState = StudyState.Inactive;
 
-                        from.SendLocalizedMessage(
-                            1054047
-                        ); // You glance at the Egg Nest, realizing you've already studied this one.
+                        // You glance at the Egg Nest, realizing you've already studied this one.
+                        from.SendLocalizedMessage(1054047);
                     }
                     else
                     {
@@ -100,15 +95,13 @@ namespace Server.Engines.Quests.Naturalist
 
                         if (nest.Special)
                         {
-                            from.SendLocalizedMessage(
-                                1054056
-                            ); // You notice something very odd about this Solen Egg Nest. You begin taking notes.
+                            // You notice something very odd about this Solen Egg Nest. You begin taking notes.
+                            from.SendLocalizedMessage(105405);
                         }
                         else
                         {
-                            from.SendLocalizedMessage(
-                                1054045
-                            ); // You begin studying the Solen Egg Nest to gather information.
+                            // You begin studying the Solen Egg Nest to gather information.
+                            from.SendLocalizedMessage(1054045);
                         }
 
                         if (from.Female)

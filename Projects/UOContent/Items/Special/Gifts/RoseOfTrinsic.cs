@@ -145,8 +145,6 @@ namespace Server.Items
             public SpawnTimer(RoseOfTrinsic rose, TimeSpan delay) : base(delay)
             {
                 m_Rose = rose;
-
-                Priority = TimerPriority.OneMinute;
             }
 
             protected override void OnTick()

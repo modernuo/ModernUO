@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
@@ -31,6 +30,7 @@ namespace SerializableMigration
             ISymbol symbol,
             ImmutableArray<AttributeData> attributes,
             ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
             ISymbol? parentSymbol,
             out string[] ruleArguments
         )
@@ -48,13 +48,13 @@ namespace SerializableMigration
                 return false;
             }
 
-            ruleArguments = requiresParent ? new[] { "DeserializationRequiresParent" } : Array.Empty<string>();
+            ruleArguments = new[] { requiresParent ? "DeserializationRequiresParent" : "" };
             return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property)
+        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
         {
-            const string expectedRule = nameof(SerializationMethodSignatureMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {
@@ -62,7 +62,7 @@ namespace SerializableMigration
             }
 
             var propertyName = property.Name;
-            var argument = property.RuleArguments.Length >= 1 &&
+            var argument = property.RuleArguments?.Length >= 1 &&
                            property.RuleArguments[0] == "DeserializationRequiresParent" ? ", this" : "";
 
             source.AppendLine($"{indent}{propertyName} = new {property.Type}(reader{argument});");
@@ -70,7 +70,7 @@ namespace SerializableMigration
 
         public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
         {
-            const string expectedRule = nameof(SerializationMethodSignatureMigrationRule);
+            var expectedRule = RuleName;
             var ruleName = property.Rule;
             if (expectedRule != ruleName)
             {

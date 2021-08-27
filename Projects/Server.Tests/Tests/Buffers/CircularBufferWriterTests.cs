@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.IO;
-using Server.Network;
 using Xunit;
 
 namespace Server.Tests.Buffers

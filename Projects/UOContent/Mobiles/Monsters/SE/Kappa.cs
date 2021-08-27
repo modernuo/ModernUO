@@ -165,7 +165,10 @@ namespace Server.Mobiles
             base.OnDamage(amount, from, willKill);
         }
 
-        public override Item NewHarmfulItem() => new AcidSlime(TimeSpan.FromSeconds(10), 5, 10);
+        public override Item NewHarmfulItem() => new PoolOfAcid(TimeSpan.FromSeconds(10), 5, 10)
+        {
+            Name = "slime"
+        };
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -189,7 +192,6 @@ namespace Server.Mobiles
             {
                 m_From = from;
                 m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             protected override void OnTick()

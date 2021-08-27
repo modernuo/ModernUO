@@ -14,68 +14,39 @@
  *************************************************************************/
 
 using System.Buffers;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Server.Network
 {
     public static class OutgoingMapPackets
     {
+        private static byte[] _mapPatchesPacket = new byte[41];
+
         public static void SendMapPatches(this NetState ns)
         {
-            if (ns == null || ns.ProtocolChanges >= ProtocolChanges.Version6000)
+            if (ns == null)
             {
                 return;
             }
 
-            int count;
+            if (_mapPatchesPacket[0] == 0)
+            {
+                var writer = new SpanWriter(_mapPatchesPacket);
+                writer.Write((byte)0xBF); // Packet ID
+                writer.Write((ushort)41); // Length
+                writer.Write((ushort)0x18); // Subpacket
+                writer.Write(4);
 
-            if (ns.HasFlag(ClientFlags.TerMur))
-            {
-                count = 6;
-            }
-            else if (ns.HasFlag(ClientFlags.Tokuno))
-            {
-                count = 5;
-            }
-            else if (ns.HasFlag(ClientFlags.Malas))
-            {
-                count = 4;
-            }
-            else if (ns.HasFlag(ClientFlags.Ilshenar))
-            {
-                count = 3;
-            }
-            else if (ns.HasFlag(ClientFlags.Trammel))
-            {
-                count = 2;
-            }
-            else if (ns.HasFlag(ClientFlags.Felucca))
-            {
-                count = 1;
-            }
-            else
-            {
-                return;
+                for (int i = 0; i < 4; i++)
+                {
+                    var map = Map.Maps[i];
+
+                    writer.Write(map.Tiles.Patch.StaticBlocks);
+                    writer.Write(map.Tiles.Patch.LandBlocks);
+                }
             }
 
-            var writer = new SpanWriter(stackalloc byte[9 + count * 8]);
-            writer.Write((byte)0xBF); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-            writer.Write((ushort)0x18); // Subpacket
-            writer.Write(count);
-
-            for (int i = 0; i < count; i++)
-            {
-                var map = Map.Maps[i];
-
-                writer.Write(map.Tiles.Patch.StaticBlocks);
-                writer.Write(map.Tiles.Patch.LandBlocks);
-            }
-
-            writer.WritePacketLength();
-
-            ns.Send(writer.Span);
+            ns.Send(_mapPatchesPacket);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

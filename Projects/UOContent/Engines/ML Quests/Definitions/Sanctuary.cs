@@ -25,32 +25,6 @@ namespace Server.Engines.MLQuests.Definitions
 
             Rewards.Add(ItemReward.FletchingSatchel);
         }
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Beotham"), new Point3D(6285, 114, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Beotham"), new Point3D(6285, 114, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Danoel"), new Point3D(6282, 116, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Danoel"), new Point3D(6282, 116, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Tallinin"), new Point3D(6279, 122, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Tallinin"), new Point3D(6279, 122, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Tiana"), new Point3D(6257, 112, -10), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Tiana"), new Point3D(6257, 112, -10), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "LorekeeperOolua"), new Point3D(6250, 124, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "LorekeeperOolua"), new Point3D(6250, 124, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "LorekeeperRollarn"), new Point3D(6244, 110, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "LorekeeperRollarn"), new Point3D(6244, 110, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Dallid"), new Point3D(6277, 104, -10), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Dallid"), new Point3D(6277, 104, -10), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Canir"), new Point3D(6274, 130, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Canir"), new Point3D(6274, 130, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Yellienir"), new Point3D(6257, 126, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Yellienir"), new Point3D(6257, 126, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "ElderOnallan"), new Point3D(6258, 108, -10), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "ElderOnallan"), new Point3D(6258, 108, -10), Map.Felucca);
-        }
     }
 
     public class BendingTheBow : MLQuest

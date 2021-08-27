@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class SerpentsFang : Kryss
+    [Serializable(0, false)]
+    public partial class SerpentsFang : Kryss
     {
         [Constructible]
         public SerpentsFang()
@@ -11,10 +12,6 @@ namespace Server.Items
             WeaponAttributes.ResistPoisonBonus = 20;
             Attributes.AttackChance = 15;
             Attributes.WeaponDamage = 50;
-        }
-
-        public SerpentsFang(Serial serial) : base(serial)
-        {
         }
 
         public override int LabelNumber => 1061601; // Serpent's Fang
@@ -31,25 +28,6 @@ namespace Server.Items
             fire = cold = nrgy = chaos = direct = 0;
             phys = 25;
             pois = 75;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (ItemID == 0x1401)
-            {
-                ItemID = 0x1400;
-            }
         }
     }
 }

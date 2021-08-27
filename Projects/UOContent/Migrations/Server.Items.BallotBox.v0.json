@@ -1,0 +1,36 @@
+{
+  "version": 0,
+  "type": "Server.Items.BallotBox",
+  "properties": [
+    {
+      "name": "Topic",
+      "type": "string[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "string",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "Yes",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "@Tidy",
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "No",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "@Tidy",
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

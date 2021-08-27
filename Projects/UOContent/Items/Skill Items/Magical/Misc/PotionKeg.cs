@@ -94,7 +94,7 @@ namespace Server.Items
 
             if (version < 1)
             {
-                Timer.DelayCall(UpdateWeight);
+                Timer.StartTimer(UpdateWeight);
             }
         }
 

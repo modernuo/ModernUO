@@ -430,7 +430,7 @@ namespace Server.Mobiles
                     SetControlMaster(null);
                     EscortTable.Remove(master);
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(5.0), Delete);
+                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
                     return null;
                 }
 
@@ -708,8 +708,6 @@ namespace Server.Mobiles
                 : base(delay)
             {
                 m_Mobile = m;
-
-                Priority = TimerPriority.OneSecond;
             }
 
             protected override void OnTick()

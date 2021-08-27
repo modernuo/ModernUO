@@ -248,7 +248,6 @@ namespace Server.Mobiles
             {
                 m_Mobile = m;
                 m_Mods = mods;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

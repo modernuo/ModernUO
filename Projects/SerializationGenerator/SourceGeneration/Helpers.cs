@@ -44,7 +44,7 @@ namespace SerializationGenerator
 
         public static string ToFriendlyString(this Accessibility accessibility) => SyntaxFacts.GetText(accessibility);
 
-        public static Accessibility GetAccessibility(string value) =>
+        public static Accessibility GetAccessibility(string? value) =>
             value switch
             {
                 "private"            => Accessibility.Private,
@@ -55,5 +55,11 @@ namespace SerializationGenerator
                 "private protected"  => Accessibility.ProtectedAndInternal,
                 _                    => Accessibility.NotApplicable
             };
+
+        public static bool CanBeConstructedFrom(this ITypeSymbol? symbol, ISymbol classSymbol) =>
+            symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.ConstructedFrom.Equals(
+                classSymbol,
+                SymbolEqualityComparer.Default
+            ) || symbol != null && CanBeConstructedFrom(symbol.BaseType, classSymbol);
     }
 }

@@ -1,0 +1,65 @@
+{
+  "version": 4,
+  "type": "Server.Items.Aquarium",
+  "properties": [
+    {
+      "name": "EvaluateTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LiveCreatures",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "VacationLeft",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Food",
+      "type": "Server.Items.AquariumState",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Water",
+      "type": "Server.Items.AquariumState",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Events",
+      "type": "System.Collections.Generic.List\u003Cint\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "",
+        "int",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "RewardAvailable",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

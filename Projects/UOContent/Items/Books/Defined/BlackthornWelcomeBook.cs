@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    public class BlackthornWelcomeBook : RedBook
+    [Serializable(0)]
+    public partial class BlackthornWelcomeBook : RedBook
     {
         public static readonly BookContent Content = new(
             "A Welcome",
@@ -244,24 +245,6 @@ namespace Server.Items
         [Constructible]
         public BlackthornWelcomeBook() : base(false) => Hue = 0x89B;
 
-        public BlackthornWelcomeBook(Serial serial) : base(serial)
-        {
-        }
-
         public override BookContent DefaultContent => Content;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

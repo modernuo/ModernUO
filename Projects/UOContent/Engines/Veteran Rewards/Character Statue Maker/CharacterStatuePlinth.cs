@@ -101,7 +101,7 @@ namespace Server.Items
 
             if (m_Statue?.SculptedBy == null || Map == Map.Internal)
             {
-                Timer.DelayCall(Delete);
+                Timer.StartTimer(Delete);
             }
         }
 

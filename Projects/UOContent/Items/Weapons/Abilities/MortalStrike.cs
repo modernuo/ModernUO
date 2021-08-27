@@ -13,7 +13,7 @@ namespace Server.Items
         public static readonly TimeSpan PlayerDuration = TimeSpan.FromSeconds(6.0);
         public static readonly TimeSpan NPCDuration = TimeSpan.FromSeconds(12.0);
 
-        private static readonly Dictionary<Mobile, Timer> _table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         public override int BaseMana => 30;
 
@@ -41,26 +41,26 @@ namespace Server.Items
 
         public static bool IsWounded(Mobile m) => _table.ContainsKey(m);
 
+        private static void StopTimer(Mobile m)
+        {
+            if (_table.Remove(m, out var timerToken))
+            {
+                timerToken.Cancel();
+            }
+        }
+
         public static void BeginWound(Mobile m, TimeSpan duration)
         {
-            if (_table.TryGetValue(m, out var timer))
-            {
-                timer?.Stop();
-            }
-
-            _table[m] = timer = Timer.DelayCall(duration, EndWound, m);
-            timer.Start();
+            StopTimer(m);
+            Timer.StartTimer(duration, () => EndWound(m), out var timerToken);
+            _table[m] = timerToken;
 
             m.YellowHealthbar = true;
         }
 
         public static void EndWound(Mobile m)
         {
-            if (_table.Remove(m, out var timer))
-            {
-                timer.Stop();
-            }
-
+            StopTimer(m);
             m.YellowHealthbar = false;
             m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.
         }

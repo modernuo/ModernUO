@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -30,9 +31,11 @@ namespace SerializationGenerator
             this GeneratorExecutionContext context,
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
+            bool embedded,
             ImmutableArray<ISymbol> fieldsAndProperties,
             JsonSerializerOptions jsonSerializerOptions,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
         )
         {
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
@@ -47,10 +50,12 @@ namespace SerializationGenerator
                 classSymbol,
                 serializableAttr,
                 null, // Do not generate schema
+                embedded,
                 null,
                 migrations.ToImmutableArray(),
                 fieldsAndProperties,
-                serializableTypes
+                serializableTypes,
+                embeddedSerializableTypes
             );
         }
 
@@ -59,9 +64,11 @@ namespace SerializationGenerator
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
             string? migrationPath,
+            bool embedded,
             JsonSerializerOptions? jsonSerializerOptions,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
         )
         {
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
@@ -77,10 +84,12 @@ namespace SerializationGenerator
                 classSymbol,
                 serializableAttr,
                 migrationPath,
+                embedded,
                 jsonSerializerOptions,
                 migrations.ToImmutableArray(),
                 fieldsAndProperties,
-                serializableTypes
+                serializableTypes,
+                embeddedSerializableTypes
             );
         }
 
@@ -89,40 +98,77 @@ namespace SerializationGenerator
             INamedTypeSymbol classSymbol,
             AttributeData serializableAttr,
             string? migrationPath,
+            bool embedded,
             JsonSerializerOptions? jsonSerializerOptions,
             ImmutableArray<SerializableMetadata> migrations,
             ImmutableArray<ISymbol> fieldsAndProperties,
-            ImmutableArray<INamedTypeSymbol> serializableTypes
+            ImmutableArray<INamedTypeSymbol> serializableTypes,
+            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes
         )
         {
             var serializableFieldAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
             var serializableFieldAttrAttribute =
                 compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTR_ATTRIBUTE);
-            var serializableInterface = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
+            var serializableInterface =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_INTERFACE);
+            var parentSerializableAttribute =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
+            var serializableFieldSaveFlagAttribute =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_SAVE_FLAG_ATTRIBUTE);
+            var serializableFieldDefaultAttribute =
+                compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_DEFAULT_ATTRIBUTE);
 
             // If we have a parent that is or derives from ISerializable, then we are in override
             var isOverride = classSymbol.BaseType.ContainsInterface(serializableInterface);
 
-            if (!isOverride && !classSymbol.ContainsInterface(serializableInterface))
+            if (!(embedded || isOverride || classSymbol.ContainsInterface(serializableInterface)))
             {
                 return null;
             }
 
+            var isRawSerializable = classSymbol.HasRawSerializableInterface(compilation, ImmutableArray<INamedTypeSymbol>.Empty);
+
             var version = (int)serializableAttr.ConstructorArguments[0].Value!;
             var encodedVersion = (bool)serializableAttr.ConstructorArguments[1].Value!;
+
+            // Let's find out if we need to do serialization flags
+            var serializableFieldSaveFlags = new SortedDictionary<int, SerializableFieldSaveFlagMethods>();
+            foreach (var m in classSymbol.GetMembers().OfType<IMethodSymbol>())
+            {
+                var getSaveFlagAttribute = m.GetAttribute(serializableFieldSaveFlagAttribute);
+                var getDefaultValueAttribute = m.GetAttribute(serializableFieldDefaultAttribute);
+
+                if (getSaveFlagAttribute == null && getDefaultValueAttribute == null)
+                {
+                    continue;
+                }
+
+                var attrCtorArgs = getSaveFlagAttribute?.ConstructorArguments ?? getDefaultValueAttribute.ConstructorArguments;
+                var order = (int)attrCtorArgs[0].Value!;
+
+                serializableFieldSaveFlags.TryGetValue(order, out var saveFlagMethods);
+
+                serializableFieldSaveFlags[order] = new SerializableFieldSaveFlagMethods
+                {
+                    DetermineFieldShouldSerialize = getSaveFlagAttribute != null ? m : saveFlagMethods?.DetermineFieldShouldSerialize,
+                    GetFieldDefaultValue = getDefaultValueAttribute != null ? m : saveFlagMethods?.GetFieldDefaultValue
+                };
+            }
 
             var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
             var className = classSymbol.Name;
 
             StringBuilder source = new StringBuilder();
 
+            source.AppendLine("#pragma warning disable\n");
             source.GenerateNamespaceStart(namespaceName);
 
-            source.GenerateClassStart(
-                className,
-                ImmutableArray<ITypeSymbol>.Empty
-            );
+            var interfaces = !embedded || isRawSerializable
+                ? Array.Empty<ITypeSymbol>()
+                : new ITypeSymbol[] { compilation.GetTypeByMetadataName(SymbolMetadata.RAW_SERIALIZABLE_INTERFACE) };
+
+            source.GenerateClassStart(className, "    ", interfaces.ToImmutableArray());
 
             const string indent = "        ";
 
@@ -131,10 +177,17 @@ namespace SerializationGenerator
                 InstanceModifier.Const,
                 "int",
                 "_version",
-                version.ToString(),
-                true
+                version.ToString()
             );
             source.AppendLine();
+
+            var parentFieldOrProperty = embedded ? fieldsAndProperties.FirstOrDefault(
+                fieldOrPropertySymbol => fieldOrPropertySymbol.GetAttributes()
+                    .FirstOrDefault(
+                        attr =>
+                            SymbolEqualityComparer.Default.Equals(attr.AttributeClass, parentSerializableAttribute)
+                    ) != null
+            ) : null;
 
             var serializablePropertySet = new SortedSet<SerializableProperty>(new SerializablePropertyComparer());
 
@@ -182,8 +235,8 @@ namespace SerializationGenerator
                 var attrCtorArgs = serializableFieldAttr.ConstructorArguments;
 
                 var order = (int)attrCtorArgs[0].Value!;
-                var getterAccessor = Helpers.GetAccessibility(attrCtorArgs[1].Value!.ToString());
-                var setterAccessor = Helpers.GetAccessibility(attrCtorArgs[2].Value!.ToString());
+                var getterAccessor = Helpers.GetAccessibility(attrCtorArgs[1].Value?.ToString());
+                var setterAccessor = Helpers.GetAccessibility(attrCtorArgs[2].Value?.ToString());
                 var virtualProperty = (bool)attrCtorArgs[3].Value!;
 
                 if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
@@ -193,10 +246,13 @@ namespace SerializationGenerator
                         fieldSymbol,
                         getterAccessor,
                         setterAccessor,
-                        virtualProperty
+                        virtualProperty,
+                        parentFieldOrProperty
                     );
                     source.AppendLine();
                 }
+
+                serializableFieldSaveFlags.TryGetValue(order, out var serializableFieldSaveFlagMethods);
 
                 var serializableProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
                     compilation,
@@ -204,7 +260,9 @@ namespace SerializationGenerator
                     order,
                     allAttributes,
                     serializableTypes,
-                    classSymbol
+                    embeddedSerializableTypes,
+                    classSymbol,
+                    serializableFieldSaveFlagMethods
                 );
 
                 serializablePropertySet.Add(serializableProperty);
@@ -213,7 +271,7 @@ namespace SerializationGenerator
             var serializableProperties = serializablePropertySet.ToImmutableArray();
 
             // If we are not inheriting ISerializable, then we need to define some stuff
-            if (!isOverride)
+            if (!(isOverride || embedded))
             {
                 // long ISerializable.SavePosition { get; set; } = -1;
                 source.GenerateAutoProperty(
@@ -237,9 +295,12 @@ namespace SerializationGenerator
                 );
             }
 
-            // Serial constructor
-            source.GenerateSerialCtor(compilation, className, isOverride);
-            source.AppendLine();
+            if (!embedded)
+            {
+                // Serial constructor
+                source.GenerateSerialCtor(compilation, className, isOverride);
+                source.AppendLine();
+            }
 
             if (version > 0)
             {
@@ -248,7 +309,7 @@ namespace SerializationGenerator
                     var migration = migrations[i];
                     if (migration.Version < version)
                     {
-                        source.GenerateMigrationContentStruct(migration);
+                        source.GenerateMigrationContentStruct(compilation, migration, classSymbol);
                         source.AppendLine();
                     }
                 }
@@ -259,7 +320,8 @@ namespace SerializationGenerator
                 compilation,
                 isOverride,
                 encodedVersion,
-                serializableProperties
+                serializableProperties,
+                serializableFieldSaveFlags
             );
             source.AppendLine();
 
@@ -271,10 +333,33 @@ namespace SerializationGenerator
                 version,
                 encodedVersion,
                 migrations,
-                serializableProperties
+                serializableProperties,
+                parentFieldOrProperty,
+                serializableFieldSaveFlags
             );
 
-            source.GenerateClassEnd();
+            // Serialize SaveFlag enum class
+            if (serializableFieldSaveFlags.Count > 0)
+            {
+                source.AppendLine();
+                source.GenerateEnumStart(
+                    "SaveFlag",
+                    "        ",
+                    true,
+                    Accessibility.Private
+                );
+
+                source.GenerateEnumValue("            ", true, "None", -1);
+                int index = 0;
+                foreach (var (order, _) in serializableFieldSaveFlags)
+                {
+                    source.GenerateEnumValue("            ", true, serializableProperties[order].Name, index++);
+                }
+
+                source.GenerateEnumEnd("        ");
+            }
+
+            source.GenerateClassEnd("    ");
             source.GenerateNamespaceEnd();
 
             if (migrationPath != null)
@@ -284,7 +369,7 @@ namespace SerializationGenerator
                 {
                     Version = version,
                     Type = classSymbol.ToDisplayString(),
-                    Properties = serializableProperties
+                    Properties = serializableProperties.Length > 0 ? serializableProperties : null
                 };
 
                 WriteMigration(migrationPath, newMigration, jsonSerializerOptions);

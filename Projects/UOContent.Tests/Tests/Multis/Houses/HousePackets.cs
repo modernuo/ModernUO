@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Compression;
-using Server.Multis;
 
 namespace Server.Network
 {
@@ -57,14 +56,14 @@ namespace Server.Network
         private readonly bool[] m_PlaneUsed = new bool[9];
         private readonly byte[] m_PrimBuffer = new byte[4];
 
-        public DesignStateDetailed(uint serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
+        public DesignStateDetailed(Serial serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
             : base(0xD8)
         {
             EnsureCapacity(17 + tiles.Length * 5);
 
             Write((byte)0x03); // Compression Type
             Write((byte)0x00); // Unknown
-            Write(serial);
+            Write(serial.Value);
             Write(revision);
             Write((short)tiles.Length);
             Write((short)0); // Buffer length : reserved

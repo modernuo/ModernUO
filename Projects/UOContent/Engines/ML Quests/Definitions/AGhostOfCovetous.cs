@@ -34,14 +34,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override Type NextQuest => typeof(SaveHisDad);
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Ben"), new Point3D(2467, 402, 15), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Ben"), new Point3D(2467, 402, 15), Map.Felucca);
-        }
     }
 
     public class SaveHisDad : MLQuest
@@ -75,14 +67,6 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override Type NextQuest => typeof(AFathersGratitude);
         public override bool IsChainTriggered => true;
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Frederic"), new Point3D(2415, 887, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 0, "Frederic"), new Point3D(2415, 887, 0), Map.Felucca);
-        }
     }
 
     public class AFathersGratitude : MLQuest
@@ -108,16 +92,6 @@ namespace Server.Engines.MLQuests.Definitions
         }
 
         public override bool IsChainTriggered => true;
-
-        public override void Generate()
-        {
-            base.Generate();
-
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Leon"), new Point3D(2918, 851, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Leon"), new Point3D(2918, 851, 0), Map.Felucca);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Andros"), new Point3D(2531, 581, 0), Map.Trammel);
-            PutSpawner(new Spawner(1, 5, 10, 0, 3, "Andros"), new Point3D(2531, 581, 0), Map.Felucca);
-        }
     }
 
     public class Ben : BaseCreature

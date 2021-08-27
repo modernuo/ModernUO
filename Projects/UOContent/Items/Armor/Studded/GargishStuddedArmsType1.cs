@@ -1,13 +1,11 @@
 namespace Server.Items
 {
+    [Serializable(0, false)]
     [TypeAlias("Server.Items.GargishStuddedArms")]
-    public class GargishStuddedArmsType1 : BaseArmor
+    public partial class GargishStuddedArmsType1 : BaseArmor
     {
         [Constructible]
         public GargishStuddedArmsType1() : base(0x284) => Weight = 10.0;
-        public GargishStuddedArmsType1(Serial serial) : base(serial)
-        {
-        }
 
         public override Race RequiredRace => Race.Gargoyle;
         public override int BasePhysicalResistance => 6;
@@ -26,16 +24,5 @@ namespace Server.Items
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            int version = reader.ReadInt();
-        }
     }
 }

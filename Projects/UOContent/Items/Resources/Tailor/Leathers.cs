@@ -1,8 +1,12 @@
 namespace Server.Items
 {
-    public abstract class BaseLeather : Item, ICommodity
+    [Serializable(2, false)]
+    public abstract partial class BaseLeather : Item, ICommodity
     {
-        private CraftResource m_Resource;
+        [InvalidateProperties]
+        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializableField(0)]
+        private CraftResource _resource;
 
         public BaseLeather(CraftResource resource, int amount = 1) : base(0x1081)
         {
@@ -11,31 +15,16 @@ namespace Server.Items
             Amount = amount;
             Hue = CraftResources.GetHue(resource);
 
-            m_Resource = resource;
-        }
-
-        public BaseLeather(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => m_Resource;
-            set
-            {
-                m_Resource = value;
-                InvalidateProperties();
-            }
+            _resource = resource;
         }
 
         public override int LabelNumber
         {
             get
             {
-                if (m_Resource >= CraftResource.SpinedLeather && m_Resource <= CraftResource.BarbedLeather)
+                if (_resource >= CraftResource.SpinedLeather && _resource <= CraftResource.BarbedLeather)
                 {
-                    return 1049684 + (m_Resource - CraftResource.SpinedLeather);
+                    return 1049684 + (_resource - CraftResource.SpinedLeather);
                 }
 
                 return 1047022;
@@ -45,33 +34,20 @@ namespace Server.Items
         int ICommodity.DescriptionNumber => LabelNumber;
         bool ICommodity.IsDeedable => true;
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write((int)m_Resource);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             switch (version)
             {
                 case 1:
                     {
-                        m_Resource = (CraftResource)reader.ReadInt();
+                        _resource = (CraftResource)reader.ReadInt();
                         break;
                     }
                 case 0:
                     {
                         var info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
 
-                        m_Resource = CraftResources.GetFromOreInfo(info);
+                        _resource = CraftResources.GetFromOreInfo(info);
                         break;
                     }
             }
@@ -93,9 +69,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(m_Resource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                var num = CraftResources.GetLocalizationNumber(m_Resource);
+                var num = CraftResources.GetLocalizationNumber(_resource);
 
                 if (num > 0)
                 {
@@ -103,117 +79,49 @@ namespace Server.Items
                 }
                 else
                 {
-                    list.Add(CraftResources.GetName(m_Resource));
+                    list.Add(CraftResources.GetName(_resource));
                 }
             }
         }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1081, 0x1082)]
-    public class Leather : BaseLeather
+    public partial class Leather : BaseLeather
     {
         [Constructible]
         public Leather(int amount = 1) : base(CraftResource.RegularLeather, amount)
         {
         }
-
-        public Leather(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1081, 0x1082)]
-    public class SpinedLeather : BaseLeather
+    public partial class SpinedLeather : BaseLeather
     {
         [Constructible]
         public SpinedLeather(int amount = 1) : base(CraftResource.SpinedLeather, amount)
         {
         }
-
-        public SpinedLeather(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1081, 0x1082)]
-    public class HornedLeather : BaseLeather
+    public partial class HornedLeather : BaseLeather
     {
         [Constructible]
         public HornedLeather(int amount = 1) : base(CraftResource.HornedLeather, amount)
         {
         }
-
-        public HornedLeather(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
+    [Serializable(0, false)]
     [Flippable(0x1081, 0x1082)]
-    public class BarbedLeather : BaseLeather
+    public partial class BarbedLeather : BaseLeather
     {
         [Constructible]
         public BarbedLeather(int amount = 1) : base(CraftResource.BarbedLeather, amount)
         {
-        }
-
-        public BarbedLeather(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

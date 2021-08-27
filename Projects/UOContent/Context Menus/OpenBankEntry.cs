@@ -4,7 +4,7 @@ namespace Server.ContextMenus
     {
         private readonly Mobile m_Banker;
 
-        public OpenBankEntry(Mobile from, Mobile banker) : base(6105, 12) => m_Banker = banker;
+        public OpenBankEntry(Mobile banker) : base(6105, 12) => m_Banker = banker;
 
         public override void OnClick()
         {

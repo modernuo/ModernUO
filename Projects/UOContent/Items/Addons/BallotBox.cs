@@ -7,29 +7,31 @@ using Server.Prompts;
 
 namespace Server.Items
 {
-    public class BallotBox : AddonComponent
+    [Serializable(0)]
+    public partial class BallotBox : AddonComponent
     {
         public static readonly int MaxTopicLines = 6;
 
         [Constructible]
         public BallotBox() : base(0x9A8)
         {
-            Topic = Array.Empty<string>();
-            Yes = new List<Mobile>();
-            No = new List<Mobile>();
-        }
-
-        public BallotBox(Serial serial) : base(serial)
-        {
+            _topic = Array.Empty<string>();
+            _yes = new List<Mobile>();
+            _no = new List<Mobile>();
         }
 
         public override int LabelNumber => 1041006; // a ballot box
 
-        public string[] Topic { get; private set; }
+        [SerializableField(0, setter: "private")]
+        private string[] _topic;
 
-        public List<Mobile> Yes { get; private set; }
+        [Tidy]
+        [SerializableField(1, setter: "private")]
+        private List<Mobile> _yes;
 
-        public List<Mobile> No { get; private set; }
+        [Tidy]
+        [SerializableField(2, setter: "private")]
+        private List<Mobile> _no;
 
         public void ClearTopic()
         {
@@ -56,8 +58,11 @@ namespace Server.Items
 
         public void ClearVotes()
         {
-            Yes.Clear();
-            No.Clear();
+            if (Yes.Count > 0 || No.Count > 0)
+            {
+                this.Clear(_yes);
+                this.Clear(_no);
+            }
         }
 
         public bool IsOwner(Mobile from)
@@ -90,43 +95,6 @@ namespace Server.Items
                 var isOwner = IsOwner(from);
                 from.SendGump(new InternalGump(this, isOwner));
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.WriteEncodedInt(Topic.Length);
-
-            for (var i = 0; i < Topic.Length; i++)
-            {
-                writer.Write(Topic[i]);
-            }
-
-            Yes.Tidy();
-            writer.Write(Yes);
-
-            No.Tidy();
-            writer.Write(No);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            Topic = new string[reader.ReadEncodedInt()];
-
-            for (var i = 0; i < Topic.Length; i++)
-            {
-                Topic[i] = reader.ReadString();
-            }
-
-            Yes = reader.ReadEntityList<Mobile>();
-            No = reader.ReadEntityList<Mobile>();
         }
 
         private class InternalGump : Gump
@@ -259,7 +227,7 @@ namespace Server.Items
                                 }
                                 else
                                 {
-                                    m_Box.Yes.Add(from);
+                                    m_Box.Add(m_Box._yes, from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }
@@ -276,7 +244,7 @@ namespace Server.Items
                                 }
                                 else
                                 {
-                                    m_Box.No.Add(from);
+                                    m_Box.Add(m_Box._no, from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }
@@ -344,61 +312,25 @@ namespace Server.Items
         }
     }
 
-    public class BallotBoxAddon : BaseAddon
+    [Serializable(0)]
+    public partial class BallotBoxAddon : BaseAddon
     {
         public BallotBoxAddon()
         {
             AddComponent(new BallotBox(), 0, 0, 0);
         }
-
-        public BallotBoxAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new BallotBoxDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BallotBoxDeed : BaseAddonDeed
+    [Serializable(0)]
+    public partial class BallotBoxDeed : BaseAddonDeed
     {
         [Constructible]
         public BallotBoxDeed()
         {
         }
 
-        public BallotBoxDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new BallotBoxAddon();
 
         public override int LabelNumber => 1044327; // ballot box
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 }

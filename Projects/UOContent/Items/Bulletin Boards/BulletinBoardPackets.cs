@@ -54,7 +54,7 @@ namespace Server.Network
 
             int packetID = reader.ReadByte();
 
-            if (World.FindItem(reader.ReadUInt32()) is not BaseBulletinBoard board || !board.CheckRange(from))
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BaseBulletinBoard board || !board.CheckRange(from))
             {
                 return;
             }
@@ -78,7 +78,7 @@ namespace Server.Network
 
         public static void BBRequestContent(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
                 return;
             }
@@ -88,7 +88,7 @@ namespace Server.Network
 
         public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
                 return;
             }
@@ -98,7 +98,7 @@ namespace Server.Network
 
         public static void BBPostMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            var thread = World.FindItem(reader.ReadUInt32()) as BulletinMessage;
+            var thread = World.FindItem((Serial)reader.ReadUInt32()) as BulletinMessage;
 
             if (thread != null && thread.Parent != board)
             {
@@ -112,9 +112,7 @@ namespace Server.Network
                 thread = thread.Thread;
             }
 
-            var lastPostTime = DateTime.MinValue;
-
-            if (board.GetLastPostTime(from, thread == null, ref lastPostTime))
+            if (board.GetLastPostTime(from, thread == null, out var lastPostTime))
             {
                 if (thread == null)
                 {
@@ -155,7 +153,7 @@ namespace Server.Network
 
         public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
         {
-            if (World.FindItem(reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
                 return;
             }
@@ -259,8 +257,8 @@ namespace Server.Network
                 for (var i = 0; i < equipLength; i++)
                 {
                     var eq = msg.PostedEquip[i];
-                    writer.Write((short)eq.itemID);
-                    writer.Write((short)eq.hue);
+                    writer.Write((short)eq._itemID);
+                    writer.Write((short)eq._hue);
                 }
 
                 writer.Write((byte)linesLength);

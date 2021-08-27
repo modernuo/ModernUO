@@ -107,7 +107,6 @@ namespace Server.Mobiles
             public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
             {
                 m_Mobile = m;
-                Priority = TimerPriority.TwoFiftyMS;
             }
 
             public void DoExpire()

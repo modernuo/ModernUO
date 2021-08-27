@@ -67,7 +67,7 @@ namespace Server
             for (int i = 0; i < types.Length; i++)
             {
                 var m = types[i].GetMethod(method, BindingFlags.Static | BindingFlags.Public);
-                if (m != null)
+                if (m?.GetParameters().Length == 0)
                 {
                     list.Add(m);
                 }

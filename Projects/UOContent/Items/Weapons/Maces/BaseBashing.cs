@@ -2,13 +2,10 @@ using Server.Engines.ConPVP;
 
 namespace Server.Items
 {
-    public abstract class BaseBashing : BaseMeleeWeapon
+    [Serializable(0, false)]
+    public abstract partial class BaseBashing : BaseMeleeWeapon
     {
         public BaseBashing(int itemID) : base(itemID)
-        {
-        }
-
-        public BaseBashing(Serial serial) : base(serial)
         {
         }
 
@@ -18,20 +15,6 @@ namespace Server.Items
         public override SkillName DefSkill => SkillName.Macing;
         public override WeaponType DefType => WeaponType.Bashing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Bash1H;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
 
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {
@@ -51,7 +34,7 @@ namespace Server.Items
             {
                 damage *= 1.5;
 
-                attacker.SendMessage("You deliver a crushing blow!"); // Is this not localized?
+                attacker.SendLocalizedMessage(1060090); // You have delivered a crushing blow!
                 attacker.PlaySound(0x11C);
             }
 

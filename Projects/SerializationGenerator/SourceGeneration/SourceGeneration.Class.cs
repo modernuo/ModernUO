@@ -21,9 +21,16 @@ namespace SerializationGenerator
 {
     public static partial class SourceGeneration
     {
-        public static void GenerateClassStart(this StringBuilder source, string className, ImmutableArray<ITypeSymbol> interfaces)
+        public static void GenerateClassStart(
+            this StringBuilder source,
+            string className,
+            string indent,
+            ImmutableArray<ITypeSymbol> interfaces,
+            Accessibility accessor = Accessibility.Public,
+            bool isPartial = true
+        )
         {
-            source.Append($"    public partial class {className}");
+            source.Append($"{indent}{accessor.ToFriendlyString()} {(isPartial ? "partial " : "")}class {className}");
             if (!interfaces.IsEmpty)
             {
                 source.Append(" : ");
@@ -37,13 +44,12 @@ namespace SerializationGenerator
                 }
             }
 
-            source.AppendLine(@"
-    {");
+            source.AppendLine($"\n{indent}{{");
         }
 
-        public static void GenerateClassEnd(this StringBuilder source)
+        public static void GenerateClassEnd(this StringBuilder source, string indent)
         {
-            source.AppendLine("    }");
+            source.AppendLine($"{indent}}}");
         }
 
         // TODO: Generalize this to any field using dynamic indentation
@@ -53,24 +59,13 @@ namespace SerializationGenerator
             InstanceModifier instance,
             string type,
             string variableName,
-            string value,
-            bool unusedPragma = false
+            string value
         )
         {
-            if (unusedPragma)
-            {
-                source.AppendLine("#pragma warning disable 0414"); // assigned, but never used
-            }
-
             var instanceStr = instance == InstanceModifier.None ? "" : $"{instance.ToFriendlyString()} ";
             var accessorStr = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
             var valueStr = value == null ? "" : $" = {value}";
             source.AppendLine($"        {accessorStr}{instanceStr}{type} {variableName}{valueStr};");
-
-            if (unusedPragma)
-            {
-                source.AppendLine("#pragma warning restore 0414");
-            }
         }
     }
 }

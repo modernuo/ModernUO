@@ -42,7 +42,7 @@ namespace SerializationGenerator
             for (var i = 0; i < parameters.Length; i++)
             {
                 var (t, v) = parameters[i];
-                source.AppendFormat("{0} {1}", t.Name, v);
+                source.AppendFormat("{0} {1}", t.ToDisplayString(), v);
                 if (i < parameters.Length - 1)
                 {
                     source.Append(", ");

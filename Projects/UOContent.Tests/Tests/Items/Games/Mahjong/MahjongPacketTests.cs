@@ -13,7 +13,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestMahjongJoinGame()
         {
-            Serial game = 0x1024u;
+            Serial game = (Serial)0x1024u;
 
             var expected = new MahjongJoinGame(game).Compile();
 
@@ -29,7 +29,7 @@ namespace UOContent.Tests
         [InlineData(false)]
         public void TestMahjongPlayersInfo(bool showScores)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var game = new MahjongGame { ShowScores = showScores };
@@ -67,7 +67,7 @@ namespace UOContent.Tests
         [InlineData(false)]
         public void TestMahjongTilesInfo(bool spectatorVision)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var game = new MahjongGame { SpectatorVision = spectatorVision };
@@ -87,7 +87,7 @@ namespace UOContent.Tests
         [InlineData(false)]
         public void TestMahjongTileInfo(bool spectatorVision)
         {
-            var m = new Mobile(0x1);
+            var m = new Mobile((Serial)0x1);
             m.DefaultMobileInit();
 
             var game = new MahjongGame { SpectatorVision = spectatorVision };
@@ -105,7 +105,7 @@ namespace UOContent.Tests
         [Fact]
         public void TestMahjongRelieve()
         {
-            Serial game = 0x1024u;
+            Serial game = (Serial)0x1024u;
 
             var expected = new MahjongRelieve(game).Compile();
 

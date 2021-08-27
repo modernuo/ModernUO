@@ -10,7 +10,7 @@ namespace Server
         public const int EquipUpdatePacketLength = 15;
         public const int RemovePacketLength = 5;
 
-        public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, Serial hairSerial, Layer layer)
+        public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, uint hairSerial,  int itemId, int hue, Layer layer)
         {
             if (ns == null)
             {
@@ -18,31 +18,29 @@ namespace Server
             }
 
             Span<byte> buffer = stackalloc byte[EquipUpdatePacketLength];
-            CreateHairEquipUpdatePacket(buffer, m, hairSerial, layer);
+            CreateHairEquipUpdatePacket(buffer, m, hairSerial, itemId, hue, layer);
             ns.Send(buffer);
         }
 
-        public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, Serial hairSerial, Layer layer)
+        public static void CreateHairEquipUpdatePacket(Span<byte> buffer, Mobile m, uint hairSerial, int itemId, int hue, Layer layer)
         {
             if (buffer[0] != 0)
             {
                 return;
             }
 
-            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.HairHue;
-
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0x2E); // Packet ID
 
             writer.Write(hairSerial);
-            writer.Write((short)m.HairItemID);
+            writer.Write((short)itemId);
             writer.Write((byte)0);
             writer.Write((byte)layer);
             writer.Write(m.Serial);
-            writer.Write((short)hue);
+            writer.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : hue));
         }
 
-        public static void SendRemoveHairPacket(this NetState ns, Serial hairSerial)
+        public static void SendRemoveHairPacket(this NetState ns, uint hairSerial)
         {
             if (ns == null)
             {
@@ -54,7 +52,7 @@ namespace Server
             ns.Send(buffer);
         }
 
-        public static void CreateRemoveHairPacket(Span<byte> buffer, Serial hairSerial)
+        public static void CreateRemoveHairPacket(Span<byte> buffer, uint hairSerial)
         {
             if (buffer[0] != 0)
             {
@@ -123,7 +121,7 @@ namespace Server
 
         // TODO: Can we make this higher for newer clients?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - m * 4;
+        public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - m.Value * 4;
     }
 
     public class FacialHairInfo : BaseHairInfo
@@ -145,6 +143,6 @@ namespace Server
 
         // TODO: Can we make this higher for newer clients?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - 1 - m * 4;
+        public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - 1 - m.Value* 4;
     }
 }

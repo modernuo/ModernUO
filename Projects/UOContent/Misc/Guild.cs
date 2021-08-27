@@ -546,8 +546,9 @@ namespace Server.Guilds
 
     public class WarTimer : Timer
     {
-        public WarTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0)) =>
-            Priority = TimerPriority.FiveSeconds;
+        public WarTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0))
+        {
+        }
 
         public static void Initialize()
         {
@@ -927,7 +928,7 @@ namespace Server.Guilds
             else
             {
                 var g = uint.TryParse(arg, out var id)
-                    ? World.FindGuild(id) as Guild
+                    ? World.FindGuild((Serial)id) as Guild
                     : FindByAbbrev(arg) as Guild ?? FindByName(arg) as Guild;
 
                 if (g != null)
@@ -1336,7 +1337,7 @@ namespace Server.Guilds
             AcceptedWars ??= new List<WarDeclaration>();
             PendingWars ??= new List<WarDeclaration>();
 
-            Timer.DelayCall(VerifyGuild_Callback);
+            Timer.StartTimer(VerifyGuild_Callback);
         }
 
         private void VerifyGuild_Callback()
