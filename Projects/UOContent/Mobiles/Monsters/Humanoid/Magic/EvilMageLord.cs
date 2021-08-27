@@ -2,16 +2,18 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class EvilMageLord : BaseCreature
+    [Serializable(0, false)]
+    public partial class EvilMageLord : BaseCreature
     {
         [Constructible]
         public EvilMageLord() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
         {
             Name = NameList.RandomName("evil mage lord");
-            Body = Utility.RandomList(125, 126);
+            Body = Core.UOR ? Utility.Random(125, 2) : 0x190;
+            Hue = Core.UOR ? 0 : Race.Human.RandomSkinHue();
 
-            PackItem(new Robe(Utility.RandomMetalHue()));
-            PackItem(new WizardsHat(Utility.RandomMetalHue()));
+            EquipItem(new Robe(Utility.RandomMetalHue()));
+            EquipItem(new WizardsHat(Utility.RandomMetalHue()));
 
             SetStr(81, 105);
             SetDex(191, 215);
@@ -43,16 +45,12 @@ namespace Server.Mobiles
             PackReg(23);
             if (Utility.RandomBool())
             {
-                PackItem(new Shoes());
+                EquipItem(new Shoes());
             }
             else
             {
-                PackItem(new Sandals());
+                EquipItem(new Sandals());
             }
-        }
-
-        public EvilMageLord(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "an evil mage lord corpse";
@@ -69,16 +67,30 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 2);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
+            if (Core.UOR)
+            {
+                if (Body == 0x190)
+                {
+                    Body = Utility.Random(125, 2);
+                }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
+                if (Hue != 0)
+                {
+                    Hue = 0;
+                }
+            }
+            else if (Body.BodyID is 125 or 126)
+            {
+                Body = 0x190;
+
+                if (Hue == 0)
+                {
+                    Hue = Race.Human.RandomSkinHue();
+                }
+            }
         }
     }
 }

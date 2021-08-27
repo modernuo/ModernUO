@@ -2,14 +2,15 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class EvilMage : BaseCreature
+    [Serializable(0, false)]
+    public partial class EvilMage : BaseCreature
     {
         [Constructible]
         public EvilMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
         {
             Name = NameList.RandomName("evil mage");
             Title = "the evil mage";
-            Body = 124;
+            Body = Core.UOR ? 124 : 0x190;
 
             SetStr(81, 105);
             SetDex(91, 115);
@@ -37,12 +38,8 @@ namespace Server.Mobiles
 
             VirtualArmor = 16;
             PackReg(6);
-            PackItem(new Robe(Utility.RandomNeutralHue())); // TODO: Proper hue
-            PackItem(new Sandals());
-        }
-
-        public EvilMage(Serial serial) : base(serial)
-        {
+            EquipItem(new Robe(Utility.RandomNeutralHue()));
+            EquipItem(new Sandals());
         }
 
         public override string CorpseName => "an evil mage corpse";
@@ -58,16 +55,30 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
+            if (Core.UOR)
+            {
+                if (Body == 0x190)
+                {
+                    Body = 124;
+                }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
+                if (Hue != 0)
+                {
+                    Hue = 0;
+                }
+            }
+            else if (Body == 124)
+            {
+                Body = 0x190;
+
+                if (Hue == 0)
+                {
+                    Hue = Race.Human.RandomSkinHue();
+                }
+            }
         }
     }
 }
