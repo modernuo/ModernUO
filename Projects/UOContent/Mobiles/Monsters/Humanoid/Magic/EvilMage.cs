@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -10,7 +11,7 @@ namespace Server.Mobiles
         {
             Name = NameList.RandomName("evil mage");
             Title = "the evil mage";
-            Body = Core.UOR ? 124 : 0x190;
+            Body = Core.ML ? 124 : 0x190;
 
             SetStr(81, 105);
             SetDex(91, 115);
@@ -58,7 +59,7 @@ namespace Server.Mobiles
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            if (Core.UOR)
+            if (Core.ML)
             {
                 if (Body == 0x190)
                 {

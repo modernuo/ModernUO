@@ -9,8 +9,18 @@ namespace Server.Mobiles
         public EvilMageLord() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
         {
             Name = NameList.RandomName("evil mage lord");
-            Body = Core.UOR ? Utility.Random(125, 2) : 0x190;
-            Hue = Core.UOR ? 0 : Race.Human.RandomSkinHue();
+            if (Core.ML)
+            {
+                Body = Utility.Random(125, 2);
+                Hue = Race.Human.RandomSkinHue();
+            }
+            else
+            {
+                Body = 0x190;
+                Hue = Race.Human.RandomSkinHue();
+            }
+
+
 
             EquipItem(new Robe(Utility.RandomMetalHue()));
             EquipItem(new WizardsHat(Utility.RandomMetalHue()));
@@ -70,7 +80,7 @@ namespace Server.Mobiles
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            if (Core.UOR)
+            if (Core.ML)
             {
                 if (Body == 0x190)
                 {
