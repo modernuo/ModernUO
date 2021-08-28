@@ -26,13 +26,14 @@ namespace SerializationGenerator
             this StringBuilder source,
             Compilation compilation,
             string className,
+            string indent,
             bool isOverride
         )
         {
             var serialType = (ITypeSymbol)compilation.GetTypeByMetadataName("Server.Serial");
 
             source.GenerateConstructorStart(
-                "        ",
+                indent,
                 className,
                 Accessibility.Public,
                 new []{ (serialType, "serial") }.ToImmutableArray(),
@@ -41,11 +42,11 @@ namespace SerializationGenerator
 
             if (!isOverride)
             {
-                source.AppendLine(@$"            Serial = serial;
-            SetTypeRef(typeof({className}));");
+                source.AppendLine($"{indent}    Serial = serial;");
+                source.AppendLine($"{indent}    SetTypeRef(typeof({className}));");
             }
 
-            source.GenerateMethodEnd("        ");
+            source.GenerateMethodEnd(indent);
         }
     }
 }
