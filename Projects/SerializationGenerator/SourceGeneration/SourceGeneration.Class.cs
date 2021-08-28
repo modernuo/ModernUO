@@ -23,14 +23,14 @@ namespace SerializationGenerator
     {
         public static void GenerateClassStart(
             this StringBuilder source,
-            string className,
+            INamedTypeSymbol classSymbol,
             string indent,
             ImmutableArray<ITypeSymbol> interfaces,
-            Accessibility accessor = Accessibility.Public,
             bool isPartial = true
         )
         {
-            source.Append($"{indent}{accessor.ToFriendlyString()} {(isPartial ? "partial " : "")}class {className}");
+            var accessor = classSymbol.DeclaredAccessibility;
+            source.Append($"{indent}{accessor.ToFriendlyString()} {(isPartial ? "partial " : "")}class {classSymbol.Name}");
             if (!interfaces.IsEmpty)
             {
                 source.Append(" : ");
@@ -55,6 +55,7 @@ namespace SerializationGenerator
         // TODO: Generalize this to any field using dynamic indentation
         public static void GenerateClassField(
             this StringBuilder source,
+            string indent,
             Accessibility accessors,
             InstanceModifier instance,
             string type,
@@ -65,7 +66,7 @@ namespace SerializationGenerator
             var instanceStr = instance == InstanceModifier.None ? "" : $"{instance.ToFriendlyString()} ";
             var accessorStr = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
             var valueStr = value == null ? "" : $" = {value}";
-            source.AppendLine($"        {accessorStr}{instanceStr}{type} {variableName}{valueStr};");
+            source.AppendLine($"{indent}{accessorStr}{instanceStr}{type} {variableName}{valueStr};");
         }
     }
 }
