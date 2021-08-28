@@ -1025,6 +1025,7 @@ namespace Server.Misc
                             EquipItem(new StuddedLegs());
                             EquipItem(new ThighBoots());
                         }
+                        
                         break;
                     }
                 case 4: // Necromancer
