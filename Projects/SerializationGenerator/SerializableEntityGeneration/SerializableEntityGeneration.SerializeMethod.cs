@@ -27,6 +27,7 @@ namespace SerializationGenerator
         public static void GenerateSerializeMethod(
             this StringBuilder source,
             Compilation compilation,
+            string indent,
             bool isOverride,
             bool encodedVersion,
             ImmutableArray<SerializableProperty> properties,
@@ -36,7 +37,7 @@ namespace SerializationGenerator
             var genericWriterInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_WRITER_INTERFACE);
 
             source.GenerateMethodStart(
-                "        ",
+                indent,
                 "Serialize",
                 Accessibility.Public,
                 isOverride,
@@ -44,34 +45,34 @@ namespace SerializationGenerator
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericWriterInterface, "writer"))
             );
 
-            const string indent = "            ";
-            const string innerIndent = $"{indent}    ";
+            var bodyIndent = $"{indent}    ";
+            var innerIndent = $"{bodyIndent}    ";
 
             if (isOverride)
             {
-                source.AppendLine($"{indent}base.Serialize(writer);");
+                source.AppendLine($"{bodyIndent}base.Serialize(writer);");
                 source.AppendLine();
             }
 
             // Version
-            source.AppendLine($"{indent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
+            source.AppendLine($"{bodyIndent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
 
             // Let's collect the flags
             if (serializableFieldSaveFlagMethodsDictionary.Count > 0)
             {
-                source.AppendLine($"\n{indent}var saveFlags = SaveFlag.None;");
+                source.AppendLine($"\n{bodyIndent}var saveFlags = SaveFlag.None;");
 
                 foreach (var (order, saveFlagMethods) in serializableFieldSaveFlagMethodsDictionary)
                 {
-                    source.AppendLine($"{indent}if ({saveFlagMethods.DetermineFieldShouldSerialize!.Name}())\n{indent}{{");
+                    source.AppendLine($"{bodyIndent}if ({saveFlagMethods.DetermineFieldShouldSerialize!.Name}())\n{bodyIndent}{{");
 
                     var propertyName = properties[order].Name;
                     source.AppendLine($"{innerIndent}saveFlags |= SaveFlag.{propertyName};");
 
-                    source.AppendLine($"{indent}}}");
+                    source.AppendLine($"{bodyIndent}}}");
                 }
 
-                source.AppendLine($"{indent}writer.WriteEnum(saveFlags);");
+                source.AppendLine($"{bodyIndent}writer.WriteEnum(saveFlags);");
             }
 
             foreach (var property in properties)
@@ -81,13 +82,13 @@ namespace SerializationGenerator
                     // Special case
                     if (property.Type != "bool")
                     {
-                        source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
+                        source.AppendLine($"\n{bodyIndent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{bodyIndent}{{");
                         SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
                             source,
                             innerIndent,
                             property
                         );
-                        source.AppendLine($"{indent}}}");
+                        source.AppendLine($"{bodyIndent}}}");
                     }
                 }
                 else
@@ -95,13 +96,13 @@ namespace SerializationGenerator
                     source.AppendLine();
                     SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
                         source,
-                        indent,
+                        bodyIndent,
                         property
                     );
                 }
             }
 
-            source.GenerateMethodEnd("        ");
+            source.GenerateMethodEnd(indent);
         }
     }
 }
