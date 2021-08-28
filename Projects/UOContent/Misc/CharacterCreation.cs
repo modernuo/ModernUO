@@ -1207,7 +1207,11 @@ namespace Server.Misc
                             EquipItem(new Kasa());
                         }
 
-                        PackItem(new SmokeBomb(5));
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
 
                         Spellbook book = new BookOfNinjitsu();
                         PackItem(book);
