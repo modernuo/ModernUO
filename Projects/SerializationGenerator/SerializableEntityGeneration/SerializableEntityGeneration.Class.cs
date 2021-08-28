@@ -168,11 +168,13 @@ namespace SerializationGenerator
                 ? Array.Empty<ITypeSymbol>()
                 : new ITypeSymbol[] { compilation.GetTypeByMetadataName(SymbolMetadata.RAW_SERIALIZABLE_INTERFACE) };
 
-            source.GenerateClassStart(className, "    ", interfaces.ToImmutableArray());
+            var indent = "    ";
 
-            const string indent = "        ";
+            source.RecursiveGenerateClassStart(classSymbol, interfaces.ToImmutableArray(), ref indent);
+            indent += "    ";
 
             source.GenerateClassField(
+                indent,
                 Accessibility.Private,
                 InstanceModifier.Const,
                 "int",
@@ -223,7 +225,7 @@ namespace SerializationGenerator
 
                     if (attrTypeArg.Kind == TypedConstantKind.Primitive && attrTypeArg.Value is string attrStr)
                     {
-                        source.AppendLine($"        {attrStr}");
+                        source.AppendLine($"{indent}    {attrStr}");
                     }
                     else
                     {
@@ -298,7 +300,7 @@ namespace SerializationGenerator
             if (!embedded)
             {
                 // Serial constructor
-                source.GenerateSerialCtor(compilation, className, isOverride);
+                source.GenerateSerialCtor(compilation, className, indent, isOverride);
                 source.AppendLine();
             }
 
@@ -309,7 +311,7 @@ namespace SerializationGenerator
                     var migration = migrations[i];
                     if (migration.Version < version)
                     {
-                        source.GenerateMigrationContentStruct(compilation, migration, classSymbol);
+                        source.GenerateMigrationContentStruct(compilation, indent, migration, classSymbol);
                         source.AppendLine();
                     }
                 }
@@ -318,6 +320,7 @@ namespace SerializationGenerator
             // Serialize Method
             source.GenerateSerializeMethod(
                 compilation,
+                indent,
                 isOverride,
                 encodedVersion,
                 serializableProperties,
@@ -329,6 +332,7 @@ namespace SerializationGenerator
             source.GenerateDeserializeMethod(
                 compilation,
                 classSymbol,
+                indent,
                 isOverride,
                 version,
                 encodedVersion,
@@ -344,22 +348,23 @@ namespace SerializationGenerator
                 source.AppendLine();
                 source.GenerateEnumStart(
                     "SaveFlag",
-                    "        ",
+                    $"{indent}    ",
                     true,
                     Accessibility.Private
                 );
 
-                source.GenerateEnumValue("            ", true, "None", -1);
+                source.GenerateEnumValue($"{indent}        ", true, "None", -1);
                 int index = 0;
                 foreach (var (order, _) in serializableFieldSaveFlags)
                 {
-                    source.GenerateEnumValue("            ", true, serializableProperties[order].Name, index++);
+                    source.GenerateEnumValue($"{indent}    ", true, serializableProperties[order].Name, index++);
                 }
 
-                source.GenerateEnumEnd("        ");
+                source.GenerateEnumEnd($"{indent}    ");
             }
 
-            source.GenerateClassEnd("    ");
+            indent = indent.Substring(0, indent.Length - 4);
+            source.RecursiveGenerateClassEnd(classSymbol, ref indent);
             source.GenerateNamespaceEnd();
 
             if (migrationPath != null)
@@ -383,6 +388,42 @@ namespace SerializationGenerator
             Directory.CreateDirectory(migrationPath);
             var filePath = Path.Combine(migrationPath, $"{metadata.Type}.v{metadata.Version}.json");
             File.WriteAllText(filePath, JsonSerializer.Serialize(metadata, options));
+        }
+
+        private static void RecursiveGenerateClassStart(
+            this StringBuilder source,
+            INamedTypeSymbol classSymbol,
+            ImmutableArray<ITypeSymbol> interfaces,
+            ref string indent
+        )
+        {
+            var containingSymbolList = new List<INamedTypeSymbol>();
+
+            do
+            {
+                containingSymbolList.Add(classSymbol);
+                classSymbol = classSymbol.ContainingSymbol as INamedTypeSymbol;
+            } while (classSymbol != null);
+
+            containingSymbolList.Reverse();
+
+            for (var i = 0; i < containingSymbolList.Count; i++)
+            {
+                var symbol = containingSymbolList[i];
+                source.GenerateClassStart(symbol, indent, i == containingSymbolList.Count - 1 ? interfaces : ImmutableArray<ITypeSymbol>.Empty);
+                indent += "    ";
+            }
+        }
+
+        private static void RecursiveGenerateClassEnd(this StringBuilder source, INamedTypeSymbol classSymbol, ref string indent)
+        {
+            do
+            {
+                source.GenerateClassEnd(indent);
+                indent = indent.Substring(0, indent.Length - 4);
+
+                classSymbol = classSymbol.ContainingSymbol as INamedTypeSymbol;
+            } while (classSymbol != null);
         }
     }
 }
