@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.StaffEtherealMount",
+  "properties": [
+    {
+      "name": "EtherealType",
+      "type": "Server.Mobiles.EtherealType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
