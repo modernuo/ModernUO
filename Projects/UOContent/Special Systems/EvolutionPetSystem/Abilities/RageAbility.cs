@@ -115,7 +115,7 @@ namespace EvolutionPetSystem.Abilities
                 BaseCreature bc = (BaseCreature)defender;
 
                 if (bc.Controlled != true)
-                    XP += Utility.RandomMinMax(5 + (bc.HitsMax) / m_Evo.Stage +1 * 50, 5 + (bc.HitsMax) / m_Evo.Stage+1 * 20);
+                    XP += Utility.RandomMinMax(5 + (bc.HitsMax) / (m_Evo.Stage +1) * 50, 5 + (bc.HitsMax) / (m_Evo.Stage+1) * 20);
 
                 
             }

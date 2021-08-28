@@ -55,7 +55,15 @@ namespace Server.Items
                 }
                 else
                 {
-                    from.SendGump(new PetTokenGump(from, m_BoundEvoPet, this));
+                    if (m_BoundEvoPet.InLOS(from))
+                    {
+                        from.SendGump(new PetTokenGump(from, m_BoundEvoPet, this));
+                    }
+                    else
+                    {
+                        from.SendMessage("Your pet cannot be seen.");
+                    }
+                    
                 }
 
             }

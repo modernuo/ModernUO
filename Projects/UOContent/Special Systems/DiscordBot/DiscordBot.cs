@@ -17,11 +17,11 @@ namespace Server.DiscordBot
             Client.Events.DataReceived += DataReceived;
 
             // let's go!
-            Client.Connect();
+            //Client.Connect();
 
             
-            EventSink.CharacterCreated += EventSink_CharacterCreated;
-            EventSink.WorldSaveDone += EventSink_WorldSaveDone;
+            //EventSink.CharacterCreated += EventSink_CharacterCreated;
+            //EventSink.WorldSaveDone += EventSink_WorldSaveDone;
             
 
         }

@@ -75,13 +75,13 @@ namespace Scripts.Systems.Achievements
                         int pointCount = reader.ReadInt();
                         for (int i = 0; i < pointCount; ++i)
                         {
-                            m_pointsTotal.Add(reader.ReadUInt(), reader.ReadInt());
+                            m_pointsTotal.Add(reader.ReadSerial(), reader.ReadInt());
                         }
 
                         int featCount = reader.ReadInt();
                         for (int i = 0; i < featCount; ++i)
                         {
-                            var id = reader.ReadUInt();
+                            var id = reader.ReadSerial();
                             int iCount = reader.ReadInt();
 
 
