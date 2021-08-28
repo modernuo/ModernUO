@@ -23,7 +23,7 @@ namespace Server
     /// -or-
     /// [SerializableFieldAttr(typeof(CommandPropertyAttribute), AccessLevel.GameMaster)]
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Field)]
     public sealed class SerializableFieldAttrAttribute : Attribute
     {
         public string AttributeString { get; }

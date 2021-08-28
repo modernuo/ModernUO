@@ -12,7 +12,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestContainerDisplay()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             ushort gumpId = 100;
 
             var expected = new ContainerDisplay(serial, gumpId).Compile();
@@ -27,7 +27,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestContainerDisplayHS()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             ushort gumpId = 100;
 
             var expected = new ContainerDisplayHS(serial, gumpId).Compile();
@@ -43,7 +43,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestDisplaySpellbook()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
 
             var expected = new DisplaySpellbook(serial).Compile();
 
@@ -57,7 +57,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestDisplaySpellbookHS()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
 
             var expected = new DisplaySpellbookHS(serial).Compile();
 
@@ -72,7 +72,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestNewSpellbookContent()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             ushort graphic = 100;
             ushort offset = 10;
             ulong content = 0x123456789ABCDEF0;
@@ -93,7 +93,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestSpellbookContent()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             ushort offset = 10;
             ushort graphic = 100;
             ulong content = 0x123456789ABCDEF0;
@@ -110,7 +110,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestSpellbookContent6017()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             ushort offset = 10;
             ushort graphic = 100;
             ulong content = 0x123456789ABCDEF0;
@@ -128,7 +128,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestContainerContentUpdate()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1;
             var item = new Item(serial);
 
             var expected = new ContainerContentUpdate(item).Compile();
@@ -143,7 +143,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestContainerContentUpdate6017()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1;
             var item = new Item(serial);
 
             var expected = new ContainerContentUpdate6017(item).Compile();
@@ -163,7 +163,7 @@ namespace Server.Tests.Network
             cont.AddItem(new Item(World.NewItem));
             cont.Map = Map.Felucca;
 
-            var m = new Mobile((Serial)0x1);
+            var m = new Mobile(0x1);
             m.DefaultMobileInit();
             m.AccessLevel = AccessLevel.Administrator;
             m.Map = Map.Felucca;
@@ -184,7 +184,7 @@ namespace Server.Tests.Network
             cont.AddItem(new Item(World.NewItem));
             cont.Map = Map.Felucca;
 
-            var m = new Mobile((Serial)0x1);
+            var m = new Mobile(0x1);
             m.DefaultMobileInit();
             m.AccessLevel = AccessLevel.Administrator;
             m.Map = Map.Felucca;

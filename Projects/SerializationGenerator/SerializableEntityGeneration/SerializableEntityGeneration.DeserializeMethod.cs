@@ -28,7 +28,6 @@ namespace SerializationGenerator
             this StringBuilder source,
             Compilation compilation,
             INamedTypeSymbol classSymbol,
-            string indent,
             bool isOverride,
             int version,
             bool encodedVersion,
@@ -41,7 +40,7 @@ namespace SerializationGenerator
             var genericReaderInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_READER_INTERFACE);
 
             source.GenerateMethodStart(
-                indent,
+                "        ",
                 "Deserialize",
                 Accessibility.Public,
                 isOverride,
@@ -49,12 +48,12 @@ namespace SerializationGenerator
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericReaderInterface, "reader"))
             );
 
-            var bodyIndent = $"{indent}    ";
-            var innerIndent = $"{bodyIndent}    ";
+            const string indent = "            ";
+            const string innerIndent = $"{indent}    ";
 
             if (isOverride)
             {
-                source.AppendLine($"{bodyIndent}base.Deserialize(reader);");
+                source.AppendLine($"{indent}base.Deserialize(reader);");
                 source.AppendLine();
             }
 
@@ -80,7 +79,7 @@ namespace SerializationGenerator
                 ).Where(m => m.Item2 != null).ToList();
 
             // Version
-            source.AppendLine($"{bodyIndent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
+            source.AppendLine($"{indent}var version = reader.{(encodedVersion ? "ReadEncodedInt" : "ReadInt")}();");
 
             if (version > 0)
             {
@@ -96,32 +95,32 @@ namespace SerializationGenerator
                     }
 
                     source.AppendLine();
-                    source.AppendLine($"{bodyIndent}if (version == {migrationVersion})");
-                    source.AppendLine($"{bodyIndent}{{");
-                    source.AppendLine($"{bodyIndent}    MigrateFrom(new V{migrationVersion}Content(reader, this));");
-                    source.AppendLine($"{bodyIndent}    {parent}.MarkDirty();");
-                    source.GenerateAfterDeserialization($"{bodyIndent}    ", afterDeserialization);
-                    source.AppendLine($"{bodyIndent}    return;");
-                    source.AppendLine($"{bodyIndent}}}");
+                    source.AppendLine($"{indent}if (version == {migrationVersion})");
+                    source.AppendLine($"{indent}{{");
+                    source.AppendLine($"{indent}    MigrateFrom(new V{migrationVersion}Content(reader, this));");
+                    source.AppendLine($"{indent}    {parent}.MarkDirty();");
+                    source.GenerateAfterDeserialization($"{indent}    ", afterDeserialization);
+                    source.AppendLine($"{indent}    return;");
+                    source.AppendLine($"{indent}}}");
                 }
 
                 if (nextVersion < version)
                 {
                     source.AppendLine();
-                    source.AppendLine($"{bodyIndent}if (version < _version)");
-                    source.AppendLine($"{bodyIndent}{{");
-                    source.AppendLine($"{bodyIndent}    Deserialize(reader, version);");
-                    source.AppendLine($"{bodyIndent}    {parent}.MarkDirty();");
-                    source.GenerateAfterDeserialization($"{bodyIndent}    ", afterDeserialization);
-                    source.AppendLine($"{bodyIndent}    return;");
-                    source.AppendLine($"{bodyIndent}}}");
+                    source.AppendLine($"{indent}if (version < _version)");
+                    source.AppendLine($"{indent}{{");
+                    source.AppendLine($"{indent}    Deserialize(reader, version);");
+                    source.AppendLine($"{indent}    {parent}.MarkDirty();");
+                    source.GenerateAfterDeserialization($"{indent}    ", afterDeserialization);
+                    source.AppendLine($"{indent}    return;");
+                    source.AppendLine($"{indent}}}");
                 }
             }
 
             if (serializableFieldSaveFlagMethodsDictionary.Count > 0)
             {
                 source.AppendLine();
-                source.AppendLine($"{bodyIndent}var saveFlags = reader.ReadEnum<SaveFlag>();");
+                source.AppendLine($"{indent}var saveFlags = reader.ReadEnum<SaveFlag>();");
             }
 
             foreach (var property in properties)
@@ -138,11 +137,11 @@ namespace SerializationGenerator
                     // Special case
                     if (property.Type == "bool")
                     {
-                        source.AppendLine($"{bodyIndent}{property.Name} = (saveFlags & SaveFlag.{property.Name}) != 0;");
+                        source.AppendLine($"{indent}{property.Name} = (saveFlags & SaveFlag.{property.Name}) != 0;");
                     }
                     else
                     {
-                        source.AppendLine($"{bodyIndent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{bodyIndent}{{");
+                        source.AppendLine($"{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
                         rule.GenerateDeserializationMethod(
                             source,
                             innerIndent,
@@ -153,13 +152,13 @@ namespace SerializationGenerator
 
                         if (serializableFieldSaveFlagMethods.GetFieldDefaultValue != null)
                         {
-                            source.AppendLine($"{bodyIndent}}}\n{bodyIndent}else\n{bodyIndent}{{");
+                            source.AppendLine($"{indent}}}\n{indent}else\n{indent}{{");
                             source.AppendLine(
-                                $"{bodyIndent}    {property.Name} = {serializableFieldSaveFlagMethods.GetFieldDefaultValue.Name}();"
+                                $"{indent}    {property.Name} = {serializableFieldSaveFlagMethods.GetFieldDefaultValue.Name}();"
                             );
                         }
 
-                        source.AppendLine($"{bodyIndent}}}");
+                        source.AppendLine($"{indent}}}");
                     }
                 }
                 else
@@ -167,16 +166,16 @@ namespace SerializationGenerator
                     source.AppendLine();
                     rule.GenerateDeserializationMethod(
                         source,
-                        bodyIndent,
+                        indent,
                         property,
                         parentFieldOrProperty?.Name ?? "this"
                     );
-                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, bodyIndent, property, compilation, classSymbol);
+                    (rule as IPostDeserializeMethod)?.PostDeserializeMethod(source, indent, property, compilation, classSymbol);
                 }
             }
 
-            source.GenerateAfterDeserialization($"{bodyIndent}", afterDeserialization);
-            source.GenerateMethodEnd(indent);
+            source.GenerateAfterDeserialization($"{indent}", afterDeserialization);
+            source.GenerateMethodEnd("        ");
         }
 
         private static void GenerateAfterDeserialization(

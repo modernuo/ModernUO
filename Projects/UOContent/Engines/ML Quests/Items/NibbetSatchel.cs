@@ -16,7 +16,7 @@
                     2 => new Hinge(3),
                     3 => new Key(),
                     4 => new Scissors(),
-                    5 => new BarrelTap(),
+                    5 => new BarrelTap(3),
                     6 => new BarrelHoops(),
                     7 => new Gears(3),
                     8 => new Lockpick(3),

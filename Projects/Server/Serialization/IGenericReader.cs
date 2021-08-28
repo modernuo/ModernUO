@@ -33,7 +33,6 @@ namespace Server
         byte ReadByte();
         sbyte ReadSByte();
         bool ReadBool();
-        Serial ReadSerial();
 
         DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
         TimeSpan ReadTimeSpan() => new(ReadLong());

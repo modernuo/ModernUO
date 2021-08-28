@@ -17,7 +17,6 @@ using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Text;
 
@@ -63,7 +62,6 @@ namespace Server
             return intern ? Utility.Intern(str) : str;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long ReadLong()
         {
             var v = BinaryPrimitives.ReadInt64LittleEndian(_buffer.AsSpan(_position, 8));
@@ -71,7 +69,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ulong ReadULong()
         {
             var v = BinaryPrimitives.ReadUInt64LittleEndian(_buffer.AsSpan(_position, 8));
@@ -79,7 +76,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadInt()
         {
             var v = BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(_position, 4));
@@ -87,7 +83,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint ReadUInt()
         {
             var v = BinaryPrimitives.ReadUInt32LittleEndian(_buffer.AsSpan(_position, 4));
@@ -95,7 +90,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public short ReadShort()
         {
             var v = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(_position, 2));
@@ -103,7 +97,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort ReadUShort()
         {
             var v = BinaryPrimitives.ReadUInt16LittleEndian(_buffer.AsSpan(_position, 2));
@@ -111,7 +104,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double ReadDouble()
         {
             var v = BinaryPrimitives.ReadDoubleLittleEndian(_buffer.AsSpan(_position, 8));
@@ -119,7 +111,6 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float ReadFloat()
         {
             var v = BinaryPrimitives.ReadSingleLittleEndian(_buffer.AsSpan(_position, 4));
@@ -127,17 +118,11 @@ namespace Server
             return v;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte ReadByte() => _buffer[_position++];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public sbyte ReadSByte() => (sbyte)_buffer[_position++];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ReadBool() => _buffer[_position++] != 0;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Serial ReadSerial() => (Serial)ReadUInt();
 
         public int Read(Span<byte> buffer)
         {

@@ -114,7 +114,22 @@ namespace Server
                 var loc = reader.ReadPoint3D();
                 var worldLoc = reader.ReadPoint3D();
 
-                IEntity parent = reader.ReadEntity<IEntity>();
+                IEntity parent;
+
+                Serial serial = reader.ReadUInt();
+
+                if (serial.IsItem)
+                {
+                    parent = World.FindItem(serial);
+                }
+                else if (serial.IsMobile)
+                {
+                    parent = World.FindMobile(serial);
+                }
+                else
+                {
+                    parent = null;
+                }
 
                 return new BounceInfo(map, loc, worldLoc, parent);
             }
@@ -408,8 +423,6 @@ namespace Server
 
         public virtual bool IsVirtualItem => false;
 
-        public virtual bool CanSeeStaffOnly(Mobile from) => from.AccessLevel > AccessLevel.Counselor;
-
         public virtual int LabelNumber
         {
             get
@@ -488,8 +501,7 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int PileWeight => (int)Math.Ceiling(Weight * Amount);
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
             get => m_Hue;
@@ -2639,7 +2651,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
                         {
-                            Serial parent = reader.ReadSerial();
+                            Serial parent = reader.ReadUInt();
 
                             if (parent.IsMobile)
                             {
@@ -2800,7 +2812,7 @@ namespace Server
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
                         {
-                            Serial parent = reader.ReadSerial();
+                            Serial parent = reader.ReadUInt();
 
                             if (parent.IsMobile)
                             {
@@ -2918,7 +2930,7 @@ namespace Server
                             AcquireCompactInfo().m_Name = name;
                         }
 
-                        Serial parent = reader.ReadSerial();
+                        Serial parent = reader.ReadUInt();
 
                         if (parent.IsMobile)
                         {

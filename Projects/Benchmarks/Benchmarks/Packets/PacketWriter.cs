@@ -111,8 +111,6 @@ namespace Server.Network
             UnderlyingStream.Write(m_Buffer, 0, 2);
         }
 
-        public void Write(Serial serial) => Write(serial.Value);
-
         /// <summary>
         ///     Writes a 4-byte signed integer value to the underlying stream.
         /// </summary>

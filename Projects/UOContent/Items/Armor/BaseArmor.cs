@@ -566,8 +566,7 @@ namespace Server.Items
 
         public virtual Race RequiredRace => null;
 
-        [Hue]
-        [CommandProperty(AccessLevel.GameMaster)]
+        [Hue, CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -1135,17 +1134,15 @@ namespace Server.Items
         {
             var flags = (OldSaveFlag)reader.ReadEncodedInt();
 
-            Attributes = new AosAttributes(this);
-
             if (GetSaveFlag(flags, OldSaveFlag.Attributes))
             {
+                Attributes = new AosAttributes(this);
                 Attributes.Deserialize(reader);
             }
 
-            ArmorAttributes = new AosArmorAttributes(this);
-
             if (GetSaveFlag(flags, OldSaveFlag.ArmorAttributes))
             {
+                ArmorAttributes = new AosArmorAttributes(this);
                 ArmorAttributes.Deserialize(reader);
             }
 

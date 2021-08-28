@@ -27,7 +27,6 @@ namespace SerializationGenerator
         public static void GenerateSerializeMethod(
             this StringBuilder source,
             Compilation compilation,
-            string indent,
             bool isOverride,
             bool encodedVersion,
             ImmutableArray<SerializableProperty> properties,
@@ -37,7 +36,7 @@ namespace SerializationGenerator
             var genericWriterInterface = compilation.GetTypeByMetadataName(SymbolMetadata.GENERIC_WRITER_INTERFACE);
 
             source.GenerateMethodStart(
-                indent,
+                "        ",
                 "Serialize",
                 Accessibility.Public,
                 isOverride,
@@ -45,34 +44,34 @@ namespace SerializationGenerator
                 ImmutableArray.Create<(ITypeSymbol, string)>((genericWriterInterface, "writer"))
             );
 
-            var bodyIndent = $"{indent}    ";
-            var innerIndent = $"{bodyIndent}    ";
+            const string indent = "            ";
+            const string innerIndent = $"{indent}    ";
 
             if (isOverride)
             {
-                source.AppendLine($"{bodyIndent}base.Serialize(writer);");
+                source.AppendLine($"{indent}base.Serialize(writer);");
                 source.AppendLine();
             }
 
             // Version
-            source.AppendLine($"{bodyIndent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
+            source.AppendLine($"{indent}writer.{(encodedVersion ? "WriteEncodedInt" : "Write")}(_version);");
 
             // Let's collect the flags
             if (serializableFieldSaveFlagMethodsDictionary.Count > 0)
             {
-                source.AppendLine($"\n{bodyIndent}var saveFlags = SaveFlag.None;");
+                source.AppendLine($"\n{indent}var saveFlags = SaveFlag.None;");
 
                 foreach (var (order, saveFlagMethods) in serializableFieldSaveFlagMethodsDictionary)
                 {
-                    source.AppendLine($"{bodyIndent}if ({saveFlagMethods.DetermineFieldShouldSerialize!.Name}())\n{bodyIndent}{{");
+                    source.AppendLine($"{indent}if ({saveFlagMethods.DetermineFieldShouldSerialize!.Name}())\n{indent}{{");
 
                     var propertyName = properties[order].Name;
                     source.AppendLine($"{innerIndent}saveFlags |= SaveFlag.{propertyName};");
 
-                    source.AppendLine($"{bodyIndent}}}");
+                    source.AppendLine($"{indent}}}");
                 }
 
-                source.AppendLine($"{bodyIndent}writer.WriteEnum(saveFlags);");
+                source.AppendLine($"{indent}writer.WriteEnum(saveFlags);");
             }
 
             foreach (var property in properties)
@@ -82,13 +81,13 @@ namespace SerializationGenerator
                     // Special case
                     if (property.Type != "bool")
                     {
-                        source.AppendLine($"\n{bodyIndent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{bodyIndent}{{");
+                        source.AppendLine($"\n{indent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{indent}{{");
                         SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
                             source,
                             innerIndent,
                             property
                         );
-                        source.AppendLine($"{bodyIndent}}}");
+                        source.AppendLine($"{indent}}}");
                     }
                 }
                 else
@@ -96,13 +95,13 @@ namespace SerializationGenerator
                     source.AppendLine();
                     SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
                         source,
-                        bodyIndent,
+                        indent,
                         property
                     );
                 }
             }
 
-            source.GenerateMethodEnd(indent);
+            source.GenerateMethodEnd("        ");
         }
     }
 }

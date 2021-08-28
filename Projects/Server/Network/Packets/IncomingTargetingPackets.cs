@@ -30,7 +30,7 @@ namespace Server.Network
             int type = reader.ReadByte();
             var targetID = reader.ReadInt32();
             int flags = reader.ReadByte();
-            var serial = (Serial)reader.ReadUInt32();
+            Serial serial = reader.ReadUInt32();
             int x = reader.ReadInt16();
             int y = reader.ReadInt16();
             reader.ReadByte();

@@ -9,7 +9,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestWorldItemPacket()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             var itemId = 1;
 
             // Move to fixture
@@ -45,7 +45,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestWorldItemSAPacket()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             ushort itemId = 1;
 
             // Move to fixture
@@ -81,7 +81,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestWorldItemHSPacket()
         {
-            Serial serial = (Serial)0x1024;
+            Serial serial = 0x1000;
             var itemId = 1;
 
             // Move to fixture

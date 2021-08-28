@@ -55,23 +55,22 @@ namespace Server
         private const uint _maxItems = MaxItemSerial - ItemOffset + 1;
 
         private static Serial _lastMobile = Serial.Zero;
-        private static Serial _lastItem = (Serial)ItemOffset;
+        private static Serial _lastItem = ItemOffset;
         private static Serial _lastGuild = Serial.Zero;
 
         public static Serial NewMobile
         {
             get
             {
-                var last = _lastMobile;
-                var maxMobile = (Serial)MaxMobileSerial;
+                uint last = _lastMobile;
 
                 for (int i = 0; i < MaxMobileSerial; i++)
                 {
                     last++;
 
-                    if (last > maxMobile)
+                    if (last > MaxMobileSerial)
                     {
-                        last = (Serial)1;
+                        last = 1;
                     }
 
                     if (FindMobile(last) == null)
@@ -89,7 +88,7 @@ namespace Server
         {
             get
             {
-                var last = _lastItem;
+                uint last = _lastItem;
 
                 for (int i = 0; i < _maxItems; i++)
                 {
@@ -97,7 +96,7 @@ namespace Server
 
                     if (last > MaxItemSerial)
                     {
-                        last = (Serial)ItemOffset;
+                        last = ItemOffset;
                     }
 
                     if (FindItem(last) == null)
@@ -649,7 +648,7 @@ namespace Server
 
         public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
         {
-            Serial serial = reader.ReadSerial();
+            Serial serial = reader.ReadUInt();
             var typeT = typeof(T);
 
             // Add to this list when creating new serializable types

@@ -97,6 +97,9 @@ namespace Server.Engines.Craft
             typeof(BaseClothing),
             typeof(BaseInstrument),
             typeof(DragonBardingDeed),
+            /////////////////////////////////////////////////added for HorseBardingDeed///////////////////
+			typeof(HorseBardingDeed),
+/////////////////////////////////////////////////
             typeof(BaseTool),
             typeof(BaseHarvestTool),
             typeof(FukiyaDarts), typeof(Shuriken),

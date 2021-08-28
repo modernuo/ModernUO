@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Server;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -163,12 +165,15 @@ namespace Server
                 }
             }
 
-            if (from?.Player != true && m.Player && m.Mount is SwampDragon pet)
+            #region Barding
+            if ((!Core.AOS || from == null || !from.Player) && m.Player && m.Mount is SwampDragon)
             {
-                if (pet.HasBarding)
+                SwampDragon pet = m.Mount as SwampDragon;
+
+                if (pet != null && pet.HasBarding)
                 {
-                    var percent = pet.BardingExceptional ? 20 : 10;
-                    var absorbed = Scale(totalDamage, percent);
+                    int percent = (pet.BardingExceptional ? 20 : 10);
+                    int absorbed = Scale(totalDamage, percent);
 
                     totalDamage -= absorbed;
                     pet.BardingHP -= absorbed;
@@ -179,6 +184,52 @@ namespace Server
                         pet.BardingHP = 0;
 
                         m.SendLocalizedMessage(1053031); // Your dragon's barding has been destroyed!
+                    }
+                }
+            }
+            /////////////////////////////////////added for horse barding////////////////////////
+            if ((!Core.AOS || from == null || !from.Player) && m.Player && m.Mount is Horse)
+            {
+                Horse pet = m.Mount as Horse;
+
+                if (pet != null && pet.HasBarding)
+                {
+                    int percent = (pet.BardingExceptional ? 20 : 10);
+                    int absorbed = Scale(totalDamage, percent);
+
+                    totalDamage -= absorbed;
+                    pet.BardingHP -= absorbed;
+
+                    if (pet.BardingHP < 0)
+                    {
+                        pet.HasBarding = false;
+                        pet.BardingHP = 0;
+
+                        m.SendMessage("Your horses barding has been destroyed."); // Your dragon's barding has been destroyed!
+                    }
+                }
+            }
+            #endregion
+            ////////////////////////////////////////////////////////////////////////////
+
+            if (keepAlive && totalDamage > m.Hits)
+                totalDamage = m.Hits;
+
+            if (from != null && !from.Deleted && from.Alive)
+            {
+                int reflectPhys = AosAttributes.GetValue(m, AosAttribute.ReflectPhysical);
+
+                if (reflectPhys != 0)
+                {
+                    if (from is ExodusMinion && ((ExodusMinion)from).FieldActive || from is ExodusOverseer && ((ExodusOverseer)from).FieldActive)
+                    {
+                        from.FixedParticles(0x376A, 20, 10, 0x2530, EffectLayer.Waist);
+                        from.PlaySound(0x2F4);
+                        m.SendAsciiMessage("Your weapon cannot penetrate the creature's magical barrier");
+                    }
+                    else
+                    {
+                        from.Damage(Scale((damage * phys * (100 - (ignoreArmor ? 0 : m.PhysicalResistance))) / 10000, reflectPhys), m);
                     }
                 }
             }

@@ -1,7 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(0, false)]
-    public partial class DivineCountenance : HornedTribalMask
+    public class DivineCountenance : HornedTribalMask
     {
         [Constructible]
         public DivineCountenance()
@@ -12,6 +11,10 @@ namespace Server.Items
             Attributes.RegenMana = 2;
             Attributes.ReflectPhysical = 15;
             Attributes.LowerManaCost = 8;
+        }
+
+        public DivineCountenance(Serial serial) : base(serial)
+        {
         }
 
         public override int LabelNumber => 1061289; // Divine Countenance
@@ -25,5 +28,31 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(1);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+                        Resistances.Physical = 0;
+                        Resistances.Fire = 0;
+                        Resistances.Cold = 0;
+                        Resistances.Energy = 0;
+                        break;
+                    }
+            }
+        }
     }
 }

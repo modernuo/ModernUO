@@ -35,16 +35,23 @@ namespace Server.Targets
             {
                 carvable.Carve(from, m_Item);
             }
-            else if (targeted is SwampDragon pet && pet.HasBarding)
+            else if (targeted is SwampDragon && ((SwampDragon)targeted).HasBarding)
             {
+                SwampDragon pet = (SwampDragon)targeted;
+
                 if (!pet.Controlled || pet.ControlMaster != from)
-                {
                     from.SendLocalizedMessage(1053022); // You cannot remove barding from a swamp dragon you do not own.
-                }
                 else
-                {
                     pet.HasBarding = false;
-                }
+            }
+            else if (targeted is Horse && ((Horse)targeted).HasBarding)
+            {
+                Horse pet = (Horse)targeted;
+
+                if (!pet.Controlled || pet.ControlMaster != from)
+                    from.SendMessage("You cannot remove barding from a horse you do not own."); // You cannot remove barding from a horse you do not own.
+                else
+                    pet.HasBarding = false;
             }
             else
             {

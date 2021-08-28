@@ -21,7 +21,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Toolkit.HighPerformance;
-using Server;
 using Server.Text;
 
 namespace System.Buffers
@@ -234,9 +233,6 @@ namespace System.Buffers
             BinaryPrimitives.WriteUInt32BigEndian(_buffer[_position..], value);
             Position += 4;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(Serial serial) => Write(serial.Value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteLE(uint value)

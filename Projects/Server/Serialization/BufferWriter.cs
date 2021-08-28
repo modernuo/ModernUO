@@ -286,9 +286,6 @@ namespace Server
             _buffer[Index++] = *(byte*)&value; // up to 30% faster to dereference the raw value on the stack
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(Serial serial) => Write(serial.Value);
-
         internal void InternalWriteString(string value)
         {
             var remaining = m_Encoding.GetByteCount(value);

@@ -221,6 +221,8 @@ namespace Server.Engines.Craft
 
             if (Core.AOS) // exact pre-aos functionality unknown
             {
+                AddCraft(typeof(HorseBardingDeed), 1011078, 1054016, 72.5, 122.5, typeof(IronIngot), 1044036, 350, 1044037);
+                ///////////////////////////horse barding
                 AddCraft(typeof(DragonBardingDeed), 1011078, 1053012, 72.5, 122.5, typeof(IronIngot), 1044036, 750, 1044037);
             }
 

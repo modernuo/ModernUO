@@ -1,7 +1,6 @@
 namespace Server.Items
 {
-    [Serializable(0, false)]
-    public partial class HuntersHeaddress : DeerMask
+    public class HuntersHeaddress : DeerMask
     {
         [Constructible]
         public HuntersHeaddress()
@@ -15,6 +14,10 @@ namespace Server.Items
             Attributes.AttackChance = 15;
         }
 
+        public HuntersHeaddress(Serial serial) : base(serial)
+        {
+        }
+
         public override int LabelNumber => 1061595; // Hunter's Headdress
 
         public override int ArtifactRarity => 11;
@@ -23,5 +26,27 @@ namespace Server.Items
 
         public override int InitMinHits => 255;
         public override int InitMaxHits => 255;
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(1);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+            switch (version)
+            {
+                case 0:
+                    {
+                        Resistances.Cold = 0;
+                        break;
+                    }
+            }
+        }
     }
 }

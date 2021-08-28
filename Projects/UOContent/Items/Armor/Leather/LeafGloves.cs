@@ -31,20 +31,6 @@ namespace Server.Items
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
         [EncodedInt]
-        [SerializableField(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CurArcaneCharges
-        {
-            get => _curArcaneCharges;
-            set
-            {
-                _curArcaneCharges = value;
-                InvalidateProperties();
-                Update();
-            }
-        }
-
-        [EncodedInt]
         [SerializableField(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxArcaneCharges
@@ -53,6 +39,20 @@ namespace Server.Items
             set
             {
                 _maxArcaneCharges = value;
+                InvalidateProperties();
+                Update();
+            }
+        }
+
+        [EncodedInt]
+        [SerializableField(0)]
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int CurArcaneCharges
+        {
+            get => _curArcaneCharges;
+            set
+            {
+                _curArcaneCharges = value;
                 InvalidateProperties();
                 Update();
             }

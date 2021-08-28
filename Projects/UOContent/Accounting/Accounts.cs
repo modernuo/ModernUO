@@ -21,7 +21,7 @@ namespace Server.Accounting
         {
             get
             {
-                var last = _lastAccount;
+                uint last = _lastAccount;
 
                 for (uint i = 0; i < uint.MaxValue; i++)
                 {

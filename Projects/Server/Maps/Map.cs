@@ -1238,7 +1238,9 @@ namespace Server
 
             if (org.X > dest.X || org.X == dest.X && org.Y > dest.Y || org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z)
             {
-                (org, dest) = (dest, org);
+                var swap = org;
+                org = dest;
+                dest = swap;
             }
 
             int height;
