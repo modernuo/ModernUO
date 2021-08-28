@@ -308,12 +308,13 @@ namespace Server.Engines.Spawners
             DoTimer(TimeSpan.FromSeconds(1));
         }
 
+        public override bool CanSeeStaffOnly(Mobile from) => from.AccessLevel >= AccessLevel.Developer;
+
+        public override bool IsAccessibleTo(Mobile from) => from.AccessLevel >= AccessLevel.Developer;
+
         public override void OnDoubleClick(Mobile from)
         {
-            if (from.AccessLevel >= AccessLevel.Developer)
-            {
-                from.SendGump(new SpawnerGump(this));
-            }
+            from.SendGump(new SpawnerGump(this));
         }
 
         public virtual void GetSpawnerProperties(ObjectPropertyList list)

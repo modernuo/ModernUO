@@ -5195,7 +5195,7 @@ namespace Server
 
                             var map = from.Map;
 
-                            if (DragEffects && map != null && (root == null || root is Item))
+                            if (DragEffects && map != null && root is null or Item)
                             {
                                 var eable = map.GetClientsInRange(from.Location);
                                 var rootItem = root as Item;
@@ -7181,17 +7181,12 @@ namespace Server
 
         public virtual bool CanSee(object o)
         {
-            if (o is Item item)
+            return o switch
             {
-                return CanSee(item);
-            }
-
-            if (o is Mobile mobile)
-            {
-                return CanSee(mobile);
-            }
-
-            return true;
+                Item item     => CanSee(item),
+                Mobile mobile => CanSee(mobile),
+                _             => true
+            };
         }
 
         public virtual bool CanSee(Item item)
@@ -7239,7 +7234,7 @@ namespace Server
                 }
             }
 
-            return !item.Deleted && item.Map == m_Map && (item.Visible || m_AccessLevel > AccessLevel.Counselor);
+            return !item.Deleted && item.Map == m_Map && (item.Visible || item.CanSeeStaffOnly(this));
         }
 
         public virtual bool CanSee(Mobile m)

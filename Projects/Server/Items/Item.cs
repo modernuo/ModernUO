@@ -408,6 +408,8 @@ namespace Server
 
         public virtual bool IsVirtualItem => false;
 
+        public virtual bool CanSeeStaffOnly(Mobile from) => from.AccessLevel > AccessLevel.Counselor;
+
         public virtual int LabelNumber
         {
             get
