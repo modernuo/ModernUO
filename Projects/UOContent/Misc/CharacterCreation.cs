@@ -991,7 +991,7 @@ namespace Server.Misc
 
             var addSkillItems = true;
             var elf = m.Race == Race.Elf;
-            //var gargoyle = m.Race == Race.Gargoyle;
+            var gargoyle = m.Race == Race.Gargoyle;
 
             switch (prof)
             {
