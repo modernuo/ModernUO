@@ -39,6 +39,6 @@ namespace Server.Items
         [Constructible]
         public ElvenPants(int hue = 0) : base(0x2FC3, hue) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
     }
 }

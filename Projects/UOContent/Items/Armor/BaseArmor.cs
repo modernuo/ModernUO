@@ -564,7 +564,6 @@ namespace Server.Items
 
         public virtual CraftResource DefaultResource => CraftResource.Iron;
 
-        public virtual Race RequiredRace => null;
 
         [Hue]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -988,17 +987,8 @@ namespace Server.Items
 
                 if (item is BaseArmor armor)
                 {
-                    if (armor.RequiredRace != null && m.Race != armor.RequiredRace)
+                    if (!armor.CheckRace(m))
                     {
-                        if (armor.RequiredRace == Race.Elf)
-                        {
-                            m.SendLocalizedMessage(1072203); // Only Elves may use this.
-                        }
-                        else
-                        {
-                            m.SendMessage("Only {0} may use this.", armor.RequiredRace.PluralName);
-                        }
-
                         m.AddToBackpack(armor);
                     }
                     else if (!armor.AllowMaleWearer && !m.Female && m.AccessLevel < AccessLevel.GameMaster)
@@ -1287,17 +1277,8 @@ namespace Server.Items
 
             if (from.AccessLevel < AccessLevel.GameMaster)
             {
-                if (RequiredRace != null && from.Race != RequiredRace)
+                if (!CheckRace(from))
                 {
-                    if (RequiredRace == Race.Elf)
-                    {
-                        from.SendLocalizedMessage(1072203); // Only Elves may use this.
-                    }
-                    else
-                    {
-                        from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
-                    }
-
                     return false;
                 }
 
@@ -1503,12 +1484,12 @@ namespace Server.Items
                 list.Add(1041350); // faction item
             }
 
-            if (RequiredRace == Race.Elf)
+            if (RequiredRaces == Race.AllowElvesOnly)
             {
                 list.Add(1075086); // Elves Only
             }
 
-            if (RequiredRace == Race.Gargoyle)
+            if (RequiredRaces == Race.AllowGargoylesOnly)
             {
                 list.Add(1111709); // Gargoyles Only
             }

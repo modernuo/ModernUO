@@ -21,7 +21,7 @@ namespace Server.Items
 
         public override int ArmorBase => 40;
 
-        public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
-        public override Race RequiredRace => Race.Elf;
+        public override ArmorMaterialType MaterialType => ArmorMaterialType.Wood;
+        public override int RequiredRaces => Race.AllowElvesOnly;
     }
 }
