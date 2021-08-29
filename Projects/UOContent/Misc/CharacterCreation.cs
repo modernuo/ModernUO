@@ -1007,14 +1007,14 @@ namespace Server.Misc
                             EquipItem(new HidePants());
                             EquipItem(new ElvenBoots());
                         }
-                        //elif (gargoyle)
-                        //{
-                            //EquipItem(new DreadSword());
-                            //EquipItem(new GargishLeatherChestType1());
-                            //EquipItem(new GargishLeatherArmsType1());
-                            //EquipItem(new GargishLeatherKiltType1());  IMPLEMENTION NEEDED
-                            //EquipItem(new GargishLeatherLegsType1());
-                        //}
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new DreadSword()); //NOT IMPLEMENTED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1());  
+                            EquipItem(new GargishLeatherLegsType1());
+                        }
                         else
                         {
                             EquipItem(new Bascinet());
@@ -1025,7 +1025,6 @@ namespace Server.Misc
                             EquipItem(new StuddedLegs());
                             EquipItem(new ThighBoots());
                         }
-                        
                         break;
                     }
                 case 4: // Necromancer
@@ -1056,14 +1055,14 @@ namespace Server.Misc
                             EquipItem(NecroHue(new LeafLegs()));
                             EquipItem(new ElvenBoots());
                         }
-                        //elif (gargoyle)
-                        //{
-                            //EquipItem(new GlassSword());
-                            //EquipItem(new GargishLeatherChestType1());
-                            //EquipItem(new GargishLeatherArmsType1());
-                            //EquipItem(new GargishLeatherKiltType1());  IMPLEMENTION NEEDED
-                            //EquipItem(new GargishLeatherLegsType1());
-                        //}
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new GlassSword());  //NOT IMPLEMENTED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherLegsType1());
+                        }
                         else
                         {
                             EquipItem(new BoneHarvester());
@@ -1102,14 +1101,14 @@ namespace Server.Misc
                             EquipItem(new LeafGloves());
                             EquipItem(new ElvenBoots()); // Verify hue
                         }
-                        //elif (gargoyle)
-                        //{
-                            //EquipItem(new GlassSword());
-                            //EquipItem(new GargishStoneChestType1());
-                            //EquipItem(new GargishStoneArmsType1());
-                            //EquipItem(new GargishStoneKiltType1());  IMPLEMENTION NEEDED
-                            //EquipItem(new GargishStoneLegsType1());
-                        //}
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new GlassSword()); // IMPLEMENTION NEEDED
+                            EquipItem(new GargishStoneChestType1());
+                            EquipItem(new GargishStoneArmsType1());
+                            EquipItem(new GargishStoneKiltType1()); 
+                            EquipItem(new GargishStoneLegsType1());
+                        }
                         else
                         {
                             EquipItem(new Broadsword());
@@ -1148,14 +1147,14 @@ namespace Server.Misc
                             EquipItem(new TattsukeHakama(0x22D));
                             EquipItem(new Bokuto());
                         }
-                        //elif (gargoyle)
-                        //{
-                            //EquipItem(new GargishTalwar());
-                            //EquipItem(new GargishStoneChestType1());
-                            //EquipItem(new GargishStoneArmsType1());
-                            //EquipItem(new GargishStoneKiltType1());  IMPLEMENTION NEEDED
-                            //EquipItem(new GargishStoneLegsType1());
-                        //}
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new GargishTalwar()); // IMPLEMENTION NEEDED
+                            EquipItem(new GargishStoneChestType1());
+                            EquipItem(new GargishStoneArmsType1());
+                            EquipItem(new GargishStoneKiltType1());  
+                            EquipItem(new GargishStoneLegsType1());
+                        }
                         else
                         {
                             EquipItem(new LeatherJingasa());
@@ -1190,14 +1189,14 @@ namespace Server.Misc
                             EquipItem(new NinjaTabi(0x2C3));
                             EquipItem(new Kasa());
                         }
-                        //elif (gargoyle)
-                        //{
+                        else if (gargoyle)
+                        {
                             //EquipItem(new DualPointedSpear());
                             //EquipItem(new GargishStoneChestType1());
                             //EquipItem(new GargishStoneArmsType1());
                             //EquipItem(new GargishStoneKiltType1());  IMPLEMENTION NEEDED
                             //EquipItem(new GargishStoneLegsType1());
-                        //}
+                        }
                         else
                         {
                             EquipItem(new Tekagi());
