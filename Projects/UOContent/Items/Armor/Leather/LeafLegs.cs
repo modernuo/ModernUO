@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public LeafLegs() : base(0x2FC9) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 3;

@@ -2104,6 +2104,47 @@ namespace Server
 
         public virtual bool CheckConflictingLayer(Mobile m, Item item, Layer layer) => m_Layer == layer;
 
+        // Uses Race.RaceFlag
+        public virtual int RequiredRaces => Race.AllowAllRaces;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool CheckRace(Race race) => Race.IsAllowedRace(race, RequiredRaces);
+
+        public bool CheckRace(Mobile from, bool message = true)
+        {
+            var race = from.Race;
+            var requiredRaces = RequiredRaces;
+
+            if (Race.IsAllowedRace(race, requiredRaces))
+            {
+                return true;
+            }
+
+            if (!message)
+            {
+                return false;
+            }
+
+            if (race == Race.Gargoyle)
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1111708); // Gargoyles can't wear this.
+            }
+            else if (requiredRaces == Race.AllowGargoylesOnly)
+            {
+                from.LocalOverheadMessage(Network.MessageType.Regular, 0x3B2, 1111707); // Only gargoyles can wear this.
+            }
+            else if (race != Race.Elf)
+            {
+                from.SendLocalizedMessage(1072203); // Only Elves may use this.
+            }
+            else if (race != Race.Human)
+            {
+                from.SendMessage($"Only {race.PluralName} may use this.");
+            }
+
+            return false;
+        }
+
         public virtual bool CanEquip(Mobile m) => m_Layer != Layer.Invalid && m.FindItemOnLayer(m_Layer) == null;
 
         public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)

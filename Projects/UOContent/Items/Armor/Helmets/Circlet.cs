@@ -25,6 +25,6 @@ namespace Server.Items
 
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
     }
 }

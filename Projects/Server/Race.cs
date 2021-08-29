@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -16,6 +17,7 @@ namespace Server
         {
             RaceID = raceID;
             RaceIndex = raceIndex;
+            RaceFlag = 1 << raceIndex;
 
             Name = name;
 
@@ -38,6 +40,11 @@ namespace Server
 
         public static List<Race> AllRaces { get; } = new();
 
+        public const int AllowAllRaces = 0x7;      // Race.Human.RaceFlag | Race.Elf.RaceFlag | Race.Gargoyle.RaceFlag
+        public const int AllowHumanOrElves = 0x3;  // Race.Human.RaceFlag | Race.Elf.RaceFlag
+        public const int AllowElvesOnly = 0x2;     // Race.Elf.RaceFlag
+        public const int AllowGargoylesOnly = 0x4; // Race.Gargoyle.RaceFlag
+
         public Expansion RequiredExpansion { get; }
 
         public int MaleBody { get; }
@@ -52,9 +59,14 @@ namespace Server
 
         public int RaceIndex { get; }
 
+        public int RaceFlag { get; }
+
         public string Name { get; set; }
 
         public string PluralName { get; set; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsAllowedRace(Race race, int allowedRaceFlags) => (allowedRaceFlags & race.RaceFlag) != 0;
 
         public static string[] GetRaceNames()
         {

@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public RavenHelm() : base(0x2B71) => Weight = 5.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 1;
