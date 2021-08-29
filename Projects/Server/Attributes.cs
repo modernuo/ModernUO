@@ -9,11 +9,6 @@ namespace Server
     {
     }
 
-    [AttributeUsage(AttributeTargets.Property)]
-    public class BodyAttribute : Attribute
-    {
-    }
-
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class PropertyObjectAttribute : Attribute
     {

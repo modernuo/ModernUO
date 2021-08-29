@@ -19,7 +19,7 @@ namespace Server.Gumps
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;
-        private PropertiesGump m_PropertiesGump;
+        private readonly PropertiesGump m_PropertiesGump;
 
         public SetGump(PropertyInfo prop, Mobile from, object o, PropertiesGump propertiesGump) : base(GumpOffsetX, GumpOffsetY)
         {
@@ -30,7 +30,6 @@ namespace Server.Gumps
 
             var canNull = !prop.PropertyType.IsValueType;
             var canDye = prop.IsDefined(typeof(HueAttribute), false);
-            var isBody = prop.IsDefined(typeof(BodyAttribute), false);
 
             var val = prop.GetValue(m_Object, null);
             var initialText = val switch
@@ -46,16 +45,14 @@ namespace Server.Gumps
                 0,
                 0,
                 BackWidth,
-                BackHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0) +
-                (isBody ? EntryHeight + OffsetSize : 0),
+                BackHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0),
                 BackGumpID
             );
             AddImageTiled(
                 BorderSize,
                 BorderSize,
                 TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                TotalHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0) +
-                (isBody ? EntryHeight + OffsetSize : 0),
+                TotalHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0),
                 OffsetGumpID
             );
 
@@ -118,23 +115,6 @@ namespace Server.Gumps
 
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
             }
-
-            if (isBody)
-            {
-                x = BorderSize + OffsetSize;
-                y += EntryHeight + OffsetSize;
-
-                AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-                AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Body Picker");
-                x += EntryWidth + OffsetSize;
-
-                if (SetGumpID != 0)
-                {
-                    AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-                }
-
-                AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
-            }
         }
 
 
@@ -185,16 +165,6 @@ namespace Server.Gumps
                         shouldSend = false;
 
                         m_Mobile.SendHuePicker(new InternalPicker(m_Property, m_Mobile, m_Object, m_PropertiesGump));
-
-                        break;
-                    }
-                case 4: // Body Picker
-                    {
-                        toSet = null;
-                        shouldSet = false;
-                        shouldSend = false;
-
-                        m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_PropertiesGump));
 
                         break;
                     }

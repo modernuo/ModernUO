@@ -14,7 +14,8 @@ namespace Server
         Equipment
     }
 
-    public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<int>
+    [Parsable]
+    public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<int>, IComparable<int>, IComparable<Body>
     {
         private static readonly BodyType[] m_Types = Array.Empty<BodyType>();
 
@@ -70,38 +71,13 @@ namespace Server
                                && BodyID != 695
                                && BodyID != 970;
 
-        public bool IsGargoyle => BodyID == 666
-                                  || BodyID == 667
-                                  || BodyID == 694
-                                  || BodyID == 695;
+        public bool IsGargoyle => BodyID is 666 or 667 or 694 or 695;
 
-        public bool IsMale => BodyID == 183
-                              || BodyID == 185
-                              || BodyID == 400
-                              || BodyID == 402
-                              || BodyID == 605
-                              || BodyID == 607
-                              || BodyID == 666
-                              || BodyID == 694
-                              || BodyID == 750;
+        public bool IsMale => BodyID is 183 or 185 or 400 or 402 or 605 or 607 or 666 or 694 or 750;
 
-        public bool IsFemale => BodyID == 184
-                                || BodyID == 186
-                                || BodyID == 401
-                                || BodyID == 403
-                                || BodyID == 606
-                                || BodyID == 608
-                                || BodyID == 667
-                                || BodyID == 695
-                                || BodyID == 751;
+        public bool IsFemale => BodyID is 184 or 186 or 401 or 403 or 606 or 608 or 667 or 695 or 751;
 
-        public bool IsGhost => BodyID == 402
-                               || BodyID == 403
-                               || BodyID == 607
-                               || BodyID == 608
-                               || BodyID == 694
-                               || BodyID == 695
-                               || BodyID == 970;
+        public bool IsGhost => BodyID is 402 or 403 or 607 or 608 or 694 or 695 or 970;
 
         public bool IsMonster => BodyID >= 0
                                  && BodyID < m_Types.Length
@@ -151,5 +127,11 @@ namespace Server
         public static bool operator <(Body l, Body r) => l.BodyID < r.BodyID;
 
         public static bool operator <=(Body l, Body r) => l.BodyID <= r.BodyID;
+
+        public int CompareTo(Body other) => BodyID.CompareTo(other.BodyID);
+
+        public int CompareTo(int other) => BodyID.CompareTo(other);
+
+        public static Body Parse(string value) => Utility.ToInt32(value);
     }
 }

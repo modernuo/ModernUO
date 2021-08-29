@@ -648,7 +648,7 @@ namespace Server.Engines.MLQuests.Definitions
         public Aelorn()
         {
             Title = "the Chivalry Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203C;
             HairHue = 0x47D;
@@ -713,7 +713,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Wrestling Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203D;
             HairHue = 0x455;
@@ -772,7 +772,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Mace Fighting Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203C;
             HairHue = 0x455;
@@ -849,7 +849,7 @@ namespace Server.Engines.MLQuests.Definitions
         public Robyn()
         {
             Title = "the Archery Instructor";
-            BodyValue = 0x191;
+            Body = 0x191;
             Hue = 0x83EA;
             HairItemID = 0x203C;
             HairHue = 0x47D;
@@ -932,7 +932,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Fencer Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203C;
             HairHue = 0x455;
@@ -1016,7 +1016,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Tactics Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203B;
             HairHue = 0x44E;
@@ -1081,7 +1081,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Swordsmanship Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83FA;
             HairItemID = 0x203C;
             HairHue = 0x8A7;
@@ -1142,7 +1142,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Parrying Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x8374;
             HairItemID = 0;
 
@@ -1223,7 +1223,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Resisting Spells Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203D;
             HairHue = 0x457;
@@ -1279,7 +1279,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Meditation Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83F5;
             HairItemID = 0x203B;
             HairHue = 0x455;
@@ -1361,7 +1361,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Inscription Instructor";
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = 0x83EA;
             HairItemID = 0x203D;
@@ -1418,7 +1418,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Magery Instructor";
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = 0x83EA;
             HairItemID = 0x203C;
@@ -1475,7 +1475,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Evaluating Intelligence Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203C;
             HairHue = 0x455;
@@ -1535,7 +1535,7 @@ namespace Server.Engines.MLQuests.Definitions
         public AmeliaYoungstone()
         {
             Title = "the Tinkering Instructor";
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = 0x83EA;
             HairItemID = 0x203D;
@@ -1596,7 +1596,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Anatomy Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EC;
             HairItemID = 0x203C;
             HairHue = 0x477;
@@ -1656,7 +1656,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Healing Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203B;
             HairHue = 0x477;
@@ -1713,7 +1713,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Focus Instructor";
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = 0x83EA;
             HairItemID = 0x203C;
@@ -1845,7 +1845,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Hiding Instructor";
-            BodyValue = 0xF7;
+            Body = 0xF7;
 
             InitStats(100, 100, 25);
 
@@ -1894,7 +1894,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Stealth Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x8403;
             HairItemID = 0x203B;
             HairHue = 0x455;
@@ -1954,7 +1954,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Tracking Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203B;
             HairHue = 0x47D;
@@ -2093,7 +2093,7 @@ namespace Server.Engines.MLQuests.Definitions
         public Mulcivikh()
         {
             Title = "the Necromancy Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203D;
             HairHue = 0x457;
@@ -2171,7 +2171,7 @@ namespace Server.Engines.MLQuests.Definitions
         public Morganna()
         {
             Title = "the Spirit Speak Instructor";
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = 0x83EA;
             HairItemID = 0x203C;
@@ -2230,7 +2230,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Miner Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x2048;
             HairHue = 0x44E;
@@ -2292,7 +2292,7 @@ namespace Server.Engines.MLQuests.Definitions
         public GeorgeHephaestus()
         {
             Title = "the Blacksmith Instructor";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83EA;
             HairItemID = 0x203B;
             HairHue = 0x47B;

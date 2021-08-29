@@ -1019,12 +1019,12 @@ namespace Server.Gumps
                     {
                         if (m_Vendor.Female)
                         {
-                            m_Vendor.BodyValue = 400;
+                            m_Vendor.Body = 400;
                             m_Vendor.Female = false;
                         }
                         else
                         {
-                            m_Vendor.BodyValue = 401;
+                            m_Vendor.Body = 401;
                             m_Vendor.Female = true;
 
                             m_Vendor.FacialHairItemID = 0;

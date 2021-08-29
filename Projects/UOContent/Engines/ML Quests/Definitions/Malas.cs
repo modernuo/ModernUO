@@ -33,7 +33,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Fierce";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
