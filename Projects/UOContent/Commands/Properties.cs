@@ -425,10 +425,8 @@ namespace Server.Commands
                 {
                     toSet = Parse(obj, type, value);
                 }
-                catch (Exception e)
+                catch ()
                 {
-                    Console.WriteLine("Not formatted, parsable type failed");
-                    Console.WriteLine(e);
                     return "That is not properly formatted.";
                 }
             }
@@ -442,10 +440,8 @@ namespace Server.Commands
                 {
                     toSet = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
                 }
-                catch (Exception e)
+                catch ()
                 {
-                    Console.WriteLine("Not formatted, convert change type, numeric failed");
-                    Console.WriteLine(e);
                     return "That is not properly formatted.";
                 }
             }
@@ -455,10 +451,8 @@ namespace Server.Commands
                 {
                     toSet = Convert.ChangeType(value, type);
                 }
-                catch (Exception e)
+                catch ()
                 {
-                    Console.WriteLine("Not formatted, convert change type, non-numeric failed");
-                    Console.WriteLine(e);
                     return "That is not properly formatted.";
                 }
             }
