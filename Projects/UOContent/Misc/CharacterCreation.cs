@@ -1150,11 +1150,10 @@ namespace Server.Misc
                         else if (gargoyle)
                         {
                             //EquipItem(new GargishTalwar()); // IMPLEMENTION NEEDED
-                            EquipItem(new GargishStoneChestType1());
-                            EquipItem(new GargishStoneArmsType1());
-                            EquipItem(new GargishStoneKiltType1());  
-                            EquipItem(new GargishStoneLegsType1());
-                        }
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherLegsType1());
                         else
                         {
                             EquipItem(new LeatherJingasa());
@@ -1191,11 +1190,11 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            //EquipItem(new DualPointedSpear());
-                            //EquipItem(new GargishStoneChestType1());
-                            //EquipItem(new GargishStoneArmsType1());
-                            //EquipItem(new GargishStoneKiltType1());  IMPLEMENTION NEEDED
-                            //EquipItem(new GargishStoneLegsType1());
+                            //EquipItem(new DualPointedSpear()); //IMPLEMENTION NEEDED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherLegsType1());
                         }
                         else
                         {
