@@ -1,4 +1,5 @@
 using System;
+using Server.Misc;
 
 namespace Server.Tests
 {
@@ -21,6 +22,9 @@ namespace Server.Tests
             World.Configure();
 
             Timer.Init(0);
+
+            // Configure Races
+            RaceDefinitions.Configure();
 
             // Load the world
             World.Load();
