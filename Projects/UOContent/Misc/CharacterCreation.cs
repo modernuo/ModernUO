@@ -1104,10 +1104,10 @@ namespace Server.Misc
                         else if (gargoyle)
                         {
                             //EquipItem(new GlassSword()); // IMPLEMENTION NEEDED
-                            EquipItem(new GargishStoneChestType1());
-                            EquipItem(new GargishStoneArmsType1());
-                            EquipItem(new GargishStoneKiltType1()); 
-                            EquipItem(new GargishStoneLegsType1());
+                            //EquipItem(new GargishStoneChestType1());
+                            //EquipItem(new GargishStoneArmsType1());
+                            //EquipItem(new GargishStoneKiltType1()); 
+                            //EquipItem(new GargishStoneLegsType1());
                         }
                         else
                         {
