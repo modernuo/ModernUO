@@ -25,7 +25,9 @@ namespace Server.SkillHandlers
             /* Ring */ { 0, 5, 0, 10, 15, 25, 0 },
             /* Chain */ { 0, 0, 10, 0, 15, 25, 0 },
             /* Plate */ { 5, 5, 10, 10, 15, 25, 0 },
-            /* Dragon */ { 0, 5, 10, 10, 15, 25, 0 }
+            /* Dragon */ { 5, 5, 10, 10, 15, 25, 0 },
+            /* Wood */ { 5, 5, 10, 10, 15, 25, 0 },
+            /* Stone */ { 5, 5, 10, 10, 15, 25, 0 }
         };
 
         public static void Initialize()
@@ -44,7 +46,7 @@ namespace Server.SkillHandlers
 
             for (var i = 0; i < m.Items.Count; i++)
             {
-                if (!(m.Items[i] is BaseArmor armor))
+                if (m.Items[i] is not BaseArmor armor)
                 {
                     continue;
                 }

@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public GemmedCirclet() : base(0x2B70) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override int BasePhysicalResistance => 1;
         public override int BaseFireResistance => 5;

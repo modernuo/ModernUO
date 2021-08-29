@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public LeafTonlet() : base(0x2FCA) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 3;
         public override int BaseColdResistance => 2;

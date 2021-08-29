@@ -114,9 +114,6 @@ namespace Server.Items
             }
         }
 
-        public virtual Race RequiredRace =>
-            null; // On OSI, there are no weapons with race requirements, this is for custom stuff
-
         public virtual bool UseSkillMod => !Core.AOS;
 
         public static bool InDoubleStrike { get; set; }
@@ -915,17 +912,8 @@ namespace Server.Items
                 return false;
             }
 
-            if (RequiredRace != null && from.Race != RequiredRace)
+            if (!CheckRace(from))
             {
-                if (RequiredRace == Race.Elf)
-                {
-                    from.SendLocalizedMessage(1072203); // Only Elves may use this.
-                }
-                else
-                {
-                    from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
-                }
-
                 return false;
             }
 
@@ -2945,9 +2933,14 @@ namespace Server.Items
                 list.Add(1060636); // exceptional
             }
 
-            if (RequiredRace == Race.Elf)
+            if (RequiredRaces == Race.AllowElvesOnly)
             {
                 list.Add(1075086); // Elves Only
+            }
+
+            if (RequiredRaces == Race.AllowGargoylesOnly)
+            {
+                list.Add(1111709); // Gargoyles Only
             }
 
             if (ArtifactRarity > 0)

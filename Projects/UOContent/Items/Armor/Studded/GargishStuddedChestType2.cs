@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public GargishStuddedChestType2() : base(0x285) => Weight = 15.0;
 
-        public override Race RequiredRace => Race.Gargoyle;
+        public override int RequiredRaces => Race.AllowGargoylesOnly;
         public override int BasePhysicalResistance => 6;
         public override int BaseFireResistance => 6;
         public override int BaseColdResistance => 4;

@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public RoyalCirclet() : base(0x2B6F) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override int BasePhysicalResistance => 1;
         public override int BaseFireResistance => 5;

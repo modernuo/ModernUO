@@ -31,7 +31,7 @@ namespace Server.Items
         [Constructible]
         public WoodlandBelt(int hue = 0) : base(0x2B68, hue) => Weight = 4.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override bool Dye(Mobile from, DyeTub sender)
         {
