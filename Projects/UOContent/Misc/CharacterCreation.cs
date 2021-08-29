@@ -73,7 +73,9 @@ namespace Server.Misc
             SkillName.Tinkering,
             SkillName.Tracking,
             SkillName.Veterinary,
-            SkillName.Wrestling
+            SkillName.Wrestling,
+            // Added
+            SkillName.RemoveTrap
         };
 
         private static readonly TimeSpan BadStartMessageDelay = TimeSpan.FromSeconds(3.5);

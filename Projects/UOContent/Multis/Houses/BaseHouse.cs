@@ -100,7 +100,7 @@ namespace Server.Multis
         [CommandProperty(AccessLevel.GameMaster)]
         public bool RestrictDecay { get; set; }
 
-        public virtual TimeSpan DecayPeriod => TimeSpan.FromDays(5.0);
+        public virtual TimeSpan DecayPeriod => TimeSpan.FromDays(21);
 
         public virtual DecayType DecayType
         {

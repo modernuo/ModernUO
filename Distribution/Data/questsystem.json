@@ -1,0 +1,59 @@
+[
+    {
+        "ID": 1,
+        "Title": "First test quest",
+        "Description": "Lorem ipsum dolor sit amet",
+        "Rewards": [
+            {
+                "ItemName": "Gold",
+                "Amount": 10000,
+                "DropToBackpack": true
+            },
+            {
+                "ItemName": "Silver",
+                "Amount": 600,
+                "DropToBackpack": false
+            }
+        ],
+        "XP": 130,
+        "IsQuestChainElement": false,
+        "ParentQuestID": 1,
+        "QuestTaskList": [
+            {
+                "ID": 1,
+                "Type": "Kill",
+                "EntityName": "Zombie",
+                "Amount": 5
+            },
+            {
+                "ID": 2,
+                "Type": "Kill",
+                "EntityName": "Lich",
+                "Amount": 1
+            }
+        ]
+    },
+    {
+        "ID": 2,
+        "Title": "Second test quest",
+        "Description": "Lorem ipsum dolor sit amet",
+        "Rewards": [
+            {
+                "ItemName": "Gold",
+                "Amount": 10000,
+                "DropToBackpack": false
+            }
+        ],
+        "XP": 200,
+        "IsQuestChainElement": false,
+        "ParentQuestID": 2,
+        "QuestTaskList": [
+            {
+                "ID": 1,
+                "Type": "Kill",
+                "EntityName": "Lich",
+                "Amount": 5
+            }
+        ]
+    }
+]
