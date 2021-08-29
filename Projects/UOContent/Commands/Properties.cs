@@ -425,7 +425,7 @@ namespace Server.Commands
                 {
                     toSet = Parse(obj, type, value);
                 }
-                catch ()
+                catch
                 {
                     return "That is not properly formatted.";
                 }
@@ -440,7 +440,7 @@ namespace Server.Commands
                 {
                     toSet = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
                 }
-                catch ()
+                catch
                 {
                     return "That is not properly formatted.";
                 }
@@ -451,7 +451,7 @@ namespace Server.Commands
                 {
                     toSet = Convert.ChangeType(value, type);
                 }
-                catch ()
+                catch
                 {
                     return "That is not properly formatted.";
                 }
