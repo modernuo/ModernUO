@@ -1051,6 +1051,11 @@ namespace Server
             }
         }
 
+        public void MoveToWorld(WorldLocation worldLocation)
+        {
+            MoveToWorld(worldLocation.Location, worldLocation.Map);
+        }
+
         /// <summary>
         ///     Moves the Item to a given <paramref name="location" /> and <paramref name="map" />.
         /// </summary>
@@ -2306,18 +2311,12 @@ namespace Server
 
                 doubled = false;
 
-                if (m_Amount <= 1)
+                itemID = m_Amount switch
                 {
-                    itemID = coinBase;
-                }
-                else if (m_Amount <= 5)
-                {
-                    itemID = coinBase + 1;
-                }
-                else // m_Amount > 5
-                {
-                    itemID = coinBase + 2;
-                }
+                    <= 1 => coinBase,
+                    <= 5 => coinBase + 1,
+                    _    => coinBase + 2
+                };
             }
 
             var bounds = ItemBounds.Table[itemID & 0x3FFF];

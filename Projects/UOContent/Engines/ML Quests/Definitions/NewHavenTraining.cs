@@ -268,7 +268,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the archer trainer";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -346,7 +346,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the archer";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -408,7 +408,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the chef";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -468,7 +468,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the servant";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -524,7 +524,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the blacksmith trainer";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -592,7 +592,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the miner";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -645,7 +645,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the carpenter";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -703,7 +703,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the mage";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -759,7 +759,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the tinker";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -804,7 +804,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the fisher";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -862,7 +862,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the courier";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -922,7 +922,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Lumberjack";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);

@@ -1702,7 +1702,6 @@ namespace Server
             }
         }
 
-        [Body]
         [CommandProperty(AccessLevel.GameMaster)]
         public Body Body
         {
@@ -1719,14 +1718,6 @@ namespace Server
                     CheckStatTimers();
                 }
             }
-        }
-
-        [Body]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int BodyValue
-        {
-            get => Body.BodyID;
-            set => Body = value;
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]

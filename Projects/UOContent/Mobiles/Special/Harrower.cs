@@ -51,7 +51,7 @@ namespace Server.Mobiles
         public Harrower() : base(AIType.AI_Mage, FightMode.Closest, 18, 1, 0.2, 0.4)
         {
             Instances.Add(this);
-            BodyValue = 146;
+            Body = 146;
 
             SetStr(900, 1000);
             SetDex(125, 135);
@@ -145,7 +145,7 @@ namespace Server.Mobiles
             m_TrueForm = true;
 
             Name = "the true harrower";
-            BodyValue = 780;
+            Body = 780;
             Hue = 0x497;
 
             Hits = HitsMax;

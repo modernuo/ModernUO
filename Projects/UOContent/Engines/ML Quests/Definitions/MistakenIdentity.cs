@@ -201,7 +201,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Mistress of Admissions";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -247,7 +247,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Mayor";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -304,7 +304,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the necromancer";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = 0x83E8;
             InitStats(100, 100, 25);

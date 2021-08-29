@@ -79,7 +79,6 @@ namespace Server
             OfByte
         };
 
-
         public static readonly Type[] ParseTypes = { OfString };
 
         public static bool IsSerial(Type t) => t == OfSerial;

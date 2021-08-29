@@ -114,7 +114,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Architect's Daughter";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);

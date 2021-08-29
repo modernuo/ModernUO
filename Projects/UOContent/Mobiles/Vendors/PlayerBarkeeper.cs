@@ -206,7 +206,7 @@ namespace Server.Mobiles
         {
             base.InitBody();
 
-            if (BodyValue == 0x340 || BodyValue == 0x402)
+            if (Body == 0x340 || Body == 0x402)
             {
                 Hue = 0;
             }
@@ -1050,7 +1050,7 @@ namespace Server.Mobiles
             AddButton(130, 120, 4005, 4007, GetButtonID(5, 0));
             AddHtml(170, 120, 120, 20, "Title");
 
-            if (m_Barkeeper.BodyValue != 0x340 && m_Barkeeper.BodyValue != 0x402)
+            if (m_Barkeeper.Body != 0x340 && m_Barkeeper.Body != 0x402)
             {
                 AddButton(130, 200, 4005, 4007, GetButtonID(5, 1));
                 AddHtml(170, 200, 120, 20, "Appearance");
