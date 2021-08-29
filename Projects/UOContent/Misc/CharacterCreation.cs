@@ -1154,6 +1154,7 @@ namespace Server.Misc
                             EquipItem(new GargishLeatherArmsType1());
                             EquipItem(new GargishLeatherKiltType1()); 
                             EquipItem(new GargishLeatherLegsType1());
+                        }
                         else
                         {
                             EquipItem(new LeatherJingasa());
