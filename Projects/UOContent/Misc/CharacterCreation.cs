@@ -1829,10 +1829,10 @@ namespace Server.Misc
                         {
                             EquipItem(new RuneBlade());
                         }
-                        //elif (gargoyle)
-                        //{
+                        else if (gargoyle)
+                        {
                             //EquipItem(new DreadSword());  IMPLEMENTION NEEDED
-                        //}
+                        }
                         else
                         {
                             EquipItem(new Katana());
