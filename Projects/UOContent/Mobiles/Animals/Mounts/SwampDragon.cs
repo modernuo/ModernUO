@@ -107,13 +107,13 @@ namespace Server.Mobiles
                 if (m_HasBarding)
                 {
                     Hue = CraftResources.GetHue(m_BardingResource);
-                    BodyValue = 0x31F;
+                    Body = 0x31F;
                     ItemID = 0x3EBE;
                 }
                 else
                 {
                     Hue = 0x851;
-                    BodyValue = 0x31A;
+                    Body = 0x31A;
                     ItemID = 0x3EBD;
                 }
 

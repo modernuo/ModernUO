@@ -281,7 +281,7 @@ namespace Server.Engines.MLQuests.Definitions
         public Enigma()
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
-            BodyValue = 788;
+            Body = 788;
             BaseSoundID = 0x3EE;
 
             InitStats(100, 100, 25);

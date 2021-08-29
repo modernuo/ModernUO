@@ -92,7 +92,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Tortured Artist";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -139,7 +139,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Bride";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);

@@ -104,7 +104,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the keeper of tradition";
             Race = Race.Elf;
-            BodyValue = 0x25E;
+            Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);

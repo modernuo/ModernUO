@@ -56,19 +56,19 @@ namespace Server.Mobiles
             {
                 case 0:
                     {
-                        BodyValue = 116;
+                        Body = 116;
                         ItemID = 16039;
                         break;
                     }
                 case 1:
                     {
-                        BodyValue = 178;
+                        Body = 178;
                         ItemID = 16041;
                         break;
                     }
                 case 2:
                     {
-                        BodyValue = 179;
+                        Body = 179;
                         ItemID = 16055;
                         break;
                     }
