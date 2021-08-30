@@ -174,7 +174,7 @@ namespace Server.Items
 
         public virtual bool CheckWeaponSkill(Mobile from)
         {
-            if (!(from.Weapon is BaseWeapon weapon))
+            if (from.Weapon is not BaseWeapon weapon)
             {
                 return false;
             }
@@ -319,7 +319,7 @@ namespace Server.Items
                 return false;
             }
 
-            return CheckSkills(from) && CheckMana(from, false);
+            return CheckSkills(from);
         }
 
         public static bool IsWeaponAbility(Mobile m, WeaponAbility a) =>
@@ -342,7 +342,7 @@ namespace Server.Items
                 return null;
             }
 
-            if (a?.ValidatesDuringHit == true && !a.Validate(m))
+            if (a?.ValidatesDuringHit == true && (!a.Validate(m) || !a.CheckMana(m, false)))
             {
                 ClearCurrentAbility(m);
                 return null;
@@ -365,7 +365,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (a?.Validate(m) == false)
+            if (a?.Validate(m) == false || a?.CheckMana(m, false) == false)
             {
                 ClearCurrentAbility(m);
                 return false;

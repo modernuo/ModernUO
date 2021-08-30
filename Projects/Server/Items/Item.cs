@@ -2110,7 +2110,7 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool CheckRace(Race race) => Race.IsAllowedRace(race, RequiredRaces);
 
-        public bool CheckRace(Mobile from, bool message = true)
+        public virtual bool CheckRace(Mobile from, bool message = true)
         {
             var race = from.Race;
             var requiredRaces = RequiredRaces;
@@ -2125,21 +2125,21 @@ namespace Server
                 return false;
             }
 
-            if (race == Race.Gargoyle)
+            if (requiredRaces == Race.AllowGargoylesOnly)
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1111707); // Only gargoyles can wear this.
+            }
+            else if (race == Race.Gargoyle)
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1111708); // Gargoyles can't wear this.
             }
-            else if (requiredRaces == Race.AllowGargoylesOnly)
-            {
-                from.LocalOverheadMessage(Network.MessageType.Regular, 0x3B2, 1111707); // Only gargoyles can wear this.
-            }
-            else if (race != Race.Elf)
+            else if (requiredRaces == Race.AllowElvesOnly)
             {
                 from.SendLocalizedMessage(1072203); // Only Elves may use this.
             }
-            else if (race != Race.Human)
+            else
             {
-                from.SendMessage($"Only {race.PluralName} may use this.");
+                from.SendMessage($"{race.PluralName} may not use this.");
             }
 
             return false;

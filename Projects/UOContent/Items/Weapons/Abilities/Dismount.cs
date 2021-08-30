@@ -23,7 +23,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (from.Mounted && !(from.Weapon is Lance))
+            if (from.Mounted && from.Weapon is not Lance)
             {
                 from.SendLocalizedMessage(1061283); // You cannot perform that attack while mounted!
                 return false;
