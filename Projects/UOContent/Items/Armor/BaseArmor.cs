@@ -742,11 +742,6 @@ namespace Server.Items
 
         public void UnscaleDurability()
         {
-            if (World.Loading)
-            {
-                return;
-            }
-
             var scale = 100 + GetDurabilityBonus();
 
             _maxHitPoints = (_maxHitPoints * 100 + (scale - 1)) / scale;
@@ -757,11 +752,6 @@ namespace Server.Items
 
         public void ScaleDurability()
         {
-            if (World.Loading)
-            {
-                return;
-            }
-
             var scale = 100 + GetDurabilityBonus();
 
             _maxHitPoints = (_maxHitPoints * scale + 99) / 100;
