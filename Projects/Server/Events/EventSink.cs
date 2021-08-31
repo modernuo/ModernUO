@@ -106,9 +106,6 @@ namespace Server
         public static event Action<NetState, int> DeleteRequest;
         public static void InvokeDeleteRequest(NetState state, int index) => DeleteRequest?.Invoke(state, index);
 
-        public static event Action<Mobile, int> SetAbility;
-        public static void InvokeSetAbility(Mobile mobile, int index) => SetAbility?.Invoke(mobile, index);
-
         public static event Action ServerStarted;
         public static void InvokeServerStarted() => ServerStarted?.Invoke();
 

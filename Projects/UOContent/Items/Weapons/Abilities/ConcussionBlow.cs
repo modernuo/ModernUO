@@ -3,9 +3,8 @@ using System;
 namespace Server.Items
 {
     /// <summary>
-    ///     This devastating strike is most effective against those who are in good health and whose reserves of mana are low, or
-    ///     vice
-    ///     versa.
+    ///     This devastating strike is most effective against those who are in good health and whose reserves
+    ///     of mana are low, or vice versa.
     /// </summary>
     public class ConcussionBlow : WeaponAbility
     {

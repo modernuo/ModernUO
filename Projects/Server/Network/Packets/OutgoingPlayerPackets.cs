@@ -63,23 +63,6 @@ namespace Server.Network
         public static void SendDeathStatus(this NetState ns, bool dead) =>
             ns?.Send(stackalloc byte[] { 0x2C, dead ? (byte)0 : (byte)2 });
 
-        public static void SendToggleSpecialAbility(this NetState ns, int abilityId, bool active)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[8]);
-            writer.Write((byte)0xBF); // Packet ID
-            writer.Write((ushort)8);
-            writer.Write((short)0x25);
-            writer.Write((short)abilityId);
-            writer.Write(active);
-
-            ns.Send(writer.Span);
-        }
-
         public static void SendDisplayProfile(this NetState ns, Serial m, string header, string body, string footer)
         {
             if (ns == null)
@@ -351,10 +334,6 @@ namespace Server.Network
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SendPingAck(this NetState ns, byte ping) => ns?.Send(stackalloc byte[] { 0x73, ping });
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendClearWeaponAbility(this NetState ns) =>
-            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x5, 0x00, 0x21 });
 
         public static void SendDisplayHuePicker(this NetState ns, Serial huePickerSerial, int huePickerItemID)
         {
