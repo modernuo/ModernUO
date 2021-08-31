@@ -48,7 +48,6 @@ namespace Server.Network
             IncomingPackets.Register(0xD7, 0, true, EncodedCommand);
             IncomingPackets.Register(0xF4, 0, false, CrashReport);
 
-            IncomingPackets.RegisterEncoded(0x19, true, SetAbility);
             IncomingPackets.RegisterEncoded(0x28, true, GuildGumpRequest);
             IncomingPackets.RegisterEncoded(0x32, true, QuestGumpRequest);
         }
@@ -584,17 +583,12 @@ namespace Server.Network
             }
         }
 
-        public static void SetAbility(this NetState state, IEntity e, EncodedReader reader)
-        {
-            EventSink.InvokeSetAbility(state.Mobile, reader.ReadInt32());
-        }
-
-        public static void GuildGumpRequest(this NetState state, IEntity e, EncodedReader reader)
+        public static void GuildGumpRequest(NetState state, IEntity e, EncodedReader reader)
         {
             EventSink.InvokeGuildGumpRequest(state.Mobile);
         }
 
-        public static void QuestGumpRequest(this NetState state, IEntity e, EncodedReader reader)
+        public static void QuestGumpRequest(NetState state, IEntity e, EncodedReader reader)
         {
             EventSink.InvokeQuestGumpRequest(state.Mobile);
         }
