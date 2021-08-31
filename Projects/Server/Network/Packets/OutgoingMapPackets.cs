@@ -41,8 +41,8 @@ namespace Server.Network
                 {
                     var map = Map.Maps[i];
 
-                    writer.Write(map.Tiles.Patch.StaticBlocks);
-                    writer.Write(map.Tiles.Patch.LandBlocks);
+                    writer.Write(map?.Tiles.Patch.StaticBlocks ?? 0);
+                    writer.Write(map?.Tiles.Patch.LandBlocks ?? 0);
                 }
             }
 
