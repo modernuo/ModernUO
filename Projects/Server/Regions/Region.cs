@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json;
 using Server.Json;
 using Server.Network;
@@ -574,6 +575,46 @@ namespace Server
                 foreach (var mobile in sector.Mobiles)
                 {
                     if (mobile.Region.IsPartOf(this))
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        public List<Item> GetItems()
+        {
+            var list = new List<Item>();
+
+            for (var i = 0; i < Sectors?.Length; i++)
+            {
+                var sector = Sectors[i];
+
+                foreach (var item in sector.Items)
+                {
+                    if (Find(item.Location, item.Map).IsPartOf(this))
+                    {
+                        list.Add(item);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public int GetItemCount()
+        {
+            var count = 0;
+
+            for (var i = 0; i < Sectors?.Length; i++)
+            {
+                var sector = Sectors[i];
+
+                foreach (var item in sector.Items)
+                {
+                    if (Find(item.Location, item.Map).IsPartOf(this))
                     {
                         count++;
                     }

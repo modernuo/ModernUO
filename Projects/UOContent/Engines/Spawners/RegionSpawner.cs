@@ -68,6 +68,12 @@ namespace Server.Engines.Spawners
             }
         }
 
+        public override void ToJson(DynamicJson json, JsonSerializerOptions options)
+        {
+            json.SetProperty("map", options, Map);
+            json.SetProperty("region", options, SpawnRegion.Name);
+        }
+
         public override void GetSpawnerProperties(ObjectPropertyList list)
         {
             base.GetSpawnerProperties(list);

@@ -261,6 +261,17 @@ namespace Server.Engines.Spawners
             DoTimer(); // Turn off the timer!
         }
 
+        public virtual void ToJson(DynamicJson json, JsonSerializerOptions options)
+        {
+            json.SetProperty("count", options, Count);
+            json.SetProperty("minDelay", options, MinDelay);
+            json.SetProperty("maxDelay", options, MaxDelay);
+            json.SetProperty("team", options, Team);
+            json.SetProperty("homeRange", options, HomeRange);
+            json.SetProperty("walkingRange", options, WalkingRange);
+            json.SetProperty("entries", options, Entries);
+        }
+
         public abstract Point3D GetSpawnPosition(ISpawnable spawned, Map map);
 
         public override void OnAfterDuped(Item newItem)

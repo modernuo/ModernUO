@@ -70,6 +70,7 @@ namespace Server.Engines.Spawners
         [JsonIgnore]
         public List<ISpawnable> Spawned { get; }
 
+        [JsonIgnore]
         public bool IsFull => Spawned.Count >= SpawnedMaxCount;
 
         public void Serialize(IGenericWriter writer)

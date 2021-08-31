@@ -742,6 +742,11 @@ namespace Server.Items
 
         public void UnscaleDurability()
         {
+            if (World.Loading)
+            {
+                return;
+            }
+
             var scale = 100 + GetDurabilityBonus();
 
             _maxHitPoints = (_maxHitPoints * 100 + (scale - 1)) / scale;
@@ -752,6 +757,11 @@ namespace Server.Items
 
         public void ScaleDurability()
         {
+            if (World.Loading)
+            {
+                return;
+            }
+
             var scale = 100 + GetDurabilityBonus();
 
             _maxHitPoints = (_maxHitPoints * scale + 99) / 100;
@@ -919,7 +929,7 @@ namespace Server.Items
             {
                 ArmorProtectionLevel.Guarding        => 1,
                 ArmorProtectionLevel.Hardening       => 2,
-                ArmorProtectionLevel.Fortification   => 3,
+                ArmorProtectionLevel.Fortification    => 3,
                 ArmorProtectionLevel.Invulnerability => 4,
                 _                                    => 0
             };
@@ -927,31 +937,17 @@ namespace Server.Items
 
         public int GetDurabilityBonus()
         {
-            var bonus = 0;
+            var bonus = _quality == ArmorQuality.Exceptional ? 20 : 0;
 
-            if (_quality == ArmorQuality.Exceptional)
+            bonus += _durability switch
             {
-                bonus += 20;
-            }
-
-            switch (_durability)
-            {
-                case ArmorDurabilityLevel.Durable:
-                    bonus += 20;
-                    break;
-                case ArmorDurabilityLevel.Substantial:
-                    bonus += 50;
-                    break;
-                case ArmorDurabilityLevel.Massive:
-                    bonus += 70;
-                    break;
-                case ArmorDurabilityLevel.Fortified:
-                    bonus += 100;
-                    break;
-                case ArmorDurabilityLevel.Indestructible:
-                    bonus += 120;
-                    break;
-            }
+                ArmorDurabilityLevel.Durable        => 20,
+                ArmorDurabilityLevel.Substantial    => 50,
+                ArmorDurabilityLevel.Massive        => 70,
+                ArmorDurabilityLevel.Fortified       => 100,
+                ArmorDurabilityLevel.Indestructible => 120,
+                _                                   => 0
+            };
 
             if (Core.AOS)
             {

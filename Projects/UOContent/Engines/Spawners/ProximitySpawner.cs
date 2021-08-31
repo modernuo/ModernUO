@@ -86,6 +86,13 @@ namespace Server.Engines.Spawners
 
         public override bool HandlesOnMovement => true;
 
+        public override void ToJson(DynamicJson json, JsonSerializerOptions options)
+        {
+            json.SetProperty("triggerRange", options, TriggerRange);
+            json.SetProperty("spawnMessage", options, SpawnMessage);
+            json.SetProperty("instant", options, InstantFlag);
+        }
+
         public override void DoTimer(TimeSpan delay)
         {
             if (!Running)

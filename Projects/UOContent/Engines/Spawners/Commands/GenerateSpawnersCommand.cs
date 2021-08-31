@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: GenerateSpawnersCommand.cs                                      *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +25,7 @@ using Server.Utilities;
 
 namespace Server.Engines.Spawners
 {
-    public static class GenerateSpawners
+    public static class GenerateSpawnersCommand
     {
         public static void Initialize()
         {
@@ -23,13 +38,24 @@ namespace Server.Engines.Spawners
 
             if (e.Arguments.Length == 0)
             {
-                from.SendMessage("Usage: [GenerateSpawners <path|search pattern>");
+                from.SendMessage("Usage: [GenerateSpawners <relative search pattern to distribution>");
                 return;
             }
 
             var di = new DirectoryInfo(Core.BaseDirectory);
 
-            var files = di.GetFiles(e.Arguments[0], SearchOption.AllDirectories);
+            FileInfo[] files;
+
+            try
+            {
+                files = di.GetFiles(e.Arguments[0], SearchOption.AllDirectories);
+            }
+            catch
+            {
+                from.SendMessage("GenerateSpawners: Bad path. Path must be relative to the distribution folder.");
+                return;
+            }
+
 
             if (files.Length == 0)
             {

@@ -22,15 +22,28 @@ namespace Server.Json
 {
     public class DynamicJson
     {
+        public static DynamicJson Create(Type type) => new()
+        {
+            Type = type.Name,
+            Data = new Dictionary<string, JsonElement>()
+        };
+
         [JsonPropertyName("type")]
         public string Type { get; set; }
 
         [JsonExtensionData]
-        public Dictionary<string, JsonElement> data { get; set; }
+        public Dictionary<string, JsonElement> Data { get; set; }
+
+        // TODO: Use JSON Node in .NET 6
+        public void SetProperty<T>(string key, JsonSerializerOptions options, T value)
+        {
+            using var doc = JsonDocument.Parse(JsonSerializer.SerializeToUtf8Bytes(value, options));
+            Data[key] = doc.RootElement.Clone();
+        }
 
         public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
         {
-            if (data.TryGetValue(key, out var el))
+            if (Data.TryGetValue(key, out var el))
             {
                 t = el.ToObject<T>(options);
                 return true;
@@ -42,7 +55,7 @@ namespace Server.Json
 
         public bool GetEnumProperty<T>(string key, JsonSerializerOptions options, out T t) where T : struct, Enum
         {
-            if (data.TryGetValue(key, out var el))
+            if (Data.TryGetValue(key, out var el))
             {
                 return Enum.TryParse(el.ToObject<string>(options), out t);
             }
