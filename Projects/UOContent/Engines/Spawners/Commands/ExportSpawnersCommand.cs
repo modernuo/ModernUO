@@ -41,18 +41,13 @@ namespace Server.Engines.Spawners
 
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {
-            var filePath = e.Arguments.Length == 0 ? null : e.Arguments[0].Trim();
+            var path = e.Arguments.Length == 0 ? null : e.Arguments[0].Trim();
 
-            string path = null;
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(path))
             {
-                path = Path.GetDirectoryName(Path.GetFullPath(filePath!));
+                path = Path.Combine(Core.BaseDirectory, $"Data/Spawns/{Utility.GetTimeStamp()}.json");
             }
-
-            path ??= Path.Combine("Data", $"{Utility.GetTimeStamp()}.json");
-
-            bool pathWasRelative = !Path.IsPathRooted(path);
-            if (pathWasRelative)
+            else if (!Path.IsPathRooted(path))
             {
                 path = Path.Combine(Core.BaseDirectory, path);
                 AssemblyHandler.EnsureDirectory(path);
@@ -87,7 +82,7 @@ namespace Server.Engines.Spawners
 
             e.Mobile.SendMessage($"Exporting spawners to {path}...");
 
-            JsonConfig.Serialize(spawnRecords, options);
+            JsonConfig.Serialize(path, spawnRecords, options);
 
             e.Mobile.SendMessage("Export completed.");
         }
