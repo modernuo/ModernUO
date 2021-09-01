@@ -106,12 +106,14 @@ namespace Server.Mobiles
 
                 base.DoActionWander();
 
+                /*
                 if (Utility.RandomDouble() < 0.05)
                 {
                     var spell = CheckCastHealingSpell();
 
                     spell?.Cast();
                 }
+                */
             }
 
             return true;
@@ -120,10 +122,12 @@ namespace Server.Mobiles
         private Spell CheckCastHealingSpell()
         {
             // If I'm poisoned, always attempt to cure.
+            /*
             if (m_Mobile.Poisoned)
             {
                 return new CureSpell(m_Mobile);
             }
+            */
 
             // Summoned creatures never heal themselves.
             if (m_Mobile.Summoned)
@@ -156,6 +160,7 @@ namespace Server.Mobiles
 
             Spell spell = null;
 
+            /*
             if (m_Mobile.Hits < m_Mobile.HitsMax - 50)
             {
                 if (UseNecromancy())
@@ -171,6 +176,7 @@ namespace Server.Mobiles
             {
                 spell = new HealSpell(m_Mobile);
             }
+            */
 
             double delay;
 
@@ -775,6 +781,7 @@ namespace Server.Mobiles
                 Spell spell;
                 var toDispel = FindDispelTarget(true);
 
+                /*
                 if (m_Mobile.Poisoned) // Top cast priority is cure
                 {
                     m_Mobile.DebugSay("I am going to cure myself");
@@ -782,6 +789,8 @@ namespace Server.Mobiles
                     spell = new CureSpell(m_Mobile);
                 }
                 else if (toDispel != null) // Something dispellable is attacking us
+                */
+                if (toDispel != null)
                 {
                     m_Mobile.DebugSay("I am going to dispel {0}", toDispel);
 
@@ -901,10 +910,12 @@ namespace Server.Mobiles
                 RunFrom(m_Mobile.FocusMob);
                 m_Mobile.FocusMob = null;
 
+                /*
                 if (m_Mobile.Poisoned && Utility.Random(0, 5) == 0)
                 {
                     new CureSpell(m_Mobile).Cast();
                 }
+                */
             }
             else
             {

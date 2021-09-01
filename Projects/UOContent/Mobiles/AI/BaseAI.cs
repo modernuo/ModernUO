@@ -13,6 +13,7 @@ using Server.Spells;
 using Server.Spells.Spellweaving;
 using Server.Targets;
 using MoveImpl = Server.Movement.MovementImpl;
+using Server.Mobiles.BehaviorTreeAI;
 
 namespace Server.Mobiles
 {
@@ -27,7 +28,8 @@ namespace Server.Mobiles
         AI_Mage,
         AI_Berserk,
         AI_Predator,
-        AI_Thief
+        AI_Thief,
+        AI_BehaviorTree
     }
 
     public enum ActionType
@@ -136,6 +138,21 @@ namespace Server.Mobiles
             }
 
             Action = ActionType.Wander;
+
+            /*
+            behaviorTree = new BehaviorTree(this.m_Mobile);
+
+            behaviorTree.AddRoot(
+                new RepeaterNode(behaviorTree,
+                    new SelectorNode(behaviorTree, new BehaviorTreeNode[1]
+                    {
+                        new SelfHealerNode(behaviorTree),
+                    })
+                )
+            );
+
+            behaviorTree.Start();
+            */
         }
 
         public ActionType Action
@@ -2019,7 +2036,7 @@ namespace Server.Mobiles
 
             if (canOpenDoors || canDestroyObstacles)
             {
-                m_Mobile.DebugSay("My movement was blocked, I will try to clear some obstacles.");
+                // m_Mobile.DebugSay("My movement was blocked, I will try to clear some obstacles.");
 
                 var map = m_Mobile.Map;
 
@@ -2445,7 +2462,7 @@ namespace Server.Mobiles
 
             m_Mobile.NextReacquireTime = Core.TickCount + (int)m_Mobile.ReacquireDelay.TotalMilliseconds;
 
-            m_Mobile.DebugSay("Acquiring...");
+            // m_Mobile.DebugSay("Acquiring...");
 
             var map = m_Mobile.Map;
 
@@ -3090,6 +3107,7 @@ namespace Server.Mobiles
                     }
                 }
 
+                /*
                 if (m_Owner.CanDetectHidden && Core.TickCount - m_Owner.m_NextDetectHidden >= 0)
                 {
                     m_Owner.DetectHidden();
@@ -3103,6 +3121,7 @@ namespace Server.Mobiles
                     m_Owner.m_NextDetectHidden = Core.TickCount +
                                                  (int)TimeSpan.FromSeconds(Utility.RandomMinMax(min, max)).TotalMilliseconds;
                 }
+                */
             }
         }
     }
