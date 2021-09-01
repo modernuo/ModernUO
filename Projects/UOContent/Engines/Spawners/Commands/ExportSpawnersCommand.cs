@@ -47,16 +47,19 @@ namespace Server.Engines.Spawners
             {
                 path = Path.Combine(Core.BaseDirectory, $"Data/Spawns/{Utility.GetTimeStamp()}.json");
             }
-            else if (!Path.IsPathRooted(path))
+            else
             {
-                path = Path.Combine(Core.BaseDirectory, path);
-                AssemblyHandler.EnsureDirectory(path);
-            }
-
-            if (!Directory.Exists(path))
-            {
-                LogFailure("Directory doesn't exist.");
-                return;
+                var directory = Path.GetDirectoryName(Path.GetFullPath(path!))!;
+                if (!Path.IsPathRooted(path))
+                {
+                    path = Path.Combine(Core.BaseDirectory, path);
+                    AssemblyHandler.EnsureDirectory(directory);
+                }
+                else if (!Directory.Exists(directory))
+                {
+                    LogFailure("Directory doesn't exist.");
+                    return;
+                }
             }
 
             NetState.FlushAll();
@@ -80,11 +83,11 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            e.Mobile.SendMessage($"Exporting spawners to {path}...");
+            e.Mobile.SendMessage("Exporting spawners...");
 
             JsonConfig.Serialize(path, spawnRecords, options);
 
-            e.Mobile.SendMessage("Export completed.");
+            e.Mobile.SendMessage($"Spawners exported to {path}");
         }
     }
 }
