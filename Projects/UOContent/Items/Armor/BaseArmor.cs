@@ -208,6 +208,12 @@ namespace Server.Items
             get => _quality;
             set
             {
+                if (World.Loading)
+                {
+                    _quality = value;
+                    return;
+                }
+
                 UnscaleDurability();
                 _quality = value;
                 ScaleDurability();
@@ -224,6 +230,12 @@ namespace Server.Items
             get => _durability;
             set
             {
+                if (World.Loading)
+                {
+                    _durability = value;
+                    return;
+                }
+
                 UnscaleDurability();
                 _durability = value;
                 ScaleDurability();
@@ -265,7 +277,11 @@ namespace Server.Items
             {
                 if (_resource != value)
                 {
-                    UnscaleDurability();
+                    if (!World.Loading)
+                    {
+                        UnscaleDurability();
+                    }
+
 
                     _resource = value;
 
@@ -276,7 +292,10 @@ namespace Server.Items
 
                     Invalidate();
                     (Parent as Mobile)?.UpdateResistances();
-                    ScaleDurability();
+                    if (!World.Loading)
+                    {
+                        ScaleDurability();
+                    }
                 }
             }
         }
