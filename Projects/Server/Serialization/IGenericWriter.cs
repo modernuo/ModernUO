@@ -155,6 +155,12 @@ namespace Server
                     }
             }
         }
+        void Write(Guid guid)
+        {
+            Span<byte> stack = stackalloc byte[16];
+            guid.TryWriteBytes(stack);
+            Write(stack);
+        }
 
         long Seek(long offset, SeekOrigin origin);
     }

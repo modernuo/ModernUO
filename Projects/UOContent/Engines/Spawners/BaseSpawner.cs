@@ -17,6 +17,20 @@ namespace Server.Engines.Spawners
     public abstract class BaseSpawner : Item, ISpawner
     {
         private static WarnTimer m_WarnTimer;
+        private static readonly Dictionary<Guid, BaseSpawner> _spawnersByGuid = new();
+
+        private static Guid NewGuid()
+        {
+            Guid guid;
+            do
+            {
+                guid = Guid.NewGuid();
+            } while (_spawnersByGuid.ContainsKey(guid));
+
+            return guid;
+        }
+
+        private Guid _guid;
         private int m_Count;
         private bool m_Group;
         private int m_HomeRange;
@@ -62,6 +76,7 @@ namespace Server.Engines.Spawners
             params string[] spawnedNames
         ) : base(0x1f13)
         {
+            _guid = NewGuid();
             InitSpawn(amount, minDelay, maxDelay, team, homeRange);
             for (var i = 0; i < spawnedNames.Length; i++)
             {
@@ -71,6 +86,19 @@ namespace Server.Engines.Spawners
 
         public BaseSpawner(DynamicJson json, JsonSerializerOptions options) : base(0x1f13)
         {
+            if (!json.GetProperty("guid", options, out _guid))
+            {
+                _guid = NewGuid();
+            }
+
+            // TODO: Handle clobbering
+            _spawnersByGuid.Add(_guid, this);
+
+            if (json.GetProperty("name", options, out string name))
+            {
+                Name = name;
+            }
+
             json.GetProperty("count", options, out int amount);
             json.GetProperty("minDelay", options, out TimeSpan minDelay);
             json.GetProperty("maxDelay", options, out TimeSpan maxDelay);
@@ -883,7 +911,9 @@ namespace Server.Engines.Spawners
         {
             base.Serialize(writer);
 
-            writer.Write(8); // version
+            writer.Write(9); // version
+
+            writer.Write(_guid);
 
             writer.Write(ReturnOnDeactivate);
 
@@ -928,6 +958,11 @@ namespace Server.Engines.Spawners
 
             switch (version)
             {
+                case 9:
+                    {
+                        _guid = reader.ReadGuid();
+                        goto case 8;
+                    }
                 case 8:
                     {
                         ReturnOnDeactivate = reader.ReadBool();
