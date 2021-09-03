@@ -8,7 +8,9 @@
     "homeRange": 5,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00"
+    "minDelay": "00:05:00",
+    "guid": "55312eec-780a-4118-b571-3335a95f739d",
+    "name": "Spawner"
   },
   {
     "type": "Spawner",
@@ -19,7 +21,9 @@
     "homeRange": -5,
     "walkingRange": 30,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00"
+    "minDelay": "00:05:00",
+    "guid": "a2ef580c-24dc-409f-b080-8191f79feaa3",
+    "name": "Spawner"
   },
   {
     "type": "Spawner",
@@ -30,7 +34,9 @@
     "homeRange": -5,
     "walkingRange": 30,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00"
+    "minDelay": "00:05:00",
+    "guid": "d2b0aabf-080b-44a3-99e5-18c3bc6327c5",
+    "name": "Spawner"
   },
   {
     "type": "Spawner",
@@ -41,6 +47,8 @@
     "homeRange": -5,
     "walkingRange": 30,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00"
+    "minDelay": "00:05:00",
+    "guid": "57c6e82a-edab-49c0-adc0-45766dadaefb",
+    "name": "Spawner"
   }
 ]

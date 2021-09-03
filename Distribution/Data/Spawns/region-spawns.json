@@ -7,7 +7,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "bba64d97-11eb-4a87-b326-e41e3c9b355d",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -17,7 +19,9 @@
     "count": 5,
     "entries": [{ "maxCount": 5, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "e37b4d74-c87e-4102-8c87-8f80c728fe0c",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -27,7 +31,9 @@
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "aed692cc-2dac-4c80-931b-35c73ca8d092",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -37,7 +43,9 @@
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "425ac125-1597-41b4-9e6d-72b91801230b",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -47,7 +55,9 @@
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "3d7925bf-2642-4185-bc03-fa314fb75a7f",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -57,7 +67,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "57da6436-6b16-4697-add5-f4b45776ccbc",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -67,7 +79,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "427451dd-93fa-43c9-85c6-01536066c8cc",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -77,7 +91,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableOnion", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "640fe3f8-9917-4dfa-986d-038923163add",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -87,7 +103,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "f4bccdc2-c663-4ccd-b7df-31656fa2ae09",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -97,7 +115,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "0c48edf9-a88e-45f1-9ba3-cd8c919aefbc",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -107,7 +127,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCotton", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "e7b34039-ec1f-43c8-b64f-d7462ce7ae9d",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -117,7 +139,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "2bf378f0-77ed-44cd-8dfb-181d068f401e",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -127,7 +151,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "e6a4aede-5a76-473d-8331-4bb73701ea1a",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -137,7 +163,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "b29b54ab-5ae3-4ce3-93ac-326f324a34f6",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -147,7 +175,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "e416e9fa-5a9a-426b-962e-50cdce64ca7f",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -157,7 +187,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableCabbage", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "8536c19c-2036-495a-a3c5-e82c9f32f5ad",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -167,7 +199,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableTurnip", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "d8a2e54e-4951-468f-93c5-376460070cba",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -177,7 +211,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "58b14343-2032-4507-a913-6b536507c2e5",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -187,7 +223,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableCarrot", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "9805ef58-355f-4352-bfc4-43c6710ff409",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -197,7 +235,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableTurnip", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "0c6481ab-3341-4113-ac1a-6523c19c881d",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -207,7 +247,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableOnion", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "57f955bb-49e1-4a66-a214-4fbddf8d572b",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -217,7 +259,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "f68b6bc8-f822-4c7a-9d01-37fad25bc95b",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -227,7 +271,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "7b09d4b5-fe63-4f95-8525-3c970c513adc",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -237,7 +283,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableCotton", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "4b4e3973-d836-4f7c-b9f7-5fb7d468da28",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -247,7 +295,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "fb826650-9fad-43ff-8ba1-9d848f1f26c5",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -257,7 +307,9 @@
     "count": 5,
     "entries": [{ "maxCount": 5, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "79af53a5-33e2-4fdb-95dd-278a050e54fc",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -267,7 +319,9 @@
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "8408baaa-0de1-4cb0-ad89-973782e3a565",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -277,7 +331,9 @@
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "b17f2f9c-9d36-4bea-87db-69f8effc4926",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -287,7 +343,9 @@
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "690ccc1c-2ac8-4f05-8066-695aa53c98aa",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -297,7 +355,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "ee6692af-82cf-477e-96ec-375be7a23db9",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -307,7 +367,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "c052a5e0-493d-483e-a98a-665cf05c5c14",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -317,7 +379,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableOnion", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "41a583ac-749c-40a7-8658-fb3deb1b222a",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -327,7 +391,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "df4c5918-b490-4257-9aeb-541b44980b27",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -337,7 +403,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "1025906e-047c-460b-9bb8-581f57ff1357",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -347,7 +415,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCotton", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "185e475b-36cf-4dad-8776-537e84b15e42",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -357,7 +427,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "59e99d3b-b727-491b-b0f3-03a441b10c04",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -367,7 +439,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "85cc6fca-4f66-4428-aa3a-347a88523a4b",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -377,7 +451,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "afdfec82-dac3-43df-bd7b-cd2cfad5f265",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -387,7 +463,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "34b0579c-1fc6-4868-82c5-09138c5e5878",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -397,7 +475,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableCabbage", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "997d9ff5-ad2b-421b-ae76-6794e7e88150",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -407,7 +487,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableTurnip", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "bfb677f7-e824-46f6-95ef-ee5602f4f9c3",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -417,7 +499,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "c42ef172-78c8-4c5e-b26c-fcc3fc3da1cc",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -427,7 +511,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableCarrot", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "57551e80-0018-4fcf-8b83-9d39ef19b0a6",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -437,7 +523,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableTurnip", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "0da29e36-7bff-4fcf-803d-79dd16212653",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -447,7 +535,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableOnion", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "4656ad9d-a455-4217-9316-ec10d10cf68c",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -457,7 +547,9 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "d5b08634-5c5d-4bc2-b6cd-74cb06132423",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -467,7 +559,9 @@
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "ab0cb920-b25f-4811-8ef6-938549dbfa27",
+    "name": "Spawner"
   },
   {
     "type": "RegionSpawner",
@@ -477,6 +571,8 @@
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "FarmableCotton", "probability": 100 }],
     "minDelay": "00:00:10",
-    "maxDelay": "00:00:30"
+    "maxDelay": "00:00:30",
+    "guid": "69dfbe70-b46c-42b0-9ff1-351fd9651884",
+    "name": "Spawner"
   }
 ]

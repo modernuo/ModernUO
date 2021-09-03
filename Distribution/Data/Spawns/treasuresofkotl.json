@@ -11,6 +11,8 @@
     "homeRange": 20,
     "walkingRange": 5,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00"
+    "minDelay": "00:01:00",
+    "guid": "f9f9b0a0-19fa-4eb0-9957-d9bff82b7551",
+    "name": "Spawner"
   }
 ]
