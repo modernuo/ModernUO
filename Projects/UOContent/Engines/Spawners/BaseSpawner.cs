@@ -131,6 +131,13 @@ namespace Server.Engines.Spawners
         public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
 
         [CommandProperty(AccessLevel.Developer)]
+        public Guid Guid
+        {
+            get => _guid;
+            set => _guid = value;
+        }
+
+        [CommandProperty(AccessLevel.Developer)]
         public int Count
         {
             get => m_Count;
@@ -291,6 +298,9 @@ namespace Server.Engines.Spawners
 
         public virtual void ToJson(DynamicJson json, JsonSerializerOptions options)
         {
+            json.Type = GetType().Name;
+            json.SetProperty("name", options, Name);
+            json.SetProperty("guid", options, _guid);
             json.SetProperty("count", options, Count);
             json.SetProperty("minDelay", options, MinDelay);
             json.SetProperty("maxDelay", options, MaxDelay);

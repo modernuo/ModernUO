@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -42,7 +43,18 @@ namespace Server.SkillHandlers
 
         public static bool IsEmpty(BaseBook book)
         {
-            return book.Pages.SelectMany(page => page.Lines).All(line => line.Trim().Length == 0);
+            foreach (var page in book.Pages)
+            {
+                foreach (var line in page.Lines)
+                {
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public static void Copy(BaseBook bookSrc, BaseBook bookDst)
