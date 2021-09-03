@@ -991,6 +991,7 @@ namespace Server.Misc
 
             var addSkillItems = true;
             var elf = m.Race == Race.Elf;
+            var gargoyle = m.Race == Race.Gargoyle;
 
             switch (prof)
             {
@@ -998,7 +999,21 @@ namespace Server.Misc
                     {
                         if (elf)
                         {
-                            EquipItem(new LeafChest());
+                            EquipItem(new Circlet());
+                            EquipItem(new HideGorget());
+                            EquipItem(new HideChest());
+                            EquipItem(new HidePauldrons());
+                            EquipItem(new HideGloves());
+                            EquipItem(new HidePants());
+                            EquipItem(new ElvenBoots());
+                        }
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new DreadSword()); //NOT IMPLEMENTED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1());  
+                            EquipItem(new GargishLeatherLegsType1());
                         }
                         else
                         {
@@ -1010,7 +1025,6 @@ namespace Server.Misc
                             EquipItem(new StuddedLegs());
                             EquipItem(new ThighBoots());
                         }
-
                         break;
                     }
                 case 4: // Necromancer
@@ -1038,9 +1052,16 @@ namespace Server.Misc
                             EquipItem(NecroHue(new LeafArms()));
                             EquipItem(NecroHue(new LeafGloves()));
                             EquipItem(NecroHue(new LeafGorget()));
-                            EquipItem(NecroHue(new LeafGorget()));
-                            EquipItem(NecroHue(new ElvenPants())); // TODO: Verify the pants
+                            EquipItem(NecroHue(new LeafLegs()));
                             EquipItem(new ElvenBoots());
+                        }
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new GlassSword());  //NOT IMPLEMENTED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherLegsType1());
                         }
                         else
                         {
@@ -1077,7 +1098,16 @@ namespace Server.Misc
                             EquipItem(new LeafArms());
                             EquipItem(new LeafChest());
                             EquipItem(new LeafLegs());
+                            EquipItem(new LeafGloves());
                             EquipItem(new ElvenBoots()); // Verify hue
+                        }
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new GlassSword()); // IMPLEMENTION NEEDED
+                            //EquipItem(new GargishStoneChestType1());
+                            //EquipItem(new GargishStoneArmsType1());
+                            //EquipItem(new GargishStoneKiltType1()); 
+                            //EquipItem(new GargishStoneLegsType1());
                         }
                         else
                         {
@@ -1087,6 +1117,7 @@ namespace Server.Misc
                             EquipItem(new RingmailArms());
                             EquipItem(new RingmailChest());
                             EquipItem(new RingmailLegs());
+                            EquipItem(new RingmailGloves());
                             EquipItem(new ThighBoots(0x748));
                             EquipItem(new Cloak(0xCF));
                             EquipItem(new BodySash(0xCF));
@@ -1106,19 +1137,32 @@ namespace Server.Misc
                 case 6: // Samurai
                     {
                         addSkillItems = false;
-                        EquipItem(new HakamaShita(0x2C3));
-                        EquipItem(new Hakama(0x2C3));
-                        EquipItem(new SamuraiTabi(0x2C3));
-                        EquipItem(new TattsukeHakama(0x22D));
-                        EquipItem(new Bokuto());
 
                         if (elf)
                         {
                             EquipItem(new RavenHelm());
+                            EquipItem(new HakamaShita(0x2C3));
+                            EquipItem(new Hakama(0x2C3));
+                            EquipItem(new SamuraiTabi(0x2C3));
+                            EquipItem(new TattsukeHakama(0x22D));
+                            EquipItem(new Bokuto());
+                        }
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new GargishTalwar()); // IMPLEMENTION NEEDED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherLegsType1());
                         }
                         else
                         {
                             EquipItem(new LeatherJingasa());
+                            EquipItem(new HakamaShita(0x2C3));
+                            EquipItem(new Hakama(0x2C3));
+                            EquipItem(new SamuraiTabi(0x2C3));
+                            EquipItem(new TattsukeHakama(0x22D));
+                            EquipItem(new Bokuto());
                         }
 
                         PackItem(new Scissors());
@@ -1132,25 +1176,40 @@ namespace Server.Misc
                 case 7: // Ninja
                     {
                         addSkillItems = false;
-                        EquipItem(new Kasa());
+                        
 
                         int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89 };
                         // TODO: Verify that's ALL the hues for that above.
 
-                        EquipItem(new TattsukeHakama(hues.RandomElement()));
-
-                        EquipItem(new HakamaShita(0x2C3));
-                        EquipItem(new NinjaTabi(0x2C3));
-
                         if (elf)
                         {
                             EquipItem(new AssassinSpike());
+                            EquipItem(new TattsukeHakama(hues.RandomElement()));
+                            EquipItem(new HakamaShita(0x2C3));
+                            EquipItem(new NinjaTabi(0x2C3));
+                            EquipItem(new Kasa());
+                        }
+                        else if (gargoyle)
+                        {
+                            //EquipItem(new DualPointedSpear()); //IMPLEMENTION NEEDED
+                            EquipItem(new GargishLeatherChestType1());
+                            EquipItem(new GargishLeatherArmsType1());
+                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherLegsType1());
                         }
                         else
                         {
                             EquipItem(new Tekagi());
+                            EquipItem(new TattsukeHakama(hues.RandomElement()));
+                            EquipItem(new HakamaShita(0x2C3));
+                            EquipItem(new NinjaTabi(0x2C3));
+                            EquipItem(new Kasa());
                         }
 
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
+                        PackItem(new SmokeBomb());
                         PackItem(new SmokeBomb());
 
                         Spellbook book = new BookOfNinjitsu();
@@ -1770,6 +1829,10 @@ namespace Server.Misc
                         {
                             EquipItem(new RuneBlade());
                         }
+                        //else if (gargoyle)
+                        //{
+                            //EquipItem(new DreadSword());  IMPLEMENTION NEEDED
+                        //}
                         else
                         {
                             EquipItem(new Katana());
