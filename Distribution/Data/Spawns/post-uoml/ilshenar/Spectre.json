@@ -1,0 +1,23 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (310)",
+    "guid": "84a470c1-0e43-487c-aa99-bb1cce294d8d",
+    "location": [1981, 1059, -28],
+    "map": "Ilshenar",
+    "count": 12,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 40,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 2, "probability": 100 }
+    ]
+  }
+]

@@ -49,20 +49,20 @@ namespace Server.Engines.Spawners
             }
         }
 
-        [JsonPropertyName("probability")]
-        public int SpawnedProbability { get; set; }
-
-        [JsonPropertyName("maxCount")]
-        public int SpawnedMaxCount { get; set; }
-
         [JsonPropertyName("name")]
         public string SpawnedName { get; set; }
+
+        [JsonPropertyName("parameters")]
+        public string Parameters { get; set; }
 
         [JsonPropertyName("properties")]
         public string Properties { get; set; }
 
-        [JsonPropertyName("parameters")]
-        public string Parameters { get; set; }
+        [JsonPropertyName("maxCount")]
+        public int SpawnedMaxCount { get; set; }
+
+        [JsonPropertyName("probability")]
+        public int SpawnedProbability { get; set; }
 
         [JsonIgnore]
         public EntryFlags Valid { get; set; }

@@ -301,6 +301,8 @@ namespace Server.Engines.Spawners
             json.Type = GetType().Name;
             json.SetProperty("name", options, Name);
             json.SetProperty("guid", options, _guid);
+            json.SetProperty("location", options, Location);
+            json.SetProperty("map", options, Map);
             json.SetProperty("count", options, Count);
             json.SetProperty("minDelay", options, MinDelay);
             json.SetProperty("maxDelay", options, MaxDelay);

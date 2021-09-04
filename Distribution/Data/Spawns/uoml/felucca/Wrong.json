@@ -1,0 +1,161 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "a40acdbc-7e26-4c27-9689-e750ac5f3444",
+    "location": [5819, 591, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 25,
+    "entries": [{ "name": "JukaWarrior", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "e1c77465-f55c-4f12-aa43-23a3cf0e5281",
+    "location": [5808, 588, 12],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "2d5a2971-0c20-4fe4-977d-47d8d9062e19",
+    "location": [5792, 544, 10],
+    "map": "Felucca",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "48e09b65-5796-48e0-a8c2-02e165640758",
+    "location": [5857, 586, 15],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "9b106ff1-9e83-498d-b1f4-475576e689e6",
+    "location": [5857, 562, 15],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "aa57dfd0-b14e-4b95-8fd1-1e6111127cf9",
+    "location": [5828, 530, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "192809ee-839d-451b-8e44-08167fcacfc8",
+    "location": [5659, 563, 20],
+    "map": "Felucca",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Brigand", "maxCount": 1, "probability": 100 },
+      { "name": "JukaLord", "maxCount": 4, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "29e50ce6-1b98-45bf-8a52-319f9f0df4e8",
+    "location": [5724, 561, 20],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Golem", "maxCount": 1, "probability": 100 },
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2227)",
+    "guid": "b0ea3256-18d6-47b1-9eca-e654cbb5579e",
+    "location": [5690, 534, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

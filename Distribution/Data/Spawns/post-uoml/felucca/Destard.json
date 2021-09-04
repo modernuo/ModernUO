@@ -1,0 +1,465 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "59dd0658-fea5-4736-9d6d-31b5af90d6cf",
+    "location": [5209, 965, -40],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "350559a0-0c03-4ae0-9a19-06923ba5785c",
+    "location": [5247, 956, -40],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "262c2e02-da99-4d66-b87e-0da5773204b9",
+    "location": [5280, 955, -40],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "bf7c1055-f530-4f7d-8d0a-fad5429e344a",
+    "location": [5284, 926, -40],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "42efd1f0-b41b-4f87-9c1d-7994433c6759",
+    "location": [5214, 917, -40],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "9f3677ec-7a90-4aa6-a046-2a92f894c729",
+    "location": [5241, 945, -40],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "003de090-f4cd-4a98-afc8-ef50ab8415ab",
+    "location": [5161, 940, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 50,
+    "entries": [{ "name": "GiantSerpent", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "0fcbfbcf-e97f-435f-81b2-d6895cff4397",
+    "location": [5149, 907, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "eec890ef-aba3-4377-b613-88a81cca4d3b",
+    "location": [5141, 915, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 25,
+    "walkingRange": 25,
+    "entries": [
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "8fef4fc6-525e-485f-8cf2-99e1b145822a",
+    "location": [5352, 934, -5],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "12ce90b8-e6a2-4f0a-ba6b-3a688560afcb",
+    "location": [5317, 980, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 7,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "54f5cd1e-570d-4654-ae10-d26c1e2dffee",
+    "location": [5250, 869, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [{ "name": "GiantSerpent", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "ced956f2-0465-46f6-a973-a34239dd31c7",
+    "location": [5226, 826, 0],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "757aab33-6f4f-4aa0-8216-499bc0de7d21",
+    "location": [5269, 811, 7],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "f999eac1-a033-4b1d-ba31-93e3eb2f2927",
+    "location": [5307, 815, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "481dd604-c1f3-4bc6-b575-f4c05f79dfd5",
+    "location": [5294, 842, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "7306faad-bc10-4ea7-a9c5-ce05736ac499",
+    "location": [5203, 787, 5],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 12,
+    "walkingRange": 25,
+    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "bf92283c-19de-490f-bcad-ec45a4139cba",
+    "location": [5229, 841, 1],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "a32a0a8d-6dbe-4175-a22e-839c93f8d33d",
+    "location": [5205, 778, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 7,
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "95031d42-7352-431f-a9ed-40049d108548",
+    "location": [5141, 834, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "ShadowWyrm", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "3b045973-04c9-49e0-89af-3e91fc734b38",
+    "location": [5169, 836, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Daemon", "maxCount": 1, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "a5e3c3cc-9d33-4a93-afc2-b2a570d0e6f9",
+    "location": [5152, 869, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 25,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "ShadowWyrm", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "43f6d92f-ca88-4acc-ab46-95e665cc1992",
+    "location": [5153, 842, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 40,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "e8c1c0af-4866-432f-b597-f742c19fb4e8",
+    "location": [5141, 968, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "3603ed0f-9731-4327-91f1-fbef79431715",
+    "location": [5157, 997, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "6a3e8ef3-89c8-435e-8bdd-120aace1362f",
+    "location": [5185, 1006, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 50,
+    "entries": [{ "name": "AncientWyrm", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "e0bd4e5f-3c91-4c25-af96-31d000f2311e",
+    "location": [5143, 986, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (206)",
+    "guid": "5ab511d9-ae3b-411d-851d-524b7d5d0279",
+    "location": [5183, 1007, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

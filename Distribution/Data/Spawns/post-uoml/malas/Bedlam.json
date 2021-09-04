@@ -1,0 +1,40 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (408)",
+    "guid": "a4eb8774-47aa-49f3-95a3-2236cbe26a13",
+    "location": [98, 1656, 0],
+    "map": "Malas",
+    "count": 34,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 40,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "GoreFiend", "maxCount": 1, "probability": 100 },
+      { "name": "PatchworkSkeleton", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 4, "probability": 100 },
+      { "name": "Zombie", "maxCount": 6, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (408)",
+    "guid": "ef5c37e4-5947-4a72-b4ed-7221e385da97",
+    "location": [104, 1655, 0],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:15:00",
+    "maxDelay": "00:30:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 15,
+    "entries": [{ "name": "RedDeath", "maxCount": 1, "probability": 100 }]
+  }
+]

@@ -1,0 +1,342 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "7433cd87-013f-4b2c-b990-e808c92450f0",
+    "location": [1980, 116, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "EnslavedGargoyle", "maxCount": 1, "probability": 100 },
+      { "name": "GolemController", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "1ae89055-2acf-44be-a9b8-14d7f0e54eab",
+    "location": [1939, 116, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 25,
+    "entries": [{ "name": "ExodusMinion", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "3c49cffd-fbc5-4b3b-863a-aae618ae4d0a",
+    "location": [1894, 116, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "ExodusOverseer", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "709a78a2-ca19-48ce-bb52-2c4604d59603",
+    "location": [1964, 164, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GolemController", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "f1ada7b0-a3d5-4ba5-8acd-9d4d61584417",
+    "location": [1932, 164, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GolemController", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "1dd9e397-3b71-42dc-b10f-66c48b9036c7",
+    "location": [1932, 196, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "d91ac4d5-b745-4059-a7d6-3021e2df21e1",
+    "location": [1895, 160, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "d269c544-7e1a-4753-8009-c47673d4c6f0",
+    "location": [1979, 192, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "ExodusOverseer", "maxCount": 1, "probability": 100 },
+      { "name": "ExodusMinion", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "1df4d626-34d6-4e76-afb4-d42a902674f1",
+    "location": [1996, 164, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GolemController", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "6314e85f-7de2-47f2-8fb9-0ed115b5c60a",
+    "location": [2032, 184, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "09b1949f-310e-468a-a7a9-bab2c55eec86",
+    "location": [2063, 183, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "ef7e2204-2c4f-4d60-a317-857b4cc9a6c3",
+    "location": [2058, 163, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 },
+      { "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "01263cf0-ebf9-41d9-9217-b0bbc7fa0239",
+    "location": [2044, 143, -28],
+    "map": "Ilshenar",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 1, "probability": 100 },
+      { "name": "ExodusMinion", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "d631b5a1-3e8f-43e5-ad30-99caec59b0ec",
+    "location": [2071, 116, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "ExodusOverseer", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "278c1967-6953-4b17-94c5-790e57a4420b",
+    "location": [2044, 87, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "ExodusMinion", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "14d0e8f9-95ca-40b3-bd66-2b740b012857",
+    "location": [2031, 48, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "61b59ae7-b8ab-4c89-a62a-b8593e676789",
+    "location": [2038, 67, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "4dfe21bf-fd1e-4ed7-be7d-780de18dea87",
+    "location": [1995, 67, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [{ "name": "GolemController", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "32276482-8b1e-49e3-96e4-440ea82f7663",
+    "location": [1980, 39, -28],
+    "map": "Ilshenar",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "ExodusOverseer", "maxCount": 1, "probability": 100 },
+      { "name": "ExodusMinion", "maxCount": 1, "probability": 100 },
+      { "name": "GolemController", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "434a5e60-b907-4e3b-83a0-67bf9e27749c",
+    "location": [1931, 67, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GolemController", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "a00905ef-5385-4e83-a9e5-1cb94d50e638",
+    "location": [1896, 72, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [{ "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2304)",
+    "guid": "69af748a-c1b7-428c-aa06-fa1bed34d74f",
+    "location": [1932, 35, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

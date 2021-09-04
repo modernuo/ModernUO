@@ -1,0 +1,356 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "a9e4a422-4da0-43b2-9246-d0604f2d19ff",
+    "location": [6049, 1447, 4],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "cee29891-9903-446e-8520-e3228937e618",
+    "location": [6091, 1491, 10],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "35130ab7-1097-4d13-be53-2cb3271b12c5",
+    "location": [6048, 1487, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "b67d9bd3-b8c2-4bae-9a24-8f4cb1402900",
+    "location": [6065, 1459, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "88cb62b7-50d5-4142-8e7c-0724fe2d9fd0",
+    "location": [6092, 1448, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "d3c0a57d-b979-4249-a13c-6b84e81cbd65",
+    "location": [6107, 1452, 25],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "cb63fca7-6d0f-4e9f-a35c-88d7e7355ebe",
+    "location": [6112, 1462, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "4b6dd897-b716-468b-a6fb-945609f2d463",
+    "location": [6039, 1438, 4],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "2a97b34b-56a8-4fd6-a65a-fa004fe79e96",
+    "location": [6115, 1491, -15],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "70fe80f5-0c28-4364-978d-21f765ee6a55",
+    "location": [6084, 1470, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "f82c828c-961a-4d1c-ad14-2f90c9660092",
+    "location": [6049, 1470, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "730aec13-c036-43f6-8748-2b098b7b7904",
+    "location": [6034, 1467, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "6be653bf-a552-4fea-aaab-b746dcfdfe2d",
+    "location": [6059, 1438, 4],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "90d057b4-5ed1-42ae-8067-f6b42dbf3e20",
+    "location": [6061, 1490, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "1a2ce443-d38a-4d19-a678-bffbd37e085d",
+    "location": [6041, 1486, 5],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "BullFrog", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "935f70c7-716c-47ec-a980-fe01686fbca1",
+    "location": [6090, 1483, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 25,
+    "entries": [{ "name": "Alligator", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "3eb878a7-ea8e-4d3a-992d-906f774deeeb",
+    "location": [6077, 1492, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 10,
+    "entries": [{ "name": "Alligator", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "aadea909-8f7e-4063-8b9c-7338a3724c49",
+    "location": [6108, 1471, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 10,
+    "entries": [{ "name": "Alligator", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "0639965b-be96-40c4-9d73-d56c22acfa28",
+    "location": [6087, 1443, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 10,
+    "entries": [{ "name": "Alligator", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "ca286656-16dc-4735-8cce-ba6d5ee04447",
+    "location": [6052, 1463, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 25,
+    "entries": [{ "name": "Alligator", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2102)",
+    "guid": "61f22984-14e1-4963-8947-b4e58d8e08c4",
+    "location": [6037, 1494, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:00:00",
+    "maxDelay": "00:01:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 10,
+    "entries": [{ "name": "Alligator", "maxCount": 1, "probability": 100 }]
+  }
+]

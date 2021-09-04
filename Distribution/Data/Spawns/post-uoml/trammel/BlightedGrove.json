@@ -1,0 +1,145 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "915cad19-ab32-4d45-ad7b-ba0630110235",
+    "location": [6507, 843, 0],
+    "map": "Trammel",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Tangle", "maxCount": 1, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 },
+      { "name": "Alligator", "maxCount": 1, "probability": 100 },
+      { "name": "Reaper", "maxCount": 1, "probability": 100 },
+      { "name": "Corpser", "maxCount": 1, "probability": 100 },
+      { "name": "Changeling", "maxCount": 1, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "7e0b55c8-8b91-4234-a908-d7ae57765865",
+    "location": [6513, 871, 0],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 35,
+    "walkingRange": 35,
+    "entries": [
+      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 1, "probability": 100 },
+      { "name": "Harpy", "maxCount": 1, "probability": 100 },
+      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "Snake", "maxCount": 1, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "c25dafb9-4e19-42f7-9583-fbc41206daf5",
+    "location": [6585, 878, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Harpy", "maxCount": 1, "probability": 100 },
+      { "name": "Saliva", "maxCount": 1, "probability": 100 },
+      { "name": "Changeling", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "e6f77da5-1d29-437b-80be-f4ee7033752c",
+    "location": [6535, 848, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Abscess", "maxCount": 1, "probability": 100 },
+      { "name": "Hydra", "maxCount": 1, "probability": 100 },
+      { "name": "BogThing", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "ba2c6171-4f63-438a-8af4-0200d3644722",
+    "location": [6540, 872, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "InsaneDryad", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "274dbcec-a2eb-4530-b37b-eb46690c27d2",
+    "location": [6518, 870, 0],
+    "map": "Trammel",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 40,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "Thrasher", "maxCount": 1, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
+      { "name": "Reaper", "maxCount": 1, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 },
+      { "name": "Alligator", "maxCount": 1, "probability": 100 },
+      { "name": "Coil", "maxCount": 1, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "5ad05cd1-1f72-4a94-8406-411eccef96a5",
+    "location": [6489, 897, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "InsaneDryad", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (101)",
+    "guid": "2be666cd-bbc2-4f57-9333-c857a08cfb7a",
+    "location": [6518, 879, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "InsaneDryad", "maxCount": 1, "probability": 100 }]
+  }
+]

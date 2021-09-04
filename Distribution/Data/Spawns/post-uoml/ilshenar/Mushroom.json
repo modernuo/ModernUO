@@ -1,0 +1,58 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (305)",
+    "guid": "6e405872-3928-4c4c-ab93-f68ed25d29b9",
+    "location": [1444, 1519, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:02:00",
+    "maxDelay": "00:05:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (305)",
+    "guid": "c495e502-c55e-4ab2-b7a0-576ee60cc9d2",
+    "location": [1441, 1532, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:02:00",
+    "maxDelay": "00:05:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (305)",
+    "guid": "147cc502-906a-4216-a803-57c34d9a127f",
+    "location": [1415, 1498, -27],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:02:00",
+    "maxDelay": "00:05:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (305)",
+    "guid": "d5ed1953-906a-44c8-b471-23aa9b95cd4a",
+    "location": [1464, 1495, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:02:00",
+    "maxDelay": "00:05:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+  }
+]

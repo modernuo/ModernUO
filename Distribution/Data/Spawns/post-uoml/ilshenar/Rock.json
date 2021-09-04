@@ -1,0 +1,221 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "d95b2aff-9043-4845-9a84-4a2fc217ed35",
+    "location": [2188, 310, -7],
+    "map": "Ilshenar",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "c1fc7ee1-640a-46fb-b33e-4f5a505e86a0",
+    "location": [2220, 75, -27],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "AcidElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "e65522aa-f5a6-4931-8a20-c9a177a4963a",
+    "location": [2207, 113, -27],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "StoneGargoyle", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "ba0066e4-1319-48a5-9940-fee92a0cf4ad",
+    "location": [2185, 168, -32],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "103bd2c5-0c61-435a-be38-d2a75030e24a",
+    "location": [2229, 143, -32],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
+      { "name": "Executioner", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "38eee324-3e5f-4e95-a49e-88bdd067f25e",
+    "location": [2154, 163, -27],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "6be0d760-0112-4236-9083-ef6e1e49da2c",
+    "location": [2125, 165, -32],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
+      { "name": "Executioner", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "50a78998-bc71-4d93-9dfc-3884076d1c74",
+    "location": [2125, 137, -32],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "924bc29c-af31-4b66-8e0f-8a6799628703",
+    "location": [2138, 97, -27],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "ElderGazer", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "dbc45b7f-274f-4d27-8116-ca3059d5f3f8",
+    "location": [2183, 85, -32],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
+      { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "346f50c5-a538-4c61-96a5-9b2275c72e5a",
+    "location": [2155, 24, -32],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "PoisonElemental", "maxCount": 1, "probability": 100 },
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "a23fa584-c1ea-4b43-b373-47da667da042",
+    "location": [2124, 96, -32],
+    "map": "Ilshenar",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "PoisonElemental", "maxCount": 1, "probability": 100 },
+      { "name": "Lich", "maxCount": 1, "probability": 100 },
+      { "name": "LichLord", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "dfe2dc85-fb19-41da-85b7-5cc57d92969b",
+    "location": [2094, 56, -32],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [{ "name": "Executioner", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (308)",
+    "guid": "2dd4a528-3c75-408e-b810-2d85919d1999",
+    "location": [2127, 29, -32],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "HellHound", "maxCount": 1, "probability": 100 },
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

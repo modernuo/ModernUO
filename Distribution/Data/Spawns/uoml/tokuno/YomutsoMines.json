@@ -1,0 +1,168 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "44126055-5718-4d04-845c-0448c08b3feb",
+    "location": [16, 56, -1],
+    "map": "Malas",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "12572339-5c16-47b6-8bd7-8a6e4b2b495b",
+    "location": [25, 19, -1],
+    "map": "Malas",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "3a2cad92-b8c2-4087-92fe-ede663c1a5a6",
+    "location": [71, 29, -1],
+    "map": "Malas",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "938a2b6c-c31d-43b2-b62d-af4fdd114fb2",
+    "location": [54, 67, -1],
+    "map": "Malas",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "82409f73-c7aa-4416-8c88-cef242a6821f",
+    "location": [83, 114, -1],
+    "map": "Malas",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "8f9af305-ec57-4163-a0e0-445147f7626d",
+    "location": [102, 84, -1],
+    "map": "Malas",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "636f9516-9974-43de-8809-f640f84fa7c5",
+    "location": [116, 61, -1],
+    "map": "Malas",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 2, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "a893850b-dec3-4cdc-b51f-3dae703e7ee4",
+    "location": [111, 20, -1],
+    "map": "Malas",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "DullCopperElemental", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "YomotsuPriest", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2506)",
+    "guid": "45781b9e-f80b-4aaf-a663-fb25e9546ced",
+    "location": [107, 23, -1],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "FireBeetle", "maxCount": 1, "probability": 100 }]
+  }
+]

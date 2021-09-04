@@ -1,0 +1,302 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "333d697c-b83f-47e0-966d-601edb0fdb4c",
+    "location": [5146, 1995, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "29f6c1b3-eace-41f3-bbb7-d409f15bd293",
+    "location": [5153, 1971, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "4626fff6-1304-4fcc-8a0f-0b1e1e2716ec",
+    "location": [5153, 1961, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "DireWolf", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "e1922e25-a24c-46cc-8ba0-8c78d1820a11",
+    "location": [5144, 1960, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "OrcishLord", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "0eff2157-4d59-4e22-917d-e5b800ab80ef",
+    "location": [5141, 1968, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "OrcCaptain", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "2bbe7324-acbb-4f72-a3d3-8377f05a4f16",
+    "location": [5332, 1365, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "916cde75-d93d-4e35-919a-409c1ba3ebab",
+    "location": [5308, 1372, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "Noble", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "006553c4-bf2c-4739-b5c3-54e129df844e",
+    "location": [5302, 1355, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 12,
+    "entries": [
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "9667faec-ac76-4c66-8f91-4d3447b54f24",
+    "location": [5316, 1332, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "GiantRat", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "27f4291d-9187-4c5e-8efa-94a7df8dd340",
+    "location": [5331, 1346, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "DireWolf", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "b3d8c6f0-f91b-4e84-9d8d-7e59efbf5f21",
+    "location": [5354, 1332, 0],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 },
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "772a2e72-d105-4d40-a49f-c14db70cfa01",
+    "location": [5356, 1304, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "68c8e35e-9e74-494b-b514-24b86ce04c80",
+    "location": [5317, 1309, 0],
+    "map": "Felucca",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 },
+      { "name": "OrcBomber", "maxCount": 2, "probability": 100 },
+      { "name": "Orc", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "e45e8777-fec6-4bb2-a51b-bd30189b8615",
+    "location": [5300, 1314, 0],
+    "map": "Felucca",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 3, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "9dab79a2-0efc-4fda-958b-e83233714ee6",
+    "location": [5292, 1316, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "Corpser", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "321d941f-105c-4312-82af-de1bd1fe45dd",
+    "location": [5281, 2029, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "814a36d3-0fc3-4338-8166-6a9797566326",
+    "location": [5308, 2005, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 12,
+    "walkingRange": 12,
+    "entries": [
+      { "name": "OrcBrute", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "8b623981-0059-4031-b035-4eaa71bdcd8c",
+    "location": [5310, 1969, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 12,
+    "walkingRange": 12,
+    "entries": [
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (212)",
+    "guid": "ccf3fb52-325a-4370-abee-19657d782508",
+    "location": [5348, 2011, 0],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

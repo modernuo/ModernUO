@@ -1,0 +1,145 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "2564c11f-4b7e-4a9f-99d3-ad9a5b85107b",
+    "location": [6513, 871, 0],
+    "map": "Felucca",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 35,
+    "walkingRange": 35,
+    "entries": [
+      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 1, "probability": 100 },
+      { "name": "Harpy", "maxCount": 1, "probability": 100 },
+      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "Snake", "maxCount": 1, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "d713996b-0a1f-4245-b20a-2668972c1662",
+    "location": [6507, 843, 0],
+    "map": "Felucca",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Tangle", "maxCount": 1, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 },
+      { "name": "Alligator", "maxCount": 1, "probability": 100 },
+      { "name": "Reaper", "maxCount": 1, "probability": 100 },
+      { "name": "Corpser", "maxCount": 1, "probability": 100 },
+      { "name": "Changeling", "maxCount": 1, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "49409384-b622-495a-b832-6f4d34c372d0",
+    "location": [6535, 848, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Abscess", "maxCount": 1, "probability": 100 },
+      { "name": "Hydra", "maxCount": 1, "probability": 100 },
+      { "name": "BogThing", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "ecb3574b-883c-4e1c-a919-9befe59a4976",
+    "location": [6518, 870, 0],
+    "map": "Felucca",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 40,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "Thrasher", "maxCount": 1, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
+      { "name": "Reaper", "maxCount": 1, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 },
+      { "name": "Alligator", "maxCount": 1, "probability": 100 },
+      { "name": "Coil", "maxCount": 1, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "de70ef72-940a-47c6-a2a1-c8c4e388fc86",
+    "location": [6540, 872, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "InsaneDryad", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "a730b0cc-6b94-479b-823f-00b0d80b020b",
+    "location": [6585, 878, 0],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Harpy", "maxCount": 1, "probability": 100 },
+      { "name": "Saliva", "maxCount": 1, "probability": 100 },
+      { "name": "Changeling", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "95025043-621d-4ec9-a3c1-a0f039bae5db",
+    "location": [6489, 897, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "InsaneDryad", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2201)",
+    "guid": "5c6c6b03-bf89-4260-93c4-2c9f2925ab13",
+    "location": [6518, 879, 0],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [{ "name": "InsaneDryad", "maxCount": 1, "probability": 100 }]
+  }
+]

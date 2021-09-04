@@ -1,0 +1,101 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (301)",
+    "guid": "097228e9-c64a-4a7e-9599-b906258b96a2",
+    "location": [50, 689, -28],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:10:00",
+    "maxDelay": "00:20:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 15,
+    "entries": [{ "name": "AncientWyrm", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (301)",
+    "guid": "a3d8fbb7-c5e5-4007-af5e-f83ec13f3b4e",
+    "location": [115, 716, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (301)",
+    "guid": "6cb8d763-955d-43ab-99fc-f0b7b826395e",
+    "location": [131, 78, 0],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (301)",
+    "guid": "0d6d3cc4-6e63-41f3-a428-24d26b38734d",
+    "location": [54, 718, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (301)",
+    "guid": "f923956f-5bf7-475b-a09e-c8d600cae381",
+    "location": [82, 718, -28],
+    "map": "Ilshenar",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (301)",
+    "guid": "510ff783-2e01-4dbc-ad82-afa207c7afd1",
+    "location": [79, 687, -28],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

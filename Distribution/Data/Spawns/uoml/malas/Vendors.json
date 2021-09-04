@@ -1,0 +1,485 @@
+[
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "8da43aed-5358-4cc7-94b4-5fcd66ff3071",
+    "location": [989, 520, -50],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Banker", "maxCount": 402, "probability": 100 },
+      { "name": "Minter", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "6bdc2557-e4bb-4ac3-a180-75c764161b77",
+    "location": [976, 512, -50],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Blacksmith", "maxCount": 402, "probability": 100 },
+      { "name": "BlacksmithGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "3e9fc9f5-cdf0-4da9-b631-3f54434e5efa",
+    "location": [976, 527, -50],
+    "map": "Malas",
+    "count": 406,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tailor", "maxCount": 402, "probability": 100 },
+      { "name": "Weaver", "maxCount": 1, "probability": 100 },
+      { "name": "TailorGuildmaster", "maxCount": 1, "probability": 100 },
+      { "name": "Tanner", "maxCount": 1, "probability": 100 },
+      { "name": "Furtrader", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "a024fe9d-032e-4142-9f5e-1320c95b91af",
+    "location": [1016, 514, -70],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "KeeperOfChivalry", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "3518e6a3-712d-420f-9bab-5820e9a3f400",
+    "location": [961, 517, -70],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "KeeperOfChivalry", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "5419ee38-b9fc-43f4-8dde-f40cb3eba20b",
+    "location": [1004, 527, -50],
+    "map": "Malas",
+    "count": 405,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "HolyMage", "maxCount": 402, "probability": 100 },
+      { "name": "Herbalist", "maxCount": 1, "probability": 100 },
+      { "name": "Alchemist", "maxCount": 1, "probability": 100 },
+      { "name": "CustomHairstylist", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "e0a5fe3e-efe0-4f07-be70-7c0e657b6ad6",
+    "location": [1003, 512, -50],
+    "map": "Malas",
+    "count": 406,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tinker", "maxCount": 402, "probability": 100 },
+      { "name": "TinkerGuildmaster", "maxCount": 1, "probability": 100 },
+      { "name": "Carpenter", "maxCount": 1, "probability": 100 },
+      { "name": "Architect", "maxCount": 1, "probability": 100 },
+      { "name": "RealEstateBroker", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "9ad237d7-c4cc-4246-8591-f77251552c0c",
+    "location": [993, 511, -50],
+    "map": "Malas",
+    "count": 404,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Provisioner", "maxCount": 402, "probability": 100 },
+      { "name": "Cobbler", "maxCount": 1, "probability": 100 },
+      { "name": "Jeweler", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "86a0e655-23dc-41e9-a075-1bcd793f3d27",
+    "location": [989, 527, -50],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "f409d2ce-9ffa-4a27-99f3-28f521bb4522",
+    "location": [1027, 494, -70],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "AnimalTrainer", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "c4cf68a2-abbe-474d-9be6-5abb91ad8d89",
+    "location": [1029, 520, -55],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 402, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "91b3001f-c8ff-47c3-9e78-ff857fce2c12",
+    "location": [950, 520, -55],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 402, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "4bf05548-141c-49c6-8d48-2dac1a07c5d1",
+    "location": [1977, 1365, -80],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Blacksmith", "maxCount": 402, "probability": 100 },
+      { "name": "BlacksmithGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "c454d58e-7475-4728-b361-d5f79817d78c",
+    "location": [1992, 1315, -90],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "AnimalTrainer", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "d1ba9863-3adb-488b-9379-2114e9229050",
+    "location": [2011, 1326, -80],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Provisioner", "maxCount": 402, "probability": 100 },
+      { "name": "Cobbler", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "504c4d90-b69f-4227-83c2-c08d881d5bee",
+    "location": [2017, 1356, -90],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Baker", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "9d7b2bf1-936f-4dfc-aa80-034cfd442b31",
+    "location": [2027, 1353, -90],
+    "map": "Malas",
+    "count": 405,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "TavernKeeper", "maxCount": 402, "probability": 100 },
+      { "name": "Waiter", "maxCount": 1, "probability": 100 },
+      { "name": "Cook", "maxCount": 1, "probability": 100 },
+      { "name": "Barkeeper", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "f2e74349-4233-48ab-962c-d720b1039c29",
+    "location": [2023, 1379, -80],
+    "map": "Malas",
+    "count": 404,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Mage", "maxCount": 402, "probability": 100 },
+      { "name": "Alchemist", "maxCount": 1, "probability": 100 },
+      { "name": "MageGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "2deeeb18-fdb6-45ec-bb5d-1dabf8e6a095",
+    "location": [2025, 1387, -80],
+    "map": "Malas",
+    "count": 404,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Herbalist", "maxCount": 402, "probability": 100 },
+      { "name": "Alchemist", "maxCount": 1, "probability": 100 },
+      { "name": "CustomHairstylist", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "4d5485c1-0836-4bc0-81c2-0134d9cc7afe",
+    "location": [2045, 1397, -90],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Jeweler", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "53a2d0de-0c0f-4e8f-afd6-a25890858529",
+    "location": [2048, 1343, -85],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Banker", "maxCount": 402, "probability": 100 },
+      { "name": "Minter", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "0d0701db-9272-434e-aa23-0b64328bd189",
+    "location": [2037, 1311, -85],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "cab56528-ec1f-4348-8053-3f7cfa66275d",
+    "location": [2066, 1282, -80],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tinker", "maxCount": 402, "probability": 100 },
+      { "name": "TinkerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "355bdba9-dc9b-441e-803f-38bf55ff3307",
+    "location": [2060, 1283, -80],
+    "map": "Malas",
+    "count": 404,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Carpenter", "maxCount": 402, "probability": 100 },
+      { "name": "Architect", "maxCount": 1, "probability": 100 },
+      { "name": "RealEstateBroker", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "19a40dd5-2cdd-47d7-8af2-8129c95a056f",
+    "location": [2083, 1322, -80],
+    "map": "Malas",
+    "count": 404,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tailor", "maxCount": 402, "probability": 100 },
+      { "name": "Weaver", "maxCount": 1, "probability": 100 },
+      { "name": "TailorGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "16263334-f5e0-4995-92b6-9b825be3a8f5",
+    "location": [2078, 1327, -80],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tanner", "maxCount": 402, "probability": 100 },
+      { "name": "Furtrader", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "9ca8d14b-56f9-4c36-a26c-a356ce01445a",
+    "location": [2068, 1372, -75],
+    "map": "Malas",
+    "count": 403,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 402, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "7aca6472-518c-43b4-a2ce-4816f35e4700",
+    "location": [1056, 1434, -85],
+    "map": "Malas",
+    "count": 402,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 402, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "name": "Spawner (2405)",
+    "guid": "4aaba45a-d1f5-43c4-85df-deb411f0d1c7",
+    "location": [1051, 1434, -85],
+    "map": "Malas",
+    "count": 405,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "TavernKeeper", "maxCount": 402, "probability": 100 },
+      { "name": "Waiter", "maxCount": 1, "probability": 100 },
+      { "name": "Cook", "maxCount": 1, "probability": 100 },
+      { "name": "Barkeeper", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]
