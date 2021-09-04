@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Items;
 using Server.Spells.Sixth;
 using Server.Targeting;
