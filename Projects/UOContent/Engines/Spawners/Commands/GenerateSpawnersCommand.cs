@@ -20,6 +20,7 @@ using System.IO;
 using System.Text.Json;
 using Server.Collections;
 using Server.Json;
+using Server.Logging;
 using Server.Network;
 using Server.Utilities;
 
@@ -27,6 +28,8 @@ namespace Server.Engines.Spawners
 {
     public static class GenerateSpawnersCommand
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(GenerateSpawnersCommand));
+
         public static void Initialize()
         {
             CommandSystem.Register("GenerateSpawners", AccessLevel.Developer, GenerateSpawners_OnCommand);
@@ -63,6 +66,8 @@ namespace Server.Engines.Spawners
                 return;
             }
 
+            var watch = Stopwatch.StartNew();
+
             var allSpawners = new Dictionary<Guid, ISpawner>();
             foreach (var item in World.Items.Values)
             {
@@ -73,18 +78,23 @@ namespace Server.Engines.Spawners
             }
 
             var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
+            var totalGenerated = 0;
+            var totalFailures = 0;
 
             for (var i = 0; i < files.Length; i++)
             {
                 var file = files[i];
-                from.SendMessage("GenerateSpawners: Generating spawners for {0}...", file.Name);
+                from.SendMessage("GenerateSpawners: Generating spawners from {0}...", file.Name);
+                logger.Information($"{from} is generating spawners from {file.FullName}");
 
                 NetState.FlushAll();
 
                 try
                 {
                     var spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
-                    ParseSpawnerList(from, spawners, options, allSpawners);
+                    ParseSpawnerList(from, spawners, options, allSpawners, out var generated, out var failed);
+                    totalGenerated += generated;
+                    totalFailures += failed;
                 }
                 catch (JsonException)
                 {
@@ -94,19 +104,31 @@ namespace Server.Engines.Spawners
                     );
                 }
             }
+
+            watch.Stop();
+
+            logger.Information("Generated {0} spawners ({1:F2} seconds, {2} failures)");
+            from.SendMessage(
+                "GenerateSpawners: Generated {0} spawners ({1:F2} seconds, {2} failures)",
+                totalGenerated,
+                watch.Elapsed.TotalSeconds,
+                totalFailures
+            );
         }
 
         private static void ParseSpawnerList(
             Mobile from,
             List<DynamicJson> spawners,
             JsonSerializerOptions options,
-            Dictionary<Guid, ISpawner> allSpawners
+            Dictionary<Guid, ISpawner> allSpawners,
+            out int totalGenerated,
+            out int failureCount
         )
         {
-            var watch = Stopwatch.StartNew();
-            var failures = new List<string>();
-            var count = 0;
+            failureCount = 0;
+            totalGenerated = 0;
 
+            using var queue = PooledRefQueue<Item>.Create();
             for (var i = 0; i < spawners.Count; i++)
             {
                 var json = spawners[i];
@@ -114,13 +136,8 @@ namespace Server.Engines.Spawners
 
                 if (type == null || !typeof(BaseSpawner).IsAssignableFrom(type))
                 {
-                    var failure = $"GenerateSpawners: Invalid spawner type {json.Type ?? "(-null-)"} ({i})";
-                    if (!failures.Contains(failure))
-                    {
-                        failures.Add(failure);
-                        from.SendMessage(failure);
-                    }
-
+                    logger.Error($"Invalid spawner type {json.Type ?? "(-null-)"} ({i}).");
+                    failureCount++;
                     continue;
                 }
 
@@ -130,7 +147,6 @@ namespace Server.Engines.Spawners
                 // Delete all spawners at this location.
                 // Probably shouldn't do this outside of migrations? Is there a better way to find/fix spawners?
                 var eable = map.GetItemsInRange<BaseSpawner>(location, 0);
-                using var queue = PooledRefQueue<Item>.Create();
                 foreach (var spawner in eable)
                 {
                     if (spawner.GetType() == type)
@@ -160,29 +176,43 @@ namespace Server.Engines.Spawners
                     }
 
                     allSpawners.Add(spawner.Guid, spawner);
+                    totalGenerated++;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    var failure = $"GenerateSpawners: Spawner {type} failed to construct";
-                    if (!failures.Contains(failure))
-                    {
-                        failures.Add(failure);
-                        from.SendMessage(failure);
-                    }
+                    json.GetProperty("guid", options, out Guid guid);
+                    TraceException(ex, $"Failed to generate spawner {guid}.");
 
-                    continue;
+                    failureCount++;
+                }
+            }
+        }
+
+        private static void TraceException(Exception ex, string message = "")
+        {
+            try
+            {
+                using var op = new StreamWriter("spawner-errors.log", true);
+                op.WriteLine("# {0}", Core.Now);
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    op.WriteLine(message);
                 }
 
-                count++;
+                op.WriteLine(ex);
+
+                op.WriteLine();
+                op.WriteLine();
+            }
+            catch
+            {
+                // ignored
             }
 
-            watch.Stop();
-            from.SendMessage(
-                "GenerateSpawners: Generated {0} spawners ({1:F2} seconds, {2} failures)",
-                count,
-                watch.Elapsed.TotalSeconds,
-                failures.Count
-            );
+#if DEBUG
+            logger.Error($"{message}\n{ex}");
+#endif
         }
     }
 }
