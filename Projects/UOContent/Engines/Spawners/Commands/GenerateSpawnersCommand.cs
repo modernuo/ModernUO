@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
+using Server.Collections;
 using Server.Json;
 using Server.Network;
 using Server.Utilities;
@@ -63,6 +63,15 @@ namespace Server.Engines.Spawners
                 return;
             }
 
+            var allSpawners = new Dictionary<Guid, ISpawner>();
+            foreach (var item in World.Items.Values)
+            {
+                if (item is ISpawner spawner)
+                {
+                    allSpawners[spawner.Guid] = spawner;
+                }
+            }
+
             var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
 
             for (var i = 0; i < files.Length; i++)
@@ -75,7 +84,7 @@ namespace Server.Engines.Spawners
                 try
                 {
                     var spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
-                    ParseSpawnerList(from, spawners, options);
+                    ParseSpawnerList(from, spawners, options, allSpawners);
                 }
                 catch (JsonException)
                 {
@@ -87,7 +96,12 @@ namespace Server.Engines.Spawners
             }
         }
 
-        private static void ParseSpawnerList(Mobile from, List<DynamicJson> spawners, JsonSerializerOptions options)
+        private static void ParseSpawnerList(
+            Mobile from,
+            List<DynamicJson> spawners,
+            JsonSerializerOptions options,
+            Dictionary<Guid, ISpawner> allSpawners
+        )
         {
             var watch = Stopwatch.StartNew();
             var failures = new List<string>();
@@ -113,12 +127,22 @@ namespace Server.Engines.Spawners
                 json.GetProperty("location", options, out Point3D location);
                 json.GetProperty("map", options, out Map map);
 
+                // Delete all spawners at this location.
+                // Probably shouldn't do this outside of migrations? Is there a better way to find/fix spawners?
                 var eable = map.GetItemsInRange<BaseSpawner>(location, 0);
-
-                if (eable.Any(sp => sp.GetType() == type))
+                using var queue = PooledRefQueue<Item>.Create();
+                foreach (var spawner in eable)
                 {
-                    eable.Free();
-                    continue;
+                    if (spawner.GetType() == type)
+                    {
+                        queue.Enqueue(spawner);
+                        allSpawners.Remove(spawner.Guid);
+                    }
+                }
+
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().Delete();
                 }
 
                 eable.Free();
@@ -129,6 +153,13 @@ namespace Server.Engines.Spawners
 
                     spawner!.MoveToWorld(location, map);
                     spawner!.Respawn();
+
+                    if (allSpawners.Remove(spawner.Guid, out var oldSpawner))
+                    {
+                        oldSpawner.Delete();
+                    }
+
+                    allSpawners.Add(spawner.Guid, spawner);
                 }
                 catch (Exception)
                 {
