@@ -21,6 +21,9 @@ namespace Server
 {
     public class ServerSettings
     {
+        [JsonPropertyName("assemblyDirectories")]
+        public List<string> AssemblyDirectories { get; set; } = new();
+
         [JsonPropertyName("dataDirectories")]
         public List<string> DataDirectories { get; set; } = new();
 

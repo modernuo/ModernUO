@@ -29,8 +29,43 @@ namespace Server
         private static TypeCache m_NullCache;
         public static Assembly[] Assemblies { get; set; }
 
-        public static void LoadScripts(string[] files)
+        internal static Assembly AssemblyResolver(object sender, ResolveEventArgs args)
         {
+            EnsureAssemblyDirectories();
+            var assemblyDirectories = ServerConfiguration.AssemblyDirectories;
+
+            var assemblyName = new AssemblyName(args.Name);
+            var assemblyFile = $"{assemblyName.Name}.dll";
+
+            foreach (var assemblyDir in assemblyDirectories)
+            {
+                var assemblyPath = Path.Combine(assemblyDir, assemblyFile);
+                if (File.Exists(assemblyPath))
+                {
+                    var assemblyNameCheck = AssemblyName.GetAssemblyName(assemblyPath);
+                    if (assemblyNameCheck.FullName == assemblyName.FullName)
+                    {
+                        return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static void EnsureAssemblyDirectories()
+        {
+            if (ServerConfiguration.AssemblyDirectories.Count == 0)
+            {
+                ServerConfiguration.AssemblyDirectories.Add(Path.Combine(Core.BaseDirectory, "Assemblies"));
+                ServerConfiguration.Save();
+            }
+        }
+
+        public static void LoadAssemblies(string[] files)
+        {
+            EnsureAssemblyDirectories();
+
             var assemblies = new Assembly[files.Length];
 
             for (var i = 0; i < files.Length; i++)
