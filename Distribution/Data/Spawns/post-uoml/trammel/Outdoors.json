@@ -5039,25 +5039,6 @@
   {
     "type": "Spawner",
     "name": "Spawner (113)",
-    "guid": "ce3c4169-72d3-494d-a3e3-d74be3b4b5cf",
-    "location": [4057, 300, 0],
-    "map": "Trammel",
-    "count": 4,
-    "minDelay": "00:20:00",
-    "maxDelay": "00:20:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
-      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 1, "probability": 100 },
-      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "name": "Spawner (113)",
     "guid": "6d959a51-4fc9-45ac-baf0-e7c2a89bd988",
     "location": [4057, 300, 0],
     "map": "Trammel",

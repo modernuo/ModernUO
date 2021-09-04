@@ -5205,25 +5205,6 @@
   {
     "type": "Spawner",
     "name": "Spawner (213)",
-    "guid": "2534084b-d35d-4534-b53c-621bf34cd517",
-    "location": [4057, 300, 0],
-    "map": "Felucca",
-    "count": 4,
-    "minDelay": "00:20:00",
-    "maxDelay": "00:20:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
-      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 1, "probability": 100 },
-      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "name": "Spawner (213)",
     "guid": "380907fb-c87c-44e2-8ed6-469cc08de4fc",
     "location": [4057, 300, 0],
     "map": "Felucca",
