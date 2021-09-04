@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using Server.Json;
 using Server.Network;
 
@@ -39,38 +41,30 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            var inputDir = Path.Combine(Core.BaseDirectory, args.Arguments[0]);
-            var inputDi = new DirectoryInfo(inputDir);
+            var inputDi = new DirectoryInfo(Core.BaseDirectory);
 
-            if (!inputDi.Exists)
+            var patternMatches = new Matcher()
+                .AddInclude(args.Arguments[0])
+                .Execute(new DirectoryInfoWrapper(inputDi))
+                .Files;
+
+            List<FileInfo> files = new List<FileInfo>();
+            foreach (var match in patternMatches)
             {
-                from.SendMessage("ConvertPremiumSpawners: Input path doesn't exist.");
-                return;
+                files.Add(new FileInfo(match.Path));
             }
 
-            FileInfo[] files;
-
-            try
-            {
-                files = inputDi.GetFiles("*.map", SearchOption.AllDirectories);
-            }
-            catch
-            {
-                from.SendMessage("ConvertPremiumSpawners: Bad input path. Path must be relative to the distribution folder.");
-                return;
-            }
-
-            if (files.Length == 0)
+            if (files.Count == 0)
             {
                 from.SendMessage("ConvertPremiumSpawners: No files found.");
                 return;
             }
 
+            var inputDir = Path.Combine(Core.BaseDirectory, args.Arguments[0]);
             var outputDir = Path.Combine(Core.BaseDirectory, args.Arguments[1]);
-
             var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
 
-            for (var i = 0; i < files.Length; i++)
+            for (var i = 0; i < files.Count; i++)
             {
                 var file = files[i];
                 from.SendMessage("ConvertPremiumSpawners: Converting spawners for {0}...", file.Name);

@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using Server.Collections;
 using Server.Json;
 using Server.Logging;
@@ -47,20 +49,18 @@ namespace Server.Engines.Spawners
 
             var di = new DirectoryInfo(Core.BaseDirectory);
 
-            FileInfo[] files;
+            var patternMatches = new Matcher()
+                .AddInclude(e.Arguments[0])
+                .Execute(new DirectoryInfoWrapper(di))
+                .Files;
 
-            try
+            List<FileInfo> files = new List<FileInfo>();
+            foreach (var match in patternMatches)
             {
-                files = di.GetFiles(e.Arguments[0], SearchOption.AllDirectories);
-            }
-            catch
-            {
-                from.SendMessage("GenerateSpawners: Bad path. Path must be relative to the distribution folder.");
-                return;
+                files.Add(new FileInfo(match.Path));
             }
 
-
-            if (files.Length == 0)
+            if (files.Count == 0)
             {
                 from.SendMessage("GenerateSpawners: No files found matching the pattern");
                 return;
@@ -81,7 +81,7 @@ namespace Server.Engines.Spawners
             var totalGenerated = 0;
             var totalFailures = 0;
 
-            for (var i = 0; i < files.Length; i++)
+            for (var i = 0; i < files.Count; i++)
             {
                 var file = files[i];
                 from.SendMessage("GenerateSpawners: Generating spawners from {0}...", file.Name);

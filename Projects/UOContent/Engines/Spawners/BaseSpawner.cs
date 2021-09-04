@@ -17,18 +17,6 @@ namespace Server.Engines.Spawners
     public abstract class BaseSpawner : Item, ISpawner
     {
         private static WarnTimer m_WarnTimer;
-        private static readonly Dictionary<Guid, BaseSpawner> _spawnersByGuid = new();
-
-        private static Guid NewGuid()
-        {
-            Guid guid;
-            do
-            {
-                guid = Guid.NewGuid();
-            } while (_spawnersByGuid.ContainsKey(guid));
-
-            return guid;
-        }
 
         private Guid _guid;
         private int m_Count;
@@ -76,7 +64,7 @@ namespace Server.Engines.Spawners
             params string[] spawnedNames
         ) : base(0x1f13)
         {
-            _guid = NewGuid();
+            _guid = Guid.NewGuid();
             InitSpawn(amount, minDelay, maxDelay, team, homeRange);
             for (var i = 0; i < spawnedNames.Length; i++)
             {
@@ -88,11 +76,8 @@ namespace Server.Engines.Spawners
         {
             if (!json.GetProperty("guid", options, out _guid))
             {
-                _guid = NewGuid();
+                _guid = Guid.NewGuid();
             }
-
-            // TODO: Handle clobbering
-            _spawnersByGuid.Add(_guid, this);
 
             if (json.GetProperty("name", options, out string name))
             {
