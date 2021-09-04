@@ -92,7 +92,7 @@ namespace Server.Engines.Spawners
                 try
                 {
                     var spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
-                    ParseSpawnerList(from, spawners, options, allSpawners, out var generated, out var failed);
+                    ParseSpawnerList(spawners, options, allSpawners, out var generated, out var failed);
                     totalGenerated += generated;
                     totalFailures += failed;
                 }
@@ -117,7 +117,6 @@ namespace Server.Engines.Spawners
         }
 
         private static void ParseSpawnerList(
-            Mobile from,
             List<DynamicJson> spawners,
             JsonSerializerOptions options,
             Dictionary<Guid, ISpawner> allSpawners,
