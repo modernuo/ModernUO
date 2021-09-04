@@ -29,13 +29,25 @@ namespace Server
         private static TypeCache m_NullCache;
         public static Assembly[] Assemblies { get; set; }
 
-        internal static Assembly AssemblyResolver(object sender, ResolveEventArgs args)
+        internal static Assembly AssemblyResolver(object sender, ResolveEventArgs args) =>
+            LoadAssemblyByAssemblyName(args.Name);
+
+        private static void EnsureAssemblyDirectories()
         {
+            if (ServerConfiguration.AssemblyDirectories.Count == 0)
+            {
+                ServerConfiguration.AssemblyDirectories.Add(Path.Combine(Core.BaseDirectory, "Assemblies"));
+                ServerConfiguration.Save();
+            }
+        }
+
+        public static Assembly LoadAssemblyByAssemblyName(string fullAssemblyName)
+        {
+            var assemblyName = new AssemblyName(fullAssemblyName);
+            var assemblyFile = $"{assemblyName.Name}.dll";
+
             EnsureAssemblyDirectories();
             var assemblyDirectories = ServerConfiguration.AssemblyDirectories;
-
-            var assemblyName = new AssemblyName(args.Name);
-            var assemblyFile = $"{assemblyName.Name}.dll";
 
             foreach (var assemblyDir in assemblyDirectories)
             {
@@ -53,24 +65,35 @@ namespace Server
             return null;
         }
 
-        private static void EnsureAssemblyDirectories()
+        public static Assembly LoadAssemblyByFileName(string assemblyFile)
         {
-            if (ServerConfiguration.AssemblyDirectories.Count == 0)
+            EnsureAssemblyDirectories();
+            var assemblyDirectories = ServerConfiguration.AssemblyDirectories;
+
+            foreach (var assemblyDir in assemblyDirectories)
             {
-                ServerConfiguration.AssemblyDirectories.Add(Path.Combine(Core.BaseDirectory, "Assemblies"));
-                ServerConfiguration.Save();
+                var assemblyPath = Path.Combine(assemblyDir, assemblyFile);
+                if (File.Exists(assemblyPath))
+                {
+                    return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+                }
             }
+
+            return null;
         }
 
         public static void LoadAssemblies(string[] files)
         {
-            EnsureAssemblyDirectories();
-
             var assemblies = new Assembly[files.Length];
 
             for (var i = 0; i < files.Length; i++)
             {
-                assemblies[i] = AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]);
+                var assembly = LoadAssemblyByFileName(files[i]);
+                if (assembly == null)
+                {
+                    throw new FileNotFoundException($"Could not load {files[i]}");
+                }
+                assemblies[i] = LoadAssemblyByFileName(files[i]);
             }
 
             Assemblies = assemblies;
