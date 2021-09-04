@@ -1,5 +1,5 @@
 using System;
-using System.Text;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Ethics.Evil
@@ -46,7 +46,7 @@ namespace Server.Ethics.Evil
                 ++enemyCount;
             }
 
-            var sb = new StringBuilder();
+            using var sb = new ValueStringBuilder();
 
             sb.Append("You sense ");
             sb.Append(enemyCount == 0 ? "no" : enemyCount.ToString());
@@ -54,7 +54,7 @@ namespace Server.Ethics.Evil
 
             if (primary != null)
             {
-                sb.Append(", and a strong presense");
+                sb.Append(", and a strong presence");
 
                 switch (from.Mobile.GetDirectionTo(primary.Mobile))
                 {
