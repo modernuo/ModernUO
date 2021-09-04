@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerializationGenerator", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerializationSchemaGenerator", "Projects\SerializationSchemaGenerator\SerializationSchemaGenerator.csproj", "{A30150A3-796C-4C6D-B3E4-B7BEB0021701}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcGateway", "GrpcGateway\GrpcGateway.csproj", "{967A2F67-8961-4EE5-8A08-6E26DC25BD09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analyze|x64 = Analyze|x64
@@ -65,6 +67,12 @@ Global
 		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Debug|x64.Build.0 = Debug|x64
 		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Release|x64.ActiveCfg = Release|x64
 		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Release|x64.Build.0 = Release|x64
+		{967A2F67-8961-4EE5-8A08-6E26DC25BD09}.Analyze|x64.ActiveCfg = Analyze|x64
+		{967A2F67-8961-4EE5-8A08-6E26DC25BD09}.Analyze|x64.Build.0 = Analyze|x64
+		{967A2F67-8961-4EE5-8A08-6E26DC25BD09}.Debug|x64.ActiveCfg = Debug|x64
+		{967A2F67-8961-4EE5-8A08-6E26DC25BD09}.Debug|x64.Build.0 = Debug|x64
+		{967A2F67-8961-4EE5-8A08-6E26DC25BD09}.Release|x64.ActiveCfg = Release|x64
+		{967A2F67-8961-4EE5-8A08-6E26DC25BD09}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

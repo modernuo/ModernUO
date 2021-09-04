@@ -35,6 +35,7 @@
         <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
+        <ProjectReference Include="..\..\GrpcGateway\GrpcGateway.csproj" />
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>

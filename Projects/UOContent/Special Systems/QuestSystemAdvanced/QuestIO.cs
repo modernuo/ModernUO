@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Server.QuestSystem
+namespace Server.QuestSystemAdvanced
 {
     public static class QuestIO
     {
@@ -17,7 +17,8 @@ namespace Server.QuestSystem
 
         public static void Initialize()
         {
-
+            Quests.Clear();
+            //LoadQuests(null);
             //CommandSystem.Register("LoadQuests", AccessLevel.GameMaster, GenerateQuests_OnCommand);
         }
 
@@ -74,7 +75,7 @@ namespace Server.QuestSystem
         {
             var watch = Stopwatch.StartNew();
             var failures = new List<string>();
-            
+
 
             for (int i = 0; i < quests.Count; i++)
             {
@@ -94,11 +95,33 @@ namespace Server.QuestSystem
                     continue;
                 }
 
-                
+                json.GetProperty("ID", options, out int id);
+                json.GetProperty("Title", options, out string title);
+                json.GetProperty("Description", options, out string description);
+                json.GetProperty("Rewards", options, out List<RewardDefinition> rewards);
+                json.GetProperty("XP", options, out int xp);
+                json.GetProperty("IsQuestChainElement", options, out bool isquestchainelement);
+                json.GetProperty("ParentQuestID", options, out int parentquestid);
+                json.GetProperty("QuestTaskList", options, out List<QuestTaskDefinition> questtasklist);
+
+                var questdefinition = new QuestDefinition()
+                {
+                    ID = id,
+                    Title = title,
+                    Description = description,
+                    Rewards = rewards,
+                    XP = xp,
+                    IsQuestChainElement = isquestchainelement,
+                    ParentQuestID = parentquestid,
+                    QuestTaskList = questtasklist
+                };
+
+                Quests.Add(questdefinition);
 
 
 
-    }
+
+            }
         }
     }
 }
