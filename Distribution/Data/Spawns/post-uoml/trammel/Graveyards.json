@@ -1,0 +1,132 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "bfb89dcf-c7c9-4025-9fc3-fff0ed402dcb",
+    "name": "Spawner (108)",
+    "location": [1369, 1475, 10],
+    "map": "Trammel",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9b5da612-f580-4b8e-b4e8-7080c4bd6378",
+    "name": "Spawner (108)",
+    "location": [1285, 3731, 0],
+    "map": "Trammel",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9fb73e8d-bf21-4036-b7d2-f083da29959f",
+    "name": "Spawner (108)",
+    "location": [2438, 1100, 8],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Lich", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "26267e9d-f61a-43a8-8344-5d10017b9bb7",
+    "name": "Spawner (108)",
+    "location": [4545, 1317, 8],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e3518708-8cdc-4ea7-afa7-c8e457ac1ca4",
+    "name": "Spawner (108)",
+    "location": [2758, 867, 0],
+    "map": "Trammel",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9e036d48-0239-4ace-9abc-d7f8f4297ee2",
+    "name": "Spawner (108)",
+    "location": [722, 1119, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "50a4ab3e-1aa0-46b3-9c5b-d48615903928",
+    "name": "Spawner (108)",
+    "location": [3407, 2652, 48],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Zombie", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

@@ -1,0 +1,87 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "c0cda6aa-ea6d-44bf-8fd3-5fd581f35fce",
+    "name": "Spawner (307)",
+    "location": [1310, 1519, -28],
+    "map": "Ilshenar",
+    "count": 15,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 50,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Ratman", "maxCount": 1, "probability": 100 },
+      { "name": "RatmanMage", "maxCount": 7, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 7, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "43afac06-d04f-490b-a8f0-d018a00b7bb2",
+    "name": "Spawner (307)",
+    "location": [1224, 1524, -28],
+    "map": "Ilshenar",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 5, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ed6260e6-f356-4465-a632-70cb6d7d39ac",
+    "name": "Spawner (307)",
+    "location": [1224, 1494, -28],
+    "map": "Ilshenar",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 5, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "71554dfc-ac2f-4d71-b4eb-2d928d5830a3",
+    "name": "Spawner (307)",
+    "location": [1181, 1512, -68],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "SkeletalDragon", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1f6b14a9-07ed-41ab-89ae-f7a1b1b57b35",
+    "name": "Spawner (307)",
+    "location": [1171, 1511, -68],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

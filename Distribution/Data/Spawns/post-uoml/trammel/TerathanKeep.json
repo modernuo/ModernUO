@@ -1,0 +1,638 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "3e0ac525-691e-4062-8fbc-e3e5cfb3d3ee",
+    "name": "Spawner (121)",
+    "location": [5296, 1561, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "dd331813-82eb-4219-bfee-30029bd2987c",
+    "name": "Spawner (121)",
+    "location": [5296, 1562, 0],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9462c56f-69c2-433e-a059-548905026057",
+    "name": "Spawner (121)",
+    "location": [5297, 1565, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "be6100be-32d5-4aba-8ac3-67ae13dc2508",
+    "name": "Spawner (121)",
+    "location": [5342, 1553, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a71f9838-1fcb-41b8-a8f7-3f988a707507",
+    "name": "Spawner (121)",
+    "location": [5342, 1552, 0],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1b696aaf-008a-4de6-8469-f53b97ebc341",
+    "name": "Spawner (121)",
+    "location": [5343, 1551, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8645e8ef-8c1a-4b28-b7e4-7fbf657a224c",
+    "name": "Spawner (121)",
+    "location": [5334, 1613, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8df373ae-d6b3-4d0c-b28e-d72d9e249ff5",
+    "name": "Spawner (121)",
+    "location": [5334, 1614, 0],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e4b0d1e9-1315-45a9-b66c-52e9e4fba867",
+    "name": "Spawner (121)",
+    "location": [5335, 1615, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c14221d4-9c77-4e7c-9dfc-642046d38c90",
+    "name": "Spawner (121)",
+    "location": [5348, 1552, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 1,
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bc174473-1079-456e-96af-7d9de4477297",
+    "name": "Spawner (121)",
+    "location": [5345, 1551, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 1,
+    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4a48b120-2dd1-4c81-a8ee-412b8ac76499",
+    "name": "Spawner (121)",
+    "location": [5344, 1757, -125],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2beb79d3-d5bd-4fce-8bf0-302a51ba38ed",
+    "name": "Spawner (121)",
+    "location": [5345, 1757, -125],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5c68c269-7606-43d8-98db-6d64b9975c32",
+    "name": "Spawner (121)",
+    "location": [5346, 1756, -125],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9cfce9c7-25a3-4026-a7aa-6f5fe9b0ac5a",
+    "name": "Spawner (121)",
+    "location": [5335, 1706, -70],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1246b878-04e0-4ccf-a62b-f307ede1270e",
+    "name": "Spawner (121)",
+    "location": [5335, 1707, -70],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ce6ec303-c575-474f-afd6-4141c20f6547",
+    "name": "Spawner (121)",
+    "location": [5336, 1708, -70],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "97121692-967d-48c7-a3bb-d838b35d972b",
+    "name": "Spawner (121)",
+    "location": [5270, 1695, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0cf1d575-77a5-4e35-91eb-6da7b6c20e8d",
+    "name": "Spawner (121)",
+    "location": [5270, 1694, 0],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "56bd5aee-2453-4051-9c2e-d7e01cd8ba56",
+    "name": "Spawner (121)",
+    "location": [5271, 1693, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a12c8b3b-1aed-46d6-8134-0a83fe0d5f20",
+    "name": "Spawner (121)",
+    "location": [5365, 1707, -71],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 1,
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0666031e-d939-4a50-859b-173b4bd16ac4",
+    "name": "Spawner (121)",
+    "location": [5363, 1709, -75],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 1,
+    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "201c8fcf-7737-47ef-b4ec-01acdfc72fda",
+    "name": "Spawner (121)",
+    "location": [5176, 1702, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b49440bb-95eb-42ff-856c-359e8c708e81",
+    "name": "Spawner (121)",
+    "location": [5176, 1701, 2],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "70cd6cf4-01d2-4bea-96dc-9ef6cd1d9203",
+    "name": "Spawner (121)",
+    "location": [5177, 1700, 1],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "649589c5-5dc9-4dc4-9832-c15d79221278",
+    "name": "Spawner (121)",
+    "location": [5132, 1624, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "711da322-6be4-4a57-815a-48ddd1f98fd7",
+    "name": "Spawner (121)",
+    "location": [5132, 1623, 0],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "98a176f3-d195-4105-9cb4-24b7415641c2",
+    "name": "Spawner (121)",
+    "location": [5134, 1625, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "413f095d-f2f4-488d-8f83-2d429db2b607",
+    "name": "Spawner (121)",
+    "location": [5160, 1586, -15],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2159766a-dee8-4e73-a6d2-32d84ce32034",
+    "name": "Spawner (121)",
+    "location": [5163, 1585, -15],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d03480e2-ee60-4acc-b5f4-b8eb76c74efd",
+    "name": "Spawner (121)",
+    "location": [5161, 1584, -15],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bfe58438-b6d9-4480-8f25-e6566ee91de8",
+    "name": "Spawner (121)",
+    "location": [5200, 1565, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "655d418c-977b-480b-b597-d5bddcb4760d",
+    "name": "Spawner (121)",
+    "location": [5201, 1566, 0],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ae496bc2-99fc-45ec-970f-98ab9057faec",
+    "name": "Spawner (121)",
+    "location": [5200, 1568, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
+      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

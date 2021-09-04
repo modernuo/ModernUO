@@ -1,0 +1,42 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "aa72c5a4-373d-4594-8736-6e9e54e245bb",
+    "name": "Spawner (2214)",
+    "location": [6279, 879, -1],
+    "map": "Felucca",
+    "count": 11,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "Cat", "maxCount": 6, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e854773f-f10b-4e77-b691-48f064d993c4",
+    "name": "Spawner (2214)",
+    "location": [6275, 879, -2],
+    "map": "Felucca",
+    "count": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Troglodyte", "maxCount": 1, "probability": 100 },
+      { "name": "Grobu", "maxCount": 3, "probability": 100 },
+      { "name": "Lurg", "maxCount": 3, "probability": 100 },
+      { "name": "GiantRat", "maxCount": 3, "probability": 100 }
+    ]
+  }
+]

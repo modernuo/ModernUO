@@ -3,6 +3,7 @@
   "BouncyCastle.Crypto.dll",
   "MailKit.dll",
   "MimeKit.dll",
+  "Microsoft.Extensions.FileSystemGlobbing.dll",
   "Zlib.Bindings.dll",
   "UOContent.dll"
 ]

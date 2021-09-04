@@ -1,0 +1,178 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "b64bffca-707a-4c96-bc9a-bb2320fe0301",
+    "name": "Spawner (2403)",
+    "location": [1343, 1248, -90],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "cf3670a3-41a3-4363-a795-794f0e5185ea",
+    "name": "Spawner (2403)",
+    "location": [1343, 1196, -90],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4c1e67ac-7d3e-4105-af90-d39da9e6b960",
+    "name": "Spawner (2403)",
+    "location": [1372, 1225, -90],
+    "map": "Malas",
+    "count": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "OrcBrute", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 4, "probability": 100 },
+      { "name": "OrcBomber", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9d0ea6a2-cf34-476d-ba27-683468874478",
+    "name": "Spawner (2403)",
+    "location": [1322, 1225, -90],
+    "map": "Malas",
+    "count": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "OrcBrute", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 4, "probability": 100 },
+      { "name": "OrcBomber", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d2da5dd0-c06f-41e5-9644-d30d11f7eb4c",
+    "name": "Spawner (2403)",
+    "location": [911, 194, -79],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6c1c4236-e8aa-497d-9aa5-a6973422d0f0",
+    "name": "Spawner (2403)",
+    "location": [1665, 356, -50],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 25,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5dff8e4a-1ed5-4ac0-bea9-cc851801760a",
+    "name": "Spawner (2403)",
+    "location": [1364, 596, -86],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c8a33790-2f54-43f7-a9c9-4f668984be4a",
+    "name": "Spawner (2403)",
+    "location": [1205, 700, -88],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "927b51ec-b017-466d-bf14-17d9bfef58a9",
+    "name": "Spawner (2403)",
+    "location": [1257, 1326, -90],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1b1481f5-8bb3-4959-8e2f-6e830dfab018",
+    "name": "Spawner (2403)",
+    "location": [1598, 1819, -110],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:15:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

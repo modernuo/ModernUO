@@ -22,7 +22,7 @@ namespace Server.Commands.Generic
             {
                 var ext = Extensions.Parse(from, ref args);
 
-                if (!CheckObjectTypes(from, command, ext, out var _, out var mobiles))
+                if (!CheckObjectTypes(from, command, ext, out var items, out var mobiles))
                 {
                     return;
                 }
@@ -35,21 +35,22 @@ namespace Server.Commands.Generic
                 {
                     foreach (var mob in reg.GetMobiles())
                     {
-                        if (!BaseCommand.IsAccessible(from, mob))
-                        {
-                            continue;
-                        }
-
-                        if (ext.IsValid(mob))
+                        if (BaseCommand.IsAccessible(from, mob) && ext.IsValid(mob))
                         {
                             list.Add(mob);
                         }
                     }
                 }
-                else
+
+                if (items)
                 {
-                    command.LogFailure("This command does not support items.");
-                    return;
+                    foreach (var item in reg.GetItems())
+                    {
+                        if (BaseCommand.IsAccessible(from, item) && ext.IsValid(item))
+                        {
+                            list.Add(item);
+                        }
+                    }
                 }
 
                 ext.Filter(list);

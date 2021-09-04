@@ -17,6 +17,8 @@ namespace Server.Engines.Spawners
     public abstract class BaseSpawner : Item, ISpawner
     {
         private static WarnTimer m_WarnTimer;
+
+        private Guid _guid;
         private int m_Count;
         private bool m_Group;
         private int m_HomeRange;
@@ -62,6 +64,7 @@ namespace Server.Engines.Spawners
             params string[] spawnedNames
         ) : base(0x1f13)
         {
+            _guid = Guid.NewGuid();
             InitSpawn(amount, minDelay, maxDelay, team, homeRange);
             for (var i = 0; i < spawnedNames.Length; i++)
             {
@@ -71,6 +74,16 @@ namespace Server.Engines.Spawners
 
         public BaseSpawner(DynamicJson json, JsonSerializerOptions options) : base(0x1f13)
         {
+            if (!json.GetProperty("guid", options, out _guid))
+            {
+                _guid = Guid.NewGuid();
+            }
+
+            if (json.GetProperty("name", options, out string name))
+            {
+                Name = name;
+            }
+
             json.GetProperty("count", options, out int amount);
             json.GetProperty("minDelay", options, out TimeSpan minDelay);
             json.GetProperty("maxDelay", options, out TimeSpan maxDelay);
@@ -101,6 +114,13 @@ namespace Server.Engines.Spawners
         public List<SpawnerEntry> Entries { get; private set; }
 
         public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
+
+        [CommandProperty(AccessLevel.Developer)]
+        public Guid Guid
+        {
+            get => _guid;
+            set => _guid = value;
+        }
 
         [CommandProperty(AccessLevel.Developer)]
         public int Count
@@ -259,6 +279,22 @@ namespace Server.Engines.Spawners
             }
 
             DoTimer(); // Turn off the timer!
+        }
+
+        public virtual void ToJson(DynamicJson json, JsonSerializerOptions options)
+        {
+            json.Type = GetType().Name;
+            json.SetProperty("name", options, Name);
+            json.SetProperty("guid", options, _guid);
+            json.SetProperty("location", options, Location);
+            json.SetProperty("map", options, Map);
+            json.SetProperty("count", options, Count);
+            json.SetProperty("minDelay", options, MinDelay);
+            json.SetProperty("maxDelay", options, MaxDelay);
+            json.SetProperty("team", options, Team);
+            json.SetProperty("homeRange", options, HomeRange);
+            json.SetProperty("walkingRange", options, WalkingRange);
+            json.SetProperty("entries", options, Entries);
         }
 
         public abstract Point3D GetSpawnPosition(ISpawnable spawned, Map map);
@@ -872,7 +908,9 @@ namespace Server.Engines.Spawners
         {
             base.Serialize(writer);
 
-            writer.Write(8); // version
+            writer.Write(9); // version
+
+            writer.Write(_guid);
 
             writer.Write(ReturnOnDeactivate);
 
@@ -917,6 +955,11 @@ namespace Server.Engines.Spawners
 
             switch (version)
             {
+                case 9:
+                    {
+                        _guid = reader.ReadGuid();
+                        goto case 8;
+                    }
                 case 8:
                     {
                         ReturnOnDeactivate = reader.ReadBool();

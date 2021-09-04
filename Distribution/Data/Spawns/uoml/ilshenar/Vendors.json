@@ -1,0 +1,758 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "be1ca9f3-ca82-44b5-bc25-d4cbf12f1552",
+    "name": "Spawner (2312)",
+    "location": [791, 618, 0],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "StoneCrafter", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e65a3007-b27a-4385-a70a-7df1c055af94",
+    "name": "Spawner (2312)",
+    "location": [808, 697, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Armorer", "maxCount": 314, "probability": 100 },
+      { "name": "Weaponsmith", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "90eac0b8-ec22-4fcd-859b-5287848a2006",
+    "name": "Spawner (2312)",
+    "location": [808, 586, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Armorer", "maxCount": 314, "probability": 100 },
+      { "name": "Weaponsmith", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a47dc2d3-25e7-424b-a2fa-adb379c5326a",
+    "name": "Spawner (2312)",
+    "location": [1225, 563, -18],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "GypsyAnimalTrainer", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9353902f-49ba-4589-bc54-3d9b013d63ad",
+    "name": "Spawner (2312)",
+    "location": [1388, 428, -23],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "GypsyAnimalTrainer", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "89182d79-f239-4702-a81e-18d6ba4d1998",
+    "name": "Spawner (2312)",
+    "location": [1497, 614, -14],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Armorer", "maxCount": 314, "probability": 100 },
+      { "name": "Weaponsmith", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4a725fb3-2cd0-4454-ae17-911ba67b07d7",
+    "name": "Spawner (2312)",
+    "location": [854, 680, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Banker", "maxCount": 314, "probability": 100 },
+      { "name": "Minter", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8951a13e-fb7e-404c-a494-0d73b108bc2c",
+    "name": "Spawner (2312)",
+    "location": [855, 603, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Banker", "maxCount": 314, "probability": 100 },
+      { "name": "Minter", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a69ef52b-f08c-4c0f-b86b-792a472ae8fd",
+    "name": "Spawner (2312)",
+    "location": [766, 641, 0],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tinker", "maxCount": 314, "probability": 100 },
+      { "name": "TinkerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bb7cb809-cd5b-4a7e-a1f8-4ee077a4cf6e",
+    "name": "Spawner (2312)",
+    "location": [1226, 554, -12],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "GypsyBanker", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "590f4348-1acf-4046-be05-e110d65bc302",
+    "name": "Spawner (2312)",
+    "location": [1610, 556, -19],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Banker", "maxCount": 314, "probability": 100 },
+      { "name": "Minter", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c0874f82-5773-4a54-aed5-5f71f0e604d4",
+    "name": "Spawner (2312)",
+    "location": [826, 679, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Provisioner", "maxCount": 314, "probability": 100 },
+      { "name": "Cobbler", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "66d4dd1f-26b6-4496-8452-9d7b51b6421f",
+    "name": "Spawner (2312)",
+    "location": [824, 602, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Provisioner", "maxCount": 314, "probability": 100 },
+      { "name": "Cobbler", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8debcf18-9d06-4563-b8d8-2aa0db41fa08",
+    "name": "Spawner (2312)",
+    "location": [1400, 434, -11],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "GypsyMaiden", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a1586f13-9959-4f33-85a0-793ad3fc6712",
+    "name": "Spawner (2312)",
+    "location": [665, 665, -35],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bc051bb8-5101-4fa0-95bc-ee6fdb355dec",
+    "name": "Spawner (2312)",
+    "location": [1364, 1051, -13],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "720e3894-2702-4f94-b93c-f0b78c891b13",
+    "name": "Spawner (2312)",
+    "location": [1261, 582, -18],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Blacksmith", "maxCount": 314, "probability": 100 },
+      { "name": "BlacksmithGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9a217e2b-1e2a-48fe-8deb-4464994d5fd6",
+    "name": "Spawner (2312)",
+    "location": [284, 536, -24],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ee7edd20-8f78-4c7f-89de-679dd3215975",
+    "name": "Spawner (2312)",
+    "location": [1235, 543, -15],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "FortuneTeller", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2b5fab42-c3ae-429c-ad47-f13cb5d3f72b",
+    "name": "Spawner (2312)",
+    "location": [1407, 428, -8],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "FortuneTeller", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "111326c5-cf2e-43f5-a806-bdf6c07bf673",
+    "name": "Spawner (2312)",
+    "location": [1628, 548, -11],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7aed27d2-be7c-4831-973e-a019e8c15e84",
+    "name": "Spawner (2312)",
+    "location": [1518, 619, -19],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e1622a24-3b53-4458-b478-c441e960d536",
+    "name": "Spawner (2312)",
+    "location": [1093, 955, -38],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f4c6b69c-e842-492a-9136-44cbfd3c9bbf",
+    "name": "Spawner (2312)",
+    "location": [872, 586, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6cc533d8-ef4e-421b-a6af-33c5db8abd19",
+    "name": "Spawner (2312)",
+    "location": [1620, 554, -20],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8e6de1cc-7f37-40a9-98d3-17c3443a520c",
+    "name": "Spawner (2312)",
+    "location": [1605, 541, -13],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Jeweler", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1d5f91c4-720d-40d6-b231-ebd4e22a1f8d",
+    "name": "Spawner (2312)",
+    "location": [859, 698, -40],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Jeweler", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1ebe0545-ac58-4fd4-9d71-68e5d368e1bc",
+    "name": "Spawner (2312)",
+    "location": [868, 657, -40],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Scribe", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "57117f1f-6e70-461e-a897-93d0d8fbefc7",
+    "name": "Spawner (2312)",
+    "location": [869, 625, -40],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Scribe", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "08c1ab93-8d41-4233-868f-cc20f7aae7d9",
+    "name": "Spawner (2312)",
+    "location": [1405, 439, 2],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "GypsyBanker", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fe340fd0-8e01-45e7-89da-73df66f6a5bc",
+    "name": "Spawner (2312)",
+    "location": [1394, 441, 13],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "FortuneTeller", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "835b7f32-152b-498c-b0d2-53634f79fecf",
+    "name": "Spawner (2312)",
+    "location": [1505, 611, -19],
+    "map": "Ilshenar",
+    "count": 316,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Mage", "maxCount": 314, "probability": 100 },
+      { "name": "Alchemist", "maxCount": 1, "probability": 100 },
+      { "name": "MageGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3738e2c9-73fb-4f2a-8d13-e5d45f7e1ca9",
+    "name": "Spawner (2312)",
+    "location": [774, 1144, -30],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d8362690-102a-4d27-9c86-df0b159ff398",
+    "name": "Spawner (2312)",
+    "location": [1598, 539, -19],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Provisioner", "maxCount": 314, "probability": 100 },
+      { "name": "Cobbler", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ca7e99e7-1fb9-4c2a-990f-458aed68181f",
+    "name": "Spawner (2312)",
+    "location": [369, 1432, 15],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0768445d-43bd-44ab-937a-30595192358d",
+    "name": "Spawner (2312)",
+    "location": [1318, 1328, -14],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Provisioner", "maxCount": 314, "probability": 100 },
+      { "name": "Cobbler", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ef17b13f-ea23-44f9-a19c-b3e448417002",
+    "name": "Spawner (2312)",
+    "location": [896, 610, -40],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tailor", "maxCount": 314, "probability": 100 },
+      { "name": "Weaver", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7c715f8d-7a1d-4e87-a740-317f8fe83bde",
+    "name": "Spawner (2312)",
+    "location": [896, 610, -40],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "TailorGuildmaster", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fe2fbd32-417f-48c6-8f81-ff15dd3714b1",
+    "name": "Spawner (2312)",
+    "location": [1499, 619, -19],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "AnimalTrainer", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ef47df75-9814-493a-a502-2dcfbf2953a4",
+    "name": "Spawner (2312)",
+    "location": [1600, 552, -16],
+    "map": "Ilshenar",
+    "count": 316,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tailor", "maxCount": 314, "probability": 100 },
+      { "name": "Weaver", "maxCount": 1, "probability": 100 },
+      { "name": "TailorGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "da0c7827-09cd-4036-9250-2bbbf5897e1b",
+    "name": "Spawner (2312)",
+    "location": [840, 571, 0],
+    "map": "Ilshenar",
+    "count": 316,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Mage", "maxCount": 314, "probability": 100 },
+      { "name": "Glassblower", "maxCount": 1, "probability": 100 },
+      { "name": "MageGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "90ff3c3c-772f-4c47-9050-c5262846fbbf",
+    "name": "Spawner (2312)",
+    "location": [840, 707, 0],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a4ba7cc9-4bd7-496b-a942-849ac0570645",
+    "name": "Spawner (2312)",
+    "location": [1253, 588, -19],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Tinker", "maxCount": 314, "probability": 100 },
+      { "name": "TinkerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "836031d5-ca70-4a3a-9018-6cbf8efc8a05",
+    "name": "Spawner (2312)",
+    "location": [1566, 1049, -8],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "InnKeeper", "maxCount": 314, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b96b47a6-4999-4c0b-9df6-3c4fd68c1684",
+    "name": "Spawner (2312)",
+    "location": [792, 665, 0],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Blacksmith", "maxCount": 314, "probability": 100 },
+      { "name": "BlacksmithGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "48ee09f3-1271-41d7-8ee7-0f88f9a454f8",
+    "name": "Spawner (2312)",
+    "location": [575, 537, -69],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ffeb6efa-2a9a-400b-9a38-4f4f436119b0",
+    "name": "Spawner (2312)",
+    "location": [682, 297, -41],
+    "map": "Ilshenar",
+    "count": 315,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "Healer", "maxCount": 314, "probability": 100 },
+      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0cc1ef57-5272-4e44-9290-cd5af65b88a7",
+    "name": "Spawner (2312)",
+    "location": [1514, 611, -14],
+    "map": "Ilshenar",
+    "count": 314,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 5,
+    "entries": [{ "name": "Baker", "maxCount": 314, "probability": 100 }]
+  }
+]

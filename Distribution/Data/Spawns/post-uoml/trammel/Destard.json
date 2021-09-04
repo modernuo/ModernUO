@@ -1,0 +1,465 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "0f810f61-1afb-49fe-9c06-890dd0e8e1c7",
+    "name": "Spawner (106)",
+    "location": [5209, 965, -40],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "77c817b4-9bcf-461b-9fdf-a1bf040fb8ce",
+    "name": "Spawner (106)",
+    "location": [5247, 956, -40],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e91a324b-d854-482e-be3d-e53d6a1b535c",
+    "name": "Spawner (106)",
+    "location": [5280, 955, -40],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "67e54987-029f-41cf-ad31-91c39531a356",
+    "name": "Spawner (106)",
+    "location": [5284, 926, -40],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "65c4b3bc-43b6-4fac-8247-3269c79229ec",
+    "name": "Spawner (106)",
+    "location": [5214, 917, -40],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4dc431f0-6e8a-4553-ad81-aa000a057d0a",
+    "name": "Spawner (106)",
+    "location": [5241, 945, -40],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "43b8e763-8d20-4bdc-9b94-3f3314e5d882",
+    "name": "Spawner (106)",
+    "location": [5161, 940, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 50,
+    "entries": [{ "name": "GiantSerpent", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "72d5f305-332d-4c52-9178-bcd72af9d0ec",
+    "name": "Spawner (106)",
+    "location": [5149, 907, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2d5d45ec-61c0-40ab-93bb-d0b8b77bf674",
+    "name": "Spawner (106)",
+    "location": [5141, 915, 0],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 25,
+    "walkingRange": 25,
+    "entries": [
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "426815b9-842e-41fa-93fd-238957e15415",
+    "name": "Spawner (106)",
+    "location": [5352, 934, -5],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b63b534b-925f-445a-9838-0f62f4fc22bd",
+    "name": "Spawner (106)",
+    "location": [5317, 980, 0],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 7,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8e30b948-657d-43cc-a6eb-d05dff0e02e0",
+    "name": "Spawner (106)",
+    "location": [5250, 869, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [{ "name": "GiantSerpent", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5c62b324-02b0-4e4d-9a22-292842c0e402",
+    "name": "Spawner (106)",
+    "location": [5226, 826, 0],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ae429570-5c08-476c-8a4f-427358bc51a0",
+    "name": "Spawner (106)",
+    "location": [5269, 811, 7],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b2236767-eb36-4270-91de-2895ecb22ff1",
+    "name": "Spawner (106)",
+    "location": [5307, 815, 0],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "aea14bef-279f-4167-a4f5-ac9ffd480e93",
+    "name": "Spawner (106)",
+    "location": [5294, 842, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "048dc6cf-ce37-4401-840d-0ec2edeaceb0",
+    "name": "Spawner (106)",
+    "location": [5203, 787, 5],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 12,
+    "walkingRange": 25,
+    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bc0bd710-61c4-4d02-b25c-9f7194e0b723",
+    "name": "Spawner (106)",
+    "location": [5229, 841, 1],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "aa7798ff-d30d-4c14-b6b3-b19357569963",
+    "name": "Spawner (106)",
+    "location": [5205, 778, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 7,
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "07d8aebc-ca83-46b8-9125-baa05cc4a882",
+    "name": "Spawner (106)",
+    "location": [5141, 834, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "ShadowWyrm", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bc4b2836-5b80-451d-bebc-7abd7af5127b",
+    "name": "Spawner (106)",
+    "location": [5169, 836, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Daemon", "maxCount": 1, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "52fee28f-c173-45b2-9f4b-79a9af838d37",
+    "name": "Spawner (106)",
+    "location": [5152, 869, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 25,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Drake", "maxCount": 1, "probability": 100 },
+      { "name": "ShadowWyrm", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4d64bf13-bbbc-47d0-ba23-ca0d46cd25d2",
+    "name": "Spawner (106)",
+    "location": [5153, 842, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 40,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "10f45487-6f01-4876-8294-dae2d39da06e",
+    "name": "Spawner (106)",
+    "location": [5141, 968, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f7574f21-519a-48bc-bb96-643bb9ffc557",
+    "name": "Spawner (106)",
+    "location": [5157, 997, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "665a1c73-6bc1-4b04-ae0c-4681422469b2",
+    "name": "Spawner (106)",
+    "location": [5185, 1006, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 50,
+    "entries": [{ "name": "AncientWyrm", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "53bd6f2a-4625-4365-a5ae-b14e442b229f",
+    "name": "Spawner (106)",
+    "location": [5143, 986, 0],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "28408be0-fbd4-4bbd-9b01-5fa90d64b5fc",
+    "name": "Spawner (106)",
+    "location": [5183, 1007, 0],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

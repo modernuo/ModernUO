@@ -1,0 +1,119 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "aa3f15b2-5266-4551-bde0-102295c3681c",
+    "name": "Spawner (2124)",
+    "location": [5976, 1387, -22],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "HellCat", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a640ff8d-6e41-4f75-86ee-cbe300e50c05",
+    "name": "Spawner (2124)",
+    "location": [5940, 1356, -2],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "HellCat", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bce06611-b59d-49b3-8271-24c92684a27a",
+    "name": "Spawner (2124)",
+    "location": [5912, 1326, 0],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "HellCat", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1cbddc11-9029-47b6-8ef1-374d0793472e",
+    "name": "Spawner (2124)",
+    "location": [5956, 1310, -2],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "HellCat", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "badb9b8c-3912-41dd-b50d-518ac07e334e",
+    "name": "Spawner (2124)",
+    "location": [5999, 1327, 10],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "HellCat", "maxCount": 1, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "87775144-55bb-4988-a8bf-d72cf4133d29",
+    "name": "Spawner (2124)",
+    "location": [5915, 1302, 2],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 1,
+    "entries": [
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]

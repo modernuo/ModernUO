@@ -1,0 +1,161 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "95dd308c-afcc-4f0b-8256-c5a9d12da556",
+    "name": "Spawner (2127)",
+    "location": [5819, 591, 0],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 25,
+    "entries": [{ "name": "JukaWarrior", "maxCount": 1, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5d1f68e1-a89d-4bce-ba9b-3e30a3cf11de",
+    "name": "Spawner (2127)",
+    "location": [5808, 588, 12],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a16c670e-28dc-43de-bbbc-3c3f25108d8e",
+    "name": "Spawner (2127)",
+    "location": [5792, 544, 10],
+    "map": "Trammel",
+    "count": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "95313961-89f7-4718-8e25-fd60fea1d82f",
+    "name": "Spawner (2127)",
+    "location": [5857, 586, 15],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "66a06112-555c-4a9f-85f6-281b5403725f",
+    "name": "Spawner (2127)",
+    "location": [5857, 562, 15],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b3307587-a5d8-4f3f-97e9-a18239a00663",
+    "name": "Spawner (2127)",
+    "location": [5828, 530, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2113880c-bbe4-4ae8-86e5-b59d69acb137",
+    "name": "Spawner (2127)",
+    "location": [5659, 563, 20],
+    "map": "Trammel",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Brigand", "maxCount": 1, "probability": 100 },
+      { "name": "JukaLord", "maxCount": 4, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "68c9ae4e-0439-465b-9728-ff57839416db",
+    "name": "Spawner (2127)",
+    "location": [5724, 561, 20],
+    "map": "Trammel",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Golem", "maxCount": 1, "probability": 100 },
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "be6210a3-43d5-45a8-89d7-dbd0bea8b72e",
+    "name": "Spawner (2127)",
+    "location": [5690, 534, 0],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  }
+]
