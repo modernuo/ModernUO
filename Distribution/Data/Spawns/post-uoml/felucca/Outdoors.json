@@ -2240,24 +2240,6 @@
   {
     "type": "Spawner",
     "name": "Spawner (213)",
-    "guid": "1c1d91da-d118-4904-9eb0-e7a4955f44be",
-    "location": [2080, 400, 0],
-    "map": "Felucca",
-    "count": 3,
-    "minDelay": "00:20:00",
-    "maxDelay": "00:20:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "AirElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "Orc", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "name": "Spawner (213)",
     "guid": "cdddffb4-8fb3-4a1d-ab77-f3d7776512c3",
     "location": [2080, 400, 0],
     "map": "Felucca",

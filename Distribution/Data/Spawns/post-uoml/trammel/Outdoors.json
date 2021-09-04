@@ -2074,24 +2074,6 @@
   {
     "type": "Spawner",
     "name": "Spawner (113)",
-    "guid": "c8dfabd9-9740-4299-8944-ef492072482a",
-    "location": [2080, 400, 0],
-    "map": "Trammel",
-    "count": 3,
-    "minDelay": "00:20:00",
-    "maxDelay": "00:20:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "AirElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "Orc", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "name": "Spawner (113)",
     "guid": "f89f0583-2125-4570-988a-b36d0625a8a6",
     "location": [2080, 400, 0],
     "map": "Trammel",
