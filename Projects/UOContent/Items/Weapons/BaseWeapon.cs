@@ -806,7 +806,7 @@ namespace Server.Items
                 WeaponDurabilityLevel.Durable        => 20,
                 WeaponDurabilityLevel.Substantial    => 50,
                 WeaponDurabilityLevel.Massive        => 70,
-                WeaponDurabilityLevel.Fortified       => 100,
+                WeaponDurabilityLevel.Fortified      => 100,
                 WeaponDurabilityLevel.Indestructible => 120,
                 _                                    => 0
             };
@@ -1505,32 +1505,15 @@ namespace Server.Items
             {
                 var positionChance = Utility.RandomDouble();
 
-                Item armorItem;
-
-                if (positionChance < 0.07)
+                Item armorItem = positionChance switch
                 {
-                    armorItem = defender.NeckArmor;
-                }
-                else if (positionChance < 0.14)
-                {
-                    armorItem = defender.HandArmor;
-                }
-                else if (positionChance < 0.28)
-                {
-                    armorItem = defender.ArmsArmor;
-                }
-                else if (positionChance < 0.43)
-                {
-                    armorItem = defender.HeadArmor;
-                }
-                else if (positionChance < 0.65)
-                {
-                    armorItem = defender.LegsArmor;
-                }
-                else
-                {
-                    armorItem = defender.ChestArmor;
-                }
+                    < 0.07 => defender.NeckArmor,
+                    < 0.14 => defender.HandArmor,
+                    < 0.28 => defender.ArmsArmor,
+                    < 0.43 => defender.HeadArmor,
+                    < 0.65 => defender.LegsArmor,
+                    _      => defender.ChestArmor
+                };
 
                 if (armorItem is IWearableDurability armor)
                 {
@@ -1633,12 +1616,10 @@ namespace Server.Items
                 {
                     if (m?.Summoned == true && m.SummonMaster == defender)
                     {
-                        attacker.SendLocalizedMessage(
-                            1063141
-                        ); // Your attack has been diverted to a nearby mirror image of your target!
-                        defender.SendLocalizedMessage(
-                            1063140
-                        ); // You manage to divert the attack onto one of your nearby mirror images.
+                        // Your attack has been diverted to a nearby mirror image of your target!
+                        attacker.SendLocalizedMessage(1063141);
+                        // You manage to divert the attack onto one of your nearby mirror images.
+                        defender.SendLocalizedMessage(1063140);
 
                         /*
                          * TODO: What happens if the Clone parries a blow?
@@ -1791,18 +1772,17 @@ namespace Server.Items
             }
 
             AddBlood(attacker, defender, damage);
-            int phys, fire, cold, pois, nrgy, chaos, direct;
 
             GetDamageTypes(
-                   attacker,
-                   out phys,
-                   out fire,
-                   out cold,
-                   out pois,
-                   out nrgy,
-                   out chaos,
-                   out direct
-               );
+                attacker,
+                out var phys,
+                out var fire,
+                out var cold,
+                out var pois,
+                out var nrgy,
+                out var chaos,
+                out var direct
+            );
 
             if (Core.ML && this is BaseRanged && attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)
             {
@@ -2402,28 +2382,15 @@ namespace Server.Items
                 return 0;
             }
 
-            var bonus = 0;
-
-            switch (m_AccuracyLevel)
+            return m_AccuracyLevel switch
             {
-                case WeaponAccuracyLevel.Accurate:
-                    bonus += 02;
-                    break;
-                case WeaponAccuracyLevel.Surpassingly:
-                    bonus += 04;
-                    break;
-                case WeaponAccuracyLevel.Eminently:
-                    bonus += 06;
-                    break;
-                case WeaponAccuracyLevel.Exceedingly:
-                    bonus += 08;
-                    break;
-                case WeaponAccuracyLevel.Supremely:
-                    bonus += 10;
-                    break;
-            }
-
-            return bonus;
+                WeaponAccuracyLevel.Accurate     => 2,
+                WeaponAccuracyLevel.Surpassingly => 4,
+                WeaponAccuracyLevel.Eminently    => 6,
+                WeaponAccuracyLevel.Exceedingly  => 8,
+                WeaponAccuracyLevel.Supremely    => 10,
+                _                                => 0
+            };
         }
 
         public virtual int GetDamageBonus()
