@@ -7,7 +7,7 @@ namespace Server.Spells.Seventh
     {
         private static readonly SpellInfo _info = new(
             "Meteor Swarm",
-            "Flam Kal Des Ylem",
+            "Kal Des Flam Ylem",
             233,
             9042,
             false,
