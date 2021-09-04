@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "aa72c5a4-373d-4594-8736-6e9e54e245bb",
     "name": "Spawner (214)",
-    "guid": "7fbf7ffa-1466-458a-8340-03f245c540e6",
     "location": [6279, 879, -1],
     "map": "Felucca",
     "count": 11,
@@ -22,8 +22,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e854773f-f10b-4e77-b691-48f064d993c4",
     "name": "Spawner (214)",
-    "guid": "de71f6dc-0341-43f4-a06d-6f5cabeca4e4",
     "location": [6275, 879, -2],
     "map": "Felucca",
     "count": 10,

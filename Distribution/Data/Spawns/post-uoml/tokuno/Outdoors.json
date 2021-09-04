@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "eca3ff06-29b4-4ec6-945e-e734402c47ac",
     "name": "Spawner (502)",
-    "guid": "a9650bae-d555-48a1-b377-8026157aea6a",
     "location": [1215, 1086, 25],
     "map": "Tokuno",
     "count": 1,
@@ -15,8 +15,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f27805b7-13e8-455b-9951-8542fe8f005b",
     "name": "Spawner (502)",
-    "guid": "90cfe1a7-023c-4c82-a309-7052ea0e8ffb",
     "location": [643, 540, 24],
     "map": "Tokuno",
     "count": 2,
@@ -32,8 +32,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "31ce0817-b908-48e9-88ce-d18992600f2e",
     "name": "Spawner (502)",
-    "guid": "7fdc9e42-e1c6-43b2-8a20-cb01f37f0282",
     "location": [615, 556, 37],
     "map": "Tokuno",
     "count": 3,
@@ -50,8 +50,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7e533474-bf8b-4779-bc2b-a542f9bf682a",
     "name": "Spawner (502)",
-    "guid": "641dbeb7-da8f-4de0-b4c2-80ae37b12c4f",
     "location": [1184, 837, 36],
     "map": "Tokuno",
     "count": 1,
@@ -64,8 +64,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8b4ba8e2-02da-468d-8df4-d1a379cae491",
     "name": "Spawner (502)",
-    "guid": "d3c466e8-fe1d-4e7b-8cc2-0faf371a2ed3",
     "location": [499, 530, 32],
     "map": "Tokuno",
     "count": 3,
@@ -82,8 +82,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bdc7ce99-6013-450c-8b92-546160ca8085",
     "name": "Spawner (502)",
-    "guid": "c6625e4a-6b2b-4acb-9a66-70dd1798b290",
     "location": [1197, 813, 27],
     "map": "Tokuno",
     "count": 1,
@@ -96,8 +96,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5db44bce-1b3e-4b4a-9202-3445ab7f206b",
     "name": "Spawner (502)",
-    "guid": "8d38417a-a539-4d66-809f-28fbb53979c2",
     "location": [1247, 791, 6],
     "map": "Tokuno",
     "count": 1,
@@ -110,8 +110,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "544ec738-5674-4a29-99bf-8f990cd9a46d",
     "name": "Spawner (502)",
-    "guid": "a360d2d4-cdc2-4068-ab91-15f5e911da3d",
     "location": [1345, 881, 13],
     "map": "Tokuno",
     "count": 1,
@@ -124,8 +124,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f9bcb23a-9764-48fd-a2d3-38f055ddf7d8",
     "name": "Spawner (502)",
-    "guid": "b7b7cf93-43aa-42c0-8f88-0ef1c83b1ee2",
     "location": [1377, 882, 21],
     "map": "Tokuno",
     "count": 1,
@@ -138,8 +138,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0788dd9c-63ca-490d-bcfb-759b3fda5ee6",
     "name": "Spawner (502)",
-    "guid": "d2c95061-56c2-4702-94fc-0794d7658d8f",
     "location": [208, 641, 36],
     "map": "Tokuno",
     "count": 1,
@@ -152,8 +152,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d97d0251-eee7-405f-a138-a11731f87186",
     "name": "Spawner (502)",
-    "guid": "713ebcad-60b4-4bed-9f8b-ee9658ffa246",
     "location": [582, 505, 32],
     "map": "Tokuno",
     "count": 4,
@@ -171,8 +171,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6511b4bd-0af5-45d2-8b6d-06cf746d9417",
     "name": "Spawner (502)",
-    "guid": "355be132-1301-4efa-925b-eaa54d9fdd83",
     "location": [1311, 776, 10],
     "map": "Tokuno",
     "count": 1,
@@ -185,8 +185,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f1826f7b-c626-4f04-86c8-ce0c186acbee",
     "name": "Spawner (502)",
-    "guid": "7b1a9daf-34f1-471b-a4ba-75a18f1d1ce8",
     "location": [554, 476, 32],
     "map": "Tokuno",
     "count": 1,
@@ -199,8 +199,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "85824d91-1f8d-44af-a554-c21523235088",
     "name": "Spawner (502)",
-    "guid": "b32640ba-7b91-4c9a-9b91-37858955d0b5",
     "location": [571, 550, 32],
     "map": "Tokuno",
     "count": 2,
@@ -216,8 +216,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b4b4de75-a8a1-4d92-9ea8-cd8b701fe660",
     "name": "Spawner (502)",
-    "guid": "78013483-8c6c-4d7c-80da-eca3178a564d",
     "location": [526, 556, 32],
     "map": "Tokuno",
     "count": 3,
@@ -234,8 +234,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0d2fe927-af7d-4194-8544-a1b00c11648c",
     "name": "Spawner (502)",
-    "guid": "be3c9766-9e40-4392-927a-f828105479ce",
     "location": [1336, 810, 9],
     "map": "Tokuno",
     "count": 1,
@@ -248,8 +248,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e4e8a5f6-3c3b-4ae8-911e-3ab84f6505f8",
     "name": "Spawner (502)",
-    "guid": "e00d0f7d-0222-49f0-92c5-6479dba7b323",
     "location": [1344, 774, 19],
     "map": "Tokuno",
     "count": 1,
@@ -262,8 +262,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5a98721f-2062-444a-9253-b393f20c2f42",
     "name": "Spawner (502)",
-    "guid": "815a54c9-e988-4ac0-a518-42f3aa0e0195",
     "location": [528, 552, 32],
     "map": "Tokuno",
     "count": 1,
@@ -276,8 +276,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1c34e7b7-7aa6-4584-ac80-501183251c17",
     "name": "Spawner (502)",
-    "guid": "e246803e-a5af-4b46-9f69-94c6a323b5cb",
     "location": [502, 553, 32],
     "map": "Tokuno",
     "count": 1,
@@ -290,8 +290,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "948d7cbf-e18c-4ad9-954a-7974c0e7d8a3",
     "name": "Spawner (502)",
-    "guid": "d4307a6d-d88f-4147-ac9f-971ae7ca27bc",
     "location": [517, 513, 32],
     "map": "Tokuno",
     "count": 1,
@@ -304,8 +304,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "cc351f48-07b6-4035-9143-76df95e6cd97",
     "name": "Spawner (502)",
-    "guid": "4481fdde-3a0d-421d-96df-adc9abc04fcd",
     "location": [1291, 695, 19],
     "map": "Tokuno",
     "count": 2,
@@ -321,8 +321,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c7d1fbe2-58b6-4699-b480-500e34ce7c2a",
     "name": "Spawner (502)",
-    "guid": "f3be425b-124d-4122-b03d-3f15234fef6a",
     "location": [1354, 700, 33],
     "map": "Tokuno",
     "count": 1,
@@ -335,8 +335,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5b86c0c1-8ff7-43e4-9d5c-519572bddc1b",
     "name": "Spawner (502)",
-    "guid": "5ad75897-4f48-4b80-a12c-16c8b890d648",
     "location": [273, 606, 7],
     "map": "Tokuno",
     "count": 1,
@@ -349,8 +349,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "677cd278-8f22-4133-82c9-74e1c25b0668",
     "name": "Spawner (502)",
-    "guid": "8d5ecdbc-2288-49c5-98bd-9fddb03f58f2",
     "location": [518, 477, 32],
     "map": "Tokuno",
     "count": 1,
@@ -363,8 +363,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6825a6ee-0de7-47e7-bb3a-f8fcd3e88d0d",
     "name": "Spawner (502)",
-    "guid": "c479b64c-9b16-43ad-a2f4-0c5bac88b506",
     "location": [159, 688, 24],
     "map": "Tokuno",
     "count": 1,
@@ -377,8 +377,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7759c1d5-18b4-4e64-acc0-9b2b3b1ce4b3",
     "name": "Spawner (502)",
-    "guid": "3f920079-5a6d-4648-9641-a239a00e1144",
     "location": [157, 685, 25],
     "map": "Tokuno",
     "count": 6,
@@ -398,8 +398,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "dc092935-abe0-4a1f-aee3-52b31f6008f4",
     "name": "Spawner (502)",
-    "guid": "81f8f84f-3fb2-4bff-840d-2954acb4c73b",
     "location": [246, 768, 55],
     "map": "Tokuno",
     "count": 2,
@@ -415,8 +415,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "253de532-294c-4e21-9229-2d8f8bd82a7b",
     "name": "Spawner (502)",
-    "guid": "3b746145-1748-47e9-aa11-4b43697d35b4",
     "location": [186, 534, 41],
     "map": "Tokuno",
     "count": 1,
@@ -429,8 +429,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1322355f-57ad-4092-bbaa-5ad4eeeaa1cb",
     "name": "Spawner (502)",
-    "guid": "47b587c5-164f-46c7-a4b6-024d82bad3cc",
     "location": [374, 820, 34],
     "map": "Tokuno",
     "count": 1,
@@ -443,8 +443,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9cccf528-8e5b-4493-9b50-340f3b1a19dd",
     "name": "Spawner (502)",
-    "guid": "7f6ac2c8-3d26-4584-86ce-0681186b0529",
     "location": [258, 709, 41],
     "map": "Tokuno",
     "count": 1,
@@ -457,8 +457,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3e9bf16f-3e5e-46ca-b77b-0fefb50733fd",
     "name": "Spawner (502)",
-    "guid": "04defd07-c637-40af-b43a-3501abba4657",
     "location": [124, 646, 37],
     "map": "Tokuno",
     "count": 1,
@@ -471,8 +471,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bbfa20a6-a749-4796-8093-e0aebedd1567",
     "name": "Spawner (502)",
-    "guid": "140afd90-d2a0-4e7f-869d-f0321ced2172",
     "location": [123, 647, 36],
     "map": "Tokuno",
     "count": 6,
@@ -492,8 +492,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a0e4c0eb-bfde-4f4d-9127-72ec018fe53b",
     "name": "Spawner (502)",
-    "guid": "1bfd23a1-5b8b-4099-b062-5c78bfbf5b17",
     "location": [356, 722, 54],
     "map": "Tokuno",
     "count": 1,
@@ -506,8 +506,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ef145b1a-d0cb-4b43-91e9-2c6b462e21b4",
     "name": "Spawner (502)",
-    "guid": "7ce619fb-a873-4cb3-9aeb-ef1c6520409e",
     "location": [201, 731, 30],
     "map": "Tokuno",
     "count": 1,
@@ -520,8 +520,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "49acbb5c-a3e5-4a8d-ae1e-466b6af4f55d",
     "name": "Spawner (502)",
-    "guid": "2d07aa3b-6f07-4d2f-a9dc-75d99eeb8339",
     "location": [181, 588, 45],
     "map": "Tokuno",
     "count": 1,
@@ -534,8 +534,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a2d235a6-318d-48e4-ae94-37929804de6d",
     "name": "Spawner (502)",
-    "guid": "978bc34a-69a9-40e8-a660-933b64de8442",
     "location": [180, 586, 45],
     "map": "Tokuno",
     "count": 6,
@@ -555,8 +555,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2658ba3b-9ac8-4d15-afc4-fbeec1732b06",
     "name": "Spawner (502)",
-    "guid": "4f15251d-ac85-4aaa-aaee-6e803532412b",
     "location": [200, 803, 62],
     "map": "Tokuno",
     "count": 1,
@@ -569,8 +569,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "86e81472-4cb1-4cc9-b269-c13dd78e0241",
     "name": "Spawner (502)",
-    "guid": "85e7b7bc-0f96-4c0d-ac41-5f64a74a41ef",
     "location": [166, 583, 49],
     "map": "Tokuno",
     "count": 1,
@@ -583,8 +583,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e4ee7422-10a9-40c6-ae83-5ad8abe2f279",
     "name": "Spawner (502)",
-    "guid": "a7c3c163-5be8-4b97-bfac-13f900f19113",
     "location": [190, 856, 52],
     "map": "Tokuno",
     "count": 2,
@@ -600,8 +600,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e1707b0a-62b4-40f7-a20d-4686ff0275a6",
     "name": "Spawner (502)",
-    "guid": "6f46a0d8-6d48-4bf5-be09-771d80775dcd",
     "location": [206, 891, 56],
     "map": "Tokuno",
     "count": 1,
@@ -614,8 +614,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1838df81-a91d-4497-80b1-1753c7d7d5af",
     "name": "Spawner (502)",
-    "guid": "81fb4e4f-b955-4352-aefd-79edfc3ccaaa",
     "location": [1008, 246, 37],
     "map": "Tokuno",
     "count": 2,
@@ -631,8 +631,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a9f31936-c665-47a0-bc5f-998d32ed3886",
     "name": "Spawner (502)",
-    "guid": "a60fefb5-b32e-4fe6-b546-e5e7fabafb89",
     "location": [212, 646, 31],
     "map": "Tokuno",
     "count": 6,
@@ -652,8 +652,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d3973a81-5d0b-46b1-b4c1-99df8c1a0dd3",
     "name": "Spawner (502)",
-    "guid": "59a74704-0c96-4775-9b50-c0da8613f73e",
     "location": [208, 936, 43],
     "map": "Tokuno",
     "count": 1,
@@ -666,8 +666,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d4e31105-319f-4da6-a44a-381c65d5902b",
     "name": "Spawner (502)",
-    "guid": "95bfbe85-9ce1-4441-a7af-04f6acbfab7a",
     "location": [248, 928, 36],
     "map": "Tokuno",
     "count": 2,
@@ -683,8 +683,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8ecd3c54-ee52-489a-8500-93fae7a51649",
     "name": "Spawner (502)",
-    "guid": "2fd8587f-0b41-4750-8d25-3387ccb01e4a",
     "location": [221, 968, 34],
     "map": "Tokuno",
     "count": 1,
@@ -697,8 +697,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8626188e-72b6-49e1-8a92-28401c752d53",
     "name": "Spawner (502)",
-    "guid": "f0a9ca4c-2693-491b-b3a7-c5aa60e520a7",
     "location": [192, 1014, 10],
     "map": "Tokuno",
     "count": 3,
@@ -715,8 +715,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1cac1922-279b-4c1a-9987-cf0f1f2d5751",
     "name": "Spawner (502)",
-    "guid": "76a607e3-20c2-460c-a54f-fb88705d096f",
     "location": [1016, 292, 30],
     "map": "Tokuno",
     "count": 2,
@@ -732,8 +732,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9a82890c-8386-47dc-8315-daafeccb4367",
     "name": "Spawner (502)",
-    "guid": "f075b563-08f4-495a-869c-ca94d55328a1",
     "location": [232, 1116, 10],
     "map": "Tokuno",
     "count": 5,
@@ -752,8 +752,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "62df65e1-31d4-4244-97a0-fa99dfb02a10",
     "name": "Spawner (502)",
-    "guid": "6822dd41-fc4a-4761-9fe7-b2ab71539884",
     "location": [948, 247, 19],
     "map": "Tokuno",
     "count": 3,
@@ -770,8 +770,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "db134a33-bdc3-4fe4-b8ed-5b828501c2a3",
     "name": "Spawner (502)",
-    "guid": "81b2cf23-90b8-44e0-955e-35403d226db8",
     "location": [285, 1156, 13],
     "map": "Tokuno",
     "count": 5,
@@ -790,8 +790,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f80ebc37-bb28-4119-a7be-eb1753475fb9",
     "name": "Spawner (502)",
-    "guid": "e4051bd3-870b-4423-ac63-635f0acfeab8",
     "location": [261, 1186, 20],
     "map": "Tokuno",
     "count": 1,
@@ -804,8 +804,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "87ec3880-2c4a-4a98-b79f-355c93bba2b7",
     "name": "Spawner (502)",
-    "guid": "43106def-d809-43bd-a2fc-2403337d883b",
     "location": [251, 1074, 10],
     "map": "Tokuno",
     "count": 5,
@@ -824,8 +824,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6c2d73de-218e-459b-a260-1d0dd9ed3e3e",
     "name": "Spawner (502)",
-    "guid": "0b6548a8-da7a-44d3-b3a6-88643f476365",
     "location": [962, 203, 23],
     "map": "Tokuno",
     "count": 3,
@@ -842,8 +842,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "61e9e4d3-5998-4d57-a9dd-2902b9f7293a",
     "name": "Spawner (502)",
-    "guid": "d7219549-c936-46cf-905c-09b9be2dba72",
     "location": [916, 225, 23],
     "map": "Tokuno",
     "count": 3,
@@ -860,8 +860,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "31aecce7-5ac8-4208-a258-0987c22b74dd",
     "name": "Spawner (502)",
-    "guid": "e562727d-0bed-4f9d-b1a9-b59fe9e22b26",
     "location": [899, 271, 34],
     "map": "Tokuno",
     "count": 2,
@@ -877,8 +877,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ad811813-4681-4d34-8f4f-72716235ac88",
     "name": "Spawner (502)",
-    "guid": "2eedf178-dc28-4714-8f44-733146f8ac4b",
     "location": [819, 208, 38],
     "map": "Tokuno",
     "count": 3,
@@ -895,8 +895,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "319d3f84-6839-4813-8cdd-368ec2bf72d2",
     "name": "Spawner (502)",
-    "guid": "80471dc1-f70d-4efa-85ad-75cc219c37ed",
     "location": [248, 525, 41],
     "map": "Tokuno",
     "count": 2,
@@ -912,8 +912,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "707e4323-ae80-4014-b9fe-a9ecbd2916a4",
     "name": "Spawner (502)",
-    "guid": "b4a859cf-bf64-4554-9908-b28e033de118",
     "location": [824, 280, 33],
     "map": "Tokuno",
     "count": 3,
@@ -930,8 +930,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5cbaed28-9d82-40fd-b67d-ac88476e35a8",
     "name": "Spawner (502)",
-    "guid": "36ee6743-8196-45db-a69c-b19f8f8efa64",
     "location": [284, 423, 31],
     "map": "Tokuno",
     "count": 1,
@@ -944,8 +944,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5e323bcc-473f-476b-af98-4e73294620bf",
     "name": "Spawner (502)",
-    "guid": "cad6e013-2bfa-47c4-878a-2bfb02e3a8f3",
     "location": [265, 406, 22],
     "map": "Tokuno",
     "count": 1,
@@ -958,8 +958,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1ef29dd3-76bb-4068-8a40-9849c0aa9bf1",
     "name": "Spawner (502)",
-    "guid": "0a5609b0-6f61-4fe4-b70e-603dcc6af644",
     "location": [289, 477, 32],
     "map": "Tokuno",
     "count": 1,
@@ -972,8 +972,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9f5a0e7a-238e-43c1-a3f0-fedd19b8e746",
     "name": "Spawner (502)",
-    "guid": "879369e2-882e-4ea9-aef2-cacf27aa4746",
     "location": [326, 454, 32],
     "map": "Tokuno",
     "count": 1,
@@ -986,8 +986,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "24ae6d4d-ba52-4ce5-adbc-956a168b7896",
     "name": "Spawner (502)",
-    "guid": "088df1fc-fa47-416d-996b-66dfe783b255",
     "location": [765, 189, 42],
     "map": "Tokuno",
     "count": 2,
@@ -1003,8 +1003,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "73a10c1b-89ea-4b05-a85b-928eab35f281",
     "name": "Spawner (502)",
-    "guid": "ae8c9dbd-456f-4833-86e1-061f92ce28de",
     "location": [360, 466, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1017,8 +1017,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7d671380-7f33-4082-b5fa-de107117208a",
     "name": "Spawner (502)",
-    "guid": "d9b5023b-5de2-4457-ab03-5cbf10151f47",
     "location": [384, 460, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1031,8 +1031,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9e3c3942-33a2-441b-9c1d-b6ccb10a6cb4",
     "name": "Spawner (502)",
-    "guid": "d087ef79-4390-4563-9985-34f2a1ee7ca8",
     "location": [418, 463, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1045,8 +1045,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9d84bd7d-1901-4ead-bbd0-bdece81cf6db",
     "name": "Spawner (502)",
-    "guid": "ddd42694-d43e-40f2-91ea-557f0acc85ed",
     "location": [425, 443, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1059,8 +1059,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "365a7a58-8313-41f4-8329-e92dc88a87a9",
     "name": "Spawner (502)",
-    "guid": "b036f80c-5d86-4a38-a0a4-ed7d87bb8549",
     "location": [472, 433, 27],
     "map": "Tokuno",
     "count": 1,
@@ -1073,8 +1073,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7edd7be4-77b0-4e35-bec2-fa1dd14c4708",
     "name": "Spawner (502)",
-    "guid": "ba69426b-6e87-45ee-afe6-32e982807fbc",
     "location": [407, 399, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1087,8 +1087,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "795a551e-ab09-44ac-996d-eac96c1d74e2",
     "name": "Spawner (502)",
-    "guid": "3b14f965-e0c3-4d31-8394-0c4769944cbd",
     "location": [358, 396, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1101,8 +1101,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c6b07ac4-5735-4f3e-842a-6eee2061c116",
     "name": "Spawner (502)",
-    "guid": "cdf651c5-acaf-462f-915a-756c9a6ec795",
     "location": [725, 246, 36],
     "map": "Tokuno",
     "count": 2,
@@ -1118,8 +1118,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a4edc6f1-89d5-4a26-bd4c-0ee4a225a783",
     "name": "Spawner (502)",
-    "guid": "ec47ffb2-ec96-44eb-bb76-45deef68b98c",
     "location": [769, 152, 12],
     "map": "Tokuno",
     "count": 3,
@@ -1136,8 +1136,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "fee43098-26ac-4c98-8351-6b3aa0a6a6b4",
     "name": "Spawner (502)",
-    "guid": "eb74c0a1-0f32-4637-b395-f496be9eae8d",
     "location": [323, 374, 32],
     "map": "Tokuno",
     "count": 1,
@@ -1150,8 +1150,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2a4399c2-a2b8-4fee-8c4a-f5aeec85e150",
     "name": "Spawner (502)",
-    "guid": "d198eca7-6f29-4166-82c7-07fd8049c023",
     "location": [773, 229, 64],
     "map": "Tokuno",
     "count": 2,
@@ -1167,8 +1167,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "220c50cd-e712-4c01-bc50-da80a9efa7a2",
     "name": "Spawner (502)",
-    "guid": "02ef14cf-a7b9-491e-8eb2-e68e1a3454cc",
     "location": [415, 351, 28],
     "map": "Tokuno",
     "count": 1,
@@ -1181,8 +1181,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0e204063-3ad5-49d8-a677-2179cb933312",
     "name": "Spawner (502)",
-    "guid": "82220e2d-a09f-40a3-93ae-d9ef79e004a8",
     "location": [789, 276, 56],
     "map": "Tokuno",
     "count": 2,
@@ -1198,8 +1198,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d3629ba0-7cce-4787-845f-b023ad792eea",
     "name": "Spawner (502)",
-    "guid": "e581fad9-a16e-4ee5-b8bd-43aaf83aee1a",
     "location": [493, 378, 45],
     "map": "Tokuno",
     "count": 2,
@@ -1215,8 +1215,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8fd367d2-d64d-4573-b59d-4599a13e97f9",
     "name": "Spawner (502)",
-    "guid": "aee82889-22ac-4b7c-9bf6-74651ae9891a",
     "location": [454, 374, 32],
     "map": "Tokuno",
     "count": 2,
@@ -1232,8 +1232,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "21d6ef7b-c03c-4bf7-94c7-d0db718ad849",
     "name": "Spawner (502)",
-    "guid": "ea32d8bc-e6ed-4ee2-a892-e94a32f34a5b",
     "location": [798, 377, 25],
     "map": "Tokuno",
     "count": 2,
@@ -1249,8 +1249,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "65f4af21-170b-4c46-9798-7b157327364a",
     "name": "Spawner (502)",
-    "guid": "6f2a4ab1-6211-463a-bb5b-67ad23032921",
     "location": [472, 336, 38],
     "map": "Tokuno",
     "count": 1,
@@ -1263,8 +1263,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c9f216ba-9f75-44fd-a337-81a5a1da867c",
     "name": "Spawner (502)",
-    "guid": "abd08b94-87b2-4812-ab65-b11b9901b046",
     "location": [841, 326, 32],
     "map": "Tokuno",
     "count": 4,
@@ -1282,8 +1282,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "884af9a0-d63c-4bc2-81c0-70ee499882e5",
     "name": "Spawner (502)",
-    "guid": "ad68c5d0-c0a7-43dc-99fd-6eb4c6859932",
     "location": [907, 292, 19],
     "map": "Tokuno",
     "count": 3,
@@ -1300,8 +1300,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "017e0d53-ee8d-415f-be2d-8ef61ca2a2cd",
     "name": "Spawner (502)",
-    "guid": "24cf278a-ed80-45d0-8819-260dcff64d29",
     "location": [526, 299, 26],
     "map": "Tokuno",
     "count": 1,
@@ -1314,8 +1314,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a2aeca93-8409-49a4-9ce7-3aedb059721c",
     "name": "Spawner (502)",
-    "guid": "4341afec-a045-44cd-b798-00cdf211f05e",
     "location": [540, 343, 8],
     "map": "Tokuno",
     "count": 1,
@@ -1328,8 +1328,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9fc43513-ec15-4207-97ab-09861fb97d7c",
     "name": "Spawner (502)",
-    "guid": "d70cd8d9-768a-4845-a0f1-e6bab853994c",
     "location": [527, 393, 53],
     "map": "Tokuno",
     "count": 2,
@@ -1345,8 +1345,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a43608ac-743d-4704-bca7-7ffcb8169071",
     "name": "Spawner (502)",
-    "guid": "2d2aa27e-c526-452d-9bb0-53e442a1f4d3",
     "location": [566, 430, 35],
     "map": "Tokuno",
     "count": 1,
@@ -1359,8 +1359,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3de14a59-5a81-4453-9749-6affeeba5328",
     "name": "Spawner (502)",
-    "guid": "e8c4ca95-03e5-47ec-a3da-31486120b715",
     "location": [892, 391, 14],
     "map": "Tokuno",
     "count": 3,
@@ -1377,8 +1377,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0b991694-56d8-4397-8635-64ae8eb79bb9",
     "name": "Spawner (502)",
-    "guid": "401d2981-39aa-4816-b8e4-22f53f8da22c",
     "location": [873, 326, 37],
     "map": "Tokuno",
     "count": 3,
@@ -1395,8 +1395,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3d7955d2-4dee-4ec1-acba-ac3851dabae7",
     "name": "Spawner (502)",
-    "guid": "493fe365-183e-4983-a87b-d4f065e155cf",
     "location": [594, 362, 22],
     "map": "Tokuno",
     "count": 1,
@@ -1409,8 +1409,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8dc8a8c9-6229-45fa-90d9-dc4e6a1dec63",
     "name": "Spawner (502)",
-    "guid": "4e98a49c-847d-40f0-b228-08502ce3cc2a",
     "location": [861, 335, 37],
     "map": "Tokuno",
     "count": 2,
@@ -1426,8 +1426,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "05a01a2a-80b3-47f9-9784-14e41938749d",
     "name": "Spawner (502)",
-    "guid": "8062d8ea-f40c-4871-acdd-bfd6ae9b90b7",
     "location": [853, 386, 19],
     "map": "Tokuno",
     "count": 2,
@@ -1443,8 +1443,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4a42bbf1-f1b6-453a-bbd3-b1da3746ac39",
     "name": "Spawner (502)",
-    "guid": "ae5cdfa0-a61f-498e-bd58-aa10c413971f",
     "location": [649, 409, 36],
     "map": "Tokuno",
     "count": 1,
@@ -1457,8 +1457,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "dd5b7839-9748-4047-9350-763ffb794b67",
     "name": "Spawner (502)",
-    "guid": "3b3ff1a4-2527-40c7-912c-a41b52779aa6",
     "location": [677, 446, 31],
     "map": "Tokuno",
     "count": 3,
@@ -1475,8 +1475,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "78d6b14f-d8ed-4b61-b26e-9150e4565f14",
     "name": "Spawner (502)",
-    "guid": "574e5b74-ac3e-4edf-aa4c-447d974ba347",
     "location": [907, 394, 10],
     "map": "Tokuno",
     "count": 3,
@@ -1493,8 +1493,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "820e5552-d32d-41ea-88e1-2a846018dbe0",
     "name": "Spawner (502)",
-    "guid": "fa61adff-58f2-436f-8a74-25640360e51a",
     "location": [927, 451, 14],
     "map": "Tokuno",
     "count": 3,
@@ -1511,8 +1511,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0146782a-0335-4922-a40b-8a0c423d74bf",
     "name": "Spawner (502)",
-    "guid": "e8ed3372-dc05-48bf-9ac9-c524ad9b93f6",
     "location": [932, 364, 3],
     "map": "Tokuno",
     "count": 3,
@@ -1529,8 +1529,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9f8cd538-2d06-4b1d-9088-5e5004689409",
     "name": "Spawner (502)",
-    "guid": "cf55029d-720e-461d-a426-9a0179deb4b1",
     "location": [930, 405, 11],
     "map": "Tokuno",
     "count": 3,
@@ -1547,8 +1547,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2392cb2c-c378-4bd3-b501-e0e4c47d90b7",
     "name": "Spawner (502)",
-    "guid": "2fa2f15d-1774-4f6e-8078-172623981b82",
     "location": [992, 383, 5],
     "map": "Tokuno",
     "count": 3,
@@ -1565,8 +1565,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6cb2b8ea-23e8-4fb0-be10-75b845a4dd37",
     "name": "Spawner (502)",
-    "guid": "9f83cba8-16b1-43b0-86b0-79ee094d372a",
     "location": [997, 407, -2],
     "map": "Tokuno",
     "count": 3,
@@ -1583,8 +1583,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7e69b3da-9e28-4a1a-b637-9d49fd26f92d",
     "name": "Spawner (502)",
-    "guid": "f399ef48-ca12-4a61-bca6-6a87d23b4fd9",
     "location": [951, 409, 9],
     "map": "Tokuno",
     "count": 3,
@@ -1601,8 +1601,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d3b83975-d49e-4816-8d40-f951f8ca4752",
     "name": "Spawner (502)",
-    "guid": "731a9796-44a3-4f65-bb7b-c01648e122fb",
     "location": [1036, 366, 7],
     "map": "Tokuno",
     "count": 1,
@@ -1615,8 +1615,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c092e5c5-9225-40c6-aa04-69e3c1ec5062",
     "name": "Spawner (502)",
-    "guid": "b437dc8c-2a2b-4d39-9d88-a2c7dfb66484",
     "location": [1034, 293, 21],
     "map": "Tokuno",
     "count": 2,
@@ -1632,8 +1632,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "33b57c7b-f4fa-4517-ae3d-bdd66a501a15",
     "name": "Spawner (502)",
-    "guid": "4bce49ee-765f-4e0e-89ab-2df741b647d5",
     "location": [980, 278, 30],
     "map": "Tokuno",
     "count": 2,
@@ -1649,8 +1649,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c893f443-492a-4cc3-830d-41989f4cf7bf",
     "name": "Spawner (502)",
-    "guid": "f5e21fe9-195d-4bab-ac09-0cf1740982c9",
     "location": [948, 522, 7],
     "map": "Tokuno",
     "count": 1,
@@ -1663,8 +1663,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "df86c11f-7dd5-488e-a1ce-5f5559150a60",
     "name": "Spawner (502)",
-    "guid": "827c8fa8-01ed-481d-ba02-e077c61c9daf",
     "location": [918, 439, 14],
     "map": "Tokuno",
     "count": 3,
@@ -1681,8 +1681,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bcd7c645-3661-4901-8bf2-69a30bde2d21",
     "name": "Spawner (502)",
-    "guid": "ca95cfff-61e4-465b-9d8e-dd5e6054e127",
     "location": [951, 467, 12],
     "map": "Tokuno",
     "count": 3,
@@ -1699,8 +1699,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c14634e0-f3b4-4cfc-a9ef-ec0c7e2f0be5",
     "name": "Spawner (502)",
-    "guid": "4d81af0d-4878-49a0-ba24-a1ce854e5a4f",
     "location": [1150, 1072, 14],
     "map": "Tokuno",
     "count": 2,
@@ -1716,8 +1716,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "41c95563-111d-4373-94da-04ea78de4ec7",
     "name": "Spawner (502)",
-    "guid": "4eaaea92-6fb6-401b-ab09-0db03443e258",
     "location": [979, 477, 2],
     "map": "Tokuno",
     "count": 3,
@@ -1734,8 +1734,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "53bbd0ba-b7ad-4878-b792-49742ca465a5",
     "name": "Spawner (502)",
-    "guid": "b5436053-2e5a-4082-90b9-67f8b85bad93",
     "location": [983, 448, -1],
     "map": "Tokuno",
     "count": 3,
@@ -1752,8 +1752,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "32d60afe-e750-414e-ba79-507559c91732",
     "name": "Spawner (502)",
-    "guid": "8b9e8730-5a2d-4927-89f7-81972496483c",
     "location": [1051, 473, 7],
     "map": "Tokuno",
     "count": 1,
@@ -1766,8 +1766,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "acda12ab-fad7-44dd-b147-1f7d8f14bb82",
     "name": "Spawner (502)",
-    "guid": "cbef6f86-0d75-4254-b549-8b1accfa17c2",
     "location": [1062, 469, 8],
     "map": "Tokuno",
     "count": 2,
@@ -1783,8 +1783,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "37ec6472-45cf-401d-b53e-412ba3701e87",
     "name": "Spawner (502)",
-    "guid": "06343fb1-978a-49b2-87c6-105a6a9f230c",
     "location": [1086, 452, 14],
     "map": "Tokuno",
     "count": 3,
@@ -1801,8 +1801,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "38ee164f-af8f-43ff-b045-e16b6934479b",
     "name": "Spawner (502)",
-    "guid": "7c9b19ad-db13-4772-ab02-0063bf19ab01",
     "location": [1084, 464, 15],
     "map": "Tokuno",
     "count": 1,
@@ -1815,8 +1815,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "408186ff-d5b9-45b7-81d5-bd7922caa4bd",
     "name": "Spawner (502)",
-    "guid": "12d8198d-bada-4297-bb3c-1025b2ea1474",
     "location": [999, 580, 14],
     "map": "Tokuno",
     "count": 2,
@@ -1832,8 +1832,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "68e53c12-796d-42b7-8e4a-18c44c7be2b1",
     "name": "Spawner (502)",
-    "guid": "b5c68f87-23d3-4071-9b96-9ab2c41be0e3",
     "location": [921, 593, 20],
     "map": "Tokuno",
     "count": 2,
@@ -1849,8 +1849,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "22a92fcb-98f5-4a99-96b8-b2b9a0ffac46",
     "name": "Spawner (502)",
-    "guid": "92618d85-5341-4cfd-85c2-fed6307b99a6",
     "location": [1042, 559, 22],
     "map": "Tokuno",
     "count": 1,
@@ -1863,8 +1863,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6ff7c79a-ed90-4c3e-9eb6-0e313590e67a",
     "name": "Spawner (502)",
-    "guid": "ef2bc8a7-d17f-49d1-a700-3937633c3fc3",
     "location": [1062, 564, 22],
     "map": "Tokuno",
     "count": 1,
@@ -1877,8 +1877,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "476f44e9-0fa7-40ae-bb4c-85edb3b23fa6",
     "name": "Spawner (502)",
-    "guid": "1538d7ff-9ca4-4776-98d3-1169fde5d8e4",
     "location": [1092, 563, 22],
     "map": "Tokuno",
     "count": 1,
@@ -1891,8 +1891,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "69c7144e-d61e-4da0-a35c-1984d750b7d4",
     "name": "Spawner (502)",
-    "guid": "82df6ed9-e22c-4aac-8c16-3367749f4c82",
     "location": [1146, 516, 21],
     "map": "Tokuno",
     "count": 1,
@@ -1905,8 +1905,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e5d1e6c4-9baa-44d6-9129-c181bee86a89",
     "name": "Spawner (502)",
-    "guid": "ba4163d3-406d-4c6e-bfbf-0a9f7e343ce5",
     "location": [192, 770, 56],
     "map": "Tokuno",
     "count": 1,
@@ -1919,8 +1919,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c226ba8d-7803-4b9b-9c30-082d130b4622",
     "name": "Spawner (502)",
-    "guid": "baa991ef-e691-4b58-aa58-5446d6c97c40",
     "location": [1214, 531, 28],
     "map": "Tokuno",
     "count": 1,
@@ -1933,8 +1933,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d5f269ec-7d41-4f86-aa84-60e1e49ea907",
     "name": "Spawner (502)",
-    "guid": "436d8ed7-2b30-4d31-9641-45222132f2a1",
     "location": [1172, 535, 23],
     "map": "Tokuno",
     "count": 2,
@@ -1950,8 +1950,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6d36129d-9c4b-41c7-ac7e-3065e95c0c8e",
     "name": "Spawner (502)",
-    "guid": "1ea5d121-d077-428c-8b38-ab5c51467130",
     "location": [1184, 616, 19],
     "map": "Tokuno",
     "count": 1,
@@ -1964,8 +1964,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6b720032-be76-4ffe-9efd-98d260408628",
     "name": "Spawner (502)",
-    "guid": "90eb13b8-fbc7-430f-b5d5-a811c8df33f3",
     "location": [1058, 799, 13],
     "map": "Tokuno",
     "count": 1,
@@ -1978,8 +1978,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ee65a597-210c-4c61-b006-8a595c660f3d",
     "name": "Spawner (502)",
-    "guid": "a49d42c8-641f-4502-b589-d95b63678449",
     "location": [1181, 484, 22],
     "map": "Tokuno",
     "count": 1,
@@ -1992,8 +1992,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e7498277-a5cf-471e-aa70-3d4066bc7e5a",
     "name": "Spawner (502)",
-    "guid": "e42d081c-ce7a-47af-aa23-364508cd3da5",
     "location": [1196, 507, 26],
     "map": "Tokuno",
     "count": 2,
@@ -2009,8 +2009,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e9485db7-9bf0-4207-b2ef-d078164973dc",
     "name": "Spawner (502)",
-    "guid": "05a4c4a7-c316-4d3c-a347-40ae456000eb",
     "location": [1258, 531, 31],
     "map": "Tokuno",
     "count": 1,
@@ -2023,8 +2023,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "53f4da75-9974-4197-b9cd-c350ff6545dd",
     "name": "Spawner (502)",
-    "guid": "7b38510a-3381-462a-9a2b-415a13d1d940",
     "location": [1285, 573, 30],
     "map": "Tokuno",
     "count": 1,
@@ -2037,8 +2037,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "74dfcfec-45e5-446e-83ca-16222e74a9fc",
     "name": "Spawner (502)",
-    "guid": "bebdefdd-6ee4-4560-9fb3-fee6fcd6f20b",
     "location": [1321, 619, 38],
     "map": "Tokuno",
     "count": 5,
@@ -2057,8 +2057,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2ff26e7f-39e9-43b6-9cfc-c816c5aaafce",
     "name": "Spawner (502)",
-    "guid": "62ad1ea3-c403-4519-93a4-374fc6f81d9b",
     "location": [1214, 652, 90],
     "map": "Tokuno",
     "count": 3,
@@ -2075,8 +2075,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d99d3f59-efa8-4b82-8eb2-c4e534850a0a",
     "name": "Spawner (502)",
-    "guid": "3e3e5db9-add6-416c-a3ee-b310b561df70",
     "location": [1176, 701, 72],
     "map": "Tokuno",
     "count": 3,
@@ -2093,8 +2093,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3421f1c6-9ace-40e0-b55c-42cd31e5cc20",
     "name": "Spawner (502)",
-    "guid": "c30c390c-810b-478f-948e-0b479bd0f527",
     "location": [1144, 667, 70],
     "map": "Tokuno",
     "count": 3,
@@ -2111,8 +2111,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4888b00c-3867-4e36-aba7-379675faad0a",
     "name": "Spawner (502)",
-    "guid": "58d28b4a-1b2e-4166-9872-57cb21cec7bb",
     "location": [1134, 705, 72],
     "map": "Tokuno",
     "count": 4,
@@ -2130,8 +2130,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "33f8d248-e342-4824-a13c-810a8b03461b",
     "name": "Spawner (502)",
-    "guid": "8058bb24-8184-4e1e-9149-bce0e899d186",
     "location": [1105, 753, 44],
     "map": "Tokuno",
     "count": 2,
@@ -2147,8 +2147,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "030f777e-512e-4c16-8e7b-931798a2d6e2",
     "name": "Spawner (502)",
-    "guid": "99ed4707-1abd-41d3-b451-a9d0c60cb012",
     "location": [1021, 802, 0],
     "map": "Tokuno",
     "count": 2,
@@ -2164,8 +2164,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b5856936-8d66-4ee3-869a-baa45f0a7313",
     "name": "Spawner (502)",
-    "guid": "b8203092-7186-412d-b2b6-d63a1e84bc0c",
     "location": [931, 833, 23],
     "map": "Tokuno",
     "count": 1,
@@ -2178,8 +2178,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "93c37225-d9a6-4d6c-8a9d-73585febd5d7",
     "name": "Spawner (502)",
-    "guid": "bb37d5b8-0e23-45b9-8d7a-fed4a12dd79e",
     "location": [1006, 857, 15],
     "map": "Tokuno",
     "count": 2,
@@ -2195,8 +2195,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d09ba32d-07dc-4eff-9573-97127a7a9c97",
     "name": "Spawner (502)",
-    "guid": "441d5b42-5248-4696-a281-f7ce2c48cfc3",
     "location": [980, 815, 15],
     "map": "Tokuno",
     "count": 3,
@@ -2213,8 +2213,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ee33036a-4320-417d-b775-130d08190426",
     "name": "Spawner (502)",
-    "guid": "f77c1591-d0bc-49dc-b15f-88af4d256606",
     "location": [892, 652, 17],
     "map": "Tokuno",
     "count": 1,
@@ -2227,8 +2227,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1956d9ec-1587-43bb-b1a7-276ff42b8b6e",
     "name": "Spawner (502)",
-    "guid": "13d08576-f795-4914-91ef-2b941d5cd7fe",
     "location": [968, 753, 3],
     "map": "Tokuno",
     "count": 1,
@@ -2241,8 +2241,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "fe4220d0-17b3-47ca-b397-cfcc1edfb6e4",
     "name": "Spawner (502)",
-    "guid": "8d0d8ea0-4885-4bc9-b197-0fa1c725a1cb",
     "location": [938, 722, 10],
     "map": "Tokuno",
     "count": 1,
@@ -2255,8 +2255,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "86ba867e-2f39-48d0-beff-8c749d1a8483",
     "name": "Spawner (502)",
-    "guid": "d1f80ed7-d71c-4f73-b444-0af3ed7da4b1",
     "location": [932, 685, 12],
     "map": "Tokuno",
     "count": 1,
@@ -2269,8 +2269,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "80687148-85fd-415e-a1b4-cf662d5f888b",
     "name": "Spawner (502)",
-    "guid": "d876833b-ed32-4bab-8d87-5a95ccf5ea85",
     "location": [1120, 1099, 25],
     "map": "Tokuno",
     "count": 4,
@@ -2288,8 +2288,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6226ae55-3359-443c-b4b8-40bcc795e8d4",
     "name": "Spawner (502)",
-    "guid": "9d3be899-020b-42fd-9e9f-c01a87502b47",
     "location": [840, 714, 16],
     "map": "Tokuno",
     "count": 2,
@@ -2305,8 +2305,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1d5f131f-b863-46d4-bda2-e3e3b64f1f53",
     "name": "Spawner (502)",
-    "guid": "a2047e3a-c228-4966-a0a1-a28e17a712ee",
     "location": [883, 604, 39],
     "map": "Tokuno",
     "count": 1,
@@ -2319,8 +2319,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f7669be6-8709-406e-bd46-4050e1bdae7e",
     "name": "Spawner (502)",
-    "guid": "e457c430-cbab-44aa-b451-c515e9ab0e17",
     "location": [1012, 631, 11],
     "map": "Tokuno",
     "count": 1,
@@ -2333,8 +2333,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "685d293d-f4c1-4b0a-82a5-07ed90876a3a",
     "name": "Spawner (502)",
-    "guid": "30a83b1d-0f23-4a4b-b3b1-adede5431d58",
     "location": [1076, 864, 56],
     "map": "Tokuno",
     "count": 2,
@@ -2350,8 +2350,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bafe4af4-c9f4-47fd-bb2d-1495ba0cbc7e",
     "name": "Spawner (502)",
-    "guid": "471c2c50-a9da-4725-ae07-0a72c7c1e89e",
     "location": [1055, 887, 38],
     "map": "Tokuno",
     "count": 1,
@@ -2364,8 +2364,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b0706a6a-4671-4dae-8ea0-3860a017eaf1",
     "name": "Spawner (502)",
-    "guid": "71eb9eee-3c9c-4136-b809-059b65afdad8",
     "location": [1052, 976, 26],
     "map": "Tokuno",
     "count": 2,
@@ -2381,8 +2381,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "aa080446-34ea-4a50-803e-d8c6d24c683b",
     "name": "Spawner (502)",
-    "guid": "1910c80b-7b72-4845-8a3e-847ffef1a55b",
     "location": [1064, 1029, 32],
     "map": "Tokuno",
     "count": 2,
@@ -2398,8 +2398,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c245f671-7530-46ef-96ee-35edb28dca61",
     "name": "Spawner (502)",
-    "guid": "9590fb4b-dcb2-4470-93cc-15ef1f20205a",
     "location": [1092, 980, 33],
     "map": "Tokuno",
     "count": 1,
@@ -2412,8 +2412,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d4d5820a-dd70-4007-8400-f2348fcfe642",
     "name": "Spawner (502)",
-    "guid": "65eac58a-d3e7-4201-9ff1-8768052821b0",
     "location": [1086, 910, 61],
     "map": "Tokuno",
     "count": 2,
@@ -2429,8 +2429,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e8e5af8a-79e8-4478-984b-b6bb302f2df5",
     "name": "Spawner (502)",
-    "guid": "533074ef-e1eb-4b45-9fc8-2639d45f22fe",
     "location": [637, 357, 32],
     "map": "Tokuno",
     "count": 1,
@@ -2443,8 +2443,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2170767f-d745-4b95-912c-f8662fcf3588",
     "name": "Spawner (502)",
-    "guid": "e1396994-688a-4a59-b4df-f72fa4b9aea5",
     "location": [1282, 898, 12],
     "map": "Tokuno",
     "count": 1,
@@ -2457,8 +2457,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "59c4157f-2809-43d9-a529-cd5ea750e901",
     "name": "Spawner (502)",
-    "guid": "fb471eb5-1376-4850-aa3a-694fc22163ff",
     "location": [243, 1031, 13],
     "map": "Tokuno",
     "count": 5,
@@ -2477,8 +2477,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9430c0bd-f74a-4b42-be15-9e8bc9fb7005",
     "name": "Spawner (502)",
-    "guid": "96f382eb-2cbe-49bb-9dc0-1b8a7ef3cf85",
     "location": [742, 1012, 33],
     "map": "Tokuno",
     "count": 1,
@@ -2491,8 +2491,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "555db3ff-2165-4923-9262-104e3b3caea0",
     "name": "Spawner (502)",
-    "guid": "3f3e8db7-e5be-4a95-b345-69505a3bd0f2",
     "location": [662, 495, 28],
     "map": "Tokuno",
     "count": 1,
@@ -2505,8 +2505,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0cf5b274-0adb-41df-8258-8c77c454e784",
     "name": "Spawner (502)",
-    "guid": "286e26b0-508e-454b-b744-bcc37e2f9319",
     "location": [1293, 864, -1],
     "map": "Tokuno",
     "count": 1,
@@ -2519,8 +2519,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "91129669-c4ed-4738-8e43-97322c636dcf",
     "name": "Spawner (502)",
-    "guid": "6e1765a6-74fd-4afd-a884-1eaaeafe2a19",
     "location": [1321, 847, 13],
     "map": "Tokuno",
     "count": 1,
@@ -2533,8 +2533,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5d43e9cf-c1c6-408f-b5ab-81b8f5e1ab13",
     "name": "Spawner (502)",
-    "guid": "047e39ef-d5ae-480b-9a66-25a1144774db",
     "location": [1343, 654, 35],
     "map": "Tokuno",
     "count": 1,
@@ -2547,8 +2547,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "495ad7e8-68c5-499d-8304-5c62552dc4d5",
     "name": "Spawner (502)",
-    "guid": "251db956-2f89-47fb-b31c-b51cbd924551",
     "location": [294, 748, 55],
     "map": "Tokuno",
     "count": 1,
@@ -2561,8 +2561,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "57010b48-5af5-45a3-a15e-413405c8e0d7",
     "name": "Spawner (502)",
-    "guid": "ec307505-42df-4962-9610-5790527b60ae",
     "location": [198, 924, 42],
     "map": "Tokuno",
     "count": 2,
@@ -2578,8 +2578,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4ec9631c-de8f-4028-bd74-433150687b7b",
     "name": "Spawner (502)",
-    "guid": "31246625-0ef4-4ed5-93b2-143adea1ca1c",
     "location": [185, 1046, 10],
     "map": "Tokuno",
     "count": 4,
@@ -2597,8 +2597,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e42a2b9a-41c2-47fd-8fa2-08cff9887485",
     "name": "Spawner (502)",
-    "guid": "98589918-8b3e-4195-964f-a7bed21e9d3c",
     "location": [210, 1085, 10],
     "map": "Tokuno",
     "count": 5,
@@ -2617,8 +2617,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c723064b-86ab-4218-859f-4b6d351d4002",
     "name": "Spawner (502)",
-    "guid": "a8caa2fb-5b8a-4757-ba92-fcca63c3e945",
     "location": [581, 953, 33],
     "map": "Tokuno",
     "count": 4,
@@ -2636,8 +2636,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b1bac669-ae74-440f-bd35-eb302526ef32",
     "name": "Spawner (502)",
-    "guid": "d28d6125-bb54-4411-9274-4e9f812a290e",
     "location": [533, 991, 53],
     "map": "Tokuno",
     "count": 1,
@@ -2650,8 +2650,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "48e114f6-757d-4050-8f39-2f77c964c432",
     "name": "Spawner (502)",
-    "guid": "9dbf8b0c-f510-41c8-b8d7-eddf1cbeb0f1",
     "location": [562, 984, 43],
     "map": "Tokuno",
     "count": 2,
@@ -2667,8 +2667,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "65f6b618-4823-4b70-b85c-b1d4e9add406",
     "name": "Spawner (502)",
-    "guid": "c7e11eed-648b-4e72-9271-2a270092ff74",
     "location": [511, 956, 27],
     "map": "Tokuno",
     "count": 1,
@@ -2681,8 +2681,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "63dc8d3b-f19d-4de7-a3f3-79a5b7cc88d9",
     "name": "Spawner (502)",
-    "guid": "0fcdcaac-6258-475b-9064-1ac23fe1c181",
     "location": [524, 934, 19],
     "map": "Tokuno",
     "count": 1,
@@ -2695,8 +2695,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a15d0373-9872-4df1-b8b1-80e0887e5fd4",
     "name": "Spawner (502)",
-    "guid": "fd0747ea-a184-454f-9ee9-2dfbfd0ec488",
     "location": [535, 918, 14],
     "map": "Tokuno",
     "count": 1,
@@ -2709,8 +2709,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9fce83a1-c27e-41a0-b954-41001795893c",
     "name": "Spawner (502)",
-    "guid": "468015c7-945f-4afd-8a3f-209ae3bbba4c",
     "location": [526, 889, 11],
     "map": "Tokuno",
     "count": 1,
@@ -2723,8 +2723,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6ed52ccc-a54e-4eb3-a72f-6dd63b06df58",
     "name": "Spawner (502)",
-    "guid": "8b516b49-3d7d-434a-9041-ec1ef1ca6201",
     "location": [573, 933, 25],
     "map": "Tokuno",
     "count": 4,
@@ -2742,8 +2742,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4a15d0cf-6b2f-441d-96f1-63dd24deec23",
     "name": "Spawner (502)",
-    "guid": "0e094e29-e100-4bab-b58d-b8fdb23fa335",
     "location": [612, 888, 25],
     "map": "Tokuno",
     "count": 4,
@@ -2761,8 +2761,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0eb2dd89-976f-4dad-af46-12605a23319c",
     "name": "Spawner (502)",
-    "guid": "1d0a18bf-016b-493f-9144-8989d7c1b564",
     "location": [570, 840, 0],
     "map": "Tokuno",
     "count": 1,
@@ -2775,8 +2775,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "558d479a-b51c-4a23-925b-b34835d67b0d",
     "name": "Spawner (502)",
-    "guid": "692d63a0-4970-4fd0-8085-a5b574534c59",
     "location": [601, 930, 32],
     "map": "Tokuno",
     "count": 2,
@@ -2792,8 +2792,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "962e2bcd-57a5-4e07-b390-28c75e5d9964",
     "name": "Spawner (502)",
-    "guid": "2ef46bd5-7e11-436a-9aaf-1ba0f302f1b1",
     "location": [638, 866, 23],
     "map": "Tokuno",
     "count": 2,
@@ -2809,8 +2809,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a9afed11-2fcc-40e9-8e7a-cf93190c277a",
     "name": "Spawner (502)",
-    "guid": "8942c3c8-eb2e-45bb-81af-39be245de106",
     "location": [666, 896, 28],
     "map": "Tokuno",
     "count": 2,
@@ -2826,8 +2826,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9f8f223a-0b4b-44de-856e-ec05ac82bddd",
     "name": "Spawner (502)",
-    "guid": "1bf9fdc4-7c86-4e62-b41b-86a72d54189c",
     "location": [700, 826, 36],
     "map": "Tokuno",
     "count": 1,
@@ -2840,8 +2840,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b8b13567-bc5c-4cb0-a92f-5e23e1a2b33e",
     "name": "Spawner (502)",
-    "guid": "bf350b6b-b687-4b26-b334-117912a372b0",
     "location": [715, 831, 36],
     "map": "Tokuno",
     "count": 1,
@@ -2854,8 +2854,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f5a9892e-b367-4efa-b1b0-b8be5e249daf",
     "name": "Spawner (502)",
-    "guid": "fd0fd9e4-bb50-4aa2-a3c8-3f8c93aef5a0",
     "location": [725, 823, 24],
     "map": "Tokuno",
     "count": 1,
@@ -2868,8 +2868,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "52701f93-112e-4017-af2e-3785e56e9390",
     "name": "Spawner (502)",
-    "guid": "a50dfd18-9994-4d82-b662-f984c84876ab",
     "location": [771, 824, 16],
     "map": "Tokuno",
     "count": 1,
@@ -2882,8 +2882,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bc374876-cd1f-40e1-aba4-71c9e03fa200",
     "name": "Spawner (502)",
-    "guid": "98cfa8c1-b315-428a-bac3-6cd9315c638b",
     "location": [737, 853, 35],
     "map": "Tokuno",
     "count": 1,
@@ -2896,8 +2896,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0fbe963b-f52d-4ba8-9eed-8f5752787d6d",
     "name": "Spawner (502)",
-    "guid": "d7bdbc4b-c25e-4ee8-9f57-098c4ceadfa7",
     "location": [709, 877, 18],
     "map": "Tokuno",
     "count": 1,
@@ -2910,8 +2910,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bfa75f1a-f5b0-4498-856b-7c176b72a9f7",
     "name": "Spawner (502)",
-    "guid": "a2c05038-ed68-4356-a0c4-1885239c5e59",
     "location": [683, 857, 31],
     "map": "Tokuno",
     "count": 1,
@@ -2924,8 +2924,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "47f08ac8-f9fe-4fcf-b383-b775d1e14dfe",
     "name": "Spawner (502)",
-    "guid": "a0b044de-e5dc-4f0d-a392-125e411ece23",
     "location": [667, 943, 43],
     "map": "Tokuno",
     "count": 2,
@@ -2941,8 +2941,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f65dbf08-7540-4029-b121-685f5d0b7f28",
     "name": "Spawner (502)",
-    "guid": "351cb040-90ef-4de0-a476-fc9cca28864f",
     "location": [619, 981, 45],
     "map": "Tokuno",
     "count": 2,
@@ -2958,8 +2958,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "81a61cd9-d66c-4a82-89c4-8c5631d86267",
     "name": "Spawner (502)",
-    "guid": "cca8acfa-f1c3-4a22-899d-d2b6615537e6",
     "location": [588, 1012, 62],
     "map": "Tokuno",
     "count": 1,
@@ -2972,8 +2972,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9133862f-391f-47c6-adc4-c8e430dc5e77",
     "name": "Spawner (502)",
-    "guid": "4d02e331-0ac4-4591-86dc-a50fb8ea577a",
     "location": [644, 1005, 55],
     "map": "Tokuno",
     "count": 2,
@@ -2989,8 +2989,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0523d079-6d9d-4e1a-8e1f-5e1feafaac8f",
     "name": "Spawner (502)",
-    "guid": "bae6a8f5-82d8-4c87-ae3c-dba918acef5e",
     "location": [668, 986, 46],
     "map": "Tokuno",
     "count": 2,
@@ -3006,8 +3006,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "91b767ce-2e31-450e-b76e-27812bfd885b",
     "name": "Spawner (502)",
-    "guid": "4591d03d-c86b-445b-aae6-be22843cf2f9",
     "location": [688, 979, 44],
     "map": "Tokuno",
     "count": 2,
@@ -3023,8 +3023,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "82544453-44dd-4376-a10c-163bd742e75d",
     "name": "Spawner (502)",
-    "guid": "7d29bb96-5df7-4088-82fb-44e288edd14a",
     "location": [680, 956, 44],
     "map": "Tokuno",
     "count": 1,
@@ -3037,8 +3037,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f3ee05a0-0e97-46c3-8bca-9d5781cda4fe",
     "name": "Spawner (502)",
-    "guid": "cce2df36-59b3-41ce-86b7-3f3ce5f865e7",
     "location": [722, 916, 40],
     "map": "Tokuno",
     "count": 1,
@@ -3051,8 +3051,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "666555ba-8950-4692-9be1-89691292ea08",
     "name": "Spawner (502)",
-    "guid": "410f0f5e-75ac-4708-bb19-8c8d746b0511",
     "location": [729, 934, 42],
     "map": "Tokuno",
     "count": 1,
@@ -3065,8 +3065,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d68b09e3-8d79-4a11-a85e-77f5ead0c343",
     "name": "Spawner (502)",
-    "guid": "99bbb094-fe69-4e50-865d-38c60521c4dd",
     "location": [771, 979, 29],
     "map": "Tokuno",
     "count": 1,
@@ -3079,8 +3079,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "70e5541b-8947-4b72-b01b-a5aaabc42aaa",
     "name": "Spawner (502)",
-    "guid": "f771e7eb-c89a-4cbd-bf30-275232bd8b15",
     "location": [803, 961, 14],
     "map": "Tokuno",
     "count": 1,
@@ -3093,8 +3093,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "71964711-e596-4239-9533-f9a2840ad23a",
     "name": "Spawner (502)",
-    "guid": "c6f32e8d-2a65-4ddb-a5b2-aed770c5779e",
     "location": [819, 944, 22],
     "map": "Tokuno",
     "count": 2,
@@ -3110,8 +3110,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "17320c55-de21-4279-bf86-b5e73eba446c",
     "name": "Spawner (502)",
-    "guid": "d6c627dc-c3d7-49df-b2be-6c6f9cd112d8",
     "location": [792, 920, 31],
     "map": "Tokuno",
     "count": 1,
@@ -3124,8 +3124,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2a789cb0-e62e-4965-b4ef-f0a21b02da71",
     "name": "Spawner (502)",
-    "guid": "a7af0b27-2160-40a2-8d0b-dd755e4c36b8",
     "location": [794, 890, 31],
     "map": "Tokuno",
     "count": 2,
@@ -3141,8 +3141,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2cf28edc-514b-433a-9150-7f1efe81568c",
     "name": "Spawner (502)",
-    "guid": "3075e4ef-8887-4ea7-84d1-56a8fd4136cd",
     "location": [819, 902, 27],
     "map": "Tokuno",
     "count": 2,
@@ -3158,8 +3158,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5ff28b7e-2517-4ddf-871b-13fb6c09ec9d",
     "name": "Spawner (502)",
-    "guid": "d5ff82d8-bec6-40bb-b489-9f19f69b69b3",
     "location": [770, 875, 30],
     "map": "Tokuno",
     "count": 1,
@@ -3172,8 +3172,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "29c0555b-3634-4528-a5e0-f1c157b91676",
     "name": "Spawner (502)",
-    "guid": "37dea21b-7bd5-49fe-bfc7-8e3dc4074146",
     "location": [760, 941, 37],
     "map": "Tokuno",
     "count": 2,
@@ -3189,8 +3189,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1529d84c-f219-40a8-81d0-5b090b8cd418",
     "name": "Spawner (502)",
-    "guid": "3c28c05c-b3fb-4c6e-ab84-51f1d889d669",
     "location": [874, 971, 45],
     "map": "Tokuno",
     "count": 1,
@@ -3203,8 +3203,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "39964e63-134a-49c5-95a4-23f7af0e8b96",
     "name": "Spawner (502)",
-    "guid": "0616b939-4d71-4cc9-9488-3d090f4e3a3a",
     "location": [1105, 855, 50],
     "map": "Tokuno",
     "count": 2,
@@ -3220,8 +3220,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c0ed65a2-c691-4547-ba30-7bb53aa71d19",
     "name": "Spawner (502)",
-    "guid": "de111d5f-40e1-49ad-9d95-3ed038fa16c7",
     "location": [926, 145, 49],
     "map": "Tokuno",
     "count": 10,
@@ -3242,8 +3242,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f269baa8-723b-45d1-a9de-d675a1dfe3d7",
     "name": "Spawner (502)",
-    "guid": "47e732c8-ab34-4ded-ada5-75943d2c8b99",
     "location": [879, 128, 44],
     "map": "Tokuno",
     "count": 10,
@@ -3264,8 +3264,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bae01154-6556-460d-86a3-6d8c5ac013d7",
     "name": "Spawner (502)",
-    "guid": "8a9288f7-2a22-46e3-86e7-a52691ab82cb",
     "location": [914, 55, 36],
     "map": "Tokuno",
     "count": 10,
@@ -3286,8 +3286,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "03772976-92a3-4f00-95f7-54b6418f5f00",
     "name": "Spawner (502)",
-    "guid": "409a02aa-3672-430c-9e0c-1cfaa9b45152",
     "location": [947, 103, 46],
     "map": "Tokuno",
     "count": 10,
@@ -3308,8 +3308,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8d822d9d-e14f-4748-a8e7-67c1abb2b466",
     "name": "Spawner (502)",
-    "guid": "00565566-2b65-4efd-ab1b-23236d543f90",
     "location": [976, 144, 35],
     "map": "Tokuno",
     "count": 10,

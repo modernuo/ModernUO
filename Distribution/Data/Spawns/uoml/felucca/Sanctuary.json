@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "7b386242-66ba-45a2-95ef-c3edfb1d1712",
     "name": "Spawner (2217)",
-    "guid": "79bb4642-d09f-4e67-a867-81ce574e267b",
     "location": [6263, 118, -10],
     "map": "Felucca",
     "count": 26,
@@ -24,8 +24,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4a776338-3a30-4254-a210-0c6f5d8ec57f",
     "name": "Spawner (2217)",
-    "guid": "56797c5a-e96e-470b-9bce-09f7ba0d877c",
     "location": [6349, 89, -20],
     "map": "Felucca",
     "count": 52,
@@ -51,8 +51,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0f3b1215-a03e-46dd-a8fc-8d5eb791fff0",
     "name": "Spawner (2217)",
-    "guid": "349d7a50-e968-4e0a-843c-52b43a3b3b18",
     "location": [6168, 117, 0],
     "map": "Felucca",
     "count": 81,
@@ -81,8 +81,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "919be0b2-e795-40fa-965a-e38bfdc68e4a",
     "name": "Spawner (2217)",
-    "guid": "6ec96566-6517-444c-8007-c17b99b54eab",
     "location": [6189, 71, 0],
     "map": "Felucca",
     "count": 43,
@@ -104,8 +104,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1a164fac-a2f9-43de-a5bd-a3dd2b4c209b",
     "name": "Spawner (2217)",
-    "guid": "8e2284a3-f11f-47ab-917c-2ab4b40730f6",
     "location": [6187, 101, 0],
     "map": "Felucca",
     "count": 105,
@@ -134,8 +134,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5734c2f3-14aa-453d-a6f7-e74232fb3af9",
     "name": "Spawner (2217)",
-    "guid": "82830be8-05c5-4992-a1dd-6e6c9f225017",
     "location": [6184, 29, 0],
     "map": "Felucca",
     "count": 10,
@@ -154,8 +154,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "43d66c19-641f-41ec-81ce-7e18f46733db",
     "name": "Spawner (2217)",
-    "guid": "e08457b2-0214-40f8-b442-b886215f75d5",
     "location": [6265, 48, -10],
     "map": "Felucca",
     "count": 286,
@@ -191,8 +191,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "267ca2ac-df1f-47b9-8c2c-f9449c79e135",
     "name": "Spawner (2217)",
-    "guid": "935c7bd3-9302-4355-b3e1-90f530ebcd19",
     "location": [6191, 155, 0],
     "map": "Felucca",
     "count": 141,

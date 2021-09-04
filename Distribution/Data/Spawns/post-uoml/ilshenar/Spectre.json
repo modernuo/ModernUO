@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "a9f067b2-0d50-468b-9392-fcd6c58abdca",
     "name": "Spawner (310)",
-    "guid": "84a470c1-0e43-487c-aa99-bb1cce294d8d",
     "location": [1981, 1059, -28],
     "map": "Ilshenar",
     "count": 12,

@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "d90dea03-b2cb-4b99-bd72-5aae8a332bfa",
     "name": "Spawner (311)",
-    "guid": "acbe7be9-488b-4902-839e-2bbaf1f987a0",
     "location": [1517, 558, 5],
     "map": "Ilshenar",
     "count": 1,
@@ -15,8 +15,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ab3dd2b3-07aa-41e9-ad5a-e2f43f27164c",
     "name": "Spawner (311)",
-    "guid": "b54dd1de-2bef-4036-a0b7-498041a9be73",
     "location": [1517, 552, 10],
     "map": "Ilshenar",
     "count": 3,
@@ -33,8 +33,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "02c838c4-6602-43ff-ab50-7f283c2f68c2",
     "name": "Spawner (311)",
-    "guid": "92d88991-c678-4796-9a5a-34a67b0de0c3",
     "location": [1516, 557, 4],
     "map": "Ilshenar",
     "count": 3,
@@ -50,8 +50,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8f22e220-52d1-468d-a7b6-9114de11ce4e",
     "name": "Spawner (311)",
-    "guid": "c55b0ed6-cd88-4602-9fab-fa261e458186",
     "location": [1517, 552, 10],
     "map": "Ilshenar",
     "count": 8,
@@ -69,8 +69,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "550794d7-03a6-40e6-ba7b-55f760445e56",
     "name": "Spawner (311)",
-    "guid": "4e3a51df-9218-41e2-8be2-27982ce1f319",
     "location": [1517, 541, 11],
     "map": "Ilshenar",
     "count": 1,
@@ -83,8 +83,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "cef88e8f-026c-499c-b85d-baa903238136",
     "name": "Spawner (311)",
-    "guid": "ff792465-ce98-4ba4-b9ee-b7c9273e62df",
     "location": [1517, 541, 61],
     "map": "Ilshenar",
     "count": 1,
@@ -97,8 +97,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2519b05f-1e27-4422-833e-2a236c6f8aaf",
     "name": "Spawner (311)",
-    "guid": "29b368f2-4f86-41ab-84a6-0abf55c24bf7",
     "location": [1203, 1138, -25],
     "map": "Ilshenar",
     "count": 4,
@@ -116,8 +116,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0c049e44-3727-4772-b8ce-1350328fddcf",
     "name": "Spawner (311)",
-    "guid": "0e07e3de-a576-4c7a-ba9e-18f901cc09a3",
     "location": [1127, 1112, -34],
     "map": "Ilshenar",
     "count": 2,
@@ -133,8 +133,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6947407d-ed3f-490d-9b90-c1fff5a3587e",
     "name": "Spawner (311)",
-    "guid": "d9999625-dfa8-4bdf-a3db-da1443fbc166",
     "location": [1180, 1188, -25],
     "map": "Ilshenar",
     "count": 1,
@@ -147,8 +147,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8b686285-c781-460d-ba5f-c7d71c1a1748",
     "name": "Spawner (311)",
-    "guid": "95e754c4-8243-42d4-a0f2-c1ee7299ea43",
     "location": [1181, 1189, -25],
     "map": "Ilshenar",
     "count": 1,
@@ -161,8 +161,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3de99e86-67d5-47d1-abfc-0faba585f121",
     "name": "Spawner (311)",
-    "guid": "607a2e46-8841-4da4-b590-9977c767049e",
     "location": [817, 1065, -30],
     "map": "Ilshenar",
     "count": 23,
@@ -181,8 +181,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7fa522d6-8d6e-4714-ad13-49fe6e50a73e",
     "name": "Spawner (311)",
-    "guid": "2293aa76-2002-459e-9547-2cf346ceb8d3",
     "location": [1643, 310, 48],
     "map": "Ilshenar",
     "count": 20,
@@ -202,8 +202,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6c0ae42a-15f9-4cd3-a082-4fdbc07f89cc",
     "name": "Spawner (311)",
-    "guid": "9ad40a64-0881-401c-92f8-439f83de3aa6",
     "location": [1643, 310, 48],
     "map": "Ilshenar",
     "count": 3,
@@ -219,8 +219,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a1745cf8-c3a6-40fa-bb29-9def638343f2",
     "name": "Spawner (311)",
-    "guid": "8f0af346-c9af-4054-b91a-6379715e2181",
     "location": [1665, 244, 93],
     "map": "Ilshenar",
     "count": 4,
@@ -236,8 +236,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "dc58a43b-46d9-4be0-89e2-06617fa5af69",
     "name": "Spawner (311)",
-    "guid": "887e2ae6-c6db-4932-a902-151549606553",
     "location": [1715, 228, 78],
     "map": "Ilshenar",
     "count": 6,
@@ -254,8 +254,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "111afee8-c940-4246-a117-7702d21ebee5",
     "name": "Spawner (311)",
-    "guid": "9c8a21cc-9ef1-405c-a41f-1bd1c47744f9",
     "location": [1363, 1046, -13],
     "map": "Ilshenar",
     "count": 1,
@@ -268,8 +268,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4cbabb06-70ed-472b-b807-ceb413a8f9c1",
     "name": "Spawner (311)",
-    "guid": "9a6111c5-2b60-4a98-bf6a-e36dc19bb9ae",
     "location": [1046, 517, -80],
     "map": "Ilshenar",
     "count": 4,
@@ -285,8 +285,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "811f5f8d-092d-4835-8964-1f7721c3bbac",
     "name": "Spawner (311)",
-    "guid": "c27c6b03-2218-42c6-b1f0-83a68d7cec92",
     "location": [1046, 517, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -299,8 +299,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "761f2e6f-d415-4442-a837-4d2c43294ba6",
     "name": "Spawner (311)",
-    "guid": "efdf5acb-4f66-4c0c-a990-93f96ba9bdd2",
     "location": [1116, 527, -80],
     "map": "Ilshenar",
     "count": 2,
@@ -316,8 +316,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6fe7a6fb-6d18-4581-bb70-371e51518bdf",
     "name": "Spawner (311)",
-    "guid": "9f025da0-e318-43e3-b3db-9dc3bd128467",
     "location": [1110, 542, -77],
     "map": "Ilshenar",
     "count": 1,
@@ -330,8 +330,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4683f7b7-b5b0-471c-ab55-c33d5c5ddc19",
     "name": "Spawner (311)",
-    "guid": "2127c86d-9539-4fc0-970a-1b25ff0ae430",
     "location": [1108, 492, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -344,8 +344,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a7ccd077-3940-4f44-b14d-2e45f21b5fdf",
     "name": "Spawner (311)",
-    "guid": "9e411f6a-f009-4788-87ba-2c85770a50d1",
     "location": [1110, 542, -77],
     "map": "Ilshenar",
     "count": 5,
@@ -363,8 +363,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3691eab3-8b04-46a4-ace1-ae9aecfaf219",
     "name": "Spawner (311)",
-    "guid": "5f026baf-f0d3-4c69-a09f-e4b95aededbd",
     "location": [1108, 492, -80],
     "map": "Ilshenar",
     "count": 5,
@@ -382,8 +382,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ed0db4c7-84f1-49b9-ba81-ff232f4255e0",
     "name": "Spawner (311)",
-    "guid": "45accdcd-6550-49cf-aa99-669438234bf6",
     "location": [1161, 668, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -396,8 +396,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b4cf46cc-2b9d-4e42-82d1-32657426ef0c",
     "name": "Spawner (311)",
-    "guid": "4e24406e-6bed-4142-86ee-0d845b62c783",
     "location": [1181, 691, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -410,8 +410,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "950eb27b-fb66-4a8b-a434-09d416bedc3c",
     "name": "Spawner (311)",
-    "guid": "5bcf2fa2-1d20-43bf-b8f8-6a8a753e2506",
     "location": [1187, 685, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -424,8 +424,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "02eed1af-100f-430d-81f0-9d81417790c1",
     "name": "Spawner (311)",
-    "guid": "b08f26a6-4db7-4b5e-827c-832caf98c015",
     "location": [1191, 696, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -438,8 +438,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7b774000-0a38-4e27-a17f-1001f81eec09",
     "name": "Spawner (311)",
-    "guid": "af719ef6-a5cf-490e-973d-afa5686a1f0d",
     "location": [1191, 696, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -452,8 +452,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0eb8d0fd-a223-44cd-a91e-acbd31a568a5",
     "name": "Spawner (311)",
-    "guid": "a6a800b8-6eca-46bf-b100-345830a9b359",
     "location": [1203, 762, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -466,8 +466,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "edeb9eb1-2157-4c57-b743-73db3751bd60",
     "name": "Spawner (311)",
-    "guid": "ba09f894-09de-47e9-8276-2b4d5792511f",
     "location": [1234, 760, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -480,8 +480,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "76ce4042-5f27-4e93-a417-29a1c545f64e",
     "name": "Spawner (311)",
-    "guid": "eb686174-52ff-4f18-a3c8-8676d8945359",
     "location": [1213, 719, -80],
     "map": "Ilshenar",
     "count": 4,
@@ -497,8 +497,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "78d351e0-494a-4ac9-a1a1-2ff07f4cdab1",
     "name": "Spawner (311)",
-    "guid": "7e85d9b7-d795-4d62-aa97-99105ddbe38d",
     "location": [1214, 744, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -511,8 +511,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "fc0f18cd-7070-4fa5-b499-a9eeea127cdf",
     "name": "Spawner (311)",
-    "guid": "a2670b44-2155-4055-adbb-ec3b3ec9fe83",
     "location": [1231, 694, -80],
     "map": "Ilshenar",
     "count": 3,
@@ -528,8 +528,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "563f344b-97f3-40c6-a64d-d87cdb6a93d1",
     "name": "Spawner (311)",
-    "guid": "1968bc4e-ccf3-4cfd-bf86-8b0475c77d6c",
     "location": [1251, 703, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -542,8 +542,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e4d28153-f0a0-4d17-bb77-4d783bfc1656",
     "name": "Spawner (311)",
-    "guid": "1e16fdaa-cf7f-4a03-9da8-557e92c1d841",
     "location": [1274, 728, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -556,8 +556,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7324a8c7-0fbe-4a34-b478-d743a9d88409",
     "name": "Spawner (311)",
-    "guid": "26fd925c-5ce3-4238-8e21-bdccca38ed27",
     "location": [1292, 755, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -570,8 +570,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e0b20c00-8f00-40fd-9488-dc71892ce492",
     "name": "Spawner (311)",
-    "guid": "d7c0a6b3-5058-4e83-9e97-0a2dfe0290ca",
     "location": [1280, 770, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -584,8 +584,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "372cdd42-8ed9-4b97-aa00-abefbfe8e0ff",
     "name": "Spawner (311)",
-    "guid": "b8a0b9c9-5f10-4c83-9d75-ffaf2eb4c1ca",
     "location": [1279, 781, -80],
     "map": "Ilshenar",
     "count": 1,
@@ -598,8 +598,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b9343eb4-b15e-4ced-99cb-8a4ec5f3e519",
     "name": "Spawner (311)",
-    "guid": "c0aff3e5-8ce5-4dca-b796-445f8a74110e",
     "location": [1243, 732, -80],
     "map": "Ilshenar",
     "count": 5,
@@ -616,8 +616,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ac6f0882-cb21-4cd0-874c-b0e5b44d40e6",
     "name": "Spawner (311)",
-    "guid": "88c7ea47-bca1-44a5-a577-56047a9e34a2",
     "location": [1262, 758, -80],
     "map": "Ilshenar",
     "count": 1,

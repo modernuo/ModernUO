@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "b64bffca-707a-4c96-bc9a-bb2320fe0301",
     "name": "Spawner (2403)",
-    "guid": "4448e5c3-8279-443b-97d9-01f2872c22d4",
     "location": [1343, 1248, -90],
     "map": "Malas",
     "count": 1,
@@ -15,8 +15,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "cf3670a3-41a3-4363-a795-794f0e5185ea",
     "name": "Spawner (2403)",
-    "guid": "74bbad69-b207-4a97-a092-9ec9b48d3bec",
     "location": [1343, 1196, -90],
     "map": "Malas",
     "count": 1,
@@ -29,8 +29,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4c1e67ac-7d3e-4105-af90-d39da9e6b960",
     "name": "Spawner (2403)",
-    "guid": "33ea14f1-19e2-418a-bb82-9c292f12cbf4",
     "location": [1372, 1225, -90],
     "map": "Malas",
     "count": 10,
@@ -49,8 +49,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9d0ea6a2-cf34-476d-ba27-683468874478",
     "name": "Spawner (2403)",
-    "guid": "d1bdff97-a4cc-4499-8b90-54aa0c5ac9b8",
     "location": [1322, 1225, -90],
     "map": "Malas",
     "count": 10,
@@ -69,8 +69,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d2da5dd0-c06f-41e5-9644-d30d11f7eb4c",
     "name": "Spawner (2403)",
-    "guid": "81b5837f-6e0d-4a55-b78d-6cf9e73cb080",
     "location": [911, 194, -79],
     "map": "Malas",
     "count": 4,
@@ -87,8 +87,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6c1c4236-e8aa-497d-9aa5-a6973422d0f0",
     "name": "Spawner (2403)",
-    "guid": "ede9c0eb-f13b-4197-817f-a0e3263c443b",
     "location": [1665, 356, -50],
     "map": "Malas",
     "count": 4,
@@ -105,8 +105,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5dff8e4a-1ed5-4ac0-bea9-cc851801760a",
     "name": "Spawner (2403)",
-    "guid": "9be2d269-2add-47b6-81b0-fc6858aceebd",
     "location": [1364, 596, -86],
     "map": "Malas",
     "count": 4,
@@ -123,8 +123,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c8a33790-2f54-43f7-a9c9-4f668984be4a",
     "name": "Spawner (2403)",
-    "guid": "05f35ee2-e44a-4e37-a28d-f067c58f5813",
     "location": [1205, 700, -88],
     "map": "Malas",
     "count": 4,
@@ -141,8 +141,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "927b51ec-b017-466d-bf14-17d9bfef58a9",
     "name": "Spawner (2403)",
-    "guid": "58ccb04a-5917-45fe-ad53-bf963e7c9d08",
     "location": [1257, 1326, -90],
     "map": "Malas",
     "count": 4,
@@ -159,8 +159,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1b1481f5-8bb3-4959-8e2f-6e830dfab018",
     "name": "Spawner (2403)",
-    "guid": "172dbc98-ad10-4948-a927-e4e2613cb4c3",
     "location": [1598, 1819, -110],
     "map": "Malas",
     "count": 4,

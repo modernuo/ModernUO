@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "c98b2a08-4828-4f08-9e9e-d5a8f6cf73d4",
     "name": "Spawner (2114)",
-    "guid": "ed14ded4-1308-4f91-9cba-6fbae51a9ce2",
     "location": [6279, 880, 1],
     "map": "Trammel",
     "count": 11,
@@ -22,8 +22,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8a2d3da6-8b1c-4d9b-96a3-0da8f4e8b0d6",
     "name": "Spawner (2114)",
-    "guid": "cd47dc37-a12d-4f56-b31f-e46107a47309",
     "location": [6275, 879, -2],
     "map": "Trammel",
     "count": 10,

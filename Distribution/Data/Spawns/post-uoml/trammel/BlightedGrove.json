@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "cd410b69-ff7b-475b-baa0-48e55dba4029",
     "name": "Spawner (101)",
-    "guid": "915cad19-ab32-4d45-ad7b-ba0630110235",
     "location": [6507, 843, 0],
     "map": "Trammel",
     "count": 7,
@@ -23,8 +23,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "49c79db1-bcc6-4959-acbf-de841f78c424",
     "name": "Spawner (101)",
-    "guid": "7e0b55c8-8b91-4234-a908-d7ae57765865",
     "location": [6513, 871, 0],
     "map": "Trammel",
     "count": 6,
@@ -44,8 +44,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "69b7df9c-6af7-4c0b-8719-556c176c6380",
     "name": "Spawner (101)",
-    "guid": "c25dafb9-4e19-42f7-9583-fbc41206daf5",
     "location": [6585, 878, 0],
     "map": "Trammel",
     "count": 3,
@@ -62,8 +62,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "11b98525-709e-4dbf-978c-03c5998447a1",
     "name": "Spawner (101)",
-    "guid": "e6f77da5-1d29-437b-80be-f4ee7033752c",
     "location": [6535, 848, 0],
     "map": "Trammel",
     "count": 3,
@@ -80,8 +80,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "cdd934ef-de26-4bd8-811c-eb2119563791",
     "name": "Spawner (101)",
-    "guid": "ba2c6171-4f63-438a-8af4-0200d3644722",
     "location": [6540, 872, 0],
     "map": "Trammel",
     "count": 1,
@@ -94,8 +94,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0baa5aca-7b00-49a9-affb-a8554812a223",
     "name": "Spawner (101)",
-    "guid": "274dbcec-a2eb-4530-b37b-eb46690c27d2",
     "location": [6518, 870, 0],
     "map": "Trammel",
     "count": 7,
@@ -116,8 +116,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5eef9ef6-d644-4c5d-977f-eee955ca0ff2",
     "name": "Spawner (101)",
-    "guid": "5ad05cd1-1f72-4a94-8406-411eccef96a5",
     "location": [6489, 897, 0],
     "map": "Trammel",
     "count": 1,
@@ -130,8 +130,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5512fd28-856e-46c1-b6b6-942b7aa3bb1a",
     "name": "Spawner (101)",
-    "guid": "2be666cd-bbc2-4f57-9333-c857a08cfb7a",
     "location": [6518, 879, 0],
     "map": "Trammel",
     "count": 1,

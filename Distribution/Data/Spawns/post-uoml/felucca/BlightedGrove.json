@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "a702eb8d-4fcf-4544-bb25-3cc1109e514c",
     "name": "Spawner (201)",
-    "guid": "d71c87db-e444-48f8-80a5-4d739b5f9939",
     "location": [6513, 871, 0],
     "map": "Felucca",
     "count": 6,
@@ -22,8 +22,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "35dc223e-3f4c-49e3-a539-613ca77fccf2",
     "name": "Spawner (201)",
-    "guid": "80654604-c19c-4404-8f29-390dab5cbba4",
     "location": [6507, 843, 0],
     "map": "Felucca",
     "count": 7,
@@ -44,8 +44,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1175e0e3-ee63-4568-9af4-dee601cc8e64",
     "name": "Spawner (201)",
-    "guid": "de7ff879-0b21-40b9-a421-909a76804895",
     "location": [6535, 848, 0],
     "map": "Felucca",
     "count": 3,
@@ -62,8 +62,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2526d506-586a-4e1f-a654-9ce43dc1bee5",
     "name": "Spawner (201)",
-    "guid": "ac22bb66-3493-488b-b054-2e478f9d7190",
     "location": [6518, 870, 0],
     "map": "Felucca",
     "count": 7,
@@ -84,8 +84,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "be27af47-35c8-412b-9f81-3113600e902e",
     "name": "Spawner (201)",
-    "guid": "76b122ff-b316-4900-8d7c-75a424880dbf",
     "location": [6540, 872, 0],
     "map": "Felucca",
     "count": 1,
@@ -98,8 +98,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b8b54dd6-4400-4bcf-acf7-89be12341c78",
     "name": "Spawner (201)",
-    "guid": "d6983d0c-55a7-42f9-9a4d-d12794fe869a",
     "location": [6585, 878, 0],
     "map": "Felucca",
     "count": 3,
@@ -116,8 +116,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bf379e30-e1b9-4e35-a185-2d17f079ac02",
     "name": "Spawner (201)",
-    "guid": "37d83007-f524-4e62-aac8-ccf31fe64b1f",
     "location": [6489, 897, 0],
     "map": "Felucca",
     "count": 1,
@@ -130,8 +130,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ae22187a-f01f-4970-8176-69137b98e12f",
     "name": "Spawner (201)",
-    "guid": "def66e8c-4880-409f-9e97-466bebac6084",
     "location": [6518, 879, 0],
     "map": "Felucca",
     "count": 1,

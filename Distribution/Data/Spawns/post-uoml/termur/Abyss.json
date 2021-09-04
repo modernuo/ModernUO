@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "a04d299e-f7b3-4422-8fb0-2e1c00772e4e",
+    "name": "Spawner (601)",
     "location": [795, 753, 53],
     "map": "TerMur",
     "count": 1,
@@ -15,8 +15,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "f8e8e058-6fdc-4cff-b65a-3441c4cd2696",
+    "name": "Spawner (601)",
     "location": [745, 739, 16],
     "map": "TerMur",
     "count": 1,
@@ -29,8 +29,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "328b58c0-3f65-4009-8956-b08ccbb3b713",
+    "name": "Spawner (601)",
     "location": [749, 475, -17],
     "map": "TerMur",
     "count": 1,
@@ -43,8 +43,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "2d0e8f04-2a94-4049-b6d6-1453d728a6b3",
+    "name": "Spawner (601)",
     "location": [326, 159, 20],
     "map": "TerMur",
     "count": 1,
@@ -57,8 +57,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "8da7030b-465d-4aff-9f7d-c44ab1c3506f",
+    "name": "Spawner (601)",
     "location": [716, 720, -11],
     "map": "TerMur",
     "count": 5,
@@ -77,8 +77,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "c7c81f76-792f-4a6d-9417-a6aec5df64d8",
+    "name": "Spawner (601)",
     "location": [992, 337, 9],
     "map": "TerMur",
     "count": 5,
@@ -97,8 +97,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "860fbe9a-8a27-4d8d-9b8a-621029d37f7c",
+    "name": "Spawner (601)",
     "location": [982, 491, -12],
     "map": "TerMur",
     "count": 3,
@@ -115,8 +115,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "f9b10a8e-797a-4421-b82c-0b62175762d5",
+    "name": "Spawner (601)",
     "location": [981, 491, -12],
     "map": "TerMur",
     "count": 1,
@@ -129,8 +129,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "95d6224c-9d36-42da-907b-7bea918c676e",
+    "name": "Spawner (601)",
     "location": [919, 502, -12],
     "map": "TerMur",
     "count": 3,
@@ -147,8 +147,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "8bfb35fe-b1b0-4319-ad50-b4bf1f5e9ab4",
+    "name": "Spawner (601)",
     "location": [918, 502, -12],
     "map": "TerMur",
     "count": 1,
@@ -161,8 +161,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "fa6e3454-d54e-494a-a83f-0717135dcead",
+    "name": "Spawner (601)",
     "location": [949, 555, -14],
     "map": "TerMur",
     "count": 3,
@@ -179,8 +179,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "f7305cdc-9eab-416f-9818-fcf5ced0a745",
+    "name": "Spawner (601)",
     "location": [950, 555, -14],
     "map": "TerMur",
     "count": 1,
@@ -193,8 +193,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "0ba6b19c-52a4-4291-95f5-d3a69aa5085d",
+    "name": "Spawner (601)",
     "location": [974, 161, -11],
     "map": "TerMur",
     "count": 8,
@@ -216,8 +216,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "52f40561-ba37-44c2-920d-0dc61e63a9b3",
+    "name": "Spawner (601)",
     "location": [581, 815, -45],
     "map": "TerMur",
     "count": 8,
@@ -239,8 +239,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "d408a458-54d8-4870-8cdb-7b8178082ee9",
+    "name": "Spawner (601)",
     "location": [526, 766, -92],
     "map": "TerMur",
     "count": 9,
@@ -263,8 +263,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "8bfc3823-2350-4544-9ae6-48dacd1561c2",
+    "name": "Spawner (601)",
     "location": [536, 657, 8],
     "map": "TerMur",
     "count": 7,
@@ -285,8 +285,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "6ffbfac9-f23e-459b-be9f-68909de6809d",
+    "name": "Spawner (601)",
     "location": [601, 905, -60],
     "map": "TerMur",
     "count": 8,
@@ -308,8 +308,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "0ff29d79-4abb-46aa-9386-cfc1195ad34e",
+    "name": "Spawner (601)",
     "location": [818, 927, -15],
     "map": "TerMur",
     "count": 1,
@@ -322,8 +322,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "7b825abf-ddac-4ae1-9769-112a43158d74",
+    "name": "Spawner (601)",
     "location": [684, 579, -15],
     "map": "TerMur",
     "count": 5,
@@ -342,8 +342,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "1b82244f-9e95-40df-a123-9eba126a630f",
+    "name": "Spawner (601)",
     "location": [440, 708, 24],
     "map": "TerMur",
     "count": 4,
@@ -361,8 +361,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "eb74b7e4-681f-49a4-8f55-776453e65653",
+    "name": "Spawner (601)",
     "location": [674, 828, -109],
     "map": "TerMur",
     "count": 8,
@@ -384,8 +384,8 @@
   },
   {
     "type": "Spawner",
-    "name": "Spawner (601)",
     "guid": "79e05beb-81b3-4eb4-a4e9-91efba98efa3",
+    "name": "Spawner (601)",
     "location": [887, 277, 3],
     "map": "TerMur",
     "count": 4,

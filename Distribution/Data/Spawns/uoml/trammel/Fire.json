@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "16080290-8a25-4668-a071-b2a4a3590005",
     "name": "Spawner (2107)",
-    "guid": "445b11e0-31ce-4737-86a7-a1c2720a3790",
     "location": [5693, 1415, 38],
     "map": "Trammel",
     "count": 4,
@@ -19,8 +19,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "95927ddc-0a0e-4af7-ba4d-aa741eb9e85e",
     "name": "Spawner (2107)",
-    "guid": "f07282d1-6e13-4e15-8726-3c976ef096ed",
     "location": [5695, 1434, -1],
     "map": "Trammel",
     "count": 1,
@@ -33,8 +33,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a0ca7557-0d67-4fb2-bc0c-90cf17aded40",
     "name": "Spawner (2107)",
-    "guid": "95b183f3-9c2a-456d-acc1-91eae35425ad",
     "location": [5680, 1438, 0],
     "map": "Trammel",
     "count": 1,
@@ -47,8 +47,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1f219a04-6dea-4a23-b10b-c94fa225f073",
     "name": "Spawner (2107)",
-    "guid": "57d13c68-5520-4522-b79c-b0ecccb564e0",
     "location": [5733, 1433, 22],
     "map": "Trammel",
     "count": 3,
@@ -65,8 +65,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "40fed51f-cb73-462a-815e-76357dbc3dd6",
     "name": "Spawner (2107)",
-    "guid": "4fcd2e77-e74c-4dd2-88d2-8d4c39cf68e8",
     "location": [5787, 1427, 17],
     "map": "Trammel",
     "count": 1,
@@ -79,8 +79,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3c39211b-8d5b-4e8e-a96b-233b2dd4df1a",
     "name": "Spawner (2107)",
-    "guid": "e88cbfad-4192-4e73-85ce-60f353498dc5",
     "location": [5717, 1465, -2],
     "map": "Trammel",
     "count": 1,
@@ -93,8 +93,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "24dc17aa-c4a4-4669-99b7-b3be692625b9",
     "name": "Spawner (2107)",
-    "guid": "d034eb8e-6569-453d-8a2e-ebfcac7c88f7",
     "location": [5744, 1471, 2],
     "map": "Trammel",
     "count": 6,
@@ -112,8 +112,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a46351ad-73f9-4fc6-8acf-b79f2dacf835",
     "name": "Spawner (2107)",
-    "guid": "2a01b7a2-da4c-4e62-8e0d-9d168e59ac72",
     "location": [5790, 1451, 7],
     "map": "Trammel",
     "count": 4,
@@ -131,8 +131,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9a4b5a9a-85f2-4318-891d-5c159f1c814a",
     "name": "Spawner (2107)",
-    "guid": "2c2b7d03-59be-4320-8022-f8615b50443c",
     "location": [5852, 1468, 1],
     "map": "Trammel",
     "count": 21,
@@ -153,8 +153,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a80fedb0-ad6c-4537-a125-e2b6b9303ab1",
     "name": "Spawner (2107)",
-    "guid": "9a88ff29-c0c9-43ea-a492-40a3c6bb62d3",
     "location": [5852, 1468, 1],
     "map": "Trammel",
     "count": 1,
@@ -167,8 +167,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2991d4b6-9159-408b-9f22-ad5adb84cb8a",
     "name": "Spawner (2107)",
-    "guid": "66aa32fe-c082-411f-8bb3-f63ba9b550c0",
     "location": [5859, 1387, 0],
     "map": "Trammel",
     "count": 1,
@@ -181,8 +181,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0610bf19-19b6-4c4d-aea0-6bda41e02d08",
     "name": "Spawner (2107)",
-    "guid": "f10a199d-641c-4b3d-93d5-89a553bb44c0",
     "location": [5787, 1386, -2],
     "map": "Trammel",
     "count": 1,
@@ -195,8 +195,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "79815cf2-5840-40d1-945e-16e02b1e0c6c",
     "name": "Spawner (2107)",
-    "guid": "619837a0-8758-4ffa-be5c-c0a64cc21b2f",
     "location": [5818, 1379, 0],
     "map": "Trammel",
     "count": 1,
@@ -209,8 +209,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9b22963f-8d04-46bb-a006-9b2d5481407f",
     "name": "Spawner (2107)",
-    "guid": "eacfc473-70b4-4304-8e6c-d7ef9548bcc3",
     "location": [5836, 1364, 1],
     "map": "Trammel",
     "count": 1,
@@ -223,8 +223,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ad69c37c-8d1f-4ccb-8425-f2c67984eb9a",
     "name": "Spawner (2107)",
-    "guid": "258d4063-c636-4677-a548-7201c37ed1c8",
     "location": [5809, 1332, 0],
     "map": "Trammel",
     "count": 1,
@@ -237,8 +237,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d9495c43-6e45-49b3-92b5-86330e507966",
     "name": "Spawner (2107)",
-    "guid": "783afd79-12e1-453a-acc8-06126b66738c",
     "location": [5859, 1341, -1],
     "map": "Trammel",
     "count": 1,
@@ -251,8 +251,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ae67ec0d-fe6a-4016-9a9d-03d3de903d9c",
     "name": "Spawner (2107)",
-    "guid": "a862a5dc-c52f-40a6-88f8-d6578d5559b8",
     "location": [5835, 1304, 0],
     "map": "Trammel",
     "count": 6,
@@ -269,8 +269,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "46607951-c95c-468b-8e43-03e3783b0d26",
     "name": "Spawner (2107)",
-    "guid": "adbeb66f-482a-4369-92e1-d10bda4603aa",
     "location": [5867, 1309, 0],
     "map": "Trammel",
     "count": 2,
@@ -286,8 +286,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1b92aae2-475e-44e8-b232-e2efeaf778e7",
     "name": "Spawner (2107)",
-    "guid": "199c060d-82e5-40b2-bad1-3f1d9dc0636e",
     "location": [5699, 1302, 1],
     "map": "Trammel",
     "count": 1,
@@ -300,8 +300,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ca0c7155-9ade-4774-9ce6-4ef6cbb23e53",
     "name": "Spawner (2107)",
-    "guid": "07c3aed4-47a8-4889-985c-f8d47ea01d09",
     "location": [5723, 1291, 0],
     "map": "Trammel",
     "count": 1,
@@ -314,8 +314,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ed01917f-85c8-471a-960a-68e2837d9958",
     "name": "Spawner (2107)",
-    "guid": "5a9b7488-1192-4c76-9fd1-2c22d9d9f694",
     "location": [5732, 1297, -1],
     "map": "Trammel",
     "count": 1,
@@ -328,8 +328,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0564338f-0c40-46ff-9689-9551fc46b7fa",
     "name": "Spawner (2107)",
-    "guid": "71d1e971-2546-4b0e-988d-90ca4092a87c",
     "location": [5667, 1315, 5],
     "map": "Trammel",
     "count": 3,
@@ -345,8 +345,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8d148daa-bd74-4d18-9ab9-fe87977ca9bb",
     "name": "Spawner (2107)",
-    "guid": "ece2b2dd-4f94-4548-a507-561c9e83eb33",
     "location": [5747, 1320, 0],
     "map": "Trammel",
     "count": 2,
@@ -362,8 +362,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "60f131d6-03b2-4afe-9bef-9f3fb95806c6",
     "name": "Spawner (2107)",
-    "guid": "24b94bbb-5794-4f69-b001-2393dad4327d",
     "location": [5717, 1333, 6],
     "map": "Trammel",
     "count": 2,
@@ -379,8 +379,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9b4009c9-d8e5-4a60-8bcb-9cc2adab2bf7",
     "name": "Spawner (2107)",
-    "guid": "ba5e1647-31f1-49db-b40d-ae0a4ab74e5c",
     "location": [5731, 1379, 0],
     "map": "Trammel",
     "count": 4,
@@ -396,8 +396,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4c1016e4-0862-48b5-9fe7-852e930adbb4",
     "name": "Spawner (2107)",
-    "guid": "46c82f95-d8be-40a7-a99c-d47bd4f5cb61",
     "location": [5709, 1364, -1],
     "map": "Trammel",
     "count": 1,
@@ -410,8 +410,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "80f16e1d-c7e2-401a-9cc2-95b3c5e84061",
     "name": "Spawner (2107)",
-    "guid": "cf692210-bf0c-4ed2-9e08-0db1c9f88a83",
     "location": [5691, 1347, 0],
     "map": "Trammel",
     "count": 1,
@@ -424,8 +424,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "cb66d6ef-21da-42f8-8e2e-0123062a563d",
     "name": "Spawner (2107)",
-    "guid": "33a22271-d511-43e1-abb4-9215829f1dd7",
     "location": [5678, 1340, -2],
     "map": "Trammel",
     "count": 2,
@@ -441,8 +441,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "338c1497-34fd-4bf9-b559-a2420b917caa",
     "name": "Spawner (2107)",
-    "guid": "55fc2336-326f-4f70-ab37-34ecad95b98a",
     "location": [5651, 1363, 0],
     "map": "Trammel",
     "count": 8,
@@ -460,8 +460,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0a20a97e-184b-4274-ba46-3554df81bf2d",
     "name": "Spawner (2107)",
-    "guid": "782cf8b7-b0bd-4a0e-81d9-58c5a48a0797",
     "location": [5654, 1380, 0],
     "map": "Trammel",
     "count": 1,
@@ -474,8 +474,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "d91e9dc7-b9e5-482b-9a11-70e6cd4ca1f3",
     "name": "Spawner (2107)",
-    "guid": "0efb7657-baaf-49f4-ac84-12d01d225866",
     "location": [5689, 1387, 1],
     "map": "Trammel",
     "count": 1,
@@ -488,8 +488,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "939e162b-c7c9-4a44-8de2-ecb97cf3c165",
     "name": "Spawner (2107)",
-    "guid": "f01096a7-368a-4328-8015-bed9ffec1507",
     "location": [5656, 1412, 0],
     "map": "Trammel",
     "count": 1,
@@ -502,8 +502,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ebe5560d-883a-4ff8-b4c7-2dc82905d14c",
     "name": "Spawner (2107)",
-    "guid": "272a76da-4f2a-412c-a8c8-b9c72e1cc84a",
     "location": [5651, 1402, 0],
     "map": "Trammel",
     "count": 1,
@@ -516,8 +516,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1c7a741a-b951-40eb-a5d6-deff063b77ba",
     "name": "Spawner (2107)",
-    "guid": "fc17544b-b634-4df9-87bc-ca370f8697c9",
     "location": [5643, 1403, 0],
     "map": "Trammel",
     "count": 1,
@@ -530,8 +530,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7917b356-483b-48ec-89a1-fbd89fb9a8ae",
     "name": "Spawner (2107)",
-    "guid": "a981b195-c0d2-421c-80f7-61f71cd50624",
     "location": [5651, 1408, 0],
     "map": "Trammel",
     "count": 1,
@@ -544,8 +544,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "54d8445b-a74c-4163-a2e8-2e3c5c16d196",
     "name": "Spawner (2107)",
-    "guid": "f5c85bd7-5ff1-463f-825e-11f32944b467",
     "location": [5651, 1418, 0],
     "map": "Trammel",
     "count": 2,
@@ -561,8 +561,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0dba5823-7589-4c91-adbd-1b5f36cd24a5",
     "name": "Spawner (2107)",
-    "guid": "58437254-8093-44e3-8539-fca1fd0b4302",
     "location": [5650, 1419, 22],
     "map": "Trammel",
     "count": 1,
@@ -575,8 +575,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b803ed64-42cc-41e8-aa5b-bab78a3de25c",
     "name": "Spawner (2107)",
-    "guid": "531c3f9e-5a8d-4040-a623-5dde707dc59a",
     "location": [5647, 1439, 22],
     "map": "Trammel",
     "count": 1,
@@ -589,8 +589,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "850408f2-8b7b-49c1-adc1-ad8aad86565d",
     "name": "Spawner (2107)",
-    "guid": "24c467ff-2e59-42f4-8e73-eb2ab01e86bd",
     "location": [5651, 1443, 0],
     "map": "Trammel",
     "count": 1,
@@ -603,8 +603,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3b84e7ae-bf8d-4b85-8170-139b47cf84f5",
     "name": "Spawner (2107)",
-    "guid": "73aed399-08ce-40dd-8274-78be1df0ba10",
     "location": [5651, 1435, 0],
     "map": "Trammel",
     "count": 1,
@@ -617,8 +617,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f3989c3d-3d4f-4a7e-b553-4b728188c20d",
     "name": "Spawner (2107)",
-    "guid": "8ea74bc4-45c7-4b51-8b65-9152eb619efc",
     "location": [5643, 1435, 0],
     "map": "Trammel",
     "count": 1,
@@ -631,8 +631,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "35bb89db-3207-47ae-87b3-6061629c2384",
     "name": "Spawner (2107)",
-    "guid": "8c821bc1-b634-42df-9cbd-4c1ac41d429e",
     "location": [5638, 1439, 0],
     "map": "Trammel",
     "count": 1,
@@ -645,8 +645,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e48b3241-2e94-4dbb-aa6d-d6e437196b07",
     "name": "Spawner (2107)",
-    "guid": "22e036c7-f7ee-4d6a-8caa-727d5ff1bbcb",
     "location": [5714, 1465, 0],
     "map": "Trammel",
     "count": 1,
@@ -659,8 +659,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "24d6175a-d1f0-4c54-b717-74b2a8d0bd0e",
     "name": "Spawner (2107)",
-    "guid": "36a09254-7df2-4cc5-ac85-f83c4022735a",
     "location": [5723, 1390, 2],
     "map": "Trammel",
     "count": 1,
@@ -673,8 +673,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "79fc3a13-bc60-4f02-a9d0-757f4e10f4e3",
     "name": "Spawner (2107)",
-    "guid": "e8a26f01-fb73-46a7-b6d4-457025c93356",
     "location": [5679, 1438, 0],
     "map": "Trammel",
     "count": 1,
@@ -687,8 +687,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "374cdb83-75dc-4c4d-a77f-3417a6168459",
     "name": "Spawner (2107)",
-    "guid": "b063b0c8-7f4e-4cfb-8542-8909ff430902",
     "location": [5715, 1465, -1],
     "map": "Trammel",
     "count": 1,
@@ -701,8 +701,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "867f5552-fab2-4461-afa5-b9b7794ab5d8",
     "name": "Spawner (2107)",
-    "guid": "0f461013-966b-4e32-acc7-eef6b4e628c0",
     "location": [5722, 1390, 1],
     "map": "Trammel",
     "count": 1,
@@ -715,8 +715,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bb95d16a-4943-46af-be61-8cea297f06e4",
     "name": "Spawner (2107)",
-    "guid": "ad04a729-e8b1-4675-a312-045a66558d1a",
     "location": [5679, 1439, 0],
     "map": "Trammel",
     "count": 1,
@@ -729,8 +729,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0eac88c9-833f-43ab-ac2f-17e2d9c12efc",
     "name": "Spawner (2107)",
-    "guid": "60490c52-ea68-42da-b4e1-9cb7fc0b7d7f",
     "location": [5650, 1434, 0],
     "map": "Trammel",
     "count": 1,
@@ -743,8 +743,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7fe79ef3-0dc6-49a7-85f1-7b79bf30de85",
     "name": "Spawner (2107)",
-    "guid": "d821664d-ec55-4301-b2d7-9b2c4c1f27c2",
     "location": [5643, 1435, 0],
     "map": "Trammel",
     "count": 1,

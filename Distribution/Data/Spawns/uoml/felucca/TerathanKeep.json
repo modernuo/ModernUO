@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "55355f65-498d-4893-bd0e-fba844e9f120",
     "name": "Spawner (2221)",
-    "guid": "e849eead-348c-4f94-971d-ea14a697fc92",
     "location": [5296, 1561, 0],
     "map": "Felucca",
     "count": 4,
@@ -20,8 +20,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "bb5d6515-f724-497e-a0b5-70d32f80578d",
     "name": "Spawner (2221)",
-    "guid": "3636b908-6b71-4acb-9557-aad9f90ff9c4",
     "location": [5296, 1562, 0],
     "map": "Felucca",
     "count": 5,
@@ -40,8 +40,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "601ede9c-4fb0-47fe-a982-ca6703090495",
     "name": "Spawner (2221)",
-    "guid": "c4b3dafd-3007-4f48-8ff1-a2ed4a3a825f",
     "location": [5297, 1565, 0],
     "map": "Felucca",
     "count": 4,
@@ -59,8 +59,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "21d05ed0-3b1c-4a18-be82-c85ea2a68531",
     "name": "Spawner (2221)",
-    "guid": "a2a84870-f70d-4269-bfe3-9bdcf13fab24",
     "location": [5342, 1553, 0],
     "map": "Felucca",
     "count": 4,
@@ -78,8 +78,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3c65e403-f98a-4504-9e26-430a37bdb8c6",
     "name": "Spawner (2221)",
-    "guid": "66c7de38-6306-48a4-a4e8-ea760c182c09",
     "location": [5342, 1552, 0],
     "map": "Felucca",
     "count": 5,
@@ -98,8 +98,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "26ecf6a9-65b5-420f-a3c1-ae2116e92cfb",
     "name": "Spawner (2221)",
-    "guid": "ded1fdd7-9c43-4c2b-bd98-99ed33830027",
     "location": [5343, 1551, 0],
     "map": "Felucca",
     "count": 4,
@@ -117,8 +117,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e29d9595-f186-46de-897f-3227a8db1313",
     "name": "Spawner (2221)",
-    "guid": "f57daa0b-652b-4244-8da9-e38b3a033b1b",
     "location": [5334, 1613, 0],
     "map": "Felucca",
     "count": 4,
@@ -136,8 +136,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3f09db3b-afe2-4408-82ad-14ba48c7e66a",
     "name": "Spawner (2221)",
-    "guid": "246b1012-1210-4d24-b1b4-faeef7ab5e31",
     "location": [5334, 1614, 0],
     "map": "Felucca",
     "count": 5,
@@ -156,8 +156,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "563d8613-4266-4f8f-bd28-0573e2138a95",
     "name": "Spawner (2221)",
-    "guid": "6e7274c4-7ace-4f02-b4ac-f72265a3ff4b",
     "location": [5335, 1615, 0],
     "map": "Felucca",
     "count": 4,
@@ -175,8 +175,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "48405bde-3491-4f81-b6cd-cca354da06af",
     "name": "Spawner (2221)",
-    "guid": "a2088ffe-1a5c-4890-8359-3eeb73bc5bac",
     "location": [5348, 1552, 0],
     "map": "Felucca",
     "count": 1,
@@ -189,8 +189,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "ec51568f-b0de-4883-aa1f-33881194dc42",
     "name": "Spawner (2221)",
-    "guid": "66ff1c9e-aaf5-443e-9963-eefe4369d901",
     "location": [5345, 1551, 0],
     "map": "Felucca",
     "count": 1,
@@ -203,8 +203,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "9600b0fa-1e97-4fa8-ac75-35e4cf0aead7",
     "name": "Spawner (2221)",
-    "guid": "2e1b7243-4992-4a45-8c73-3aad64b963f9",
     "location": [5344, 1757, -125],
     "map": "Felucca",
     "count": 4,
@@ -222,8 +222,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3b91323c-fc8e-45a1-af5c-04ed1c619198",
     "name": "Spawner (2221)",
-    "guid": "d3e4a499-a757-4499-b972-35d84fa44ecc",
     "location": [5345, 1757, -125],
     "map": "Felucca",
     "count": 5,
@@ -242,8 +242,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8cdcfee4-7039-498e-99f9-db83c1520848",
     "name": "Spawner (2221)",
-    "guid": "84763b70-3ccc-4291-94d8-aebb6a9d95f4",
     "location": [5346, 1756, -125],
     "map": "Felucca",
     "count": 4,
@@ -261,8 +261,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "2740c6db-8d5d-4247-aade-cbc32917482a",
     "name": "Spawner (2221)",
-    "guid": "bf208082-ae24-443e-9cda-4c3e7ccfd27d",
     "location": [5335, 1706, -70],
     "map": "Felucca",
     "count": 4,
@@ -280,8 +280,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b682cc13-67e6-4ce2-9879-06d6b902eb77",
     "name": "Spawner (2221)",
-    "guid": "c38718e1-7b75-497b-9a7b-e7379ff02176",
     "location": [5335, 1707, -70],
     "map": "Felucca",
     "count": 5,
@@ -300,8 +300,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "5cb763bb-a025-43a4-93e1-6aa28201008d",
     "name": "Spawner (2221)",
-    "guid": "4c250f30-42ef-42e6-bb95-acc0cedbeb0a",
     "location": [5336, 1708, -70],
     "map": "Felucca",
     "count": 4,
@@ -319,8 +319,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "3101f47d-c5e3-4915-8cc4-531e231015fb",
     "name": "Spawner (2221)",
-    "guid": "6aa3cf74-1d7f-44e5-929f-868abb81a672",
     "location": [5270, 1695, 0],
     "map": "Felucca",
     "count": 4,
@@ -338,8 +338,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e933ea3b-01a8-49d0-85f3-12f83fae12a8",
     "name": "Spawner (2221)",
-    "guid": "ee635358-4253-4908-97df-6348193e5f25",
     "location": [5270, 1694, 0],
     "map": "Felucca",
     "count": 5,
@@ -358,8 +358,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "14a5e304-4c89-44d8-bbe1-52307064c5c6",
     "name": "Spawner (2221)",
-    "guid": "4db99b65-eed5-4b48-af2a-1cefcfe7e135",
     "location": [5271, 1693, 0],
     "map": "Felucca",
     "count": 4,
@@ -377,8 +377,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "6f40633e-c916-46c2-84ce-b299325ed706",
     "name": "Spawner (2221)",
-    "guid": "bbe4713b-8d85-4b1a-8fa4-5b527643be0d",
     "location": [5365, 1707, -71],
     "map": "Felucca",
     "count": 1,
@@ -391,8 +391,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "e2d418cf-5c3a-4dfd-8379-b79e0ebba68c",
     "name": "Spawner (2221)",
-    "guid": "ce6b9c5a-4012-48e7-9b8a-9fc931f637eb",
     "location": [5363, 1709, -75],
     "map": "Felucca",
     "count": 1,
@@ -405,8 +405,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "f8454f79-a064-419c-adb2-4eae61516050",
     "name": "Spawner (2221)",
-    "guid": "5201ad6c-e9ad-42b3-8180-89b8234e4154",
     "location": [5176, 1702, 0],
     "map": "Felucca",
     "count": 4,
@@ -424,8 +424,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "a90e91d5-22db-4179-a146-38b74c44941e",
     "name": "Spawner (2221)",
-    "guid": "d8e006fb-442a-4290-87c6-2a56375e01d8",
     "location": [5176, 1701, 2],
     "map": "Felucca",
     "count": 5,
@@ -444,8 +444,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "7a1d0961-cd67-4ab0-8fd6-64bb0e6b70a8",
     "name": "Spawner (2221)",
-    "guid": "ceed3446-e173-4909-b04e-30fe20b8fc1e",
     "location": [5177, 1700, 1],
     "map": "Felucca",
     "count": 4,
@@ -463,8 +463,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "84158e73-2f04-4043-ae74-7203f49882d9",
     "name": "Spawner (2221)",
-    "guid": "52d5b5b4-f5a8-4856-8cf7-e8478bfcb034",
     "location": [5132, 1624, 0],
     "map": "Felucca",
     "count": 4,
@@ -482,8 +482,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "0283295b-a9b6-4093-ba6b-1c45f5e6ef1a",
     "name": "Spawner (2221)",
-    "guid": "94e6313e-8a68-464f-847f-b738cc4acda8",
     "location": [5132, 1623, 0],
     "map": "Felucca",
     "count": 5,
@@ -502,8 +502,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "c0f5235e-3166-429c-b694-912476d301a0",
     "name": "Spawner (2221)",
-    "guid": "eb8e1ea8-d72b-4931-97c9-671666ec7271",
     "location": [5134, 1625, 0],
     "map": "Felucca",
     "count": 4,
@@ -521,8 +521,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "1f0feb9f-49eb-4446-b925-318c2f40a3a2",
     "name": "Spawner (2221)",
-    "guid": "58578967-9990-4a87-9dad-a565fa2ec672",
     "location": [5160, 1586, -15],
     "map": "Felucca",
     "count": 4,
@@ -540,8 +540,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b2c652b8-9117-4dbd-90a7-a3b2381ceed2",
     "name": "Spawner (2221)",
-    "guid": "c11fcf08-c3b9-456b-8aaf-970cbdd49a54",
     "location": [5163, 1585, -15],
     "map": "Felucca",
     "count": 5,
@@ -560,8 +560,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b515d25b-b2a1-4f4f-8a3f-4b4dddac1497",
     "name": "Spawner (2221)",
-    "guid": "d3293616-a51a-43d3-afaf-91c86338ca60",
     "location": [5161, 1584, -15],
     "map": "Felucca",
     "count": 4,
@@ -579,8 +579,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "b84c78fe-41c9-45a7-a013-21acc94a3523",
     "name": "Spawner (2221)",
-    "guid": "aae678a2-2cb9-490a-9f36-3f06cad348da",
     "location": [5200, 1565, 0],
     "map": "Felucca",
     "count": 4,
@@ -598,8 +598,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "4e9e59fc-97f0-4a17-b8f2-25add94556f7",
     "name": "Spawner (2221)",
-    "guid": "5eb19d72-76d2-49ff-8f75-a1dfc1531879",
     "location": [5201, 1566, 0],
     "map": "Felucca",
     "count": 5,
@@ -618,8 +618,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "92541636-d25c-4ff5-8c96-eb3601bb4275",
     "name": "Spawner (2221)",
-    "guid": "98904506-c2e6-4a7e-ae37-291a0ae5e217",
     "location": [5200, 1568, 0],
     "map": "Felucca",
     "count": 4,

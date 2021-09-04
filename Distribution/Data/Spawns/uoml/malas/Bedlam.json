@@ -1,8 +1,8 @@
 [
   {
     "type": "Spawner",
+    "guid": "11a1f407-c83a-4e50-a708-4f819ffb1071",
     "name": "Spawner (2408)",
-    "guid": "55c40a60-25ef-44bf-b049-7fb939c0df87",
     "location": [98, 1656, 0],
     "map": "Malas",
     "count": 34,
@@ -25,8 +25,8 @@
   },
   {
     "type": "Spawner",
+    "guid": "8a594e4f-5cf8-41f5-a49f-73d6d71f4e44",
     "name": "Spawner (2408)",
-    "guid": "870a8c52-5936-488d-a6f5-0c7d34863951",
     "location": [104, 1655, 0],
     "map": "Malas",
     "count": 1,
