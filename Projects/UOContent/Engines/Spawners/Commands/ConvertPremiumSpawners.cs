@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
@@ -81,9 +80,7 @@ namespace Server.Engines.Spawners
                     AssemblyHandler.EnsureDirectory(fullOutputDir);
 
                     var outputFileName = $"{file.Name[..^file.Extension.Length]}.json";
-                    Console.WriteLine("Output file: {0}", outputFileName);
-
-                    // ParsePremiumSpawnerFile(file.FullName, Path.Combine(fullOutputDir, outputFileName), options);
+                    ParsePremiumSpawnerFile(file.FullName, Path.Combine(fullOutputDir, outputFileName), options);
                 }
                 catch (Exception e)
                 {
