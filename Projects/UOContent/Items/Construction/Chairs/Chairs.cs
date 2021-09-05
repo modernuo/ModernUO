@@ -1,63 +1,21 @@
 namespace Server.Items
 {
-    [Furniture, Flippable(0xB4F, 0xB4E, 0xB50, 0xB51)]
-    public class FancyWoodenChairCushion : Item
+    [Furniture]
+    [Flippable(0xB4F, 0xB4E, 0xB50, 0xB51)]
+    [Serializable(0, false)]
+    public partial class FancyWoodenChairCushion : Item
     {
         [Constructible]
         public FancyWoodenChairCushion() : base(0xB4F) => Weight = 20.0;
-
-        public FancyWoodenChairCushion(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 6.0)
-            {
-                Weight = 20.0;
-            }
-        }
     }
 
-    [Furniture, Flippable(0xB53, 0xB52, 0xB54, 0xB55)]
-    public class WoodenChairCushion : Item
+    [Furniture]
+    [Flippable(0xB53, 0xB52, 0xB54, 0xB55)]
+    [Serializable(0, false)]
+    public partial class WoodenChairCushion : Item
     {
         [Constructible]
         public WoodenChairCushion() : base(0xB53) => Weight = 20.0;
-
-        public WoodenChairCushion(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Weight == 6.0)
-            {
-                Weight = 20.0;
-            }
-        }
     }
 
     [Furniture, Flippable(0xB57, 0xB56, 0xB59, 0xB58)]
