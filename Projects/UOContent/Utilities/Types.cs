@@ -1,4 +1,7 @@
 using System;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -37,6 +40,7 @@ namespace Server
         public static readonly Type OfNoSort = typeof(NoSortAttribute);
         public static readonly Type OfEntity = typeof(IEntity);
         public static readonly Type OfConstructible = typeof(ConstructibleAttribute);
+        public static readonly Type OfGuid = typeof(Guid);
 
         public static readonly string[] BoolNames = { "True", "False" };
         public static readonly object[] BoolValues = { true, false };
@@ -79,28 +83,43 @@ namespace Server
             OfByte
         };
 
-        public static readonly Type[] ParseTypes = { OfString };
+        public static readonly Type[] ParseTypes = { OfString, OfChar, OfText, OfGuid, OfTimeSpan };
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSerial(Type t) => t == OfSerial;
 
-        public static bool IsType(Type t) => t == OfType;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsType(Type t) => t == OfType || t.IsSubclassOf(OfType);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsChar(Type t) => t == OfChar;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsString(Type t) => t == OfString;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsText(Type t) => t == OfText;
 
-        public static bool IsEnum(Type t) => t.IsEnum;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsEnum(Type t) => t.IsEnum || t.IsSubclassOf(OfEnum);
 
-        public static bool IsParsable(Type t) => t == OfTimeSpan || t.IsDefined(OfParsable, false);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsGuid(Type t) => t == OfGuid;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsParsable(Type t) =>
+            IsChar(t) || IsString(t) || IsText(t) || IsGuid(t) || t == OfTimeSpan || t.IsDefined(OfParsable, false);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNumeric(Type t) => Array.IndexOf(NumericTypes, t) >= 0;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSignedNumeric(Type t) => Array.IndexOf(SignedNumerics, t) >= 0;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsUnsignedNumeric(Type t) => Array.IndexOf(UnsignedNumerics, t) >= 0;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
     }
 }

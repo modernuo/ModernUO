@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Server.Buffers;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Gumps;
@@ -287,12 +288,7 @@ namespace Server.Commands
 
             if (realProps.Length == 1)
             {
-                if (positive)
-                {
-                    return "The property has been increased.";
-                }
-
-                return "The property has been decreased.";
+                return positive ? "The property has been increased." : "The property has been decreased.";
             }
 
             if (positive && negative)
@@ -300,12 +296,7 @@ namespace Server.Commands
                 return "The properties have been changed.";
             }
 
-            if (positive)
-            {
-                return "The properties have been increased.";
-            }
-
-            return "The properties have been decreased.";
+            return positive ? "The properties have been increased." : "The properties have been decreased.";
         }
 
         private static string InternalGetValue(object o, PropertyInfo p, PropertyInfo[] chain = null)
@@ -345,17 +336,20 @@ namespace Server.Commands
                 return $"{p.Name} = {toString}";
             }
 
-            var concat = new string[chain.Length * 2 + 1];
-
-            for (var i = 0; i < chain.Length; ++i)
+            using var builder = new ValueStringBuilder();
+            for (var i = 0; i < chain.Length; i++)
             {
-                concat[i * 2 + 0] = chain[i].Name;
-                concat[i * 2 + 1] = i < chain.Length - 1 ? "." : " = ";
+                builder.Append(chain[i].Name);
+                if (i < chain.Length - 1)
+                {
+                    builder.Append(".");
+                }
             }
 
-            concat[^1] = toString;
+            builder.Append(" = ");
+            builder.Append(toString);
 
-            return string.Concat(concat);
+            return builder.ToString();
         }
 
         public static string SetValue(Mobile from, object o, string name, string value)
@@ -377,9 +371,12 @@ namespace Server.Commands
             return method?.Invoke(o, m_ParseParams);
         }
 
-        public static string ConstructFromString(Type type, object obj, string value, ref object constructed)
+        public static string ParseValue(Type type, string value, out object constructed) =>
+            ParseValue(type, null, value, out constructed);
+
+        public static string ParseValue(Type type, object obj, string value, out object constructed)
         {
-            object toSet;
+            constructed = null;
             var isSerial = IsSerial(type);
 
             if (isSerial) // mutate into int32
@@ -396,7 +393,7 @@ namespace Server.Commands
             {
                 try
                 {
-                    toSet = Enum.Parse(type, value ?? "", true);
+                    constructed = Enum.Parse(type, value ?? "", true);
                 }
                 catch
                 {
@@ -407,9 +404,9 @@ namespace Server.Commands
             {
                 try
                 {
-                    toSet = AssemblyHandler.FindTypeByName(value);
+                    constructed = AssemblyHandler.FindTypeByName(value);
 
-                    if (toSet == null)
+                    if (constructed == null)
                     {
                         return "No type with that name was found.";
                     }
@@ -423,7 +420,7 @@ namespace Server.Commands
             {
                 try
                 {
-                    toSet = Parse(obj, type, value);
+                    constructed = Parse(obj, type, value);
                 }
                 catch
                 {
@@ -432,13 +429,13 @@ namespace Server.Commands
             }
             else if (value == null)
             {
-                toSet = null;
+                constructed = null;
             }
             else if (value.StartsWithOrdinal("0x") && IsNumeric(type))
             {
                 try
                 {
-                    toSet = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
+                    constructed = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
                 }
                 catch
                 {
@@ -449,7 +446,7 @@ namespace Server.Commands
             {
                 try
                 {
-                    toSet = Convert.ChangeType(value, type);
+                    constructed = Convert.ChangeType(value, type);
                 }
                 catch
                 {
@@ -459,10 +456,10 @@ namespace Server.Commands
 
             if (isSerial) // mutate back
             {
-                toSet = (Serial)(toSet ?? Serial.MinusOne);
+                constructed = (Serial)(constructed ?? Serial.MinusOne);
             }
 
-            constructed = toSet;
+            constructed = constructed;
             return null;
         }
 
@@ -475,16 +472,12 @@ namespace Server.Commands
             {
                 if (toSet is AccessLevel newLevel)
                 {
-                    var reqLevel = AccessLevel.Administrator;
-
-                    if (newLevel == AccessLevel.Administrator)
+                    var reqLevel = newLevel switch
                     {
-                        reqLevel = AccessLevel.Developer;
-                    }
-                    else if (newLevel >= AccessLevel.Developer)
-                    {
-                        reqLevel = AccessLevel.Owner;
-                    }
+                        AccessLevel.Administrator => AccessLevel.Developer,
+                        >= AccessLevel.Developer  => AccessLevel.Owner,
+                        _                         => AccessLevel.Administrator
+                    };
 
                     if (from.AccessLevel < reqLevel)
                     {
@@ -532,21 +525,13 @@ namespace Server.Commands
         public static string InternalSetValue(
             Mobile from, object logobj, object o, PropertyInfo p, string pname,
             string value, bool shouldLog
-        )
-        {
-            object toSet = null;
-            var result = ConstructFromString(p.PropertyType, o, value, ref toSet);
+        ) =>
+            ParseValue(p.PropertyType, o, value, out var toSet) ??
+            SetDirect(from, logobj, o, p, pname, toSet, shouldLog);
 
-            return result ?? SetDirect(from, logobj, o, p, pname, toSet, shouldLog);
-        }
-
-        public static string InternalSetValue(object o, PropertyInfo p, string value)
-        {
-            object toSet = null;
-            var result = ConstructFromString(p.PropertyType, o, value, ref toSet);
-
-            return result ?? SetDirect(o, p, toSet);
-        }
+        public static string InternalSetValue(object o, PropertyInfo p, string value) =>
+            ParseValue(p.PropertyType, o, value, out var toSet) ??
+            SetDirect(o, p, toSet);
 
 
         private class PropsTarget : Target
