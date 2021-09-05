@@ -679,12 +679,10 @@ namespace Server.Engines.Spawners
                 {
                     if (realProps[i] != null)
                     {
-                        object toSet = null;
-                        var result = Properties.ConstructFromString(
+                        var result = Types.TryParse(
                             realProps[i].PropertyType,
-                            entity,
                             props[i, 1],
-                            ref toSet
+                            out var toSet
                         );
 
                         if (result == null)

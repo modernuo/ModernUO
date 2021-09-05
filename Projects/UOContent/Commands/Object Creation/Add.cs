@@ -13,8 +13,6 @@ namespace Server.Commands
 {
     public static class Add
     {
-        private static readonly object[] m_ParseArgs = new object[1];
-
         public static void Initialize()
         {
             CommandSystem.Register("Tile", AccessLevel.GameMaster, Tile_OnCommand);
@@ -245,7 +243,7 @@ namespace Server.Commands
             for (int i = 0, a = 0; i < paramList.Length; i++)
             {
                 var param = paramList[i];
-                var value = ParseValue(param.ParameterType, a < args.Length ? args[a++] : null);
+                TryParse(param.ParameterType, a < args.Length ? args[a++] : null, out var value);
 
                 if (value != null)
                 {
@@ -262,56 +260,6 @@ namespace Server.Commands
             }
 
             return values;
-        }
-
-        public static object ParseValue(Type type, string value)
-        {
-            try
-            {
-                if (IsEnum(type))
-                {
-                    return Enum.Parse(type, value, true);
-                }
-
-                if (IsType(type))
-                {
-                    return AssemblyHandler.FindTypeByName(value);
-                }
-
-                if (IsParsable(type))
-                {
-                    return ParseParsable(type, value);
-                }
-
-                object obj = value;
-
-                if (value.StartsWithOrdinal("0x"))
-                {
-                    if (IsSignedNumeric(type))
-                    {
-                        obj = Convert.ToInt64(value[2..], 16);
-                    }
-                    else if (IsUnsignedNumeric(type))
-                    {
-                        obj = Convert.ToUInt64(value[2..], 16);
-                    }
-                    else
-                    {
-                        obj = Convert.ToInt32(value[2..], 16);
-                    }
-                }
-
-                if (obj == null && !type.IsValueType)
-                {
-                    return null;
-                }
-
-                return Convert.ChangeType(obj, type);
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         public static IEntity Build(
@@ -733,21 +681,6 @@ namespace Server.Commands
         public static void OutlineAvg_OnCommand(CommandEventArgs e)
         {
             InternalAvg_OnCommand(e, true);
-        }
-
-        public static bool IsEnum(Type type) => type.IsSubclassOf(OfEnum);
-
-        public static bool IsType(Type type) => type == OfType || type.IsSubclassOf(OfType);
-
-        public static bool IsParsable(Type type) => type.IsDefined(OfParsable, false);
-
-        public static object ParseParsable(Type type, string value)
-        {
-            var method = type.GetMethod("Parse", ParseTypes);
-
-            m_ParseArgs[0] = value;
-
-            return method?.Invoke(null, m_ParseArgs);
         }
 
         private enum TileZType
