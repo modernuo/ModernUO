@@ -2133,27 +2133,27 @@ namespace Server.Gumps
                                 {
                                     if (Core.SA)
                                     {
-                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*/*.json");
+                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*.json");
                                     }
                                     else
                                     {
                                         if (Core.ML)
                                         {
-                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*/*.json");
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
                                         }
 
                                         if (Core.SE)
                                         {
-                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*/*.json");
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
                                         }
 
                                         if (Core.AOS)
                                         {
-                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*/*.json");
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*.json");
                                         }
 
-                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*/*.json");
-                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*/*.json");
+                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
+                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
                                     }
 
                                     notice = "Spawners have been generated.";
