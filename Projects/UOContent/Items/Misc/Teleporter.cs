@@ -671,7 +671,7 @@ namespace Server.Items
 
     public class WaitTeleporter : KeywordTeleporter
     {
-        private static Dictionary<Mobile, TeleportingInfo> m_Table = new();
+        private static Dictionary<Mobile, TeleportingInfo> m_Table = new Dictionary<Mobile, TeleportingInfo>();
 
         [Constructible]
         public WaitTeleporter()
