@@ -1,23 +1,58 @@
 [
   {
     "type": "Spawner",
-    "guid": "eca3ff06-29b4-4ec6-945e-e734402c47ac",
+    "guid": "db468eba-47a3-46c1-b47a-c2179f0b2a5f",
     "name": "Spawner (502)",
     "location": [1215, 1086, 25],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Kappa", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f27805b7-13e8-455b-9951-8542fe8f005b",
+    "guid": "1f388571-783f-4271-ad85-19979804caed",
     "name": "Spawner (502)",
     "location": [643, 540, 24],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "BakeKitsune", "maxCount": 4, "probability": 100 },
+      { "name": "HellCat", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e6218636-c822-4e08-9b7c-1355ccae6ccf",
+    "name": "Spawner (502)",
+    "location": [615, 556, 37],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
+      { "name": "HellCat", "maxCount": 8, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b4421adb-275f-4462-95dc-2d8bcd981471",
+    "name": "Spawner (502)",
+    "location": [1184, 837, 36],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
@@ -25,64 +60,29 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [
-      { "name": "BakeKitsune", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 }
-    ]
+    "entries": [{ "name": "LesserHiryu", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "31ce0817-b908-48e9-88ce-d18992600f2e",
-    "name": "Spawner (502)",
-    "location": [615, 556, 37],
-    "map": "Tokuno",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "BakeKitsune", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "7e533474-bf8b-4779-bc2b-a542f9bf682a",
-    "name": "Spawner (502)",
-    "location": [1184, 837, 36],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "LesserHiryu", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8b4ba8e2-02da-468d-8df4-d1a379cae491",
+    "guid": "5906f708-87ed-4315-9849-69799e96a1fe",
     "name": "Spawner (502)",
     "location": [499, 530, 32],
     "map": "Tokuno",
-    "count": 3,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "LesserHiryu", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 },
-      { "name": "Oni", "maxCount": 1, "probability": 100 }
+      { "name": "LesserHiryu", "maxCount": 6, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 6, "probability": 100 },
+      { "name": "Oni", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bdc7ce99-6013-450c-8b92-546160ca8085",
+    "guid": "d3042275-6dc0-4a32-b09f-01d26bbb2c29",
     "name": "Spawner (502)",
     "location": [1197, 813, 27],
     "map": "Tokuno",
@@ -96,65 +96,23 @@
   },
   {
     "type": "Spawner",
-    "guid": "5db44bce-1b3e-4b4a-9202-3445ab7f206b",
+    "guid": "b0318874-b52d-4005-aaf0-540bce7fc3e9",
     "name": "Spawner (502)",
     "location": [1247, 791, 6],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "LesserHiryu", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "LesserHiryu", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "544ec738-5674-4a29-99bf-8f990cd9a46d",
+    "guid": "2facb999-7cc7-4e29-9a29-d77bb5a2d6fa",
     "name": "Spawner (502)",
     "location": [1345, 881, 13],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "f9bcb23a-9764-48fd-a2d3-38f055ddf7d8",
-    "name": "Spawner (502)",
-    "location": [1377, 882, 21],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 30,
-    "entries": [{ "name": "LavaSerpent", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "0788dd9c-63ca-490d-bcfb-759b3fda5ee6",
-    "name": "Spawner (502)",
-    "location": [208, 641, 36],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "d97d0251-eee7-405f-a138-a11731f87186",
-    "name": "Spawner (502)",
-    "location": [582, 505, 32],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
@@ -162,16 +120,58 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
+    "entries": [{ "name": "Kappa", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a8f16a28-29cc-41c2-a79e-be9e10a32363",
+    "name": "Spawner (502)",
+    "location": [1377, 882, 21],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 30,
+    "entries": [{ "name": "LavaSerpent", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "93a819a9-3b0f-40bd-b923-20ed865b6d0f",
+    "name": "Spawner (502)",
+    "location": [208, 641, 36],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 40,
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6bc3be1f-048d-44a1-99d1-416c753c9468",
+    "name": "Spawner (502)",
+    "location": [582, 505, 32],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
-      { "name": "BakeKitsune", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 }
+      { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
+      { "name": "HellCat", "maxCount": 8, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 8, "probability": 100 },
+      { "name": "HellHound", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6511b4bd-0af5-45d2-8b6d-06cf746d9417",
+    "guid": "e9149d3f-2c41-4774-9758-1f8f71b1598e",
     "name": "Spawner (502)",
     "location": [1311, 776, 10],
     "map": "Tokuno",
@@ -185,56 +185,56 @@
   },
   {
     "type": "Spawner",
-    "guid": "f1826f7b-c626-4f04-86c8-ce0c186acbee",
+    "guid": "e2ab6de1-7751-4971-b901-3fb6f9ad2a2c",
     "name": "Spawner (502)",
     "location": [554, 476, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "BakeKitsune", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "BakeKitsune", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "85824d91-1f8d-44af-a554-c21523235088",
+    "guid": "55d6194b-1117-472c-b276-543f6234d504",
     "name": "Spawner (502)",
     "location": [571, 550, 32],
     "map": "Tokuno",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "BakeKitsune", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
+      { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b4b4de75-a8a1-4d92-9ea8-cd8b701fe660",
+    "guid": "60281adb-b53d-4daf-9ce8-84c89c800e56",
     "name": "Spawner (502)",
     "location": [526, 556, 32],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "BakeKitsune", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
+      { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
+      { "name": "HellCat", "maxCount": 8, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0d2fe927-af7d-4194-8544-a1b00c11648c",
+    "guid": "3a1bebc3-fa84-492d-9b65-7a1e95a18fe1",
     "name": "Spawner (502)",
     "location": [1336, 810, 9],
     "map": "Tokuno",
@@ -248,21 +248,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "e4e8a5f6-3c3b-4ae8-911e-3ab84f6505f8",
+    "guid": "a8390df1-8ea6-42e6-9d13-e09159f03a0e",
     "name": "Spawner (502)",
     "location": [1344, 774, 19],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "LesserHiryu", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "LesserHiryu", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5a98721f-2062-444a-9253-b393f20c2f42",
+    "guid": "98f4d240-c7db-4d14-ad8b-9b8fdb381d82",
     "name": "Spawner (502)",
     "location": [528, 552, 32],
     "map": "Tokuno",
@@ -276,7 +276,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1c34e7b7-7aa6-4584-ac80-501183251c17",
+    "guid": "c80f169f-7335-426e-a51c-ca1771920137",
     "name": "Spawner (502)",
     "location": [502, 553, 32],
     "map": "Tokuno",
@@ -290,21 +290,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "948d7cbf-e18c-4ad9-954a-7974c0e7d8a3",
+    "guid": "b4bf88f4-306f-49f5-a2ab-ef5412ede34e",
     "name": "Spawner (502)",
     "location": [517, 513, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "BakeKitsune", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "BakeKitsune", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "cc351f48-07b6-4035-9143-76df95e6cd97",
+    "guid": "402e05e6-7371-4469-ab9b-32ac67e0dbf0",
     "name": "Spawner (502)",
     "location": [1291, 695, 19],
     "map": "Tokuno",
@@ -315,13 +315,13 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "LesserHiryu", "maxCount": 1, "probability": 100 },
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 }
+      { "name": "LesserHiryu", "maxCount": 2, "probability": 100 },
+      { "name": "RevenantLion", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c7d1fbe2-58b6-4699-b480-500e34ce7c2a",
+    "guid": "f1fa14d5-38a8-41b5-8deb-d256e37f49d7",
     "name": "Spawner (502)",
     "location": [1354, 700, 33],
     "map": "Tokuno",
@@ -335,51 +335,72 @@
   },
   {
     "type": "Spawner",
-    "guid": "5b86c0c1-8ff7-43e4-9d5c-519572bddc1b",
+    "guid": "7f962e07-3668-48c6-889e-d2afab115c85",
     "name": "Spawner (502)",
     "location": [273, 606, 7],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Mongbat", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "677cd278-8f22-4133-82c9-74e1c25b0668",
+    "guid": "038fac93-3c13-44ef-aba9-491c8ad45a2b",
     "name": "Spawner (502)",
     "location": [518, 477, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "BakeKitsune", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "BakeKitsune", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "6825a6ee-0de7-47e7-bb3a-f8fcd3e88d0d",
+    "guid": "99dd39c0-83e8-4f4d-a661-eb6bee0601b3",
     "name": "Spawner (502)",
     "location": [159, 688, 24],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7759c1d5-18b4-4e64-acc0-9b2b3b1ce4b3",
+    "guid": "52415a9d-22d9-4e34-af5a-f5f995a08d02",
     "name": "Spawner (502)",
     "location": [157, 685, 25],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 8, "probability": 100 },
+      { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "742dfb62-1a8b-4abe-89d2-2aa5b3eccd8c",
+    "name": "Spawner (502)",
+    "location": [246, 768, 55],
     "map": "Tokuno",
     "count": 6,
     "minDelay": "00:05:00",
@@ -388,155 +409,155 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
+      { "name": "EarthElemental", "maxCount": 6, "probability": 100 },
+      { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dc092935-abe0-4a1f-aee3-52b31f6008f4",
-    "name": "Spawner (502)",
-    "location": [246, 768, 55],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
-      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "253de532-294c-4e21-9229-2d8f8bd82a7b",
+    "guid": "c1966d23-2f5c-4a49-bc2c-b18756f292c3",
     "name": "Spawner (502)",
     "location": [186, 534, 41],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "1322355f-57ad-4092-bbaa-5ad4eeeaa1cb",
+    "guid": "05dffa7d-7472-4317-82f0-35e8d6c53fc8",
     "name": "Spawner (502)",
     "location": [374, 820, 34],
     "map": "Tokuno",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "RaiJu", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RaiJu", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9cccf528-8e5b-4493-9b50-340f3b1a19dd",
+    "guid": "34706834-7851-4da5-928a-c74d6b0c84c3",
     "name": "Spawner (502)",
     "location": [258, 709, 41],
     "map": "Tokuno",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3e9bf16f-3e5e-46ca-b77b-0fefb50733fd",
+    "guid": "a5616fa0-d8b0-4711-bab9-34bacc355ed0",
     "name": "Spawner (502)",
     "location": [124, 646, 37],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "bbfa20a6-a749-4796-8093-e0aebedd1567",
+    "guid": "8e531f0c-3c40-4567-bc25-d433936fcf2a",
     "name": "Spawner (502)",
     "location": [123, 647, 36],
     "map": "Tokuno",
-    "count": 6,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 8, "probability": 100 },
+      { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a0e4c0eb-bfde-4f4d-9127-72ec018fe53b",
+    "guid": "0af3775d-7a5c-458c-920d-9147d2490ac4",
     "name": "Spawner (502)",
     "location": [356, 722, 54],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "YomotsuWarrior", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ef145b1a-d0cb-4b43-91e9-2c6b462e21b4",
+    "guid": "ae8aaaa8-249c-4994-b84d-c27860c04b12",
     "name": "Spawner (502)",
     "location": [201, 731, 30],
     "map": "Tokuno",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "49acbb5c-a3e5-4a8d-ae1e-466b6af4f55d",
+    "guid": "1763036e-1279-413f-93f8-447989b5b34c",
     "name": "Spawner (502)",
     "location": [181, 588, 45],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a2d235a6-318d-48e4-ae94-37929804de6d",
+    "guid": "19d3293a-39da-428f-b8f0-64d1aa2ca711",
     "name": "Spawner (502)",
     "location": [180, 586, 45],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 8, "probability": 100 },
+      { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "84d7c14d-faf3-4902-a569-f1426b2f16c3",
+    "name": "Spawner (502)",
+    "location": [200, 803, 62],
     "map": "Tokuno",
     "count": 6,
     "minDelay": "00:05:00",
@@ -544,32 +565,11 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
-    ]
+    "entries": [{ "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2658ba3b-9ac8-4d15-afc4-fbeec1732b06",
-    "name": "Spawner (502)",
-    "location": [200, 803, 62],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "86e81472-4cb1-4cc9-b269-c13dd78e0241",
+    "guid": "ec646b02-cb01-4fba-b336-7d617095b3d3",
     "name": "Spawner (502)",
     "location": [166, 583, 49],
     "map": "Tokuno",
@@ -583,57 +583,9 @@
   },
   {
     "type": "Spawner",
-    "guid": "e4ee7422-10a9-40c6-ae83-5ad8abe2f279",
+    "guid": "9b5e2d60-bf93-418d-a447-fa42e903a4e4",
     "name": "Spawner (502)",
     "location": [190, 856, 52],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "e1707b0a-62b4-40f7-a20d-4686ff0275a6",
-    "name": "Spawner (502)",
-    "location": [206, 891, 56],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "1838df81-a91d-4497-80b1-1753c7d7d5af",
-    "name": "Spawner (502)",
-    "location": [1008, 246, 37],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "a9f31936-c665-47a0-bc5f-998d32ed3886",
-    "name": "Spawner (502)",
-    "location": [212, 646, 31],
     "map": "Tokuno",
     "count": 6,
     "minDelay": "00:05:00",
@@ -642,309 +594,357 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
+      { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d3973a81-5d0b-46b1-b4c1-99df8c1a0dd3",
+    "guid": "e396724d-7481-4cb6-9302-77ed6dfb8b98",
+    "name": "Spawner (502)",
+    "location": [206, 891, 56],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "Mongbat", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6f788eb2-7306-4b06-9368-c6ff57e09ff7",
+    "name": "Spawner (502)",
+    "location": [1008, 246, 37],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "005a9ed1-16b4-49a2-8f12-ee718ea97d4d",
+    "name": "Spawner (502)",
+    "location": [212, 646, 31],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 8, "probability": 100 },
+      { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b6be5e10-9a08-4766-beb3-e9a445d4ae57",
     "name": "Spawner (502)",
     "location": [208, 936, 43],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Mongbat", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d4e31105-319f-4da6-a44a-381c65d5902b",
+    "guid": "9d0b815f-1f4b-499f-9c0d-4cfc20a62983",
     "name": "Spawner (502)",
     "location": [248, 928, 36],
     "map": "Tokuno",
-    "count": 2,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
+      { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8ecd3c54-ee52-489a-8500-93fae7a51649",
+    "guid": "5865a64e-b788-493a-9334-43fcec0bab98",
     "name": "Spawner (502)",
     "location": [221, 968, 34],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Mongbat", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "8626188e-72b6-49e1-8a92-28401c752d53",
+    "guid": "0c8687ee-6ffe-4243-81ba-5938dc3c80c3",
     "name": "Spawner (502)",
     "location": [192, 1014, 10],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1cac1922-279b-4c1a-9987-cf0f1f2d5751",
+    "guid": "1dc1ab31-c521-4fdd-8248-fcf3c97717c6",
     "name": "Spawner (502)",
     "location": [1016, 292, 30],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9a82890c-8386-47dc-8315-daafeccb4367",
+    "guid": "31ab5811-6361-44eb-9bda-c31fb4444295",
     "name": "Spawner (502)",
     "location": [232, 1116, 10],
     "map": "Tokuno",
-    "count": 5,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 12, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 12, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 12, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 12, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "62df65e1-31d4-4244-97a0-fa99dfb02a10",
+    "guid": "3f8ba73c-44f5-41b9-affa-72a4bf38bee9",
     "name": "Spawner (502)",
     "location": [948, 247, 19],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 },
-      { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 },
+      { "name": "EliteNinja", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "db134a33-bdc3-4fe4-b8ed-5b828501c2a3",
+    "guid": "65bb731d-dfb2-4eeb-9858-03d58c785b2a",
     "name": "Spawner (502)",
     "location": [285, 1156, 13],
     "map": "Tokuno",
-    "count": 5,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 12, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 12, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 12, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 12, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f80ebc37-bb28-4119-a7be-eb1753475fb9",
+    "guid": "61f7f65b-b91f-4e51-8551-e72d045d225f",
     "name": "Spawner (502)",
     "location": [261, 1186, 20],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Kappa", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "87ec3880-2c4a-4a98-b79f-355c93bba2b7",
+    "guid": "73714dcc-c107-4e57-98e3-800002a6ba8b",
     "name": "Spawner (502)",
     "location": [251, 1074, 10],
     "map": "Tokuno",
-    "count": 5,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 12, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 12, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 12, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 12, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6c2d73de-218e-459b-a260-1d0dd9ed3e3e",
+    "guid": "1eabd7ef-f919-48c9-a2d9-bd0953eca101",
     "name": "Spawner (502)",
     "location": [962, 203, 23],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 },
-      { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 },
+      { "name": "EliteNinja", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "61e9e4d3-5998-4d57-a9dd-2902b9f7293a",
+    "guid": "818696a6-799b-49c6-855a-0b4efd4dcfda",
     "name": "Spawner (502)",
     "location": [916, 225, 23],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 },
-      { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 },
+      { "name": "EliteNinja", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "31aecce7-5ac8-4208-a258-0987c22b74dd",
+    "guid": "2fb8bd06-f301-46d7-bc73-b79ea25bc9a7",
     "name": "Spawner (502)",
     "location": [899, 271, 34],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ad811813-4681-4d34-8f4f-72716235ac88",
+    "guid": "8ac2fd03-8350-4d2a-8c44-a2a7a126356e",
     "name": "Spawner (502)",
     "location": [819, 208, 38],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "319d3f84-6839-4813-8cdd-368ec2bf72d2",
+    "guid": "02267402-1f6a-40ba-82fc-1b3bec08fcd6",
     "name": "Spawner (502)",
     "location": [248, 525, 41],
     "map": "Tokuno",
-    "count": 2,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "Kappa", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 6, "probability": 100 },
+      { "name": "Kappa", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "707e4323-ae80-4014-b9fe-a9ecbd2916a4",
+    "guid": "90b5cbd2-ec33-4b76-ab24-9b3dace6724b",
     "name": "Spawner (502)",
     "location": [824, 280, 33],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5cbaed28-9d82-40fd-b67d-ac88476e35a8",
+    "guid": "bc472613-2b05-41aa-af9a-db4ef9e40fd0",
     "name": "Spawner (502)",
     "location": [284, 423, 31],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5e323bcc-473f-476b-af98-4e73294620bf",
+    "guid": "d34f4cf7-eecf-4074-82e9-065d8aa94c1a",
     "name": "Spawner (502)",
     "location": [265, 406, 22],
     "map": "Tokuno",
@@ -958,7 +958,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1ef29dd3-76bb-4068-8a40-9849c0aa9bf1",
+    "guid": "fb71c80f-279b-4f05-8037-e53f05fef9f4",
     "name": "Spawner (502)",
     "location": [289, 477, 32],
     "map": "Tokuno",
@@ -972,300 +972,218 @@
   },
   {
     "type": "Spawner",
-    "guid": "9f5a0e7a-238e-43c1-a3f0-fedd19b8e746",
+    "guid": "31e9bebd-7db7-46c5-a143-e540ca8ccd98",
     "name": "Spawner (502)",
     "location": [326, 454, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "24ae6d4d-ba52-4ce5-adbc-956a168b7896",
+    "guid": "a4c44311-a4b2-4bc4-8533-2723551964b5",
     "name": "Spawner (502)",
     "location": [765, 189, 42],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "73a10c1b-89ea-4b05-a85b-928eab35f281",
+    "guid": "a83437ce-696c-4d66-93e7-90777f276afb",
     "name": "Spawner (502)",
     "location": [360, 466, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7d671380-7f33-4082-b5fa-de107117208a",
+    "guid": "aa9544d7-3f07-4e3f-b2e1-0a37763cd99b",
     "name": "Spawner (502)",
     "location": [384, 460, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Mongbat", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9e3c3942-33a2-441b-9c1d-b6ccb10a6cb4",
+    "guid": "e6108ac2-0a40-4c99-a006-ee8b9d3950b9",
     "name": "Spawner (502)",
     "location": [418, 463, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Mongbat", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9d84bd7d-1901-4ead-bbd0-bdece81cf6db",
+    "guid": "516cda7d-9e69-4aba-9e5d-9fded4599601",
     "name": "Spawner (502)",
     "location": [425, 443, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "365a7a58-8313-41f4-8329-e92dc88a87a9",
+    "guid": "149dab9c-9eba-43fc-922d-6f0c001552a4",
     "name": "Spawner (502)",
     "location": [472, 433, 27],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7edd7be4-77b0-4e35-bec2-fa1dd14c4708",
+    "guid": "4dfbc791-7f39-44f7-99e9-4558e98c5055",
     "name": "Spawner (502)",
     "location": [407, 399, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "795a551e-ab09-44ac-996d-eac96c1d74e2",
+    "guid": "1a9c5dc9-b415-4da6-83f1-eab7300e39bf",
     "name": "Spawner (502)",
     "location": [358, 396, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "c6b07ac4-5735-4f3e-842a-6eee2061c116",
+    "guid": "896fbcbf-72c3-4280-bc24-c65df790c56e",
     "name": "Spawner (502)",
     "location": [725, 246, 36],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a4edc6f1-89d5-4a26-bd4c-0ee4a225a783",
+    "guid": "aa3b9c76-9b9c-44f7-94cf-43c7b90277a7",
     "name": "Spawner (502)",
     "location": [769, 152, 12],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMageLord", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fee43098-26ac-4c98-8351-6b3aa0a6a6b4",
+    "guid": "4f48b4b8-cd8e-48fd-815b-04539b2e7295",
     "name": "Spawner (502)",
     "location": [323, 374, 32],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2a4399c2-a2b8-4fee-8c4a-f5aeec85e150",
+    "guid": "adafc69d-7044-4319-8e4a-6e729aabfba0",
     "name": "Spawner (502)",
     "location": [773, 229, 64],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "220c50cd-e712-4c01-bc50-da80a9efa7a2",
+    "guid": "318bacdf-f3b3-4619-95b6-dc8ce45e2f67",
     "name": "Spawner (502)",
     "location": [415, 351, 28],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "0e204063-3ad5-49d8-a677-2179cb933312",
+    "guid": "26a8d09d-b64b-40ab-a798-4df18a9b37a9",
     "name": "Spawner (502)",
     "location": [789, 276, 56],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 40,
-    "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "d3629ba0-7cce-4787-845f-b023ad792eea",
-    "name": "Spawner (502)",
-    "location": [493, 378, 45],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "TsukiWolf", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8fd367d2-d64d-4573-b59d-4599a13e97f9",
-    "name": "Spawner (502)",
-    "location": [454, 374, 32],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "TsukiWolf", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "21d6ef7b-c03c-4bf7-94c7-d0db718ad849",
-    "name": "Spawner (502)",
-    "location": [798, 377, 25],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 40,
-    "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "65f4af21-170b-4c46-9798-7b157327364a",
-    "name": "Spawner (502)",
-    "location": [472, 336, 38],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "c9f216ba-9f75-44fd-a337-81a5a1da867c",
-    "name": "Spawner (502)",
-    "location": [841, 326, 32],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
@@ -1274,33 +1192,115 @@
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMageLord", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "884af9a0-d63c-4bc2-81c0-70ee499882e5",
+    "guid": "796af405-0888-48d6-945b-2da6c9f5578d",
     "name": "Spawner (502)",
-    "location": [907, 292, 19],
+    "location": [493, 378, 45],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Kappa", "maxCount": 8, "probability": 100 },
+      { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "cba2353c-6c72-4abe-b04e-5dbc6fc24027",
+    "name": "Spawner (502)",
+    "location": [454, 374, 32],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Kappa", "maxCount": 8, "probability": 100 },
+      { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2cb5338d-2c87-40b8-bd7a-f6ed6162ecc8",
+    "name": "Spawner (502)",
+    "location": [798, 377, 25],
+    "map": "Tokuno",
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "017e0d53-ee8d-415f-be2d-8ef61ca2a2cd",
+    "guid": "d344dbc9-d8ce-4502-bd9d-09be8e5e1286",
+    "name": "Spawner (502)",
+    "location": [472, 336, 38],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "TsukiWolf", "maxCount": 8, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "435eff18-25d3-4e71-849c-6e8c69c05c9f",
+    "name": "Spawner (502)",
+    "location": [841, 326, 32],
+    "map": "Tokuno",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "RuneBeetle", "maxCount": 6, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 6, "probability": 100 },
+      { "name": "EvilMageLord", "maxCount": 6, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 6, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c1afa53a-2806-4717-9ce7-04b6ac4afeab",
+    "name": "Spawner (502)",
+    "location": [907, 292, 19],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d0734d58-9c91-45c2-8b51-69d73217e9d7",
     "name": "Spawner (502)",
     "location": [526, 299, 26],
     "map": "Tokuno",
@@ -1314,494 +1314,494 @@
   },
   {
     "type": "Spawner",
-    "guid": "a2aeca93-8409-49a4-9ce7-3aedb059721c",
+    "guid": "0eef3fac-cdf6-4f36-bfca-b979d8f936af",
     "name": "Spawner (502)",
     "location": [540, 343, 8],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9fc43513-ec15-4207-97ab-09861fb97d7c",
+    "guid": "436deca6-7510-45d7-84b4-9d5749246ca3",
     "name": "Spawner (502)",
     "location": [527, 393, 53],
     "map": "Tokuno",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "TsukiWolf", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 8, "probability": 100 },
+      { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a43608ac-743d-4704-bca7-7ffcb8169071",
+    "guid": "a25ae4f2-e3d4-4c6c-ae56-10c00f828436",
     "name": "Spawner (502)",
     "location": [566, 430, 35],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3de14a59-5a81-4453-9749-6affeeba5328",
+    "guid": "98e06265-c66b-426c-87f1-fa8bcfbfbd18",
     "name": "Spawner (502)",
     "location": [892, 391, 14],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0b991694-56d8-4397-8635-64ae8eb79bb9",
+    "guid": "3946cdc1-9fcf-40fd-91ab-2f52f6c97592",
     "name": "Spawner (502)",
     "location": [873, 326, 37],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMageLord", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3d7955d2-4dee-4ec1-acba-ac3851dabae7",
+    "guid": "919574b9-7243-4843-94d0-cb4f5b4d0f1b",
     "name": "Spawner (502)",
     "location": [594, 362, 22],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "8dc8a8c9-6229-45fa-90d9-dc4e6a1dec63",
+    "guid": "47a5ecc2-c805-4edf-a622-3f9cc0655911",
     "name": "Spawner (502)",
     "location": [861, 335, 37],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Ronin", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 4, "probability": 100 },
+      { "name": "Ronin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "05a01a2a-80b3-47f9-9784-14e41938749d",
+    "guid": "d7641cb5-bb06-4d5a-9b9d-24413ae09e8c",
     "name": "Spawner (502)",
     "location": [853, 386, 19],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Ronin", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 4, "probability": 100 },
+      { "name": "Ronin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4a42bbf1-f1b6-453a-bbd3-b1da3746ac39",
+    "guid": "270fa492-ee22-44dd-9f22-b83bcd5ce6eb",
     "name": "Spawner (502)",
     "location": [649, 409, 36],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "RaiJu", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RaiJu", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "dd5b7839-9748-4047-9350-763ffb794b67",
+    "guid": "e84fef60-0b86-48d0-8e63-b754a89b1579",
     "name": "Spawner (502)",
     "location": [677, 446, 31],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "BakeKitsune", "maxCount": 1, "probability": 100 },
-      { "name": "Oni", "maxCount": 1, "probability": 100 }
+      { "name": "RevenantLion", "maxCount": 4, "probability": 100 },
+      { "name": "BakeKitsune", "maxCount": 4, "probability": 100 },
+      { "name": "Oni", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "78d6b14f-d8ed-4b61-b26e-9150e4565f14",
+    "guid": "4980823a-bcbe-431e-8ad2-594bf7e28aaf",
     "name": "Spawner (502)",
     "location": [907, 394, 10],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "820e5552-d32d-41ea-88e1-2a846018dbe0",
+    "guid": "e9bf85cd-f6ef-4207-852e-0c8128711512",
     "name": "Spawner (502)",
     "location": [927, 451, 14],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0146782a-0335-4922-a40b-8a0c423d74bf",
+    "guid": "10592fab-f09a-450d-999b-b35b30fe5cb0",
     "name": "Spawner (502)",
     "location": [932, 364, 3],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9f8cd538-2d06-4b1d-9088-5e5004689409",
+    "guid": "e60bef67-7439-47c5-950a-4d6ba75f9456",
     "name": "Spawner (502)",
     "location": [930, 405, 11],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2392cb2c-c378-4bd3-b501-e0e4c47d90b7",
+    "guid": "97c87b67-b804-4135-8bbf-80e2e1595bf2",
     "name": "Spawner (502)",
     "location": [992, 383, 5],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6cb2b8ea-23e8-4fb0-be10-75b845a4dd37",
+    "guid": "b504e238-76e5-4634-a3cc-deb3b3ce3db2",
     "name": "Spawner (502)",
     "location": [997, 407, -2],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7e69b3da-9e28-4a1a-b637-9d49fd26f92d",
+    "guid": "37a35bdc-a33a-47ec-b7d3-e520093ebe29",
     "name": "Spawner (502)",
     "location": [951, 409, 9],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d3b83975-d49e-4816-8d40-f951f8ca4752",
+    "guid": "01d0fd73-f752-4375-9fa8-46a112f9cf01",
     "name": "Spawner (502)",
     "location": [1036, 366, 7],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "c092e5c5-9225-40c6-aa04-69e3c1ec5062",
+    "guid": "19e63dc7-82b4-4a67-94e4-5f016bf5be36",
     "name": "Spawner (502)",
     "location": [1034, 293, 21],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "33b57c7b-f4fa-4517-ae3d-bdd66a501a15",
+    "guid": "0a66af15-e45e-41be-a474-91e6ff754ae5",
     "name": "Spawner (502)",
     "location": [980, 278, 30],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Ronin", "maxCount": 1, "probability": 100 },
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 }
+      { "name": "Ronin", "maxCount": 4, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c893f443-492a-4cc3-830d-41989f4cf7bf",
+    "guid": "7142d685-eb27-4e84-92cb-4344d63d739e",
     "name": "Spawner (502)",
     "location": [948, 522, 7],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Ronin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ronin", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "df86c11f-7dd5-488e-a1ce-5f5559150a60",
+    "guid": "9cc378fc-7158-4e04-83ad-895160e6d1ec",
     "name": "Spawner (502)",
     "location": [918, 439, 14],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bcd7c645-3661-4901-8bf2-69a30bde2d21",
+    "guid": "602fd66a-e62a-4963-a028-bbdc0d8f9401",
     "name": "Spawner (502)",
     "location": [951, 467, 12],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c14634e0-f3b4-4cfc-a9ef-ec0c7e2f0be5",
+    "guid": "62fb0bce-3f04-4d27-9341-14e8e9ea6497",
     "name": "Spawner (502)",
     "location": [1150, 1072, 14],
     "map": "Tokuno",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "Kappa", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "Kappa", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "41c95563-111d-4373-94da-04ea78de4ec7",
+    "guid": "46e8f0bc-a094-423d-bd18-23a05efa801d",
     "name": "Spawner (502)",
     "location": [979, 477, 2],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "53bbd0ba-b7ad-4878-b792-49742ca465a5",
+    "guid": "4c61fe6f-8b81-40ed-acef-188199111f3c",
     "name": "Spawner (502)",
     "location": [983, 448, -1],
     "map": "Tokuno",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "32d60afe-e750-414e-ba79-507559c91732",
+    "guid": "91372a1f-eb92-49f7-b7ae-25c8fb221855",
     "name": "Spawner (502)",
     "location": [1051, 473, 7],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "acda12ab-fad7-44dd-b147-1f7d8f14bb82",
+    "guid": "b818a6a6-2295-402a-912f-a3c7b680d71a",
     "name": "Spawner (502)",
     "location": [1062, 469, 8],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DireWolf", "maxCount": 1, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 1, "probability": 100 }
+      { "name": "DireWolf", "maxCount": 4, "probability": 100 },
+      { "name": "TimberWolf", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "37ec6472-45cf-401d-b53e-412ba3701e87",
+    "guid": "f9bbad6f-cb96-4a0d-90dd-5711a4b19ec7",
     "name": "Spawner (502)",
     "location": [1086, 452, 14],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "RuneBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "38ee164f-af8f-43ff-b045-e16b6934479b",
+    "guid": "6c79a8c2-cbae-49ae-87ca-3f32e5c1eda0",
     "name": "Spawner (502)",
     "location": [1084, 464, 15],
     "map": "Tokuno",
@@ -1815,41 +1815,41 @@
   },
   {
     "type": "Spawner",
-    "guid": "408186ff-d5b9-45b7-81d5-bd7922caa4bd",
+    "guid": "866db38c-6643-486a-973b-ed4eb3855e05",
     "name": "Spawner (502)",
     "location": [999, 580, 14],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 },
-      { "name": "TsukiWolf", "maxCount": 1, "probability": 100 }
+      { "name": "KazeKemono", "maxCount": 4, "probability": 100 },
+      { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "68e53c12-796d-42b7-8e4a-18c44c7be2b1",
+    "guid": "d935aa73-025f-4c79-92df-f46b642cda74",
     "name": "Spawner (502)",
     "location": [921, 593, 20],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "MountainGoat", "maxCount": 1, "probability": 100 },
-      { "name": "Sheep", "maxCount": 1, "probability": 100 }
+      { "name": "MountainGoat", "maxCount": 4, "probability": 100 },
+      { "name": "Sheep", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "22a92fcb-98f5-4a99-96b8-b2b9a0ffac46",
+    "guid": "7ddcace7-c82a-4f05-9855-3c4c413e4602",
     "name": "Spawner (502)",
     "location": [1042, 559, 22],
     "map": "Tokuno",
@@ -1863,7 +1863,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "6ff7c79a-ed90-4c3e-9eb6-0e313590e67a",
+    "guid": "0f013060-e752-4f42-972f-9b5638b67aa4",
     "name": "Spawner (502)",
     "location": [1062, 564, 22],
     "map": "Tokuno",
@@ -1877,241 +1877,241 @@
   },
   {
     "type": "Spawner",
-    "guid": "476f44e9-0fa7-40ae-bb4c-85edb3b23fa6",
+    "guid": "d3d6ff67-6800-4108-9039-071f96f48955",
     "name": "Spawner (502)",
     "location": [1092, 563, 22],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "69c7144e-d61e-4da0-a35c-1984d750b7d4",
+    "guid": "8e7895e4-b062-48a8-bf1e-11bd423cf49f",
     "name": "Spawner (502)",
     "location": [1146, 516, 21],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e5d1e6c4-9baa-44d6-9129-c181bee86a89",
+    "guid": "9d0a3d34-a633-4d61-9d84-b2df29ae7051",
     "name": "Spawner (502)",
     "location": [192, 770, 56],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
-    "entries": [{ "name": "Mongbat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Mongbat", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "c226ba8d-7803-4b9b-9c30-082d130b4622",
+    "guid": "4615040f-530b-4719-bd2f-2a201281cd44",
     "name": "Spawner (502)",
     "location": [1214, 531, 28],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d5f269ec-7d41-4f86-aa84-60e1e49ea907",
+    "guid": "2e030c4f-6f79-41b9-add4-785e95c7d016",
     "name": "Spawner (502)",
     "location": [1172, 535, 23],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
+      { "name": "Reaper", "maxCount": 4, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6d36129d-9c4b-41c7-ac7e-3065e95c0c8e",
+    "guid": "ace8cee6-59ca-4e3c-90a7-1285a1758f14",
     "name": "Spawner (502)",
     "location": [1184, 616, 19],
     "map": "Tokuno",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "LavaSerpent", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "LavaSerpent", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "6b720032-be76-4ffe-9efd-98d260408628",
+    "guid": "59600e4f-219e-4f5b-baa3-6714be5b9f7e",
     "name": "Spawner (502)",
     "location": [1058, 799, 13],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Kappa", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ee65a597-210c-4c61-b006-8a595c660f3d",
+    "guid": "3cfcea02-60a9-463b-a5a3-67bae5267235",
     "name": "Spawner (502)",
     "location": [1181, 484, 22],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e7498277-a5cf-471e-aa70-3d4066bc7e5a",
+    "guid": "97ce7efd-4bea-4256-aec4-dde1404c559b",
     "name": "Spawner (502)",
     "location": [1196, 507, 26],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
+      { "name": "Reaper", "maxCount": 4, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e9485db7-9bf0-4207-b2ef-d078164973dc",
+    "guid": "150fd272-8a8e-4313-9751-5b5e9a7b9c74",
     "name": "Spawner (502)",
     "location": [1258, 531, 31],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Reaper", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Reaper", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "53f4da75-9974-4197-b9cd-c350ff6545dd",
+    "guid": "c0f9cdb5-34f3-470e-9080-e375959d95e1",
     "name": "Spawner (502)",
     "location": [1285, 573, 30],
     "map": "Tokuno",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TsukiWolf", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "74dfcfec-45e5-446e-83ca-16222e74a9fc",
+    "guid": "bbf25923-04a3-4b44-9e43-6199ea5a5dd1",
     "name": "Spawner (502)",
     "location": [1321, 619, 38],
     "map": "Tokuno",
-    "count": 5,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 }
+      { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2ff26e7f-39e9-43b6-9cfc-c816c5aaafce",
+    "guid": "6f7d75f4-e71b-474c-8711-00345b91e83d",
     "name": "Spawner (502)",
     "location": [1214, 652, 90],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "HellHound", "maxCount": 4, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
+      { "name": "LavaSerpent", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d99d3f59-efa8-4b82-8eb2-c4e534850a0a",
+    "guid": "a5228c3d-ef03-46e5-9d44-8b2e223eef4d",
     "name": "Spawner (502)",
     "location": [1176, 701, 72],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "HellHound", "maxCount": 4, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
+      { "name": "LavaSerpent", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3421f1c6-9ace-40e0-b55c-42cd31e5cc20",
+    "guid": "5b5ace63-c337-4f3b-b82b-7901942fb71a",
     "name": "Spawner (502)",
     "location": [1144, 667, 70],
     "map": "Tokuno",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "HellHound", "maxCount": 4, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
+      { "name": "LavaSerpent", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4888b00c-3867-4e36-aba7-379675faad0a",
+    "guid": "a5316c66-ce00-4cd1-9151-7508e8d0b6e8",
     "name": "Spawner (502)",
     "location": [1134, 705, 72],
     "map": "Tokuno",
@@ -2122,156 +2122,17 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+      { "name": "HellHound", "maxCount": 4, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
+      { "name": "LavaSerpent", "maxCount": 4, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "33f8d248-e342-4824-a13c-810a8b03461b",
+    "guid": "fa991041-da28-4f4e-980c-8034ec03aa57",
     "name": "Spawner (502)",
     "location": [1105, 753, 44],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "030f777e-512e-4c16-8e7b-931798a2d6e2",
-    "name": "Spawner (502)",
-    "location": [1021, 802, 0],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "GiantBlackWidow", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b5856936-8d66-4ee3-869a-baa45f0a7313",
-    "name": "Spawner (502)",
-    "location": [931, 833, 23],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "93c37225-d9a6-4d6c-8a9d-73585febd5d7",
-    "name": "Spawner (502)",
-    "location": [1006, 857, 15],
-    "map": "Tokuno",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "GiantBlackWidow", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "d09ba32d-07dc-4eff-9573-97127a7a9c97",
-    "name": "Spawner (502)",
-    "location": [980, 815, 15],
-    "map": "Tokuno",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "GiantBlackWidow", "maxCount": 1, "probability": 100 },
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "ee33036a-4320-417d-b775-130d08190426",
-    "name": "Spawner (502)",
-    "location": [892, 652, 17],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "KazeKemono", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "1956d9ec-1587-43bb-b1a7-276ff42b8b6e",
-    "name": "Spawner (502)",
-    "location": [968, 753, 3],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "TsukiWolf", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "fe4220d0-17b3-47ca-b397-cfcc1edfb6e4",
-    "name": "Spawner (502)",
-    "location": [938, 722, 10],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "KazeKemono", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "86ba867e-2f39-48d0-beff-8c749d1a8483",
-    "name": "Spawner (502)",
-    "location": [932, 685, 12],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "KazeKemono", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "80687148-85fd-415e-a1b4-cf662d5f888b",
-    "name": "Spawner (502)",
-    "location": [1120, 1099, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
@@ -2280,32 +2141,171 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "RevenantLion", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 }
+      { "name": "HellCat", "maxCount": 4, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6226ae55-3359-443c-b4b8-40bcc795e8d4",
+    "guid": "e9314780-e6f4-4589-a64b-cd470dc5bb32",
     "name": "Spawner (502)",
-    "location": [840, 714, 16],
+    "location": [1021, 802, 0],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 },
-      { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
+      { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
+      { "name": "GiantBlackWidow", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1d5f131f-b863-46d4-bda2-e3e3b64f1f53",
+    "guid": "cd76c01b-91e2-4a35-b2d2-c30a7ddfe78a",
+    "name": "Spawner (502)",
+    "location": [931, 833, 23],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "Kappa", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7fdc0616-9830-43aa-9d9c-a51bda258191",
+    "name": "Spawner (502)",
+    "location": [1006, 857, 15],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
+      { "name": "GiantBlackWidow", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d393499a-3788-4887-b582-2903c0ae3c16",
+    "name": "Spawner (502)",
+    "location": [980, 815, 15],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
+      { "name": "GiantBlackWidow", "maxCount": 4, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4354759f-5548-41f0-acb1-fbc9c7a9694a",
+    "name": "Spawner (502)",
+    "location": [892, 652, 17],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "KazeKemono", "maxCount": 8, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "67b16a8e-dbf3-46f2-8c1c-89f4601d9f56",
+    "name": "Spawner (502)",
+    "location": [968, 753, 3],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "TsukiWolf", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3c541073-7877-418c-af03-7864f952a710",
+    "name": "Spawner (502)",
+    "location": [938, 722, 10],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "KazeKemono", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f314eaf0-1752-4943-82f0-89288cf6b903",
+    "name": "Spawner (502)",
+    "location": [932, 685, 12],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "KazeKemono", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7ebea3a2-31d2-4ff1-b858-42ce1945f701",
+    "name": "Spawner (502)",
+    "location": [1120, 1099, 25],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
+      { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5da7254b-6b8b-4ad4-b253-e9a3f8b84350",
+    "name": "Spawner (502)",
+    "location": [840, 714, 16],
+    "map": "Tokuno",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "KazeKemono", "maxCount": 8, "probability": 100 },
+      { "name": "EliteNinja", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "65e659e7-d71c-472d-9552-755fd0b7d187",
     "name": "Spawner (502)",
     "location": [883, 604, 39],
     "map": "Tokuno",
@@ -2319,7 +2319,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f7669be6-8709-406e-bd46-4050e1bdae7e",
+    "guid": "a30ef889-c94e-4870-a1c7-6bc38738919d",
     "name": "Spawner (502)",
     "location": [1012, 631, 11],
     "map": "Tokuno",
@@ -2333,88 +2333,119 @@
   },
   {
     "type": "Spawner",
-    "guid": "685d293d-f4c1-4b0a-82a5-07ed90876a3a",
+    "guid": "19a680ca-e843-4941-8443-572b8299cccf",
     "name": "Spawner (502)",
     "location": [1076, 864, 56],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "GiantBlackWidow", "maxCount": 1, "probability": 100 }
+      { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
+      { "name": "GiantBlackWidow", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bafe4af4-c9f4-47fd-bb2d-1495ba0cbc7e",
+    "guid": "22d610e3-5455-4ad6-ba5a-0894e1a78d2e",
     "name": "Spawner (502)",
     "location": [1055, 887, 38],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Kappa", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b0706a6a-4671-4dae-8ea0-3860a017eaf1",
+    "guid": "cb28888e-536f-4588-87ed-32e0151c3557",
     "name": "Spawner (502)",
     "location": [1052, 976, 26],
     "map": "Tokuno",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "aa080446-34ea-4a50-803e-d8c6d24c683b",
+    "guid": "497466b2-aa4f-4a36-b431-53c89e5c6afe",
     "name": "Spawner (502)",
     "location": [1064, 1029, 32],
     "map": "Tokuno",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 8, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c245f671-7530-46ef-96ee-35edb28dca61",
+    "guid": "cfdb9550-70ee-48ef-a165-4dd2b82a5ace",
     "name": "Spawner (502)",
     "location": [1092, 980, 33],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Kappa", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Kappa", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d4d5820a-dd70-4007-8400-f2348fcfe642",
+    "guid": "e5ec5310-19bc-428f-92d3-b6e972280758",
     "name": "Spawner (502)",
     "location": [1086, 910, 61],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      { "name": "Kappa", "maxCount": 4, "probability": 100 },
+      { "name": "EliteNinja", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e8727ee4-86b2-4ac0-bff7-bd503904199f",
+    "name": "Spawner (502)",
+    "location": [637, 357, 32],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "RevenantLion", "maxCount": 4, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "18a2424f-1bd0-4745-b96d-07275a0b28cd",
+    "name": "Spawner (502)",
+    "location": [1282, 898, 12],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
@@ -2422,104 +2453,73 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
-    ]
+    "entries": [{ "name": "Oni", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e8e5af8a-79e8-4478-984b-b6bb302f2df5",
-    "name": "Spawner (502)",
-    "location": [637, 357, 32],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "RevenantLion", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "2170767f-d745-4b95-912c-f8662fcf3588",
-    "name": "Spawner (502)",
-    "location": [1282, 898, 12],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "Oni", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "59c4157f-2809-43d9-a529-cd5ea750e901",
+    "guid": "cabd6472-2187-4078-85e1-437ab1d2d0b8",
     "name": "Spawner (502)",
     "location": [243, 1031, 13],
     "map": "Tokuno",
-    "count": 5,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 12, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 12, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 12, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 12, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9430c0bd-f74a-4b42-be15-9e8bc9fb7005",
+    "guid": "c1c5f957-9c22-4839-9b22-1be66ab4a078",
     "name": "Spawner (502)",
     "location": [742, 1012, 33],
     "map": "Tokuno",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "555db3ff-2165-4923-9262-104e3b3caea0",
+    "guid": "1d54520b-6357-4a09-a9dd-024c82a9dc3d",
     "name": "Spawner (502)",
     "location": [662, 495, 28],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "BakeKitsune", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "BakeKitsune", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "0cf5b274-0adb-41df-8258-8c77c454e784",
+    "guid": "47a74e20-3a5b-43ee-b381-d945b34ddc8a",
     "name": "Spawner (502)",
     "location": [1293, 864, -1],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "LesserHiryu", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "LesserHiryu", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "91129669-c4ed-4738-8e43-97322c636dcf",
+    "guid": "7043408d-2dc5-4c52-b192-2e95d93195c5",
     "name": "Spawner (502)",
     "location": [1321, 847, 13],
     "map": "Tokuno",
@@ -2533,37 +2533,9 @@
   },
   {
     "type": "Spawner",
-    "guid": "5d43e9cf-c1c6-408f-b5ab-81b8f5e1ab13",
+    "guid": "d46fba23-4a24-4736-8701-daa96189ff9f",
     "name": "Spawner (502)",
     "location": [1343, 654, 35],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "LesserHiryu", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "495ad7e8-68c5-499d-8304-5c62552dc4d5",
-    "name": "Spawner (502)",
-    "location": [294, 748, 55],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "57010b48-5af5-45a3-a15e-413405c8e0d7",
-    "name": "Spawner (502)",
-    "location": [198, 924, 42],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
@@ -2571,53 +2543,81 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
+    "entries": [{ "name": "LesserHiryu", "maxCount": 2, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "eb40a1dc-8905-430d-a5b6-180d5629d0a2",
+    "name": "Spawner (502)",
+    "location": [294, 748, 55],
+    "map": "Tokuno",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [{ "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e9f063b7-3bd6-4490-804e-1dcedcd98cc0",
+    "name": "Spawner (502)",
+    "location": [198, 924, 42],
+    "map": "Tokuno",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
-      { "name": "YomotsuWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "KazeKemono", "maxCount": 1, "probability": 100 }
+      { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 },
+      { "name": "KazeKemono", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4ec9631c-de8f-4028-bd74-433150687b7b",
+    "guid": "07e15b51-9db0-4924-8c8e-5626e94a0eec",
     "name": "Spawner (502)",
     "location": [185, 1046, 10],
     "map": "Tokuno",
-    "count": 4,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 12, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 12, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 12, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e42a2b9a-41c2-47fd-8fa2-08cff9887485",
+    "guid": "1382b18e-ee1d-4364-8fe0-604a01e29711",
     "name": "Spawner (502)",
     "location": [210, 1085, 10],
     "map": "Tokuno",
-    "count": 5,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Kappa", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "Kappa", "maxCount": 12, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 12, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 12, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 12, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c723064b-86ab-4218-859f-4b6d351d4002",
+    "guid": "deb29408-0b0a-4bbe-bfee-962353f80e94",
     "name": "Spawner (502)",
     "location": [581, 953, 33],
     "map": "Tokuno",
@@ -2628,31 +2628,17 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Shade", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b1bac669-ae74-440f-bd35-eb302526ef32",
+    "guid": "997db593-15d5-4963-9659-0a372b565d86",
     "name": "Spawner (502)",
     "location": [533, 991, 53],
-    "map": "Tokuno",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "48e114f6-757d-4050-8f39-2f77c964c432",
-    "name": "Spawner (502)",
-    "location": [562, 984, 43],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
@@ -2660,70 +2646,84 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b2ac0fff-06ad-438a-a365-0bb7ad3502a6",
+    "name": "Spawner (502)",
+    "location": [562, 984, 43],
+    "map": "Tokuno",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "65f6b618-4823-4b70-b85c-b1d4e9add406",
+    "guid": "defa7e90-33db-45c3-8ef7-6f5b153bf4cd",
     "name": "Spawner (502)",
     "location": [511, 956, 27],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "63dc8d3b-f19d-4de7-a3f3-79a5b7cc88d9",
+    "guid": "4540125e-93b0-4491-bdee-fd09145a4a6c",
     "name": "Spawner (502)",
     "location": [524, 934, 19],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a15d0373-9872-4df1-b8b1-80e0887e5fd4",
+    "guid": "5bf51fd3-f2c9-49f3-b680-549db2d662fe",
     "name": "Spawner (502)",
     "location": [535, 918, 14],
     "map": "Tokuno",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9fce83a1-c27e-41a0-b954-41001795893c",
+    "guid": "c2d2e12f-2919-4097-81b2-69c88f8d4f63",
     "name": "Spawner (502)",
     "location": [526, 889, 11],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "6ed52ccc-a54e-4eb3-a72f-6dd63b06df58",
+    "guid": "ee8bcfb4-c8aa-46d8-a29c-3350388df282",
     "name": "Spawner (502)",
     "location": [573, 933, 25],
     "map": "Tokuno",
@@ -2734,15 +2734,15 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Shade", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4a15d0cf-6b2f-441d-96f1-63dd24deec23",
+    "guid": "ceff3a89-0382-4aa9-b03d-e5935edcafe7",
     "name": "Spawner (502)",
     "location": [612, 888, 25],
     "map": "Tokuno",
@@ -2753,577 +2753,577 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Shade", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0eb2dd89-976f-4dad-af46-12605a23319c",
+    "guid": "4526aff8-ef6d-4c5b-b1ea-0754687af7bb",
     "name": "Spawner (502)",
     "location": [570, 840, 0],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "558d479a-b51c-4a23-925b-b34835d67b0d",
+    "guid": "3cc7a85a-0c2e-4368-8912-0c52aef08729",
     "name": "Spawner (502)",
     "location": [601, 930, 32],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "SkeletalMage", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "962e2bcd-57a5-4e07-b390-28c75e5d9964",
+    "guid": "8dcd72ef-b063-43c7-ae83-84dd5d2389c2",
     "name": "Spawner (502)",
     "location": [638, 866, 23],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a9afed11-2fcc-40e9-8e7a-cf93190c277a",
+    "guid": "9723d0f8-bdca-4e26-a59c-750042c787a3",
     "name": "Spawner (502)",
     "location": [666, 896, 28],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9f8f223a-0b4b-44de-856e-ec05ac82bddd",
+    "guid": "3247cd95-f365-49a5-8a8d-efa7b29def12",
     "name": "Spawner (502)",
     "location": [700, 826, 36],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Orc", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b8b13567-bc5c-4cb0-a92f-5e23e1a2b33e",
+    "guid": "ddecebbf-fc04-45ad-9eea-328790b80fc0",
     "name": "Spawner (502)",
     "location": [715, 831, 36],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Orc", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f5a9892e-b367-4efa-b1b0-b8be5e249daf",
+    "guid": "a2b02241-de57-4e42-908a-d89b90ae45d3",
     "name": "Spawner (502)",
     "location": [725, 823, 24],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "52701f93-112e-4017-af2e-3785e56e9390",
+    "guid": "de26b10f-8b26-4f72-92aa-058a19600dd2",
     "name": "Spawner (502)",
     "location": [771, 824, 16],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "bc374876-cd1f-40e1-aba4-71c9e03fa200",
+    "guid": "73b7620d-f5f9-4fdb-9379-831522388d84",
     "name": "Spawner (502)",
     "location": [737, 853, 35],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "0fbe963b-f52d-4ba8-9eed-8f5752787d6d",
+    "guid": "243f4da3-3b86-46e7-afd0-66b9e67a506e",
     "name": "Spawner (502)",
     "location": [709, 877, 18],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "bfa75f1a-f5b0-4498-856b-7c176b72a9f7",
+    "guid": "462cc023-8496-4574-8963-5577ce18642d",
     "name": "Spawner (502)",
     "location": [683, 857, 31],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Orc", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Orc", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "47f08ac8-f9fe-4fcf-b383-b775d1e14dfe",
+    "guid": "67cd30f3-8ec3-4cbb-91b5-a2074fab67f4",
     "name": "Spawner (502)",
     "location": [667, 943, 43],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f65dbf08-7540-4029-b121-685f5d0b7f28",
+    "guid": "c41c2c47-c049-41b3-b4cf-b48cc130a9e0",
     "name": "Spawner (502)",
     "location": [619, 981, 45],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "81a61cd9-d66c-4a82-89c4-8c5631d86267",
+    "guid": "1f22b0f9-3a7d-4520-935a-7d3e965708d4",
     "name": "Spawner (502)",
     "location": [588, 1012, 62],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9133862f-391f-47c6-adc4-c8e430dc5e77",
+    "guid": "7537f1f7-5755-4e45-ba02-7f4a79ccb98b",
     "name": "Spawner (502)",
     "location": [644, 1005, 55],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0523d079-6d9d-4e1a-8e1f-5e1feafaac8f",
+    "guid": "9ed6e580-23db-415f-a93d-4a1841495166",
     "name": "Spawner (502)",
     "location": [668, 986, 46],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 }
+      { "name": "Orc", "maxCount": 4, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "91b767ce-2e31-450e-b76e-27812bfd885b",
+    "guid": "bd996179-baa6-48a6-b065-5371b0592cfd",
     "name": "Spawner (502)",
     "location": [688, 979, 44],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 }
+      { "name": "Orc", "maxCount": 4, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "82544453-44dd-4376-a10c-163bd742e75d",
+    "guid": "2c226f07-9334-453c-b888-63f6f7bffeb4",
     "name": "Spawner (502)",
     "location": [680, 956, 44],
     "map": "Tokuno",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Skeleton", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f3ee05a0-0e97-46c3-8bca-9d5781cda4fe",
+    "guid": "692aae7e-d475-458e-8d26-a15b280edd8f",
     "name": "Spawner (502)",
     "location": [722, 916, 40],
     "map": "Tokuno",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetle", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "666555ba-8950-4692-9be1-89691292ea08",
+    "guid": "8fb6a683-1f7b-4364-9538-2db139f0288e",
     "name": "Spawner (502)",
     "location": [729, 934, 42],
     "map": "Tokuno",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d68b09e3-8d79-4a11-a85e-77f5ead0c343",
+    "guid": "990e1da9-704d-4e3d-b1a6-9180cea7dabe",
     "name": "Spawner (502)",
     "location": [771, 979, 29],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "70e5541b-8947-4b72-b01b-a5aaabc42aaa",
+    "guid": "904d1a0d-b3b7-43b4-b37f-5c8a61bffbdb",
     "name": "Spawner (502)",
     "location": [803, 961, 14],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "71964711-e596-4239-9533-f9a2840ad23a",
+    "guid": "76c890d5-23df-453d-bb6b-d1e6789384c3",
     "name": "Spawner (502)",
     "location": [819, 944, 22],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 }
+      { "name": "Orc", "maxCount": 4, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "17320c55-de21-4279-bf86-b5e73eba446c",
+    "guid": "86222a57-5629-47c3-8a8d-977853e8081c",
     "name": "Spawner (502)",
     "location": [792, 920, 31],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2a789cb0-e62e-4965-b4ef-f0a21b02da71",
+    "guid": "ed3f775c-f53d-46b2-8a53-bc325a2cb088",
     "name": "Spawner (502)",
     "location": [794, 890, 31],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }
+      { "name": "Orc", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2cf28edc-514b-433a-9150-7f1efe81568c",
+    "guid": "b332005a-d3b2-4d5a-a527-6858e5197c0b",
     "name": "Spawner (502)",
     "location": [819, 902, 27],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 }
+      { "name": "Orc", "maxCount": 4, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5ff28b7e-2517-4ddf-871b-13fb6c09ec9d",
+    "guid": "eb58e0a4-29a4-4f28-a54b-226136752d59",
     "name": "Spawner (502)",
     "location": [770, 875, 30],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "29c0555b-3634-4528-a5e0-f1c157b91676",
+    "guid": "19703e47-77ae-4ee1-97ba-199e119d633d",
     "name": "Spawner (502)",
     "location": [760, 941, 37],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 },
-      { "name": "DeathwatchBeetle", "maxCount": 1, "probability": 100 }
+      { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
+      { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1529d84c-f219-40a8-81d0-5b090b8cd418",
+    "guid": "1a53a4f7-a748-48c5-b72c-40315e1b6cc8",
     "name": "Spawner (502)",
     "location": [874, 971, 45],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "39964e63-134a-49c5-95a4-23f7af0e8b96",
+    "guid": "414e159b-efdc-4c32-be33-60f677efc824",
     "name": "Spawner (502)",
     "location": [1105, 855, 50],
     "map": "Tokuno",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "GiantBlackWidow", "maxCount": 1, "probability": 100 }
+      { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
+      { "name": "GiantBlackWidow", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c0ed65a2-c691-4547-ba30-7bb53aa71d19",
+    "guid": "3e4489f8-0e90-420b-a546-8628a6b39871",
     "name": "Spawner (502)",
     "location": [926, 145, 49],
     "map": "Tokuno",
-    "count": 10,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
       { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
       { "name": "LadyOfTheSnow", "maxCount": 2, "probability": 100 },
-      { "name": "PolarBear", "maxCount": 2, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
       { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f269baa8-723b-45d1-a9de-d675a1dfe3d7",
+    "guid": "9412516d-cb2a-4ea7-a03d-9ea7354b5437",
     "name": "Spawner (502)",
     "location": [879, 128, 44],
     "map": "Tokuno",
-    "count": 10,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
       { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
       { "name": "LadyOfTheSnow", "maxCount": 2, "probability": 100 },
-      { "name": "PolarBear", "maxCount": 2, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
       { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bae01154-6556-460d-86a3-6d8c5ac013d7",
+    "guid": "2a2f5196-88ac-4cc7-9f02-d08890632f18",
     "name": "Spawner (502)",
     "location": [914, 55, 36],
     "map": "Tokuno",
-    "count": 10,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
       { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
       { "name": "LadyOfTheSnow", "maxCount": 2, "probability": 100 },
-      { "name": "PolarBear", "maxCount": 2, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
       { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "03772976-92a3-4f00-95f7-54b6418f5f00",
+    "guid": "63477a04-4f55-4c09-b594-0031d9d4e25d",
     "name": "Spawner (502)",
     "location": [947, 103, 46],
     "map": "Tokuno",
-    "count": 10,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
       { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
       { "name": "LadyOfTheSnow", "maxCount": 2, "probability": 100 },
-      { "name": "PolarBear", "maxCount": 2, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
       { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8d822d9d-e14f-4748-a8e7-67c1abb2b466",
+    "guid": "3416dcdb-aebf-4f59-8158-bd16a36d460c",
     "name": "Spawner (502)",
     "location": [976, 144, 35],
     "map": "Tokuno",
-    "count": 10,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
       { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
       { "name": "LadyOfTheSnow", "maxCount": 2, "probability": 100 },
-      { "name": "PolarBear", "maxCount": 2, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 },
       { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 }
     ]

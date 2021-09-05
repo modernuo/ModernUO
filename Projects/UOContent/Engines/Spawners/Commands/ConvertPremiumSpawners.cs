@@ -20,12 +20,15 @@ using System.Text.Json;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using Server.Json;
+using Server.Logging;
 using Server.Network;
 
 namespace Server.Engines.Spawners
 {
     public static class ConvertPremiumSpawners
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConvertPremiumSpawners));
+
         public static void Initialize()
         {
             CommandSystem.Register("ConvertPremiumSpawners", AccessLevel.Developer, ConvertPremiumSpawners_OnCommand);
@@ -48,10 +51,10 @@ namespace Server.Engines.Spawners
                 .Execute(new DirectoryInfoWrapper(inputDi))
                 .Files;
 
-            List<FileInfo> files = new List<FileInfo>();
+            List<(FileInfo, string)> files = new List<(FileInfo, string)>();
             foreach (var match in patternMatches)
             {
-                files.Add(new FileInfo(match.Path));
+                files.Add((new FileInfo(match.Path), match.Stem));
             }
 
             if (files.Count == 0)
@@ -60,38 +63,36 @@ namespace Server.Engines.Spawners
                 return;
             }
 
-            var inputDir = Path.Combine(Core.BaseDirectory, args.Arguments[0]);
             var outputDir = Path.Combine(Core.BaseDirectory, args.Arguments[1]);
             var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
 
             for (var i = 0; i < files.Count; i++)
             {
-                var file = files[i];
-                from.SendMessage("ConvertPremiumSpawners: Converting spawners for {0}...", file.Name);
+                var (file, stem) = files[i];
+                from.SendMessage("ConvertPremiumSpawners: Converting spawners for {0}...", stem);
 
                 NetState.FlushAll();
 
                 try
                 {
-                    var relativePath = Path.GetRelativePath(inputDir, file.DirectoryName!);
-                    var fullOutputDir = Path.Combine(outputDir, relativePath);
+                    var stemDir = stem[..^file.Name.Length];
+                    var fullOutputDir = Path.Combine(outputDir, stemDir);
                     AssemblyHandler.EnsureDirectory(fullOutputDir);
-                    ParsePremiumSpawnerFile(file, fullOutputDir, options);
+
+                    var outputFileName = $"{file.Name[..^file.Extension.Length]}.json";
+                    ParsePremiumSpawnerFile(file.FullName, Path.Combine(fullOutputDir, outputFileName), options);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    from.SendMessage(
-                        "ConvertPremiumSpawners: Exception parsing {0}, file may not be in the correct format.",
-                        file.FullName
-                    );
+                    logger.Error(e.ToString());
+                    from.SendMessage($"ConvertPremiumSpawners: Exception parsing {stem}, file may not be in the correct format.");
                 }
             }
         }
 
-        private static void ParsePremiumSpawnerFile(FileInfo file, string outputDirectory, JsonSerializerOptions options)
+        private static void ParsePremiumSpawnerFile(string inputFile, string outputFile, JsonSerializerOptions options)
         {
-            var lines = File.ReadAllLines(file.FullName);
+            var lines = File.ReadAllLines(inputFile);
 
             TimeSpan minTime = TimeSpan.MinValue;
             TimeSpan maxTime = TimeSpan.MinValue;
@@ -153,8 +154,6 @@ namespace Server.Engines.Spawners
                 }
             }
 
-            var outputFile = Path.Combine(outputDirectory, $"{file.Name[..^file.Extension.Length]}.json");
-            Console.WriteLine("Writing to: {0}", outputFile);
             JsonConfig.Serialize(outputFile, json, options);
         }
 
@@ -186,9 +185,13 @@ namespace Server.Engines.Spawners
                     Guid = Guid.NewGuid()
                 };
 
+                var totalCount = 0;
+
                 for (var i = 0; i < 6; i++)
                 {
-                    spawner.Entries.AddRange(CreateSpawnerEntries(parts[i + 1], int.Parse(parts[i + 15])));
+                    var count = int.Parse(parts[i + 16]);
+                    totalCount += count;
+                    spawner.Entries.AddRange(CreateSpawnerEntries(parts[i + 1], count));
                 }
 
                 if (spawner.Entries.Count == 0)
@@ -197,13 +200,7 @@ namespace Server.Engines.Spawners
                     continue;
                 }
 
-                var totalCount = 0;
-                foreach (var entry in spawner.Entries)
-                {
-                    totalCount += entry.SpawnedMaxCount;
-                }
                 spawner.Count = totalCount;
-
                 spawnersList.Add(spawner);
             }
 

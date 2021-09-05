@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "9fe28add-7660-44c9-8659-2fb5bffc2999",
+    "guid": "4563aa47-639e-47f3-a301-c430a6e1777a",
     "name": "Spawner (104)",
     "location": [5187, 603, 0],
     "map": "Trammel",
@@ -13,41 +13,41 @@
     "walkingRange": 35,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "16614520-d0e0-4885-9fc4-7541aa7f0c00",
+    "guid": "94066b8f-d45a-4273-b649-ab593fbe55e8",
     "name": "Spawner (104)",
     "location": [5186, 575, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 12,
-    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "WaterElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d651bc31-4a57-4dcd-ba21-203aeeaecac1",
+    "guid": "f4c26861-33c2-4f4b-af35-62f556e385cb",
     "name": "Spawner (104)",
     "location": [5187, 545, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 6,
     "walkingRange": 25,
-    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Skeleton", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b2a39b54-4dfb-4211-ad0d-09b97141f57d",
+    "guid": "28f3eccc-1c12-4576-ae46-e9cfb11fb19f",
     "name": "Spawner (104)",
     "location": [5163, 567, 0],
     "map": "Trammel",
@@ -59,81 +59,81 @@
     "walkingRange": 25,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ffcaa849-ce8d-4a84-8b6d-e13d68cb68a7",
+    "guid": "b83d71f9-6539-4a90-a43a-4feb8ee48678",
     "name": "Spawner (104)",
     "location": [5145, 553, -40],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 35,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "93e9b77c-2cf3-4576-aa68-ec5e41880fea",
+    "guid": "462bded2-9162-4b79-a1a3-7d35a889f899",
     "name": "Spawner (104)",
     "location": [5147, 579, -50],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7076a306-66de-4edf-8ebe-82818c2ed20a",
+    "guid": "5da72c5b-46fd-4a13-962f-3accc945f462",
     "name": "Spawner (104)",
     "location": [5147, 598, -50],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a137aff3-4c85-479c-a861-3c0e27119555",
+    "guid": "5c3582a8-fa9c-4839-aff6-82457f87f023",
     "name": "Spawner (104)",
     "location": [5145, 622, -50],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cda362c6-a876-413a-a266-b77b4a18d416",
+    "guid": "5018fced-3b89-4654-88ac-143ceed1e566",
     "name": "Spawner (104)",
     "location": [5212, 531, 0],
     "map": "Trammel",
@@ -144,13 +144,13 @@
     "homeRange": 8,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 2, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Spectre", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b28eaa81-25a3-47c8-b2b7-6c1033a971ec",
+    "guid": "d729f42a-87ef-4a42-8a3b-b65ae177ab40",
     "name": "Spawner (104)",
     "location": [5219, 552, 0],
     "map": "Trammel",
@@ -161,15 +161,15 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1b856448-bb99-4205-a4dc-20d8c128b574",
+    "guid": "f2dac00d-2532-4fc4-8ae2-bde51687b3e1",
     "name": "Spawner (104)",
     "location": [5219, 573, 0],
     "map": "Trammel",
@@ -180,19 +180,19 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6f2c6fe7-8931-4a36-8407-f70c914d663a",
+    "guid": "5b1e99f8-bde4-41f5-a76d-78b9dca9844c",
     "name": "Spawner (104)",
     "location": [5145, 618, -50],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -200,12 +200,12 @@
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ec51fac3-336f-42ff-b280-3472b1d22b62",
+    "guid": "d846b9eb-23d3-4b86-8a61-20331e2cf8db",
     "name": "Spawner (104)",
     "location": [5307, 546, 0],
     "map": "Trammel",
@@ -224,7 +224,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5b7950b5-ecd7-44bc-8d0b-0bafff4d39fd",
+    "guid": "4fb75ec8-f949-4480-b573-064a299b34c0",
     "name": "Spawner (104)",
     "location": [5327, 542, 0],
     "map": "Trammel",
@@ -243,7 +243,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ed19c18c-2b6f-470e-805a-530ab434920f",
+    "guid": "3dfec3c5-2cc6-4908-b975-51182b394218",
     "name": "Spawner (104)",
     "location": [5286, 542, 0],
     "map": "Trammel",
@@ -262,7 +262,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bdf0a945-17da-49fc-93c8-2f84fbe56749",
+    "guid": "6ac0a6d7-ac00-48c9-bb46-827c103b44ef",
     "name": "Spawner (104)",
     "location": [5283, 583, 0],
     "map": "Trammel",
@@ -273,13 +273,13 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 }
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0c9d6112-0cce-43a0-9fe3-5e1b3e628e8c",
+    "guid": "b094c982-2cfd-42ff-ab54-b175a134de30",
     "name": "Spawner (104)",
     "location": [5318, 578, 0],
     "map": "Trammel",
@@ -299,24 +299,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "a71ba703-7755-4323-b3ef-e4fc6812ec50",
+    "guid": "564f98cb-f8fe-43dd-a180-9da4652a4f1e",
     "name": "Spawner (104)",
     "location": [5342, 582, 0],
     "map": "Trammel",
-    "count": 5,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
       { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "14d5adc7-cd29-44bf-a8e4-ca5bb72c8f6d",
+    "guid": "8a63e78b-f33d-4502-9760-81c36f272658",
     "name": "Spawner (104)",
     "location": [5299, 603, 0],
     "map": "Trammel",
@@ -329,27 +329,27 @@
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
       { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8796cf71-de8f-47e5-936a-db4711e9158d",
+    "guid": "a44b5c06-0cda-4edc-8468-fa4a00a52b1e",
     "name": "Spawner (104)",
     "location": [5295, 623, -5],
     "map": "Trammel",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 6,
     "walkingRange": 10,
-    "entries": [{ "name": "BoneMagi", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "BoneMagi", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9d13962f-f872-4580-8a57-63ecfcd8c4af",
+    "guid": "9f4cf647-abba-4181-aa0a-b477d21800c4",
     "name": "Spawner (104)",
     "location": [5322, 626, 0],
     "map": "Trammel",
@@ -362,18 +362,18 @@
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
       { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "60f24c85-3823-40c8-a2de-83b49adafca9",
+    "guid": "591e02f3-9855-42a6-ae25-d11d0fbe788b",
     "name": "Spawner (104)",
     "location": [5323, 571, 0],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -381,12 +381,12 @@
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c45fdf54-489e-40d5-961a-9c4de3b1c496",
+    "guid": "d2d34809-99ba-41b9-9f74-ed1a65248ca0",
     "name": "Spawner (104)",
     "location": [5139, 661, 0],
     "map": "Trammel",
@@ -405,21 +405,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "975f2869-efaa-44f2-8938-09bee68cd8a2",
+    "guid": "4afcb2a6-cecf-4d42-a449-de7e061ccd6c",
     "name": "Spawner (104)",
     "location": [5190, 655, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lich", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d3bbe3a1-221d-49ea-9ab4-17cc885d152c",
+    "guid": "7f6975e8-9689-441b-b484-e0c803cf29db",
     "name": "Spawner (104)",
     "location": [5170, 678, 0],
     "map": "Trammel",
@@ -438,7 +438,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "56a6b935-799a-4055-8942-3dd8f61c2051",
+    "guid": "7038def8-3dd9-481a-aff9-b344e58e0122",
     "name": "Spawner (104)",
     "location": [5151, 718, 0],
     "map": "Trammel",
@@ -450,14 +450,14 @@
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 3, "probability": 100 },
+      { "name": "Lich", "maxCount": 3, "probability": 100 },
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
       { "name": "Wraith", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b6cbb7c0-c5d2-4ed7-9ef0-3baa85814972",
+    "guid": "f6f496d1-7f72-4e0a-be1f-e8249bc31633",
     "name": "Spawner (104)",
     "location": [5192, 695, 0],
     "map": "Trammel",
@@ -474,7 +474,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d38f6a1f-57b3-4276-b165-ea9de2b62ff1",
+    "guid": "f3f74896-465e-4cc7-bb83-63d508157390",
     "name": "Spawner (104)",
     "location": [5183, 727, 0],
     "map": "Trammel",
@@ -491,7 +491,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "cde70ecb-4886-401d-9126-79c2c0c46608",
+    "guid": "b0cf1788-6671-41ad-aa47-4e8287fbac5e",
     "name": "Spawner (104)",
     "location": [5212, 674, -20],
     "map": "Trammel",
@@ -510,25 +510,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "9184d9a6-1725-4499-bf31-1b71a184a563",
+    "guid": "cd67b487-cfbb-436c-9623-b05e87602698",
     "name": "Spawner (104)",
     "location": [5219, 734, -20],
     "map": "Trammel",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lich", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7fef2320-abcb-4b91-b3c6-c8378391a5ad",
+    "guid": "20f986bd-7976-415c-bf34-2df8bde4025e",
     "name": "Spawner (104)",
     "location": [5150, 742, 0],
     "map": "Trammel",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -536,13 +536,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 },
       { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "901ea1d3-3ed0-4210-98c8-0638aed73c11",
+    "guid": "bf4c7226-e5d1-4d90-b70c-cc4d3ad472cb",
     "name": "Spawner (104)",
     "location": [5307, 675, -20],
     "map": "Trammel",
@@ -553,45 +553,45 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 2, "probability": 100 }
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
+      { "name": "Lich", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "28dba4f2-9744-4c99-bd94-0c426cf9f13c",
+    "guid": "7a2d79d7-d842-4977-8449-5d7735e73c6f",
     "name": "Spawner (104)",
     "location": [5280, 675, 8],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3761f8d8-ef5c-4673-b6d2-4aa9ed2659ce",
+    "guid": "8f579b88-cb8e-4c17-b795-fd4d1d3d69d2",
     "name": "Spawner (104)",
     "location": [5320, 708, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lich", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "04c14a6d-a588-469b-ad2e-f51e3ac326de",
+    "guid": "a3e5c4ff-6bd0-4380-aebd-47ee3c1c1421",
     "name": "Spawner (104)",
     "location": [5314, 748, -20],
     "map": "Trammel",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -599,19 +599,19 @@
     "walkingRange": 25,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 2, "probability": 100 },
-      { "name": "LichLord", "maxCount": 3, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 },
+      { "name": "Lich", "maxCount": 3, "probability": 100 },
+      { "name": "LichLord", "maxCount": 1, "probability": 100 },
+      { "name": "SilverSerpent", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f8209dd3-9299-4dbd-b4ec-5c900bdb9086",
+    "guid": "6006bae6-ddb4-4c35-9c38-c1378f71e584",
     "name": "Spawner (104)",
     "location": [5267, 690, 0],
     "map": "Trammel",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -619,7 +619,7 @@
     "walkingRange": 35,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 },
       { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   }

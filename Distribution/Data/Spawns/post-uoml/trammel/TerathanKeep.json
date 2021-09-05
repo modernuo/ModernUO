@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "3e0ac525-691e-4062-8fbc-e3e5cfb3d3ee",
+    "guid": "0b2133ab-a3f1-4857-80a2-c41233c499fe",
     "name": "Spawner (121)",
     "location": [5296, 1561, 0],
     "map": "Trammel",
@@ -20,7 +20,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "dd331813-82eb-4219-bfee-30029bd2987c",
+    "guid": "88aac11e-5718-4d06-be82-14b956899e5c",
     "name": "Spawner (121)",
     "location": [5296, 1562, 0],
     "map": "Trammel",
@@ -40,7 +40,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9462c56f-69c2-433e-a059-548905026057",
+    "guid": "fab17e79-c410-496f-8cf8-b7b07363b973",
     "name": "Spawner (121)",
     "location": [5297, 1565, 0],
     "map": "Trammel",
@@ -59,7 +59,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "be6100be-32d5-4aba-8ac3-67ae13dc2508",
+    "guid": "0945ec2d-d81a-4b3e-9c49-4d67c615a056",
     "name": "Spawner (121)",
     "location": [5342, 1553, 0],
     "map": "Trammel",
@@ -78,7 +78,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a71f9838-1fcb-41b8-a8f7-3f988a707507",
+    "guid": "5f285bad-aaa5-40d3-add2-5b550f38e408",
     "name": "Spawner (121)",
     "location": [5342, 1552, 0],
     "map": "Trammel",
@@ -98,7 +98,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1b696aaf-008a-4de6-8469-f53b97ebc341",
+    "guid": "81220dc9-b072-44ff-8b29-3257236c2b25",
     "name": "Spawner (121)",
     "location": [5343, 1551, 0],
     "map": "Trammel",
@@ -117,7 +117,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8645e8ef-8c1a-4b28-b7e4-7fbf657a224c",
+    "guid": "9fb21a92-1084-4819-a2b2-15e4887c701c",
     "name": "Spawner (121)",
     "location": [5334, 1613, 0],
     "map": "Trammel",
@@ -136,7 +136,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8df373ae-d6b3-4d0c-b28e-d72d9e249ff5",
+    "guid": "031eb48a-ab35-4358-b90b-4c6f50b96a38",
     "name": "Spawner (121)",
     "location": [5334, 1614, 0],
     "map": "Trammel",
@@ -156,7 +156,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e4b0d1e9-1315-45a9-b66c-52e9e4fba867",
+    "guid": "656b11cd-88d3-40fb-b9dc-f830f7e22ae5",
     "name": "Spawner (121)",
     "location": [5335, 1615, 0],
     "map": "Trammel",
@@ -175,7 +175,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c14221d4-9c77-4e7c-9dfc-642046d38c90",
+    "guid": "3f984984-b04b-4635-8685-0e4e2eae07a7",
     "name": "Spawner (121)",
     "location": [5348, 1552, 0],
     "map": "Trammel",
@@ -189,21 +189,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "bc174473-1079-456e-96af-7d9de4477297",
+    "guid": "52c5db98-5de5-4d55-9a26-85f3bc461810",
     "name": "Spawner (121)",
     "location": [5345, 1551, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "4a48b120-2dd1-4c81-a8ee-412b8ac76499",
+    "guid": "d6923469-ec40-4861-a6e7-ef21b07024a7",
     "name": "Spawner (121)",
     "location": [5344, 1757, -125],
     "map": "Trammel",
@@ -222,7 +222,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "2beb79d3-d5bd-4fce-8bf0-302a51ba38ed",
+    "guid": "3e3c0553-182a-40da-b633-ef4bf2c42425",
     "name": "Spawner (121)",
     "location": [5345, 1757, -125],
     "map": "Trammel",
@@ -242,7 +242,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5c68c269-7606-43d8-98db-6d64b9975c32",
+    "guid": "cff18fb7-c66e-4c05-bb2e-01f883d660ce",
     "name": "Spawner (121)",
     "location": [5346, 1756, -125],
     "map": "Trammel",
@@ -261,7 +261,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9cfce9c7-25a3-4026-a7aa-6f5fe9b0ac5a",
+    "guid": "50432a43-ccb4-4064-8336-06ea08e4b61e",
     "name": "Spawner (121)",
     "location": [5335, 1706, -70],
     "map": "Trammel",
@@ -280,7 +280,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1246b878-04e0-4ccf-a62b-f307ede1270e",
+    "guid": "f1bd125f-c580-49ef-be95-922862466bad",
     "name": "Spawner (121)",
     "location": [5335, 1707, -70],
     "map": "Trammel",
@@ -300,7 +300,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ce6ec303-c575-474f-afd6-4141c20f6547",
+    "guid": "4cc200d3-c1ba-4433-92ba-fa48868ee0f8",
     "name": "Spawner (121)",
     "location": [5336, 1708, -70],
     "map": "Trammel",
@@ -319,7 +319,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "97121692-967d-48c7-a3bb-d838b35d972b",
+    "guid": "6fe29b7c-0452-4412-a1b9-d0c30c0721fc",
     "name": "Spawner (121)",
     "location": [5270, 1695, 0],
     "map": "Trammel",
@@ -338,7 +338,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0cf1d575-77a5-4e35-91eb-6da7b6c20e8d",
+    "guid": "b116f136-d3a6-43fa-b111-ef38b6ff3efa",
     "name": "Spawner (121)",
     "location": [5270, 1694, 0],
     "map": "Trammel",
@@ -358,7 +358,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "56bd5aee-2453-4051-9c2e-d7e01cd8ba56",
+    "guid": "245b8698-8502-4d28-a477-04532306bfd3",
     "name": "Spawner (121)",
     "location": [5271, 1693, 0],
     "map": "Trammel",
@@ -377,7 +377,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a12c8b3b-1aed-46d6-8134-0a83fe0d5f20",
+    "guid": "c9238348-7288-4d4f-97c2-9df88a2981b3",
     "name": "Spawner (121)",
     "location": [5365, 1707, -71],
     "map": "Trammel",
@@ -391,21 +391,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "0666031e-d939-4a50-859b-173b4bd16ac4",
+    "guid": "2ce3592b-1ef9-4c42-8731-660451045829",
     "name": "Spawner (121)",
     "location": [5363, 1709, -75],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "201c8fcf-7737-47ef-b4ec-01acdfc72fda",
+    "guid": "7c3950c7-e1df-4308-905f-f987fe5c9b99",
     "name": "Spawner (121)",
     "location": [5176, 1702, 0],
     "map": "Trammel",
@@ -424,7 +424,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b49440bb-95eb-42ff-856c-359e8c708e81",
+    "guid": "bf601676-5f93-4b75-ae89-ac1b1a4774f6",
     "name": "Spawner (121)",
     "location": [5176, 1701, 2],
     "map": "Trammel",
@@ -444,7 +444,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "70cd6cf4-01d2-4bea-96dc-9ef6cd1d9203",
+    "guid": "45a4e9ce-7994-4faa-bca4-adaf4e330450",
     "name": "Spawner (121)",
     "location": [5177, 1700, 1],
     "map": "Trammel",
@@ -463,7 +463,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "649589c5-5dc9-4dc4-9832-c15d79221278",
+    "guid": "7c337921-7949-4be3-bd19-9353b66560ae",
     "name": "Spawner (121)",
     "location": [5132, 1624, 0],
     "map": "Trammel",
@@ -482,7 +482,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "711da322-6be4-4a57-815a-48ddd1f98fd7",
+    "guid": "27edcd48-0444-44f7-a6d2-dbf5e2bb08f1",
     "name": "Spawner (121)",
     "location": [5132, 1623, 0],
     "map": "Trammel",
@@ -502,7 +502,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "98a176f3-d195-4105-9cb4-24b7415641c2",
+    "guid": "c3d9ecd4-8f8e-42a2-9029-b585a881657f",
     "name": "Spawner (121)",
     "location": [5134, 1625, 0],
     "map": "Trammel",
@@ -521,7 +521,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "413f095d-f2f4-488d-8f83-2d429db2b607",
+    "guid": "bdcd9c84-b005-4f1e-8c9f-0af0f8800d38",
     "name": "Spawner (121)",
     "location": [5160, 1586, -15],
     "map": "Trammel",
@@ -540,7 +540,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "2159766a-dee8-4e73-a6d2-32d84ce32034",
+    "guid": "f27e8d0a-6a88-40e1-b02b-97b2c550065c",
     "name": "Spawner (121)",
     "location": [5163, 1585, -15],
     "map": "Trammel",
@@ -560,7 +560,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d03480e2-ee60-4acc-b5f4-b8eb76c74efd",
+    "guid": "286c764e-4d51-42fa-97d5-86fc2f4902f8",
     "name": "Spawner (121)",
     "location": [5161, 1584, -15],
     "map": "Trammel",
@@ -579,7 +579,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bfe58438-b6d9-4480-8f25-e6566ee91de8",
+    "guid": "1a9ae4d0-2900-4a34-a4b0-72d5ed252665",
     "name": "Spawner (121)",
     "location": [5200, 1565, 0],
     "map": "Trammel",
@@ -598,7 +598,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "655d418c-977b-480b-b597-d5bddcb4760d",
+    "guid": "b0fde845-3212-41e0-8f65-c457b0570a53",
     "name": "Spawner (121)",
     "location": [5201, 1566, 0],
     "map": "Trammel",
@@ -618,7 +618,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ae496bc2-99fc-45ec-970f-98ab9057faec",
+    "guid": "8af3286d-17b3-4447-8292-ee407d69f826",
     "name": "Spawner (121)",
     "location": [5200, 1568, 0],
     "map": "Trammel",

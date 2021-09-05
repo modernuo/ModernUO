@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "1e3e41e6-3c52-4805-b756-ce17ca1190f9",
+    "guid": "81cb310e-ae13-4fca-bd6e-3bb693d0ef0a",
     "name": "Spawner (223)",
     "location": [1400, 1623, 28],
     "map": "Felucca",
@@ -15,7 +15,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "6b0dc456-95df-46b2-b73a-998a654f965c",
+    "guid": "b902cab2-6165-44ca-b583-814d9d3849a0",
     "name": "Spawner (223)",
     "location": [1400, 1628, 28],
     "map": "Felucca",
@@ -29,7 +29,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "27a4b4e7-8227-4841-b2e6-c932111cda7f",
+    "guid": "e284edef-ae7d-4ed1-8620-441dfb4618c9",
     "name": "Spawner (223)",
     "location": [1521, 1457, 15],
     "map": "Felucca",
@@ -43,7 +43,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "346894b1-f02f-4da6-b855-f4560ee5fca1",
+    "guid": "e97a4cd6-1170-4ab3-abf2-58b0c8e241bd",
     "name": "Spawner (223)",
     "location": [1525, 1457, 15],
     "map": "Felucca",
@@ -57,7 +57,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a8e354ca-c58a-49e9-b80b-0f69ed558d3f",
+    "guid": "1d916eb1-ed25-4d3b-a9cd-995e97630ed8",
     "name": "Spawner (223)",
     "location": [1662, 1611, 19],
     "map": "Felucca",
@@ -71,7 +71,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d3f73752-0da0-424e-9d93-cf0b8f1817f9",
+    "guid": "409f20ec-24eb-4ac4-9768-ee6467476f0c",
     "name": "Spawner (223)",
     "location": [1421, 1698, 0],
     "map": "Felucca",
@@ -85,7 +85,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b64f8c99-4646-4baa-ba34-1236156850e9",
+    "guid": "70250667-d0b4-488e-95e3-c660bcab2428",
     "name": "Spawner (223)",
     "location": [2254, 1207, 0],
     "map": "Felucca",
@@ -99,7 +99,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "eb47b804-5a0e-4248-8805-89047325d0bc",
+    "guid": "b4bb5474-dfc9-46a7-ba0d-9b117110cb0b",
     "name": "Spawner (223)",
     "location": [5290, 3987, 37],
     "map": "Felucca",
@@ -113,7 +113,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "7ca26672-6be4-4583-9210-9a0532c0ab46",
+    "guid": "34e31c96-47b7-4760-8446-d0a1f816d315",
     "name": "Spawner (223)",
     "location": [3652, 2619, 0],
     "map": "Felucca",
@@ -127,7 +127,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "350301e9-2228-4a59-9479-98a31d0d72f2",
+    "guid": "ee365839-216c-4690-89cc-f5d83845f669",
     "name": "Spawner (223)",
     "location": [1330, 3778, 0],
     "map": "Felucca",
@@ -141,7 +141,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "84ff25e8-b3f4-4716-8cf6-b620ac0ede79",
+    "guid": "84f9a05f-e99b-4ece-9156-1978b789c47f",
     "name": "Spawner (223)",
     "location": [3721, 2161, 20],
     "map": "Felucca",
@@ -155,7 +155,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d072cb97-2c47-4862-bad7-045afd87b1cc",
+    "guid": "9c4d2d6b-56e8-4473-959d-9cc9199c11e1",
     "name": "Spawner (223)",
     "location": [2515, 557, 0],
     "map": "Felucca",
@@ -169,7 +169,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c315fe62-93a6-42f0-9104-46a8c94faa0b",
+    "guid": "4de7c0e5-3203-4a68-a2d6-8e78652191fc",
     "name": "Spawner (223)",
     "location": [4451, 1153, 0],
     "map": "Felucca",
@@ -183,7 +183,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "554731a8-65be-4b03-9f6f-ec229ac20c7c",
+    "guid": "ba1a481e-d5da-4445-af80-eee525b3e3c9",
     "name": "Spawner (223)",
     "location": [3773, 1308, 0],
     "map": "Felucca",
@@ -197,7 +197,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b300b847-c10a-4e9d-ad34-a3470e14808c",
+    "guid": "8517bfc1-8190-42fb-bfec-f5a0a03488cc",
     "name": "Spawner (223)",
     "location": [5685, 3148, -4],
     "map": "Felucca",
@@ -211,7 +211,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f205cf69-4eaa-4c2b-8f43-142d509cdae3",
+    "guid": "92425d73-e98b-46d3-b391-77582cda9302",
     "name": "Spawner (223)",
     "location": [2891, 3474, 15],
     "map": "Felucca",
@@ -225,7 +225,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "168dec1a-bcdb-4c45-b3e4-eb795ae062f8",
+    "guid": "fa72d822-a3e5-43f5-9eb6-f800b3e49553",
     "name": "Spawner (223)",
     "location": [603, 2141, 0],
     "map": "Felucca",
@@ -239,7 +239,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fd0c2b87-53be-4c5a-b025-9b5dfee06247",
+    "guid": "c5d53f85-e6b8-4791-a77e-d241fab79d05",
     "name": "Spawner (223)",
     "location": [1914, 2687, 0],
     "map": "Felucca",
@@ -253,7 +253,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ca5d3a28-fc46-4b2a-8fdb-7bb95fe15356",
+    "guid": "0f9c22dd-0738-4b96-b652-3171ed867cbd",
     "name": "Spawner (223)",
     "location": [1829, 2811, 0],
     "map": "Felucca",
@@ -267,7 +267,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "2124e6da-d185-4016-baab-02e54e2c7090",
+    "guid": "a65b533b-cb58-4d72-8c9b-5375a7e7ad02",
     "name": "Spawner (223)",
     "location": [2895, 686, 0],
     "map": "Felucca",
@@ -281,7 +281,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "dc5cfaba-38c3-4032-b58f-132d4d44509b",
+    "guid": "0f1fbc08-b932-424b-956a-f78082db8525",
     "name": "Spawner (223)",
     "location": [627, 864, 0],
     "map": "Felucca",
@@ -295,22 +295,22 @@
   },
   {
     "type": "Spawner",
-    "guid": "80cea843-7e5c-4b69-9aaf-7ef60dfd47c4",
+    "guid": "9119d23e-0857-4d0c-a03e-c345aafdd7fe",
     "name": "Spawner (223)",
     "location": [1399, 3743, -21],
     "map": "Felucca",
-    "count": 30,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "HireBard", "maxCount": 1, "probability": 100 },
-      { "name": "HireBardArcher", "maxCount": 1, "probability": 100 },
-      { "name": "HireBeggar", "maxCount": 1, "probability": 100 },
-      { "name": "HireFighter", "maxCount": 1, "probability": 100 },
-      { "name": "HireMage", "maxCount": 1, "probability": 100 },
+      { "name": "HireBard", "maxCount": 5, "probability": 100 },
+      { "name": "HireBardArcher", "maxCount": 5, "probability": 100 },
+      { "name": "HireBeggar", "maxCount": 5, "probability": 100 },
+      { "name": "HireFighter", "maxCount": 5, "probability": 100 },
+      { "name": "HireMage", "maxCount": 5, "probability": 100 },
       { "name": "HireRanger", "maxCount": 5, "probability": 100 },
       { "name": "HireRangerArcher", "maxCount": 5, "probability": 100 },
       { "name": "HireSailor", "maxCount": 5, "probability": 100 },
@@ -320,7 +320,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "652689fc-49d1-4a9f-a38f-0f5e6ceb7cc5",
+    "guid": "63416791-9505-4a1e-ab72-91c9438612df",
     "name": "Spawner (223)",
     "location": [1483, 1760, -2],
     "map": "Felucca",
@@ -331,14 +331,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0d47f9c2-6e26-4ef0-bff7-4bfcd6b5189e",
+    "guid": "9522412c-95ef-4067-9b3c-fd814717f9b4",
     "name": "Spawner (223)",
     "location": [1372, 3916, -2],
     "map": "Felucca",
@@ -349,14 +349,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "08b16a8a-bd33-48de-8b43-003f791100e1",
+    "guid": "cb794f47-6ae2-4f92-809d-27c34fbd0b7b",
     "name": "Spawner (223)",
     "location": [1126, 3688, -2],
     "map": "Felucca",
@@ -367,14 +367,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "84226730-10e6-48d7-a666-9e879a204f2e",
+    "guid": "a39b544b-76ab-424d-9f6d-a91cd55e3ed6",
     "name": "Spawner (223)",
     "location": [3674, 2291, -2],
     "map": "Felucca",
@@ -385,14 +385,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2eeb8eb0-f068-40e1-839d-0b52dc513c39",
+    "guid": "259cc674-14e4-4fe2-b8fa-10af4610ffbc",
     "name": "Spawner (223)",
     "location": [4398, 1049, -2],
     "map": "Felucca",
@@ -403,14 +403,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cd04fa3a-a6aa-4c7c-b692-e8562ecad673",
+    "guid": "017be0ee-b224-4daf-9626-6bcb46a4b433",
     "name": "Spawner (223)",
     "location": [3815, 1217, 0],
     "map": "Felucca",
@@ -421,14 +421,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0c09cc6a-35cb-4d81-9d9d-0b16ac8f49e8",
+    "guid": "87354a42-802a-4607-92e9-cd39a5bac46d",
     "name": "Spawner (223)",
     "location": [3749, 1404, 0],
     "map": "Felucca",
@@ -439,14 +439,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e34b074a-473f-4eed-9570-34b78f87d591",
+    "guid": "6301492f-d4ed-4f24-afb2-cbbedb68afe6",
     "name": "Spawner (223)",
     "location": [3645, 2661, -2],
     "map": "Felucca",
@@ -457,14 +457,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "eb95b777-0b47-471f-852f-f72f034ded0a",
+    "guid": "aac6fef9-46e2-44b2-9297-cd812c3b2c7b",
     "name": "Spawner (223)",
     "location": [2994, 3451, 16],
     "map": "Felucca",
@@ -475,14 +475,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cf1d2f73-0fc7-4d19-a29b-5a45e6ae900e",
+    "guid": "ee30f8c4-8c52-4aaf-a974-2e4df4d0e28e",
     "name": "Spawner (223)",
     "location": [673, 2235, -3],
     "map": "Felucca",
@@ -493,14 +493,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c45d1a37-14b1-46a5-abba-2aa156077d91",
+    "guid": "bba7781a-c2fd-486f-8bfa-587c809347d5",
     "name": "Spawner (223)",
     "location": [573, 2246, 0],
     "map": "Felucca",
@@ -511,14 +511,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "75a006e5-735d-485a-a364-008a952538a9",
+    "guid": "380cd112-1791-4b59-8910-9ec257750d3e",
     "name": "Spawner (223)",
     "location": [2068, 2854, 0],
     "map": "Felucca",
@@ -529,14 +529,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f92e883b-c443-4d82-b433-c3f37fa5cbd5",
+    "guid": "710c1e19-1ae1-4131-99c6-184cb4636f03",
     "name": "Spawner (223)",
     "location": [3041, 827, -3],
     "map": "Felucca",
@@ -547,14 +547,14 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d9b7c61c-7640-4455-bbf3-6e266f36c83d",
+    "guid": "d95bb2d0-7f44-4ff3-9c87-93d0ba887e86",
     "name": "Spawner (223)",
     "location": [631, 883, 0],
     "map": "Felucca",
@@ -565,18 +565,18 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "EscortableMage", "maxCount": 1, "probability": 100 },
-      { "name": "SeekerOfAdventure", "maxCount": 1, "probability": 100 },
-      { "name": "Noble", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
+      { "name": "SeekerOfAdventure", "maxCount": 3, "probability": 100 },
+      { "name": "Noble", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e3d95ca7-a7c2-4aac-bda2-b2fd2881269d",
+    "guid": "5ed933bb-802f-444d-855d-c499926302ab",
     "name": "Spawner (223)",
     "location": [1813, 2834, 0],
     "map": "Felucca",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -584,26 +584,26 @@
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cfb78d7f-e334-41d2-8db7-d154533e4369",
+    "guid": "e134aa6f-68a5-48c8-819f-64e2806f8877",
     "name": "Spawner (223)",
     "location": [2875, 675, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 2,
-    "entries": [{ "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel1", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "105c8e21-3a04-4887-b212-48ff5255ad27",
+    "guid": "adee85c7-830f-4ef1-8539-77b5006da4f9",
     "name": "Spawner (223)",
     "location": [2874, 692, 0],
     "map": "Felucca",
@@ -620,7 +620,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f98a852c-5dbb-4f3d-8a82-26dd651e965a",
+    "guid": "23e949aa-940a-4b5a-9ce9-762db82b58a6",
     "name": "Spawner (223)",
     "location": [2884, 692, 0],
     "map": "Felucca",
@@ -631,13 +631,13 @@
     "homeRange": 1,
     "walkingRange": 1,
     "entries": [
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
+      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "89c0d2b0-815b-4bd2-ab63-733dd902f4a3",
+    "guid": "892bd9fc-6385-46b9-9c20-dd9eeb4dcdc8",
     "name": "Spawner (223)",
     "location": [7082, 367, 0],
     "map": "Felucca",
@@ -651,11 +651,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "f4dc485e-49b5-4da8-9144-937bd7c49a8b",
+    "guid": "8e6761b5-a94e-4a95-90da-c08d5966aeb5",
     "name": "Spawner (223)",
     "location": [7063, 350, 0],
     "map": "Felucca",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -663,12 +663,12 @@
     "walkingRange": 4,
     "entries": [
       { "name": "Bolaevin", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 1, "probability": 100 }
+      { "name": "Bird", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "85dd6d62-777b-4a02-bf93-be4128b80007",
+    "guid": "478d5bf8-5043-4d76-9a45-802677f0c30f",
     "name": "Spawner (223)",
     "location": [7010, 363, 0],
     "map": "Felucca",
@@ -682,7 +682,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "6de65fdc-ee7a-4e94-adbe-70547e55d22b",
+    "guid": "c7251678-03dd-4030-8316-2529b932fecb",
     "name": "Spawner (223)",
     "location": [7048, 382, 0],
     "map": "Felucca",
@@ -703,7 +703,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ec5cfd79-eba1-4f5a-9b0d-58dcef7aac31",
+    "guid": "c9a63304-f0da-4144-9982-f8ce6d4c1914",
     "name": "Spawner (223)",
     "location": [6989, 342, 0],
     "map": "Felucca",
@@ -717,7 +717,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "de88aeb8-30fd-4389-bc84-c9e01b9b362b",
+    "guid": "8d5e0ca7-10d5-4475-9aa3-23bdc96210de",
     "name": "Spawner (223)",
     "location": [7053, 338, 0],
     "map": "Felucca",
@@ -734,7 +734,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c1653c8e-c3f9-4707-9ac8-6a7b1a74a343",
+    "guid": "01057a94-5e22-4609-8162-aa947144da30",
     "name": "Spawner (223)",
     "location": [7031, 409, 7],
     "map": "Felucca",
@@ -751,7 +751,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c72446de-e913-4851-b733-95cd82d41b32",
+    "guid": "b9f512c6-5b66-4f2a-9a03-6c0c99d7863f",
     "name": "Spawner (223)",
     "location": [7090, 387, 0],
     "map": "Felucca",

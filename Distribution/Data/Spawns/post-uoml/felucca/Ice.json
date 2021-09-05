@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "e3075cc1-a1a9-44d0-9c0c-cf4c028678ed",
+    "guid": "5a62f325-4e00-49c3-8576-fdd9fcf330e5",
     "name": "Spawner (210)",
     "location": [5771, 224, -2],
     "map": "Felucca",
@@ -15,7 +15,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "75dbf01b-7b95-4ebc-add2-d1615f514355",
+    "guid": "3d3f7414-5249-4ee4-9602-c842af0da38c",
     "name": "Spawner (210)",
     "location": [5799, 188, -6],
     "map": "Felucca",
@@ -26,8 +26,8 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
       { "name": "FrostSpider", "maxCount": 1, "probability": 100 }
@@ -35,7 +35,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1ffce1b9-64ea-4fd4-af1a-f4e4a253404a",
+    "guid": "b8a2691a-996a-4c38-834f-897b972bfe2f",
     "name": "Spawner (210)",
     "location": [5867, 218, -4],
     "map": "Felucca",
@@ -47,13 +47,13 @@
     "walkingRange": 25,
     "entries": [
       { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FrostOoze", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 2, "probability": 100 }
+      { "name": "FrostOoze", "maxCount": 2, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "72751036-25c9-48e6-a1e6-9b9d817e6dbe",
+    "guid": "d31d21b1-8768-4d45-a962-182e67f5a5c0",
     "name": "Spawner (210)",
     "location": [5850, 219, -3],
     "map": "Felucca",
@@ -67,7 +67,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5626133c-2d99-46d6-a4a8-73885d1b7609",
+    "guid": "e111cb63-9804-4eac-96ad-290a0b963c8f",
     "name": "Spawner (210)",
     "location": [5814, 237, 0],
     "map": "Felucca",
@@ -81,7 +81,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a87c46d3-cea7-47e1-889a-78ae7ca0a774",
+    "guid": "d7d771c1-605a-4253-965e-dec048f72502",
     "name": "Spawner (210)",
     "location": [5752, 144, 9],
     "map": "Felucca",
@@ -95,11 +95,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "51d06207-fe8d-4ece-bbad-de91002e787b",
+    "guid": "03498749-3218-4779-8864-b854b36c79f7",
     "name": "Spawner (210)",
     "location": [5839, 159, 0],
     "map": "Felucca",
-    "count": 6,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -116,11 +116,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "791e9349-d6dd-4336-bf8c-92754df1c57e",
+    "guid": "0614ccac-5ffc-4223-8348-cbb5a0f0cc2d",
     "name": "Spawner (210)",
     "location": [5785, 161, -6],
     "map": "Felucca",
-    "count": 6,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -137,7 +137,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1f272d6b-513e-43e9-9329-f4d90462db6d",
+    "guid": "61e8233d-f991-4429-9e4e-c7e0d24201d0",
     "name": "Spawner (210)",
     "location": [5757, 213, -7],
     "map": "Felucca",
@@ -148,54 +148,54 @@
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "Ratman", "maxCount": 3, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 4, "probability": 100 }
+      { "name": "IceSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "Ratman", "maxCount": 1, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "93bbafca-f0c7-4511-bafc-fc8a2b3fe676",
+    "guid": "d8d3fc0f-231c-4d04-b0a3-7191cc4512b2",
     "name": "Spawner (210)",
     "location": [5681, 191, -6],
     "map": "Felucca",
-    "count": 12,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 3, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 3, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 4, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f1e9f01a-a851-49b6-a66b-15d8dac4a594",
+    "guid": "4ab984eb-913e-4b21-a9b2-5242726ae03f",
     "name": "Spawner (210)",
     "location": [5731, 176, -5],
     "map": "Felucca",
-    "count": 19,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 35,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 9, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 9, "probability": 100 },
       { "name": "IceElemental", "maxCount": 9, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ab56e077-5103-4048-bc70-455e89d808ed",
+    "guid": "33003603-a1fc-43a4-b9d7-2408eb2e5e50",
     "name": "Spawner (210)",
     "location": [5848, 226, 0],
     "map": "Felucca",
@@ -209,7 +209,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d6be5262-175d-40fd-8a96-c3bf88af92a2",
+    "guid": "cb37f510-fff9-4c76-8c51-2d59ddd8f715",
     "name": "Spawner (210)",
     "location": [5683, 197, -4],
     "map": "Felucca",
@@ -223,7 +223,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "2c75a1c2-6d31-44c8-9b94-a21685e3c6ff",
+    "guid": "b96eb341-ef4c-4b7e-ba01-6fb487be56a7",
     "name": "Spawner (210)",
     "location": [5721, 147, -1],
     "map": "Felucca",
@@ -237,7 +237,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c452fe41-ac05-495c-8e0f-23ac2b6c2490",
+    "guid": "3bf7b937-9eb6-45fc-81e6-d907910ca62a",
     "name": "Spawner (210)",
     "location": [5758, 139, 5],
     "map": "Felucca",
@@ -251,7 +251,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e9e09103-7788-4565-acbd-019c3f2e83fc",
+    "guid": "1cf83838-f5d3-42f9-8390-f445a01ac889",
     "name": "Spawner (210)",
     "location": [5754, 211, -6],
     "map": "Felucca",
@@ -265,7 +265,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8360403a-ecdc-4f5b-a41b-25780eff3caf",
+    "guid": "fe1657a5-a11c-4fe6-9544-a7ed0d2059b2",
     "name": "Spawner (210)",
     "location": [5833, 242, -2],
     "map": "Felucca",
@@ -279,7 +279,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bffe5f9f-cb97-459b-a6be-7a49d0d39847",
+    "guid": "a3c447a5-c7bb-4826-a5ae-81d8b3863130",
     "name": "Spawner (210)",
     "location": [5854, 227, 0],
     "map": "Felucca",
@@ -293,7 +293,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f0409a71-5254-4507-b6fb-4996a2576511",
+    "guid": "f2eb3f17-d5f4-4c58-a248-825e46a8a0f8",
     "name": "Spawner (210)",
     "location": [5772, 188, -3],
     "map": "Felucca",
@@ -307,7 +307,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ea07fe39-192a-4d25-a4ab-29e9795ce6a9",
+    "guid": "cdb2ea29-4ee5-48c3-9444-018c5003afbd",
     "name": "Spawner (210)",
     "location": [5837, 245, -5],
     "map": "Felucca",
@@ -321,7 +321,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "200aef67-63b9-43ad-bff1-7ab9cb3610f8",
+    "guid": "9b93a6e4-67e5-4d22-aa51-ff84ea98bb72",
     "name": "Spawner (210)",
     "location": [5751, 140, 10],
     "map": "Felucca",
@@ -335,7 +335,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "247eb29e-ba91-48ff-8e7d-c1b07455216d",
+    "guid": "479095c0-02ab-4651-9edc-362d77a65a65",
     "name": "Spawner (210)",
     "location": [5763, 187, 0],
     "map": "Felucca",
@@ -349,7 +349,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "586d92cf-09af-462d-be14-9b68d657b4d3",
+    "guid": "ed18e76c-c568-42fe-9c98-8482c467ff61",
     "name": "Spawner (210)",
     "location": [5756, 203, -2],
     "map": "Felucca",
@@ -363,7 +363,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "4e2b757c-c3f5-43c3-b6e5-a4821eb2c009",
+    "guid": "e89bcb09-65c3-4474-bded-50e62ce3c153",
     "name": "Spawner (210)",
     "location": [5712, 145, -34],
     "map": "Felucca",
@@ -377,7 +377,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9a33ac1b-b0f7-4131-b784-c7169a53d0e1",
+    "guid": "4b8dd28c-f72f-45c5-afc4-84dc637c1e0a",
     "name": "Spawner (210)",
     "location": [5684, 181, -5],
     "map": "Felucca",
@@ -391,25 +391,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "8ea39293-bbfe-45b0-acad-d607d87ca77d",
+    "guid": "8aba961b-8ce4-49ba-9ec8-7861204815c4",
     "name": "Spawner (210)",
     "location": [5831, 358, -1],
     "map": "Felucca",
-    "count": 20,
+    "count": 24,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "RatmanArcher", "maxCount": 12, "probability": 100 },
-      { "name": "RatmanMage", "maxCount": 7, "probability": 100 }
+      { "name": "Ratman", "maxCount": 12, "probability": 100 },
+      { "name": "RatmanArcher", "maxCount": 7, "probability": 100 },
+      { "name": "RatmanMage", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "78fd44d7-c5a1-44d5-a00a-9a06ecc17fbe",
+    "guid": "bca4ab21-15b1-4b04-b698-05d4f8df1f6c",
     "name": "Spawner (210)",
     "location": [5838, 355, 0],
     "map": "Felucca",
@@ -423,7 +423,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0530d9c1-1f5e-4d49-ba60-a01fbf08e15c",
+    "guid": "72473a5f-3d9b-4f69-b3f9-0d266291468a",
     "name": "Spawner (210)",
     "location": [5824, 363, 0],
     "map": "Felucca",
@@ -437,7 +437,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3af352e6-46f7-4276-8637-e37ab46aafd4",
+    "guid": "7b080104-77b8-491b-b8f9-44cec8ecbb65",
     "name": "Spawner (210)",
     "location": [5680, 306, 0],
     "map": "Felucca",
@@ -451,7 +451,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bec95ae2-3bfc-491e-b4d7-62634236c9e5",
+    "guid": "51445c30-3ef8-4c0e-95bc-b12e643e39ba",
     "name": "Spawner (210)",
     "location": [5669, 330, 0],
     "map": "Felucca",
@@ -465,7 +465,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d319205b-d61b-4471-b9ef-a1afb0170439",
+    "guid": "d5ca5e49-cbb2-4079-81f1-c8679fcecb46",
     "name": "Spawner (210)",
     "location": [5696, 303, 0],
     "map": "Felucca",
@@ -479,7 +479,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e046120b-1438-4382-bc07-24abb2e76cf3",
+    "guid": "f522aee5-3ff7-427c-a3f1-31b162a65fbe",
     "name": "Spawner (210)",
     "location": [5682, 314, 0],
     "map": "Felucca",
@@ -493,7 +493,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8df63ea5-6b3b-4d2e-857b-eaa6750d16aa",
+    "guid": "57c38552-9c17-4451-9e53-3a8d2048d2f6",
     "name": "Spawner (210)",
     "location": [5666, 331, 0],
     "map": "Felucca",
@@ -507,7 +507,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "865cf406-9289-42f8-afb7-d068582a9c09",
+    "guid": "89792e6b-89bb-4c0a-8f45-259ab52f6844",
     "name": "Spawner (210)",
     "location": [5676, 331, 0],
     "map": "Felucca",

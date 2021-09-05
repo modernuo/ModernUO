@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "95ce788f-49ae-44ea-8b13-51a853d60f8c",
+    "guid": "73a4bf99-0ec3-40f5-b6c6-86abb6b5b574",
     "name": "Spawner (209)",
     "location": [5923, 48, 22],
     "map": "Felucca",
@@ -18,24 +18,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "c587c0a8-716e-449c-ae58-4cd23a50fb3a",
+    "guid": "4d5d1ad7-e8ec-4072-aaa5-60148b6b1633",
     "name": "Spawner (209)",
     "location": [5911, 55, 22],
     "map": "Felucca",
-    "count": 3,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel1", "maxCount": 2, "probability": 100 }
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
+      { "name": "TreasureChestLevel1", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9f7dbaad-6055-4fbb-84e8-ceda2abcbab9",
+    "guid": "72a58090-313e-407c-88f3-4589706ce720",
     "name": "Spawner (209)",
     "location": [5948, 49, 22],
     "map": "Felucca",
@@ -52,24 +52,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "71ddc17c-e817-40bb-b74c-37087637f1a4",
+    "guid": "55c08276-33f5-4a81-b29d-69f5c6fd6eb6",
     "name": "Spawner (209)",
     "location": [5954, 26, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "46640d57-3467-4921-9303-1992cb5b41b5",
+    "guid": "8193feec-c25b-484d-ae5e-ed08011bdd4f",
     "name": "Spawner (209)",
     "location": [5977, 49, 22],
     "map": "Felucca",
@@ -86,38 +86,38 @@
   },
   {
     "type": "Spawner",
-    "guid": "34fc8a29-54dd-4ae6-9e3e-026bdb266b6f",
+    "guid": "74881cf0-b5c7-4405-bcda-94b3d3baeb31",
     "name": "Spawner (209)",
     "location": [5995, 62, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "FireGargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireGargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9e3890c4-bf41-4424-b94f-8a46f91d1ad9",
+    "guid": "53c930b6-9da5-4543-be7e-3fc576ef5dd2",
     "name": "Spawner (209)",
     "location": [5970, 80, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "410193cd-7c95-41a5-8917-3ff4f690cd44",
+    "guid": "74da3036-3d76-47ba-92ef-e2bf3b9e0ef4",
     "name": "Spawner (209)",
     "location": [5994, 96, 0],
     "map": "Felucca",
@@ -128,61 +128,61 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 2, "probability": 100 }
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2eeca04a-a072-4110-bc22-d29ab9d1728d",
+    "guid": "cc62bdf5-4b80-4d0f-b505-da1072a83a35",
     "name": "Spawner (209)",
     "location": [5946, 75, 22],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2e67fce1-056c-49fe-868c-166b63dfba44",
+    "guid": "5fdc3c1f-8471-405d-82f1-06f97369c994",
     "name": "Spawner (209)",
     "location": [5940, 107, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5a12d305-0f88-4f7a-bc24-096a3ee52eab",
+    "guid": "92be9f7c-c84e-453f-8dc9-fe0080e20789",
     "name": "Spawner (209)",
     "location": [5915, 91, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c113cda2-afa9-4816-9ff9-312c4c976a69",
+    "guid": "7b394cdd-416f-4d19-b797-2bfa1b7bcab6",
     "name": "Spawner (209)",
     "location": [5990, 36, 22],
     "map": "Felucca",
@@ -196,21 +196,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "cbeee25b-67a1-4898-9c98-818ab7bfe3eb",
+    "guid": "98d3590c-691c-41df-a0a5-9306c5fcb9f1",
     "name": "Spawner (209)",
     "location": [5985, 36, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 2,
-    "entries": [{ "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel1", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "82e52e07-3173-447d-a67b-154f9bb81069",
+    "guid": "80419ca6-262a-4219-852b-bebc9d4ed947",
     "name": "Spawner (209)",
     "location": [5989, 25, 22],
     "map": "Felucca",
@@ -224,7 +224,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "24ad536c-241b-4aa5-af1e-417a00bb8823",
+    "guid": "b496ff0c-e786-4745-a5f2-15be500def57",
     "name": "Spawner (209)",
     "location": [5983, 25, 22],
     "map": "Felucca",
@@ -238,7 +238,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0c58293a-a4ac-4144-85fb-6c77f4674b5b",
+    "guid": "c0c1350a-0f7f-4638-aa4f-04652af2a7da",
     "name": "Spawner (209)",
     "location": [5979, 26, 22],
     "map": "Felucca",
@@ -252,7 +252,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1e0a7433-56c0-4dbd-8712-0f3289f51c0e",
+    "guid": "b06bc9bb-e877-4958-a427-4df43a0748b9",
     "name": "Spawner (209)",
     "location": [5981, 84, 0],
     "map": "Felucca",
@@ -266,7 +266,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "690a7ae1-18d9-4249-bc86-50ac39259804",
+    "guid": "e5f7287c-0731-4b03-b76e-0970507df18d",
     "name": "Spawner (209)",
     "location": [5966, 70, 0],
     "map": "Felucca",
@@ -280,7 +280,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d9c557e3-33c5-499b-9bcb-cbe29fc4254d",
+    "guid": "6468fabe-a889-451f-abe7-932bee576a28",
     "name": "Spawner (209)",
     "location": [5958, 65, 0],
     "map": "Felucca",
@@ -294,7 +294,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5e181223-96d0-4160-a782-39cf0cb275ec",
+    "guid": "a29d1eb0-e07b-4c26-99c9-27baf3edb014",
     "name": "Spawner (209)",
     "location": [5937, 65, 0],
     "map": "Felucca",
@@ -308,7 +308,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "2fe3e005-6f3e-47f5-9f30-60bb5609bc19",
+    "guid": "e76e56fd-8b68-4535-b03d-4bed039daa55",
     "name": "Spawner (209)",
     "location": [5921, 81, 0],
     "map": "Felucca",
@@ -322,7 +322,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "97b8d7ab-845b-485c-af42-75d3828a56c9",
+    "guid": "de879ff4-9c86-4eec-b48c-959301ff83f3",
     "name": "Spawner (209)",
     "location": [5972, 86, 0],
     "map": "Felucca",
@@ -336,7 +336,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "68d191f3-1b14-4bd9-ab87-5bc5e0b10ac6",
+    "guid": "a404b892-ba90-4ac7-be93-43460c5e53f0",
     "name": "Spawner (209)",
     "location": [5917, 93, 0],
     "map": "Felucca",
@@ -350,7 +350,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "eb42d5a0-0469-464c-a71a-f1c16130ae9f",
+    "guid": "15eda36a-c00b-49dc-bfe3-a50d92123c2f",
     "name": "Spawner (209)",
     "location": [5929, 77, 0],
     "map": "Felucca",
@@ -364,7 +364,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1ed7544e-1a83-49fd-b1df-61f9ca402c2f",
+    "guid": "cd40cd10-9531-4ccf-bdfe-c92c83bc3bc3",
     "name": "Spawner (209)",
     "location": [5945, 78, 22],
     "map": "Felucca",
@@ -378,11 +378,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "1e1327ed-f122-443e-89ab-a0edac200199",
+    "guid": "2acf18bc-021c-4853-a78e-fa673dbdd76b",
     "name": "Spawner (209)",
     "location": [5967, 80, 0],
     "map": "Felucca",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -390,119 +390,119 @@
     "walkingRange": 6,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "08540116-eaca-4043-975f-0e215f5905f5",
+    "guid": "e3d52e48-5710-4ba5-b239-e09a0cd5e872",
     "name": "Spawner (209)",
     "location": [5961, 169, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c7fe3dd2-c2de-433f-8f28-745dcfbb6fed",
+    "guid": "e4ef1d65-a740-496e-a5b4-f85312633052",
     "name": "Spawner (209)",
     "location": [5992, 146, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Daemon", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Daemon", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e957453b-3e97-4f44-ab43-99bf2d6bd5f0",
+    "guid": "ab5876e4-9cba-4a92-afbe-9030402dcbf3",
     "name": "Spawner (209)",
     "location": [5945, 175, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "367e12e8-364a-44ab-a44f-231c40be6887",
+    "guid": "90cd0867-831d-46d8-8d07-8ae5d65b1e47",
     "name": "Spawner (209)",
     "location": [5956, 145, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "afc70653-ee1a-4a71-a544-7acc3fae7fb9",
+    "guid": "d0d0c487-cfd5-4e29-a45d-f814967797fa",
     "name": "Spawner (209)",
     "location": [5917, 156, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2a5d258c-7a28-490e-be43-320cb460a7b4",
+    "guid": "26ac95c2-5558-4077-9998-c5beeb7e8046",
     "name": "Spawner (209)",
     "location": [5914, 195, 22],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7fc81ca3-1939-4956-89b9-3db668e99f02",
+    "guid": "ccd087df-54f2-4696-bc15-a3be48470aa5",
     "name": "Spawner (209)",
     "location": [5918, 223, 44],
     "map": "Felucca",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "682df2da-1d37-4945-af16-4891a6694ec8",
+    "guid": "317df32a-2992-4f4a-b978-87eee963d561",
     "name": "Spawner (209)",
     "location": [5918, 235, 44],
     "map": "Felucca",
@@ -513,13 +513,13 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bbccc5ca-9f4c-45c9-b70f-66af02bfbd22",
+    "guid": "b34b407a-7f63-4257-bdc1-78f3163a5f75",
     "name": "Spawner (209)",
     "location": [5954, 225, 22],
     "map": "Felucca",
@@ -530,30 +530,30 @@
     "homeRange": 12,
     "walkingRange": 20,
     "entries": [
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 4, "probability": 100 }
+      { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6ab86951-ce7c-4752-a1db-6ece4804c571",
+    "guid": "9bfd8f39-d27c-48e1-bfeb-0162f4881a2e",
     "name": "Spawner (209)",
     "location": [5986, 203, 44],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 12,
     "walkingRange": 25,
     "entries": [
-      { "name": "Gazer", "maxCount": 1, "probability": 100 },
-      { "name": "GazerLarva", "maxCount": 3, "probability": 100 }
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "GazerLarva", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ace156c6-dd93-47ce-a98a-64a6eac0e7c0",
+    "guid": "33301994-da3d-4178-ae8c-f7db535784a0",
     "name": "Spawner (209)",
     "location": [5983, 169, 0],
     "map": "Felucca",
@@ -567,7 +567,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ab507d4a-7b38-440d-ac9f-70d0df3658c9",
+    "guid": "fb0d4918-8977-44d0-92d9-7e6267b62a7f",
     "name": "Spawner (209)",
     "location": [5992, 147, 0],
     "map": "Felucca",
@@ -581,7 +581,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "379deee1-9b8d-4198-be88-5c4d7fc91a0e",
+    "guid": "a782d10c-59bd-4bd3-8eb9-2a78719fd9b4",
     "name": "Spawner (209)",
     "location": [5970, 169, 0],
     "map": "Felucca",
@@ -595,7 +595,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "dcab63c6-48ed-4278-b890-aa34b2e6c101",
+    "guid": "225cdfdd-2f24-4c49-87ef-0448507da17f",
     "name": "Spawner (209)",
     "location": [5997, 145, 0],
     "map": "Felucca",
@@ -609,7 +609,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c610d54d-2df8-4434-8e4b-ee34d04f17bf",
+    "guid": "3ce75ae6-093f-4f10-b5c1-272a9776c2d2",
     "name": "Spawner (209)",
     "location": [5978, 185, 44],
     "map": "Felucca",
@@ -623,7 +623,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "06a9fb26-2898-4385-9cba-f441576ce536",
+    "guid": "b90a3c30-9749-4223-9e81-9188a30c727d",
     "name": "Spawner (209)",
     "location": [5962, 217, 22],
     "map": "Felucca",
@@ -637,7 +637,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "de41194b-df4c-4a02-ab06-57fc6d319823",
+    "guid": "85e48021-924e-49bd-90e0-85b01b1021bc",
     "name": "Spawner (209)",
     "location": [5989, 186, 44],
     "map": "Felucca",
@@ -651,7 +651,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b704df0e-ff05-47d4-b409-08d35fd15a84",
+    "guid": "b0687b35-95d6-48e1-b075-55fd1faa5063",
     "name": "Spawner (209)",
     "location": [5926, 230, 44],
     "map": "Felucca",
@@ -665,45 +665,9 @@
   },
   {
     "type": "Spawner",
-    "guid": "5b0de09b-1c7c-4670-9a39-2310ec0135a6",
+    "guid": "e978a387-2727-4c39-85c8-16b3c6f2969e",
     "name": "Spawner (209)",
     "location": [6094, 154, -22],
-    "map": "Felucca",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 20,
-    "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "97fc5383-f5be-4aab-98e5-27ed1bb4c2e0",
-    "name": "Spawner (209)",
-    "location": [6122, 170, 0],
-    "map": "Felucca",
-    "count": 5,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 20,
-    "entries": [
-      { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 1, "probability": 100 },
-      { "name": "GazerLarva", "maxCount": 3, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "183ce093-b4ee-4c23-b466-50ad23d66987",
-    "name": "Spawner (209)",
-    "location": [6086, 178, 0],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -712,16 +676,34 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 2, "probability": 100 }
+      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d5c9b2cd-afde-47ce-8fe0-8f8e53f23cbf",
+    "guid": "93fdf44f-9a95-4a11-b7c2-2d558ca2d437",
     "name": "Spawner (209)",
-    "location": [6119, 219, 22],
+    "location": [6122, 170, 0],
+    "map": "Felucca",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "GazerLarva", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a7569f5b-dad0-419e-a784-af9b8bfc60b0",
+    "name": "Spawner (209)",
+    "location": [6086, 178, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -730,28 +712,46 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
       { "name": "Gazer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a7dca5ba-a023-42f4-b350-63c44e75428b",
+    "guid": "37cd9071-b0bb-41f1-93e1-ee50487edc74",
     "name": "Spawner (209)",
-    "location": [6058, 193, 22],
+    "location": [6119, 219, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
+      { "name": "Gazer", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0605755e-2a6a-45f0-8a14-37e9e7010a13",
+    "guid": "e5b8d01c-2293-42c4-8ed0-4fffcc1e0aff",
+    "name": "Spawner (209)",
+    "location": [6058, 193, 22],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3421a293-1957-4a23-b050-910aaf9f211c",
     "name": "Spawner (209)",
     "location": [6033, 199, 22],
     "map": "Felucca",
@@ -762,31 +762,31 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "StoneGargoyle", "maxCount": 2, "probability": 100 }
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "20101ec3-d55c-4a2e-95ca-4dc10ff4315b",
+    "guid": "572ca10c-4892-4945-b7d4-2b9df1d51d13",
     "name": "Spawner (209)",
     "location": [6052, 156, 0],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 2, "probability": 100 },
-      { "name": "GazerLarva", "maxCount": 3, "probability": 100 }
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "GazerLarva", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1be9f8ab-9884-4c92-8268-decd35ca30b1",
+    "guid": "db6a7440-9c85-400f-9fbc-9ea9c8c69164",
     "name": "Spawner (209)",
     "location": [6121, 166, 0],
     "map": "Felucca",
@@ -800,7 +800,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b60f447a-d14f-4d4e-9eec-a740f55f43a5",
+    "guid": "32f0f7d1-6145-48d7-a6bb-6a3015964780",
     "name": "Spawner (209)",
     "location": [6124, 159, 0],
     "map": "Felucca",
@@ -814,7 +814,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "36b3f80e-bd9c-4b72-a68b-e10d39b33b9e",
+    "guid": "70564f6b-1725-414c-9ef4-d2402e6cfde8",
     "name": "Spawner (209)",
     "location": [6087, 186, 0],
     "map": "Felucca",
@@ -828,7 +828,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "785c5687-3694-4234-aa82-4242a2b822ff",
+    "guid": "5a00adac-4b86-4cde-8520-eb6b51d271ec",
     "name": "Spawner (209)",
     "location": [6060, 158, 0],
     "map": "Felucca",
@@ -842,7 +842,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0037959c-8c03-4c08-84f2-e85d4340fb18",
+    "guid": "b3ea2162-f70f-40ba-92e0-0d1820c4f479",
     "name": "Spawner (209)",
     "location": [6046, 199, 22],
     "map": "Felucca",
@@ -856,7 +856,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "aab474ed-5939-4a6d-9995-a7fccfb7a77d",
+    "guid": "9453078d-36c6-46c3-a5d7-7086780707b8",
     "name": "Spawner (209)",
     "location": [6041, 222, 44],
     "map": "Felucca",
@@ -870,7 +870,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1389aa04-9f5e-4908-ad2d-68831b6851cc",
+    "guid": "07267c9b-1455-47ec-885c-418388fe5df6",
     "name": "Spawner (209)",
     "location": [6125, 221, 22],
     "map": "Felucca",
@@ -884,7 +884,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ab11dc69-15f8-44fc-bdfa-c3b7fafe1a16",
+    "guid": "dd36a876-49a9-43df-b35a-a4ce32499d3d",
     "name": "Spawner (209)",
     "location": [6120, 229, 22],
     "map": "Felucca",
@@ -898,7 +898,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5f46637a-55f0-4974-9383-737236d31998",
+    "guid": "50edd29c-ed4b-4321-a8d7-0b7561cc923b",
     "name": "Spawner (209)",
     "location": [6092, 187, 0],
     "map": "Felucca",
@@ -912,7 +912,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b95637cd-25a8-4702-8699-5d9129ae7eec",
+    "guid": "39726a71-b66c-4013-b625-b32a8ba2d721",
     "name": "Spawner (209)",
     "location": [6041, 230, 44],
     "map": "Felucca",
@@ -926,7 +926,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "eab09f7d-9a5a-49aa-a0f9-29d2168090f4",
+    "guid": "4815a5f0-aca1-4f0e-88b5-ef8aa4df08c2",
     "name": "Spawner (209)",
     "location": [6033, 205, 22],
     "map": "Felucca",
@@ -940,7 +940,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9a8b3173-1ccf-4896-a4c6-199f9f058e7e",
+    "guid": "ba8ccb47-e78a-441e-b626-7bd423077d3c",
     "name": "Spawner (209)",
     "location": [6058, 153, 0],
     "map": "Felucca",
@@ -954,7 +954,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ab14a7cb-ac61-4ebe-bd59-cdc04cab4949",
+    "guid": "92a7ffa1-3c11-424a-a7af-bbb2dc49ac08",
     "name": "Spawner (209)",
     "location": [6064, 96, 22],
     "map": "Felucca",
@@ -965,84 +965,84 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 2, "probability": 100 },
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 },
       { "name": "Imp", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4878881a-4a71-4127-9545-8f9a33fe0841",
+    "guid": "8ee96e4d-2c92-49fa-b01a-40e19ece56d3",
     "name": "Spawner (209)",
     "location": [6081, 83, 21],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9412c441-8999-40d9-85d1-c72f4caba435",
+    "guid": "f67bfb20-8128-4699-936b-37a792b7086c",
     "name": "Spawner (209)",
     "location": [6084, 66, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3831b137-0c9f-412c-8144-e9043118b9fc",
+    "guid": "3c0ee712-4025-43a7-9ec1-3821d758bfe5",
     "name": "Spawner (209)",
     "location": [6106, 67, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ab283894-2eb9-47b5-8a2d-2e78d5e4656f",
+    "guid": "0e5f0f20-5cc7-4e18-87d9-93736f1d71b7",
     "name": "Spawner (209)",
     "location": [6116, 86, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "FireGargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireGargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d08f9155-df82-49d3-87c3-77a893e473cf",
+    "guid": "3302304b-f8a4-4638-9218-4bc883fb2811",
     "name": "Spawner (209)",
     "location": [6099, 51, 22],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "50927a23-7b78-4b80-863a-fbe5dd584dbe",
+    "guid": "da0917f7-f30c-453c-b767-6f825428eb59",
     "name": "Spawner (209)",
     "location": [6107, 37, 22],
     "map": "Felucca",
@@ -1056,7 +1056,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9103df79-c0f8-4bcd-9da8-f7a74960555a",
+    "guid": "7f5c5979-7038-41ed-b055-2d022c8b06e5",
     "name": "Spawner (209)",
     "location": [6054, 45, 0],
     "map": "Felucca",
@@ -1074,7 +1074,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "70d2d9bd-05b8-4a4f-9f66-298351ed76f1",
+    "guid": "7b88586b-18c3-45a4-a6de-900e6ceaa864",
     "name": "Spawner (209)",
     "location": [6108, 66, 0],
     "map": "Felucca",
@@ -1088,7 +1088,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "7ff60801-403f-4a1d-bf86-f1743ad367aa",
+    "guid": "7672fa03-92ce-4855-90ae-66082355c179",
     "name": "Spawner (209)",
     "location": [6117, 81, 0],
     "map": "Felucca",
@@ -1102,7 +1102,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "637ac9dc-7370-4cff-ad36-b45ca1e72a85",
+    "guid": "c0b89eb0-7bc5-47b2-9ff6-32f16b236742",
     "name": "Spawner (209)",
     "location": [6058, 92, 22],
     "map": "Felucca",
@@ -1116,7 +1116,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f47a20ed-c4ce-4c52-b2f4-e1c56e2ba465",
+    "guid": "5dfa30dc-1590-4e52-a339-0ead51e7dd8e",
     "name": "Spawner (209)",
     "location": [6113, 92, 0],
     "map": "Felucca",
@@ -1130,7 +1130,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "01c2217b-30e0-40e7-a292-ba6f9b0fd97d",
+    "guid": "7a2d0ba5-68fe-4672-88da-ecc1a8978c02",
     "name": "Spawner (209)",
     "location": [6107, 70, 0],
     "map": "Felucca",
@@ -1144,7 +1144,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "cfb273b5-3baa-46dc-93e0-d1c8f148c4de",
+    "guid": "349a17a0-eeeb-4b70-bd73-277509e44ac1",
     "name": "Spawner (209)",
     "location": [6081, 44, 22],
     "map": "Felucca",
@@ -1158,7 +1158,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e28e606c-3b49-45ae-b070-f426682df5ff",
+    "guid": "53b614b7-1d3f-42dd-8be6-713057bcd618",
     "name": "Spawner (209)",
     "location": [6097, 36, 22],
     "map": "Felucca",
@@ -1172,7 +1172,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "feadd01d-8a0f-4708-a70f-3072effaa1c6",
+    "guid": "3ba4ffaa-796e-4b04-a9d5-6884f33928ef",
     "name": "Spawner (209)",
     "location": [6064, 96, 22],
     "map": "Felucca",
@@ -1186,7 +1186,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "20db206b-357d-4b88-bb02-6c82a0fb90a2",
+    "guid": "40e9cae3-14ce-4132-be18-0879d45cd22c",
     "name": "Spawner (209)",
     "location": [6086, 45, 22],
     "map": "Felucca",
@@ -1200,7 +1200,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d6326703-1bf1-4185-8247-01cc98b68f02",
+    "guid": "a2b3facc-dd13-4ecd-9a59-5d7cc88565a3",
     "name": "Spawner (209)",
     "location": [6108, 36, 22],
     "map": "Felucca",

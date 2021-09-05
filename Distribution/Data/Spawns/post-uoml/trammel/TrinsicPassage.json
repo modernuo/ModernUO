@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "aa3f15b2-5266-4551-bde0-102295c3681c",
+    "guid": "54cb95e8-ceb7-42de-872f-6c2208f075c1",
     "name": "Spawner (124)",
     "location": [5976, 1387, -22],
     "map": "Trammel",
@@ -12,8 +12,8 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -21,7 +21,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a640ff8d-6e41-4f75-86ee-cbe300e50c05",
+    "guid": "bdc0fed3-7087-4713-9690-92e8878992cb",
     "name": "Spawner (124)",
     "location": [5940, 1356, -2],
     "map": "Trammel",
@@ -32,8 +32,8 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bce06611-b59d-49b3-8271-24c92684a27a",
+    "guid": "1e21e474-6f3f-4e15-b16a-da201c371cfe",
     "name": "Spawner (124)",
     "location": [5912, 1326, 0],
     "map": "Trammel",
@@ -52,8 +52,8 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -61,7 +61,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1cbddc11-9029-47b6-8ef1-374d0793472e",
+    "guid": "098f3928-ea97-4278-ad09-63a202b30fea",
     "name": "Spawner (124)",
     "location": [5956, 1310, -2],
     "map": "Trammel",
@@ -72,8 +72,8 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -81,7 +81,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "badb9b8c-3912-41dd-b50d-518ac07e334e",
+    "guid": "01aee8cd-fc2b-4e00-8d21-991131290d9b",
     "name": "Spawner (124)",
     "location": [5999, 1327, 10],
     "map": "Trammel",
@@ -92,8 +92,8 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -101,11 +101,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "87775144-55bb-4988-a8bf-d72cf4133d29",
+    "guid": "faefe911-578d-4e50-b1b5-918119689237",
     "name": "Spawner (124)",
     "location": [5915, 1302, 2],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -113,7 +113,7 @@
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   }
 ]

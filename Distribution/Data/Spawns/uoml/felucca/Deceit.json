@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "919b34c1-62a6-4ead-b673-8b89af2f606b",
+    "guid": "edd28bb3-5aeb-487a-8571-9e4e4aea0783",
     "name": "Spawner (2204)",
     "location": [5187, 603, 0],
     "map": "Felucca",
@@ -13,41 +13,41 @@
     "walkingRange": 35,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3e3bb1fe-8a81-4c9b-94df-20025c18adc3",
+    "guid": "8507dbe4-8220-4439-adbe-5ef6ebb0fec3",
     "name": "Spawner (2204)",
     "location": [5186, 575, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 12,
-    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "WaterElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5feace6a-3868-4cd3-b2ff-60f995aaf2c4",
+    "guid": "fb409b68-fe6b-422f-bf2d-95c4a92f5e21",
     "name": "Spawner (2204)",
     "location": [5187, 545, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 6,
     "walkingRange": 25,
-    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Skeleton", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5f9e184c-9f15-41c6-a2b1-32962886604c",
+    "guid": "19d96c26-d7f8-4209-9071-00e0117ed1d8",
     "name": "Spawner (2204)",
     "location": [5163, 567, 0],
     "map": "Felucca",
@@ -59,81 +59,81 @@
     "walkingRange": 25,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0022901c-35af-4c3e-b9e3-44db636cb8b7",
+    "guid": "9862d38e-e12f-4e04-932f-0020f3121d9a",
     "name": "Spawner (2204)",
     "location": [5145, 553, -40],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 35,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6609dc2a-e64a-4123-962f-236459df66bd",
+    "guid": "d8ba7cc3-c1f6-4701-b684-850203cb9e37",
     "name": "Spawner (2204)",
     "location": [5147, 579, -50],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b9df7c96-3dd8-4bdd-87e5-715a8b35be3c",
+    "guid": "ab35ec53-2a16-4cdd-a2a1-f1b84922e36c",
     "name": "Spawner (2204)",
     "location": [5147, 598, -50],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "709fec92-f702-4b74-8884-1b2a4c1a7c80",
+    "guid": "d9f4d863-626f-480c-968a-9630e6a9a83d",
     "name": "Spawner (2204)",
     "location": [5145, 622, -50],
     "map": "Felucca",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dbc32f4b-9a56-4096-af25-1fd63364064f",
+    "guid": "cb79321c-1a80-4881-8961-1997174d0458",
     "name": "Spawner (2204)",
     "location": [5212, 531, 0],
     "map": "Felucca",
@@ -144,13 +144,13 @@
     "homeRange": 8,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 2, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Spectre", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3e8f231f-311a-4645-8b2b-e317eeea6952",
+    "guid": "684234a4-21ea-4f94-897b-e92d88a17ced",
     "name": "Spawner (2204)",
     "location": [5219, 552, 0],
     "map": "Felucca",
@@ -161,15 +161,15 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6d89efc3-8652-4ae2-925d-a9e782dd1c3d",
+    "guid": "0b6e0a59-f918-4f77-8bc8-f5b5d944d3a5",
     "name": "Spawner (2204)",
     "location": [5219, 573, 0],
     "map": "Felucca",
@@ -180,19 +180,19 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "63fb391e-78eb-4334-9f8b-a2839fb12655",
+    "guid": "f6b68da6-e7f9-4cb1-870c-079ebff4787b",
     "name": "Spawner (2204)",
     "location": [5145, 618, -50],
     "map": "Felucca",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -200,12 +200,12 @@
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e03487c5-523f-49e8-9c47-25ffb8b0c5b2",
+    "guid": "1cbfae9c-7cc7-45cc-842f-0e75a158cd8a",
     "name": "Spawner (2204)",
     "location": [5307, 546, 0],
     "map": "Felucca",
@@ -224,7 +224,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b0dc269b-cd4c-4097-850d-7d0f3e84b1ed",
+    "guid": "d4857128-1876-473c-951f-418107fad15c",
     "name": "Spawner (2204)",
     "location": [5327, 542, 0],
     "map": "Felucca",
@@ -243,7 +243,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b27ec05e-a3b0-4282-93fe-093caa679771",
+    "guid": "9b00a63e-cf2d-495b-8bd9-61cef122f168",
     "name": "Spawner (2204)",
     "location": [5286, 542, 0],
     "map": "Felucca",
@@ -262,7 +262,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b42f67c6-e9c6-4860-ba19-d8f59b43f166",
+    "guid": "f2fc19bd-75c9-4f68-b59d-6efc65381167",
     "name": "Spawner (2204)",
     "location": [5283, 583, 0],
     "map": "Felucca",
@@ -273,13 +273,13 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 }
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "24656974-75b4-4fff-9891-61c44e5e8cdd",
+    "guid": "7016863d-26dc-4d2e-beda-68031a966ebe",
     "name": "Spawner (2204)",
     "location": [5318, 578, 0],
     "map": "Felucca",
@@ -299,24 +299,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "362ced14-77c3-4e27-b9ca-806837c3388b",
+    "guid": "79dfd73d-ede7-44e2-8651-94cfe5f77314",
     "name": "Spawner (2204)",
     "location": [5342, 582, 0],
     "map": "Felucca",
-    "count": 5,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
       { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cc63aea4-4c53-4be7-bb09-cc74b2f8e93a",
+    "guid": "3d25517a-5b90-4468-9e23-4041f88774e2",
     "name": "Spawner (2204)",
     "location": [5299, 603, 0],
     "map": "Felucca",
@@ -329,27 +329,27 @@
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
       { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d09f2f14-10bb-4e00-bb32-493ef1b65413",
+    "guid": "fa668f86-9786-48bc-a676-5a879e77bee2",
     "name": "Spawner (2204)",
     "location": [5295, 623, -5],
     "map": "Felucca",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 6,
     "walkingRange": 10,
-    "entries": [{ "name": "BoneMagi", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "BoneMagi", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "94d44c37-088b-45bf-bbdc-1fe87907959e",
+    "guid": "efc2564d-a6df-40a6-ad5e-6e6e81d066e9",
     "name": "Spawner (2204)",
     "location": [5322, 626, 0],
     "map": "Felucca",
@@ -362,18 +362,18 @@
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
       { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2fa6a3d5-93b7-4fbd-b805-019e1784ece0",
+    "guid": "350cfc3c-1c89-463d-a93a-f2ab22149d19",
     "name": "Spawner (2204)",
     "location": [5323, 571, 0],
     "map": "Felucca",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -381,12 +381,12 @@
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a1d0644b-9cf8-49b1-bee1-d6b5ca786b37",
+    "guid": "f5e81dcf-fa17-4d36-8aa1-e73496aad012",
     "name": "Spawner (2204)",
     "location": [5139, 661, 0],
     "map": "Felucca",
@@ -405,21 +405,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "bbcac349-b16d-407e-9406-6beef8294b6f",
+    "guid": "750ebeff-4327-4bf0-b285-8c6749530985",
     "name": "Spawner (2204)",
     "location": [5190, 655, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lich", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f026009a-7798-4928-a332-6b397d36c9a6",
+    "guid": "a2d6e670-8282-4b60-bd5f-933e45d3d7a8",
     "name": "Spawner (2204)",
     "location": [5170, 678, 0],
     "map": "Felucca",
@@ -438,7 +438,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fe9f8670-82b2-48f3-b408-dd2f55d38481",
+    "guid": "56939d4e-8a5d-47da-a117-e7f56ff6671b",
     "name": "Spawner (2204)",
     "location": [5151, 718, 0],
     "map": "Felucca",
@@ -450,14 +450,14 @@
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 3, "probability": 100 },
+      { "name": "Lich", "maxCount": 3, "probability": 100 },
+      { "name": "Spectre", "maxCount": 1, "probability": 100 },
       { "name": "Wraith", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "47bad0e4-d028-4ef7-b953-ac9e8ef9ce51",
+    "guid": "0be3858f-bd81-4a27-9a8d-3846c0df0603",
     "name": "Spawner (2204)",
     "location": [5192, 695, 0],
     "map": "Felucca",
@@ -474,7 +474,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "faa5141e-bd0f-40b0-91c9-fea50404edcc",
+    "guid": "cacb456a-f52d-4168-9d59-8df80779a1d6",
     "name": "Spawner (2204)",
     "location": [5183, 727, 0],
     "map": "Felucca",
@@ -491,7 +491,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ab3c81c8-8a52-4392-99b2-b1496d9b505f",
+    "guid": "05d2885b-2b4d-4c4e-907e-2fdbe4d54e69",
     "name": "Spawner (2204)",
     "location": [5212, 674, -20],
     "map": "Felucca",
@@ -510,25 +510,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "e94e8cc2-f994-41e2-a04b-9aaf214dcd9c",
+    "guid": "c69344fe-718b-4e69-83b8-d12141250707",
     "name": "Spawner (2204)",
     "location": [5219, 734, -20],
     "map": "Felucca",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lich", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "304dd8df-b4bf-40cd-8e74-892a5af7fcb0",
+    "guid": "88b5fff8-7124-4a19-83ad-465e8aaf072b",
     "name": "Spawner (2204)",
     "location": [5150, 742, 0],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -536,13 +536,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 },
       { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "aeaa630b-9e41-412e-82be-ad5acd571f4a",
+    "guid": "2a7f9024-7d0f-43a0-8721-52b6a3c27c8f",
     "name": "Spawner (2204)",
     "location": [5307, 675, -20],
     "map": "Felucca",
@@ -553,45 +553,45 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 2, "probability": 100 }
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
+      { "name": "Lich", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6e9ef1ee-a43b-4e86-9111-c3169c4bd913",
+    "guid": "dbb8562b-7557-4347-9faa-a5facf1ba1d4",
     "name": "Spawner (2204)",
     "location": [5280, 675, 8],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "6d35a9f8-d1b6-43e5-a4ce-53df3a8f8a28",
+    "guid": "818d1f8c-a5ba-4ef1-a823-2b04bca2f2e2",
     "name": "Spawner (2204)",
     "location": [5320, 708, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lich", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a5c75d41-ee17-4e41-b3c3-c3198f3dc328",
+    "guid": "35acdddb-eef4-4687-b6d7-6dea19535b71",
     "name": "Spawner (2204)",
     "location": [5314, 748, -20],
     "map": "Felucca",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -599,19 +599,19 @@
     "walkingRange": 25,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 2, "probability": 100 },
-      { "name": "LichLord", "maxCount": 3, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 },
+      { "name": "Lich", "maxCount": 3, "probability": 100 },
+      { "name": "LichLord", "maxCount": 1, "probability": 100 },
+      { "name": "SilverSerpent", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "16b6b85c-a81c-47c2-9fca-4d5af3cd628d",
+    "guid": "25b2761d-dc06-443e-b979-049c7f50abf6",
     "name": "Spawner (2204)",
     "location": [5267, 690, 0],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -619,7 +619,7 @@
     "walkingRange": 35,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 },
       { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   }

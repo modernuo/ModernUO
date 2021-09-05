@@ -1,31 +1,31 @@
 [
   {
     "type": "Spawner",
-    "guid": "11a1f407-c83a-4e50-a708-4f819ffb1071",
+    "guid": "8c2124f4-e175-4198-8cf8-9cf64804fc22",
     "name": "Spawner (2408)",
     "location": [98, 1656, 0],
     "map": "Malas",
-    "count": 34,
+    "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "GoreFiend", "maxCount": 1, "probability": 100 },
-      { "name": "PatchworkSkeleton", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 4, "probability": 100 },
-      { "name": "Zombie", "maxCount": 6, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 6, "probability": 100 },
-      { "name": "RottingCorpse", "maxCount": 4, "probability": 100 }
+      { "name": "GoreFiend", "maxCount": 4, "probability": 100 },
+      { "name": "PatchworkSkeleton", "maxCount": 4, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 6, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 6, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 6, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 6, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8a594e4f-5cf8-41f5-a49f-73d6d71f4e44",
+    "guid": "eaa69fa3-4076-4fc5-950a-fe175713bbd3",
     "name": "Spawner (2408)",
     "location": [104, 1655, 0],
     "map": "Malas",

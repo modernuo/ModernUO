@@ -1,9 +1,52 @@
 [
   {
     "type": "Spawner",
-    "guid": "cd410b69-ff7b-475b-baa0-48e55dba4029",
+    "guid": "b04cfa39-6091-49da-bdba-1b737c266a0a",
     "name": "Spawner (101)",
     "location": [6507, 843, 0],
+    "map": "Trammel",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Tangle", "maxCount": 8, "probability": 100 },
+      { "name": "Bogling", "maxCount": 8, "probability": 100 },
+      { "name": "Alligator", "maxCount": 8, "probability": 100 },
+      { "name": "Reaper", "maxCount": 8, "probability": 100 },
+      { "name": "Corpser", "maxCount": 8, "probability": 100 },
+      { "name": "Changeling", "maxCount": 8, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "713c3e56-33d2-430c-b182-364da7607c83",
+    "name": "Spawner (101)",
+    "location": [6513, 871, 0],
+    "map": "Trammel",
+    "count": 17,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 35,
+    "walkingRange": 35,
+    "entries": [
+      { "name": "GiantSerpent", "maxCount": 17, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 17, "probability": 100 },
+      { "name": "Harpy", "maxCount": 17, "probability": 100 },
+      { "name": "SilverSerpent", "maxCount": 17, "probability": 100 },
+      { "name": "Snake", "maxCount": 17, "probability": 100 },
+      { "name": "Bogling", "maxCount": 17, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c6215ac8-c0e3-4c83-9394-984deb29c773",
+    "name": "Spawner (101)",
+    "location": [6585, 878, 0],
     "map": "Trammel",
     "count": 7,
     "minDelay": "00:05:00",
@@ -12,75 +55,32 @@
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Tangle", "maxCount": 1, "probability": 100 },
-      { "name": "Bogling", "maxCount": 1, "probability": 100 },
-      { "name": "Alligator", "maxCount": 1, "probability": 100 },
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Corpser", "maxCount": 1, "probability": 100 },
-      { "name": "Changeling", "maxCount": 1, "probability": 100 },
-      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+      { "name": "Harpy", "maxCount": 7, "probability": 100 },
+      { "name": "Saliva", "maxCount": 7, "probability": 100 },
+      { "name": "Changeling", "maxCount": 7, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "49c79db1-bcc6-4959-acbf-de841f78c424",
-    "name": "Spawner (101)",
-    "location": [6513, 871, 0],
-    "map": "Trammel",
-    "count": 6,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 35,
-    "walkingRange": 35,
-    "entries": [
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "GiantToad", "maxCount": 1, "probability": 100 },
-      { "name": "Harpy", "maxCount": 1, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "Snake", "maxCount": 1, "probability": 100 },
-      { "name": "Bogling", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "69b7df9c-6af7-4c0b-8719-556c176c6380",
-    "name": "Spawner (101)",
-    "location": [6585, 878, 0],
-    "map": "Trammel",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 10,
-    "entries": [
-      { "name": "Harpy", "maxCount": 1, "probability": 100 },
-      { "name": "Saliva", "maxCount": 1, "probability": 100 },
-      { "name": "Changeling", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "11b98525-709e-4dbf-978c-03c5998447a1",
+    "guid": "025ff0bc-ff5b-4175-b963-1e393ee70543",
     "name": "Spawner (101)",
     "location": [6535, 848, 0],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Abscess", "maxCount": 1, "probability": 100 },
-      { "name": "Hydra", "maxCount": 1, "probability": 100 },
-      { "name": "BogThing", "maxCount": 1, "probability": 100 }
+      { "name": "Abscess", "maxCount": 4, "probability": 100 },
+      { "name": "Hydra", "maxCount": 4, "probability": 100 },
+      { "name": "BogThing", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cdd934ef-de26-4bd8-811c-eb2119563791",
+    "guid": "e840761f-1c5b-45f2-ba91-2a273e9739c2",
     "name": "Spawner (101)",
     "location": [6540, 872, 0],
     "map": "Trammel",
@@ -94,29 +94,29 @@
   },
   {
     "type": "Spawner",
-    "guid": "0baa5aca-7b00-49a9-affb-a8554812a223",
+    "guid": "43cff389-a041-49a6-89fb-cd5111466e70",
     "name": "Spawner (101)",
     "location": [6518, 870, 0],
     "map": "Trammel",
-    "count": 7,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Thrasher", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Bogling", "maxCount": 1, "probability": 100 },
-      { "name": "Alligator", "maxCount": 1, "probability": 100 },
-      { "name": "Coil", "maxCount": 1, "probability": 100 },
-      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+      { "name": "Thrasher", "maxCount": 9, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 9, "probability": 100 },
+      { "name": "Reaper", "maxCount": 9, "probability": 100 },
+      { "name": "Bogling", "maxCount": 9, "probability": 100 },
+      { "name": "Alligator", "maxCount": 9, "probability": 100 },
+      { "name": "Coil", "maxCount": 9, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 9, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5eef9ef6-d644-4c5d-977f-eee955ca0ff2",
+    "guid": "3dbad35b-a4c0-4d6d-b1d7-ad4cb792da01",
     "name": "Spawner (101)",
     "location": [6489, 897, 0],
     "map": "Trammel",
@@ -130,7 +130,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5512fd28-856e-46c1-b6b6-942b7aa3bb1a",
+    "guid": "04ebab40-c487-455f-8bea-211ae849bf2a",
     "name": "Spawner (101)",
     "location": [6518, 879, 0],
     "map": "Trammel",

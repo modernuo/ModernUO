@@ -1,21 +1,21 @@
 [
   {
     "type": "Spawner",
-    "guid": "bc89681a-5d2a-404d-b795-90716066f1e6",
+    "guid": "80a9c1da-dd8f-490b-9742-3f044df6342a",
     "name": "Spawner (120)",
     "location": [5670, 1807, 4],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7e5f9c52-45bc-4745-9993-19682e02735a",
+    "guid": "e2dfbc83-aee1-4e9d-9320-df1cea768140",
     "name": "Spawner (120)",
     "location": [5673, 1846, 1],
     "map": "Trammel",
@@ -29,7 +29,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f096059d-8f76-4b0d-bb60-f78b84596517",
+    "guid": "245aab6c-8a39-4f1b-9aaf-eaafc8117f58",
     "name": "Spawner (120)",
     "location": [5693, 1834, 0],
     "map": "Trammel",
@@ -43,7 +43,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "eb2e539b-812d-4937-9b99-8928151b97e5",
+    "guid": "72ee4a95-09bc-4efa-baf4-4a9c75c7b397",
     "name": "Spawner (120)",
     "location": [5704, 1807, 4],
     "map": "Trammel",
@@ -57,7 +57,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "708eb729-fb33-4897-a026-d37179e5d4d1",
+    "guid": "23a8fa37-4b98-4d53-b5f8-df35c72b6ff2",
     "name": "Spawner (120)",
     "location": [5722, 1820, 5],
     "map": "Trammel",
@@ -71,7 +71,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f187ec9e-3c44-4143-a726-802afe10d0af",
+    "guid": "5dd054bd-aabe-4f16-8029-1c766ba83308",
     "name": "Spawner (120)",
     "location": [5709, 1874, 1],
     "map": "Trammel",
@@ -85,7 +85,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "df7d5726-6918-4887-8623-9e49836fa611",
+    "guid": "196acab9-0c1f-491f-a11e-7aabb7c56648",
     "name": "Spawner (120)",
     "location": [5681, 1886, 2],
     "map": "Trammel",
@@ -99,7 +99,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "22255cf3-6144-461f-9abf-6673db5bd7e6",
+    "guid": "ab7b16cd-6111-412a-9a29-27d1da389076",
     "name": "Spawner (120)",
     "location": [5756, 1857, 4],
     "map": "Trammel",
@@ -113,7 +113,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f6ae21ec-cf0b-4fc5-abc4-bd83fd9ab174",
+    "guid": "274ebd5a-249f-4dd9-92ad-25dcb95d8d06",
     "name": "Spawner (120)",
     "location": [5912, 1800, 1],
     "map": "Trammel",
@@ -127,21 +127,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "0cfbec30-fc4a-4bd4-bca9-db3d04c521c6",
+    "guid": "caba66b7-9425-4fd5-b2f0-576ef17354da",
     "name": "Spawner (120)",
     "location": [5920, 1842, 1],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 30,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "8292b6a0-d221-4cf6-b570-1896b8cfbdc4",
+    "guid": "821a5e93-b1a5-4fef-9ef0-45f6833fa68d",
     "name": "Spawner (120)",
     "location": [5887, 1840, -18],
     "map": "Trammel",
@@ -155,21 +155,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "ce6d135e-40b0-476d-a8b0-e88c1031cc30",
+    "guid": "7b61d8d6-669b-45e7-b478-7df484b954d6",
     "name": "Spawner (120)",
     "location": [5847, 1819, 1],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "394e710e-902f-45ce-9497-46d774eb287c",
+    "guid": "97e600cc-7679-4998-aa88-d6124f061421",
     "name": "Spawner (120)",
     "location": [5829, 1798, 1],
     "map": "Trammel",
@@ -183,7 +183,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5e43369a-9555-4568-9dd6-5c8e21cbe58f",
+    "guid": "f5300b36-01bc-48bd-842d-a8d57f03cdd1",
     "name": "Spawner (120)",
     "location": [5873, 1798, 0],
     "map": "Trammel",
@@ -194,13 +194,13 @@
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 },
-      { "name": "RedSolenQueen", "maxCount": 2, "probability": 100 }
+      { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 },
+      { "name": "RedSolenQueen", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e810ae6e-7947-4c7c-b804-9fb01a0d8b04",
+    "guid": "d325fbe4-9db7-4583-8eb3-dbabaefba8fe",
     "name": "Spawner (120)",
     "location": [5782, 1793, 1],
     "map": "Trammel",
@@ -214,21 +214,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "688a9323-064e-41b2-8fb9-718c254fcb8a",
+    "guid": "e5564c6c-b83e-46be-8af8-c35024c13df3",
     "name": "Spawner (120)",
     "location": [5799, 1857, 5],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3eff51b4-15c6-400f-8cc1-ed66aab683ea",
+    "guid": "3db4e70c-3423-4aaf-b80c-656c9b657c69",
     "name": "Spawner (120)",
     "location": [5815, 1881, 2],
     "map": "Trammel",
@@ -242,35 +242,35 @@
   },
   {
     "type": "Spawner",
-    "guid": "87351730-a040-4c74-9edd-0c9e2337fd4d",
+    "guid": "204955db-7ad2-40bc-a4e4-09a07d091c72",
     "name": "Spawner (120)",
     "location": [5831, 1910, 3],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Beetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Beetle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a4b1e9b5-083b-4a4a-ade0-43a4259af1e9",
+    "guid": "43fe7167-b65e-4e21-ae5f-d52b5c58607c",
     "name": "Spawner (120)",
     "location": [5718, 2024, 4],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9e08de11-16d0-497e-b15a-89d4763e3ae1",
+    "guid": "f780f0c8-a550-427a-99a8-1834f747a867",
     "name": "Spawner (120)",
     "location": [5776, 2019, 2],
     "map": "Trammel",
@@ -284,7 +284,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c58855c7-ab2f-4eec-8842-22d3236d9b42",
+    "guid": "c49c6762-912b-4609-9df3-c33cb865e2b6",
     "name": "Spawner (120)",
     "location": [5782, 2021, -11],
     "map": "Trammel",
@@ -298,21 +298,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "f8a0a50d-8ef2-4f3d-9fc8-4233483064ee",
+    "guid": "75a0efe5-1432-4b69-abeb-69058db48d31",
     "name": "Spawner (120)",
     "location": [5767, 1962, 2],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 50,
-    "entries": [{ "name": "DreadSpider", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "DreadSpider", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "487821d1-cdb9-43c4-8391-d9f3f3e068c8",
+    "guid": "21746fe5-d247-4351-b3fe-e58cfd3db9b2",
     "name": "Spawner (120)",
     "location": [5671, 1979, 0],
     "map": "Trammel",
@@ -326,35 +326,35 @@
   },
   {
     "type": "Spawner",
-    "guid": "e05c4172-87a7-4914-9551-ac330b38e2d2",
+    "guid": "3e0b4f9c-116a-44ad-9cf5-fc8f9179c02c",
     "name": "Spawner (120)",
     "location": [5703, 1991, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 35,
-    "entries": [{ "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3c10cd80-e611-4804-a32e-1227a8baa718",
+    "guid": "ed1dd6c0-4260-415d-8ef1-4185452bdfa3",
     "name": "Spawner (120)",
     "location": [5699, 1921, 2],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 30,
-    "entries": [{ "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5176bd18-e531-45e7-8c13-ddbe4b8cd76f",
+    "guid": "22b0f532-20f7-4b1e-9807-a8ffcd5732d7",
     "name": "Spawner (120)",
     "location": [5748, 1923, 0],
     "map": "Trammel",
@@ -368,11 +368,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "ee52cb81-9688-4918-b537-89faf931c0b3",
+    "guid": "beafc393-f412-4d90-8816-c00a26814f92",
     "name": "Spawner (120)",
     "location": [5736, 1939, 7],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -380,12 +380,12 @@
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenQueen", "maxCount": 1, "probability": 100 },
-      { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
+      { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b2237a85-a698-453e-bb82-7967e44a7058",
+    "guid": "71a71fe3-081c-49d4-9eed-8a280eb9fe95",
     "name": "Spawner (120)",
     "location": [5876, 2018, 3],
     "map": "Trammel",
@@ -399,7 +399,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b6b0b492-8123-4aef-b1f2-88d870234060",
+    "guid": "4ecaeb0d-e3c7-4680-9859-c2879f71cd2c",
     "name": "Spawner (120)",
     "location": [5856, 2018, 0],
     "map": "Trammel",
@@ -413,7 +413,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9005607a-9a17-49df-90c1-6baab1e0ba1d",
+    "guid": "8b45fed3-db59-49c8-b477-b5d76f1c5fd2",
     "name": "Spawner (120)",
     "location": [5838, 2019, 3],
     "map": "Trammel",
@@ -427,49 +427,49 @@
   },
   {
     "type": "Spawner",
-    "guid": "825ffd1e-2cfe-476d-92a8-a8467d430e8b",
+    "guid": "495718b4-baad-4872-8d48-07cec97e5fda",
     "name": "Spawner (120)",
     "location": [5910, 1991, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ef08e610-30c1-4e4a-9917-5298914dc2f8",
+    "guid": "16d57106-d22a-48c5-a704-96675ab47670",
     "name": "Spawner (120)",
     "location": [5837, 1992, -2],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Beetle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Beetle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b292753a-d136-4c73-8329-39cbd6695e03",
+    "guid": "373d83af-8b04-46f3-9602-7199c792fc9f",
     "name": "Spawner (120)",
     "location": [5863, 1958, 2],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2a2b0611-2397-4a2d-9111-033016b80e5a",
+    "guid": "50b74a27-fb2a-4890-a4cf-6309a7c1a2f2",
     "name": "Spawner (120)",
     "location": [5884, 1920, -15],
     "map": "Trammel",
@@ -483,63 +483,63 @@
   },
   {
     "type": "Spawner",
-    "guid": "18b5419f-4293-4300-8ee9-920e1f8ba01a",
+    "guid": "72980a1c-b916-4b7f-95d3-5a66b4f47fca",
     "name": "Spawner (120)",
     "location": [5825, 1968, 4],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "fd272222-9473-42ec-80e8-3c5d47a4669d",
+    "guid": "2c2b2ec3-aabe-4bce-b80a-21292660b372",
     "name": "Spawner (120)",
     "location": [5855, 1932, 3],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "6495ba0d-671f-4f4e-b95c-8aeb80b4957d",
+    "guid": "d1fce2c8-e0e7-454e-9546-d648f27a2bc3",
     "name": "Spawner (120)",
     "location": [5798, 1963, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 35,
-    "entries": [{ "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b5527ade-5059-4eba-b9e6-c31499e3e9c2",
+    "guid": "9b557083-7599-44ef-87f4-f8dff1b09c7e",
     "name": "Spawner (120)",
     "location": [5665, 1868, 11],
     "map": "Trammel",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "AntLion", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "AntLion", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f3503287-fa74-4370-ba8a-ef3e172c3759",
+    "guid": "ed6f6b69-45b4-4591-9865-f7d03509aa8a",
     "name": "Spawner (120)",
     "location": [5707, 1843, -15],
     "map": "Trammel",
@@ -553,11 +553,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "f08a90be-df7e-4a45-9c47-306f41fe64bc",
+    "guid": "7c89c785-3d76-4b10-a309-20ff87727f55",
     "name": "Spawner (120)",
     "location": [3218, 502, 0],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -565,16 +565,16 @@
     "walkingRange": 10,
     "entries": [
       { "name": "BlackSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
-      { "name": "BlackSolenInfiltratorWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "BlackSolenInfiltratorWarrior", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4d806f12-db78-4487-99d2-ae67858b6f35",
+    "guid": "d575dc9a-eb61-43f3-a8c1-758e59010f50",
     "name": "Spawner (120)",
     "location": [1940, 3261, 1],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -582,12 +582,12 @@
     "walkingRange": 10,
     "entries": [
       { "name": "BlackSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
-      { "name": "BlackSolenInfiltratorWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "BlackSolenInfiltratorWarrior", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "828b78c8-9fe5-4475-ae34-def4f39c5f78",
+    "guid": "bcf0b17e-8f7c-4c2e-b13b-a979643031fc",
     "name": "Spawner (120)",
     "location": [1361, 894, 0],
     "map": "Trammel",

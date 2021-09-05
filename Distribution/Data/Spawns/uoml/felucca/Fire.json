@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "a1bf4e4b-b040-42a5-9f5f-c449fa810c21",
+    "guid": "9df65008-f599-43d4-b788-df7138e37320",
     "name": "Spawner (2207)",
     "location": [5693, 1415, 38],
     "map": "Felucca",
@@ -13,13 +13,13 @@
     "walkingRange": 20,
     "entries": [
       { "name": "Slime", "maxCount": 1, "probability": 100 },
-      { "name": "GiantRat", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 }
+      { "name": "GiantRat", "maxCount": 2, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "18a4eb22-85a6-4bee-8a10-75a9062806db",
+    "guid": "d77719be-10a6-40f5-97a0-95dc2e3137b4",
     "name": "Spawner (2207)",
     "location": [5695, 1434, -1],
     "map": "Felucca",
@@ -33,21 +33,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "45da94b1-9d82-47c4-bae2-7449f86fb452",
+    "guid": "a08f5c78-d35f-4755-a0f9-009660acb8c9",
     "name": "Spawner (2207)",
     "location": [5680, 1438, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "EvilMageLord", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "EvilMageLord", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "4b33a61f-8d1c-43af-9b97-f34c861655a4",
+    "guid": "1da36d4f-d8c9-4202-8ce0-b8456969fbe7",
     "name": "Spawner (2207)",
     "location": [5733, 1433, 22],
     "map": "Felucca",
@@ -65,7 +65,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3039ceed-cb57-41b0-b37d-f14937351a50",
+    "guid": "93908c67-1ffd-4196-bceb-b2ca2ec98e5d",
     "name": "Spawner (2207)",
     "location": [5787, 1427, 17],
     "map": "Felucca",
@@ -79,21 +79,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "998c79d9-602c-4fce-ac52-40191db841c8",
+    "guid": "7b6bd2f4-2d4f-4144-ac9a-e34b9d2f88b1",
     "name": "Spawner (2207)",
     "location": [5717, 1465, -2],
     "map": "Felucca",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireElemental", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ad8bb560-77c2-4f22-a67c-0dfe4a5f0aa5",
+    "guid": "b8f9386a-456c-44ff-9baa-0b8234e0c0c4",
     "name": "Spawner (2207)",
     "location": [5744, 1471, 2],
     "map": "Felucca",
@@ -104,15 +104,15 @@
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 3, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 3, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
       { "name": "HellHound", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "779e071c-01a4-4b0d-a5f0-ee48647edd82",
+    "guid": "8524d599-a31d-4fb0-977e-0cff77d2d297",
     "name": "Spawner (2207)",
     "location": [5790, 1451, 7],
     "map": "Felucca",
@@ -131,29 +131,29 @@
   },
   {
     "type": "Spawner",
-    "guid": "aa2961e9-01ce-4431-9d4e-41c8945fdc7f",
+    "guid": "b4c87574-6489-4e20-8642-61051697b2e1",
     "name": "Spawner (2207)",
     "location": [5852, 1468, 1],
     "map": "Felucca",
-    "count": 21,
+    "count": 17,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
     "entries": [
-      { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 4, "probability": 100 },
-      { "name": "HellCat", "maxCount": 6, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 3, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 2, "probability": 100 }
+      { "name": "Lich", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 6, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 6, "probability": 100 },
+      { "name": "HellCat", "maxCount": 1, "probability": 100 },
+      { "name": "HellHound", "maxCount": 3, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "18649dcc-7983-4a3f-a073-e97e8ae8076e",
+    "guid": "1e8b71e5-2c17-4c4d-b933-b887a9b830b4",
     "name": "Spawner (2207)",
     "location": [5852, 1468, 1],
     "map": "Felucca",
@@ -167,7 +167,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d4a82f0f-3502-4eb1-a116-88b940d919a5",
+    "guid": "1f24afdd-09b5-406c-90d6-c714c1811f4e",
     "name": "Spawner (2207)",
     "location": [5859, 1387, 0],
     "map": "Felucca",
@@ -181,7 +181,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0bde6daa-52c4-4209-beb0-255025ad1649",
+    "guid": "a874fb64-451c-4f30-ab6f-e56a9eb71604",
     "name": "Spawner (2207)",
     "location": [5787, 1386, -2],
     "map": "Felucca",
@@ -195,7 +195,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "304d591c-fb9a-4e37-a241-395acbb56bac",
+    "guid": "ce7b5441-9c5e-4426-9ff8-09085c48f899",
     "name": "Spawner (2207)",
     "location": [5818, 1379, 0],
     "map": "Felucca",
@@ -209,7 +209,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3570ea4d-e7ba-468a-a73b-2b74c5fa0ae1",
+    "guid": "4f164c53-9758-4970-91ab-c4de29e3bfc2",
     "name": "Spawner (2207)",
     "location": [5836, 1364, 1],
     "map": "Felucca",
@@ -223,7 +223,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f8a447b0-dabc-423a-bbf7-5f049ba7f9de",
+    "guid": "d009fa2f-ee2e-4adf-828d-917c991f5c8d",
     "name": "Spawner (2207)",
     "location": [5809, 1332, 0],
     "map": "Felucca",
@@ -237,7 +237,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c4e999f5-3190-4c74-bb56-1bf2a29ee2ac",
+    "guid": "2e619be6-7384-415e-a23a-d7327b39a05e",
     "name": "Spawner (2207)",
     "location": [5859, 1341, -1],
     "map": "Felucca",
@@ -251,7 +251,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e5e765ab-9980-41d7-a091-906a344b20ea",
+    "guid": "06b7ba24-826f-4130-b3fb-f367ac6e9a82",
     "name": "Spawner (2207)",
     "location": [5835, 1304, 0],
     "map": "Felucca",
@@ -262,14 +262,14 @@
     "homeRange": 15,
     "walkingRange": 30,
     "entries": [
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Efreet", "maxCount": 4, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
+      { "name": "Efreet", "maxCount": 1, "probability": 100 },
       { "name": "LavaSerpent", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "53ac3bb5-c2ac-4575-a462-ead7fce79def",
+    "guid": "dfe6b8e9-4b85-4f76-a60f-47ae91fd38fa",
     "name": "Spawner (2207)",
     "location": [5867, 1309, 0],
     "map": "Felucca",
@@ -286,7 +286,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "45929927-07ff-4023-9964-9c05bc66c8d7",
+    "guid": "9157324f-0d09-409e-8ace-f0c4dcb44683",
     "name": "Spawner (2207)",
     "location": [5699, 1302, 1],
     "map": "Felucca",
@@ -300,21 +300,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "43ac43a9-f412-41de-8fbd-e334eb331308",
+    "guid": "3bac45c2-6a16-4892-b25c-f6c02788a5f4",
     "name": "Spawner (2207)",
     "location": [5723, 1291, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "bd71d1bf-189d-4aeb-b5b3-8a19d8fa64c0",
+    "guid": "25415970-01ad-463e-b9f0-053c077a209f",
     "name": "Spawner (2207)",
     "location": [5732, 1297, -1],
     "map": "Felucca",
@@ -328,7 +328,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3b8feef2-d54d-4896-b727-1b81d52845d9",
+    "guid": "5bb1395f-d446-42de-bcdf-d257d7ed953a",
     "name": "Spawner (2207)",
     "location": [5667, 1315, 5],
     "map": "Felucca",
@@ -339,13 +339,13 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Efreet", "maxCount": 1, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 2, "probability": 100 }
+      { "name": "Efreet", "maxCount": 2, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b785c48d-1d05-4aff-9b32-8dcef0c2a508",
+    "guid": "5655a639-c25c-446b-9de9-30fb4d294143",
     "name": "Spawner (2207)",
     "location": [5747, 1320, 0],
     "map": "Felucca",
@@ -362,7 +362,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e44b4307-4fa2-48fd-8d16-e9c075fcce6f",
+    "guid": "436c4d7e-5dac-4f1f-a6bf-397e2e768683",
     "name": "Spawner (2207)",
     "location": [5717, 1333, 6],
     "map": "Felucca",
@@ -379,7 +379,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1d57761d-f277-4b8a-82c1-934ea54dfcb8",
+    "guid": "3a206916-74e5-44ec-8c78-bf01a8916f53",
     "name": "Spawner (2207)",
     "location": [5731, 1379, 0],
     "map": "Felucca",
@@ -390,41 +390,41 @@
     "homeRange": 3,
     "walkingRange": 7,
     "entries": [
-      { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "LichLord", "maxCount": 3, "probability": 100 }
+      { "name": "Lich", "maxCount": 3, "probability": 100 },
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "46a864b6-82ff-472e-98c5-8a7fad63d5ab",
+    "guid": "88f058cc-ebdb-48bd-908a-cbb49142fd11",
     "name": "Spawner (2207)",
     "location": [5709, 1364, -1],
     "map": "Felucca",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "HellHound", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "HellHound", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "1eabc90a-91ab-458d-b09a-55d3142cc09d",
+    "guid": "d11e7abf-7396-4fa4-a7a1-8dd69b700907",
     "name": "Spawner (2207)",
     "location": [5691, 1347, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "Daemon", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Daemon", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "fbd35398-7127-48b2-868d-658be661ac82",
+    "guid": "55d34b4f-fbf6-43a0-b8bb-5215ae74c2a6",
     "name": "Spawner (2207)",
     "location": [5678, 1340, -2],
     "map": "Felucca",
@@ -441,7 +441,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "58c51e2a-5631-40a4-8651-473eb6e5945a",
+    "guid": "1d357111-cd98-4c2d-ab92-ead67f9da0e9",
     "name": "Spawner (2207)",
     "location": [5651, 1363, 0],
     "map": "Felucca",
@@ -453,14 +453,14 @@
     "walkingRange": 3,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 5, "probability": 100 },
+      { "name": "HellHound", "maxCount": 5, "probability": 100 },
+      { "name": "LavaSnake", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fc5a19ea-b1b8-42e8-abec-4486f6bfa7bd",
+    "guid": "d00cb0e2-efb1-47c3-a65f-079f2677219c",
     "name": "Spawner (2207)",
     "location": [5654, 1380, 0],
     "map": "Felucca",
@@ -474,7 +474,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "af9fa4d7-2b00-4483-842e-29e9046e4196",
+    "guid": "934c223f-19e3-401c-aaf9-494c751d8c1c",
     "name": "Spawner (2207)",
     "location": [5689, 1387, 1],
     "map": "Felucca",
@@ -488,7 +488,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fad8a862-83fc-4944-be56-d12acb782e68",
+    "guid": "6569aa86-8a7e-4a7d-8b0b-f46badca59c2",
     "name": "Spawner (2207)",
     "location": [5656, 1412, 0],
     "map": "Felucca",
@@ -502,7 +502,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b5403612-a693-4ac8-8fd3-4e9cdd154d35",
+    "guid": "d114e342-f07c-46b9-9164-43bafbd74988",
     "name": "Spawner (2207)",
     "location": [5651, 1402, 0],
     "map": "Felucca",
@@ -516,7 +516,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "390f19a3-4636-433b-8c0f-809b7ef71d07",
+    "guid": "90609dc2-cd78-4057-9b87-6023fc1fa263",
     "name": "Spawner (2207)",
     "location": [5643, 1403, 0],
     "map": "Felucca",
@@ -530,7 +530,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5f11c791-e5fa-46ca-8ff1-48ebddb013e9",
+    "guid": "c60b60b7-79f5-4a77-b9af-c4a9b49d87f1",
     "name": "Spawner (2207)",
     "location": [5651, 1408, 0],
     "map": "Felucca",
@@ -544,7 +544,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3d954dae-cb1c-44b4-98c0-10316c8013d2",
+    "guid": "c701efc3-54d7-40d9-b3d0-909ded6a74d6",
     "name": "Spawner (2207)",
     "location": [5651, 1418, 0],
     "map": "Felucca",
@@ -561,7 +561,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1db1ecbc-7ec0-4dcd-900c-241bbed10918",
+    "guid": "d7e70c50-8b14-4153-b44f-a9f6764762f0",
     "name": "Spawner (2207)",
     "location": [5650, 1419, 22],
     "map": "Felucca",
@@ -575,7 +575,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d2b18126-f68e-46aa-a6ea-45370e419834",
+    "guid": "e6a0e881-cdbe-4fe2-98dd-1d63debf8e1b",
     "name": "Spawner (2207)",
     "location": [5647, 1439, 22],
     "map": "Felucca",
@@ -589,7 +589,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e24789c3-7a6d-48ee-8ea8-83fe52e20122",
+    "guid": "f17e6176-bbdd-4861-bd51-8aa58d4de7f9",
     "name": "Spawner (2207)",
     "location": [5651, 1443, 0],
     "map": "Felucca",
@@ -603,7 +603,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ff4fc4d7-e1e0-4bc9-9c37-c6601c94e105",
+    "guid": "c729c34e-7162-442e-a0bc-0e8b1ca89720",
     "name": "Spawner (2207)",
     "location": [5651, 1435, 0],
     "map": "Felucca",
@@ -617,7 +617,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "594c9249-16e4-4ee1-976a-dfb3a63828c0",
+    "guid": "09685cb4-df4f-4bd2-98fd-4ca2f401d65b",
     "name": "Spawner (2207)",
     "location": [5643, 1435, 0],
     "map": "Felucca",
@@ -631,7 +631,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ffb64958-7c43-43bc-8236-8859a84d9968",
+    "guid": "2834e29b-b0b5-4f09-80ea-c0cc6cbdb5a6",
     "name": "Spawner (2207)",
     "location": [5638, 1439, 0],
     "map": "Felucca",
@@ -645,7 +645,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "657e2996-e2ec-42ee-a112-f31546dfae6a",
+    "guid": "8f08a4ce-78dd-48ca-81e4-1e6d4d35d15e",
     "name": "Spawner (2207)",
     "location": [5714, 1465, 0],
     "map": "Felucca",
@@ -659,7 +659,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "dd4b44ab-f59e-4ac0-a9d9-3933a166f549",
+    "guid": "bb0ec9be-567e-46d8-9045-c498fc51972d",
     "name": "Spawner (2207)",
     "location": [5723, 1390, 2],
     "map": "Felucca",
@@ -673,7 +673,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1287941c-8c26-41cb-8768-a2aae4757650",
+    "guid": "11550ec6-9ce8-4c50-a310-38383b51f230",
     "name": "Spawner (2207)",
     "location": [5679, 1438, 0],
     "map": "Felucca",
@@ -687,49 +687,49 @@
   },
   {
     "type": "Spawner",
-    "guid": "706c37b1-53fd-4a71-91d0-d1ecc32f269c",
+    "guid": "f3828caa-6ea3-40b5-86a0-21808b5eb4ea",
     "name": "Spawner (2207)",
     "location": [5715, 1465, -1],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "23dfcce1-dd6c-4dea-add8-21704142f0a1",
+    "guid": "be64cf9e-3d3a-4e25-9162-50fa7a777f44",
     "name": "Spawner (2207)",
     "location": [5722, 1390, 1],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "def41282-a2ec-4786-9a87-434256ec39d0",
+    "guid": "c3250304-df94-4c9d-8a15-e9efa6845b65",
     "name": "Spawner (2207)",
     "location": [5679, 1439, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3d96fa75-1658-4166-8f9f-2b91d9ef63e8",
+    "guid": "c2f7684e-9246-4b09-b224-f993c15173b9",
     "name": "Spawner (2207)",
     "location": [5650, 1434, 0],
     "map": "Felucca",
@@ -743,16 +743,16 @@
   },
   {
     "type": "Spawner",
-    "guid": "4f9a7de9-7b0d-479c-8cd0-94afc8eece72",
+    "guid": "23349d09-37ca-4f61-ba48-b1a593d90c6a",
     "name": "Spawner (2207)",
     "location": [5643, 1435, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 2,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }]
   }
 ]

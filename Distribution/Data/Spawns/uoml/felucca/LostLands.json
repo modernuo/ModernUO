@@ -1,159 +1,159 @@
 [
   {
     "type": "Spawner",
-    "guid": "f1aa2f30-603d-4630-9c16-7bf0c11939d0",
+    "guid": "5c677abc-6f32-45bb-a1cb-c0a826f8e95f",
     "name": "Spawner (2211)",
     "location": [5728, 3209, -3],
     "map": "Felucca",
-    "count": 1,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
-    "entries": [{ "name": "SwampDragon", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "SwampDragon", "maxCount": 7, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "920a1155-3d6f-41fd-9258-837eff692c8e",
+    "guid": "f04320b3-02e3-457c-aa3d-85944e1987e1",
     "name": "Spawner (2211)",
     "location": [5457, 2651, 45],
     "map": "Felucca",
-    "count": 52,
+    "count": 54,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 150,
     "walkingRange": 150,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 15, "probability": 100 },
       { "name": "Scorpion", "maxCount": 15, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 15, "probability": 100 },
-      { "name": "Orc", "maxCount": 6, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 9, "probability": 100 },
-      { "name": "StoneHarpy", "maxCount": 6, "probability": 100 }
+      { "name": "DesertOstard", "maxCount": 6, "probability": 100 },
+      { "name": "Orc", "maxCount": 9, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 6, "probability": 100 },
+      { "name": "StoneHarpy", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6572f879-6be4-4de2-a18d-fb5b183e3f17",
+    "guid": "8d68603f-69e3-4d13-b972-2648fa6e6f5b",
     "name": "Spawner (2211)",
     "location": [5457, 2651, 45],
     "map": "Felucca",
-    "count": 14,
+    "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 150,
     "walkingRange": 150,
     "entries": [
-      { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 3, "probability": 100 },
-      { "name": "Mummy", "maxCount": 6, "probability": 100 },
+      { "name": "StoneGargoyle", "maxCount": 3, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 6, "probability": 100 },
+      { "name": "Mummy", "maxCount": 4, "probability": 100 },
+      { "name": "Ettin", "maxCount": 6, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "dbad34f7-3dad-4a18-8143-dfae7052b6a8",
+    "name": "Spawner (2211)",
+    "location": [5520, 2890, 33],
+    "map": "Felucca",
+    "count": 37,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 100,
+    "walkingRange": 100,
+    "entries": [
+      { "name": "Imp", "maxCount": 10, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 10, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 4, "probability": 100 },
+      { "name": "Orc", "maxCount": 6, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 4, "probability": 100 },
+      { "name": "StoneHarpy", "maxCount": 3, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "413f3751-fb8f-4519-bc77-47bb4c6cb964",
+    "name": "Spawner (2211)",
+    "location": [5520, 2890, 33],
+    "map": "Felucca",
+    "count": 13,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 100,
+    "walkingRange": 100,
+    "entries": [
+      { "name": "StoneGargoyle", "maxCount": 3, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 4, "probability": 100 },
+      { "name": "Mummy", "maxCount": 2, "probability": 100 },
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c5060df9-e594-4177-8849-a47d1a9a2eea",
-    "name": "Spawner (2211)",
-    "location": [5520, 2890, 33],
-    "map": "Felucca",
-    "count": 35,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 100,
-    "walkingRange": 100,
-    "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 10, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 10, "probability": 100 },
-      { "name": "Orc", "maxCount": 4, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 6, "probability": 100 },
-      { "name": "StoneHarpy", "maxCount": 4, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "1794d355-f3cd-4574-b3f6-1371920b3649",
-    "name": "Spawner (2211)",
-    "location": [5520, 2890, 33],
-    "map": "Felucca",
-    "count": 10,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 100,
-    "walkingRange": 100,
-    "entries": [
-      { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 3, "probability": 100 },
-      { "name": "Mummy", "maxCount": 4, "probability": 100 },
-      { "name": "Ettin", "maxCount": 2, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "400312e3-c434-4a92-83fd-5d07d83c11f4",
+    "guid": "c9cf3ac9-5078-48a6-8d1d-8a622fa60024",
     "name": "Spawner (2211)",
     "location": [5580, 2885, 6],
     "map": "Felucca",
-    "count": 11,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "Gazer", "maxCount": 1, "probability": 100 },
-      { "name": "Reaper", "maxCount": 3, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "Reaper", "maxCount": 2, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
       { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "49c0ecd5-5aba-4d1e-8635-d853975b1eb9",
+    "guid": "ba775ba5-f4a7-462e-88f1-c9962147118a",
     "name": "Spawner (2211)",
     "location": [5557, 2625, 0],
     "map": "Felucca",
-    "count": 19,
+    "count": 21,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Corpser", "maxCount": 1, "probability": 100 },
+      { "name": "Corpser", "maxCount": 3, "probability": 100 },
       { "name": "GiantSpider", "maxCount": 3, "probability": 100 },
       { "name": "Troll", "maxCount": 3, "probability": 100 },
-      { "name": "Harpy", "maxCount": 3, "probability": 100 },
-      { "name": "Ettin", "maxCount": 6, "probability": 100 },
+      { "name": "Harpy", "maxCount": 6, "probability": 100 },
+      { "name": "Ettin", "maxCount": 3, "probability": 100 },
       { "name": "Gazer", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1797a7c6-9e77-4114-a48b-eed070d74720",
+    "guid": "1eee493b-6795-4b24-b390-72c7cd5b2b9a",
     "name": "Spawner (2211)",
     "location": [5394, 2530, 6],
     "map": "Felucca",
-    "count": 6,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "Cyclops", "maxCount": 1, "probability": 100 },
-      { "name": "Titan", "maxCount": 5, "probability": 100 }
+      { "name": "Cyclops", "maxCount": 5, "probability": 100 },
+      { "name": "Titan", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "766c994f-3c9a-4b56-b045-8ae8bca07e79",
+    "guid": "0f0fa954-8f4e-4a76-aa93-5e5bf5cb1735",
     "name": "Spawner (2211)",
     "location": [5711, 2494, 46],
     "map": "Felucca",
@@ -164,277 +164,277 @@
     "homeRange": 80,
     "walkingRange": 80,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 3, "probability": 100 },
       { "name": "Scorpion", "maxCount": 3, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 3, "probability": 100 },
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 3, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 3, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "13144257-22cb-4b26-82ce-e2dcecc3ee9b",
+    "guid": "f56b7a46-f8e5-4e85-aa15-9f30cf0c409d",
     "name": "Spawner (2211)",
     "location": [5711, 2494, 46],
     "map": "Felucca",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 80,
     "walkingRange": 80,
-    "entries": [{ "name": "Ettin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ettin", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "cf59a386-ded3-430b-9ea3-8ae6545c408e",
+    "guid": "fa987bdc-474a-44da-91be-4b0bcd8cb807",
     "name": "Spawner (2211)",
     "location": [5765, 2637, 39],
     "map": "Felucca",
-    "count": 17,
+    "count": 26,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 3, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 6, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 3, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 4, "probability": 100 }
+      { "name": "OphidianArchmage", "maxCount": 3, "probability": 100 },
+      { "name": "OphidianMage", "maxCount": 6, "probability": 100 },
+      { "name": "OphidianMatriarch", "maxCount": 3, "probability": 100 },
+      { "name": "OphidianKnight", "maxCount": 4, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6e685327-f30c-426e-9610-092e02354b70",
+    "guid": "12d2b037-bfa7-4ea1-9580-28e0623a2671",
     "name": "Spawner (2211)",
     "location": [5697, 2626, -2],
     "map": "Felucca",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
     "entries": [
-      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 2, "probability": 100 },
-      { "name": "Imp", "maxCount": 4, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 },
+      { "name": "Drake", "maxCount": 4, "probability": 100 },
+      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "48cfcf01-1f6a-4007-b270-0eb54bac3da3",
+    "guid": "6e1001c3-4e95-479b-a49a-850853fd7e59",
     "name": "Spawner (2211)",
     "location": [5729, 2767, -1],
     "map": "Felucca",
-    "count": 28,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 60,
     "walkingRange": 70,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 8, "probability": 100 },
       { "name": "Scorpion", "maxCount": 8, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 8, "probability": 100 },
-      { "name": "Orc", "maxCount": 3, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 5, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 3, "probability": 100 },
+      { "name": "Orc", "maxCount": 5, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 3, "probability": 100 },
       { "name": "StoneHarpy", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bcbdb433-ef79-487a-bc0f-6654157193e3",
+    "guid": "cc748df2-8d72-4078-a6a4-5a25406770a3",
     "name": "Spawner (2211)",
     "location": [5729, 2767, -1],
     "map": "Felucca",
-    "count": 10,
+    "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 60,
     "walkingRange": 70,
     "entries": [
-      { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 },
+      { "name": "StoneGargoyle", "maxCount": 3, "probability": 100 },
       { "name": "Wyvern", "maxCount": 3, "probability": 100 },
       { "name": "Mummy", "maxCount": 3, "probability": 100 },
-      { "name": "Ettin", "maxCount": 3, "probability": 100 }
+      { "name": "Ettin", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "624652d4-46a9-48bf-9ba8-da3d9b70a249",
+    "guid": "07a9c362-3e90-470f-8020-52320f19ef71",
     "name": "Spawner (2211)",
     "location": [5724, 2949, 31],
     "map": "Felucca",
-    "count": 37,
+    "count": 44,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 65,
     "walkingRange": 75,
     "entries": [
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
+      { "name": "HellHound", "maxCount": 8, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 8, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 8, "probability": 100 },
-      { "name": "Efreet", "maxCount": 10, "probability": 100 },
-      { "name": "HellCat", "maxCount": 4, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 6, "probability": 100 }
+      { "name": "FireElemental", "maxCount": 10, "probability": 100 },
+      { "name": "Efreet", "maxCount": 4, "probability": 100 },
+      { "name": "HellCat", "maxCount": 6, "probability": 100 },
+      { "name": "LavaSerpent", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "43860e50-552c-4ff1-a5ec-53cec65a310c",
+    "guid": "76d30438-3240-4879-aae2-083e9eecfd1f",
     "name": "Spawner (2211)",
     "location": [5724, 2949, 31],
     "map": "Felucca",
-    "count": 1,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 65,
     "walkingRange": 75,
-    "entries": [{ "name": "LavaSnake", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "LavaSnake", "maxCount": 15, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "90b2f2e8-9614-42bc-b04a-d8d37874c34c",
+    "guid": "6fae27d7-64f5-4e31-8a41-381a6344a96d",
     "name": "Spawner (2211)",
     "location": [5863, 2470, 46],
     "map": "Felucca",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
-    "entries": [{ "name": "Wyvern", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Wyvern", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "14474812-3195-4a69-b3cc-76c7fd01a475",
+    "guid": "0051ef48-a9fa-49be-8307-04ed26c3f8fc",
     "name": "Spawner (2211)",
     "location": [5501, 2361, 27],
     "map": "Felucca",
-    "count": 26,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 75,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 8, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 4, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 8, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 4, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "WhiteWolf", "maxCount": 4, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 5, "probability": 100 },
       { "name": "Walrus", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "339ab308-f2f2-4d20-93fd-dce7b677cb21",
+    "guid": "d8f34e41-4ecb-4747-8300-cabad11db9f6",
     "name": "Spawner (2211)",
     "location": [5501, 2361, 27],
     "map": "Felucca",
-    "count": 1,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 75,
-    "entries": [{ "name": "PolarBear", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "PolarBear", "maxCount": 5, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "070372ca-b9c1-4b9f-ab95-882e5d708d90",
+    "guid": "6ef79240-6f81-42f3-ae82-873af735b246",
     "name": "Spawner (2211)",
     "location": [5351, 2359, 0],
     "map": "Felucca",
-    "count": 25,
+    "count": 29,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 75,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 7, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 4, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 7, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 4, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "WhiteWolf", "maxCount": 4, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 5, "probability": 100 },
       { "name": "Walrus", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f6c95f4b-26d4-4119-b61c-d90e41902550",
+    "guid": "04c56ada-2f70-4d20-a168-217066a7920d",
     "name": "Spawner (2211)",
     "location": [5351, 2359, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 75,
-    "entries": [{ "name": "PolarBear", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "PolarBear", "maxCount": 5, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f7077ba1-15a6-4096-bb3f-12c3015ac0a7",
+    "guid": "8e896c88-1cc3-4b00-a042-41b7daa309dc",
     "name": "Spawner (2211)",
     "location": [5173, 2368, 21],
     "map": "Felucca",
-    "count": 26,
+    "count": 28,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 50,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 10, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 4, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 10, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 4, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "WhiteWolf", "maxCount": 4, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 3, "probability": 100 },
       { "name": "Walrus", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1b2dc880-50fb-447e-a270-365bc021fb6c",
+    "guid": "6bd68fd6-cde9-45a8-8a99-8173b0e61e54",
     "name": "Spawner (2211)",
     "location": [5173, 2368, 21],
     "map": "Felucca",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 50,
-    "entries": [{ "name": "PolarBear", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "PolarBear", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "619a5cec-7ea6-40dd-8ba1-6d0ef41155fa",
+    "guid": "27c7c466-0a83-4356-8b5d-7aab73b1dde1",
     "name": "Spawner (2211)",
     "location": [6091, 2379, 25],
     "map": "Felucca",
-    "count": 26,
+    "count": 28,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 60,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 6, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 10, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 6, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 10, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 3, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 3, "probability": 100 },
       { "name": "Walrus", "maxCount": 3, "probability": 100 },
       { "name": "PolarBear", "maxCount": 3, "probability": 100 }
@@ -442,19 +442,19 @@
   },
   {
     "type": "Spawner",
-    "guid": "71e8e7d8-4ce9-420d-a611-059f1f17b1ee",
+    "guid": "9fcbab64-2922-4c73-b1a1-8c7304252e57",
     "name": "Spawner (2211)",
     "location": [5967, 2370, 44],
     "map": "Felucca",
-    "count": 23,
+    "count": 26,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 75,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 6, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 6, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 4, "probability": 100 },
       { "name": "FrostTroll", "maxCount": 4, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 4, "probability": 100 },
@@ -463,395 +463,480 @@
   },
   {
     "type": "Spawner",
-    "guid": "99829b48-83f9-40ca-abde-a9d12a0d5e8f",
+    "guid": "4c6585a9-e298-4753-a981-b77e13fec541",
     "name": "Spawner (2211)",
     "location": [5967, 2370, 44],
     "map": "Felucca",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 75,
-    "entries": [{ "name": "PolarBear", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "PolarBear", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "8a1fe2c9-630f-4da4-869f-d25f8f39c6d1",
+    "guid": "7a81959d-4cbc-487c-a41c-867dfa194ca0",
     "name": "Spawner (2211)",
     "location": [5817, 2367, 42],
     "map": "Felucca",
-    "count": 20,
+    "count": 23,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 75,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 6, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 6, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 3, "probability": 100 },
       { "name": "FrostTroll", "maxCount": 3, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 3, "probability": 100 },
-      { "name": "WhiteWolf", "maxCount": 3, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 4, "probability": 100 },
       { "name": "Walrus", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7be5293c-833a-468d-8019-9133fa48bf2e",
+    "guid": "f706d02f-df96-4378-8e75-697f931d9eeb",
     "name": "Spawner (2211)",
     "location": [5817, 2367, 42],
     "map": "Felucca",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 75,
-    "entries": [{ "name": "PolarBear", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "PolarBear", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "74f7ac03-0317-4f26-9e78-0140b8cdab9c",
+    "guid": "26b4a453-57c9-4bcf-b19b-a5caace69ace",
     "name": "Spawner (2211)",
     "location": [5756, 3453, -2],
     "map": "Felucca",
-    "count": 33,
+    "count": 42,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 130,
     "walkingRange": 130,
     "entries": [
-      { "name": "Gorilla", "maxCount": 1, "probability": 100 },
+      { "name": "Gorilla", "maxCount": 10, "probability": 100 },
       { "name": "Panther", "maxCount": 10, "probability": 100 },
       { "name": "GiantSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 2, "probability": 100 }
+      { "name": "SilverSerpent", "maxCount": 2, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ac18ba83-7971-42d4-9739-6f0494a8e04d",
+    "guid": "ab1c20f0-33bf-4b17-9d3e-b4a1bf3a7dc9",
     "name": "Spawner (2211)",
     "location": [5985, 3441, 17],
     "map": "Felucca",
-    "count": 49,
+    "count": 50,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 80,
     "walkingRange": 90,
     "entries": [
-      { "name": "GiantToad", "maxCount": 1, "probability": 100 },
-      { "name": "SwampDragon", "maxCount": 8, "probability": 100 },
-      { "name": "GiantRat", "maxCount": 5, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 8, "probability": 100 },
+      { "name": "SwampDragon", "maxCount": 5, "probability": 100 },
+      { "name": "GiantRat", "maxCount": 12, "probability": 100 },
       { "name": "Alligator", "maxCount": 12, "probability": 100 },
-      { "name": "SewerRat", "maxCount": 12, "probability": 100 },
-      { "name": "PlagueBeast", "maxCount": 11, "probability": 100 }
+      { "name": "SewerRat", "maxCount": 11, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c2c476ac-a077-4dd1-970f-d6661fb48c3a",
+    "guid": "c86b6986-06f2-4bfd-83a9-eb305dffd798",
     "name": "Spawner (2211)",
     "location": [5985, 3441, 17],
     "map": "Felucca",
-    "count": 34,
+    "count": 36,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 80,
     "walkingRange": 90,
     "entries": [
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 15, "probability": 100 },
-      { "name": "Bogling", "maxCount": 5, "probability": 100 },
-      { "name": "BogThing", "maxCount": 13, "probability": 100 }
+      { "name": "BullFrog", "maxCount": 15, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 5, "probability": 100 },
+      { "name": "Bogling", "maxCount": 13, "probability": 100 },
+      { "name": "BogThing", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b2e16f3f-46a6-42eb-94ef-2841d8a4c4ef",
+    "guid": "b4fdfdb8-b446-4cad-a4d5-700f6e387112",
     "name": "Spawner (2211)",
     "location": [5220, 3664, -1],
     "map": "Felucca",
-    "count": 20,
+    "count": 23,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 25,
     "entries": [
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 3, "probability": 100 },
       { "name": "SkeletalKnight", "maxCount": 3, "probability": 100 },
       { "name": "BoneMagi", "maxCount": 3, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
-      { "name": "Wraith", "maxCount": 6, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 },
+      { "name": "Wraith", "maxCount": 4, "probability": 100 },
       { "name": "Ghoul", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5c001c55-cbce-4a44-b8fb-2ccf2ddd5201",
+    "guid": "507fcaa7-e8ed-4ce1-93db-f6f6d4bc5abc",
     "name": "Spawner (2211)",
     "location": [5212, 3619, 0],
     "map": "Felucca",
-    "count": 13,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "SavageRider", "maxCount": 1, "probability": 100 },
-      { "name": "Savage", "maxCount": 3, "probability": 100 },
-      { "name": "SavageShaman", "maxCount": 9, "probability": 100 }
+      { "name": "SavageRider", "maxCount": 3, "probability": 100 },
+      { "name": "Savage", "maxCount": 9, "probability": 100 },
+      { "name": "SavageShaman", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "917fa1dd-7e1e-4b0e-9c79-41face1475a6",
+    "guid": "048db5e6-adcb-4fec-91e7-3d12011d05b0",
     "name": "Spawner (2211)",
     "location": [5347, 3449, 17],
     "map": "Felucca",
-    "count": 37,
+    "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 1, "probability": 100 },
-      { "name": "Orc", "maxCount": 4, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 8, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "Orc", "maxCount": 8, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 4, "probability": 100 },
       { "name": "GreatHart", "maxCount": 4, "probability": 100 },
-      { "name": "Hind", "maxCount": 4, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 16, "probability": 100 }
+      { "name": "Hind", "maxCount": 16, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "feed12ee-1299-43a5-a7a1-ee0fcf6cb4d6",
+    "guid": "b35c2359-f228-4ede-ab15-7677b251219d",
     "name": "Spawner (2211)",
     "location": [5243, 3548, 14],
     "map": "Felucca",
-    "count": 37,
+    "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 1, "probability": 100 },
-      { "name": "Orc", "maxCount": 4, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 8, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "Orc", "maxCount": 8, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 4, "probability": 100 },
       { "name": "GreatHart", "maxCount": 4, "probability": 100 },
-      { "name": "Hind", "maxCount": 4, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 16, "probability": 100 }
+      { "name": "Hind", "maxCount": 16, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f689b58e-1c2a-455f-9c99-a0ffb965604a",
+    "guid": "54cb046e-98e1-4971-8b9b-0b62d687c1ab",
     "name": "Spawner (2211)",
     "location": [5250, 3449, 16],
     "map": "Felucca",
-    "count": 37,
+    "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 1, "probability": 100 },
-      { "name": "Orc", "maxCount": 4, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 8, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "Orc", "maxCount": 8, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 4, "probability": 100 },
       { "name": "GreatHart", "maxCount": 4, "probability": 100 },
-      { "name": "Hind", "maxCount": 4, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 16, "probability": 100 }
+      { "name": "Hind", "maxCount": 16, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bcfddfac-936d-4f08-9bae-16186223c73e",
+    "guid": "270bb58a-fbba-4af0-98b2-3cece2112336",
     "name": "Spawner (2211)",
     "location": [5349, 3547, -1],
     "map": "Felucca",
-    "count": 37,
+    "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 1, "probability": 100 },
-      { "name": "Orc", "maxCount": 4, "probability": 100 },
-      { "name": "OrcishLord", "maxCount": 8, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "Orc", "maxCount": 8, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 4, "probability": 100 },
       { "name": "GreatHart", "maxCount": 4, "probability": 100 },
-      { "name": "Hind", "maxCount": 4, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 16, "probability": 100 }
+      { "name": "Hind", "maxCount": 16, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "96fb227d-cec6-42d6-b895-3021a476b0a4",
+    "guid": "fba20373-697a-475b-8db9-52501d460fce",
     "name": "Spawner (2211)",
     "location": [5201, 3162, 53],
     "map": "Felucca",
-    "count": 31,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 6, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 6, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 6, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 6, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 6, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 },
       { "name": "Rabbit", "maxCount": 4, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
       { "name": "Cougar", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a45ac0ac-771c-4fc1-b2fa-0b65bb505df5",
+    "guid": "150865b5-2285-49ea-94d4-42554405d181",
     "name": "Spawner (2211)",
     "location": [5201, 3162, 53],
     "map": "Felucca",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "Llama", "maxCount": 2, "probability": 100 },
       { "name": "TimberWolf", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3e06bd5d-88ae-4b9f-a490-a7af25ba4bc9",
+    "guid": "15e3c862-5e27-47f3-ba4d-8a9ee45c3623",
     "name": "Spawner (2211)",
     "location": [5251, 3301, -2],
     "map": "Felucca",
-    "count": 31,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 6, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 6, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 6, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 6, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 6, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 },
       { "name": "Rabbit", "maxCount": 4, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
       { "name": "Cougar", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d8e8bc3d-8993-4616-b95e-b12f27cc78b9",
+    "guid": "0e69642d-acde-40f0-bc27-0e07d9292977",
     "name": "Spawner (2211)",
     "location": [5251, 3301, -2],
     "map": "Felucca",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "Llama", "maxCount": 2, "probability": 100 },
       { "name": "TimberWolf", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "857f24df-315c-49b5-86fd-d44a32bd61c7",
+    "guid": "4bc10a0b-643a-434c-af08-7b789cfcd954",
     "name": "Spawner (2211)",
     "location": [5250, 3401, 1],
     "map": "Felucca",
-    "count": 31,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 6, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 6, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 6, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 6, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 6, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 },
       { "name": "Rabbit", "maxCount": 4, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
       { "name": "Cougar", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a9e902f2-8ac0-4563-8955-33bf263252ad",
+    "guid": "673c07e2-de3f-4228-9c93-fcaa22aae807",
     "name": "Spawner (2211)",
     "location": [5250, 3401, 1],
     "map": "Felucca",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "Llama", "maxCount": 2, "probability": 100 },
       { "name": "TimberWolf", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e9faa338-10e8-49f4-b0bf-e2abfd5b368f",
+    "guid": "273dd9e4-983d-4029-8b2b-3e2ea1178a95",
     "name": "Spawner (2211)",
     "location": [5351, 3401, 30],
     "map": "Felucca",
-    "count": 31,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 6, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 6, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 6, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 6, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 6, "probability": 100 },
+      { "name": "Horse", "maxCount": 4, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 4, "probability": 100 },
       { "name": "Rabbit", "maxCount": 4, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
       { "name": "Cougar", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a0cac57c-83d8-4dcc-a1ea-aa2a5988de68",
+    "guid": "5a102eab-82dd-45ca-9071-d38e2d759ce6",
     "name": "Spawner (2211)",
     "location": [5351, 3401, 30],
+    "map": "Felucca",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 50,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "Llama", "maxCount": 2, "probability": 100 },
+      { "name": "TimberWolf", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "620213e0-2aad-4795-9d8a-1c326bb59212",
+    "name": "Spawner (2211)",
+    "location": [6018, 3673, 18],
+    "map": "Felucca",
+    "count": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 50,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 2, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Cougar", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9d0907cc-7569-4001-9ef3-6c95a3273262",
+    "name": "Spawner (2211)",
+    "location": [6018, 3673, 18],
+    "map": "Felucca",
+    "count": 7,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 50,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "Llama", "maxCount": 1, "probability": 100 },
+      { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
+      { "name": "Corpser", "maxCount": 1, "probability": 100 },
+      { "name": "Ettin", "maxCount": 1, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9cf77fad-29ee-4dc8-a174-7adf1ba52831",
+    "name": "Spawner (2211)",
+    "location": [6018, 3673, 18],
+    "map": "Felucca",
+    "count": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 50,
+    "walkingRange": 50,
+    "entries": [
+      { "name": "Gazer", "maxCount": 1, "probability": 100 },
+      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
+      { "name": "Harpy", "maxCount": 1, "probability": 100 },
+      { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8ac377e6-e430-4412-8fcd-8ed365924d58",
+    "name": "Spawner (2211)",
+    "location": [6018, 3673, 18],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -860,129 +945,44 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "Llama", "maxCount": 2, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 2, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "cd998cce-82a5-45f7-b91a-eda114017322",
-    "name": "Spawner (2211)",
-    "location": [6018, 3673, 18],
-    "map": "Felucca",
-    "count": 17,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 50,
-    "walkingRange": 50,
-    "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 2, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Cougar", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "4f84a0e8-f2ed-442a-8198-1fa491d94207",
-    "name": "Spawner (2211)",
-    "location": [6018, 3673, 18],
-    "map": "Felucca",
-    "count": 6,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 50,
-    "walkingRange": 50,
-    "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "Llama", "maxCount": 1, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
-      { "name": "Corpser", "maxCount": 1, "probability": 100 },
-      { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "190d21a0-52c8-4686-97b4-1d97c05e06c4",
-    "name": "Spawner (2211)",
-    "location": [6018, 3673, 18],
-    "map": "Felucca",
-    "count": 8,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 50,
-    "walkingRange": 50,
-    "entries": [
-      { "name": "Gazer", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "Harpy", "maxCount": 1, "probability": 100 },
-      { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "d3442290-c2ee-429d-b5ed-e72b38aac9d0",
-    "name": "Spawner (2211)",
-    "location": [6018, 3673, 18],
-    "map": "Felucca",
-    "count": 4,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 50,
-    "walkingRange": 50,
-    "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9ed9075c-624d-41ee-92fd-5c7c1ccb204c",
+    "guid": "66e10caf-9bd5-4f1c-8e03-6c0b8ef97cda",
     "name": "Spawner (2211)",
     "location": [6022, 3773, 18],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4a221fdb-603a-49da-9739-030216b334e1",
+    "guid": "15908c1e-bc66-4149-9c00-c11fe35e5a17",
     "name": "Spawner (2211)",
     "location": [6022, 3773, 18],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -994,12 +994,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bcfc8f25-e70d-45d1-a36c-8a9a93921111",
+    "guid": "c9d49bec-96ad-41ab-8397-20f8cb54ab0f",
     "name": "Spawner (2211)",
     "location": [6022, 3773, 18],
     "map": "Felucca",
@@ -1014,17 +1014,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e0039ca4-0566-4deb-a717-3b3cfac39da7",
+    "guid": "b9b9dd7d-c27f-48e4-99b3-23cd89fc19cb",
     "name": "Spawner (2211)",
     "location": [6022, 3773, 18],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1034,41 +1034,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0bd20f55-3ce2-4f72-b30f-aca3153173c7",
+    "guid": "f8499d9a-396d-46a9-abba-b78ce9de9e74",
     "name": "Spawner (2211)",
     "location": [6022, 2874, 16],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6516e19c-2a4f-4eef-a6fb-6e9b17e9c0a3",
+    "guid": "c3c7e0c0-82d2-4fa6-b8d8-ceb9131c811f",
     "name": "Spawner (2211)",
     "location": [6022, 2874, 16],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1080,12 +1080,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3eae2bb5-6125-4ab1-9321-5134d90197c6",
+    "guid": "e646890b-dfcb-4572-bc2b-c4683711befa",
     "name": "Spawner (2211)",
     "location": [6022, 2874, 16],
     "map": "Felucca",
@@ -1100,17 +1100,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8054c1b6-d021-4469-991d-212a4c783e22",
+    "guid": "04ebb8af-b6c7-488c-816c-b37805270c49",
     "name": "Spawner (2211)",
     "location": [6022, 2874, 16],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1120,41 +1120,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "817c7427-56ba-42d6-a653-df599a977b89",
+    "guid": "bc3fc7a6-6646-4c86-8830-883c67dd0938",
     "name": "Spawner (2211)",
     "location": [6022, 3971, 17],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1a29a007-da5d-4562-975b-f01363770e22",
+    "guid": "f31f301e-888f-4493-a562-b05219ff599d",
     "name": "Spawner (2211)",
     "location": [6022, 3971, 17],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1166,12 +1166,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6043dbe3-4b11-4de3-b931-3d186b4f5599",
+    "guid": "4da8db24-068c-406f-a561-6128621f78e6",
     "name": "Spawner (2211)",
     "location": [6022, 3971, 17],
     "map": "Felucca",
@@ -1186,17 +1186,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "952dc4f8-d4dd-4401-8e2f-cd44b3b08773",
+    "guid": "ed54effc-7e93-4d1e-be86-690a39878733",
     "name": "Spawner (2211)",
     "location": [6022, 3971, 17],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1206,41 +1206,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fa066a58-0a5d-469a-8d3b-7d291c901d55",
+    "guid": "4d59b4f4-57c3-43ef-9fc2-0364e61a718c",
     "name": "Spawner (2211)",
     "location": [5920, 3675, 12],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "230de6b5-00d4-4c0f-a4d3-bd7a196af717",
+    "guid": "d2665bd3-8dfc-4e5d-aa4b-0810ebf249a3",
     "name": "Spawner (2211)",
     "location": [5920, 3675, 12],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1252,12 +1252,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "39e12246-2a85-4a04-8094-096e5111184c",
+    "guid": "e6336daa-16af-48dd-ad9a-04b2aea717ca",
     "name": "Spawner (2211)",
     "location": [5920, 3675, 12],
     "map": "Felucca",
@@ -1272,17 +1272,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e3bd5a9e-0931-4e73-92f2-2673f355b689",
+    "guid": "616334e1-53ea-49c0-8901-856c483a69e5",
     "name": "Spawner (2211)",
     "location": [5920, 3675, 12],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1292,41 +1292,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2ec6bdd1-36bf-47b5-aaa6-7315127248a4",
+    "guid": "942c695f-f39f-4c28-8704-9714152cdefd",
     "name": "Spawner (2211)",
     "location": [5921, 3777, 28],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "16858759-55da-4a42-822c-d83ec512bd1e",
+    "guid": "b532fb5d-8a9a-4ee4-8358-e7e2ef4095d9",
     "name": "Spawner (2211)",
     "location": [5921, 3777, 28],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1338,12 +1338,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cac852d5-90d4-4972-a559-c9b6dbffaf89",
+    "guid": "20911691-e6c3-4c40-87d1-ee67a34d2669",
     "name": "Spawner (2211)",
     "location": [5921, 3777, 28],
     "map": "Felucca",
@@ -1358,17 +1358,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1af5d921-a4bf-4e2a-a657-f31c6f271011",
+    "guid": "e14998fb-042e-4d70-809a-d5ac583494b0",
     "name": "Spawner (2211)",
     "location": [5921, 3777, 28],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1378,41 +1378,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0862c0d1-79bc-4b16-a70d-832e3520123d",
+    "guid": "aa42da05-496c-43fd-8178-a7fdb9ebfe63",
     "name": "Spawner (2211)",
     "location": [5919, 3875, 16],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3f87f80f-c675-4677-b07b-7cef131e7bca",
+    "guid": "b4f901b5-6562-4689-9d5a-3ad3e3ad8a3f",
     "name": "Spawner (2211)",
     "location": [5919, 3875, 16],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1424,12 +1424,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "40f96996-af06-41cb-bafc-1ced770321de",
+    "guid": "092875e2-4178-4845-97e9-1d70ab565933",
     "name": "Spawner (2211)",
     "location": [5919, 3875, 16],
     "map": "Felucca",
@@ -1444,17 +1444,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7accb849-879a-4044-b5f9-4961b2b5d58e",
+    "guid": "fde4de4d-8369-49e1-944f-b76d4a2e42d2",
     "name": "Spawner (2211)",
     "location": [5919, 3875, 16],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1464,41 +1464,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b2ac5740-4153-4fa7-a573-9aa4fca442e4",
+    "guid": "775ba293-8e3a-4d62-bf10-7e002b3b2ec5",
     "name": "Spawner (2211)",
     "location": [5918, 3975, 1],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "41b30917-e2ab-4b3e-a424-24ec78997157",
+    "guid": "55a13cb2-cc95-4d1b-8498-2babc070ce78",
     "name": "Spawner (2211)",
     "location": [5918, 3975, 1],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1510,12 +1510,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d0094077-3f13-47c2-bb93-62108ea81ae9",
+    "guid": "050b5b91-6840-4ec9-adca-c73658982e58",
     "name": "Spawner (2211)",
     "location": [5918, 3975, 1],
     "map": "Felucca",
@@ -1530,17 +1530,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "11df6e31-57b3-4a0b-81ef-9091867cf3d9",
+    "guid": "ae2d2521-6a54-46cc-8bd6-4e4ff10242e8",
     "name": "Spawner (2211)",
     "location": [5918, 3975, 1],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1550,41 +1550,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "651f48a5-ff23-4737-b864-2badcdeee9e6",
+    "guid": "a98d669c-759b-45b5-96ad-3a1153f38d9d",
     "name": "Spawner (2211)",
     "location": [5820, 3675, 0],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2e334a0d-1740-48b8-866d-8dda72b19165",
+    "guid": "741769ff-9984-44cf-a8b0-bdc393beffc2",
     "name": "Spawner (2211)",
     "location": [5820, 3675, 0],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1596,12 +1596,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fb5f5178-d1b0-4208-bad8-8aa3dcaed321",
+    "guid": "f72695d4-8b46-4aef-acd3-39aedce54767",
     "name": "Spawner (2211)",
     "location": [5820, 3675, 0],
     "map": "Felucca",
@@ -1616,17 +1616,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1f6223ea-86a4-424a-a50c-a5465875ee1c",
+    "guid": "30f49430-b98b-4da2-89b6-cfbf3f69182e",
     "name": "Spawner (2211)",
     "location": [5820, 3675, 0],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1636,41 +1636,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "46c3fbb0-e2ee-4eb2-a0c6-4c6d3a878b54",
+    "guid": "738a7321-91fd-4205-97a0-cb9ef78e5ad0",
     "name": "Spawner (2211)",
     "location": [5820, 3775, 48],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a663fe8f-8737-4f3e-a9cb-aef416ad0472",
+    "guid": "3a9fe475-26ea-4f9c-a73b-e33ab2674130",
     "name": "Spawner (2211)",
     "location": [5820, 3775, 48],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1682,12 +1682,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "247b744f-8905-4305-b2e5-ad3ec85d730d",
+    "guid": "bdfb73eb-b35a-4701-afe9-0487da724239",
     "name": "Spawner (2211)",
     "location": [5820, 3775, 48],
     "map": "Felucca",
@@ -1702,17 +1702,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "602244dd-d96a-4bae-83c5-4942b8ae0040",
+    "guid": "b831bbb7-b063-4039-9d54-bdaf8c0a4cbf",
     "name": "Spawner (2211)",
     "location": [5820, 3775, 48],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1722,41 +1722,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "da07c20b-e503-4ca6-99d3-69df6aaa9f19",
+    "guid": "421bbe19-6e35-4125-a521-0a5294553b06",
     "name": "Spawner (2211)",
     "location": [5818, 3876, 18],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "39da3eda-1740-420d-aa83-f502e5b1e67f",
+    "guid": "50aa6367-2c0f-475a-a0f7-81ee98f66244",
     "name": "Spawner (2211)",
     "location": [5818, 3876, 18],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1768,12 +1768,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "add2b763-423c-4d0a-b241-3fe384371fee",
+    "guid": "872072bf-8139-497f-8338-76cc9b06d93e",
     "name": "Spawner (2211)",
     "location": [5818, 3876, 18],
     "map": "Felucca",
@@ -1788,17 +1788,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "01fea04b-8b4f-4cd6-8efd-07ca51202d80",
+    "guid": "bf8af0ff-9824-45cb-b254-bb762019c7ca",
     "name": "Spawner (2211)",
     "location": [5818, 3876, 18],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1808,41 +1808,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c8fba00d-2ede-46d1-ae61-c74a01b8312d",
+    "guid": "93c70268-f78d-436e-b3c0-3dd39fbadad3",
     "name": "Spawner (2211)",
     "location": [5819, 3974, 16],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "daaa9ffd-e3e6-4044-9af2-de4c4a3c7b3e",
+    "guid": "d51c7215-68f4-4c9f-aa0c-c15f8c0555ed",
     "name": "Spawner (2211)",
     "location": [5819, 3974, 16],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1854,12 +1854,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8aa56f2c-6c69-428e-bc63-7bab73358eeb",
+    "guid": "3b2a1a28-2c30-483f-833c-1a9ad40bd153",
     "name": "Spawner (2211)",
     "location": [5819, 3974, 16],
     "map": "Felucca",
@@ -1874,17 +1874,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "02b7ffb0-ba1c-4f47-ada4-ee5dc395e3dc",
+    "guid": "bf46ef5b-0f23-4bd9-93ce-b6bf724fd816",
     "name": "Spawner (2211)",
     "location": [5819, 3974, 16],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1894,41 +1894,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dc37a032-da39-4fc5-9b00-9e6441b02285",
+    "guid": "e64d60d3-0d19-4878-a69c-90548a99ef6e",
     "name": "Spawner (2211)",
     "location": [5721, 3675, 22],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "aa0c9e09-fa3e-472e-a1df-211640ac5b7f",
+    "guid": "2694242b-1d3f-4dfc-96c0-892202e3b950",
     "name": "Spawner (2211)",
     "location": [5721, 3675, 22],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1940,12 +1940,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "25e9d9a9-b346-43e8-8925-0a1780d35e6f",
+    "guid": "42d4b8fa-99ad-412e-9df7-bd3f92c023ac",
     "name": "Spawner (2211)",
     "location": [5721, 3675, 22],
     "map": "Felucca",
@@ -1960,17 +1960,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "45b91484-21bf-40f6-972e-c20daf84b5d4",
+    "guid": "80c6a933-7596-4e44-9ecb-006e36b52a4c",
     "name": "Spawner (2211)",
     "location": [5721, 3675, 22],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1980,41 +1980,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "eff21731-fe23-41dd-8361-bbb65989ac33",
+    "guid": "54cc6589-3bd8-4258-a88c-834c928a2257",
     "name": "Spawner (2211)",
     "location": [5722, 3776, 32],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "58b22870-5d97-4b0e-9a51-82fb35f002a1",
+    "guid": "0fe27512-76eb-4830-939d-36ab2aafaa42",
     "name": "Spawner (2211)",
     "location": [5722, 3776, 32],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2026,12 +2026,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e8db291f-1577-452f-8c9d-1d4f0788901f",
+    "guid": "c3108d12-e98e-4525-aea1-18bcdce8cb3f",
     "name": "Spawner (2211)",
     "location": [5722, 3776, 32],
     "map": "Felucca",
@@ -2046,17 +2046,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2c5a88ee-a124-4351-b946-b4de5bbcaae1",
+    "guid": "4d1cecc3-832e-4898-ae75-bce89940fb02",
     "name": "Spawner (2211)",
     "location": [5722, 3776, 32],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2066,41 +2066,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "99d860bf-32b1-4d78-99c5-a568cdb2bcd6",
+    "guid": "21f61927-4b6f-4b7d-8c37-4e0dbab8a750",
     "name": "Spawner (2211)",
     "location": [5721, 3876, -3],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "06e2006b-4876-42c1-bb37-05fd2d0c17b9",
+    "guid": "e1af1466-54a7-4db4-a6ba-d8867ab87512",
     "name": "Spawner (2211)",
     "location": [5721, 3876, -3],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2112,12 +2112,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c787a74a-dfff-47c6-94bc-ad72d887d3d6",
+    "guid": "88937169-f283-4c78-9d28-7f03ac03872c",
     "name": "Spawner (2211)",
     "location": [5721, 3876, -3],
     "map": "Felucca",
@@ -2132,17 +2132,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8fd88db1-2102-4747-bc87-0e93e1b25654",
+    "guid": "585f8ed2-b655-4de7-b9c8-e937bd858d43",
     "name": "Spawner (2211)",
     "location": [5721, 3876, -3],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2152,41 +2152,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "932277d9-7dbd-4d7e-bc4a-d8d96b12bdfa",
+    "guid": "8bbb0aca-5066-44cc-80b6-2a6e4862d6df",
     "name": "Spawner (2211)",
     "location": [5721, 3975, 21],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4efbaf82-4de7-4702-8945-fc879a178b29",
+    "guid": "e79036f2-c56f-4467-8312-c95bf651af1c",
     "name": "Spawner (2211)",
     "location": [5721, 3975, 21],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2198,12 +2198,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7c992821-1939-42f6-9410-8d135f3e3b96",
+    "guid": "b4562d6b-3ea3-46c0-9a75-d102a5da6fef",
     "name": "Spawner (2211)",
     "location": [5721, 3975, 21],
     "map": "Felucca",
@@ -2218,17 +2218,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2d2f2d3d-c6bb-4ee7-b042-c222a3102b37",
+    "guid": "5a31f2cf-8495-4789-b1d7-3a480f373f73",
     "name": "Spawner (2211)",
     "location": [5721, 3975, 21],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2238,41 +2238,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "13b9b5c7-7c23-4485-9e7d-73ff543aa8e6",
+    "guid": "41d9a9e4-66be-4a71-a1ea-b8dec95e6258",
     "name": "Spawner (2211)",
     "location": [5623, 3676, -3],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "108557eb-b11e-4213-938d-802ddf239a00",
+    "guid": "4c010aa0-3974-42d1-ace5-aefc3014eda1",
     "name": "Spawner (2211)",
     "location": [5623, 3676, -3],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2284,12 +2284,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1d4a73ee-6dbd-4aa9-8e42-68fe6ea3ea38",
+    "guid": "9d472611-6a0e-4aca-ba28-e3b6f3e2bb1e",
     "name": "Spawner (2211)",
     "location": [5623, 3676, -3],
     "map": "Felucca",
@@ -2304,17 +2304,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "16ba1226-622c-447a-8136-13a3503bbfef",
+    "guid": "95f3b7c6-e49c-483f-8598-6a5c71f6e959",
     "name": "Spawner (2211)",
     "location": [5623, 3676, -3],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2324,41 +2324,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9123fcc3-8428-4cd7-8b78-7343cdf3942a",
+    "guid": "783e28bf-94fe-445d-b357-a4009b10eab0",
     "name": "Spawner (2211)",
     "location": [5621, 3775, 2],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c0e82561-3d27-46d5-b98c-6de0e64f455c",
+    "guid": "d7e46421-f97f-427e-885c-2e3092bbbb23",
     "name": "Spawner (2211)",
     "location": [5621, 3775, 2],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2370,12 +2370,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ce37a9a3-3a78-49e7-9f87-4637a4ea83f7",
+    "guid": "354f9453-76f6-4cc8-8255-873544d38355",
     "name": "Spawner (2211)",
     "location": [5621, 3775, 2],
     "map": "Felucca",
@@ -2390,17 +2390,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1edbf83e-4f2b-4f1f-ad60-5ce1431fe8cd",
+    "guid": "6488c8bb-5ced-4f2f-9f3a-6f80958d1ae6",
     "name": "Spawner (2211)",
     "location": [5621, 3775, 2],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2410,41 +2410,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "76d5ed30-1c2c-4140-90f8-297577e4ad56",
+    "guid": "5702bcbc-9e12-44b5-a382-d2a56acda20f",
     "name": "Spawner (2211)",
     "location": [5623, 3875, 15],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a48bf064-068e-4084-8c3b-68e35e42b728",
+    "guid": "c2962e5e-fa41-4e95-8870-66cf709d80c5",
     "name": "Spawner (2211)",
     "location": [5623, 3875, 15],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2456,12 +2456,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7d6d860d-d308-4bce-ad1a-b6de71078106",
+    "guid": "21cba4e8-69f4-49b4-bdc2-1b5893001823",
     "name": "Spawner (2211)",
     "location": [5623, 3875, 15],
     "map": "Felucca",
@@ -2476,17 +2476,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "575028d4-2f78-4167-a29f-d791226c83b5",
+    "guid": "fdc76541-5d27-4dcf-ab0e-fb96e4beb7e8",
     "name": "Spawner (2211)",
     "location": [5623, 3875, 15],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2496,41 +2496,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f7ef55c2-b273-414c-9db8-cfd73d3b8a0e",
+    "guid": "6b8e8c6a-2fb2-443a-a5ac-6ba23572d23c",
     "name": "Spawner (2211)",
     "location": [5624, 3975, -3],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "03a9e6d7-5bf7-4fa0-b01f-b6a2a312f35e",
+    "guid": "64a11ac5-1b77-4d46-beed-78d63b227f89",
     "name": "Spawner (2211)",
     "location": [5624, 3975, -3],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2542,12 +2542,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "000a91f8-fb3a-4c2c-a14a-b22da68ab681",
+    "guid": "35afdfbe-5809-4afe-bf7a-b2de7ef3e6a4",
     "name": "Spawner (2211)",
     "location": [5624, 3975, -3],
     "map": "Felucca",
@@ -2562,17 +2562,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7e9a82d9-187b-4ab2-a96d-0124bd34b85d",
+    "guid": "2a5e6b73-0af4-4461-96af-e980adc67771",
     "name": "Spawner (2211)",
     "location": [5624, 3975, -3],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2582,41 +2582,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "97d6b2d4-fc2b-4a6c-b63b-958482b61d2c",
+    "guid": "62947b20-aa82-480c-887f-bbacd25e698f",
     "name": "Spawner (2211)",
     "location": [5523, 3676, 45],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7585d00e-b2a5-4fb6-a657-2b317c80b275",
+    "guid": "7a43ad68-7a8b-43f6-b8e4-2f5bce9b3c1e",
     "name": "Spawner (2211)",
     "location": [5523, 3676, 45],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2628,12 +2628,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7bf34f17-1e4d-4801-8cba-ab83b50ad2da",
+    "guid": "5d4a0fe3-6d82-42e1-83a8-8eea8de98aee",
     "name": "Spawner (2211)",
     "location": [5523, 3676, 45],
     "map": "Felucca",
@@ -2648,17 +2648,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f54bd88b-0a07-4fe3-889c-4c400ee5314c",
+    "guid": "6ff7fdd5-e4c7-41ea-958f-8b030f8aca55",
     "name": "Spawner (2211)",
     "location": [5523, 3676, 45],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2668,41 +2668,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1a478295-0573-4b87-910f-b7119ec69155",
+    "guid": "21157414-21f7-4eb1-84e8-cb9ffb3b0b1b",
     "name": "Spawner (2211)",
     "location": [5521, 3775, 8],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "57e89203-376d-4b76-9e61-71382cc44a18",
+    "guid": "1d35c378-e89b-4bcc-9074-bd08850092de",
     "name": "Spawner (2211)",
     "location": [5521, 3775, 8],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2714,12 +2714,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "eea50f22-3ee3-4846-9b96-f5567af55260",
+    "guid": "38fd8a6b-4deb-4f8f-87be-70dcfd5b4055",
     "name": "Spawner (2211)",
     "location": [5521, 3775, 8],
     "map": "Felucca",
@@ -2734,17 +2734,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0dc6322f-4aea-44ad-8d52-2a91967a11f9",
+    "guid": "4438dccc-cae8-4b97-8079-baee38c36b7a",
     "name": "Spawner (2211)",
     "location": [5521, 3775, 8],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2754,41 +2754,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "97e538d2-ff1f-4d74-bce4-c590121be454",
+    "guid": "d8ac67eb-7ed1-4f41-80de-549bc900fccd",
     "name": "Spawner (2211)",
     "location": [5521, 3875, -1],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1c48ad2e-3462-4b61-9659-f8496e00b840",
+    "guid": "23eb1938-b1a7-400d-a9dd-12d6f514a3c5",
     "name": "Spawner (2211)",
     "location": [5521, 3875, -1],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2800,12 +2800,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9f26ba85-3ac3-4f54-b0aa-2c2fa2f5bf64",
+    "guid": "224ddc6f-f8ea-4752-8209-4a8484eeca66",
     "name": "Spawner (2211)",
     "location": [5521, 3875, -1],
     "map": "Felucca",
@@ -2820,17 +2820,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "848d450e-bd25-4007-a65d-7d37d3ea9820",
+    "guid": "8be2f678-bffa-4aa1-acf4-d4e3d2cfd92d",
     "name": "Spawner (2211)",
     "location": [5521, 3875, -1],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2840,41 +2840,41 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7b86a8e7-8cfc-472b-a1a4-4f64cd5036c1",
+    "guid": "9b991a2d-71f9-42d1-9d66-7a7a4d6ba42e",
     "name": "Spawner (2211)",
     "location": [5478, 3587, 3],
     "map": "Felucca",
-    "count": 17,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 3, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 3, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 3, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 2, "probability": 100 },
+      { "name": "RidableLlama", "maxCount": 2, "probability": 100 },
       { "name": "Rabbit", "maxCount": 2, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 2, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
       { "name": "Cougar", "maxCount": 1, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4b51589c-ede0-4abd-920b-7af442b9430d",
+    "guid": "6686565b-fadf-4063-9125-c8fe0a138653",
     "name": "Spawner (2211)",
     "location": [5478, 3587, 3],
     "map": "Felucca",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2886,12 +2886,12 @@
       { "name": "TimberWolf", "maxCount": 1, "probability": 100 },
       { "name": "Corpser", "maxCount": 1, "probability": 100 },
       { "name": "Ettin", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 }
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "244dfdec-6895-4614-a614-c75f3ee7e1a2",
+    "guid": "18e0751c-cee9-4120-8873-04f87bfe4772",
     "name": "Spawner (2211)",
     "location": [5478, 3587, 3],
     "map": "Felucca",
@@ -2906,17 +2906,17 @@
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
       { "name": "Harpy", "maxCount": 1, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d6ef1308-dea1-45de-adaf-1e2c6057f8e6",
+    "guid": "1a30ea72-ec30-49a4-be3f-1f7a4a0217b2",
     "name": "Spawner (2211)",
     "location": [5478, 3587, 3],
     "map": "Felucca",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2926,60 +2926,60 @@
       { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Ratman", "maxCount": 1, "probability": 100 },
       { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Troll", "maxCount": 1, "probability": 100 }
+      { "name": "Troll", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "90f3aef0-fbed-472b-95ce-77671cc115ef",
+    "guid": "675ac5d1-85b0-4fe0-89c3-011c4ee3be55",
     "name": "Spawner (2211)",
     "location": [5520, 3939, 42],
     "map": "Felucca",
-    "count": 4,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "ForestOstard", "maxCount": 1, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
       { "name": "RidableLlama", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e75bfdf0-76d2-4bf2-8443-0b59dafd4b87",
+    "guid": "833ac732-4f3f-4863-8b88-f1b52673d063",
     "name": "Spawner (2211)",
     "location": [5784, 3951, 20],
     "map": "Felucca",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 35,
-    "entries": [{ "name": "FrenziedOstard", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FrenziedOstard", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b92b0f69-b1d8-4a1e-9eae-28512960a67f",
+    "guid": "e118382e-b3f3-4e8c-ae91-52fcb3eb6e79",
     "name": "Spawner (2211)",
     "location": [5764, 2585, -4],
     "map": "Felucca",
-    "count": 3,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 75,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 2, "probability": 100 }
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b8edeba3-d7b2-4a3c-b5fd-8866330cb9f2",
+    "guid": "ef9989f7-1231-48a7-b6ff-428d1df26bce",
     "name": "Spawner (2211)",
     "location": [5838, 2651, 0],
     "map": "Felucca",
@@ -3000,29 +3000,29 @@
   },
   {
     "type": "Spawner",
-    "guid": "d238502a-4223-487d-a140-03408f387eb8",
+    "guid": "3781051c-c4bb-4e65-b4f5-5e09c44b9a31",
     "name": "Spawner (2211)",
     "location": [5218, 3786, 1],
     "map": "Felucca",
-    "count": 49,
+    "count": 50,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 1, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "Rat", "maxCount": 15, "probability": 100 },
-      { "name": "Hind", "maxCount": 5, "probability": 100 },
-      { "name": "Llama", "maxCount": 4, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 20, "probability": 100 },
+      { "name": "Bird", "maxCount": 15, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "Llama", "maxCount": 3, "probability": 100 },
       { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ff0c9014-9892-4852-969e-dd3d4f5403a4",
+    "guid": "273c3edf-416a-4113-b68a-fe94b128b63d",
     "name": "Spawner (2211)",
     "location": [5218, 3786, 1],
     "map": "Felucca",
@@ -3033,35 +3033,35 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "64879ab6-44d6-48c5-a2d3-b193a234fb7e",
+    "guid": "6ad3a966-1fcf-45e8-b36a-f3f2c5cbd374",
     "name": "Spawner (2211)",
     "location": [5371, 3820, -2],
     "map": "Felucca",
-    "count": 49,
+    "count": 50,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 1, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "Rat", "maxCount": 15, "probability": 100 },
-      { "name": "Hind", "maxCount": 5, "probability": 100 },
-      { "name": "Llama", "maxCount": 4, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 20, "probability": 100 },
+      { "name": "Bird", "maxCount": 15, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "Llama", "maxCount": 3, "probability": 100 },
       { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c0470503-eb46-4ac7-bb1c-05a3a302a760",
+    "guid": "3612f07e-f714-4ad8-bec2-e7bbca18b0ea",
     "name": "Spawner (2211)",
     "location": [5371, 3820, -2],
     "map": "Felucca",
@@ -3072,35 +3072,35 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fae51d2f-3d20-460d-a6c0-153fc5cfa36a",
+    "guid": "7c05974e-e051-411c-8e9d-991adc1b11d7",
     "name": "Spawner (2211)",
     "location": [5368, 3887, 0],
     "map": "Felucca",
-    "count": 49,
+    "count": 50,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 1, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "Rat", "maxCount": 15, "probability": 100 },
-      { "name": "Hind", "maxCount": 5, "probability": 100 },
-      { "name": "Llama", "maxCount": 4, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 20, "probability": 100 },
+      { "name": "Bird", "maxCount": 15, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "Llama", "maxCount": 3, "probability": 100 },
       { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "24a37a9d-5405-4998-b962-551118b99742",
+    "guid": "5821f460-0bda-4984-8a75-10c711c09f64",
     "name": "Spawner (2211)",
     "location": [5368, 3887, 0],
     "map": "Felucca",
@@ -3111,35 +3111,35 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e0a20d0b-9282-4fb8-a81c-2cead4c2cd3b",
+    "guid": "dd202c62-aa55-4c9c-b3f6-1a0a6d44c32e",
     "name": "Spawner (2211)",
     "location": [5367, 4003, 19],
     "map": "Felucca",
-    "count": 49,
+    "count": 50,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 1, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "Rat", "maxCount": 15, "probability": 100 },
-      { "name": "Hind", "maxCount": 5, "probability": 100 },
-      { "name": "Llama", "maxCount": 4, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 20, "probability": 100 },
+      { "name": "Bird", "maxCount": 15, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "Llama", "maxCount": 3, "probability": 100 },
       { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "772b7b98-39e0-4be6-8aad-e8f2064f59d8",
+    "guid": "cc8c9793-e6fe-48b5-9b83-28d3178fa5a0",
     "name": "Spawner (2211)",
     "location": [5367, 4003, 19],
     "map": "Felucca",
@@ -3150,35 +3150,35 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "66e65ac9-e9ab-460c-8d86-b0ab089a2c50",
+    "guid": "b424a6e3-dd2b-4140-a335-fa3916397531",
     "name": "Spawner (2211)",
     "location": [5466, 4005, -1],
     "map": "Felucca",
-    "count": 49,
+    "count": 50,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 1, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "Rat", "maxCount": 15, "probability": 100 },
-      { "name": "Hind", "maxCount": 5, "probability": 100 },
-      { "name": "Llama", "maxCount": 4, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 20, "probability": 100 },
+      { "name": "Bird", "maxCount": 15, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "Llama", "maxCount": 3, "probability": 100 },
       { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9cb627a0-fb32-48f8-a519-0f78d888efea",
+    "guid": "b5d11127-71e9-4521-88ae-739adb829541",
     "name": "Spawner (2211)",
     "location": [5466, 4005, -1],
     "map": "Felucca",
@@ -3189,88 +3189,88 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "84d1770b-0e91-40ff-aa01-d68435dec64d",
+    "guid": "d41bb4a9-6e4c-4959-88ce-0f7cc1e518c3",
     "name": "Spawner (2211)",
     "location": [5194, 3885, -1],
     "map": "Felucca",
-    "count": 17,
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 32,
     "walkingRange": 45,
     "entries": [
-      { "name": "Bull", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 10, "probability": 100 },
+      { "name": "Bull", "maxCount": 10, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 6, "probability": 100 },
       { "name": "Cow", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e771cdbe-c41f-47a6-b555-8d2027295d26",
+    "guid": "33c93a22-4e4d-4b81-a122-0fc480c300a2",
     "name": "Spawner (2211)",
     "location": [5200, 3895, 2],
     "map": "Felucca",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Bull", "maxCount": 1, "probability": 100 },
+      { "name": "Bull", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
       { "name": "Cow", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8b6b9f15-78fa-4368-80ca-6fcf7bbe66ca",
+    "guid": "5bc4fc91-8bea-4601-990a-f5bfac3d090e",
     "name": "Spawner (2211)",
     "location": [5159, 3913, 1],
     "map": "Felucca",
-    "count": 19,
+    "count": 11,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 10,
     "entries": [
-      { "name": "Sheep", "maxCount": 10, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
+      { "name": "Sheep", "maxCount": 7, "probability": 100 },
+      { "name": "Goat", "maxCount": 1, "probability": 100 },
       { "name": "Bull", "maxCount": 1, "probability": 100 },
       { "name": "Chicken", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9ff7eee0-c9de-4377-8228-df4bdbd842d2",
+    "guid": "13efbe43-2edd-44f9-8282-5b3274f79912",
     "name": "Spawner (2211)",
     "location": [5570, 3153, 14],
     "map": "Felucca",
-    "count": 20,
+    "count": 25,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 60,
     "walkingRange": 80,
     "entries": [
-      { "name": "Gorilla", "maxCount": 1, "probability": 100 },
+      { "name": "Gorilla", "maxCount": 6, "probability": 100 },
       { "name": "Panther", "maxCount": 6, "probability": 100 },
       { "name": "GiantSerpent", "maxCount": 6, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 6, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
+      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3ac3eaa0-5570-4b6b-8b48-cdf1ce2dcc07",
+    "guid": "d03b6997-0732-409a-a2ec-f92413ac6a08",
     "name": "Spawner (2211)",
     "location": [5440, 3292, -4],
     "map": "Felucca",
@@ -3281,16 +3281,16 @@
     "homeRange": 56,
     "walkingRange": 62,
     "entries": [
-      { "name": "Gorilla", "maxCount": 1, "probability": 100 },
+      { "name": "Gorilla", "maxCount": 5, "probability": 100 },
       { "name": "Panther", "maxCount": 5, "probability": 100 },
       { "name": "GiantSerpent", "maxCount": 5, "probability": 100 },
       { "name": "Mongbat", "maxCount": 5, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 5, "probability": 100 }
+      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "257f40d2-08be-4db6-a8f6-e39d201edb1f",
+    "guid": "84a12c7e-b2f6-4713-8d14-5c768f38358b",
     "name": "Spawner (2211)",
     "location": [5566, 3292, 4],
     "map": "Felucca",
@@ -3301,39 +3301,39 @@
     "homeRange": 56,
     "walkingRange": 62,
     "entries": [
-      { "name": "Gorilla", "maxCount": 1, "probability": 100 },
+      { "name": "Gorilla", "maxCount": 5, "probability": 100 },
       { "name": "Panther", "maxCount": 5, "probability": 100 },
       { "name": "GiantSerpent", "maxCount": 5, "probability": 100 },
       { "name": "Mongbat", "maxCount": 5, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 5, "probability": 100 }
+      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dd865548-f113-42ae-be89-34bd7e0c3c69",
+    "guid": "91259235-0484-4698-906e-bf63a077d599",
     "name": "Spawner (2211)",
     "location": [5454, 3136, -60],
     "map": "Felucca",
-    "count": 17,
+    "count": 26,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanAvenger", "maxCount": 2, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 4, "probability": 100 },
+      { "name": "TerathanMatriarch", "maxCount": 2, "probability": 100 },
+      { "name": "TerathanAvenger", "maxCount": 4, "probability": 100 },
+      { "name": "TerathanDrone", "maxCount": 10, "probability": 100 },
       { "name": "TerathanWarrior", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d6d7505d-aa91-409b-86c0-efb6e0e1ab33",
+    "guid": "d2e9a141-6f17-4844-bbfa-a8e9adacbc50",
     "name": "Spawner (2211)",
     "location": [5490, 3071, 15],
     "map": "Felucca",
-    "count": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -3343,17 +3343,17 @@
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
       { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
       { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "OphidianKnight", "maxCount": 2, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7638ce77-3e1a-407b-8844-938678adaf93",
+    "guid": "00b71fd9-b553-4846-8cc6-5ceaf42ba4b3",
     "name": "Spawner (2211)",
     "location": [5467, 3078, -3],
     "map": "Felucca",
-    "count": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -3363,17 +3363,17 @@
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
       { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
       { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "OphidianKnight", "maxCount": 2, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cfc67f53-a514-4a35-9a12-5c2031510f91",
+    "guid": "db44f2a2-5df8-4de6-94c9-cbe8f792f3e5",
     "name": "Spawner (2211)",
     "location": [5446, 3074, 3],
     "map": "Felucca",
-    "count": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -3383,17 +3383,17 @@
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
       { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
       { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "OphidianKnight", "maxCount": 2, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7bd408f3-f6fa-4ba0-b032-0749cabfe608",
+    "guid": "440d81ae-8e54-44db-b6de-909abe0e75b8",
     "name": "Spawner (2211)",
     "location": [5432, 3079, -4],
     "map": "Felucca",
-    "count": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -3403,17 +3403,17 @@
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
       { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
       { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "OphidianKnight", "maxCount": 2, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fde73a51-d0a4-409d-9e81-f3075415aca8",
+    "guid": "f19e0ef2-66a2-48b9-a6df-83027370fd1d",
     "name": "Spawner (2211)",
     "location": [5408, 3077, 16],
     "map": "Felucca",
-    "count": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -3423,8 +3423,8 @@
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
       { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
       { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 }
+      { "name": "OphidianKnight", "maxCount": 2, "probability": 100 },
+      { "name": "OphidianWarrior", "maxCount": 2, "probability": 100 }
     ]
   }
 ]
