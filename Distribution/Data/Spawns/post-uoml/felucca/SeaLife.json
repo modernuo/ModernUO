@@ -1,2417 +1,5637 @@
 [
   {
     "type": "Spawner",
-    "guid": "89e390bd-e500-431b-8478-afbcd38d9e67",
-    "name": "Spawner (218)",
-    "location": [1395, 3421, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "a3ab32dc-d772-4f43-b587-2a04e988106f",
-    "name": "Spawner (218)",
-    "location": [4888, 375, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "43a7e8fa-9d82-444e-b588-996eaff0dbd7",
-    "name": "Spawner (218)",
-    "location": [4352, 215, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "5417af74-a992-4122-b575-26c4e39315e0",
-    "name": "Spawner (218)",
-    "location": [3688, 439, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "0fc528c8-9324-497a-9d71-69d207b41850",
-    "name": "Spawner (218)",
-    "location": [4512, 583, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "54a8e7fb-5e47-452e-8768-4183e87603e7",
-    "name": "Spawner (218)",
-    "location": [4904, 759, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "0772fcdd-7124-4b0d-adc0-c962217cef53",
-    "name": "Spawner (218)",
-    "location": [4904, 1127, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "124020f3-cbc2-4f1a-be92-7e26992d3595",
-    "name": "Spawner (218)",
-    "location": [3576, 823, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "44cc0b01-3573-42b9-a72b-2044774b67e9",
-    "name": "Spawner (218)",
-    "location": [4016, 1031, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "d8cab21d-926a-46c2-a8db-03b262d2a7d9",
-    "name": "Spawner (218)",
-    "location": [3992, 1447, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "e1b916f3-5c95-4074-b467-99321d65e70c",
-    "name": "Spawner (218)",
-    "location": [4232, 1655, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8a95d20b-76e5-45e7-b461-cc44391db613",
-    "name": "Spawner (218)",
-    "location": [4600, 1751, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "e9d77b05-3288-4210-93a1-1f438475ff5d",
-    "name": "Spawner (218)",
-    "location": [4896, 1519, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8876d112-abfc-424a-abff-eeefda68c5ac",
-    "name": "Spawner (218)",
-    "location": [3616, 1807, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "5d4c7d09-362a-4b90-a4c9-bceebce9ab1f",
-    "name": "Spawner (218)",
-    "location": [4032, 2039, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "0ba24937-c119-4386-be38-d471eb101eb1",
-    "name": "Spawner (218)",
-    "location": [4624, 2199, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "ecb17d7f-11c9-44bd-bcb2-48bc49d2ba35",
-    "name": "Spawner (218)",
-    "location": [4400, 2527, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "f9471326-6ab9-41e6-af38-761802a647f0",
-    "name": "Spawner (218)",
-    "location": [3984, 2423, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "daa03961-4a4d-4534-ba0d-29cc931b2a86",
-    "name": "Spawner (218)",
-    "location": [4896, 2119, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "f3bc4e3e-ec8c-417c-80ec-b9fcc354530a",
-    "name": "Spawner (218)",
-    "location": [4912, 2471, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "21410875-2c9e-489f-adc7-485e62166d9e",
-    "name": "Spawner (218)",
-    "location": [4864, 2831, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "70cf1754-5a15-4070-84d6-255cb22f7ffa",
-    "name": "Spawner (218)",
-    "location": [4536, 2847, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "834098c0-be4c-47e5-ad6a-ed09df49ff15",
-    "name": "Spawner (218)",
-    "location": [4896, 3215, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b9db5268-bb54-4c69-81a9-b0f1b8dac4f5",
-    "name": "Spawner (218)",
-    "location": [4192, 2975, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "2939c65c-2c4d-4762-b694-9e921b1456c3",
-    "name": "Spawner (218)",
-    "location": [4008, 2767, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b343d92f-93a0-4935-b6d7-41874d5e7a85",
-    "name": "Spawner (218)",
-    "location": [3328, 2063, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "a75a1f2a-863f-41d7-b5d3-9d28057059b3",
-    "name": "Spawner (218)",
-    "location": [3176, 2383, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "424f9ed4-b5f7-49b0-bd0f-b90ef6a2caed",
-    "name": "Spawner (218)",
-    "location": [3088, 2759, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "425deff0-eff3-4019-8a25-4eda2224adef",
-    "name": "Spawner (218)",
-    "location": [3888, 3167, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "6a00131d-19c8-4f53-869a-964eb1fd506b",
-    "name": "Spawner (218)",
-    "location": [4152, 3415, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "2be0a37b-0c73-47c4-baf4-e81cecee64cd",
-    "name": "Spawner (218)",
-    "location": [3968, 3895, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "6684cb08-192c-4d05-bff5-a474e3ceca09",
-    "name": "Spawner (218)",
-    "location": [3240, 3151, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8a9dd10f-c57a-4974-95c9-ea9178e9a776",
-    "name": "Spawner (218)",
-    "location": [3776, 3519, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "bce317c0-da08-4dfc-99c2-c5ccdd3e04fc",
-    "name": "Spawner (218)",
-    "location": [3344, 3479, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "90b74acb-9abe-485a-8acb-d3c2833467ef",
-    "name": "Spawner (218)",
-    "location": [2792, 2951, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "94942930-a3be-448e-a09b-02705f77bd99",
-    "name": "Spawner (218)",
-    "location": [2608, 3295, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b61e9fb0-68e5-426e-8986-86b4a66a46a1",
-    "name": "Spawner (218)",
-    "location": [2744, 2567, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b496da49-6091-4887-9f07-51174ceed6e1",
-    "name": "Spawner (218)",
-    "location": [2368, 2799, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "9dd9a8e2-c2f9-432e-a571-748063ee502f",
-    "name": "Spawner (218)",
-    "location": [3560, 3871, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "6c92ad1f-b1e5-4e18-b457-d01128ca79a3",
-    "name": "Spawner (218)",
-    "location": [3168, 3871, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "45864b5f-3ff6-4e09-a61a-73cd3b42df76",
-    "name": "Spawner (218)",
-    "location": [2768, 3847, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "11a40557-c75e-4693-be7e-e03435bc547e",
-    "name": "Spawner (218)",
-    "location": [1720, 3879, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "fbec7570-357c-4114-97d3-6cd15b788c85",
-    "name": "Spawner (218)",
-    "location": [200, 3879, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "adb3eb1d-8821-4d36-b9e3-cbaa79db2944",
-    "name": "Spawner (218)",
-    "location": [544, 3719, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "3a71ca57-1be0-4464-b872-0898c79b1d50",
-    "name": "Spawner (218)",
-    "location": [896, 3695, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "38896360-84a5-4223-8c29-a848465306ad",
-    "name": "Spawner (218)",
-    "location": [824, 3287, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "1eabc25e-308b-479a-ae0f-2b2024fb8de7",
-    "name": "Spawner (218)",
-    "location": [176, 3551, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "92ebc50f-5667-432d-9e65-1fd8b7b0b30f",
-    "name": "Spawner (218)",
-    "location": [480, 3351, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "fa15318d-d17f-4e1d-a5c1-ace32432846e",
-    "name": "Spawner (218)",
-    "location": [512, 2919, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "4d69f24f-0ba3-42af-b485-57d07a72acad",
-    "name": "Spawner (218)",
-    "location": [192, 2895, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "54e0c891-5ea2-431f-a135-ac75815c9ac4",
-    "name": "Spawner (218)",
-    "location": [208, 2503, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b20feb65-41be-4a14-9a5f-4eafa0587acc",
-    "name": "Spawner (218)",
-    "location": [840, 2863, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "be090bd9-4eab-4b7a-bace-14bbd2f156b9",
-    "name": "Spawner (218)",
-    "location": [600, 2511, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
-    "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "a1818570-d448-4ae8-ae86-45f20c974128",
-    "name": "Spawner (218)",
-    "location": [200, 2103, -5],
-    "map": "Felucca",
-    "count": 67,
+    "guid": "2d7cf932-ce8c-4a83-bd73-6371f3448072",
+    "name": "Spawner (218)",
+    "location": [
+      1395,
+      3421,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "f499fbf2-c904-40f6-b96b-4e5ee754a413",
-    "name": "Spawner (218)",
-    "location": [168, 1743, -5],
-    "map": "Felucca",
-    "count": 67,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3dcee48d-ec06-4315-9abc-ef03d4c03e4a",
+    "name": "Spawner (218)",
+    "location": [
+      4888,
+      375,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "6480c025-3ec4-4f2c-8dd2-bd9877373a80",
-    "name": "Spawner (218)",
-    "location": [200, 559, -5],
-    "map": "Felucca",
-    "count": 67,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "670934bb-5897-4cdd-bbd3-1c90df939a21",
+    "name": "Spawner (218)",
+    "location": [
+      4352,
+      215,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b7ef4f51-c562-479d-bc3e-141525ca12b1",
-    "name": "Spawner (218)",
-    "location": [184, 191, -5],
-    "map": "Felucca",
-    "count": 67,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e602a618-789c-4b14-84d6-fc4eba7fff99",
+    "name": "Spawner (218)",
+    "location": [
+      3688,
+      439,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "3fb6ffb2-60ae-461a-9079-be06f7eb2035",
-    "name": "Spawner (218)",
-    "location": [592, 223, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e6115838-1fe9-4d50-845e-758c36abdccb",
+    "name": "Spawner (218)",
+    "location": [
+      4512,
+      583,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "964b5329-f795-4829-9087-0d7a022455cd",
-    "name": "Spawner (218)",
-    "location": [496, 527, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fac96160-fbae-4833-8946-e315521ffb8e",
+    "name": "Spawner (218)",
+    "location": [
+      4904,
+      759,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "f705cb57-63b8-441d-920b-d95a40344534",
-    "name": "Spawner (218)",
-    "location": [2400, 2399, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0627e5fe-58d2-432f-9864-9d4bc05e187d",
+    "name": "Spawner (218)",
+    "location": [
+      4904,
+      1127,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "71fe9c93-49b1-4160-a3d0-885b402949a6",
-    "name": "Spawner (218)",
-    "location": [3008, 1895, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1f070052-489a-4be0-90b1-a4ac42a0c367",
+    "name": "Spawner (218)",
+    "location": [
+      3576,
+      823,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "04d8f2d3-428a-4c3b-9b7f-1d6fe59c40a8",
-    "name": "Spawner (218)",
-    "location": [2392, 2031, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "696ab0e9-99f4-49ca-b79c-4d87f37fa250",
+    "name": "Spawner (218)",
+    "location": [
+      4016,
+      1031,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "24f36447-401b-45cb-acc1-655a83717f27",
-    "name": "Spawner (218)",
-    "location": [2624, 1775, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "54fc0bab-2105-444b-8155-804624544ffd",
+    "name": "Spawner (218)",
+    "location": [
+      3992,
+      1447,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "33960bc7-c914-4df4-8914-1964f96c234d",
-    "name": "Spawner (218)",
-    "location": [3408, 1407, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8fe15958-527f-4480-98d6-6d8c9e2653cd",
+    "name": "Spawner (218)",
+    "location": [
+      4232,
+      1655,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b7c7e853-c824-47d3-9600-df61af7c7581",
-    "name": "Spawner (218)",
-    "location": [3256, 1031, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b90733e7-882e-42a3-ab1c-852611eec585",
+    "name": "Spawner (218)",
+    "location": [
+      4600,
+      1751,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "60acf466-506b-4325-9846-4abf48820b1f",
-    "name": "Spawner (218)",
-    "location": [2952, 1239, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "01985344-d2d2-4fa8-ab4c-c1e3bd4e1426",
+    "name": "Spawner (218)",
+    "location": [
+      4896,
+      1519,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "bec59db1-a4fc-466a-bc6e-9f93951eb73f",
-    "name": "Spawner (218)",
-    "location": [2752, 1455, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9703d8ff-da28-4ea8-9071-d9f9a4c6d836",
+    "name": "Spawner (218)",
+    "location": [
+      3616,
+      1807,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "9df60af8-e818-40d6-8ee4-afd878c889ef",
-    "name": "Spawner (218)",
-    "location": [2208, 1703, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2abdef39-47e2-4145-9dd5-9af7e078d53c",
+    "name": "Spawner (218)",
+    "location": [
+      4032,
+      2039,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
     "walkingRange": 175,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "541347de-5334-4462-983e-7eaecd9e94bd",
-    "name": "Spawner (218)",
-    "location": [1866, 1798, -5],
-    "map": "Felucca",
-    "count": 67,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 175,
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "79aefaf1-568d-41d2-bed6-bd670ecce526",
+    "name": "Spawner (218)",
+    "location": [
+      4624,
+      2199,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
     "walkingRange": 175,
-    "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 15, "probability": 100 },
-      { "name": "Kraken", "maxCount": 15, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 6, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "10c63ec7-84af-4090-9a88-2f5cb887dd07",
-    "name": "Spawner (218)",
-    "location": [931, 141, -5],
-    "map": "Felucca",
-    "count": 57,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "cd863ac3-ff02-4719-a235-9f8403f1f6b9",
+    "name": "Spawner (218)",
+    "location": [
+      4400,
+      2527,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9b0dcb48-2f80-4503-8f25-ddbc29221473",
+    "name": "Spawner (218)",
+    "location": [
+      3984,
+      2423,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "89971651-6235-411e-b939-9d42fa08539a",
+    "name": "Spawner (218)",
+    "location": [
+      4896,
+      2119,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a3c1a4b2-df5b-4492-a0c5-0e9e5a0c399f",
+    "name": "Spawner (218)",
+    "location": [
+      4912,
+      2471,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3e3b9e43-1b6c-407b-9c3f-325e87738c26",
+    "name": "Spawner (218)",
+    "location": [
+      4864,
+      2831,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fe2bf6f9-ab40-4e8d-b7e9-ef01688462cb",
+    "name": "Spawner (218)",
+    "location": [
+      4536,
+      2847,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0014d520-3474-4486-86ec-00a967fb2a5e",
+    "name": "Spawner (218)",
+    "location": [
+      4896,
+      3215,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2910bc91-c850-493b-b157-d37b8a4dfde8",
+    "name": "Spawner (218)",
+    "location": [
+      4192,
+      2975,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "20fdaa4f-d544-4a36-925b-cc0dfb565abc",
+    "name": "Spawner (218)",
+    "location": [
+      4008,
+      2767,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "aa54f319-d255-4aea-b782-d505cce89754",
+    "name": "Spawner (218)",
+    "location": [
+      3328,
+      2063,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b096bc10-2a6c-42a6-bd3c-1835e6ba57e3",
+    "name": "Spawner (218)",
+    "location": [
+      3176,
+      2383,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "85204ae4-6b37-4f1e-9490-c081e806e26f",
+    "name": "Spawner (218)",
+    "location": [
+      3088,
+      2759,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d98fd38f-c4f3-4933-9ea3-53a81c886e8f",
+    "name": "Spawner (218)",
+    "location": [
+      3888,
+      3167,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0c6c585b-1213-4135-bab3-6f15861f7aa0",
+    "name": "Spawner (218)",
+    "location": [
+      4152,
+      3415,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "201a3c66-f161-43f2-a6d0-0ca3597a6678",
+    "name": "Spawner (218)",
+    "location": [
+      3968,
+      3895,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fb98801b-da33-4aab-b21a-8f4f0df5ee8c",
+    "name": "Spawner (218)",
+    "location": [
+      3240,
+      3151,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "47efe73c-82a4-4117-b43b-e5d15136c149",
+    "name": "Spawner (218)",
+    "location": [
+      3776,
+      3519,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "07342ec8-7e6f-4d0c-877f-743f3143d265",
+    "name": "Spawner (218)",
+    "location": [
+      3344,
+      3479,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e6f4428d-db11-4d83-837f-4b92a3bee9e8",
+    "name": "Spawner (218)",
+    "location": [
+      2792,
+      2951,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "2f2b2fca-8ffe-4bb5-95d3-94a5ee0b72a8",
+    "name": "Spawner (218)",
+    "location": [
+      2608,
+      3295,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9be3514d-643b-4008-b316-aa0f47902fe8",
+    "name": "Spawner (218)",
+    "location": [
+      2744,
+      2567,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "01b29f02-2bec-4d96-8d9a-ccb1957acff3",
+    "name": "Spawner (218)",
+    "location": [
+      2368,
+      2799,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "10d5ae06-e475-4d16-93ca-a1deee44e78e",
+    "name": "Spawner (218)",
+    "location": [
+      3560,
+      3871,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5fe352af-61a0-464a-8ded-bd840ddc69c8",
+    "name": "Spawner (218)",
+    "location": [
+      3168,
+      3871,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d8eb15e7-f507-4850-a1fd-9bc9f1ce1e07",
+    "name": "Spawner (218)",
+    "location": [
+      2768,
+      3847,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7e4ba525-1583-4aed-a7b7-783f37239a5a",
+    "name": "Spawner (218)",
+    "location": [
+      1720,
+      3879,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bea968d2-ac27-494b-b59f-a3ed10e48402",
+    "name": "Spawner (218)",
+    "location": [
+      200,
+      3879,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0a9ddbf8-0673-47fa-b250-08395ca453af",
+    "name": "Spawner (218)",
+    "location": [
+      544,
+      3719,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "395aeb43-6d36-4856-b6f5-19790d555189",
+    "name": "Spawner (218)",
+    "location": [
+      896,
+      3695,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "956a87d3-17ff-4f04-9165-ac12e0954594",
+    "name": "Spawner (218)",
+    "location": [
+      824,
+      3287,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "44c78479-90c2-44fe-92a8-23cb6de892fa",
+    "name": "Spawner (218)",
+    "location": [
+      176,
+      3551,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6c993910-33aa-4227-b37d-e3cdec1ed456",
+    "name": "Spawner (218)",
+    "location": [
+      480,
+      3351,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5e5967d0-64f1-46b3-a8c9-c85e60e2498f",
+    "name": "Spawner (218)",
+    "location": [
+      512,
+      2919,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c86a16f5-01d1-4a6b-8967-6e35ba6d4f30",
+    "name": "Spawner (218)",
+    "location": [
+      192,
+      2895,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "23ad7990-6434-4baa-8ced-32317059b195",
+    "name": "Spawner (218)",
+    "location": [
+      208,
+      2503,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1d557f82-a5f6-46f1-b459-fb3096e5852c",
+    "name": "Spawner (218)",
+    "location": [
+      840,
+      2863,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c3938e64-993f-45c6-886e-dcdde4e43ee9",
+    "name": "Spawner (218)",
+    "location": [
+      600,
+      2511,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d01dce21-9d3a-4b51-85ce-e4589e03776f",
+    "name": "Spawner (218)",
+    "location": [
+      200,
+      2103,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ef767a86-1b77-4ddb-a52b-d4c6599b42c0",
+    "name": "Spawner (218)",
+    "location": [
+      168,
+      1743,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e19fdd70-0246-43dd-bde0-a65e5324f684",
+    "name": "Spawner (218)",
+    "location": [
+      200,
+      559,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e5bd5536-fac7-43f2-a074-01d548139c56",
+    "name": "Spawner (218)",
+    "location": [
+      184,
+      191,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "176e52b8-2ac0-496f-9647-fc42ea72ee8a",
+    "name": "Spawner (218)",
+    "location": [
+      592,
+      223,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "17574264-babd-4f28-92ed-1fcb3f07ee28",
+    "name": "Spawner (218)",
+    "location": [
+      496,
+      527,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "319bf1d1-606a-4b25-be88-11da80afe4fd",
+    "name": "Spawner (218)",
+    "location": [
+      2400,
+      2399,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8fb38b44-6776-4902-a7ec-ad918c7d58cc",
+    "name": "Spawner (218)",
+    "location": [
+      3008,
+      1895,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8faaf35e-e1d9-4bf5-8ddb-403d6628dc91",
+    "name": "Spawner (218)",
+    "location": [
+      2392,
+      2031,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ec9b98b4-d409-4aaf-823c-a5cf9503f461",
+    "name": "Spawner (218)",
+    "location": [
+      2624,
+      1775,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "760de2a1-81b0-44b0-a936-749b378086cf",
+    "name": "Spawner (218)",
+    "location": [
+      3408,
+      1407,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5e50039d-cd33-4802-bc94-d472eb3fc521",
+    "name": "Spawner (218)",
+    "location": [
+      3256,
+      1031,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4de0d475-b6de-4676-ae8c-715b17e0f44a",
+    "name": "Spawner (218)",
+    "location": [
+      2952,
+      1239,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "df48afce-46f8-4d69-bae7-b843e1185554",
+    "name": "Spawner (218)",
+    "location": [
+      2752,
+      1455,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a798b4a7-f027-4e9f-86d0-a93f721ee033",
+    "name": "Spawner (218)",
+    "location": [
+      2208,
+      1703,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "61eb0c80-5734-4aaa-8639-26c61907aa70",
+    "name": "Spawner (218)",
+    "location": [
+      1866,
+      1798,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 22,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 175,
+    "walkingRange": 175,
+    "entries": [
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a5a6b13c-50d2-4aa4-ba70-9b2abb9841b6",
+    "name": "Spawner (218)",
+    "location": [
+      931,
+      141,
+      -5
+    ],
+    "map": "Felucca",
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 130,
     "walkingRange": 130,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 13, "probability": 100 },
-      { "name": "Kraken", "maxCount": 13, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 4, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2d8f6e54-6880-40ac-aa1b-bf01d2c8a316",
+    "guid": "c02a7e0f-a448-45c3-b8e8-532f0441089d",
     "name": "Spawner (218)",
-    "location": [3267, 1717, -5],
+    "location": [
+      3267,
+      1717,
+      -5
+    ],
     "map": "Felucca",
-    "count": 57,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 130,
     "walkingRange": 130,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 13, "probability": 100 },
-      { "name": "Kraken", "maxCount": 13, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 4, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "26cd8b7f-27ac-40c6-b2fa-20be8078e179",
+    "guid": "d2bdb1a3-d96b-4a44-95e7-099f39ff38cc",
     "name": "Spawner (218)",
-    "location": [2395, 1405, -5],
+    "location": [
+      2395,
+      1405,
+      -5
+    ],
     "map": "Felucca",
-    "count": 57,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 130,
     "walkingRange": 130,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 13, "probability": 100 },
-      { "name": "Kraken", "maxCount": 13, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 4, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3718600f-4d72-4f3b-a295-357f25478343",
+    "guid": "3867ead7-d062-44a3-a284-ba67c14b2b3b",
     "name": "Spawner (218)",
-    "location": [139, 1173, -5],
+    "location": [
+      139,
+      1173,
+      -5
+    ],
     "map": "Felucca",
-    "count": 57,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 130,
     "walkingRange": 130,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 13, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 13, "probability": 100 },
-      { "name": "Kraken", "maxCount": 13, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 4, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ce843aff-a9c1-4be9-a662-50f6a7bdc0a9",
+    "guid": "e131f5dc-1b9d-480e-b759-85af56822993",
     "name": "Spawner (218)",
-    "location": [3123, 1485, -5],
+    "location": [
+      3123,
+      1485,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ea2855d8-8f1a-4ce2-beef-a430d208274d",
+    "guid": "df7a4d12-8fbd-4547-8f92-bb4dfc720ac2",
     "name": "Spawner (218)",
-    "location": [3811, 109, -5],
+    "location": [
+      3811,
+      109,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "509934c2-fbf2-4ab9-a2c0-887162a68821",
+    "guid": "da152e88-97ad-4c9e-b27d-c4d4385e8455",
     "name": "Spawner (218)",
-    "location": [3931, 1757, -5],
+    "location": [
+      3931,
+      1757,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "50168603-48b6-4845-b02c-a4502ae7cdaa",
+    "guid": "372bca4b-5296-48b9-9207-7782d129aa21",
     "name": "Spawner (218)",
-    "location": [2931, 3245, -5],
+    "location": [
+      2931,
+      3245,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ef80151e-c96b-470e-bda8-6502c5fb26c8",
+    "guid": "8a301447-cfe7-45e3-b30a-b9573379b108",
     "name": "Spawner (218)",
-    "location": [2291, 3181, -5],
+    "location": [
+      2291,
+      3181,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2916d1fa-6a39-4b17-86b2-516cc2d518d1",
+    "guid": "5a7be8f4-75a8-495b-9ec7-18ca5a146566",
     "name": "Spawner (218)",
-    "location": [979, 3997, -5],
+    "location": [
+      979,
+      3997,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "325df697-5097-4016-bb38-e80ae3b2fa14",
+    "guid": "07ce9fc5-0714-4583-bd08-329c1997ed4d",
     "name": "Spawner (218)",
-    "location": [147, 3213, -5],
+    "location": [
+      147,
+      3213,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "270fde44-f98d-499e-b372-a83427e04003",
+    "guid": "667c9bca-f47b-4a12-b00e-55db4657cb46",
     "name": "Spawner (218)",
-    "location": [1891, 3597, -5],
+    "location": [
+      1891,
+      3597,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "03a16206-38b5-4ee5-a384-d698899e274e",
+    "guid": "296f03e2-d85d-4743-8fd2-0428b9390c89",
     "name": "Spawner (218)",
-    "location": [2971, 1605, -5],
+    "location": [
+      2971,
+      1605,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "37321750-3739-4fd2-b153-7d62f4943281",
+    "guid": "fc7ef1ce-76f7-4239-b044-7f30a4c32a42",
     "name": "Spawner (218)",
-    "location": [1580, 75, -5],
+    "location": [
+      1580,
+      75,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1d1464b8-4d2c-4eeb-84fa-fc53650c39db",
+    "guid": "60abd3c2-eba6-4e07-aae5-1d988ade2d99",
     "name": "Spawner (218)",
-    "location": [4275, 1309, -5],
+    "location": [
+      4275,
+      1309,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6c5bdee7-62a6-40cf-a92a-15fb6c69b9f3",
+    "guid": "f61ab42b-c23e-462f-980d-ea4d236f4796",
     "name": "Spawner (218)",
-    "location": [4667, 109, -5],
+    "location": [
+      4667,
+      109,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "be8b1122-1450-4964-a78b-af92c6b39119",
+    "guid": "d45f2c8d-d661-4a91-bc0a-b04f901b64b2",
     "name": "Spawner (218)",
-    "location": [5003, 101, -5],
+    "location": [
+      5003,
+      101,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "86fe67ad-6620-435d-aa68-7e47d21e2922",
+    "guid": "5b9bde41-61e8-486c-8893-f5de1e36bdf2",
     "name": "Spawner (218)",
-    "location": [3603, 125, -5],
+    "location": [
+      3603,
+      125,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5117ef00-98ec-431e-ba39-28c32a6fc604",
+    "guid": "08ccd285-5416-4099-8edf-371c61bccbd2",
     "name": "Spawner (218)",
-    "location": [4112, 791, -5],
+    "location": [
+      4112,
+      791,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "43776435-b0aa-4f36-9521-8f4202b37a37",
+    "guid": "445d35c5-b9a8-4269-ab27-c8b294156811",
     "name": "Spawner (218)",
-    "location": [3891, 733, -5],
+    "location": [
+      3891,
+      733,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "aa9c1232-c0f7-42e1-897b-08d043ca9d0c",
+    "guid": "e35061d7-cfbd-4383-b75b-065c37982be4",
     "name": "Spawner (218)",
-    "location": [3672, 1535, -5],
+    "location": [
+      3672,
+      1535,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cf91ae8d-84ab-4c5b-9c85-78fffe481e6f",
+    "guid": "a88ec077-c435-47e0-92b3-548e27f2e603",
     "name": "Spawner (218)",
-    "location": [4363, 1981, -5],
+    "location": [
+      4363,
+      1981,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d1553113-a0e6-4fd1-ba60-e9470b8aa86f",
+    "guid": "a408764b-0975-45e6-87dc-031e05747605",
     "name": "Spawner (218)",
-    "location": [4995, 1829, -5],
+    "location": [
+      4995,
+      1829,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "94a9cf05-0e4c-456e-a782-38396a352839",
+    "guid": "b3e6d001-7ec1-48c0-a243-df5a177d56a7",
     "name": "Spawner (218)",
-    "location": [4283, 2221, -5],
+    "location": [
+      4283,
+      2221,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "42722eb4-eb69-4aec-bfbe-4a100d256276",
+    "guid": "bdd432ee-e61f-4df2-ab8b-d1296838dd90",
     "name": "Spawner (218)",
-    "location": [2008, 4007, -5],
+    "location": [
+      2008,
+      4007,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "82526d9a-2536-43a9-8e46-6e7548db8e9c",
+    "guid": "817895c6-8683-41e6-b08d-01a5ff038f94",
     "name": "Spawner (218)",
-    "location": [2320, 4007, -5],
+    "location": [
+      2320,
+      4007,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "85ac1719-5894-454f-8b01-95502f61c71c",
+    "guid": "ec7aedaf-b518-4f7e-9d05-b864db54eac2",
     "name": "Spawner (218)",
-    "location": [4955, 3997, -5],
+    "location": [
+      4955,
+      3997,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0fe2d8a0-b230-43dd-843a-e584ce6687d3",
+    "guid": "0f18cdfa-c425-4525-9056-54476d4bc98d",
     "name": "Spawner (218)",
-    "location": [4731, 3997, -5],
+    "location": [
+      4731,
+      3997,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bbc06ab1-7057-49b0-aa2b-b1d71faa40ff",
+    "guid": "05f1490c-6e6c-4905-8d78-01f2367c5f58",
     "name": "Spawner (218)",
-    "location": [4307, 3965, -5],
+    "location": [
+      4307,
+      3965,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1029a19a-f937-4caa-9c8a-3b267f3cc0d7",
+    "guid": "96ea0189-bdc2-40de-8660-f07b8f3c6d51",
     "name": "Spawner (218)",
-    "location": [2227, 3533, -5],
+    "location": [
+      2227,
+      3533,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "adff3ae2-f504-4e2d-916c-0e8cf7e7cdb3",
+    "guid": "5114e22e-6538-4d21-b276-aa9a00a88a54",
     "name": "Spawner (218)",
-    "location": [1187, 3885, -5],
+    "location": [
+      1187,
+      3885,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f138842c-908f-4e30-b934-fdc3dfc4be92",
+    "guid": "a8e4212a-a3d5-4e62-937a-3118350ea07d",
     "name": "Spawner (218)",
-    "location": [731, 3989, -5],
+    "location": [
+      731,
+      3989,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "63f6d024-c75e-4b69-bf9e-ec753e48e959",
+    "guid": "5491c069-ef4f-4b5c-bc5b-5913c4339f3f",
     "name": "Spawner (218)",
-    "location": [491, 4013, -5],
+    "location": [
+      491,
+      4013,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "723a8465-871a-437e-8412-48e3b12e0865",
+    "guid": "c0738ba5-30cc-4819-9f84-3df391ddb250",
     "name": "Spawner (218)",
-    "location": [107, 909, -5],
+    "location": [
+      107,
+      909,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1b8f52da-5db6-49cc-b96c-5be6b6eac97c",
+    "guid": "0071f2f5-305e-4819-b388-4ffbf15f7fb1",
     "name": "Spawner (218)",
-    "location": [1792, 79, -5],
+    "location": [
+      1792,
+      79,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "82a0b2e8-2d78-4cb4-b152-dfa2b63c0298",
+    "guid": "52a8d52f-aec5-4ea8-8964-3a769c403cc2",
     "name": "Spawner (218)",
-    "location": [1336, 79, -5],
+    "location": [
+      1336,
+      79,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9837992d-cb67-4b3a-b9c6-1b3db329d225",
+    "guid": "1bc905f9-1691-4a2b-afca-738e6b22fc47",
     "name": "Spawner (218)",
-    "location": [4048, 63, -5],
+    "location": [
+      4048,
+      63,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0777b06c-e40a-4c0c-a667-337ef9264d63",
+    "guid": "33e0f8af-c16e-4dc4-a240-5c0533ff3375",
     "name": "Spawner (218)",
-    "location": [4392, 823, -5],
+    "location": [
+      4392,
+      823,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f19a8a85-e2a6-4278-9aba-29b45e407141",
+    "guid": "a4a476f6-ad25-4619-a34e-285bffea1f55",
     "name": "Spawner (218)",
-    "location": [3520, 2263, -5],
+    "location": [
+      3520,
+      2263,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "02d32b76-6ad9-45d2-bc1f-ff2abb315f18",
+    "guid": "058ccec6-cf0a-4246-97d1-5397c1557502",
     "name": "Spawner (218)",
-    "location": [3568, 3215, -5],
+    "location": [
+      3568,
+      3215,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "66dce513-0812-4204-8bc4-344a613c3ea3",
+    "guid": "fec6b06d-982d-45b5-aa46-a6334f5ece5e",
     "name": "Spawner (218)",
-    "location": [4992, 3791, -5],
+    "location": [
+      4992,
+      3791,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "04ddce05-3351-4619-8a5b-88215e719c8e",
+    "guid": "8964dcc7-930d-44fb-85a8-f2f85e4fc458",
     "name": "Spawner (218)",
-    "location": [4984, 3567, -5],
+    "location": [
+      4984,
+      3567,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dd6c1fc3-4f6d-410a-bc26-81da14e01cd8",
+    "guid": "add4463a-f94f-45b8-8504-98007a319caf",
     "name": "Spawner (218)",
-    "location": [2072, 2527, -5],
+    "location": [
+      2072,
+      2527,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d2febc03-0e0a-4010-ad5b-a65718aebcfc",
+    "guid": "54d209e5-3a8c-476b-bc51-e3ebb3449c6c",
     "name": "Spawner (218)",
-    "location": [2040, 3751, -5],
+    "location": [
+      2040,
+      3751,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "32079c83-3e47-4a96-81c2-a8f378206856",
+    "guid": "fd9175ae-f576-4ffd-bae8-2710ae3e07e1",
     "name": "Spawner (218)",
-    "location": [2288, 3767, -5],
+    "location": [
+      2288,
+      3767,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9eeeeede-612b-499d-8857-9a270c56a77d",
+    "guid": "1e652609-1c8b-4f88-bd10-de2445856391",
     "name": "Spawner (218)",
-    "location": [496, 1879, -5],
+    "location": [
+      496,
+      1879,
+      -5
+    ],
     "map": "Felucca",
-    "count": 43,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "DeepSeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "SeaSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "WaterElemental", "maxCount": 10, "probability": 100 },
-      { "name": "Kraken", "maxCount": 10, "probability": 100 },
-      { "name": "Dolphin", "maxCount": 2, "probability": 100 },
-      { "name": "SeaHorse", "maxCount": 1, "probability": 100 }
+      {
+        "name": "DeepSeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SeaSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "WaterElemental",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Kraken",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dolphin",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SeaHorse",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   }
 ]

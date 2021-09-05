@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "9a0a9274-0ba6-497d-bec0-8a8298f0fe8f",
+    "guid": "5a62f325-4e00-49c3-8576-fdd9fcf330e5",
     "name": "Spawner (210)",
-    "location": [5771, 224, -2],
+    "location": [
+      5771,
+      224,
+      -2
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -11,13 +15,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "ArcticOgreLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ArcticOgreLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "59fcd9db-8d45-438a-95c5-008f307f6cc6",
+    "guid": "3d3f7414-5249-4ee4-9602-c842af0da38c",
     "name": "Spawner (210)",
-    "location": [5799, 188, -6],
+    "location": [
+      5799,
+      188,
+      -6
+    ],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
@@ -26,18 +40,42 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Ratman",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2198425f-1701-4827-8cef-4bec2b1fb34a",
+    "guid": "b8a2691a-996a-4c38-834f-897b972bfe2f",
     "name": "Spawner (210)",
-    "location": [5867, 218, -4],
+    "location": [
+      5867,
+      218,
+      -4
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -46,16 +84,32 @@
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FrostOoze", "maxCount": 2, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostOoze",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "IceSnake",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e71d41ec-0fcb-475f-92a6-7251743a84f9",
+    "guid": "d31d21b1-8768-4d45-a962-182e67f5a5c0",
     "name": "Spawner (210)",
-    "location": [5850, 219, -3],
+    "location": [
+      5850,
+      219,
+      -3
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -63,13 +117,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "RatmanMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "RatmanMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "5964bfe4-3075-4b94-8750-abf464bb9d04",
+    "guid": "e111cb63-9804-4eac-96ad-290a0b963c8f",
     "name": "Spawner (210)",
-    "location": [5814, 237, 0],
+    "location": [
+      5814,
+      237,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -77,13 +141,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "ArcticOgreLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ArcticOgreLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "b7af9c59-1fc7-432b-bdd2-062d78e93680",
+    "guid": "d7d771c1-605a-4253-965e-dec048f72502",
     "name": "Spawner (210)",
-    "location": [5752, 144, 9],
+    "location": [
+      5752,
+      144,
+      9
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -91,113 +165,243 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "WhiteWyrm", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "WhiteWyrm",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ce85e52c-f09f-4a09-918d-03d9de407485",
+    "guid": "03498749-3218-4779-8864-b854b36c79f7",
     "name": "Spawner (210)",
-    "location": [5839, 159, 0],
+    "location": [
+      5839,
+      159,
+      0
+    ],
     "map": "Felucca",
-    "count": 6,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "FrostOoze", "maxCount": 1, "probability": 100 },
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FrostOoze",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c72fc965-e09c-4c71-bdfd-dd35ad44f8a4",
+    "guid": "0614ccac-5ffc-4223-8348-cbb5a0f0cc2d",
     "name": "Spawner (210)",
-    "location": [5785, 161, -6],
+    "location": [
+      5785,
+      161,
+      -6
+    ],
     "map": "Felucca",
-    "count": 6,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 18,
     "walkingRange": 20,
     "entries": [
-      { "name": "FrostOoze", "maxCount": 1, "probability": 100 },
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FrostOoze",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5c6b85ac-0d58-4a5f-8541-93c0eb0e3c2e",
+    "guid": "61e8233d-f991-4429-9e4e-c7e0d24201d0",
     "name": "Spawner (210)",
-    "location": [5757, 213, -7],
+    "location": [
+      5757,
+      213,
+      -7
+    ],
     "map": "Felucca",
-    "count": 14,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 3, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 2, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Ratman",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bda79939-7c22-4d5a-b2d5-fc72ac9d311e",
+    "guid": "d8d3fc0f-231c-4d04-b0a3-7191cc4512b2",
     "name": "Spawner (210)",
-    "location": [5681, 191, -6],
+    "location": [
+      5681,
+      191,
+      -6
+    ],
     "map": "Felucca",
-    "count": 13,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 3, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Ratman",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f1a8f73e-304e-4c80-abb1-ad63bee5aa14",
+    "guid": "4ab984eb-913e-4b21-a9b2-5242726ae03f",
     "name": "Spawner (210)",
-    "location": [5731, 176, -5],
+    "location": [
+      5731,
+      176,
+      -5
+    ],
     "map": "Felucca",
-    "count": 27,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 35,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 9, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 9, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 9, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 9,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cbf893ec-0c86-4e0a-b450-72e98fa1035f",
+    "guid": "33003603-a1fc-43a4-b9d7-2408eb2e5e50",
     "name": "Spawner (210)",
-    "location": [5848, 226, 0],
+    "location": [
+      5848,
+      226,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -205,13 +409,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c3b18d0a-ef34-4e27-b6b4-b895fccf22ad",
+    "guid": "cb37f510-fff9-4c76-8c51-2d59ddd8f715",
     "name": "Spawner (210)",
-    "location": [5683, 197, -4],
+    "location": [
+      5683,
+      197,
+      -4
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -219,13 +433,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "fa1f9dad-aea1-4159-9c32-d7f8ccff5543",
+    "guid": "b96eb341-ef4c-4b7e-ba01-6fb487be56a7",
     "name": "Spawner (210)",
-    "location": [5721, 147, -1],
+    "location": [
+      5721,
+      147,
+      -1
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -233,13 +457,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "dd55e039-c501-48e3-a5ca-c1a3ca9a144b",
+    "guid": "3bf7b937-9eb6-45fc-81e6-d907910ca62a",
     "name": "Spawner (210)",
-    "location": [5758, 139, 5],
+    "location": [
+      5758,
+      139,
+      5
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -247,13 +481,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "23f18229-bdce-41a0-904e-bf6db5828c43",
+    "guid": "1cf83838-f5d3-42f9-8390-f445a01ac889",
     "name": "Spawner (210)",
-    "location": [5754, 211, -6],
+    "location": [
+      5754,
+      211,
+      -6
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -261,13 +505,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "a09a74ea-3a0d-4d54-b15e-7bbe66f2222d",
+    "guid": "fe1657a5-a11c-4fe6-9544-a7ed0d2059b2",
     "name": "Spawner (210)",
-    "location": [5833, 242, -2],
+    "location": [
+      5833,
+      242,
+      -2
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -275,13 +529,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "be974469-f820-40de-98aa-ed542520508c",
+    "guid": "a3c447a5-c7bb-4826-a5ae-81d8b3863130",
     "name": "Spawner (210)",
-    "location": [5854, 227, 0],
+    "location": [
+      5854,
+      227,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -289,13 +553,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "bd5ac6e7-c507-40ab-8dbf-05decd4c62a8",
+    "guid": "f2eb3f17-d5f4-4c58-a248-825e46a8a0f8",
     "name": "Spawner (210)",
-    "location": [5772, 188, -3],
+    "location": [
+      5772,
+      188,
+      -3
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -303,13 +577,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "39f8139c-bae2-4ffd-87b9-eb97bac7d145",
+    "guid": "cdb2ea29-4ee5-48c3-9444-018c5003afbd",
     "name": "Spawner (210)",
-    "location": [5837, 245, -5],
+    "location": [
+      5837,
+      245,
+      -5
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -317,13 +601,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "dc16fdc6-8dd5-4977-a67b-93a55969eb7f",
+    "guid": "9b93a6e4-67e5-4d22-aa51-ff84ea98bb72",
     "name": "Spawner (210)",
-    "location": [5751, 140, 10],
+    "location": [
+      5751,
+      140,
+      10
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -331,13 +625,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "cfec0926-3248-4881-8c62-c0f10db6bc14",
+    "guid": "479095c0-02ab-4651-9edc-362d77a65a65",
     "name": "Spawner (210)",
-    "location": [5763, 187, 0],
+    "location": [
+      5763,
+      187,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -345,13 +649,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1f58ba40-4735-4b24-880c-58e751fbb0ad",
+    "guid": "ed18e76c-c568-42fe-9c98-8482c467ff61",
     "name": "Spawner (210)",
-    "location": [5756, 203, -2],
+    "location": [
+      5756,
+      203,
+      -2
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -359,13 +673,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "00f8817e-22e6-4f49-90d8-bcd72c1ab0f4",
+    "guid": "e89bcb09-65c3-4474-bded-50e62ce3c153",
     "name": "Spawner (210)",
-    "location": [5712, 145, -34],
+    "location": [
+      5712,
+      145,
+      -34
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -373,13 +697,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "5a62cc73-bf68-4837-88b7-5c437c1a3f78",
+    "guid": "4b8dd28c-f72f-45c5-afc4-84dc637c1e0a",
     "name": "Spawner (210)",
-    "location": [5684, 181, -5],
+    "location": [
+      5684,
+      181,
+      -5
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -387,13 +721,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0ead11bc-a532-4a10-8933-ea842c304ede",
+    "guid": "8aba961b-8ce4-49ba-9ec8-7861204815c4",
     "name": "Spawner (210)",
-    "location": [5831, 358, -1],
+    "location": [
+      5831,
+      358,
+      -1
+    ],
     "map": "Felucca",
     "count": 24,
     "minDelay": "00:05:00",
@@ -402,16 +746,32 @@
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ratman", "maxCount": 12, "probability": 100 },
-      { "name": "RatmanArcher", "maxCount": 7, "probability": 100 },
-      { "name": "RatmanMage", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Ratman",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "RatmanArcher",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "RatmanMage",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1795a0f0-8445-4f96-8193-42a1d9797d36",
+    "guid": "bca4ab21-15b1-4b04-b698-05d4f8df1f6c",
     "name": "Spawner (210)",
-    "location": [5838, 355, 0],
+    "location": [
+      5838,
+      355,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -419,13 +779,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "9a1f023c-e636-461a-8fa2-46d9b9a3340e",
+    "guid": "72473a5f-3d9b-4f69-b3f9-0d266291468a",
     "name": "Spawner (210)",
-    "location": [5824, 363, 0],
+    "location": [
+      5824,
+      363,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -433,13 +803,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "4813d8fb-495f-4301-8ebc-d117809fc2ef",
+    "guid": "7b080104-77b8-491b-b8f9-44cec8ecbb65",
     "name": "Spawner (210)",
-    "location": [5680, 306, 0],
+    "location": [
+      5680,
+      306,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -447,13 +827,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "IceFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "IceFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "eb364422-6166-457d-930a-87d5d8d2dc3a",
+    "guid": "51445c30-3ef8-4c0e-95bc-b12e643e39ba",
     "name": "Spawner (210)",
-    "location": [5669, 330, 0],
+    "location": [
+      5669,
+      330,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -461,13 +851,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "IceFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "IceFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c0f1bf57-22ec-4ed3-b5cf-3fdbe3296ef2",
+    "guid": "d5ca5e49-cbb2-4079-81f1-c8679fcecb46",
     "name": "Spawner (210)",
-    "location": [5696, 303, 0],
+    "location": [
+      5696,
+      303,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -475,13 +875,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "4e35dc39-ea91-4fbc-94e5-e732ced206fb",
+    "guid": "f522aee5-3ff7-427c-a3f1-31b162a65fbe",
     "name": "Spawner (210)",
-    "location": [5682, 314, 0],
+    "location": [
+      5682,
+      314,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -489,13 +899,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ebd86bf0-ac09-4e44-a7c0-d4a0423c605c",
+    "guid": "57c38552-9c17-4451-9e53-3a8d2048d2f6",
     "name": "Spawner (210)",
-    "location": [5666, 331, 0],
+    "location": [
+      5666,
+      331,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -503,13 +923,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "762ade65-1ebd-462e-9644-7561e75c10c0",
+    "guid": "89792e6b-89bb-4c0a-8f45-259ab52f6844",
     "name": "Spawner (210)",
-    "location": [5676, 331, 0],
+    "location": [
+      5676,
+      331,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -517,6 +947,12 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   }
 ]

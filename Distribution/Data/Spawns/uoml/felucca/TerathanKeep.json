@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "ac9c40dc-b29a-472f-9dca-cd599248505f",
+    "guid": "ec99841b-c28c-4b7c-a4d3-15f2753a4184",
     "name": "Spawner (2221)",
-    "location": [5296, 1561, 0],
+    "location": [
+      5296,
+      1561,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -12,17 +16,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7fec5f62-6636-4318-8926-21dd4f9bbabe",
+    "guid": "fee1141d-1c6e-479e-9cfc-d92fed242b0a",
     "name": "Spawner (2221)",
-    "location": [5296, 1562, 0],
+    "location": [
+      5296,
+      1562,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -31,18 +55,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ad8521fa-2549-4678-a144-88e0f69d68de",
+    "guid": "b3b5c6cf-915f-427b-97b1-89d49bdc440a",
     "name": "Spawner (2221)",
-    "location": [5297, 1565, 0],
+    "location": [
+      5297,
+      1565,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -51,17 +99,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6f978f29-eee9-42d7-991d-1e2129d9a185",
+    "guid": "6db88e49-590f-4fc9-9ff2-484c0caba22d",
     "name": "Spawner (2221)",
-    "location": [5342, 1553, 0],
+    "location": [
+      5342,
+      1553,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -70,17 +138,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "94915a0f-95c6-4a35-94c6-d1f42e47ce4c",
+    "guid": "14d9a777-99d2-4e2a-92e4-98eb9ed2cc2a",
     "name": "Spawner (2221)",
-    "location": [5342, 1552, 0],
+    "location": [
+      5342,
+      1552,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -89,18 +177,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a5009cc0-949a-4605-8208-4a2b82b919e8",
+    "guid": "5a472619-a1fd-43b6-8ed3-876689a8b7a4",
     "name": "Spawner (2221)",
-    "location": [5343, 1551, 0],
+    "location": [
+      5343,
+      1551,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -109,17 +221,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4c0d89ec-3e50-49b0-97df-8e3538dc1267",
+    "guid": "ce1ce8c5-583f-4f67-84b6-126bc30487ff",
     "name": "Spawner (2221)",
-    "location": [5334, 1613, 0],
+    "location": [
+      5334,
+      1613,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -128,17 +260,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "446b1d7d-b01a-4395-9b36-9108b55101e4",
+    "guid": "d6b68ad4-a9c2-4982-9477-31a7cb202a69",
     "name": "Spawner (2221)",
-    "location": [5334, 1614, 0],
+    "location": [
+      5334,
+      1614,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -147,18 +299,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0df42885-243f-4283-a412-73dff78f13b4",
+    "guid": "dfb3c171-67af-4dea-8b11-1d49762b2fb2",
     "name": "Spawner (2221)",
-    "location": [5335, 1615, 0],
+    "location": [
+      5335,
+      1615,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -167,17 +343,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9cc1a71a-10cc-49c3-b181-e7dd4eef688e",
+    "guid": "78eb98fb-eb53-4956-919c-9b075b3a02ad",
     "name": "Spawner (2221)",
-    "location": [5348, 1552, 0],
+    "location": [
+      5348,
+      1552,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -185,13 +381,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "28df2a9d-7043-4221-ad94-e2a3e6a3c563",
+    "guid": "628166d6-c981-4d20-bee3-f9e68ca672e4",
     "name": "Spawner (2221)",
-    "location": [5345, 1551, 0],
+    "location": [
+      5345,
+      1551,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -199,13 +405,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ebfd8bae-73ec-4b73-b0b2-7758f209236e",
+    "guid": "da8f850f-a715-4ae6-9c10-47db89b3d732",
     "name": "Spawner (2221)",
-    "location": [5344, 1757, -125],
+    "location": [
+      5344,
+      1757,
+      -125
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -214,17 +430,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6c815485-2f69-4534-b404-d6dfcfddfade",
+    "guid": "d3a73b6d-ffa1-4448-9308-6431b4f51d4b",
     "name": "Spawner (2221)",
-    "location": [5345, 1757, -125],
+    "location": [
+      5345,
+      1757,
+      -125
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -233,18 +469,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8896af45-514b-49b7-a765-94623e055589",
+    "guid": "ada2362f-c030-42f1-86ce-5d983ff64a38",
     "name": "Spawner (2221)",
-    "location": [5346, 1756, -125],
+    "location": [
+      5346,
+      1756,
+      -125
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -253,17 +513,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d7b8c3a4-f386-4caa-9d33-46c4acecb44c",
+    "guid": "f9a936c9-3c10-4029-a46d-dbbdb5494b48",
     "name": "Spawner (2221)",
-    "location": [5335, 1706, -70],
+    "location": [
+      5335,
+      1706,
+      -70
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -272,17 +552,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "808cc51b-8f2c-45b9-bded-bebe0cbce9d1",
+    "guid": "8cddc6ca-33de-411d-9d6d-03f61c427acc",
     "name": "Spawner (2221)",
-    "location": [5335, 1707, -70],
+    "location": [
+      5335,
+      1707,
+      -70
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -291,18 +591,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b3b3a8ae-5a8f-4c08-b468-37546223626a",
+    "guid": "56ff9b13-646b-4f60-be0b-b5aaa730d17d",
     "name": "Spawner (2221)",
-    "location": [5336, 1708, -70],
+    "location": [
+      5336,
+      1708,
+      -70
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -311,17 +635,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2770566a-5405-4e91-b377-eaa07e3e2573",
+    "guid": "97e91add-b1d5-48e6-ae53-6dd25cb088bc",
     "name": "Spawner (2221)",
-    "location": [5270, 1695, 0],
+    "location": [
+      5270,
+      1695,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -330,17 +674,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f96b1262-8e09-40cf-8b84-c941e07eb86b",
+    "guid": "fbc340d4-cf84-410e-9764-5987bdacc4fc",
     "name": "Spawner (2221)",
-    "location": [5270, 1694, 0],
+    "location": [
+      5270,
+      1694,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -349,18 +713,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0a4d59b7-ca3b-46ae-9570-e33319baec1f",
+    "guid": "adcadb01-80d3-40a1-acf8-6a7493aeef84",
     "name": "Spawner (2221)",
-    "location": [5271, 1693, 0],
+    "location": [
+      5271,
+      1693,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -369,17 +757,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7b356ab1-86c0-4741-95ef-b0b1b925acbb",
+    "guid": "ebca1c72-604f-4cba-b019-c5de4a5b55c8",
     "name": "Spawner (2221)",
-    "location": [5365, 1707, -71],
+    "location": [
+      5365,
+      1707,
+      -71
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -387,13 +795,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6aba7fb0-a519-4867-a98f-e533fa748e52",
+    "guid": "140da661-2c38-4502-a8d3-a093fb672c3e",
     "name": "Spawner (2221)",
-    "location": [5363, 1709, -75],
+    "location": [
+      5363,
+      1709,
+      -75
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -401,13 +819,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "8891ca74-2e89-4dc1-b38a-56f225c4b132",
+    "guid": "7045923d-0e54-48e2-8c61-25f4e748bb62",
     "name": "Spawner (2221)",
-    "location": [5176, 1702, 0],
+    "location": [
+      5176,
+      1702,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -416,17 +844,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9c0d45c1-270b-439e-995a-9407b058cfee",
+    "guid": "877895b3-0048-42fa-943b-4246c6d0dbd1",
     "name": "Spawner (2221)",
-    "location": [5176, 1701, 2],
+    "location": [
+      5176,
+      1701,
+      2
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -435,18 +883,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f0e57551-115d-4a07-a615-9c45ba953a02",
+    "guid": "b1a245ac-73e5-4f51-a9b0-72a7e0aeb999",
     "name": "Spawner (2221)",
-    "location": [5177, 1700, 1],
+    "location": [
+      5177,
+      1700,
+      1
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -455,17 +927,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "35ed7ad4-8a2b-43d7-8a39-3277c36fec36",
+    "guid": "9c464287-4f2e-40c2-b6cd-7110d89097eb",
     "name": "Spawner (2221)",
-    "location": [5132, 1624, 0],
+    "location": [
+      5132,
+      1624,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -474,17 +966,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "da349bdd-a8d9-4625-8cd9-6ba83fc268dd",
+    "guid": "a720dbb7-0f4e-45c8-9bac-c9b76e028c02",
     "name": "Spawner (2221)",
-    "location": [5132, 1623, 0],
+    "location": [
+      5132,
+      1623,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -493,18 +1005,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f691e01c-b6a1-4fc5-8b35-f53b715bfa11",
+    "guid": "1613210d-f099-406c-8dad-b3e6c4978ea4",
     "name": "Spawner (2221)",
-    "location": [5134, 1625, 0],
+    "location": [
+      5134,
+      1625,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -513,17 +1049,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0fa2f91d-69cc-4220-a0a8-4c86552fea97",
+    "guid": "19a3a2ba-4466-440e-9eb8-69c30087faf0",
     "name": "Spawner (2221)",
-    "location": [5160, 1586, -15],
+    "location": [
+      5160,
+      1586,
+      -15
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -532,17 +1088,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c19a941b-f20f-4848-bcd9-5523fb2ad94d",
+    "guid": "05f81bd1-8432-458d-973a-85449805e567",
     "name": "Spawner (2221)",
-    "location": [5163, 1585, -15],
+    "location": [
+      5163,
+      1585,
+      -15
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -551,18 +1127,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "36ea17fd-6d22-4852-bd10-695266222b78",
+    "guid": "0c8d7085-680b-49cf-a8c3-be20a79f94be",
     "name": "Spawner (2221)",
-    "location": [5161, 1584, -15],
+    "location": [
+      5161,
+      1584,
+      -15
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -571,17 +1171,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3c07172b-75b5-497c-a52f-9948cd9eef37",
+    "guid": "6b1ed67b-dcfd-41a6-9b27-9f815db3e48f",
     "name": "Spawner (2221)",
-    "location": [5200, 1565, 0],
+    "location": [
+      5200,
+      1565,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -590,17 +1210,37 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Balron",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Nightmare",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7870143e-1c8b-41d6-bd8b-a65342fc51a4",
+    "guid": "0e911183-4be3-4c7d-878b-a7b4d97d8f14",
     "name": "Spawner (2221)",
-    "location": [5201, 1566, 0],
+    "location": [
+      5201,
+      1566,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -609,18 +1249,42 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "OphidianArchmage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianKnight", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMage", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 }
+      {
+        "name": "OphidianArchmage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianKnight",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianWarrior",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "OphidianMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fb72e0e5-af28-4ab7-b7bf-c71d33365ffe",
+    "guid": "578848ef-81b8-4528-b3e5-7819296f1441",
     "name": "Spawner (2221)",
-    "location": [5200, 1568, 0],
+    "location": [
+      5200,
+      1568,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -629,10 +1293,26 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "TerathanAvenger", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanDrone", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanMatriarch", "maxCount": 1, "probability": 100 },
-      { "name": "TerathanWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TerathanAvenger",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanDrone",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanMatriarch",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TerathanWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   }
 ]

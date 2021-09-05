@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "2bd3af40-f0b4-4656-8d54-6b8d8efff25d",
+    "guid": "29168b55-1571-4743-9178-01314586cbe5",
     "name": "Spawner (2227)",
-    "location": [5819, 591, 0],
+    "location": [
+      5819,
+      591,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -11,13 +15,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 25,
-    "entries": [{ "name": "JukaWarrior", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "JukaWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c5ae1422-83c7-4a73-89fa-f353a2294324",
+    "guid": "419487ab-4c4b-4726-8f93-0cd1b49aed0d",
     "name": "Spawner (2227)",
-    "location": [5808, 588, 12],
+    "location": [
+      5808,
+      588,
+      12
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -26,16 +40,32 @@
     "homeRange": 15,
     "walkingRange": 30,
     "entries": [
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c83d69c6-4ebd-42a8-bdd7-aa257705702a",
+    "guid": "84d09a21-c001-44ed-9c8a-2e7791fa4b1e",
     "name": "Spawner (2227)",
-    "location": [5792, 544, 10],
+    "location": [
+      5792,
+      544,
+      10
+    ],
     "map": "Felucca",
     "count": 8,
     "minDelay": "00:05:00",
@@ -44,15 +74,27 @@
     "homeRange": 6,
     "walkingRange": 30,
     "entries": [
-      { "name": "GolemController", "maxCount": 4, "probability": 100 },
-      { "name": "Golem", "maxCount": 4, "probability": 100 }
+      {
+        "name": "GolemController",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Golem",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "50502242-8ed3-4b82-ae50-0f7890947ce4",
+    "guid": "63285a8f-9f0d-4966-9f0e-a7fa33fe3a45",
     "name": "Spawner (2227)",
-    "location": [5857, 586, 15],
+    "location": [
+      5857,
+      586,
+      15
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -61,16 +103,32 @@
     "homeRange": 7,
     "walkingRange": 30,
     "entries": [
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c477c804-5388-4007-8dca-110d26cee8d3",
+    "guid": "dfb2dd7e-c751-49e6-9059-25b892efce67",
     "name": "Spawner (2227)",
-    "location": [5857, 562, 15],
+    "location": [
+      5857,
+      562,
+      15
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -79,16 +137,32 @@
     "homeRange": 7,
     "walkingRange": 30,
     "entries": [
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ac71e1da-5457-46b4-9bcf-786b54c41d6e",
+    "guid": "41bd23d3-0a22-41fd-a2d2-5d6d809b2018",
     "name": "Spawner (2227)",
-    "location": [5828, 530, 0],
+    "location": [
+      5828,
+      530,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -97,16 +171,32 @@
     "homeRange": 8,
     "walkingRange": 30,
     "entries": [
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e1f19ca7-67f3-4825-a3a4-d716691ecab1",
+    "guid": "346ff700-516b-4788-85a2-9ee7146726f9",
     "name": "Spawner (2227)",
-    "location": [5659, 563, 20],
+    "location": [
+      5659,
+      563,
+      20
+    ],
     "map": "Felucca",
     "count": 9,
     "minDelay": "00:05:00",
@@ -115,17 +205,37 @@
     "homeRange": 10,
     "walkingRange": 30,
     "entries": [
-      { "name": "Brigand", "maxCount": 4, "probability": 100 },
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Brigand",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c8da8428-8886-4049-97a4-8b6533d8ef36",
+    "guid": "87ed7838-1bc6-4987-bd1e-0cc16bd54f32",
     "name": "Spawner (2227)",
-    "location": [5724, 561, 20],
+    "location": [
+      5724,
+      561,
+      20
+    ],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
@@ -134,17 +244,37 @@
     "homeRange": 8,
     "walkingRange": 30,
     "entries": [
-      { "name": "Golem", "maxCount": 1, "probability": 100 },
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Golem",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e5b45d9c-3307-4712-b0dc-d35be4a5d0b2",
+    "guid": "3ce378dd-3952-4fac-a5fe-ad12a7b09f20",
     "name": "Spawner (2227)",
-    "location": [5690, 534, 0],
+    "location": [
+      5690,
+      534,
+      0
+    ],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
@@ -153,9 +283,21 @@
     "homeRange": 8,
     "walkingRange": 30,
     "entries": [
-      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaWarrior", "maxCount": 3, "probability": 100 }
+      {
+        "name": "JukaLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "JukaWarrior",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   }
 ]

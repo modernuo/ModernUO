@@ -1,30 +1,62 @@
 [
   {
     "type": "Spawner",
-    "guid": "6e5080ca-7621-4782-9ccc-756cb595fd47",
+    "guid": "3cf3a839-be51-4f1c-8592-9a1f89b02b87",
     "name": "Spawner (2114)",
-    "location": [6279, 880, 1],
+    "location": [
+      6279,
+      880,
+      1
+    ],
     "map": "Trammel",
-    "count": 21,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Cat", "maxCount": 6, "probability": 100 },
-      { "name": "Dog", "maxCount": 6, "probability": 100 },
-      { "name": "Rat", "maxCount": 6, "probability": 100 },
-      { "name": "Cat", "maxCount": 1, "probability": 100 },
-      { "name": "Dog", "maxCount": 1, "probability": 100 },
-      { "name": "Rat", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Cat",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f9c928e6-453c-479b-a347-f864e12f9f10",
+    "guid": "67d9fa9b-5bc4-4f2b-8f19-fc31af6f2333",
     "name": "Spawner (2114)",
-    "location": [6275, 879, -2],
+    "location": [
+      6275,
+      879,
+      -2
+    ],
     "map": "Trammel",
     "count": 12,
     "minDelay": "00:05:00",
@@ -33,10 +65,26 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Troglodyte", "maxCount": 3, "probability": 100 },
-      { "name": "Grobu", "maxCount": 3, "probability": 100 },
-      { "name": "Lurg", "maxCount": 3, "probability": 100 },
-      { "name": "GiantRat", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Troglodyte",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Grobu",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Lurg",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "GiantRat",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   }
 ]

@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "3208858f-989f-4f6d-b897-15fa103c81cd",
+    "guid": "92f3597c-2d16-4f72-b8f0-c2e8e855b334",
     "name": "Spawner (2228)",
-    "location": [5569, 1306, 0],
+    "location": [
+      5569,
+      1306,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -11,13 +15,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d49deb50-b8aa-48fe-ab69-04cd8d687f9a",
+    "guid": "e1b1ac2b-578c-4fcd-8882-4e78047852f2",
     "name": "Spawner (2228)",
-    "location": [5539, 1301, 0],
+    "location": [
+      5539,
+      1301,
+      0
+    ],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
@@ -25,13 +39,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
-    "entries": [{ "name": "Cursed", "maxCount": 4, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Cursed",
+        "maxCount": 4,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "b2e60adc-f24d-4570-9670-08085f86f771",
+    "guid": "fb1469d0-67e5-44cc-868c-7879e3d04603",
     "name": "Spawner (2228)",
-    "location": [5525, 1296, 0],
+    "location": [
+      5525,
+      1296,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -39,13 +63,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "fe6a8782-6562-4a9a-a797-753dcd8303f1",
+    "guid": "86fa9698-3b65-416e-b947-55eb169a65b8",
     "name": "Spawner (2228)",
-    "location": [5492, 1294, 0],
+    "location": [
+      5492,
+      1294,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -53,13 +87,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "SkeletalKnight", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "SkeletalKnight",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "711a7bc4-df8a-4770-a2e9-7c651fec7ef8",
+    "guid": "3c57a7a8-4376-47c4-bbd0-79c14dfa1e9d",
     "name": "Spawner (2228)",
-    "location": [5492, 1297, 0],
+    "location": [
+      5492,
+      1297,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -67,13 +111,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "3df71ae7-b2c3-4304-98e2-0ecc3e8974f9",
+    "guid": "e9d26f46-ca9e-4ef6-b946-1ad646d11bb7",
     "name": "Spawner (2228)",
-    "location": [5458, 1303, 0],
+    "location": [
+      5458,
+      1303,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -81,13 +135,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "LysanderGathenwale", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "LysanderGathenwale",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6bae7cd3-54d0-4a0e-97f2-4c43be56526e",
+    "guid": "04591799-f2f2-446c-beee-df4ef3a88f1b",
     "name": "Spawner (2228)",
-    "location": [5415, 1312, 0],
+    "location": [
+      5415,
+      1312,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -95,13 +159,47 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e70b2932-6fa3-45ab-8359-ffc2831b3276",
+    "guid": "a541dc54-0708-4584-8df2-aa8cd9e41efb",
     "name": "Spawner (2228)",
-    "location": [5399, 1298, 0],
+    "location": [
+      5399,
+      1298,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "SkeletalKnight",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ff670d55-158a-40f9-b228-7ea17fd81559",
+    "name": "Spawner (2228)",
+    "location": [
+      5398,
+      1299,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -109,41 +207,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MorgBergen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "547f1d6f-8ddc-459d-bed4-0e08132ffa44",
+    "guid": "7bfe01e3-1ba0-460e-b6e5-7a813bb616dc",
     "name": "Spawner (2228)",
-    "location": [5398, 1299, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 20,
-    "entries": [{ "name": "MorgBergen", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "4bfe1ef3-4f78-45ee-9b54-33376f49521d",
-    "name": "Spawner (2228)",
-    "location": [5412, 1330, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "BoneKnight", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "d4c3eeb1-9c1e-48bb-800f-9357b6c42350",
-    "name": "Spawner (2228)",
-    "location": [5415, 1331, 0],
+    "location": [
+      5412,
+      1330,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -151,13 +231,47 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BoneKnight",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "5b655660-318f-4b7f-a4df-bb10e0e8fe52",
+    "guid": "9d0c1a06-557d-4eec-83fe-6c6f1340e5a6",
     "name": "Spawner (2228)",
-    "location": [5403, 1332, 0],
+    "location": [
+      5415,
+      1331,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6c6e1194-471d-480d-9e8a-1dc63c0abbf3",
+    "name": "Spawner (2228)",
+    "location": [
+      5403,
+      1332,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -165,13 +279,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Skeleton",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "cda3d3b4-1876-4e47-8550-e3b906e70c1a",
+    "guid": "d1fa73c3-fc93-4630-a81c-eb272cd40185",
     "name": "Spawner (2228)",
-    "location": [5420, 1355, 0],
+    "location": [
+      5420,
+      1355,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -179,13 +303,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "TavaraSewel", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TavaraSewel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1d44c8a6-0a89-4633-a002-82b01a65d17f",
+    "guid": "d37ef7a2-76ff-4c00-b104-059f764f76ff",
     "name": "Spawner (2228)",
-    "location": [5422, 1355, 0],
+    "location": [
+      5422,
+      1355,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -193,363 +327,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "a3c5e6b9-3455-4a2d-8dec-b2c1374030f9",
+    "guid": "a6b68b32-e386-4456-ad05-125d9cba058f",
     "name": "Spawner (2228)",
-    "location": [5435, 1346, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 10,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "224ae47c-3ae5-40ea-bce3-bf9d8322b091",
-    "name": "Spawner (2228)",
-    "location": [5396, 1371, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "14784f9c-a61f-4763-81db-07b96f869a2c",
-    "name": "Spawner (2228)",
-    "location": [5395, 1370, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Cursed", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "56b6b900-3eed-4fe5-affc-691f6bc7025e",
-    "name": "Spawner (2228)",
-    "location": [5393, 1369, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "3e6e3e7b-0747-4256-9ade-5054755996f4",
-    "name": "Spawner (2228)",
-    "location": [5400, 1397, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "KhaldunZealot", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "e7f7d5ac-c9c8-4bc0-b132-6d0942be222b",
-    "name": "Spawner (2228)",
-    "location": [5444, 1410, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "6552a765-f312-4d7a-9288-bb54fdfb8985",
-    "name": "Spawner (2228)",
-    "location": [5442, 1411, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "ddc9b4ec-57cb-4a45-b28c-f29e1c00d088",
-    "name": "Spawner (2228)",
-    "location": [5400, 1428, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "KhaldunSummoner", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "9e669ca1-0fb3-4dd4-a9c5-85bc9a36dd91",
-    "name": "Spawner (2228)",
-    "location": [5402, 1430, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "93b4fd33-0add-4add-8edf-4c438366d298",
-    "name": "Spawner (2228)",
-    "location": [5404, 1431, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "1e149ecd-ab0b-44ed-b252-5f8e69ff39e2",
-    "name": "Spawner (2228)",
-    "location": [5425, 1451, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "1900833d-d067-4626-bbf8-2b786c8f68dd",
-    "name": "Spawner (2228)",
-    "location": [5418, 1450, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "c14ac9f2-d3e2-4ade-aebe-f6f6355b379d",
-    "name": "Spawner (2228)",
-    "location": [5425, 1484, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "BoneMagi", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "a1302528-c4d7-4b19-b570-dd0d12d132d7",
-    "name": "Spawner (2228)",
-    "location": [5430, 1485, 0],
-    "map": "Felucca",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 3, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "107c24bf-cd57-47f3-87e7-862b202a177d",
-    "name": "Spawner (2228)",
-    "location": [5433, 1485, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "022212d7-7b02-44a1-802b-45dba26588f6",
-    "name": "Spawner (2228)",
-    "location": [5458, 1445, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "AncientLich", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "c3888708-fc2f-464d-9a0b-d57c5307857d",
-    "name": "Spawner (2228)",
-    "location": [5459, 1449, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "KhaldunSummoner", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "9bbbc434-06a0-4b7b-9bc1-2cb8a7285a2d",
-    "name": "Spawner (2228)",
-    "location": [5460, 1451, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "KhaldunZealot", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "e8cc9763-9874-407d-8e81-4a15a3164b7e",
-    "name": "Spawner (2228)",
-    "location": [5465, 1449, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "SkeletalMage", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "555c84cc-75d4-4e30-af27-8a2190b7225d",
-    "name": "Spawner (2228)",
-    "location": [5483, 1446, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "80ccb2d6-fb05-4b51-9f64-492f96b22195",
-    "name": "Spawner (2228)",
-    "location": [5485, 1434, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Zombie", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "f38ac566-89ed-4c40-bd99-cf5c6ba07fec",
-    "name": "Spawner (2228)",
-    "location": [5499, 1411, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "261accb3-d7ea-4c80-9ab0-941bd6dba19a",
-    "name": "Spawner (2228)",
-    "location": [5475, 1402, 0],
-    "map": "Felucca",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 30,
-    "walkingRange": 30,
-    "entries": [{ "name": "SpectralArmour", "maxCount": 2, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "fb75d732-58d4-4e92-b47b-92fb01c44e16",
-    "name": "Spawner (2228)",
-    "location": [5491, 1370, 0],
-    "map": "Felucca",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 3, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8675bf2c-5181-4d51-bfbb-57449c4617ba",
-    "name": "Spawner (2228)",
-    "location": [5490, 1367, 0],
-    "map": "Felucca",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [{ "name": "SpectralArmour", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "be5e041e-9fe0-4b81-917a-79539342b52f",
-    "name": "Spawner (2228)",
-    "location": [5521, 1397, 0],
+    "location": [
+      5435,
+      1346,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -557,13 +351,623 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "ShadowFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "44cff17e-4ff1-4f54-bec5-331d2488c0f2",
+    "guid": "a6e622ec-a297-4c44-89e4-17fc7b127588",
     "name": "Spawner (2228)",
-    "location": [5605, 1343, 0],
+    "location": [
+      5396,
+      1371,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "89edcd60-e1d3-42d8-b992-03aaec09a0ef",
+    "name": "Spawner (2228)",
+    "location": [
+      5395,
+      1370,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Cursed",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "eec23c16-31c0-4bed-887b-e5fa15891696",
+    "name": "Spawner (2228)",
+    "location": [
+      5393,
+      1369,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "86ef240b-47f8-4918-803a-f043dd0b2e4e",
+    "name": "Spawner (2228)",
+    "location": [
+      5400,
+      1397,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "KhaldunZealot",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b647c6fc-c8cf-4ac4-8862-3f6a288ac886",
+    "name": "Spawner (2228)",
+    "location": [
+      5444,
+      1410,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "SkeletalKnight",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0b253bce-6be4-4602-9ddc-0f0d03e9e788",
+    "name": "Spawner (2228)",
+    "location": [
+      5442,
+      1411,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e34e42ae-4fba-428d-9460-8627acb32b8e",
+    "name": "Spawner (2228)",
+    "location": [
+      5400,
+      1428,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "KhaldunSummoner",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bf7e1e29-9832-4df4-adc7-fa167afdbfa6",
+    "name": "Spawner (2228)",
+    "location": [
+      5402,
+      1430,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ee38e2d0-0c75-483e-9503-03634907cab5",
+    "name": "Spawner (2228)",
+    "location": [
+      5404,
+      1431,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a7c42c91-71d1-434e-97a2-6be2419da639",
+    "name": "Spawner (2228)",
+    "location": [
+      5425,
+      1451,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6738216d-c615-4f86-b8b0-433804be6d2e",
+    "name": "Spawner (2228)",
+    "location": [
+      5418,
+      1450,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Skeleton",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "eb722e41-4267-48cb-a817-1d0851c7895b",
+    "name": "Spawner (2228)",
+    "location": [
+      5425,
+      1484,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "BoneMagi",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e6542e93-a203-4d2e-b2e6-0b93f695c863",
+    "name": "Spawner (2228)",
+    "location": [
+      5430,
+      1485,
+      0
+    ],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "66ab0f0e-6e24-4639-bce2-93bb86188979",
+    "name": "Spawner (2228)",
+    "location": [
+      5433,
+      1485,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Skeleton",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bf42c575-292a-4cd2-babf-39233d4f540a",
+    "name": "Spawner (2228)",
+    "location": [
+      5458,
+      1445,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "AncientLich",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "71bad24b-147d-4001-b0c6-5d9a00c3ff95",
+    "name": "Spawner (2228)",
+    "location": [
+      5459,
+      1449,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      {
+        "name": "KhaldunSummoner",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "afb085cd-4efa-47da-aec4-494463708012",
+    "name": "Spawner (2228)",
+    "location": [
+      5460,
+      1451,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "KhaldunZealot",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "46062a97-dd3a-4ba6-9b9e-233ebf3bc148",
+    "name": "Spawner (2228)",
+    "location": [
+      5465,
+      1449,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "SkeletalMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d29cf8da-75e3-4e20-b1b8-51ecbde5942a",
+    "name": "Spawner (2228)",
+    "location": [
+      5483,
+      1446,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d440099e-f38e-4f45-85ce-e0bbd4c50e7d",
+    "name": "Spawner (2228)",
+    "location": [
+      5485,
+      1434,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Zombie",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "12feef7c-3ac2-4474-b767-c980db063b56",
+    "name": "Spawner (2228)",
+    "location": [
+      5499,
+      1411,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "013c84aa-40c1-44d8-b8e9-f6745b1c6b35",
+    "name": "Spawner (2228)",
+    "location": [
+      5475,
+      1402,
+      0
+    ],
+    "map": "Felucca",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 30,
+    "walkingRange": 30,
+    "entries": [
+      {
+        "name": "SpectralArmour",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0f6b8570-c002-4a2f-b3ce-745882fe08eb",
+    "name": "Spawner (2228)",
+    "location": [
+      5491,
+      1370,
+      0
+    ],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Skeleton",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f53982c9-8d7c-460b-becf-2653818a5939",
+    "name": "Spawner (2228)",
+    "location": [
+      5490,
+      1367,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "SpectralArmour",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6e56c148-f415-4bfe-b722-8b4482b9b782",
+    "name": "Spawner (2228)",
+    "location": [
+      5521,
+      1397,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 10,
+    "entries": [
+      {
+        "name": "ShadowFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5e913247-f30e-4a61-8c3d-b00b42f70f36",
+    "name": "Spawner (2228)",
+    "location": [
+      5605,
+      1343,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -571,13 +975,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 20,
-    "entries": [{ "name": "HarrowerTentacles", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "HarrowerTentacles",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "4c82ffc3-785a-4e06-9bd7-dbd272e3a419",
+    "guid": "8ccf110d-809e-4016-ad67-06d151088844",
     "name": "Spawner (2228)",
-    "location": [5536, 1351, 0],
+    "location": [
+      5536,
+      1351,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -585,13 +999,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "KhaldunSummoner", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "KhaldunSummoner",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f8e5f793-6099-4fe8-b851-34261c818611",
+    "guid": "4b95ed14-7d77-47ec-b8f0-f8b9775cff31",
     "name": "Spawner (2228)",
-    "location": [5536, 1345, 0],
+    "location": [
+      5536,
+      1345,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -599,13 +1023,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "KhaldunZealot", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "KhaldunZealot",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6068c25d-e3ac-46be-ad53-281df42727c3",
+    "guid": "a22f7aa4-357d-4b0e-80bf-46363acc2b42",
     "name": "Spawner (2228)",
-    "location": [5549, 1324, 0],
+    "location": [
+      5549,
+      1324,
+      0
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -613,13 +1047,23 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Cursed", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Cursed",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "998cd1e9-ec56-499e-af7a-074eee57fcf1",
+    "guid": "ddbab85a-3d5b-4417-b289-d7a95aeafff2",
     "name": "Spawner (2228)",
-    "location": [5549, 1332, 0],
+    "location": [
+      5549,
+      1332,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -627,13 +1071,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 30,
-    "entries": [{ "name": "AncientLich", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "AncientLich",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "acc04059-5e51-41de-9287-1bb052a92150",
+    "guid": "12a4f785-0e30-4d1d-8bac-9030e34043f2",
     "name": "Spawner (2228)",
-    "location": [5505, 1316, 0],
+    "location": [
+      5505,
+      1316,
+      0
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -641,13 +1095,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Cursed", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Cursed",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "fbf60aa9-afa5-4466-924b-3847c91424bd",
+    "guid": "e568c255-b944-4f6d-a246-245d16aac43b",
     "name": "Spawner (2228)",
-    "location": [5452, 1366, 0],
+    "location": [
+      5452,
+      1366,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -655,6 +1119,12 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "GrimmochDrummel", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "GrimmochDrummel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   }
 ]

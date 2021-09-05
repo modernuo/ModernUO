@@ -1,279 +1,523 @@
 [
   {
     "type": "Spawner",
-    "guid": "73240b87-75ad-4732-90b3-740e6df315af",
+    "guid": "aca1fcd4-cc2b-4472-ab6e-89e0322f9fec",
     "name": "Spawner (2202)",
-    "location": [6049, 1447, 4],
+    "location": [
+      6049,
+      1447,
+      4
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a89ad8be-cfc3-418a-8feb-8c1fda75b6e3",
+    "guid": "8674d509-c36a-4ab8-9399-6329f1379984",
     "name": "Spawner (2202)",
-    "location": [6091, 1491, 10],
+    "location": [
+      6091,
+      1491,
+      10
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f54a3de0-fd76-4878-a48f-b21d54a3643b",
+    "guid": "5da0bc6b-dfdb-47b8-a0df-0ff3eaf5c212",
     "name": "Spawner (2202)",
-    "location": [6048, 1487, 5],
+    "location": [
+      6048,
+      1487,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d9d542b7-672e-4ae5-808b-1b73679a9fff",
+    "guid": "07b03a23-af40-4539-be8b-6834573838df",
     "name": "Spawner (2202)",
-    "location": [6065, 1459, 5],
+    "location": [
+      6065,
+      1459,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "426df18d-100e-4583-935f-5a136f713a0c",
+    "guid": "b8273eff-be93-4ab9-8642-c1e9a92ddbbc",
     "name": "Spawner (2202)",
-    "location": [6092, 1448, 5],
+    "location": [
+      6092,
+      1448,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "aebe3362-535c-4c90-8766-de67f9ef5d34",
+    "guid": "ebace9c4-5941-4346-9ebf-6ca7ff7e33c5",
     "name": "Spawner (2202)",
-    "location": [6107, 1452, 25],
+    "location": [
+      6107,
+      1452,
+      25
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "99087992-9ff5-4be8-a42b-fbb70853650f",
+    "guid": "371c3545-e908-4d18-8dbb-3b86c422566a",
     "name": "Spawner (2202)",
-    "location": [6112, 1462, 5],
+    "location": [
+      6112,
+      1462,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f0424ef8-8819-4cc9-be9c-c99e50f10d1b",
+    "guid": "a9a6ccfe-d9b7-40f3-bfa8-d00994214056",
     "name": "Spawner (2202)",
-    "location": [6039, 1438, 4],
+    "location": [
+      6039,
+      1438,
+      4
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0479e124-524d-4849-bfe1-4bf3f2edeb71",
+    "guid": "a8680e6d-12db-4ef9-8107-9df6850893db",
     "name": "Spawner (2202)",
-    "location": [6115, 1491, -15],
+    "location": [
+      6115,
+      1491,
+      -15
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "81aa1b18-4e8d-45f0-a670-0eec3daa7184",
+    "guid": "da9f7dcc-c64d-4a72-ba8a-b5846258a093",
     "name": "Spawner (2202)",
-    "location": [6084, 1470, 5],
+    "location": [
+      6084,
+      1470,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 1,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fca5751c-a07c-4cdd-8fb6-0c4f2b4445f2",
+    "guid": "c93d730a-8c5a-4580-8952-14008d80b395",
     "name": "Spawner (2202)",
-    "location": [6049, 1470, 5],
+    "location": [
+      6049,
+      1470,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f0584121-44a1-4966-8621-b49d5795b350",
+    "guid": "ba6cecc1-f3c1-4e95-a624-ac4d5d668265",
     "name": "Spawner (2202)",
-    "location": [6034, 1467, 5],
+    "location": [
+      6034,
+      1467,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ecf65fd6-7e1c-4d65-afcd-fa8d660dc301",
+    "guid": "75adb4cb-b0a7-44db-a5fe-d4e9b139ce7b",
     "name": "Spawner (2202)",
-    "location": [6059, 1438, 4],
+    "location": [
+      6059,
+      1438,
+      4
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a57303b1-1b92-44dc-a3c8-405a16f6413e",
+    "guid": "62ba5343-d337-495e-aaf4-9dfb4d46c8b3",
     "name": "Spawner (2202)",
-    "location": [6061, 1490, 5],
+    "location": [
+      6061,
+      1490,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a9c1f4d6-f39b-4766-bb06-28fb56611e8a",
+    "guid": "d0d1dbda-9b50-4646-9509-d5d32eb9f081",
     "name": "Spawner (2202)",
-    "location": [6041, 1486, 5],
+    "location": [
+      6041,
+      1486,
+      5
+    ],
     "map": "Felucca",
-    "count": 5,
+    "count": 3,
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 15,
     "entries": [
-      { "name": "SewerRat", "maxCount": 2, "probability": 100 },
-      { "name": "Rat", "maxCount": 2, "probability": 100 },
-      { "name": "BullFrog", "maxCount": 1, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BullFrog",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "59c9ab4c-b0a8-458b-ae59-5f9785b22290",
+    "guid": "2fd77ead-e282-4216-aa6c-0273391bdd4e",
     "name": "Spawner (2202)",
-    "location": [6090, 1483, 0],
+    "location": [
+      6090,
+      1483,
+      0
+    ],
     "map": "Felucca",
     "count": 8,
     "minDelay": "00:00:00",
@@ -281,13 +525,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 25,
-    "entries": [{ "name": "Alligator", "maxCount": 8, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Alligator",
+        "maxCount": 8,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ea09fc79-61ce-4795-acba-131d1c820962",
+    "guid": "e8b1dc3e-cc13-4253-b228-12abe499061b",
     "name": "Spawner (2202)",
-    "location": [6077, 1492, 0],
+    "location": [
+      6077,
+      1492,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:00:00",
@@ -295,13 +549,23 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": 10,
-    "entries": [{ "name": "Alligator", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Alligator",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ba5bbf97-4a49-458d-80b2-50c9e77e260b",
+    "guid": "75e04bc3-078d-40c2-9ca8-d3a11a97965f",
     "name": "Spawner (2202)",
-    "location": [6108, 1471, 0],
+    "location": [
+      6108,
+      1471,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:00:00",
@@ -309,13 +573,23 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": 10,
-    "entries": [{ "name": "Alligator", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Alligator",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "53c5dc60-80c4-44a2-aafa-b1b3ab61fb3f",
+    "guid": "3237bbc2-29a2-488c-a918-d8db1f5e7f60",
     "name": "Spawner (2202)",
-    "location": [6087, 1443, 0],
+    "location": [
+      6087,
+      1443,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:00:00",
@@ -323,13 +597,23 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": 10,
-    "entries": [{ "name": "Alligator", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Alligator",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "2f2f065b-1b38-4c6d-a2f3-9405dba2e5fc",
+    "guid": "099f6832-75ef-4f46-91b2-0d64509897c2",
     "name": "Spawner (2202)",
-    "location": [6052, 1463, 0],
+    "location": [
+      6052,
+      1463,
+      0
+    ],
     "map": "Felucca",
     "count": 8,
     "minDelay": "00:00:00",
@@ -337,13 +621,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 25,
-    "entries": [{ "name": "Alligator", "maxCount": 8, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Alligator",
+        "maxCount": 8,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c9c0bd29-866d-45d5-8624-43811d1c1416",
+    "guid": "77bf6da3-ca32-446e-8d0b-239bb4520afd",
     "name": "Spawner (2202)",
-    "location": [6037, 1494, 0],
+    "location": [
+      6037,
+      1494,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:00:00",
@@ -351,6 +645,12 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": 10,
-    "entries": [{ "name": "Alligator", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Alligator",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   }
 ]

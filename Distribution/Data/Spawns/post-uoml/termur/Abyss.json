@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "53075d57-28b4-4120-9c26-7b204707eb2e",
+    "guid": "35fb2ebe-b2e6-4a64-af3a-ce1eaacd9a54",
     "name": "Spawner (601)",
-    "location": [795, 753, 53],
+    "location": [
+      795,
+      753,
+      53
+    ],
     "map": "TerMur",
     "count": 8,
     "minDelay": "00:05:00",
@@ -11,13 +15,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "Hydra", "maxCount": 8, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Hydra",
+        "maxCount": 8,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0202ba3c-1091-47ad-967a-c60cf8aed056",
+    "guid": "8d0bc27a-c900-4d7f-8811-a52f386b6d0c",
     "name": "Spawner (601)",
-    "location": [745, 739, 16],
+    "location": [
+      745,
+      739,
+      16
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
@@ -25,13 +39,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "MaddeningHorror", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MaddeningHorror",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "7d179890-6830-4975-bd33-53c261c67b3e",
+    "guid": "f7e9ab99-b970-4be1-881b-9e7ef1af0d01",
     "name": "Spawner (601)",
-    "location": [749, 475, -17],
+    "location": [
+      749,
+      475,
+      -17
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
@@ -39,13 +63,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "SlasherOfVeils", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "SlasherOfVeils",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "9c853ade-6874-45ac-9fc0-cf9baaa0ab9d",
+    "guid": "dd5aea6e-c13b-40f4-949f-9f41eac96589",
     "name": "Spawner (601)",
-    "location": [326, 159, 20],
+    "location": [
+      326,
+      159,
+      20
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
@@ -53,71 +87,145 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "StygianDragon", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "StygianDragon",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "494c198b-ee44-4cc7-881e-d0f677a7df0c",
+    "guid": "5c81b759-1add-4e8a-b151-420aa778e236",
     "name": "Spawner (601)",
-    "location": [716, 720, -11],
+    "location": [
+      716,
+      720,
+      -11
+    ],
     "map": "TerMur",
-    "count": 120,
+    "count": 24,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "Snake", "maxCount": 24, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 24, "probability": 100 },
-      { "name": "CoralSnake", "maxCount": 24, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 24, "probability": 100 },
-      { "name": "Coil", "maxCount": 24, "probability": 100 }
+      {
+        "name": "Snake",
+        "maxCount": 24,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 24,
+        "probability": 100
+      },
+      {
+        "name": "CoralSnake",
+        "maxCount": 24,
+        "probability": 100
+      },
+      {
+        "name": "GiantSerpent",
+        "maxCount": 24,
+        "probability": 100
+      },
+      {
+        "name": "Coil",
+        "maxCount": 24,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e03b6034-b9c9-41dc-8bd5-952842e0a9a1",
+    "guid": "a02bf178-9eb0-48ff-ae18-d06958f798a8",
     "name": "Spawner (601)",
-    "location": [992, 337, 9],
+    "location": [
+      992,
+      337,
+      9
+    ],
     "map": "TerMur",
-    "count": 175,
+    "count": 35,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "GreaterMongbat", "maxCount": 35, "probability": 100 },
-      { "name": "Imp", "maxCount": 35, "probability": 100 },
-      { "name": "Daemon", "maxCount": 35, "probability": 100 },
-      { "name": "PitFiend", "maxCount": 35, "probability": 100 },
-      { "name": "DevourerRenowned", "maxCount": 35, "probability": 100 }
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "Imp",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "Daemon",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "PitFiend",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "DevourerRenowned",
+        "maxCount": 35,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ce735c3c-bce9-4709-8171-ae71f6e7a67c",
+    "guid": "3929df23-08d5-4650-89a1-6cb025fddbac",
     "name": "Spawner (601)",
-    "location": [982, 491, -12],
+    "location": [
+      982,
+      491,
+      -12
+    ],
     "map": "TerMur",
-    "count": 45,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 18,
     "walkingRange": 18,
     "entries": [
-      { "name": "ClanChitterAssistant", "maxCount": 15, "probability": 100 },
-      { "name": "ClanChitterTinkerer", "maxCount": 15, "probability": 100 },
-      { "name": "RakktaviRenowned", "maxCount": 15, "probability": 100 }
+      {
+        "name": "ClanChitterAssistant",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "ClanChitterTinkerer",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "RakktaviRenowned",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7f9024ed-718b-4792-b373-958a9b245206",
+    "guid": "941cbed7-bf9a-448d-ae6a-f741459f50d1",
     "name": "Spawner (601)",
-    "location": [981, 491, -12],
+    "location": [
+      981,
+      491,
+      -12
+    ],
     "map": "TerMur",
     "count": 16,
     "minDelay": "00:05:00",
@@ -125,31 +233,23 @@
     "team": 0,
     "homeRange": 18,
     "walkingRange": 18,
-    "entries": [{ "name": "ClockworkScorpion", "maxCount": 16, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "255be12d-52ce-43e5-9c2e-80d4fc9271b0",
-    "name": "Spawner (601)",
-    "location": [919, 502, -12],
-    "map": "TerMur",
-    "count": 45,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
     "entries": [
-      { "name": "ClanRibbonSupplicant", "maxCount": 15, "probability": 100 },
-      { "name": "ClanRibbonCourtier", "maxCount": 15, "probability": 100 },
-      { "name": "VitaviRenowned", "maxCount": 15, "probability": 100 }
+      {
+        "name": "ClockworkScorpion",
+        "maxCount": 16,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0550ca73-5d80-433b-a49c-d3db45ad2471",
+    "guid": "517bfdd3-f625-4e1c-af4b-8467810e6e46",
     "name": "Spawner (601)",
-    "location": [918, 502, -12],
+    "location": [
+      919,
+      502,
+      -12
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
@@ -157,31 +257,91 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "ClanRibbonPlagueRat", "maxCount": 15, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ClanRibbonSupplicant",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "ClanRibbonCourtier",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "VitaviRenowned",
+        "maxCount": 15,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1e6bb0e8-7e98-4faf-b407-20bfebc51227",
+    "guid": "592811d2-8196-4006-a774-5658b4df3ecb",
     "name": "Spawner (601)",
-    "location": [949, 555, -14],
+    "location": [
+      918,
+      502,
+      -12
+    ],
     "map": "TerMur",
-    "count": 45,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "ClanScratchScrounger", "maxCount": 15, "probability": 100 },
-      { "name": "ClanScratchHenchrat", "maxCount": 15, "probability": 100 },
-      { "name": "TikitaviRenowned", "maxCount": 15, "probability": 100 }
+      {
+        "name": "ClanRibbonPlagueRat",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ddf3cc17-e181-4394-ab9e-90a33d482aa6",
+    "guid": "8ff19011-9cc1-4aaf-a795-1867c6667123",
     "name": "Spawner (601)",
-    "location": [950, 555, -14],
+    "location": [
+      949,
+      555,
+      -14
+    ],
+    "map": "TerMur",
+    "count": 15,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "ClanScratchScrounger",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "ClanScratchHenchrat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "TikitaviRenowned",
+        "maxCount": 15,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1b0b5739-68fc-4048-b2be-10da4dee13b8",
+    "name": "Spawner (601)",
+    "location": [
+      950,
+      555,
+      -14
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
@@ -189,128 +349,318 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "ClanScratchSavageWolf", "maxCount": 18, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ClanScratchSavageWolf",
+        "maxCount": 18,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e912d93c-34a2-4d5d-8e0c-6aa66cfd41e9",
+    "guid": "c33dadb8-e340-4fc6-9944-627054cf96f6",
     "name": "Spawner (601)",
-    "location": [974, 161, -11],
+    "location": [
+      974,
+      161,
+      -11
+    ],
     "map": "TerMur",
-    "count": 144,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "FireAnt", "maxCount": 18, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 18, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 18, "probability": 100 },
-      { "name": "FireGargoyle", "maxCount": 18, "probability": 100 },
-      { "name": "Efreet", "maxCount": 18, "probability": 100 },
-      { "name": "LavaElemental", "maxCount": 18, "probability": 100 },
-      { "name": "FireDaemon", "maxCount": 18, "probability": 100 },
-      { "name": "FireElementalRenowned", "maxCount": 18, "probability": 100 }
+      {
+        "name": "FireAnt",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "LavaLizard",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "FireGargoyle",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Efreet",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "LavaElemental",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "FireDaemon",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "FireElementalRenowned",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e24bf4fb-42eb-4847-82bb-81f43d131d27",
+    "guid": "dcc3ba35-0e14-48fe-8a1b-8a7e5b3e4c03",
     "name": "Spawner (601)",
-    "location": [581, 815, -45],
+    "location": [
+      581,
+      815,
+      -45
+    ],
     "map": "TerMur",
-    "count": 240,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "EnslavedGrayGoblin", "maxCount": 30, "probability": 100 },
-      { "name": "EnslavedGreenGoblin", "maxCount": 30, "probability": 100 },
-      { "name": "EnslavedGoblinScout", "maxCount": 30, "probability": 100 },
-      { "name": "EnslavedGoblinKeeper", "maxCount": 30, "probability": 100 },
-      { "name": "EnslavedGreenGoblinAlchemist", "maxCount": 30, "probability": 100 },
-      { "name": "EnslavedGoblinMage", "maxCount": 30, "probability": 100 },
-      { "name": "GrayGoblinMageRenowned", "maxCount": 30, "probability": 100 },
-      { "name": "GreenGoblinAlchemistRenowned", "maxCount": 30, "probability": 100 }
+      {
+        "name": "EnslavedGrayGoblin",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "EnslavedGreenGoblin",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "EnslavedGoblinScout",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "EnslavedGoblinKeeper",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "EnslavedGreenGoblinAlchemist",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "EnslavedGoblinMage",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "GrayGoblinMageRenowned",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "GreenGoblinAlchemistRenowned",
+        "maxCount": 30,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a010b9a7-dcae-4156-a0f9-d67b2c61cda1",
+    "guid": "6dfe8446-6623-4133-8990-6d11813b2b0d",
     "name": "Spawner (601)",
-    "location": [526, 766, -92],
+    "location": [
+      526,
+      766,
+      -92
+    ],
     "map": "TerMur",
-    "count": 225,
+    "count": 25,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "LavaLizard", "maxCount": 25, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 25, "probability": 100 },
-      { "name": "FireAnt", "maxCount": 25, "probability": 100 },
-      { "name": "HellCat", "maxCount": 25, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 25, "probability": 100 },
-      { "name": "HellHound", "maxCount": 25, "probability": 100 },
-      { "name": "LavaElemental", "maxCount": 25, "probability": 100 },
-      { "name": "FireDaemon", "maxCount": 25, "probability": 100 },
-      { "name": "FireDaemonRenowned", "maxCount": 25, "probability": 100 }
+      {
+        "name": "LavaLizard",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "FireAnt",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "HellCat",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "LavaSerpent",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "HellHound",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "LavaElemental",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "FireDaemon",
+        "maxCount": 25,
+        "probability": 100
+      },
+      {
+        "name": "FireDaemonRenowned",
+        "maxCount": 25,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "13e3f514-706c-4a1d-9d06-22c006cdece6",
+    "guid": "6d71c735-e0cb-414d-b687-10c1a4192856",
     "name": "Spawner (601)",
-    "location": [536, 657, 8],
+    "location": [
+      536,
+      657,
+      8
+    ],
     "map": "TerMur",
-    "count": 245,
+    "count": 35,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 34,
     "walkingRange": 34,
     "entries": [
-      { "name": "Skeleton", "maxCount": 35, "probability": 100 },
-      { "name": "Wraith", "maxCount": 35, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 35, "probability": 100 },
-      { "name": "WailingBanshee", "maxCount": 35, "probability": 100 },
-      { "name": "SkeletalLich", "maxCount": 35, "probability": 100 },
-      { "name": "RottingCorpse", "maxCount": 35, "probability": 100 },
-      { "name": "AncientLichRenowned", "maxCount": 35, "probability": 100 }
+      {
+        "name": "Skeleton",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "Wraith",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalMage",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "WailingBanshee",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalLich",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "RottingCorpse",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "AncientLichRenowned",
+        "maxCount": 35,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3b76e7f9-9ba5-4dfe-b6eb-202845ab16a8",
+    "guid": "29d4421f-924d-47c3-abe5-45fe5e1be9a5",
     "name": "Spawner (601)",
-    "location": [601, 905, -60],
+    "location": [
+      601,
+      905,
+      -60
+    ],
     "map": "TerMur",
-    "count": 304,
+    "count": 38,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 35,
     "entries": [
-      { "name": "LavaLizard", "maxCount": 38, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 38, "probability": 100 },
-      { "name": "FireAnt", "maxCount": 38, "probability": 100 },
-      { "name": "HellHound", "maxCount": 38, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 38, "probability": 100 },
-      { "name": "LavaElemental", "maxCount": 38, "probability": 100 },
-      { "name": "FireDaemon", "maxCount": 38, "probability": 100 },
-      { "name": "FireDaemonRenowned", "maxCount": 38, "probability": 100 }
+      {
+        "name": "LavaLizard",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "FireAnt",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "HellHound",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "LavaSerpent",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "LavaElemental",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "FireDaemon",
+        "maxCount": 38,
+        "probability": 100
+      },
+      {
+        "name": "FireDaemonRenowned",
+        "maxCount": 38,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6beafb67-e367-4947-aa2b-7a85e4a9333f",
+    "guid": "7dac51b3-7c0a-4f22-8652-7e29ba875fee",
     "name": "Spawner (601)",
-    "location": [818, 927, -15],
+    "location": [
+      818,
+      927,
+      -15
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
@@ -318,87 +668,193 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "Medusa", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Medusa",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "2edc29ad-b7be-47c7-a56b-561e23bcfb4b",
+    "guid": "c64053fc-272a-4fdd-9c6c-4f05a1ec02be",
     "name": "Spawner (601)",
-    "location": [684, 579, -15],
+    "location": [
+      684,
+      579,
+      -15
+    ],
     "map": "TerMur",
-    "count": 160,
+    "count": 32,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 35,
     "entries": [
-      { "name": "CorrosiveSlime", "maxCount": 32, "probability": 100 },
-      { "name": "AcidSlug", "maxCount": 32, "probability": 100 },
-      { "name": "AcidElemental", "maxCount": 32, "probability": 100 },
-      { "name": "InterredGrizzle", "maxCount": 32, "probability": 100 },
-      { "name": "AcidElementalRenowned", "maxCount": 32, "probability": 100 }
+      {
+        "name": "CorrosiveSlime",
+        "maxCount": 32,
+        "probability": 100
+      },
+      {
+        "name": "AcidSlug",
+        "maxCount": 32,
+        "probability": 100
+      },
+      {
+        "name": "AcidElemental",
+        "maxCount": 32,
+        "probability": 100
+      },
+      {
+        "name": "InterredGrizzle",
+        "maxCount": 32,
+        "probability": 100
+      },
+      {
+        "name": "AcidElementalRenowned",
+        "maxCount": 32,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c0128c5c-d105-4992-82db-cc3c9496f2b7",
+    "guid": "a72aa352-96b2-4163-83c0-de180a8fb7e8",
     "name": "Spawner (601)",
-    "location": [440, 708, 24],
+    "location": [
+      440,
+      708,
+      24
+    ],
     "map": "TerMur",
-    "count": 120,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 35,
     "entries": [
-      { "name": "Pixie", "maxCount": 30, "probability": 100 },
-      { "name": "Wisp", "maxCount": 30, "probability": 100 },
-      { "name": "DarkWisp", "maxCount": 30, "probability": 100 },
-      { "name": "PixieRenowned", "maxCount": 30, "probability": 100 }
+      {
+        "name": "Pixie",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "Wisp",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "DarkWisp",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "PixieRenowned",
+        "maxCount": 30,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a019bf95-fb35-479c-a822-eace37c71dfa",
+    "guid": "875d5be5-9156-4e42-a41a-973aef764aee",
     "name": "Spawner (601)",
-    "location": [674, 828, -109],
+    "location": [
+      674,
+      828,
+      -109
+    ],
     "map": "TerMur",
-    "count": 240,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 30, "probability": 100 },
-      { "name": "PatchworkSkeleton", "maxCount": 30, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 30, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 30, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 30, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 30, "probability": 100 },
-      { "name": "SkeletalLich", "maxCount": 30, "probability": 100 },
-      { "name": "SkeletalDragonRenowned", "maxCount": 30, "probability": 100 }
+      {
+        "name": "Skeleton",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "PatchworkSkeleton",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalKnight",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "BoneKnight",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalMage",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "BoneMagi",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalLich",
+        "maxCount": 30,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalDragonRenowned",
+        "maxCount": 30,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e71722ae-ec20-4542-a210-2877f4097d9d",
+    "guid": "11551b29-0ee5-4fae-8d9b-2fd60465b032",
     "name": "Spawner (601)",
-    "location": [887, 277, 3],
+    "location": [
+      887,
+      277,
+      3
+    ],
     "map": "TerMur",
-    "count": 140,
+    "count": 35,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "FairyDragon", "maxCount": 35, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 35, "probability": 100 },
-      { "name": "ForgottenServant", "maxCount": 35, "probability": 100 },
-      { "name": "WyvernRenowned", "maxCount": 35, "probability": 100 }
+      {
+        "name": "FairyDragon",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "Wyvern",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "ForgottenServant",
+        "maxCount": 35,
+        "probability": 100
+      },
+      {
+        "name": "WyvernRenowned",
+        "maxCount": 35,
+        "probability": 100
+      }
     ]
   }
 ]

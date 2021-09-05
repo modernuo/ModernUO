@@ -185,9 +185,13 @@ namespace Server.Engines.Spawners
                     Guid = Guid.NewGuid()
                 };
 
+                var totalCount = 0;
+
                 for (var i = 0; i < 6; i++)
                 {
-                    spawner.Entries.AddRange(CreateSpawnerEntries(parts[i + 1], int.Parse(parts[i + 16])));
+                    var count = int.Parse(parts[i + 16]);
+                    totalCount += count;
+                    spawner.Entries.AddRange(CreateSpawnerEntries(parts[i + 1], count));
                 }
 
                 if (spawner.Entries.Count == 0)
@@ -196,13 +200,7 @@ namespace Server.Engines.Spawners
                     continue;
                 }
 
-                var totalCount = 0;
-                foreach (var entry in spawner.Entries)
-                {
-                    totalCount += entry.SpawnedMaxCount;
-                }
                 spawner.Count = totalCount;
-
                 spawnersList.Add(spawner);
             }
 

@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "dd19dcaf-5468-4617-a6a9-5ddd0df39073",
+    "guid": "c6783361-a68d-4811-a162-86af961cf503",
     "name": "Spawner (220)",
-    "location": [5670, 1807, 4],
+    "location": [
+      5670,
+      1807,
+      4
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -11,13 +15,23 @@
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "03244642-c492-4064-8fcc-2642c4514d72",
+    "guid": "292f941a-a9c4-4ec2-8957-0252fe7be988",
     "name": "Spawner (220)",
-    "location": [5673, 1846, 1],
+    "location": [
+      5673,
+      1846,
+      1
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -25,13 +39,23 @@
     "team": 0,
     "homeRange": 6,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "59be7eb7-f9ea-43fe-99dc-fa56dd4a2cdb",
+    "guid": "4e878d51-e601-4e8c-b034-fcc572f4a840",
     "name": "Spawner (220)",
-    "location": [5693, 1834, 0],
+    "location": [
+      5693,
+      1834,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -39,13 +63,23 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "607539cd-8d8b-4572-9be8-ade7bb70b1cd",
+    "guid": "7841012e-e50b-44c7-80e5-9f0901304abd",
     "name": "Spawner (220)",
-    "location": [5704, 1807, 4],
+    "location": [
+      5704,
+      1807,
+      4
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -53,13 +87,23 @@
     "team": 0,
     "homeRange": 6,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e805915e-78aa-41a9-a55f-d476ae06bccd",
+    "guid": "616e54a8-e1fd-4877-8f77-92f3361b266e",
     "name": "Spawner (220)",
-    "location": [5722, 1820, 5],
+    "location": [
+      5722,
+      1820,
+      5
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -67,13 +111,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "b5a61e02-675d-4d3f-832f-57323841bf44",
+    "guid": "81d29a4d-f337-46b8-971f-402bce72c1a3",
     "name": "Spawner (220)",
-    "location": [5709, 1874, 1],
+    "location": [
+      5709,
+      1874,
+      1
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -81,13 +135,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 50,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6189d28d-9c7e-4c8e-a3a3-05075cc6cb61",
+    "guid": "0b57c719-bf1c-4cbe-ac70-5aaabda64779",
     "name": "Spawner (220)",
-    "location": [5681, 1886, 2],
+    "location": [
+      5681,
+      1886,
+      2
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -95,13 +159,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 50,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "7939f38a-ea1f-4533-889a-b2da1fa1a437",
+    "guid": "fe17cd01-9207-4132-b25a-b23b6d0a21cd",
     "name": "Spawner (220)",
-    "location": [5756, 1857, 4],
+    "location": [
+      5756,
+      1857,
+      4
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -109,13 +183,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 50,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "3051f230-a127-4504-8f0e-591779110667",
+    "guid": "451c7289-0639-4054-879d-fd66e27e866c",
     "name": "Spawner (220)",
-    "location": [5912, 1800, 1],
+    "location": [
+      5912,
+      1800,
+      1
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -123,13 +207,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f6f6c856-3348-4825-8690-964228e9a5c5",
+    "guid": "00f9e4a9-d9a7-4d44-aecc-c2bb20a79c9c",
     "name": "Spawner (220)",
-    "location": [5920, 1842, 1],
+    "location": [
+      5920,
+      1842,
+      1
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -137,13 +231,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 30,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0c888ba5-b004-4a3c-9726-51878ed19c2f",
+    "guid": "a130822d-7738-4410-a154-7860ca71cba2",
     "name": "Spawner (220)",
-    "location": [5887, 1840, -18],
+    "location": [
+      5887,
+      1840,
+      -18
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -151,13 +255,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "AntLion", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "AntLion",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "94fb2611-0cb4-4e37-84b1-601a71c2d492",
+    "guid": "315f85b8-ba97-4ca0-b2c4-92b7cd539c5b",
     "name": "Spawner (220)",
-    "location": [5847, 1819, 1],
+    "location": [
+      5847,
+      1819,
+      1
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -165,13 +279,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "fdb24f98-25fb-494d-a20d-9228f2647de2",
+    "guid": "39cbbb5e-744c-4179-8646-fb1290698ad1",
     "name": "Spawner (220)",
-    "location": [5829, 1798, 1],
+    "location": [
+      5829,
+      1798,
+      1
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -179,13 +303,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d291402f-9e26-4a44-9a43-49b78a540aa6",
+    "guid": "c02ed532-4fdd-4e4a-83c4-f2f8a0e025e1",
     "name": "Spawner (220)",
-    "location": [5873, 1798, 0],
+    "location": [
+      5873,
+      1798,
+      0
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -194,15 +328,27 @@
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 },
-      { "name": "BlackSolenQueen", "maxCount": 1, "probability": 100 }
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "BlackSolenQueen",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6589ba77-9751-4cd0-8b07-59303f0ec823",
+    "guid": "abaf512d-5839-439d-964e-888303a40d48",
     "name": "Spawner (220)",
-    "location": [5782, 1793, 1],
+    "location": [
+      5782,
+      1793,
+      1
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -210,13 +356,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c90d523f-d907-4f6d-81ae-c3570b26a115",
+    "guid": "818ebcff-8a3d-4e6d-a8ac-fbd782899100",
     "name": "Spawner (220)",
-    "location": [5799, 1857, 5],
+    "location": [
+      5799,
+      1857,
+      5
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -224,13 +380,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "742780b7-3c42-40d8-9e75-7f15cc88f4ea",
+    "guid": "308e3de7-9304-466e-9cc0-e71367242d75",
     "name": "Spawner (220)",
-    "location": [5815, 1881, 2],
+    "location": [
+      5815,
+      1881,
+      2
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -238,13 +404,23 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "2374a5d3-5291-4308-a824-03b45fff93dd",
+    "guid": "9c112ab3-aaed-483c-a895-12d56c3da76c",
     "name": "Spawner (220)",
-    "location": [5831, 1910, 3],
+    "location": [
+      5831,
+      1910,
+      3
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -252,13 +428,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Beetle", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Beetle",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "3c26a7fc-1077-49c5-ab38-a5df8ef14412",
+    "guid": "f7c24d72-6e8d-4e78-9cd2-fd6bf7e427e3",
     "name": "Spawner (220)",
-    "location": [5718, 2024, 4],
+    "location": [
+      5718,
+      2024,
+      4
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -266,13 +452,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "4ec0b68d-0fda-44c3-810a-1d37fa85ae65",
+    "guid": "92c760f1-55bf-44cd-b51f-b3425595c3f4",
     "name": "Spawner (220)",
-    "location": [5776, 2019, 2],
+    "location": [
+      5776,
+      2019,
+      2
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -280,13 +476,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "74e7aae1-e52f-40cf-a939-3020cba0e755",
+    "guid": "8bfb6db7-bd95-4b69-9274-330a3806885b",
     "name": "Spawner (220)",
-    "location": [5782, 2021, -11],
+    "location": [
+      5782,
+      2021,
+      -11
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -294,13 +500,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "AntLion", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "AntLion",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "00c0e7d8-fce6-4083-be3a-ce8b731e570b",
+    "guid": "3bdddcd1-a470-49d7-bc08-41a4e9049e3d",
     "name": "Spawner (220)",
-    "location": [5767, 1962, 2],
+    "location": [
+      5767,
+      1962,
+      2
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -308,13 +524,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 50,
-    "entries": [{ "name": "DreadSpider", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "DreadSpider",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "2bde6bd6-8dda-45c7-bb86-8e52a09a70e2",
+    "guid": "04a12d97-707d-4bc9-ad99-b32f0e88e158",
     "name": "Spawner (220)",
-    "location": [5671, 1979, 0],
+    "location": [
+      5671,
+      1979,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -322,13 +548,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d65879f4-7e84-4758-8e80-7e4b19c9f9f1",
+    "guid": "40a36fd0-161f-42c1-9cca-9db682d9c50e",
     "name": "Spawner (220)",
-    "location": [5703, 1991, 0],
+    "location": [
+      5703,
+      1991,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -336,13 +572,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 35,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "502495e5-da8e-4f8b-8235-bc9c0b5099bf",
+    "guid": "0cda81be-bbe3-4312-af53-dcf5b33a1be8",
     "name": "Spawner (220)",
-    "location": [5699, 1921, 2],
+    "location": [
+      5699,
+      1921,
+      2
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -350,13 +596,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 30,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f054c91f-560b-4e61-baae-040e78789512",
+    "guid": "f9cdf3b9-37a7-456b-a24a-a9fc19153cda",
     "name": "Spawner (220)",
-    "location": [5748, 1923, 0],
+    "location": [
+      5748,
+      1923,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -364,13 +620,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6306addb-5a70-41d7-b253-c8111a006fe1",
+    "guid": "6f5ddf7f-8608-44e9-841d-b1b6248e54bf",
     "name": "Spawner (220)",
-    "location": [5736, 1939, 7],
+    "location": [
+      5736,
+      1939,
+      7
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -379,15 +645,27 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "BlackSolenQueen", "maxCount": 1, "probability": 100 },
-      { "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }
+      {
+        "name": "BlackSolenQueen",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5920ac59-e2c3-4de2-8c4d-642b5b3296b5",
+    "guid": "d94b6b1f-efd6-427f-aa69-88b326e256fd",
     "name": "Spawner (220)",
-    "location": [5876, 2018, 3],
+    "location": [
+      5876,
+      2018,
+      3
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -395,13 +673,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f96f204b-c049-4524-a769-dac2b56c6d57",
+    "guid": "c1cfb2f5-31c9-4686-8478-7e23db2e9ab0",
     "name": "Spawner (220)",
-    "location": [5856, 2018, 0],
+    "location": [
+      5856,
+      2018,
+      0
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -409,13 +697,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "56d6b66f-2ffa-4493-bca3-113757bfef08",
+    "guid": "4adcd151-0741-4ae0-88ef-f4b01523826c",
     "name": "Spawner (220)",
-    "location": [5838, 2019, 3],
+    "location": [
+      5838,
+      2019,
+      3
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -423,13 +721,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ac93e39c-329f-4b37-9ddd-179487146d96",
+    "guid": "4fc74f26-5c3b-4122-8a88-9581e5d02e5a",
     "name": "Spawner (220)",
-    "location": [5910, 1991, 0],
+    "location": [
+      5910,
+      1991,
+      0
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -437,13 +745,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "83218dcc-6457-4f37-9763-472cdbcfb6ab",
+    "guid": "9fccb18d-7d55-428d-9a0e-6975b0f2f213",
     "name": "Spawner (220)",
-    "location": [5837, 1992, -2],
+    "location": [
+      5837,
+      1992,
+      -2
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -451,13 +769,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Beetle", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Beetle",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "30a4c593-1a76-4901-9ad4-ccb7ed7ebdb4",
+    "guid": "e5998826-a85a-4fff-81d0-382fa35bf4ae",
     "name": "Spawner (220)",
-    "location": [5863, 1958, 2],
+    "location": [
+      5863,
+      1958,
+      2
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -465,13 +793,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "71dc22db-747b-4514-8714-386225b03528",
+    "guid": "022918a5-aa50-4cf1-b286-bae8de9c9537",
     "name": "Spawner (220)",
-    "location": [5884, 1920, -15],
+    "location": [
+      5884,
+      1920,
+      -15
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -479,13 +817,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "AntLion", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "AntLion",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "bae70587-17ae-46f3-8f2d-1ddae66b6b51",
+    "guid": "487e7cad-478d-4ffb-b109-fe2f398f2980",
     "name": "Spawner (220)",
-    "location": [5825, 1968, 4],
+    "location": [
+      5825,
+      1968,
+      4
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -493,13 +841,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "8eea8ca0-2c0f-4934-83a1-1ffe3c98e743",
+    "guid": "e82f829e-9f6f-494c-afe4-98c2cb4f1e33",
     "name": "Spawner (220)",
-    "location": [5855, 1932, 3],
+    "location": [
+      5855,
+      1932,
+      3
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -507,13 +865,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "BlackSolenWarrior", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e4e93622-53a4-474e-8f68-2ffeadfe79ad",
+    "guid": "0876305c-d6ce-46ff-bb97-e34d5fb772a9",
     "name": "Spawner (220)",
-    "location": [5798, 1963, 0],
+    "location": [
+      5798,
+      1963,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -521,13 +889,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 35,
-    "entries": [{ "name": "BlackSolenWorker", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "BlackSolenWorker",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "55f666b8-3151-475b-80d1-4fc481dd1546",
+    "guid": "b280605e-0ebe-492d-a0c0-f57d1e05e5a4",
     "name": "Spawner (220)",
-    "location": [5665, 1868, 11],
+    "location": [
+      5665,
+      1868,
+      11
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -535,13 +913,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "AntLion", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "AntLion",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d2ae8b87-16aa-4872-b20b-31abf3cabee1",
+    "guid": "a2fd7f95-2496-4594-9ed9-ab55fa31d08f",
     "name": "Spawner (220)",
-    "location": [5707, 1843, -15],
+    "location": [
+      5707,
+      1843,
+      -15
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -549,13 +937,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "AntLion", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "AntLion",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c50cdde4-248e-425f-983b-daafb60fd93c",
+    "guid": "164e28e4-c77f-450f-916a-493904e79d9b",
     "name": "Spawner (220)",
-    "location": [3218, 502, 0],
+    "location": [
+      3218,
+      502,
+      0
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -564,15 +962,27 @@
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "RedSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
-      { "name": "RedSolenInfiltratorWarrior", "maxCount": 2, "probability": 100 }
+      {
+        "name": "RedSolenInfiltratorQueen",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "RedSolenInfiltratorWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4468be3d-0a78-4c0b-a258-f46aec8e4dbd",
+    "guid": "76303de9-d601-4f18-b341-ed8741315132",
     "name": "Spawner (220)",
-    "location": [1940, 3261, 1],
+    "location": [
+      1940,
+      3261,
+      1
+    ],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
@@ -581,15 +991,27 @@
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "RedSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
-      { "name": "RedSolenInfiltratorWarrior", "maxCount": 2, "probability": 100 }
+      {
+        "name": "RedSolenInfiltratorQueen",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "RedSolenInfiltratorWarrior",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "50bf7ff2-e9c6-46b7-b94a-f08c885ab552",
+    "guid": "d1b08137-55ba-4356-8927-30febaac045b",
     "name": "Spawner (220)",
-    "location": [1361, 894, 0],
+    "location": [
+      1361,
+      894,
+      0
+    ],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
@@ -598,8 +1020,16 @@
     "homeRange": 4,
     "walkingRange": 8,
     "entries": [
-      { "name": "RedSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
-      { "name": "RedSolenInfiltratorWarrior", "maxCount": 1, "probability": 100 }
+      {
+        "name": "RedSolenInfiltratorQueen",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "RedSolenInfiltratorWarrior",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   }
 ]

@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "62a64766-7f45-4c49-8b27-69a408a211a7",
+    "guid": "0eb73fc0-e467-4792-ad60-4d3102e26915",
     "name": "Spawner (107)",
-    "location": [5693, 1415, 38],
+    "location": [
+      5693,
+      1415,
+      38
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -12,16 +16,32 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Slime", "maxCount": 1, "probability": 100 },
-      { "name": "GiantRat", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Slime",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "GiantRat",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GiantSerpent",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "45f33935-fa12-414c-97a1-6579f8d5cad1",
+    "guid": "df760fe6-6df1-45ac-a3c2-0f27637dd457",
     "name": "Spawner (107)",
-    "location": [5695, 1434, -1],
+    "location": [
+      5695,
+      1434,
+      -1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -29,13 +49,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Slime", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Slime",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e9233b5e-b998-48eb-aa44-bee67f82a981",
+    "guid": "7e6d1ab1-e613-416e-98c1-943cfdc638ea",
     "name": "Spawner (107)",
-    "location": [5680, 1438, 0],
+    "location": [
+      5680,
+      1438,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -43,13 +73,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "EvilMageLord", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMageLord",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ef6135ea-e616-477c-9ca2-1009444b7229",
+    "guid": "c474fe51-44fd-4dc4-8a50-2a35fb00bfe8",
     "name": "Spawner (107)",
-    "location": [5733, 1433, 22],
+    "location": [
+      5733,
+      1433,
+      22
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -58,16 +98,32 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "GiantRat", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 }
+      {
+        "name": "GiantRat",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2e07f74c-c996-4f86-a8da-e9f1dadc5f03",
+    "guid": "d402bb06-3c2f-4151-bd55-a97f1459aa8c",
     "name": "Spawner (107)",
-    "location": [5787, 1427, 17],
+    "location": [
+      5787,
+      1427,
+      17
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -75,13 +131,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "LavaLizard", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "LavaLizard",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "a865b5d8-f8fa-40ba-9e00-8a5dc49eb7d9",
+    "guid": "9253307c-4dbe-44bb-9e7f-7177e491daf7",
     "name": "Spawner (107)",
-    "location": [5717, 1465, -2],
+    "location": [
+      5717,
+      1465,
+      -2
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -89,13 +155,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "FireElemental", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "FireElemental",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0f97e325-2c78-402f-b3c3-a34a51a32174",
+    "guid": "a3a036ef-e0c6-4c5c-9573-2117548224e9",
     "name": "Spawner (107)",
-    "location": [5744, 1471, 2],
+    "location": [
+      5744,
+      1471,
+      2
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -104,17 +180,37 @@
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "FireElemental", "maxCount": 3, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FireElemental",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellCat",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellHound",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "06ecf87e-71eb-4c44-9062-666e06c84c77",
+    "guid": "93d283d5-a55c-47a8-b022-cb2807cd6864",
     "name": "Spawner (107)",
-    "location": [5790, 1451, 7],
+    "location": [
+      5790,
+      1451,
+      7
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -123,39 +219,91 @@
     "homeRange": 5,
     "walkingRange": 15,
     "entries": [
-      { "name": "Efreet", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Efreet",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "LavaSerpent",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellHound",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "92c6ef09-d1dc-4ba3-9c52-2e5f4725250e",
+    "guid": "cf42e1f4-a588-42f6-a9ec-f25f181ca6ae",
     "name": "Spawner (107)",
-    "location": [5852, 1468, 1],
+    "location": [
+      5852,
+      1468,
+      1
+    ],
     "map": "Trammel",
-    "count": 23,
+    "count": 17,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
     "entries": [
-      { "name": "Lich", "maxCount": 4, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 6, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 6, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 3, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Lich",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "BoneMagi",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "SkeletalMage",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "HellCat",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellHound",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "FireElemental",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "LavaLizard",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "59e9d290-07af-4aaa-b03e-8f8d9e8e2980",
+    "guid": "56b8cca4-7325-4d9f-ae81-dfbe47bf02b5",
     "name": "Spawner (107)",
-    "location": [5852, 1468, 1],
+    "location": [
+      5852,
+      1468,
+      1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -163,13 +311,23 @@
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
-    "entries": [{ "name": "LavaSnake", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "LavaSnake",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "62ad6964-62c8-40ff-9b29-1e556c43bb32",
+    "guid": "c7d55c1f-b262-4f11-a264-c731516e29a4",
     "name": "Spawner (107)",
-    "location": [5859, 1387, 0],
+    "location": [
+      5859,
+      1387,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -177,13 +335,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "LavaLizard", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "LavaLizard",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "855f3bcb-88b5-4fca-be3b-b174024da672",
+    "guid": "017e2ed5-fb4e-4776-9c76-cff6f836f32d",
     "name": "Spawner (107)",
-    "location": [5787, 1386, -2],
+    "location": [
+      5787,
+      1386,
+      -2
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -191,13 +359,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "HellCat", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "HellCat",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "8003f374-2678-41f6-b6c0-6c3db2cb9255",
+    "guid": "6ac34bad-d1e3-4d92-b379-d07ad3e49439",
     "name": "Spawner (107)",
-    "location": [5818, 1379, 0],
+    "location": [
+      5818,
+      1379,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -205,13 +383,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0d0b7d8c-d4f0-41d4-a7f2-17c2fbebf69d",
+    "guid": "c8ed6c9a-fa12-4cd8-8a14-e3eb1f07154a",
     "name": "Spawner (107)",
-    "location": [5836, 1364, 1],
+    "location": [
+      5836,
+      1364,
+      1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -219,13 +407,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "LavaSnake", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "LavaSnake",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "5d48c624-aacc-4de0-a045-b6a021a226c9",
+    "guid": "835ef9b2-6755-46e7-bf92-e2004cd6b3f9",
     "name": "Spawner (107)",
-    "location": [5809, 1332, 0],
+    "location": [
+      5809,
+      1332,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -233,13 +431,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "LavaSnake", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "LavaSnake",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "37997cce-9be3-4bef-95ea-254d0b568e89",
+    "guid": "20407dd7-05e5-4af7-8771-bcf92a833e0d",
     "name": "Spawner (107)",
-    "location": [5859, 1341, -1],
+    "location": [
+      5859,
+      1341,
+      -1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -247,13 +455,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "a6601e1d-270d-49be-996c-d1e765f15c1b",
+    "guid": "72406438-fb9d-4ffb-8daa-a290a93efba5",
     "name": "Spawner (107)",
-    "location": [5835, 1304, 0],
+    "location": [
+      5835,
+      1304,
+      0
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -262,16 +480,32 @@
     "homeRange": 15,
     "walkingRange": 30,
     "entries": [
-      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
-      { "name": "Efreet", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FireElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Efreet",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "LavaSerpent",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7bd50e48-5400-4ca1-b0d1-03d7050b6990",
+    "guid": "193c201f-41f0-4dad-a2d7-0bcf80e30199",
     "name": "Spawner (107)",
-    "location": [5867, 1309, 0],
+    "location": [
+      5867,
+      1309,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -280,15 +514,27 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "HellCat", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 }
+      {
+        "name": "HellCat",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "632dfc23-4de6-4202-add5-7c4dead94ce0",
+    "guid": "263d2d5e-da10-4537-ac29-3010728ca3b4",
     "name": "Spawner (107)",
-    "location": [5699, 1302, 1],
+    "location": [
+      5699,
+      1302,
+      1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -296,13 +542,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "FireElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "38882e38-9c19-4cda-9a5e-685103478c39",
+    "guid": "82c4dd19-052a-4f08-a8d7-540d994eee6e",
     "name": "Spawner (107)",
-    "location": [5723, 1291, 0],
+    "location": [
+      5723,
+      1291,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -310,13 +566,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "FireElemental", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "FireElemental",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e383021b-8f9b-4fff-ae96-2b2e7cf4692e",
+    "guid": "df5837df-c256-4851-9863-5c9338442d8e",
     "name": "Spawner (107)",
-    "location": [5732, 1297, -1],
+    "location": [
+      5732,
+      1297,
+      -1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -324,13 +590,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 20,
-    "entries": [{ "name": "HellHound", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "HellHound",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "05c5181b-11b1-44ee-ad74-f821d27b3e69",
+    "guid": "3dd210f5-6903-45b5-874a-1213f20378aa",
     "name": "Spawner (107)",
-    "location": [5667, 1315, 5],
+    "location": [
+      5667,
+      1315,
+      5
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -339,15 +615,27 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Efreet", "maxCount": 2, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Efreet",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "LavaLizard",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fc44d768-e233-4348-9381-ebe1808cc72b",
+    "guid": "eb42506a-19bf-470c-a4b6-4e96d6ede07f",
     "name": "Spawner (107)",
-    "location": [5747, 1320, 0],
+    "location": [
+      5747,
+      1320,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -356,15 +644,27 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaSerpent", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "LavaSerpent",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ab42eccb-8bb2-4a66-b901-4e82ca822c06",
+    "guid": "07e0ca08-16a9-4ea3-9349-bc11d1d86995",
     "name": "Spawner (107)",
-    "location": [5717, 1333, 6],
+    "location": [
+      5717,
+      1333,
+      6
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -373,15 +673,27 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 }
+      {
+        "name": "LavaLizard",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FireElemental",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0a868863-0664-472c-a9eb-030c1664e2a5",
+    "guid": "1f8ce435-dfce-4ebc-ac13-34516a8067a7",
     "name": "Spawner (107)",
-    "location": [5731, 1379, 0],
+    "location": [
+      5731,
+      1379,
+      0
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -390,15 +702,27 @@
     "homeRange": 3,
     "walkingRange": 7,
     "entries": [
-      { "name": "Lich", "maxCount": 3, "probability": 100 },
-      { "name": "LichLord", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Lich",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "LichLord",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c3479921-2028-4ffa-8569-e3d0f89edfea",
+    "guid": "f3c05932-b64d-45a7-aaf0-98bae95935e7",
     "name": "Spawner (107)",
-    "location": [5709, 1364, -1],
+    "location": [
+      5709,
+      1364,
+      -1
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -406,13 +730,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "HellHound", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      {
+        "name": "HellHound",
+        "maxCount": 6,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "125d798f-bb4c-457d-aa9c-579035917c8e",
+    "guid": "641ecc65-2a7a-4d79-8d6d-09064de015b9",
     "name": "Spawner (107)",
-    "location": [5691, 1347, 0],
+    "location": [
+      5691,
+      1347,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -420,13 +754,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "Daemon", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Daemon",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f7dca260-39b9-465d-b9df-53b96c593af3",
+    "guid": "2a2291bc-7a04-4d90-be90-c9541aec5498",
     "name": "Spawner (107)",
-    "location": [5678, 1340, -2],
+    "location": [
+      5678,
+      1340,
+      -2
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -435,15 +779,27 @@
     "homeRange": 10,
     "walkingRange": 30,
     "entries": [
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 }
+      {
+        "name": "HellHound",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellCat",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "909ecc4f-c3ad-4402-b0b7-093a5e4af1de",
+    "guid": "c6978e2b-eb18-46b6-8809-1dba551a5efc",
     "name": "Spawner (107)",
-    "location": [5651, 1363, 0],
+    "location": [
+      5651,
+      1363,
+      0
+    ],
     "map": "Trammel",
     "count": 8,
     "minDelay": "00:05:00",
@@ -452,17 +808,37 @@
     "homeRange": 3,
     "walkingRange": 3,
     "entries": [
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 5, "probability": 100 },
-      { "name": "LavaSnake", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 1, "probability": 100 }
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellHound",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "LavaSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HellCat",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7e500849-9e9c-4e3c-ad19-6df045529202",
+    "guid": "3c4823a0-17b4-43bc-8033-ee7cde4874fd",
     "name": "Spawner (107)",
-    "location": [5654, 1380, 0],
+    "location": [
+      5654,
+      1380,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -470,13 +846,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d522025d-1a87-477f-93db-5043cda2edb1",
+    "guid": "63aa9c1a-6933-4ee4-bbf5-fbaed82df249",
     "name": "Spawner (107)",
-    "location": [5689, 1387, 1],
+    "location": [
+      5689,
+      1387,
+      1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -484,13 +870,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "EvilMageLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMageLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "65715eb3-dec1-4ff1-a531-6d16fa53d337",
+    "guid": "06eeaf2c-c00f-42fa-8c42-539a81928818",
     "name": "Spawner (107)",
-    "location": [5656, 1412, 0],
+    "location": [
+      5656,
+      1412,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -498,13 +894,23 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 10,
-    "entries": [{ "name": "EvilMageLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMageLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "82686ce4-a5e4-4d54-8852-2c973da99a2c",
+    "guid": "e56c3640-05b4-407f-b362-11a83dfc9670",
     "name": "Spawner (107)",
-    "location": [5651, 1402, 0],
+    "location": [
+      5651,
+      1402,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -512,13 +918,23 @@
     "team": 0,
     "homeRange": 2,
     "walkingRange": 3,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "b463a5d2-6f10-4680-b1c5-556bf6075a8a",
+    "guid": "3a2c62cd-5e59-4da4-a2ce-9a0c5c93febd",
     "name": "Spawner (107)",
-    "location": [5643, 1403, 0],
+    "location": [
+      5643,
+      1403,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -526,13 +942,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "069f4975-3dda-4ed1-a240-fb5799b97c4d",
+    "guid": "849224e3-2e29-427b-80eb-0a151e93e199",
     "name": "Spawner (107)",
-    "location": [5651, 1408, 0],
+    "location": [
+      5651,
+      1408,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -540,13 +966,23 @@
     "team": 0,
     "homeRange": 2,
     "walkingRange": 3,
-    "entries": [{ "name": "HellHound", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "HellHound",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c6f7a946-e3ff-4284-bca7-993e4d381d8e",
+    "guid": "c15a4f6b-9710-4def-b8d0-09c117d33575",
     "name": "Spawner (107)",
-    "location": [5651, 1418, 0],
+    "location": [
+      5651,
+      1418,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -555,15 +991,27 @@
     "homeRange": 2,
     "walkingRange": 3,
     "entries": [
-      { "name": "EvilMage", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "EvilMageLord",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f807d7ac-14c1-4d2a-b543-97a2dfcb35ca",
+    "guid": "580578d9-a4f1-4054-8d68-ca645c60d4c4",
     "name": "Spawner (107)",
-    "location": [5650, 1419, 22],
+    "location": [
+      5650,
+      1419,
+      22
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -571,13 +1019,23 @@
     "team": 0,
     "homeRange": 2,
     "walkingRange": 5,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c3d58a0b-d90a-432e-a965-687f8c6dea4f",
+    "guid": "4b7d444d-5a83-4a4a-9f9b-f268080c00c6",
     "name": "Spawner (107)",
-    "location": [5647, 1439, 22],
+    "location": [
+      5647,
+      1439,
+      22
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -585,13 +1043,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 15,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "7d658fbe-1259-4a2e-baeb-689581c75dbd",
+    "guid": "3f1fa8e4-0461-43c5-915d-1f8d6243c984",
     "name": "Spawner (107)",
-    "location": [5651, 1443, 0],
+    "location": [
+      5651,
+      1443,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -599,13 +1067,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 5,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "95c3dfd8-381c-45b4-bc5a-7d1ed94a905f",
+    "guid": "a5f9ec55-e754-40f7-a83c-dfd7b78efc93",
     "name": "Spawner (107)",
-    "location": [5651, 1435, 0],
+    "location": [
+      5651,
+      1435,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -613,13 +1091,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 5,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "54f4a773-4db1-44e5-9934-ac92335f6062",
+    "guid": "c4aa67ce-4174-42c6-a18c-54d72771a68e",
     "name": "Spawner (107)",
-    "location": [5643, 1435, 0],
+    "location": [
+      5643,
+      1435,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -627,13 +1115,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 5,
-    "entries": [{ "name": "EvilMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "feb116af-5957-4b55-a8b2-ce63c5315a89",
+    "guid": "19c7452e-c000-43d9-97f9-7e969d89bda8",
     "name": "Spawner (107)",
-    "location": [5638, 1439, 0],
+    "location": [
+      5638,
+      1439,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -641,13 +1139,23 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 40,
-    "entries": [{ "name": "EvilMageLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "EvilMageLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "076226ae-40a0-4e0a-b3bb-17e3aa2085b8",
+    "guid": "40fc9fd2-ec56-4328-ba07-79287c997be5",
     "name": "Spawner (107)",
-    "location": [5714, 1465, 0],
+    "location": [
+      5714,
+      1465,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -655,13 +1163,23 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d0908cfd-5ca4-4f31-a28c-49b1a1b9935f",
+    "guid": "fc9a02b7-3d5f-4609-b586-907c4ca497ee",
     "name": "Spawner (107)",
-    "location": [5723, 1390, 2],
+    "location": [
+      5723,
+      1390,
+      2
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -669,13 +1187,23 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d3b220c9-078d-4ab4-86b3-9401a0827c94",
+    "guid": "6e37e3a4-0e7e-474f-8f47-762a96993d74",
     "name": "Spawner (107)",
-    "location": [5679, 1438, 0],
+    "location": [
+      5679,
+      1438,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -683,13 +1211,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "8c78bf9e-bb01-41bb-9e5c-df4fa924e6d1",
+    "guid": "85f5476d-1709-4dc9-b429-dadbc4f40506",
     "name": "Spawner (107)",
-    "location": [5715, 1465, -1],
+    "location": [
+      5715,
+      1465,
+      -1
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -697,13 +1235,23 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f4f8a713-34e8-4628-b530-b58696dc5f85",
+    "guid": "0077d996-0107-433c-868d-32757f57d4ec",
     "name": "Spawner (107)",
-    "location": [5722, 1390, 1],
+    "location": [
+      5722,
+      1390,
+      1
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -711,13 +1259,23 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c5f50f79-c543-4101-88a1-b57458688c4f",
+    "guid": "f8a27029-7a4d-4bc6-99c7-1e691e0e6c45",
     "name": "Spawner (107)",
-    "location": [5679, 1439, 0],
+    "location": [
+      5679,
+      1439,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -725,13 +1283,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "7b45356b-04c1-4f89-b4d3-6e5c54b7c4b4",
+    "guid": "ab04e5e0-3592-4288-b924-ac2f2b78aac7",
     "name": "Spawner (107)",
-    "location": [5650, 1434, 0],
+    "location": [
+      5650,
+      1434,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -739,13 +1307,23 @@
     "team": 0,
     "homeRange": 2,
     "walkingRange": 2,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "64efde77-fabc-47cb-84bb-dd63ff7679ff",
+    "guid": "456851f3-5839-4c42-b5e2-5bebcb146b2b",
     "name": "Spawner (107)",
-    "location": [5643, 1435, 0],
+    "location": [
+      5643,
+      1435,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -753,6 +1331,12 @@
     "team": 0,
     "homeRange": 2,
     "walkingRange": 2,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   }
 ]

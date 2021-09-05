@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "31c79a36-8caa-460c-9a82-eaa6bb2cdc93",
+    "guid": "bb7d8052-56aa-48cc-8d9a-31d4d85c0d81",
     "name": "Spawner (122)",
-    "location": [5249, 228, 15],
+    "location": [
+      5249,
+      228,
+      15
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -12,15 +16,27 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Dragon", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Dragon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Drake",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "87a584eb-16f3-482e-bf6a-3b6a9f6cc17a",
+    "guid": "1218cc8e-4200-42cc-99ee-b27dd396e3b4",
     "name": "Spawner (122)",
-    "location": [5164, 205, 15],
+    "location": [
+      5164,
+      205,
+      15
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -29,15 +45,27 @@
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "LichLord", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 2, "probability": 100 }
+      {
+        "name": "LichLord",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Lich",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7ee1c4ca-d72b-4c17-bc32-356349ec4410",
+    "guid": "f474b7be-1817-4b1d-a492-42df4790cedb",
     "name": "Spawner (122)",
-    "location": [5133, 150, 0],
+    "location": [
+      5133,
+      150,
+      0
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -45,13 +73,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "Daemon", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Daemon",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "4fa613b9-e3c5-4bbd-a5b3-9b7445b80622",
+    "guid": "1d5e571c-c1e3-45d4-a374-04b465b36460",
     "name": "Spawner (122)",
-    "location": [1550, 1658, 26],
+    "location": [
+      1550,
+      1658,
+      26
+    ],
     "map": "Trammel",
     "count": 60,
     "minDelay": "00:05:00",
@@ -60,17 +98,37 @@
     "homeRange": 120,
     "walkingRange": 120,
     "entries": [
-      { "name": "Bird", "maxCount": 15, "probability": 100 },
-      { "name": "Cat", "maxCount": 15, "probability": 100 },
-      { "name": "Dog", "maxCount": 15, "probability": 100 },
-      { "name": "Rat", "maxCount": 15, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c0f953b8-7df1-4e14-8441-7ec540fc7742",
+    "guid": "d7f7b008-ad02-4eae-8d4a-8f9163288631",
     "name": "Spawner (122)",
-    "location": [1319, 1810, 0],
+    "location": [
+      1319,
+      1810,
+      0
+    ],
     "map": "Trammel",
     "count": 7,
     "minDelay": "00:05:00",
@@ -78,13 +136,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "Cow", "maxCount": 7, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Cow",
+        "maxCount": 7,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "3834522e-f6f1-4f19-87d6-a9d364a364cf",
+    "guid": "b3d2bb40-d3d1-4ec9-9a5c-b20b737de066",
     "name": "Spawner (122)",
-    "location": [1319, 1821, 0],
+    "location": [
+      1319,
+      1821,
+      0
+    ],
     "map": "Trammel",
     "count": 7,
     "minDelay": "00:05:00",
@@ -92,13 +160,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "Cow", "maxCount": 7, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Cow",
+        "maxCount": 7,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "34ff5088-c1f1-4708-a00f-4a63b2710db7",
+    "guid": "86f2e9e8-9ebb-44dc-8372-dc6edfb41847",
     "name": "Spawner (122)",
-    "location": [1340, 1790, 15],
+    "location": [
+      1340,
+      1790,
+      15
+    ],
     "map": "Trammel",
     "count": 20,
     "minDelay": "00:05:00",
@@ -107,17 +185,37 @@
     "homeRange": 80,
     "walkingRange": 80,
     "entries": [
-      { "name": "Bird", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Rat", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "87d3a8a7-2508-4f02-9b0c-a07afeae1bac",
+    "guid": "ee6ae89b-6de4-489c-bc6c-62e43810a6a9",
     "name": "Spawner (122)",
-    "location": [1339, 1788, 15],
+    "location": [
+      1339,
+      1788,
+      15
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -125,13 +223,23 @@
     "team": 0,
     "homeRange": 80,
     "walkingRange": 80,
-    "entries": [{ "name": "Chicken", "maxCount": 5, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "e8f2efd7-963d-4863-8db5-5f6fa4a429ce",
+    "guid": "4dd3ea55-9eb8-4e5c-b31a-04a071ae46ab",
     "name": "Spawner (122)",
-    "location": [1217, 1825, 0],
+    "location": [
+      1217,
+      1825,
+      0
+    ],
     "map": "Trammel",
     "count": 20,
     "minDelay": "00:05:00",
@@ -140,17 +248,37 @@
     "homeRange": 80,
     "walkingRange": 80,
     "entries": [
-      { "name": "Bird", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Rat", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "222bd4f5-8085-49dc-9d8e-eda3415d19af",
+    "guid": "12aababc-881a-4724-a9f5-b99ed51f3fe0",
     "name": "Spawner (122)",
-    "location": [1216, 1823, 0],
+    "location": [
+      1216,
+      1823,
+      0
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -158,13 +286,23 @@
     "team": 0,
     "homeRange": 80,
     "walkingRange": 80,
-    "entries": [{ "name": "Chicken", "maxCount": 5, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d172fc36-076d-4310-89e7-e9faafe0239f",
+    "guid": "5396da5f-3f83-46e9-bd36-541a1af0972e",
     "name": "Spawner (122)",
-    "location": [1186, 1633, 0],
+    "location": [
+      1186,
+      1633,
+      0
+    ],
     "map": "Trammel",
     "count": 28,
     "minDelay": "00:05:00",
@@ -173,17 +311,37 @@
     "homeRange": 80,
     "walkingRange": 80,
     "entries": [
-      { "name": "Bird", "maxCount": 7, "probability": 100 },
-      { "name": "Cat", "maxCount": 7, "probability": 100 },
-      { "name": "Dog", "maxCount": 7, "probability": 100 },
-      { "name": "Rat", "maxCount": 7, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 7,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6d22a4ec-43a0-419b-af73-e25dad3aea17",
+    "guid": "3afe2f59-7cc4-482f-8d58-341c919c8fab",
     "name": "Spawner (122)",
-    "location": [1185, 1632, 0],
+    "location": [
+      1185,
+      1632,
+      0
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -191,13 +349,23 @@
     "team": 0,
     "homeRange": 80,
     "walkingRange": 80,
-    "entries": [{ "name": "Chicken", "maxCount": 5, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "54cf5aa2-53d3-41c6-9609-ff4916f5fec6",
+    "guid": "84e06a55-fdcb-4448-9560-9a71ae7778fb",
     "name": "Spawner (122)",
-    "location": [1937, 2760, 10],
+    "location": [
+      1937,
+      2760,
+      10
+    ],
     "map": "Trammel",
     "count": 48,
     "minDelay": "00:05:00",
@@ -206,17 +374,37 @@
     "homeRange": 120,
     "walkingRange": 120,
     "entries": [
-      { "name": "Bird", "maxCount": 12, "probability": 100 },
-      { "name": "Cat", "maxCount": 12, "probability": 100 },
-      { "name": "Dog", "maxCount": 12, "probability": 100 },
-      { "name": "Rat", "maxCount": 12, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 12,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1f4d2e51-b51b-42ad-aabb-70b9a9e367b7",
+    "guid": "66a2657f-2e25-46fb-aca9-585773bd5646",
     "name": "Spawner (122)",
-    "location": [608, 2195, 0],
+    "location": [
+      608,
+      2195,
+      0
+    ],
     "map": "Trammel",
     "count": 32,
     "minDelay": "00:05:00",
@@ -225,71 +413,139 @@
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Bird", "maxCount": 8, "probability": 100 },
-      { "name": "Cat", "maxCount": 8, "probability": 100 },
-      { "name": "Dog", "maxCount": 8, "probability": 100 },
-      { "name": "Rat", "maxCount": 8, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 8,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 8,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 8,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 8,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6ff8cd3f-e99b-4191-ac06-6ce61e3b9916",
+    "guid": "290150ac-103d-4117-a891-c09072cfb116",
     "name": "Spawner (122)",
-    "location": [813, 2164, 0],
+    "location": [
+      813,
+      2164,
+      0
+    ],
     "map": "Trammel",
-    "count": 9,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Chicken", "maxCount": 3, "probability": 100 },
-      { "name": "Sheep", "maxCount": 3, "probability": 100 },
-      { "name": "Cow", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "18fd2070-dd34-4fce-a0e9-d14a5fb9dfea",
+    "guid": "fd871bd2-e5c3-49ed-9b4e-73021199efe9",
     "name": "Spawner (122)",
-    "location": [818, 2269, 0],
+    "location": [
+      818,
+      2269,
+      0
+    ],
     "map": "Trammel",
-    "count": 9,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Chicken", "maxCount": 3, "probability": 100 },
-      { "name": "Sheep", "maxCount": 3, "probability": 100 },
-      { "name": "Cow", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b62d0170-9024-4153-a2e1-1048d826e498",
+    "guid": "aa850e39-3bd1-43cf-9b34-c8756a3eeb2f",
     "name": "Spawner (122)",
-    "location": [830, 2353, 0],
+    "location": [
+      830,
+      2353,
+      0
+    ],
     "map": "Trammel",
-    "count": 9,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Chicken", "maxCount": 3, "probability": 100 },
-      { "name": "Sheep", "maxCount": 3, "probability": 100 },
-      { "name": "Cow", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3ec28b08-1e6d-412c-878d-c0470e479d66",
+    "guid": "c74c0ea9-7dae-43fd-99ab-1de27e40d2f8",
     "name": "Spawner (122)",
-    "location": [536, 962, 0],
+    "location": [
+      536,
+      962,
+      0
+    ],
     "map": "Trammel",
     "count": 80,
     "minDelay": "00:05:00",
@@ -298,17 +554,37 @@
     "homeRange": 160,
     "walkingRange": 160,
     "entries": [
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "Cat", "maxCount": 20, "probability": 100 },
-      { "name": "Dog", "maxCount": 20, "probability": 100 },
-      { "name": "Rat", "maxCount": 20, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 20,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dd45ce63-01f2-4aa5-9ea2-9e64fe472da1",
+    "guid": "52df17e8-b859-401f-b3ad-d49035f45428",
     "name": "Spawner (122)",
-    "location": [676, 1178, 0],
+    "location": [
+      676,
+      1178,
+      0
+    ],
     "map": "Trammel",
     "count": 15,
     "minDelay": "00:05:00",
@@ -316,13 +592,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Sheep", "maxCount": 15, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Sheep",
+        "maxCount": 15,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1cfc32ab-4d20-4f66-bf1d-8d7c46918a15",
+    "guid": "519581dd-727c-42fe-9b48-854998e02194",
     "name": "Spawner (122)",
-    "location": [570, 1099, 0],
+    "location": [
+      570,
+      1099,
+      0
+    ],
     "map": "Trammel",
     "count": 15,
     "minDelay": "00:05:00",
@@ -330,13 +616,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Sheep", "maxCount": 15, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Sheep",
+        "maxCount": 15,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "ba45008e-ef15-49ca-aa2d-ebaf9e01ab43",
+    "guid": "98ed6d30-11e2-4a50-9ca8-4e00cc255d17",
     "name": "Spawner (122)",
-    "location": [675, 939, 0],
+    "location": [
+      675,
+      939,
+      0
+    ],
     "map": "Trammel",
     "count": 15,
     "minDelay": "00:05:00",
@@ -344,13 +640,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Sheep", "maxCount": 15, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Sheep",
+        "maxCount": 15,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d30fe409-242a-4796-a5da-141360b72e51",
+    "guid": "75e5fd43-c65f-4862-b96b-be5fa6e722aa",
     "name": "Spawner (122)",
-    "location": [382, 1192, 0],
+    "location": [
+      382,
+      1192,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -358,13 +664,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "Chicken", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1934b6e3-7741-46c4-8deb-cc9bf65c90da",
+    "guid": "97c5b1a1-5028-44ee-914e-c30b62486126",
     "name": "Spawner (122)",
-    "location": [560, 1239, 0],
+    "location": [
+      560,
+      1239,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -372,13 +688,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "Chicken", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "7d1a5adc-b4dd-4d7b-85db-a83cff14c5e0",
+    "guid": "81a21d4b-6f8a-44ae-a9e4-aca7eda1afa7",
     "name": "Spawner (122)",
-    "location": [688, 1007, 0],
+    "location": [
+      688,
+      1007,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -386,13 +712,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "Chicken", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "11680c0b-c6d3-4779-93ab-f4e0d0bd074c",
+    "guid": "c73117b7-d4f3-4fee-926d-b09a412dfa40",
     "name": "Spawner (122)",
-    "location": [2242, 1197, 0],
+    "location": [
+      2242,
+      1197,
+      0
+    ],
     "map": "Trammel",
     "count": 16,
     "minDelay": "00:05:00",
@@ -401,17 +737,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
-      { "name": "Cat", "maxCount": 4, "probability": 100 },
-      { "name": "Dog", "maxCount": 4, "probability": 100 },
-      { "name": "Rat", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a54bd970-16d4-47fd-9520-00dae5b709e3",
+    "guid": "ac7bee3c-854c-4da1-8676-87cfc0f100e6",
     "name": "Spawner (122)",
-    "location": [2223, 1151, 0],
+    "location": [
+      2223,
+      1151,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -419,13 +775,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "Chicken", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "cca0e920-e982-4155-a8ac-f26563baf3a4",
+    "guid": "66b8967e-4a25-462a-bac2-70b7c6ee2b08",
     "name": "Spawner (122)",
-    "location": [2939, 746, 2],
+    "location": [
+      2939,
+      746,
+      2
+    ],
     "map": "Trammel",
     "count": 40,
     "minDelay": "00:05:00",
@@ -434,17 +800,37 @@
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "Bird", "maxCount": 10, "probability": 100 },
-      { "name": "Cat", "maxCount": 10, "probability": 100 },
-      { "name": "Dog", "maxCount": 10, "probability": 100 },
-      { "name": "Rat", "maxCount": 10, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c1c2e42e-709b-485f-a57b-26581ddc2727",
+    "guid": "253c3269-5141-4306-ab24-984c74677fa3",
     "name": "Spawner (122)",
-    "location": [2904, 906, 0],
+    "location": [
+      2904,
+      906,
+      0
+    ],
     "map": "Trammel",
     "count": 40,
     "minDelay": "00:05:00",
@@ -453,17 +839,37 @@
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "Bird", "maxCount": 10, "probability": 100 },
-      { "name": "Cat", "maxCount": 10, "probability": 100 },
-      { "name": "Dog", "maxCount": 10, "probability": 100 },
-      { "name": "Rat", "maxCount": 10, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9ef46ada-6258-4753-880d-164055f74166",
+    "guid": "827b225e-094a-4fe0-80ef-e4ae2e2057c6",
     "name": "Spawner (122)",
-    "location": [2481, 542, 0],
+    "location": [
+      2481,
+      542,
+      0
+    ],
     "map": "Trammel",
     "count": 20,
     "minDelay": "00:05:00",
@@ -472,17 +878,37 @@
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Bird", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Rat", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "242c70b3-d2ba-4919-a2f4-a45c24ffbda9",
+    "guid": "be3e5a0a-6330-47c5-a254-0e0270696f3c",
     "name": "Spawner (122)",
-    "location": [2472, 434, 15],
+    "location": [
+      2472,
+      434,
+      15
+    ],
     "map": "Trammel",
     "count": 20,
     "minDelay": "00:05:00",
@@ -491,17 +917,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Rat", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0c820338-7f24-4b88-ab97-bc574b46ac20",
+    "guid": "45807a8e-eb86-4b7a-a592-a4d04b1c024f",
     "name": "Spawner (122)",
-    "location": [2566, 622, 0],
+    "location": [
+      2566,
+      622,
+      0
+    ],
     "map": "Trammel",
     "count": 12,
     "minDelay": "00:05:00",
@@ -510,17 +956,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 3, "probability": 100 },
-      { "name": "Cat", "maxCount": 3, "probability": 100 },
-      { "name": "Dog", "maxCount": 3, "probability": 100 },
-      { "name": "Rat", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d2770098-791a-497d-8c46-1779db274c7f",
+    "guid": "bb452f73-c524-4b3b-ac31-861a5ae7c30e",
     "name": "Spawner (122)",
-    "location": [1154, 3639, 0],
+    "location": [
+      1154,
+      3639,
+      0
+    ],
     "map": "Trammel",
     "count": 16,
     "minDelay": "00:05:00",
@@ -529,53 +995,105 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
-      { "name": "Cat", "maxCount": 4, "probability": 100 },
-      { "name": "Dog", "maxCount": 4, "probability": 100 },
-      { "name": "Rat", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "976f8af4-0d93-42ec-b50d-44d43e1aeacd",
+    "guid": "b058d9e8-aa3b-4410-a984-736338f185e5",
     "name": "Spawner (122)",
-    "location": [1127, 3583, 0],
+    "location": [
+      1127,
+      3583,
+      0
+    ],
     "map": "Trammel",
-    "count": 15,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Chicken", "maxCount": 5, "probability": 100 },
-      { "name": "Cow", "maxCount": 5, "probability": 100 },
-      { "name": "Sheep", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a8e568ee-b22e-441c-8356-33aa10a1695c",
+    "guid": "2ac8567f-97e0-4553-aefd-04404e6fa403",
     "name": "Spawner (122)",
-    "location": [1183, 3607, 0],
+    "location": [
+      1183,
+      3607,
+      0
+    ],
     "map": "Trammel",
-    "count": 15,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Chicken", "maxCount": 5, "probability": 100 },
-      { "name": "Cow", "maxCount": 5, "probability": 100 },
-      { "name": "Sheep", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9ea0fde1-211b-4ba4-b213-3ddb73b55ab2",
+    "guid": "0596ff5d-53a1-4384-978a-11ec521c44ec",
     "name": "Spawner (122)",
-    "location": [1400, 3775, 0],
+    "location": [
+      1400,
+      3775,
+      0
+    ],
     "map": "Trammel",
     "count": 40,
     "minDelay": "00:05:00",
@@ -584,17 +1102,37 @@
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "Bird", "maxCount": 10, "probability": 100 },
-      { "name": "Cat", "maxCount": 10, "probability": 100 },
-      { "name": "Dog", "maxCount": 10, "probability": 100 },
-      { "name": "Rat", "maxCount": 10, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5167ea3c-5066-4c8a-ae59-4907e0e9ae8b",
+    "guid": "8beee950-860e-45be-af5d-437fdd2b5eeb",
     "name": "Spawner (122)",
-    "location": [1435, 4000, 0],
+    "location": [
+      1435,
+      4000,
+      0
+    ],
     "map": "Trammel",
     "count": 20,
     "minDelay": "00:05:00",
@@ -603,17 +1141,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Rat", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d3ba3f81-50ae-4559-a491-1db47b8d8ba6",
+    "guid": "0dc3b704-8d6e-468e-ad7e-61b6097c289b",
     "name": "Spawner (122)",
-    "location": [2972, 3436, 15],
+    "location": [
+      2972,
+      3436,
+      15
+    ],
     "map": "Trammel",
     "count": 48,
     "minDelay": "00:05:00",
@@ -622,17 +1180,37 @@
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "Bird", "maxCount": 12, "probability": 100 },
-      { "name": "Cat", "maxCount": 12, "probability": 100 },
-      { "name": "Dog", "maxCount": 12, "probability": 100 },
-      { "name": "Rat", "maxCount": 12, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 12,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d92f185c-56d3-4bf1-8fb4-91b8c9682e8f",
+    "guid": "076e8845-e42b-434d-8df6-380aaf7a3383",
     "name": "Spawner (122)",
-    "location": [3444, 2556, 30],
+    "location": [
+      3444,
+      2556,
+      30
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -640,13 +1218,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "Cat", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Cat",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "cfb740c6-4f3c-452c-9893-adb1124c101a",
+    "guid": "af813f31-3e6a-4657-bd6d-640e0d74c328",
     "name": "Spawner (122)",
-    "location": [3487, 2549, 16],
+    "location": [
+      3487,
+      2549,
+      16
+    ],
     "map": "Trammel",
     "count": 30,
     "minDelay": "00:05:00",
@@ -655,16 +1243,32 @@
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 }
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 20,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "131497e2-ef26-4f07-94f0-a24afa651aa5",
+    "guid": "562f9c3f-4db0-4c6c-831d-83daf19d53ce",
     "name": "Spawner (122)",
-    "location": [3714, 2205, 20],
+    "location": [
+      3714,
+      2205,
+      20
+    ],
     "map": "Trammel",
     "count": 24,
     "minDelay": "00:05:00",
@@ -673,17 +1277,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 6, "probability": 100 },
-      { "name": "Cat", "maxCount": 6, "probability": 100 },
-      { "name": "Dog", "maxCount": 6, "probability": 100 },
-      { "name": "Rat", "maxCount": 6, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "44300631-17b0-4983-9e4a-4a93454915ca",
+    "guid": "0651efe3-7bee-409d-9934-7d686aabac52",
     "name": "Spawner (122)",
-    "location": [3717, 2111, 20],
+    "location": [
+      3717,
+      2111,
+      20
+    ],
     "map": "Trammel",
     "count": 24,
     "minDelay": "00:05:00",
@@ -692,17 +1316,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 6, "probability": 100 },
-      { "name": "Cat", "maxCount": 6, "probability": 100 },
-      { "name": "Dog", "maxCount": 6, "probability": 100 },
-      { "name": "Rat", "maxCount": 6, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ee1d3878-742f-4541-bf90-71b9691db90d",
+    "guid": "1c4cdc18-06dc-4ecf-9f82-e5a723220ee3",
     "name": "Spawner (122)",
-    "location": [2682, 2118, 0],
+    "location": [
+      2682,
+      2118,
+      0
+    ],
     "map": "Trammel",
     "count": 20,
     "minDelay": "00:05:00",
@@ -711,17 +1355,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 5, "probability": 100 },
-      { "name": "Cat", "maxCount": 5, "probability": 100 },
-      { "name": "Dog", "maxCount": 5, "probability": 100 },
-      { "name": "Rat", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "156f465f-f838-4df1-9eab-ccd84b44c119",
+    "guid": "145f69d9-8fb7-4130-85d1-591799b5b309",
     "name": "Spawner (122)",
-    "location": [2687, 2218, 0],
+    "location": [
+      2687,
+      2218,
+      0
+    ],
     "map": "Trammel",
     "count": 16,
     "minDelay": "00:05:00",
@@ -730,17 +1394,37 @@
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 4, "probability": 100 },
-      { "name": "Cat", "maxCount": 4, "probability": 100 },
-      { "name": "Dog", "maxCount": 4, "probability": 100 },
-      { "name": "Rat", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "da6c4733-f2ce-4836-a443-e02951d80015",
+    "guid": "95de32e9-060f-4776-ac71-d112526ec4b6",
     "name": "Spawner (122)",
-    "location": [3699, 1238, 0],
+    "location": [
+      3699,
+      1238,
+      0
+    ],
     "map": "Trammel",
     "count": 72,
     "minDelay": "00:05:00",
@@ -749,17 +1433,37 @@
     "homeRange": 160,
     "walkingRange": 160,
     "entries": [
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "Cat", "maxCount": 18, "probability": 100 },
-      { "name": "Dog", "maxCount": 18, "probability": 100 },
-      { "name": "Rat", "maxCount": 18, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8547be7f-b7bb-488f-8934-414b318405df",
+    "guid": "c7f550f6-bf86-41ff-86fe-406006dc60bb",
     "name": "Spawner (122)",
-    "location": [4438, 1115, 0],
+    "location": [
+      4438,
+      1115,
+      0
+    ],
     "map": "Trammel",
     "count": 48,
     "minDelay": "00:05:00",
@@ -768,35 +1472,71 @@
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Bird", "maxCount": 12, "probability": 100 },
-      { "name": "Cat", "maxCount": 12, "probability": 100 },
-      { "name": "Dog", "maxCount": 12, "probability": 100 },
-      { "name": "Rat", "maxCount": 12, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 12,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9c51a8b0-d16d-4320-8b0b-fb9dc592f201",
+    "guid": "5e763cbc-b631-4c4c-8594-1472369cd6f7",
     "name": "Spawner (122)",
-    "location": [4634, 1302, 0],
+    "location": [
+      4634,
+      1302,
+      0
+    ],
     "map": "Trammel",
-    "count": 15,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Chicken", "maxCount": 5, "probability": 100 },
-      { "name": "Cow", "maxCount": 5, "probability": 100 },
-      { "name": "Sheep", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "781ffce0-ca38-4d3a-8010-f2df88099c8a",
+    "guid": "1208aae8-e36f-4170-97bf-76ebb6bebf09",
     "name": "Spawner (122)",
-    "location": [4567, 1476, 0],
+    "location": [
+      4567,
+      1476,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -804,13 +1544,23 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "Chicken", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f696fc2a-838f-4e08-b2dc-baa7fc453a74",
+    "guid": "1378a58c-09d4-4940-81fa-209f75870791",
     "name": "Spawner (122)",
-    "location": [4422, 1451, 0],
+    "location": [
+      4422,
+      1451,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -818,13 +1568,23 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "Chicken", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Chicken",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "a6d17164-349e-4b86-986a-7b9fc346aa5a",
+    "guid": "74e17b0b-5fe4-4965-b55c-787441371f56",
     "name": "Spawner (122)",
-    "location": [7036, 409, 12],
+    "location": [
+      7036,
+      409,
+      12
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -832,13 +1592,23 @@
     "team": 0,
     "homeRange": 12,
     "walkingRange": 12,
-    "entries": [{ "name": "Bird", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "8eb2ed71-a494-46d1-8b29-10591d65778d",
+    "guid": "ae9c74fb-d8eb-4df7-aa22-412058583e8b",
     "name": "Spawner (122)",
-    "location": [7048, 424, 0],
+    "location": [
+      7048,
+      424,
+      0
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -846,13 +1616,23 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Bird", "maxCount": 5, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6445700f-8096-4e15-a94a-147342e59b09",
+    "guid": "4c814d05-058a-44a7-ad86-3e920797bc9e",
     "name": "Spawner (122)",
-    "location": [7081, 381, 0],
+    "location": [
+      7081,
+      381,
+      0
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -860,13 +1640,23 @@
     "team": 0,
     "homeRange": 12,
     "walkingRange": 12,
-    "entries": [{ "name": "Bird", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f17ec0f0-5bb6-436e-8da2-23fc00926fd2",
+    "guid": "42c9b654-4a10-4c16-8d34-487646e4c064",
     "name": "Spawner (122)",
-    "location": [7002, 382, 0],
+    "location": [
+      7002,
+      382,
+      0
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -874,13 +1664,23 @@
     "team": 0,
     "homeRange": 12,
     "walkingRange": 20,
-    "entries": [{ "name": "Bird", "maxCount": 5, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "8ae05953-cc4c-40b2-aa64-3b37f493c4c3",
+    "guid": "e3d55bfe-9e18-4d68-ba3a-691cc402a410",
     "name": "Spawner (122)",
-    "location": [6999, 352, 0],
+    "location": [
+      6999,
+      352,
+      0
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
@@ -888,13 +1688,23 @@
     "team": 0,
     "homeRange": 12,
     "walkingRange": 12,
-    "entries": [{ "name": "Bird", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 3,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "67c6ac72-b402-4e0e-8f68-27e6988e0d14",
+    "guid": "dd5c1a95-b5d7-4afa-8d8d-97a460e840b7",
     "name": "Spawner (122)",
-    "location": [7047, 382, 0],
+    "location": [
+      7047,
+      382,
+      0
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -902,13 +1712,23 @@
     "team": 0,
     "homeRange": 12,
     "walkingRange": 12,
-    "entries": [{ "name": "Bird", "maxCount": 5, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 5,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c2ce214d-bdab-4409-90bf-af0f24857060",
+    "guid": "1f7b05c2-d4a9-4828-be39-b1f1de6c3861",
     "name": "Spawner (122)",
-    "location": [7033, 385, 0],
+    "location": [
+      7033,
+      385,
+      0
+    ],
     "map": "Trammel",
     "count": 10,
     "minDelay": "00:05:00",
@@ -916,13 +1736,23 @@
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
-    "entries": [{ "name": "Bird", "maxCount": 10, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "9c5f5922-9654-4323-8c1e-32e5db5c2836",
+    "guid": "405031eb-1ebb-4793-91f7-82fd2c8c4590",
     "name": "Spawner (122)",
-    "location": [7032, 411, 7],
+    "location": [
+      7032,
+      411,
+      7
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -930,13 +1760,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 4,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1016917a-ac5b-445f-b603-e887caefbd03",
+    "guid": "561930a3-2f73-4447-b49f-e4637f3fefdf",
     "name": "Spawner (122)",
-    "location": [7044, 429, 0],
+    "location": [
+      7044,
+      429,
+      0
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -944,13 +1784,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 4,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "0a49d2d4-eae7-42fe-962a-5be8ad1cc290",
+    "guid": "18bfc417-d6d9-4495-8215-979ef88c2e96",
     "name": "Spawner (122)",
-    "location": [6986, 384, 0],
+    "location": [
+      6986,
+      384,
+      0
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -958,13 +1808,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 4,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "cc48b836-d844-4170-8820-94fba21c9e93",
+    "guid": "12f99d2c-3a40-451c-a75c-28b31f86c35a",
     "name": "Spawner (122)",
-    "location": [7063, 410, 0],
+    "location": [
+      7063,
+      410,
+      0
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -972,13 +1832,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 6,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f129c043-16b3-49bd-9365-c60dda705d52",
+    "guid": "0a4a9b61-4c34-441d-82b1-6e822fa8ceb4",
     "name": "Spawner (122)",
-    "location": [7052, 386, 0],
+    "location": [
+      7052,
+      386,
+      0
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -986,13 +1856,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 6,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "999a7968-4801-47ea-8ea5-2b99e9ebb353",
+    "guid": "39a9c600-a998-4cc2-b1a8-ee242efadaf2",
     "name": "Spawner (122)",
-    "location": [7035, 387, 0],
+    "location": [
+      7035,
+      387,
+      0
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -1000,13 +1880,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 6,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "bc95ecc6-09c4-4763-9f2d-9d5a7fc01d10",
+    "guid": "089ed81a-4b3d-4a1a-aca7-10dd211255dc",
     "name": "Spawner (122)",
-    "location": [7007, 382, 0],
+    "location": [
+      7007,
+      382,
+      0
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -1014,13 +1904,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 6,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "53e086d7-5aae-4f3e-9b5e-53f651e390c0",
+    "guid": "446d1aec-f4ab-4692-b0a1-f05455ade58e",
     "name": "Spawner (122)",
-    "location": [7087, 382, 1],
+    "location": [
+      7087,
+      382,
+      1
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -1028,13 +1928,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f421084b-b6ef-4fd5-a5bf-1b564097cb97",
+    "guid": "80dd3733-74a7-4a58-baf5-88b1eb228a36",
     "name": "Spawner (122)",
-    "location": [6992, 345, 0],
+    "location": [
+      6992,
+      345,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -1042,13 +1952,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6c92e533-4cee-4253-b9ea-50c96145b151",
+    "guid": "d1437b0a-56bb-440c-9625-8313955cdde6",
     "name": "Spawner (122)",
-    "location": [7007, 360, 0],
+    "location": [
+      7007,
+      360,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
@@ -1056,13 +1976,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      {
+        "name": "MiniatureMushroom",
+        "maxCount": 2,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "548dd43f-0d07-453f-9a4b-2f8473b64f02",
+    "guid": "1b035b3b-80f4-4486-8571-9138925425f2",
     "name": "Spawner (122)",
-    "location": [5726, 3211, -2],
+    "location": [
+      5726,
+      3211,
+      -2
+    ],
     "map": "Trammel",
     "count": 48,
     "minDelay": "00:05:00",
@@ -1071,17 +2001,37 @@
     "homeRange": 100,
     "walkingRange": 100,
     "entries": [
-      { "name": "Bird", "maxCount": 12, "probability": 100 },
-      { "name": "Cat", "maxCount": 12, "probability": 100 },
-      { "name": "Dog", "maxCount": 12, "probability": 100 },
-      { "name": "Rat", "maxCount": 12, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 12,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c3a30836-d36b-4ae8-8f2d-f19e89c3cf12",
+    "guid": "156e6770-5cef-4a8e-abc0-10ae90fe8331",
     "name": "Spawner (122)",
-    "location": [5255, 4000, 37],
+    "location": [
+      5255,
+      4000,
+      37
+    ],
     "map": "Trammel",
     "count": 24,
     "minDelay": "00:05:00",
@@ -1090,29 +2040,65 @@
     "homeRange": 80,
     "walkingRange": 80,
     "entries": [
-      { "name": "Bird", "maxCount": 6, "probability": 100 },
-      { "name": "Cat", "maxCount": 6, "probability": 100 },
-      { "name": "Dog", "maxCount": 6, "probability": 100 },
-      { "name": "Rat", "maxCount": 6, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Cat",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Dog",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "dcbaad4d-a527-455f-85c5-0b283dbcae85",
+    "guid": "c14d6a08-a6b8-486d-bffe-2129d734437b",
     "name": "Spawner (122)",
-    "location": [5267, 4012, 40],
+    "location": [
+      5267,
+      4012,
+      40
+    ],
     "map": "Trammel",
-    "count": 20,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "Chicken", "maxCount": 5, "probability": 100 },
-      { "name": "Sheep", "maxCount": 5, "probability": 100 },
-      { "name": "Cow", "maxCount": 5, "probability": 100 },
-      { "name": "Bull", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Chicken",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   }
 ]

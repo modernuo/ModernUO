@@ -1,89 +1,189 @@
 [
   {
     "type": "Spawner",
-    "guid": "ad2259cc-6596-4900-97d6-8839fededa40",
+    "guid": "7dfee8fd-49f0-457d-a88c-f38c65bf2474",
     "name": "Spawner (2208)",
-    "location": [1369, 1475, 10],
+    "location": [
+      1369,
+      1475,
+      10
+    ],
     "map": "Felucca",
-    "count": 11,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
     "entries": [
-      { "name": "Spectre", "maxCount": 2, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
-      { "name": "Zombie", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Spectre",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Wraith",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Skeleton",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Zombie",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1bcb0c70-900a-4ece-bbb8-d71e5d9506dc",
+    "guid": "b3ba766a-4852-4c5e-adf1-0276e193317f",
     "name": "Spawner (2208)",
-    "location": [1285, 3731, 0],
+    "location": [
+      1285,
+      3731,
+      0
+    ],
     "map": "Felucca",
-    "count": 13,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Spectre", "maxCount": 2, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 },
-      { "name": "Shade", "maxCount": 2, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
-      { "name": "Zombie", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Spectre",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Wraith",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Shade",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Skeleton",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Zombie",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fc0c2cc9-bd26-4b0a-bb3f-c570f2b4c36c",
+    "guid": "522530f4-50ea-4fbf-9119-b783bd955678",
     "name": "Spawner (2208)",
-    "location": [2438, 1100, 8],
+    "location": [
+      2438,
+      1100,
+      8
+    ],
     "map": "Felucca",
-    "count": 6,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Spectre",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Shade",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Wraith",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Lich",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Skeleton",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Zombie",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2834f036-31bd-4fcf-823d-3dfd8bfb301a",
+    "guid": "04856160-7e89-4672-a7d9-468b8634c3d6",
     "name": "Spawner (2208)",
-    "location": [4545, 1317, 8],
+    "location": [
+      4545,
+      1317,
+      8
+    ],
     "map": "Felucca",
-    "count": 6,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Spectre",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Shade",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Wraith",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Skeleton",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Zombie",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "13ecb2a1-7450-4621-ac42-aabef82ddfed",
+    "guid": "47aa8449-5b66-401f-ac38-c5b6538627b6",
     "name": "Spawner (2208)",
-    "location": [4543, 1314, 8],
+    "location": [
+      4543,
+      1314,
+      8
+    ],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
@@ -91,32 +191,62 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Lich", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Lich",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "04b80cf3-9a38-4415-a314-c16cce12c97a",
+    "guid": "14b45cdf-987e-4dff-9e9f-10e90e3662e6",
     "name": "Spawner (2208)",
-    "location": [2758, 867, 0],
+    "location": [
+      2758,
+      867,
+      0
+    ],
     "map": "Felucca",
-    "count": 11,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Spectre", "maxCount": 2, "probability": 100 },
-      { "name": "Wraith", "maxCount": 2, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
-      { "name": "Zombie", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Spectre",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Wraith",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Skeleton",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Zombie",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "67bb7470-fa83-4baf-80ff-e98dc26225cf",
+    "guid": "43d53b7d-95f9-4332-8d22-33e5f5a1fcf6",
     "name": "Spawner (2208)",
-    "location": [722, 1119, 0],
+    "location": [
+      722,
+      1119,
+      0
+    ],
     "map": "Felucca",
     "count": 10,
     "minDelay": "00:05:00",
@@ -124,23 +254,41 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 10, "probability": 100 }]
+    "entries": [
+      {
+        "name": "Skeleton",
+        "maxCount": 10,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "23ec825e-f161-47f0-973d-7c5853910cba",
+    "guid": "8bdfe6b3-df80-48b6-8d1e-8e052efde18b",
     "name": "Spawner (2208)",
-    "location": [3407, 2652, 48],
+    "location": [
+      3407,
+      2652,
+      48
+    ],
     "map": "Felucca",
-    "count": 8,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Zombie", "maxCount": 4, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Zombie",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Skeleton",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   }
 ]

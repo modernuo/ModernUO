@@ -1,9 +1,13 @@
 [
   {
     "type": "Spawner",
-    "guid": "9af739cc-6705-4ea6-b473-d3177f35dafb",
+    "guid": "dee07fb6-4dcc-43d5-bd0a-706c36801e8d",
     "name": "Spawner (2110)",
-    "location": [5771, 224, -2],
+    "location": [
+      5771,
+      224,
+      -2
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -11,13 +15,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "ArcticOgreLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ArcticOgreLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "086348ac-2af5-4018-af26-e8a5908ddca4",
+    "guid": "9cbfc951-e954-4e8d-b1af-cf9457216b53",
     "name": "Spawner (2110)",
-    "location": [5799, 188, -6],
+    "location": [
+      5799,
+      188,
+      -6
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
@@ -26,18 +40,42 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Ratman",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "126ad716-b128-460a-943b-9f2fb70d3fe2",
+    "guid": "a74f4f2c-7906-46c3-bd5f-8ce30e43417c",
     "name": "Spawner (2110)",
-    "location": [5867, 218, -4],
+    "location": [
+      5867,
+      218,
+      -4
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -46,16 +84,32 @@
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "FrostOoze", "maxCount": 2, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostOoze",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "IceSnake",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "426ce20c-3378-4525-bb72-8af301db0bcf",
+    "guid": "84103371-1387-4ebe-af6a-91faf5d3a5f2",
     "name": "Spawner (2110)",
-    "location": [5850, 219, -3],
+    "location": [
+      5850,
+      219,
+      -3
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -63,13 +117,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "RatmanMage", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "RatmanMage",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "895c0a4a-c260-4ee0-ad05-ad059387df18",
+    "guid": "ada3263b-aece-4dee-a69b-fe3ef96a3550",
     "name": "Spawner (2110)",
-    "location": [5814, 237, 0],
+    "location": [
+      5814,
+      237,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -77,13 +141,23 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "ArcticOgreLord", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "ArcticOgreLord",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "a943f56c-235b-4fc6-a573-fac308ad1cbd",
+    "guid": "3def478d-d193-49d2-96e0-b36023034db7",
     "name": "Spawner (2110)",
-    "location": [5752, 144, 9],
+    "location": [
+      5752,
+      144,
+      9
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -91,113 +165,243 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "WhiteWyrm", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "WhiteWyrm",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "f2cd2669-7074-495b-af6a-34f58aa9172f",
+    "guid": "49c552fa-1934-405a-8d30-4fb7db89313f",
     "name": "Spawner (2110)",
-    "location": [5839, 159, 0],
+    "location": [
+      5839,
+      159,
+      0
+    ],
     "map": "Trammel",
-    "count": 6,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "FrostOoze", "maxCount": 1, "probability": 100 },
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FrostOoze",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f3ed13d9-de88-48a2-a9bb-195ba5e28803",
+    "guid": "308a4f85-5d3f-4f44-af64-371951608f97",
     "name": "Spawner (2110)",
-    "location": [5785, 161, -6],
+    "location": [
+      5785,
+      161,
+      -6
+    ],
     "map": "Trammel",
-    "count": 6,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 18,
     "walkingRange": 20,
     "entries": [
-      { "name": "FrostOoze", "maxCount": 1, "probability": 100 },
-      { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 }
+      {
+        "name": "FrostOoze",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostSpider",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "IceSnake",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2bb6de38-8922-42c7-afdd-fb417d9d1fc7",
+    "guid": "a6faf1f3-65fa-47a8-a597-1bd61d7dc350",
     "name": "Spawner (2110)",
-    "location": [5757, 213, -7],
+    "location": [
+      5757,
+      213,
+      -7
+    ],
     "map": "Trammel",
-    "count": 14,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 3, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 2, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Ratman",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8761d44e-6d10-4583-b2e6-34c055838015",
+    "guid": "a9adcc2c-c67d-4f0d-8241-7aa8d73d0fdd",
     "name": "Spawner (2110)",
-    "location": [5681, 191, -6],
+    "location": [
+      5681,
+      191,
+      -6
+    ],
     "map": "Trammel",
-    "count": 13,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 3, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 4, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "FrostTroll",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Ratman",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "23b4df34-a2fe-4f46-8661-a96e8e42c1ea",
+    "guid": "3ec99717-4da8-4d7c-9fb2-dd9ba4c845bc",
     "name": "Spawner (2110)",
-    "location": [5731, 176, -5],
+    "location": [
+      5731,
+      176,
+      -5
+    ],
     "map": "Trammel",
-    "count": 27,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 35,
     "entries": [
-      { "name": "IceSerpent", "maxCount": 9, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 9, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 9, "probability": 100 }
+      {
+        "name": "IceSerpent",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "SnowElemental",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "IceElemental",
+        "maxCount": 9,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6bc67e3e-7096-45a7-b991-bf607f595a56",
+    "guid": "b69a34f7-3ff9-4b19-b38e-817c98a7c93f",
     "name": "Spawner (2110)",
-    "location": [5848, 226, 0],
+    "location": [
+      5848,
+      226,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -205,13 +409,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "076ec47e-96ed-4ae5-a4a3-3b851434a189",
+    "guid": "b5f90c32-64bd-4524-bfc6-84716f186595",
     "name": "Spawner (2110)",
-    "location": [5683, 197, -4],
+    "location": [
+      5683,
+      197,
+      -4
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -219,13 +433,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1dcafcff-f9d1-4b4a-8180-c8113a7b997a",
+    "guid": "f7a22de1-cc80-4060-aa02-9728d7e241a0",
     "name": "Spawner (2110)",
-    "location": [5721, 147, -1],
+    "location": [
+      5721,
+      147,
+      -1
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -233,13 +457,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1473e5a4-89e4-40d1-b495-97c41afae74e",
+    "guid": "c1a3b5ae-9c59-488f-8d7f-24d25e0c7673",
     "name": "Spawner (2110)",
-    "location": [5758, 139, 5],
+    "location": [
+      5758,
+      139,
+      5
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -247,13 +481,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "512b6eb5-648a-4410-8ff0-6fdc7f5a26bd",
+    "guid": "66e9c531-1fee-42e4-910a-cdf71b212b95",
     "name": "Spawner (2110)",
-    "location": [5754, 211, -6],
+    "location": [
+      5754,
+      211,
+      -6
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -261,13 +505,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "bbec765f-f03c-4398-a18a-0f8872f5576f",
+    "guid": "106c22c9-9d01-43a0-8983-bea255146fd5",
     "name": "Spawner (2110)",
-    "location": [5833, 242, -2],
+    "location": [
+      5833,
+      242,
+      -2
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -275,13 +529,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "c9af40cd-0b31-4340-a800-6baffdcdb12c",
+    "guid": "8855a9a7-aed4-4c54-94da-a94024783d51",
     "name": "Spawner (2110)",
-    "location": [5854, 227, 0],
+    "location": [
+      5854,
+      227,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -289,13 +553,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "72e1fe6c-7f84-48a9-9506-8fe341a7506a",
+    "guid": "3cfd9a1b-000a-430f-b44c-e64720d69237",
     "name": "Spawner (2110)",
-    "location": [5772, 188, -3],
+    "location": [
+      5772,
+      188,
+      -3
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -303,13 +577,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "34aed071-11ca-4826-96f7-654842844e5a",
+    "guid": "03886f2b-1e0e-48fd-8b92-35a1a60a95c5",
     "name": "Spawner (2110)",
-    "location": [5837, 245, -5],
+    "location": [
+      5837,
+      245,
+      -5
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -317,13 +601,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "dd140ce7-a15e-4bb0-9023-d6d7971043ad",
+    "guid": "bc1b0fa0-397d-400e-a8a1-46c6980d3ed7",
     "name": "Spawner (2110)",
-    "location": [5751, 140, 10],
+    "location": [
+      5751,
+      140,
+      10
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -331,13 +625,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "4bf9b703-db12-41a2-b4a7-63d07199a963",
+    "guid": "722d603b-dddb-4b71-88c4-9e965918d6e9",
     "name": "Spawner (2110)",
-    "location": [5763, 187, 0],
+    "location": [
+      5763,
+      187,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -345,13 +649,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "2ec67ad5-184a-435e-8bba-dd747f72183c",
+    "guid": "7ebb7a60-b45f-469c-ad0b-86490c855be1",
     "name": "Spawner (2110)",
-    "location": [5756, 203, -2],
+    "location": [
+      5756,
+      203,
+      -2
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -359,13 +673,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "09d5644b-0c11-4a6e-981e-e91a185e5a63",
+    "guid": "9456469a-1f9f-43a1-9c7b-639ca4e367f3",
     "name": "Spawner (2110)",
-    "location": [5712, 145, -34],
+    "location": [
+      5712,
+      145,
+      -34
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -373,13 +697,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "bb4e480b-cb59-4538-8244-158e32c818db",
+    "guid": "4df74fc7-0443-4fdc-a6ad-57d9a4d6bc7f",
     "name": "Spawner (2110)",
-    "location": [5684, 181, -5],
+    "location": [
+      5684,
+      181,
+      -5
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -387,13 +721,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "b6052eba-7a58-4f69-af33-293e84ae27d4",
+    "guid": "44394753-6925-4e7f-95d0-d1998f5bb036",
     "name": "Spawner (2110)",
-    "location": [5831, 358, -1],
+    "location": [
+      5831,
+      358,
+      -1
+    ],
     "map": "Trammel",
     "count": 24,
     "minDelay": "00:05:00",
@@ -402,16 +746,32 @@
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "Ratman", "maxCount": 12, "probability": 100 },
-      { "name": "RatmanArcher", "maxCount": 7, "probability": 100 },
-      { "name": "RatmanMage", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Ratman",
+        "maxCount": 12,
+        "probability": 100
+      },
+      {
+        "name": "RatmanArcher",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "RatmanMage",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0c3e832a-d821-4daf-8263-6d7db5a8d4a8",
+    "guid": "6502c7e1-5c7a-43b7-a0de-33f73f78e6a3",
     "name": "Spawner (2110)",
-    "location": [5838, 355, 0],
+    "location": [
+      5838,
+      355,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -419,13 +779,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "44368da5-455f-4788-852b-14e2bbea9db3",
+    "guid": "76706bc3-f4c4-4040-b206-650aa04e041d",
     "name": "Spawner (2110)",
-    "location": [5824, 363, 0],
+    "location": [
+      5824,
+      363,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -433,13 +803,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "1edb0681-0a19-48aa-866d-59a67c9ce442",
+    "guid": "4133a659-4bcb-4b38-a3fe-097866c8aa4e",
     "name": "Spawner (2110)",
-    "location": [5680, 306, 0],
+    "location": [
+      5680,
+      306,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -447,13 +827,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "IceFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "IceFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "140232e1-cdd2-4879-ac79-c261af60e866",
+    "guid": "947f998d-a84b-49c8-8619-852fff3e5295",
     "name": "Spawner (2110)",
-    "location": [5669, 330, 0],
+    "location": [
+      5669,
+      330,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -461,13 +851,23 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "IceFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "IceFiend",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "b1d02b99-1951-4c26-bc6e-5d3bc68772e1",
+    "guid": "ca52ec08-1f4f-400a-ab1f-9e05892dbdd2",
     "name": "Spawner (2110)",
-    "location": [5696, 303, 0],
+    "location": [
+      5696,
+      303,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -475,13 +875,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "bc1997be-de80-47ff-8892-19fa98196641",
+    "guid": "9f689286-dcc8-44ac-9d6b-c34c002d5ff5",
     "name": "Spawner (2110)",
-    "location": [5682, 314, 0],
+    "location": [
+      5682,
+      314,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -489,13 +899,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "6fb531e9-452e-49b7-9fe4-832b1cad92f5",
+    "guid": "3f420eb7-724d-47e0-89fa-1e844feee72c",
     "name": "Spawner (2110)",
-    "location": [5666, 331, 0],
+    "location": [
+      5666,
+      331,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -503,13 +923,23 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "9f77e332-e3e3-4655-b94a-aecdad95b75f",
+    "guid": "b4e94abe-5829-4d51-acb5-e112d8b33ce1",
     "name": "Spawner (2110)",
-    "location": [5676, 331, 0],
+    "location": [
+      5676,
+      331,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
@@ -517,6 +947,12 @@
     "team": 0,
     "homeRange": 1,
     "walkingRange": 1,
-    "entries": [{ "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
   }
 ]
