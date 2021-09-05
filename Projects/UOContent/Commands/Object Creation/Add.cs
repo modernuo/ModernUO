@@ -243,7 +243,7 @@ namespace Server.Commands
             for (int i = 0, a = 0; i < paramList.Length; i++)
             {
                 var param = paramList[i];
-                Properties.ParseValue(param.ParameterType, a < args.Length ? args[a++] : null, out var value);
+                ParseValue(param.ParameterType, a < args.Length ? args[a++] : null, out var value);
 
                 if (value != null)
                 {

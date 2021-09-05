@@ -22,9 +22,6 @@ namespace Server.Commands
 
     public static class Properties
     {
-        private static readonly Type[] _parseStringParamTypes = { typeof(string) };
-        private static readonly Type[] _parseROSParamTypes = { typeof(ReadOnlySpan<char>) };
-        private static readonly object[] _parseParams = new object[1];
 
         public static void Initialize()
         {
@@ -207,8 +204,6 @@ namespace Server.Commands
 
         public static string IncreaseValue(Mobile from, object o, string[] args)
         {
-            // Type type = o.GetType();
-
             var realObjs = new object[args.Length / 2];
             var realProps = new PropertyInfo[args.Length / 2];
             var realValues = new int[args.Length / 2];
@@ -362,108 +357,6 @@ namespace Server.Commands
             var p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, ref failReason);
 
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
-        }
-
-        private static object Parse(object o, Type t, string value)
-        {
-            var method = t.GetMethod("Parse", _parseStringParamTypes) ??
-                         t.GetMethod("Parse", _parseROSParamTypes);
-
-            _parseParams[0] = value;
-
-            return method?.Invoke(o, _parseParams);
-        }
-
-        public static string ParseValue(Type type, string value, out object constructed) =>
-            ParseValue(type, null, value, out constructed);
-
-        public static string ParseValue(Type type, object obj, string value, out object constructed)
-        {
-            constructed = null;
-            var isSerial = IsSerial(type);
-
-            if (isSerial) // mutate into int32
-            {
-                type = OfInt;
-            }
-
-            if (value == "(-null-)" && !type.IsValueType)
-            {
-                value = null;
-            }
-
-            if (IsEnum(type))
-            {
-                try
-                {
-                    constructed = Enum.Parse(type, value ?? "", true);
-                }
-                catch
-                {
-                    return "That is not a valid enumeration member.";
-                }
-            }
-            else if (IsType(type))
-            {
-                try
-                {
-                    constructed = AssemblyHandler.FindTypeByName(value);
-
-                    if (constructed == null)
-                    {
-                        return "No type with that name was found.";
-                    }
-                }
-                catch
-                {
-                    return "No type with that name was found.";
-                }
-            }
-            else if (IsParsable(type))
-            {
-                try
-                {
-                    constructed = Parse(obj, type, value);
-                }
-                catch
-                {
-                    return "That is not properly formatted.";
-                }
-            }
-            else if (value == null)
-            {
-                constructed = null;
-            }
-            else if (value.StartsWithOrdinal("0x") && IsNumeric(type))
-            {
-                try
-                {
-                    constructed = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
-                }
-                catch
-                {
-                    return "That is not properly formatted.";
-                }
-            }
-            else
-            {
-                try
-                {
-                    constructed = Convert.ChangeType(value, type);
-                }
-                catch
-                {
-                    return "That is not properly formatted.";
-                }
-            }
-
-            if (isSerial) // mutate back
-            {
-                constructed = (Serial)(constructed ?? Serial.MinusOne);
-            }
-
-            constructed = constructed;
-            return null;
         }
 
         public static string SetDirect(

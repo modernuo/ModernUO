@@ -679,9 +679,8 @@ namespace Server.Engines.Spawners
                 {
                     if (realProps[i] != null)
                     {
-                        var result = Properties.ParseValue(
+                        var result = Types.ParseValue(
                             realProps[i].PropertyType,
-                            entity,
                             props[i, 1],
                             out var toSet
                         );
