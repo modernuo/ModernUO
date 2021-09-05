@@ -679,7 +679,7 @@ namespace Server.Engines.Spawners
                 {
                     if (realProps[i] != null)
                     {
-                        var result = Types.ParseValue(
+                        var result = Types.TryParse(
                             realProps[i].PropertyType,
                             props[i, 1],
                             out var toSet

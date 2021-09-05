@@ -400,34 +400,12 @@ namespace Server.Commands
             }
         }
 
-        public static string SetDirect(object obj, PropertyInfo prop, object toSet)
-        {
-            try
-            {
-                if (toSet is AccessLevel)
-                {
-                    return "You do not have access to that level.";
-                }
-
-                prop.SetValue(obj, toSet, null);
-                return "Property has been set.";
-            }
-            catch
-            {
-                return "An exception was caught, the property may not be set.";
-            }
-        }
-
         public static string InternalSetValue(
             Mobile from, object logobj, object o, PropertyInfo p, string pname,
             string value, bool shouldLog
         ) =>
-            ParseValue(p.PropertyType, o, value, out var toSet) ??
+            TryParse(p.PropertyType, value, out var toSet) ??
             SetDirect(from, logobj, o, p, pname, toSet, shouldLog);
-
-        public static string InternalSetValue(object o, PropertyInfo p, string value) =>
-            ParseValue(p.PropertyType, o, value, out var toSet) ??
-            SetDirect(o, p, toSet);
 
 
         private class PropsTarget : Target

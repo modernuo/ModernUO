@@ -6,7 +6,6 @@ namespace Server
     public static class Types
     {
         private static readonly Type[] _parseStringParamTypes = { typeof(string) };
-        private static readonly Type[] _parseROSParamTypes = { typeof(ReadOnlySpan<char>) };
         private static readonly object[] _parseParams = new object[1];
 
         public static readonly Type OfByte = typeof(byte);
@@ -101,20 +100,14 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
 
-        private static object Parse(object o, Type t, string value)
+        public static object Parse(Type t, string value)
         {
-            var method = t.GetMethod("Parse", _parseStringParamTypes) ??
-                         t.GetMethod("Parse", _parseROSParamTypes);
-
+            var method = t.GetMethod("Parse", _parseStringParamTypes);
             _parseParams[0] = value;
-
-            return method?.Invoke(o, _parseParams);
+            return method?.Invoke(null, _parseParams);
         }
 
-        public static string ParseValue(Type type, string value, out object constructed) =>
-            ParseValue(type, null, value, out constructed);
-
-        public static string ParseValue(Type type, object obj, string value, out object constructed)
+        public static string TryParse(Type type, string value, out object constructed)
         {
             constructed = null;
             var isSerial = IsSerial(type);
@@ -160,7 +153,7 @@ namespace Server
             {
                 try
                 {
-                    constructed = Parse(obj, type, value);
+                    constructed = Parse(type, value);
                 }
                 catch
                 {

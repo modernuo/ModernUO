@@ -133,7 +133,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                Types.ParseValue(m_Property.PropertyType, text.Text, out toSet);
+                                Types.TryParse(m_Property.PropertyType, text.Text, out toSet);
                                 shouldSet = true;
                             }
                             catch
