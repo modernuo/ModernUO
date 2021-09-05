@@ -22,7 +22,9 @@ namespace Server.Commands
 
     public static class Properties
     {
-        private static readonly object[] m_ParseParams = new object[1];
+        private static readonly Type[] _parseStringParamTypes = { typeof(string) };
+        private static readonly Type[] _parseROSParamTypes = { typeof(ReadOnlySpan<char>) };
+        private static readonly object[] _parseParams = new object[1];
 
         public static void Initialize()
         {
@@ -364,11 +366,12 @@ namespace Server.Commands
 
         private static object Parse(object o, Type t, string value)
         {
-            var method = t.GetMethod("Parse", ParseTypes);
+            var method = t.GetMethod("Parse", _parseStringParamTypes) ??
+                         t.GetMethod("Parse", _parseROSParamTypes);
 
-            m_ParseParams[0] = value;
+            _parseParams[0] = value;
 
-            return method?.Invoke(o, m_ParseParams);
+            return method?.Invoke(o, _parseParams);
         }
 
         public static string ParseValue(Type type, string value, out object constructed) =>

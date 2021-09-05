@@ -13,8 +13,6 @@ namespace Server.Commands
 {
     public static class Add
     {
-        private static readonly object[] m_ParseArgs = new object[1];
-
         public static void Initialize()
         {
             CommandSystem.Register("Tile", AccessLevel.GameMaster, Tile_OnCommand);
@@ -683,15 +681,6 @@ namespace Server.Commands
         public static void OutlineAvg_OnCommand(CommandEventArgs e)
         {
             InternalAvg_OnCommand(e, true);
-        }
-
-        public static object ParseParsable(Type type, string value)
-        {
-            var method = type.GetMethod("Parse", ParseTypes);
-
-            m_ParseArgs[0] = value;
-
-            return method?.Invoke(null, m_ParseArgs);
         }
 
         private enum TileZType

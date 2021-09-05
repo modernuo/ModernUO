@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Server
@@ -67,29 +65,11 @@ namespace Server
             OfULong
         };
 
-        private static readonly Type[] SignedNumerics =
-        {
-            OfLong,
-            OfInt,
-            OfShort,
-            OfSByte
-        };
-
-        private static readonly Type[] UnsignedNumerics =
-        {
-            OfULong,
-            OfUInt,
-            OfUShort,
-            OfByte
-        };
-
-        public static readonly Type[] ParseTypes = { OfString, OfChar, OfText, OfGuid, OfTimeSpan };
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSerial(Type t) => t == OfSerial;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsType(Type t) => t == OfType || t.IsSubclassOf(OfType);
+        public static bool IsType(Type t) => OfType.IsAssignableFrom(t);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsChar(Type t) => t == OfChar;
@@ -101,23 +81,18 @@ namespace Server
         public static bool IsText(Type t) => t == OfText;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEnum(Type t) => t.IsEnum || t.IsSubclassOf(OfEnum);
+        public static bool IsEnum(Type t) => OfEnum.IsAssignableFrom(t);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsGuid(Type t) => t == OfGuid;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsParsable(Type t) =>
-            IsChar(t) || IsString(t) || IsText(t) || IsGuid(t) || t == OfTimeSpan || t.IsDefined(OfParsable, false);
+            IsChar(t) || IsString(t) || IsText(t) || IsGuid(t) ||
+            t == OfTimeSpan || t.IsDefined(OfParsable, false) || IsNumeric(t);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNumeric(Type t) => Array.IndexOf(NumericTypes, t) >= 0;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsSignedNumeric(Type t) => Array.IndexOf(SignedNumerics, t) >= 0;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsUnsignedNumeric(Type t) => Array.IndexOf(UnsignedNumerics, t) >= 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
