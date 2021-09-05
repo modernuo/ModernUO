@@ -1,93 +1,218 @@
 [
   {
     "type": "Spawner",
-    "guid": "99bca978-fc37-44e1-a23b-36409027c97b",
+    "guid": "38b261ef-d2c9-4796-9fcb-02a8807b373e",
     "name": "Spawner (2406)",
     "location": [179, 1869, 0],
     "map": "Malas",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "tigersclawthief", "maxCount": 1, "probability": 100 }
+      { "name": "serpentsfangassassin", "maxCount": 4, "probability": 100 },
+      { "name": "tigersclawthief", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "396cc2fe-ef28-41c7-b677-0dc677bfbadf",
+    "guid": "33b0dd51-64b1-437d-a172-23a1575c09ca",
     "name": "Spawner (2406)",
     "location": [185, 1920, 0],
     "map": "Malas",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "magedragonsflamemage", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "magedragonsflamemage", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5f0eedd5-1616-47f9-a394-431ad82bfb46",
+    "guid": "090e153d-760d-49af-96f9-cf9733b96174",
     "name": "Spawner (2406)",
     "location": [155, 1869, 0],
     "map": "Malas",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 }
+      { "name": "serpentsfangassassin", "maxCount": 4, "probability": 100 },
+      { "name": "dragonsflamemage", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "72fd9a14-d9e8-4d05-9fba-d837d70a2779",
+    "guid": "48056655-bc27-4688-ae46-7caf46dabaf2",
     "name": "Spawner (2406)",
     "location": [145, 1898, 0],
     "map": "Malas",
-    "count": 3,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "tigersclawthief", "maxCount": 1, "probability": 100 },
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 }
+      { "name": "serpentsfangassassin", "maxCount": 3, "probability": 100 },
+      { "name": "tigersclawthief", "maxCount": 3, "probability": 100 },
+      { "name": "eliteninjawarrior", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "54791108-5716-4f44-babf-aa94479bc54e",
+    "guid": "e5ce57af-85a6-4354-a5d9-a3b06d42893d",
     "name": "Spawner (2406)",
     "location": [174, 1900, 0],
     "map": "Malas",
-    "count": 3,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 }
+      { "name": "serpentsfangassassin", "maxCount": 5, "probability": 100 },
+      { "name": "dragonsflamemage", "maxCount": 5, "probability": 100 },
+      { "name": "eliteninjawarrior", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "80a6cbf1-ff22-49da-aa01-9ed326bcb7f5",
+    "guid": "e1acfb74-99a5-4907-9240-01178938aaac",
     "name": "Spawner (2406)",
     "location": [181, 1883, 0],
+    "map": "Malas",
+    "count": 32,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "serpentsfangassassin", "maxCount": 8, "probability": 100 },
+      { "name": "tigersclawthief", "maxCount": 8, "probability": 100 },
+      { "name": "dragonsflamemage", "maxCount": 8, "probability": 100 },
+      { "name": "eliteninjawarrior", "maxCount": 8, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "983f661c-6b08-4884-a922-264f349948b9",
+    "name": "Spawner (2406)",
+    "location": [183, 1961, 0],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "dragonsflamemage", "maxCount": 2, "probability": 100 },
+      { "name": "serpentsfangassassin", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "dc1edb60-d9b3-411b-af70-60bb794ddd14",
+    "name": "Spawner (2406)",
+    "location": [139, 1868, 0],
+    "map": "Malas",
+    "count": 35,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [
+      { "name": "serpentsfangassassin", "maxCount": 7, "probability": 100 },
+      { "name": "tigersclawthief", "maxCount": 7, "probability": 100 },
+      { "name": "magedragonsflamemage", "maxCount": 7, "probability": 100 },
+      { "name": "dragonsflamemage", "maxCount": 7, "probability": 100 },
+      { "name": "eliteninjawarrior", "maxCount": 7, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "41e5c3d5-0896-4183-b8b7-5669ba40f5b4",
+    "name": "Spawner (2406)",
+    "location": [170, 1974, 0],
+    "map": "Malas",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "serpentsfangassassin", "maxCount": 3, "probability": 100 },
+      { "name": "serpentsfanghighexecutioner", "maxCount": 3, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d592a16d-ab02-493a-afc9-72dad3cbcd73",
+    "name": "Spawner (2406)",
+    "location": [140, 1974, 0],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 8,
+    "walkingRange": 8,
+    "entries": [
+      { "name": "magedragonsflamemage", "maxCount": 2, "probability": 100 },
+      { "name": "serpentsfangassassin", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "64a9c7b2-7cc5-4140-a900-a184051275dc",
+    "name": "Spawner (2406)",
+    "location": [134, 1947, 0],
+    "map": "Malas",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 7,
+    "walkingRange": 7,
+    "entries": [
+      { "name": "magedragonsflamemage", "maxCount": 2, "probability": 100 },
+      { "name": "dragonsflamemage", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3e7e0693-d3b3-4df0-b77a-1f8277716450",
+    "name": "Spawner (2406)",
+    "location": [81, 1892, 0],
+    "map": "Malas",
+    "count": 12,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "eliteninjawarrior", "maxCount": 4, "probability": 100 },
+      { "name": "serpentsfangassassin", "maxCount": 4, "probability": 100 },
+      { "name": "dragonsflamemage", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "276be681-b196-40ec-bf5f-e26f1b96b54a",
+    "name": "Spawner (2406)",
+    "location": [142, 1921, 0],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:05:00",
@@ -95,165 +220,40 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "tigersclawthief", "maxCount": 1, "probability": 100 },
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 }
-    ]
+    "entries": [{ "name": "tigersclawthief", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2eabc486-a13c-40e9-9a8d-759113e2364c",
-    "name": "Spawner (2406)",
-    "location": [183, 1961, 0],
-    "map": "Malas",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 20,
-    "entries": [
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "47d6610a-f90c-452c-9287-f85c6128220d",
-    "name": "Spawner (2406)",
-    "location": [139, 1868, 0],
-    "map": "Malas",
-    "count": 5,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 8,
-    "walkingRange": 8,
-    "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "tigersclawthief", "maxCount": 1, "probability": 100 },
-      { "name": "magedragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "4e04af2d-8f7f-4423-bbce-405828ab21a7",
-    "name": "Spawner (2406)",
-    "location": [170, 1974, 0],
-    "map": "Malas",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 5,
-    "walkingRange": 5,
-    "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "serpentsfanghighexecutioner", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8f2a6a64-ecc7-400e-87de-60870cad9f99",
-    "name": "Spawner (2406)",
-    "location": [140, 1974, 0],
-    "map": "Malas",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 8,
-    "walkingRange": 8,
-    "entries": [
-      { "name": "magedragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "b2362c18-70a4-45ec-a8ad-088d10e2ec3e",
-    "name": "Spawner (2406)",
-    "location": [134, 1947, 0],
-    "map": "Malas",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 7,
-    "walkingRange": 7,
-    "entries": [
-      { "name": "magedragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "77a7879b-c457-43f3-9080-7a10c091ebd2",
-    "name": "Spawner (2406)",
-    "location": [81, 1892, 0],
-    "map": "Malas",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 5,
-    "walkingRange": 5,
-    "entries": [
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 },
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "382e4cfc-6922-4e6a-b7d3-c1ecaee80924",
-    "name": "Spawner (2406)",
-    "location": [142, 1921, 0],
-    "map": "Malas",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 5,
-    "walkingRange": 5,
-    "entries": [{ "name": "tigersclawthief", "maxCount": 1, "probability": 100 }]
-  },
-  {
-    "type": "Spawner",
-    "guid": "928a8035-0849-40ec-af45-af90da2ed045",
+    "guid": "33868180-ea47-41ce-bb5f-7ee465492259",
     "name": "Spawner (2406)",
     "location": [77, 1883, 0],
     "map": "Malas",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
     "entries": [
-      { "name": "dragonsflamemage", "maxCount": 1, "probability": 100 },
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 }
+      { "name": "dragonsflamemage", "maxCount": 4, "probability": 100 },
+      { "name": "eliteninjawarrior", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "34af92fd-34f6-4568-bbae-99f085315c28",
+    "guid": "15407ddc-d269-4c71-af5d-0ab2c550f7c5",
     "name": "Spawner (2406)",
     "location": [82, 1875, 0],
     "map": "Malas",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
     "entries": [
-      { "name": "serpentsfangassassin", "maxCount": 1, "probability": 100 },
-      { "name": "eliteninjawarrior", "maxCount": 1, "probability": 100 }
+      { "name": "serpentsfangassassin", "maxCount": 4, "probability": 100 },
+      { "name": "eliteninjawarrior", "maxCount": 4, "probability": 100 }
     ]
   }
 ]

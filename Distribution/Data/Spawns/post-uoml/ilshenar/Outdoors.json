@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "698e7b2b-d6c3-4fc2-810c-b86bf365ce2f",
+    "guid": "af303a16-314a-4eb4-95c9-c92c6c19f360",
     "name": "Spawner (306)",
     "location": [1763, 344, 52],
     "map": "Ilshenar",
@@ -15,69 +15,69 @@
   },
   {
     "type": "Spawner",
-    "guid": "79c58c11-cf94-4b69-be94-3799fcb444a4",
+    "guid": "bf08284f-4550-42ed-b436-f78361c0d103",
     "name": "Spawner (306)",
     "location": [1790, 435, -10],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 25,
-    "entries": [{ "name": "EarthElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "EarthElemental", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "916b8c02-2167-4e59-8ccb-97becdee427f",
+    "guid": "9cabe53e-f409-42a2-9225-8d4e3c56ed92",
     "name": "Spawner (306)",
     "location": [1805, 469, -9],
     "map": "Ilshenar",
-    "count": 11,
+    "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "AirElemental", "maxCount": 5, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 5, "probability": 100 },
+      { "name": "AirElemental", "maxCount": 1, "probability": 100 },
       { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 3, "probability": 100 }
+      { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "35d00158-c2ad-49aa-997f-6e5aa26b522c",
+    "guid": "7c7ec3d9-1ceb-48db-875d-9891276c1db1",
     "name": "Spawner (306)",
     "location": [1852, 484, -13],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "StoneGargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "StoneGargoyle", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "c9c14c99-2133-464b-ac38-4e75d84907fd",
+    "guid": "e21d3e9a-4497-462f-a6c0-085a5444f6eb",
     "name": "Spawner (306)",
     "location": [1856, 517, -14],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Brigand", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Brigand", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "98979174-1e56-4605-bcde-fafb2301bc3b",
+    "guid": "8f9ab57e-ebc6-46d0-bae5-fbd3f74cfe64",
     "name": "Spawner (306)",
     "location": [1775, 530, 66],
     "map": "Ilshenar",
@@ -91,24 +91,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "2b9afba2-357f-4747-96ef-ed04a5b40eff",
+    "guid": "c1bbe6b9-9df8-4c35-bc93-3a68c798006f",
     "name": "Spawner (306)",
     "location": [1828, 601, 38],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
-      { "name": "Mummy", "maxCount": 2, "probability": 100 }
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 },
+      { "name": "Mummy", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1df8f418-8f3c-46d6-a3de-2a95fcec600a",
+    "guid": "4e8116d5-4409-4a22-8604-1ec9bb3d0742",
     "name": "Spawner (306)",
     "location": [1717, 606, 17],
     "map": "Ilshenar",
@@ -122,7 +122,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1ce49055-63ab-4854-92f0-32af767eb639",
+    "guid": "6d2ec2ad-2971-4bf1-8936-c7d0c953860a",
     "name": "Spawner (306)",
     "location": [1647, 602, -14],
     "map": "Ilshenar",
@@ -133,72 +133,72 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "DesertOstard", "maxCount": 1, "probability": 100 },
-      { "name": "StoneHarpy", "maxCount": 5, "probability": 100 },
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 5, "probability": 100 },
+      { "name": "StoneHarpy", "maxCount": 1, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
       { "name": "Wyvern", "maxCount": 2, "probability": 100 },
-      { "name": "Efreet", "maxCount": 2, "probability": 100 },
+      { "name": "Efreet", "maxCount": 1, "probability": 100 },
       { "name": "LichLord", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "21a1268b-6004-441c-aa6d-52407443b0f2",
+    "guid": "c087f68a-9490-4e17-a22c-7b2406c85134",
     "name": "Spawner (306)",
     "location": [1593, 602, 7],
     "map": "Ilshenar",
-    "count": 11,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "DesertOstard", "maxCount": 1, "probability": 100 },
-      { "name": "StoneHarpy", "maxCount": 5, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 5, "probability": 100 },
+      { "name": "StoneHarpy", "maxCount": 2, "probability": 100 },
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 2, "probability": 100 },
-      { "name": "Efreet", "maxCount": 1, "probability": 100 }
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
+      { "name": "Efreet", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9fd68ac4-2949-4adb-a169-b8a2b6710380",
+    "guid": "9a51eb9e-08d2-4daa-9957-73523b873544",
     "name": "Spawner (306)",
     "location": [1700, 546, 5],
     "map": "Ilshenar",
-    "count": 2,
+    "count": 28,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 1, "probability": 100 }
+      { "name": "EarthElemental", "maxCount": 14, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 14, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "95c4c035-ace5-43a0-8577-f615da7718d7",
+    "guid": "f81f90b6-1324-4cea-b5d2-85a3dd9da979",
     "name": "Spawner (306)",
     "location": [1580, 538, -14],
     "map": "Ilshenar",
-    "count": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 7,
     "entries": [
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "RatmanArcher", "maxCount": 2, "probability": 100 },
-      { "name": "RatmanMage", "maxCount": 2, "probability": 100 }
+      { "name": "Ratman", "maxCount": 2, "probability": 100 },
+      { "name": "RatmanArcher", "maxCount": 1, "probability": 100 },
+      { "name": "RatmanMage", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "91cb0c1e-d409-4799-b4c6-0d7e9f5f0e84",
+    "guid": "1d9bd083-0006-4b41-ab16-a23ccb4b4e7c",
     "name": "Spawner (306)",
     "location": [1580, 554, -13],
     "map": "Ilshenar",
@@ -216,122 +216,122 @@
   },
   {
     "type": "Spawner",
-    "guid": "a8ab6918-d513-4c03-8e70-55564c71095e",
+    "guid": "5fadaa25-fa7a-4a29-a038-f343b80f27e0",
     "name": "Spawner (306)",
     "location": [1534, 631, -14],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 15,
-    "entries": [{ "name": "EarthElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "EarthElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "0b8e8cfa-6d24-4651-91aa-1017b1ea82cf",
+    "guid": "8f9845ad-8dd1-4e67-8cc2-6404c2047e03",
     "name": "Spawner (306)",
     "location": [1530, 667, -14],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 15,
-    "entries": [{ "name": "EarthElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "EarthElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a59865d1-d7b8-4921-a367-67d851e87ef6",
+    "guid": "8f5418bf-d0ad-4423-89a7-b8626a25bd54",
     "name": "Spawner (306)",
     "location": [1534, 600, -14],
     "map": "Ilshenar",
-    "count": 17,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 7, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 5, "probability": 100 },
+      { "name": "Shade", "maxCount": 7, "probability": 100 },
+      { "name": "Spectre", "maxCount": 7, "probability": 100 },
+      { "name": "Wraith", "maxCount": 7, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 5, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f5c69138-b8fe-43ef-b98b-4ee430b06a82",
+    "guid": "424f76b1-20ba-40b8-9b0f-311abbceadc5",
     "name": "Spawner (306)",
     "location": [1445, 681, -1],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Imp", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Imp", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e7ac13c4-c037-4852-b1ce-1362b46d6295",
+    "guid": "15ce44f3-eeff-4f20-bdbc-ff5b086db915",
     "name": "Spawner (306)",
     "location": [1400, 687, 32],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
-    "entries": [{ "name": "Harpy", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Harpy", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "dece1bfb-cd89-47b1-9249-a6813c1bbdb7",
+    "guid": "163ce945-d385-455e-84e0-695391125218",
     "name": "Spawner (306)",
     "location": [1352, 667, 111],
     "map": "Ilshenar",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 22,
     "walkingRange": 22,
     "entries": [
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "Drake", "maxCount": 3, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 3, "probability": 100 },
+      { "name": "Drake", "maxCount": 2, "probability": 100 },
       { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
       { "name": "IceElemental", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "044191ec-e029-49f3-b0c0-92fc06b66dcd",
+    "guid": "6e8f71e8-9deb-463d-976e-6535aa0ea95d",
     "name": "Spawner (306)",
     "location": [1372, 623, 111],
     "map": "Ilshenar",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 30,
     "entries": [
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 4, "probability": 100 },
-      { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 4, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 1, "probability": 100 },
+      { "name": "IceSerpent", "maxCount": 2, "probability": 100 },
       { "name": "FrostSpider", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "47f44e97-a24d-4c17-8a8e-4803562a1087",
+    "guid": "7f46b1a4-502d-4ae9-a3e1-41cd2b444c97",
     "name": "Spawner (306)",
     "location": [1316, 633, 106],
     "map": "Ilshenar",
@@ -342,36 +342,36 @@
     "homeRange": 10,
     "walkingRange": 30,
     "entries": [
-      { "name": "FrostTroll", "maxCount": 1, "probability": 100 },
-      { "name": "SnowElemental", "maxCount": 2, "probability": 100 },
+      { "name": "FrostTroll", "maxCount": 2, "probability": 100 },
+      { "name": "SnowElemental", "maxCount": 1, "probability": 100 },
       { "name": "IceElemental", "maxCount": 1, "probability": 100 },
       { "name": "Drake", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "818bf812-c1b8-4b90-bb71-4889acb3cc8d",
+    "guid": "c3281504-e45c-4e64-b9de-7d498cdd2e87",
     "name": "Spawner (306)",
     "location": [1442, 576, -11],
     "map": "Ilshenar",
-    "count": 24,
+    "count": 27,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 5, "probability": 100 },
-      { "name": "Spectre", "maxCount": 5, "probability": 100 },
-      { "name": "Wraith", "maxCount": 5, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 6, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 5, "probability": 100 },
+      { "name": "Shade", "maxCount": 6, "probability": 100 },
+      { "name": "Spectre", "maxCount": 6, "probability": 100 },
+      { "name": "Wraith", "maxCount": 6, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6d1b72b3-2fe2-46b7-8bd1-b559bcc70504",
+    "guid": "777fa7bb-fefb-41c5-b85e-4903f3a3571f",
     "name": "Spawner (306)",
     "location": [1400, 572, -13],
     "map": "Ilshenar",
@@ -382,16 +382,16 @@
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
       { "name": "Shade", "maxCount": 4, "probability": 100 },
       { "name": "Spectre", "maxCount": 4, "probability": 100 },
-      { "name": "Zombie", "maxCount": 4, "probability": 100 },
-      { "name": "Efreet", "maxCount": 2, "probability": 100 }
+      { "name": "Zombie", "maxCount": 2, "probability": 100 },
+      { "name": "Efreet", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4b48922f-e1f6-44af-b973-4b6be9f56995",
+    "guid": "51f39f8b-636c-48f8-8a06-5194b86b41b4",
     "name": "Spawner (306)",
     "location": [1421, 517, 1],
     "map": "Ilshenar",
@@ -402,16 +402,16 @@
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "Orc", "maxCount": 1, "probability": 100 },
-      { "name": "OrcCaptain", "maxCount": 3, "probability": 100 },
-      { "name": "Ettin", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 3, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "Ettin", "maxCount": 2, "probability": 100 },
       { "name": "Troll", "maxCount": 2, "probability": 100 },
-      { "name": "OrcishMage", "maxCount": 2, "probability": 100 }
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "76787d27-7614-421c-8c62-7baa853f8046",
+    "guid": "c9a392d3-23d5-4580-82d5-d0a5504bafaa",
     "name": "Spawner (306)",
     "location": [1358, 498, 3],
     "map": "Ilshenar",
@@ -425,21 +425,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "81464f95-fe34-4738-bee3-300399cc32a1",
+    "guid": "b3e75955-6e12-407c-b236-95c64a71b369",
     "name": "Spawner (306)",
     "location": [1319, 560, -4],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "516efa9c-6369-427a-a943-85ccc0c31884",
+    "guid": "d9bf3639-5acc-4ec7-83b0-ab09f126ce89",
     "name": "Spawner (306)",
     "location": [1237, 473, -4],
     "map": "Ilshenar",
@@ -450,45 +450,45 @@
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "RatmanArcher", "maxCount": 3, "probability": 100 },
+      { "name": "Ratman", "maxCount": 3, "probability": 100 },
+      { "name": "RatmanArcher", "maxCount": 1, "probability": 100 },
       { "name": "RatmanMage", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "367bec1d-be95-4fa3-83ad-9fd014b7638e",
+    "guid": "d755f781-28ff-4653-bc13-090eec948b37",
     "name": "Spawner (306)",
     "location": [1275, 401, -1],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 40,
     "entries": [
-      { "name": "Drake", "maxCount": 1, "probability": 100 },
-      { "name": "Harpy", "maxCount": 2, "probability": 100 }
+      { "name": "Drake", "maxCount": 2, "probability": 100 },
+      { "name": "Harpy", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "624d1853-4309-4e2c-bacb-aade7801f766",
+    "guid": "1514e953-1327-4f5e-8e70-fca283fa56d3",
     "name": "Spawner (306)",
     "location": [1445, 384, 22],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Troll", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Troll", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "062e327f-54c3-4943-9407-6e53a3025291",
+    "guid": "0e84c065-a3e4-46f7-a134-337164a3ae14",
     "name": "Spawner (306)",
     "location": [1416, 317, 74],
     "map": "Ilshenar",
@@ -502,7 +502,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0a2350c3-4e4c-411f-9fd9-848dada66425",
+    "guid": "f5b791db-dbe0-4b95-bd2e-2afb2a61f7a1",
     "name": "Spawner (306)",
     "location": [1496, 280, -10],
     "map": "Ilshenar",
@@ -513,13 +513,13 @@
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "Daemon", "maxCount": 3, "probability": 100 }
+      { "name": "Imp", "maxCount": 3, "probability": 100 },
+      { "name": "Daemon", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fb4f869f-5c49-4700-b9cb-5cb46d78bff4",
+    "guid": "0591ab96-8fd6-476d-97bc-635dd30172d1",
     "name": "Spawner (306)",
     "location": [1464, 241, 2],
     "map": "Ilshenar",
@@ -533,7 +533,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d3e36ea2-20d9-40d9-aac6-24d60b5a27af",
+    "guid": "cfc566e9-1748-42f5-a8cd-48c87eeae826",
     "name": "Spawner (306)",
     "location": [1503, 239, -7],
     "map": "Ilshenar",
@@ -547,33 +547,33 @@
   },
   {
     "type": "Spawner",
-    "guid": "6c7813f4-699b-4ad3-ba14-2bed67006666",
+    "guid": "81a6a320-f193-47a5-b878-f63da0e7f7bf",
     "name": "Spawner (306)",
     "location": [1571, 253, 14],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Imp", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Imp", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "2449f74f-6e11-44d8-9c40-3b8d3327687f",
+    "guid": "913d3bee-3deb-460a-8871-1a1e255b8a79",
     "name": "Spawner (306)",
     "location": [1070, 750, -80],
     "map": "Ilshenar",
-    "count": 13,
+    "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
-      { "name": "Corpser", "maxCount": 4, "probability": 100 },
+      { "name": "SewerRat", "maxCount": 4, "probability": 100 },
+      { "name": "Corpser", "maxCount": 2, "probability": 100 },
       { "name": "Bogling", "maxCount": 2, "probability": 100 },
       { "name": "GiantRat", "maxCount": 2, "probability": 100 },
       { "name": "Alligator", "maxCount": 2, "probability": 100 },
@@ -582,7 +582,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c85805d7-86b0-48ce-a9bb-9b34961b108d",
+    "guid": "38cac7d0-b4aa-40b7-b86d-ed2105a6521b",
     "name": "Spawner (306)",
     "location": [1070, 750, -80],
     "map": "Ilshenar",
@@ -593,26 +593,26 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "PlagueBeast", "maxCount": 4, "probability": 100 },
-      { "name": "AcidElemental", "maxCount": 2, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 4, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 2, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2053f71a-73b4-41ae-aed0-a10432757675",
+    "guid": "73d1efeb-8a9c-4e2c-8ed4-d9bb67dd54e9",
     "name": "Spawner (306)",
     "location": [1135, 743, -80],
     "map": "Ilshenar",
-    "count": 13,
+    "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
-      { "name": "Corpser", "maxCount": 4, "probability": 100 },
+      { "name": "SewerRat", "maxCount": 4, "probability": 100 },
+      { "name": "Corpser", "maxCount": 2, "probability": 100 },
       { "name": "Bogling", "maxCount": 2, "probability": 100 },
       { "name": "GiantRat", "maxCount": 2, "probability": 100 },
       { "name": "Alligator", "maxCount": 2, "probability": 100 },
@@ -621,7 +621,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "270ebf37-ed5a-4dc5-8c8e-3051f55284f0",
+    "guid": "1408c1bf-f421-46b7-b44b-944d67cba9cf",
     "name": "Spawner (306)",
     "location": [1135, 743, -80],
     "map": "Ilshenar",
@@ -632,15 +632,15 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "PlagueBeast", "maxCount": 4, "probability": 100 },
-      { "name": "AcidElemental", "maxCount": 2, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 4, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 2, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
       { "name": "BogThing", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8afb8b9f-ad89-4d48-8336-bbeaac50984d",
+    "guid": "8ebe5be7-20ab-4c4d-b56a-477a690329a2",
     "name": "Spawner (306)",
     "location": [1160, 681, -80],
     "map": "Ilshenar",
@@ -651,17 +651,17 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "SewerRat", "maxCount": 1, "probability": 100 },
-      { "name": "Corpser", "maxCount": 4, "probability": 100 },
-      { "name": "Bogling", "maxCount": 2, "probability": 100 },
-      { "name": "GiantRat", "maxCount": 1, "probability": 100 },
+      { "name": "SewerRat", "maxCount": 4, "probability": 100 },
+      { "name": "Corpser", "maxCount": 2, "probability": 100 },
+      { "name": "Bogling", "maxCount": 1, "probability": 100 },
+      { "name": "GiantRat", "maxCount": 2, "probability": 100 },
       { "name": "Alligator", "maxCount": 2, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 2, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c274a832-020d-49c1-89f8-b8c2d7cf62a9",
+    "guid": "ce1df196-7227-4f38-ae1a-6ded87d87196",
     "name": "Spawner (306)",
     "location": [1160, 681, -80],
     "map": "Ilshenar",
@@ -672,13 +672,13 @@
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Lizardman", "maxCount": 1, "probability": 100 },
-      { "name": "PlagueBeast", "maxCount": 3, "probability": 100 }
+      { "name": "Lizardman", "maxCount": 3, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "319fd59b-8c80-426e-9277-6f72e945b0d0",
+    "guid": "db43abc7-8c30-4c62-b4e5-90a07b292226",
     "name": "Spawner (306)",
     "location": [1097, 702, -79],
     "map": "Ilshenar",
@@ -695,7 +695,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "6c26d650-7be4-4384-bbe7-9efa1176b865",
+    "guid": "2688e553-9181-4008-ba9f-5fdd9d048683",
     "name": "Spawner (306)",
     "location": [1087, 698, -80],
     "map": "Ilshenar",
@@ -712,21 +712,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "4188051a-c93a-43e2-a7b9-8b874bdfcd52",
+    "guid": "5d7f2bb4-3981-4d5f-ace5-2037a4871bd6",
     "name": "Spawner (306)",
     "location": [1086, 702, -60],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "GolemController", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GolemController", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "acda9e51-77af-43cd-a2fe-01f3b2c2c24a",
+    "guid": "10274f72-61ec-48f8-b6eb-881c9f2b7641",
     "name": "Spawner (306)",
     "location": [1098, 698, -60],
     "map": "Ilshenar",
@@ -743,7 +743,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "04636433-68a4-4045-8789-9c1519b6a2fa",
+    "guid": "73de68cc-994c-4559-a157-717117cab508",
     "name": "Spawner (306)",
     "location": [1091, 702, -40],
     "map": "Ilshenar",
@@ -757,7 +757,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f1717d7e-d6ee-4ff7-bb55-8a945e903ed9",
+    "guid": "f94db8e0-c699-4af5-a03c-30aa3d079168",
     "name": "Spawner (306)",
     "location": [1084, 675, -80],
     "map": "Ilshenar",
@@ -771,7 +771,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f02748e6-ef0f-4739-b08e-b68e9fa0defc",
+    "guid": "072e3283-370f-414e-aaad-99a578eb972b",
     "name": "Spawner (306)",
     "location": [1059, 675, -79],
     "map": "Ilshenar",
@@ -785,7 +785,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5d6875d2-e6b3-410a-80a9-174c8b66caae",
+    "guid": "222fd970-e377-4481-8b75-4918a0bfa78f",
     "name": "Spawner (306)",
     "location": [1060, 659, -80],
     "map": "Ilshenar",
@@ -799,7 +799,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "813ad15d-4ef5-4e41-8b01-39a7a17052db",
+    "guid": "47d26bfb-fe64-49cb-9b0d-43c43ca25fca",
     "name": "Spawner (306)",
     "location": [1060, 643, -80],
     "map": "Ilshenar",
@@ -813,7 +813,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d97d2c4e-0539-4c44-8d63-a51022d13e82",
+    "guid": "401792f3-7b32-4853-933e-c697b3f105a2",
     "name": "Spawner (306)",
     "location": [1075, 628, -80],
     "map": "Ilshenar",
@@ -827,7 +827,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b3bd1e82-ea5e-4faa-ab43-9451ab28cf69",
+    "guid": "6f09a0e2-dbef-4299-9a6e-d410a85b9667",
     "name": "Spawner (306)",
     "location": [1092, 628, -80],
     "map": "Ilshenar",
@@ -841,7 +841,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "7c516c78-92d7-41ea-a1d5-53baf1557e1b",
+    "guid": "97ee8182-36f0-4ae4-80fe-896cdaa88475",
     "name": "Spawner (306)",
     "location": [1083, 638, -80],
     "map": "Ilshenar",
@@ -855,7 +855,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0094ceb1-209c-4bb9-8428-e87099fcdd19",
+    "guid": "576cdd95-3203-41b0-9a0c-6748f4ce5174",
     "name": "Spawner (306)",
     "location": [1095, 638, -80],
     "map": "Ilshenar",
@@ -869,7 +869,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "680aa950-ca7a-4ca9-871b-f7314dc27dd8",
+    "guid": "aecac103-bc40-4fdc-a1bf-63bfdf9d0db0",
     "name": "Spawner (306)",
     "location": [1095, 664, -80],
     "map": "Ilshenar",
@@ -883,7 +883,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "4bfd6f13-fece-403e-a141-05464fc9a19b",
+    "guid": "14858fa5-4c16-4ba0-9709-de22bc6e38b7",
     "name": "Spawner (306)",
     "location": [1083, 664, -80],
     "map": "Ilshenar",
@@ -897,7 +897,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "31c20aba-a813-4842-a820-57fef0db42df",
+    "guid": "b4d938d5-3c09-448e-a6f1-ad156116db25",
     "name": "Spawner (306)",
     "location": [1070, 639, -79],
     "map": "Ilshenar",
@@ -911,7 +911,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e73df2ca-c9f6-4755-9b6f-9dddef4f11a3",
+    "guid": "44620530-4bea-4073-99a3-6886ca063981",
     "name": "Spawner (306)",
     "location": [1070, 650, -79],
     "map": "Ilshenar",
@@ -928,7 +928,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "13d43287-9de8-49a3-af5c-51ea90ffec1e",
+    "guid": "adc9ffad-7896-4a17-aa7a-170214f4a22e",
     "name": "Spawner (306)",
     "location": [1072, 651, -60],
     "map": "Ilshenar",
@@ -942,7 +942,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8830b2ba-258b-47d2-b23f-f72434b4f546",
+    "guid": "ce336b05-1b42-499e-8236-2b77110b2d11",
     "name": "Spawner (306)",
     "location": [1083, 628, -60],
     "map": "Ilshenar",
@@ -956,7 +956,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9b3211ac-c614-4318-b2ca-bb022afa41b4",
+    "guid": "f2c64094-c4e9-400b-911a-358b2c0734f4",
     "name": "Spawner (306)",
     "location": [1107, 627, -59],
     "map": "Ilshenar",
@@ -970,7 +970,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9c7e82fc-f3e3-452c-9e8b-da38bd66206e",
+    "guid": "854fbf5c-8eef-4f72-9cc3-412bae65957b",
     "name": "Spawner (306)",
     "location": [1083, 675, -60],
     "map": "Ilshenar",
@@ -984,7 +984,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fa5011e2-67e4-4690-8ce1-e0190a3a5e05",
+    "guid": "d9f2b71c-45e2-4a00-83db-2a563a9ceff3",
     "name": "Spawner (306)",
     "location": [1088, 661, -60],
     "map": "Ilshenar",
@@ -1002,7 +1002,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "827992ed-aa78-4c8f-972c-42b4083ab728",
+    "guid": "c766b5dc-c0de-40eb-98f5-c87cbbc2c993",
     "name": "Spawner (306)",
     "location": [1090, 646, -60],
     "map": "Ilshenar",
@@ -1020,7 +1020,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fdd42d8e-be13-473b-88dd-e4d077ca44ce",
+    "guid": "371b4e22-e9ba-44ea-8f8f-9841cc562b57",
     "name": "Spawner (306)",
     "location": [1088, 637, -60],
     "map": "Ilshenar",
@@ -1031,14 +1031,14 @@
     "homeRange": 4,
     "walkingRange": 10,
     "entries": [
-      { "name": "JukaMage", "maxCount": 1, "probability": 100 },
-      { "name": "JukaLord", "maxCount": 2, "probability": 100 },
+      { "name": "JukaMage", "maxCount": 2, "probability": 100 },
+      { "name": "JukaLord", "maxCount": 1, "probability": 100 },
       { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "685091c5-03c7-4042-ac8d-801a34c642d3",
+    "guid": "a23c3d4d-c3d6-4026-931b-ed5de2c0bffe",
     "name": "Spawner (306)",
     "location": [1060, 652, -40],
     "map": "Ilshenar",
@@ -1052,24 +1052,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "356583a3-7914-4cf9-83ab-c2ecb50cd282",
-    "name": "Spawner (306)",
-    "location": [1083, 651, -40],
-    "map": "Ilshenar",
-    "count": 2,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 25,
-    "entries": [
-      { "name": "Betrayer", "maxCount": 1, "probability": 100 },
-      { "name": "GolemController", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "8d9714dd-e847-4297-80f3-2f43bd38508b",
+    "guid": "eb1e225c-cf50-4aa8-a80d-bf14d399dd49",
     "name": "Spawner (306)",
     "location": [1083, 651, -40],
     "map": "Ilshenar",
@@ -1080,30 +1063,47 @@
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Juggernaut", "maxCount": 1, "probability": 100 },
-      { "name": "Golem", "maxCount": 3, "probability": 100 }
+      { "name": "Betrayer", "maxCount": 1, "probability": 100 },
+      { "name": "GolemController", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cdbe9957-0e77-4496-9a0f-815a3383abeb",
+    "guid": "3726d6f2-487e-4ef3-9ab0-207832c2cf9f",
     "name": "Spawner (306)",
-    "location": [1084, 652, -20],
+    "location": [1083, 651, -40],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Juggernaut", "maxCount": 3, "probability": 100 },
+      { "name": "Golem", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "afe2f789-b082-4264-b023-937367f2e55f",
+    "name": "Spawner (306)",
+    "location": [1084, 652, -20],
+    "map": "Ilshenar",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 25,
+    "entries": [
+      { "name": "GolemController", "maxCount": 2, "probability": 100 },
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fc114907-51a6-4243-aeaf-e42cea5de3b0",
+    "guid": "201f96cd-cf5d-45db-bd59-87976dd68a69",
     "name": "Spawner (306)",
     "location": [1772, 67, -28],
     "map": "Ilshenar",
@@ -1114,15 +1114,15 @@
     "homeRange": 20,
     "walkingRange": 25,
     "entries": [
-      { "name": "MeerWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "MeerMage", "maxCount": 3, "probability": 100 },
+      { "name": "MeerWarrior", "maxCount": 3, "probability": 100 },
+      { "name": "MeerMage", "maxCount": 2, "probability": 100 },
       { "name": "MeerCaptain", "maxCount": 2, "probability": 100 },
-      { "name": "MeerEternal", "maxCount": 2, "probability": 100 }
+      { "name": "MeerEternal", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "76d903ee-cd01-41ed-8fc4-e741f3e8c2a7",
+    "guid": "959d8af8-11ca-4766-9fc8-f8c56eb7c2fd",
     "name": "Spawner (306)",
     "location": [1803, 66, -28],
     "map": "Ilshenar",
@@ -1133,36 +1133,36 @@
     "homeRange": 20,
     "walkingRange": 25,
     "entries": [
-      { "name": "MeerWarrior", "maxCount": 1, "probability": 100 },
-      { "name": "MeerMage", "maxCount": 4, "probability": 100 },
-      { "name": "MeerCaptain", "maxCount": 2, "probability": 100 },
+      { "name": "MeerWarrior", "maxCount": 4, "probability": 100 },
+      { "name": "MeerMage", "maxCount": 2, "probability": 100 },
+      { "name": "MeerCaptain", "maxCount": 1, "probability": 100 },
       { "name": "MeerEternal", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "02e0bdd0-5938-4930-aea2-bfe8b29283bc",
+    "guid": "fa6332fb-9d44-4070-94fc-c8919e6d930a",
     "name": "Spawner (306)",
     "location": [855, 464, -2],
     "map": "Ilshenar",
-    "count": 19,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 6, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 },
       { "name": "SkeletalMage", "maxCount": 3, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 3, "probability": 100 }
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bc1e3319-f99d-4b1d-8902-d3f82bbc3f23",
+    "guid": "18b54c0a-2681-48d5-9ec2-73d5c0942454",
     "name": "Spawner (306)",
     "location": [1041, 272, 56],
     "map": "Ilshenar",
@@ -1173,8 +1173,8 @@
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "PoisonElemental", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 1, "probability": 100 },
       { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 },
       { "name": "Wyvern", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
@@ -1183,11 +1183,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "ba58c3f8-b889-4549-90a8-0cdbaed46ff0",
+    "guid": "81a4802a-e327-4342-96e9-b023af44a24c",
     "name": "Spawner (306)",
     "location": [1041, 272, 56],
     "map": "Ilshenar",
-    "count": 8,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1195,16 +1195,16 @@
     "walkingRange": 25,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Spectre", "maxCount": 3, "probability": 100 },
+      { "name": "Wraith", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 },
       { "name": "Ghoul", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fec3350f-cf40-4fcf-a34d-074b2373a7c2",
+    "guid": "f2f46f74-82e8-4d03-9364-c2551e287b6d",
     "name": "Spawner (306)",
     "location": [1000, 272, 56],
     "map": "Ilshenar",
@@ -1216,8 +1216,8 @@
     "walkingRange": 25,
     "entries": [
       { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 2, "probability": 100 },
+      { "name": "StoneGargoyle", "maxCount": 2, "probability": 100 },
+      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
       { "name": "ElderGazer", "maxCount": 1, "probability": 100 }
@@ -1225,11 +1225,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "3b88b462-cd86-4728-9413-cd7cf10595b0",
+    "guid": "9790be03-c67d-48e6-b4e4-45890f6510ff",
     "name": "Spawner (306)",
     "location": [1000, 272, 56],
     "map": "Ilshenar",
-    "count": 8,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1237,20 +1237,20 @@
     "walkingRange": 25,
     "entries": [
       { "name": "LichLord", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Spectre", "maxCount": 3, "probability": 100 },
+      { "name": "Wraith", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 1, "probability": 100 },
       { "name": "Ghoul", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7327af37-b1f3-4198-bb8d-1234aac152b4",
+    "guid": "e70a81c5-b99b-429d-b77c-d5f3a6566ddc",
     "name": "Spawner (306)",
     "location": [748, 492, -64],
     "map": "Ilshenar",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1258,27 +1258,27 @@
     "walkingRange": 10,
     "entries": [
       { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 1, "probability": 100 }
+      { "name": "Gazer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fc0d6b67-be01-4af3-83a4-4c6e661399e2",
+    "guid": "28445a67-a955-485a-8194-f7396d742596",
     "name": "Spawner (306)",
     "location": [783, 448, -47],
     "map": "Ilshenar",
-    "count": 27,
+    "count": 28,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
       { "name": "Shade", "maxCount": 4, "probability": 100 },
       { "name": "Spectre", "maxCount": 4, "probability": 100 },
       { "name": "Wraith", "maxCount": 4, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 4, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 },
       { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
       { "name": "BoneKnight", "maxCount": 2, "probability": 100 },
@@ -1288,7 +1288,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "caadeebf-efdc-4a16-8399-3ca4602149b1",
+    "guid": "71c9d513-52d7-4178-811c-8aebe73a2c6c",
     "name": "Spawner (306)",
     "location": [783, 448, -47],
     "map": "Ilshenar",
@@ -1305,22 +1305,22 @@
   },
   {
     "type": "Spawner",
-    "guid": "4d6b5dc8-10a7-44c3-8ac3-2ede69181f19",
+    "guid": "1d5d45f0-2583-4fb3-88d9-ce3b66500450",
     "name": "Spawner (306)",
     "location": [742, 440, -59],
     "map": "Ilshenar",
-    "count": 27,
+    "count": 28,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
       { "name": "Shade", "maxCount": 4, "probability": 100 },
       { "name": "Spectre", "maxCount": 4, "probability": 100 },
       { "name": "Wraith", "maxCount": 4, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 4, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 2, "probability": 100 },
       { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
       { "name": "BoneKnight", "maxCount": 2, "probability": 100 },
@@ -1330,7 +1330,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f9fb2907-bb02-48c5-9609-dc2e6b49fd8b",
+    "guid": "d614189f-8672-4e89-bc4b-8291a1b30502",
     "name": "Spawner (306)",
     "location": [742, 440, -59],
     "map": "Ilshenar",
@@ -1347,25 +1347,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "f96b7b32-7b25-48a7-823d-a81f17a4b89e",
+    "guid": "a346588e-fc86-4026-ad7f-638f3a4e67a6",
     "name": "Spawner (306)",
     "location": [756, 208, -40],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "Cyclops", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Cyclops", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "eea3abd4-5d7f-4854-8780-19378342bad2",
+    "guid": "93a7016a-68e5-4156-85b8-46f7b3541204",
     "name": "Spawner (306)",
     "location": [739, 264, -54],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1374,16 +1374,16 @@
     "entries": [
       { "name": "Cyclops", "maxCount": 1, "probability": 100 },
       { "name": "Titan", "maxCount": 1, "probability": 100 },
-      { "name": "Ettin", "maxCount": 1, "probability": 100 }
+      { "name": "Ettin", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "97dcb82c-f520-4d5b-9d51-dd8f1b781306",
+    "guid": "b24508ab-8fa6-4351-b5d2-8510838b1d3a",
     "name": "Spawner (306)",
     "location": [778, 264, -38],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1392,61 +1392,61 @@
     "entries": [
       { "name": "Cyclops", "maxCount": 1, "probability": 100 },
       { "name": "Titan", "maxCount": 1, "probability": 100 },
-      { "name": "Ettin", "maxCount": 1, "probability": 100 }
+      { "name": "Ettin", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "87552cd0-1d92-4bc6-90d8-f76d12a31155",
+    "guid": "14ed09e5-c8db-41fb-8a30-157645a536d5",
     "name": "Spawner (306)",
     "location": [511, 545, -60],
     "map": "Ilshenar",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 25,
     "entries": [
-      { "name": "Brigand", "maxCount": 1, "probability": 100 },
-      { "name": "EvilMage", "maxCount": 4, "probability": 100 }
+      { "name": "Brigand", "maxCount": 4, "probability": 100 },
+      { "name": "EvilMage", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e3556a81-fa76-4982-9eca-a0cc253e5098",
+    "guid": "0961a20d-ba51-4800-bb8e-f14f4d5fcb3a",
     "name": "Spawner (306)",
     "location": [638, 555, -75],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
-    "entries": [{ "name": "Wyvern", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Wyvern", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "17871035-89d7-4545-baf0-10ffe88cdb9f",
+    "guid": "60187c81-e05d-4b7f-8c12-76dbd3ff418e",
     "name": "Spawner (306)",
     "location": [565, 343, -77],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
-    "entries": [{ "name": "Wyvern", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Wyvern", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d305004c-d7dd-45cb-8761-286054cf5c4a",
+    "guid": "bb1339b5-13d0-43e2-97f2-8a18b10e6ef2",
     "name": "Spawner (306)",
     "location": [489, 488, -62],
     "map": "Ilshenar",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1454,12 +1454,12 @@
     "walkingRange": 25,
     "entries": [
       { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 1, "probability": 100 }
+      { "name": "Gazer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "884a090b-181e-4027-b4d8-aa155cbed709",
+    "guid": "c8a63be0-2a7a-4e1e-9c65-2e4ee4f47bbf",
     "name": "Spawner (306)",
     "location": [385, 421, -62],
     "map": "Ilshenar",
@@ -1473,7 +1473,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "13cadb9b-d1a3-413a-a75e-762083a4840d",
+    "guid": "bda84d3e-738c-4b9a-9703-8466860ed9cf",
     "name": "Spawner (306)",
     "location": [447, 425, -60],
     "map": "Ilshenar",
@@ -1487,7 +1487,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "81df59de-6398-4c1f-b3bf-c1d622f0c732",
+    "guid": "ad42a047-e713-4409-bc9f-a11f7e17bca8",
     "name": "Spawner (306)",
     "location": [445, 366, -66],
     "map": "Ilshenar",
@@ -1501,7 +1501,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c06cfed7-4ab6-4e69-a5f6-179df062fa7b",
+    "guid": "c8e9cbd7-83f0-4c65-800b-914c3aa1fe14",
     "name": "Spawner (306)",
     "location": [445, 318, -64],
     "map": "Ilshenar",
@@ -1515,7 +1515,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9ffcba8d-dd1e-4c5d-8e95-29b89de2a690",
+    "guid": "8c9172c6-a58c-4a16-9e24-9a3bf2947f99",
     "name": "Spawner (306)",
     "location": [370, 264, -52],
     "map": "Ilshenar",
@@ -1527,13 +1527,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "Wyvern", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "DreadSpider", "maxCount": 2, "probability": 100 }
+      { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "69971740-15a9-4d6f-b272-7901c22a6bad",
+    "guid": "1e5aecbd-f41c-436f-95b3-89e2c0034a60",
     "name": "Spawner (306)",
     "location": [409, 264, -44],
     "map": "Ilshenar",
@@ -1545,13 +1545,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "Wyvern", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "DreadSpider", "maxCount": 2, "probability": 100 }
+      { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5b0172fb-3324-43eb-8285-973990ea559a",
+    "guid": "e66f5303-e2f3-4eb5-abc1-36879f208eb7",
     "name": "Spawner (306)",
     "location": [449, 264, -57],
     "map": "Ilshenar",
@@ -1563,13 +1563,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "Wyvern", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "DreadSpider", "maxCount": 2, "probability": 100 }
+      { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5f33d744-44f0-4491-b543-247d866aeae6",
+    "guid": "d8bde1b6-42af-4b7d-a0e4-451de4a753e8",
     "name": "Spawner (306)",
     "location": [964, 638, -80],
     "map": "Ilshenar",
@@ -1580,17 +1580,17 @@
     "homeRange": 40,
     "walkingRange": 50,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 5, "probability": 100 },
       { "name": "EarthElemental", "maxCount": 5, "probability": 100 },
       { "name": "Scorpion", "maxCount": 5, "probability": 100 },
       { "name": "SandVortex", "maxCount": 5, "probability": 100 },
-      { "name": "Ridgeback", "maxCount": 5, "probability": 100 },
+      { "name": "Ridgeback", "maxCount": 1, "probability": 100 },
       { "name": "Efreet", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5703dfb2-727d-454d-8ae3-896d04363873",
+    "guid": "0fa33e43-15d9-4128-9119-6bc6e67c8025",
     "name": "Spawner (306)",
     "location": [981, 470, -80],
     "map": "Ilshenar",
@@ -1604,7 +1604,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c08fe4e1-ae12-409f-9d40-c98300f96b37",
+    "guid": "915f87a3-d62a-478a-8ed8-8205771b3099",
     "name": "Spawner (306)",
     "location": [978, 471, -80],
     "map": "Ilshenar",
@@ -1621,7 +1621,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1479d00a-b0ae-4252-9b62-505a860d1dc4",
+    "guid": "89bd0aa6-8f61-4263-92f1-814d2a0264b2",
     "name": "Spawner (306)",
     "location": [973, 460, -80],
     "map": "Ilshenar",
@@ -1635,7 +1635,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "01ab99f6-29de-47c7-83c1-3e1fa8c70896",
+    "guid": "93671b35-d83d-4ba1-9d5c-2ef3c1deee52",
     "name": "Spawner (306)",
     "location": [964, 456, -80],
     "map": "Ilshenar",
@@ -1649,7 +1649,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "68c50049-d921-4723-a985-b823c524f8bd",
+    "guid": "533f4132-2714-4cf2-9f0c-1e40a28f13f3",
     "name": "Spawner (306)",
     "location": [963, 456, -80],
     "map": "Ilshenar",
@@ -1663,7 +1663,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "daa1e821-aaa2-486f-ac5e-879be2c7bb90",
+    "guid": "c7bffe45-66c1-49ee-879e-f98a7ca1c5e3",
     "name": "Spawner (306)",
     "location": [941, 471, -38],
     "map": "Ilshenar",
@@ -1677,25 +1677,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "d69a74d1-57b4-4051-9d33-04ae5d756a7d",
+    "guid": "9860d2a2-1efe-4933-b4de-9df5a952c306",
     "name": "Spawner (306)",
     "location": [946, 430, -80],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "38e5d36c-b836-434a-99dc-74f230f6bf4c",
+    "guid": "246103fc-8b3a-4e9e-b5a1-bc64cc17e1a2",
     "name": "Spawner (306)",
     "location": [878, 527, -77],
     "map": "Ilshenar",
-    "count": 15,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -1704,29 +1704,29 @@
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 },
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 4, "probability": 100 },
-      { "name": "Wraith", "maxCount": 4, "probability": 100 },
-      { "name": "Spectre", "maxCount": 4, "probability": 100 }
+      { "name": "Zombie", "maxCount": 4, "probability": 100 },
+      { "name": "Shade", "maxCount": 1, "probability": 100 },
+      { "name": "Wraith", "maxCount": 1, "probability": 100 },
+      { "name": "Spectre", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c1e89dfa-8032-415c-b525-b25f1f269cc0",
+    "guid": "45d80dfe-7748-4dfe-9f43-675fb7ea239a",
     "name": "Spawner (306)",
     "location": [938, 453, -80],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Imp", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Imp", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "29ad2bf5-be74-480c-8d6f-ad688a009bdd",
+    "guid": "f6ad460a-43a6-4866-805c-7019679218c5",
     "name": "Spawner (306)",
     "location": [960, 524, -80],
     "map": "Ilshenar",
@@ -1740,7 +1740,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "54d3bdcb-d5da-49c2-a5d4-1f87f3bfcdb4",
+    "guid": "148b9152-7460-4668-b5dd-713f2d94b36b",
     "name": "Spawner (306)",
     "location": [911, 502, -80],
     "map": "Ilshenar",
@@ -1754,7 +1754,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "67985a34-45b2-4381-86ec-ef35078eadfc",
+    "guid": "a940c406-d48e-4223-a432-1027cd8c93a7",
     "name": "Spawner (306)",
     "location": [930, 519, -80],
     "map": "Ilshenar",
@@ -1768,7 +1768,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b66c93e2-f939-4ac9-87c1-f8ae340be099",
+    "guid": "8e6dcfb6-d91b-4a73-8f58-a7975271494a",
     "name": "Spawner (306)",
     "location": [808, 781, -80],
     "map": "Ilshenar",
@@ -1782,21 +1782,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "f580cf30-f263-4624-8fb3-573f0619fd33",
+    "guid": "0fa441a6-e207-4f87-bc09-ba54eb01dcc0",
     "name": "Spawner (306)",
     "location": [853, 762, -80],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 17,
     "walkingRange": 17,
-    "entries": [{ "name": "Quagmire", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Quagmire", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "c8703fce-7149-4cfd-a75f-12117b3cb8ae",
+    "guid": "cb651a08-2799-4edb-b956-bc32f91337cc",
     "name": "Spawner (306)",
     "location": [821, 758, -80],
     "map": "Ilshenar",
@@ -1814,7 +1814,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f44d0f53-9e67-4967-8be8-94afae2e7c16",
+    "guid": "c73ba7bd-5cf9-4dc8-84f5-29150f4961c9",
     "name": "Spawner (306)",
     "location": [821, 802, -80],
     "map": "Ilshenar",
@@ -1832,7 +1832,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fcc68f42-dc92-4bd5-be7f-3878b375f1de",
+    "guid": "423f4313-246d-499a-bc51-580ac5a100f2",
     "name": "Spawner (306)",
     "location": [858, 799, -80],
     "map": "Ilshenar",
@@ -1843,13 +1843,13 @@
     "homeRange": 17,
     "walkingRange": 17,
     "entries": [
-      { "name": "ChaosDaemon", "maxCount": 1, "probability": 100 },
-      { "name": "Moloch", "maxCount": 2, "probability": 100 }
+      { "name": "ChaosDaemon", "maxCount": 2, "probability": 100 },
+      { "name": "Moloch", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4e859ce2-5a31-45b5-bbd7-721f50c0969c",
+    "guid": "5aeab1d9-75fc-4170-95e9-71e5d03f3c23",
     "name": "Spawner (306)",
     "location": [879, 781, -80],
     "map": "Ilshenar",
@@ -1863,35 +1863,35 @@
   },
   {
     "type": "Spawner",
-    "guid": "2f297a33-1832-487e-b13d-6e1539eaa30e",
+    "guid": "6a8e7527-9bd6-4c01-9f23-d748d01d948d",
     "name": "Spawner (306)",
     "location": [907, 780, -80],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "EarthElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "EarthElemental", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "25464782-f346-4139-bad1-6a106bc49704",
+    "guid": "855b8dbd-dbd3-435f-8e89-e5af5d8aa102",
     "name": "Spawner (306)",
     "location": [987, 791, -80],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "EarthElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "EarthElemental", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e2411ee9-3bf6-4a8c-95f8-9f9d7131779d",
+    "guid": "38307327-0a7e-48d6-aad8-2c3eb3b454c0",
     "name": "Spawner (306)",
     "location": [275, 453, -53],
     "map": "Ilshenar",
@@ -1905,41 +1905,41 @@
   },
   {
     "type": "Spawner",
-    "guid": "19cda715-57c8-453d-aebf-df0415013deb",
+    "guid": "a774cf28-ba71-4554-9b28-0cd723a5c336",
     "name": "Spawner (306)",
     "location": [652, 555, -72],
     "map": "Ilshenar",
-    "count": 21,
+    "count": 25,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 75,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 5, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 5, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 5, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 5, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 5, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
       { "name": "Gorilla", "maxCount": 3, "probability": 100 },
-      { "name": "Panther", "maxCount": 3, "probability": 100 }
+      { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a7478747-4800-4d87-83e9-33cb41e47dab",
+    "guid": "08adf16e-e138-4f14-8663-ef830eeddf25",
     "name": "Spawner (306)",
     "location": [685, 340, -64],
     "map": "Ilshenar",
-    "count": 61,
+    "count": 69,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 125,
     "walkingRange": 170,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 15, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 15, "probability": 100 },
+      { "name": "Boar", "maxCount": 9, "probability": 100 },
       { "name": "Snake", "maxCount": 9, "probability": 100 },
       { "name": "GiantSerpent", "maxCount": 9, "probability": 100 },
       { "name": "ForestOstard", "maxCount": 9, "probability": 100 },
@@ -1949,97 +1949,97 @@
   },
   {
     "type": "Spawner",
-    "guid": "4cdcee38-c0f6-4bb9-a7d9-b59117143ff7",
+    "guid": "9b8c8038-e68d-4860-a09c-1157b146b8b2",
     "name": "Spawner (306)",
     "location": [460, 469, -49],
     "map": "Ilshenar",
-    "count": 21,
+    "count": 25,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 75,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 5, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 5, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 5, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 5, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 5, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
       { "name": "Gorilla", "maxCount": 3, "probability": 100 },
-      { "name": "Panther", "maxCount": 3, "probability": 100 }
+      { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ade09147-d97b-4d97-a4c9-9e5b4c820d0d",
+    "guid": "77561622-344c-4099-a4a7-1c983b93172c",
     "name": "Spawner (306)",
     "location": [377, 340, -14],
     "map": "Ilshenar",
-    "count": 36,
+    "count": 41,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 150,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 9, "probability": 100 },
-      { "name": "Snake", "maxCount": 5, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 5, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 6, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 9, "probability": 100 },
+      { "name": "Boar", "maxCount": 5, "probability": 100 },
+      { "name": "Snake", "maxCount": 6, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 6, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 5, "probability": 100 },
       { "name": "Gorilla", "maxCount": 5, "probability": 100 },
       { "name": "Panther", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8f83ef5d-e0e3-4865-b89f-23f1e22c74a1",
+    "guid": "e263bf01-e15c-45d6-8471-682fc4fd7b7f",
     "name": "Spawner (306)",
     "location": [1083, 968, -38],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "WanderingHealer", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "WanderingHealer", "maxCount": 5, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "56345419-5e60-486f-abfb-750de7f9e34e",
+    "guid": "c4394d36-de45-41ca-84fc-2c9e7875a948",
     "name": "Spawner (306)",
     "location": [1059, 1153, -24],
     "map": "Ilshenar",
-    "count": 5,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "RatmanMage", "maxCount": 1, "probability": 100 },
+      { "name": "RatmanMage", "maxCount": 2, "probability": 100 },
       { "name": "RatmanArcher", "maxCount": 2, "probability": 100 },
-      { "name": "Ratman", "maxCount": 2, "probability": 100 }
+      { "name": "Ratman", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "aa1fbadd-ddcd-4d77-8aeb-aa4952b7bde0",
+    "guid": "fc117404-b11e-427b-9c50-1a250e2c6f75",
     "name": "Spawner (306)",
     "location": [1129, 1236, -4],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 12,
     "walkingRange": 12,
-    "entries": [{ "name": "Brigand", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Brigand", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "469e3307-ec7d-45ca-ad72-55068a25e08b",
+    "guid": "36734d32-af63-49c1-b806-c1ba82681378",
     "name": "Spawner (306)",
     "location": [1186, 1223, -20],
     "map": "Ilshenar",
@@ -2053,7 +2053,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a8bd2a5f-d946-42c4-b6ea-122ce859fd47",
+    "guid": "500ab6a2-0a26-48e1-a8b5-9592cd236d51",
     "name": "Spawner (306)",
     "location": [1519, 1019, -6],
     "map": "Ilshenar",
@@ -2067,24 +2067,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "63f97e1f-93f0-4174-b0a8-286a8d88dfde",
+    "guid": "de46934e-ee80-4505-b2df-5bbfc0d19302",
     "name": "Spawner (306)",
     "location": [1592, 1191, -20],
     "map": "Ilshenar",
-    "count": 6,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Pixie", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 5, "probability": 100 }
+      { "name": "Pixie", "maxCount": 5, "probability": 100 },
+      { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "053c629c-ab1e-4a5a-a259-7f67c62be794",
+    "guid": "4bbedf20-267f-48c4-a834-c82c531115a5",
     "name": "Spawner (306)",
     "location": [1592, 1191, -20],
     "map": "Ilshenar",
@@ -2098,24 +2098,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "0cc69629-e270-4257-82f5-6d47781ea01f",
+    "guid": "935c8221-ecb7-43ed-a44f-a323bfd7ad2f",
     "name": "Spawner (306)",
     "location": [1480, 1207, -18],
     "map": "Ilshenar",
-    "count": 6,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Pixie", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 5, "probability": 100 }
+      { "name": "Pixie", "maxCount": 5, "probability": 100 },
+      { "name": "Horse", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "356e4e3f-d94f-40a9-8691-008156f69f53",
+    "guid": "4029fe3c-23cf-438c-a07a-4fdcbb5ad98d",
     "name": "Spawner (306)",
     "location": [1480, 1207, -18],
     "map": "Ilshenar",
@@ -2129,7 +2129,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "6c279e8f-d35f-40a2-a72b-f2b97656304e",
+    "guid": "ab196c04-1fa2-4aac-bf08-c653a218149f",
     "name": "Spawner (306)",
     "location": [1318, 1246, -13],
     "map": "Ilshenar",
@@ -2140,78 +2140,78 @@
     "homeRange": 40,
     "walkingRange": 50,
     "entries": [
-      { "name": "Pixie", "maxCount": 1, "probability": 100 },
-      { "name": "Horse", "maxCount": 3, "probability": 100 }
+      { "name": "Pixie", "maxCount": 3, "probability": 100 },
+      { "name": "Horse", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b647763e-a1d1-44fa-b0a6-02ee2cbb79c9",
+    "guid": "c9403c33-1e5e-4413-89a5-b693041ee147",
     "name": "Spawner (306)",
     "location": [1183, 1287, -30],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 1, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6dc37ba1-42a9-44a6-b7e7-d522fb7e1422",
+    "guid": "6fe48793-7f65-4c9e-8c1e-aebc0d2b459b",
     "name": "Spawner (306)",
     "location": [1319, 1331, -14],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "Sheep", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Sheep", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9ee6c7dd-2699-4b5e-bdf0-9f04b6df70db",
+    "guid": "97ddb07d-ac52-4d89-a40a-66512e0a6b68",
     "name": "Spawner (306)",
     "location": [1733, 1161, -5],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Skeleton", "maxCount": 7, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f8eca2d8-9e05-43b3-84dd-95c50fe4928e",
+    "guid": "5858430b-e4a9-49a5-b71d-6420192f6e2a",
     "name": "Spawner (306)",
     "location": [1747, 1221, -1],
     "map": "Ilshenar",
-    "count": 13,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
       { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 },
       { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
-      { "name": "Imp", "maxCount": 4, "probability": 100 }
+      { "name": "Imp", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "79f13703-645d-41cf-b03e-dcd3551795e2",
+    "guid": "5f6a19c4-1d83-4f95-86d7-afd4160faabb",
     "name": "Spawner (306)",
     "location": [1678, 971, 10],
     "map": "Ilshenar",
@@ -2222,13 +2222,13 @@
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "Harpy", "maxCount": 1, "probability": 100 },
-      { "name": "StoneHarpy", "maxCount": 3, "probability": 100 }
+      { "name": "Harpy", "maxCount": 3, "probability": 100 },
+      { "name": "StoneHarpy", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b949d7a7-a4c2-44c2-8634-6569a65c1aea",
+    "guid": "5cb3934e-2648-42a4-92d4-4da366ca8e8e",
     "name": "Spawner (306)",
     "location": [1674, 1074, 32],
     "map": "Ilshenar",
@@ -2242,98 +2242,98 @@
   },
   {
     "type": "Spawner",
-    "guid": "345d3700-ec00-4219-bab1-6ca688c52017",
+    "guid": "86f65b14-63c0-45c5-a1d5-26f0c0ad1923",
     "name": "Spawner (306)",
     "location": [1585, 990, 20],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 0,
     "walkingRange": 10,
-    "entries": [{ "name": "GiantRat", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GiantRat", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "dc6bab6f-f118-4168-b71c-8856f62c02f2",
+    "guid": "3050128c-f92f-40f8-a54f-b124d91e9643",
     "name": "Spawner (306)",
     "location": [1436, 960, -22],
     "map": "Ilshenar",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "GiantSpider", "maxCount": 1, "probability": 100 },
-      { "name": "DreadSpider", "maxCount": 5, "probability": 100 },
+      { "name": "GiantSpider", "maxCount": 5, "probability": 100 },
+      { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
       { "name": "Reaper", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3211a057-585b-4141-b200-af72f7aac1d8",
+    "guid": "0dad4576-0be0-4d25-b709-e337329c7434",
     "name": "Spawner (306)",
     "location": [1249, 957, -14],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 5, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "dae37e39-cfb9-463c-808b-36bf38bce62f",
+    "guid": "8583a810-bc1c-48ad-a549-962fd61d0b3c",
     "name": "Spawner (306)",
     "location": [1360, 888, -21],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 40,
-    "entries": [{ "name": "Troll", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Troll", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "dc5c8b95-ec43-4df6-b025-809475ff3ab7",
+    "guid": "0f22eecb-d20d-467c-8320-7b8c600bf94a",
     "name": "Spawner (306)",
     "location": [1817, 976, -28],
     "map": "Ilshenar",
-    "count": 8,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 45,
     "walkingRange": 45,
     "entries": [
-      { "name": "DreadSpider", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSpider", "maxCount": 7, "probability": 100 }
+      { "name": "DreadSpider", "maxCount": 7, "probability": 100 },
+      { "name": "GiantSpider", "maxCount": 13, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3db3e7db-18b3-49e3-9d23-387e4911f286",
+    "guid": "75aa1921-f2b2-43d5-b5a3-539938dc84d3",
     "name": "Spawner (306)",
     "location": [1504, 878, 10],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
-    "entries": [{ "name": "GiantSpider", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GiantSpider", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b215af2c-af46-4c79-80ea-4b0175cf9a26",
+    "guid": "916725c8-aef2-459e-9f2c-c23ca371352f",
     "name": "Spawner (306)",
     "location": [664, 668, 5],
     "map": "Ilshenar",
@@ -2351,28 +2351,28 @@
   },
   {
     "type": "Spawner",
-    "guid": "d2e7b81a-193e-48e0-96be-506454368e19",
+    "guid": "254b15bd-8890-47c2-925a-409665abba5f",
     "name": "Spawner (306)",
     "location": [664, 665, -15],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 10,
     "entries": [
-      { "name": "RatmanArcher", "maxCount": 1, "probability": 100 },
+      { "name": "RatmanArcher", "maxCount": 2, "probability": 100 },
       { "name": "Ratman", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9ef30fc5-fb20-4dcc-8add-7109d9f905b0",
+    "guid": "d0a35375-d483-4b8e-8e11-a417511835c7",
     "name": "Spawner (306)",
     "location": [664, 665, -35],
     "map": "Ilshenar",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2380,30 +2380,30 @@
     "walkingRange": 10,
     "entries": [
       { "name": "RatmanMage", "maxCount": 1, "probability": 100 },
-      { "name": "Ratman", "maxCount": 1, "probability": 100 }
+      { "name": "Ratman", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1eec04bf-ac02-4179-b03e-d2b92eb140a0",
+    "guid": "19ee8b08-6c03-48c5-87a3-e35e6154c73b",
     "name": "Spawner (306)",
     "location": [644, 819, -44],
     "map": "Ilshenar",
-    "count": 7,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 25,
     "entries": [
-      { "name": "RatmanMage", "maxCount": 1, "probability": 100 },
+      { "name": "RatmanMage", "maxCount": 3, "probability": 100 },
       { "name": "RatmanArcher", "maxCount": 3, "probability": 100 },
-      { "name": "Ratman", "maxCount": 3, "probability": 100 }
+      { "name": "Ratman", "maxCount": 9, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "07dd49a2-443e-464f-9909-6aa4161b3e02",
+    "guid": "6aa1bee0-2572-44a5-b8fe-623164574007",
     "name": "Spawner (306)",
     "location": [961, 924, -37],
     "map": "Ilshenar",
@@ -2417,7 +2417,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "04feafea-8248-4c31-8427-b8f09431b054",
+    "guid": "04b1ac85-67ac-413d-8cbb-f7f71f147798",
     "name": "Spawner (306)",
     "location": [567, 807, -74],
     "map": "Ilshenar",
@@ -2431,7 +2431,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5da5bde6-8472-4e2d-a455-bccba76da31f",
+    "guid": "7ab34900-50fe-453d-8b90-da5b86715ccf",
     "name": "Spawner (306)",
     "location": [830, 1206, -70],
     "map": "Ilshenar",
@@ -2445,20 +2445,20 @@
   },
   {
     "type": "Spawner",
-    "guid": "1829f6e7-d6ec-4991-9411-33908b8fc370",
+    "guid": "a14e4f1b-c4de-4ff8-bb75-75543b4c5167",
     "name": "Spawner (306)",
     "location": [485, 891, -82],
     "map": "Ilshenar",
-    "count": 13,
+    "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Ratman", "maxCount": 1, "probability": 100 },
-      { "name": "RatmanMage", "maxCount": 5, "probability": 100 },
-      { "name": "RatmanArcher", "maxCount": 1, "probability": 100 },
+      { "name": "Ratman", "maxCount": 5, "probability": 100 },
+      { "name": "RatmanMage", "maxCount": 1, "probability": 100 },
+      { "name": "RatmanArcher", "maxCount": 2, "probability": 100 },
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 },
       { "name": "Slime", "maxCount": 2, "probability": 100 }
@@ -2466,7 +2466,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fd60de81-308c-42ac-8545-015a9c3258aa",
+    "guid": "d209cb2d-5d2f-411b-9b5e-7f706cdd7300",
     "name": "Spawner (306)",
     "location": [487, 890, -82],
     "map": "Ilshenar",
@@ -2480,32 +2480,32 @@
   },
   {
     "type": "Spawner",
-    "guid": "9b96f8db-dbfd-4f61-a020-06ea232b14da",
+    "guid": "5792ab40-48c0-42e6-a5db-4838dc0c300e",
     "name": "Spawner (306)",
     "location": [330, 881, -73],
     "map": "Ilshenar",
-    "count": 25,
+    "count": 33,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 4, "probability": 100 },
-      { "name": "Shade", "maxCount": 4, "probability": 100 },
-      { "name": "Wraith", "maxCount": 4, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 5, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Spectre", "maxCount": 5, "probability": 100 },
+      { "name": "Shade", "maxCount": 5, "probability": 100 },
+      { "name": "Wraith", "maxCount": 5, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
       { "name": "Zombie", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 2, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 2, "probability": 100 }
+      { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 2, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f7ecb7c6-b46c-487d-a7fa-53c938a9f72f",
+    "guid": "d3223fca-57e3-4923-bef7-741a622cc266",
     "name": "Spawner (306)",
     "location": [325, 893, -72],
     "map": "Ilshenar",
@@ -2519,7 +2519,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c3c2380a-60a9-47fe-b475-58c96a75b9ec",
+    "guid": "086c1599-8464-4ae3-be70-ff4edec128a0",
     "name": "Spawner (306)",
     "location": [366, 881, -73],
     "map": "Ilshenar",
@@ -2533,7 +2533,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "075adc87-1cee-40f9-bad3-1d66355cfa25",
+    "guid": "10c377d7-814b-44a2-8d34-e1c90cd2e25e",
     "name": "Spawner (306)",
     "location": [338, 863, -72],
     "map": "Ilshenar",
@@ -2547,28 +2547,28 @@
   },
   {
     "type": "Spawner",
-    "guid": "c345853b-bd71-433b-861b-9f358b4711f2",
+    "guid": "602719e0-6565-4707-8f9a-4460ced42d0f",
     "name": "Spawner (306)",
     "location": [353, 1140, -54],
     "map": "Ilshenar",
-    "count": 27,
+    "count": 21,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 7, "probability": 100 },
-      { "name": "Shade", "maxCount": 7, "probability": 100 },
-      { "name": "Wraith", "maxCount": 7, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 3, "probability": 100 },
-      { "name": "Zombie", "maxCount": 2, "probability": 100 }
+      { "name": "Skeleton", "maxCount": 7, "probability": 100 },
+      { "name": "Spectre", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Wraith", "maxCount": 3, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4e456b48-0809-4fb9-84ac-ceac20868488",
+    "guid": "cde2c4ad-6546-4074-8458-bf1b7e4cc1fe",
     "name": "Spawner (306)",
     "location": [354, 1140, -52],
     "map": "Ilshenar",
@@ -2582,110 +2582,110 @@
   },
   {
     "type": "Spawner",
-    "guid": "86b1486e-31cf-45a1-b0bb-9eb6255f9c03",
+    "guid": "84ee87b3-72fa-43f4-90df-c287b17588ef",
     "name": "Spawner (306)",
     "location": [430, 1176, -68],
     "map": "Ilshenar",
-    "count": 35,
+    "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 60,
     "walkingRange": 60,
     "entries": [
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantToad", "maxCount": 4, "probability": 100 },
-      { "name": "Alligator", "maxCount": 12, "probability": 100 },
-      { "name": "Reaper", "maxCount": 14, "probability": 100 },
-      { "name": "Corpser", "maxCount": 4, "probability": 100 }
+      { "name": "SwampTentacle", "maxCount": 4, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 12, "probability": 100 },
+      { "name": "Alligator", "maxCount": 14, "probability": 100 },
+      { "name": "Reaper", "maxCount": 4, "probability": 100 },
+      { "name": "Corpser", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "498d5b87-ea6c-416f-a9da-d42777f378cb",
+    "guid": "496642db-4897-4369-9ac0-a26146a6c7f1",
     "name": "Spawner (306)",
     "location": [350, 1204, -38],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantToad", "maxCount": 2, "probability": 100 },
-      { "name": "Alligator", "maxCount": 5, "probability": 100 },
-      { "name": "Reaper", "maxCount": 6, "probability": 100 },
-      { "name": "Corpser", "maxCount": 2, "probability": 100 }
+      { "name": "SwampTentacle", "maxCount": 2, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 5, "probability": 100 },
+      { "name": "Alligator", "maxCount": 6, "probability": 100 },
+      { "name": "Reaper", "maxCount": 2, "probability": 100 },
+      { "name": "Corpser", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "500eec14-5daa-411b-8057-4382d06acdfb",
+    "guid": "0fedd12d-c965-4493-aacd-799084d62c80",
     "name": "Spawner (306)",
     "location": [400, 1334, -37],
     "map": "Ilshenar",
-    "count": 29,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "GiantToad", "maxCount": 5, "probability": 100 },
-      { "name": "Lizardman", "maxCount": 8, "probability": 100 },
-      { "name": "Alligator", "maxCount": 5, "probability": 100 },
-      { "name": "Reaper", "maxCount": 5, "probability": 100 },
-      { "name": "Corpser", "maxCount": 5, "probability": 100 }
+      { "name": "SwampTentacle", "maxCount": 5, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 8, "probability": 100 },
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 },
+      { "name": "Alligator", "maxCount": 0, "probability": 100 },
+      { "name": "Reaper", "maxCount": 0, "probability": 100 },
+      { "name": "Corpser", "maxCount": 0, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c0b225a5-fab6-4d4b-979b-adbff1f4b67c",
+    "guid": "0ef6d45b-26f2-4af9-89db-ba0addfbf94d",
     "name": "Spawner (306)",
     "location": [291, 1313, -25],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Lizardman", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lizardman", "maxCount": 7, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "0f5455ce-0dd7-4bfe-b535-52926d0005a6",
+    "guid": "78f533ab-64cb-42b2-8c11-50a0e5fe83cb",
     "name": "Spawner (306)",
     "location": [295, 1348, -26],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Lizardman", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lizardman", "maxCount": 8, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "653d49a5-e3ff-43b8-9af2-9b4c5f2a5953",
+    "guid": "daff3d5f-d96a-4edf-9379-5d95f82b7c5f",
     "name": "Spawner (306)",
     "location": [302, 1580, -29],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "Lizardman", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Lizardman", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "80374557-450e-4409-89cd-3df508c1d3df",
+    "guid": "9bd22c4d-ea60-4233-99dc-2a967f7c733e",
     "name": "Spawner (306)",
     "location": [325, 1576, -28],
     "map": "Ilshenar",
@@ -2699,11 +2699,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "ac68311a-6671-477b-ad9b-d36e1e5d7534",
+    "guid": "f38998c1-f3fd-44a7-957e-16b534ff0653",
     "name": "Spawner (306)",
     "location": [223, 1360, -15],
     "map": "Ilshenar",
-    "count": 4,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2711,13 +2711,13 @@
     "walkingRange": 20,
     "entries": [
       { "name": "AncientWyrm", "maxCount": 1, "probability": 100 },
-      { "name": "Wyvern", "maxCount": 1, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 2, "probability": 100 }
+      { "name": "Wyvern", "maxCount": 2, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b8d659d8-7cf2-4273-8b1a-52393f8b1e6b",
+    "guid": "1f725ef3-ebbb-4fda-b5ae-c16b427104ca",
     "name": "Spawner (306)",
     "location": [278, 1440, 15],
     "map": "Ilshenar",
@@ -2731,11 +2731,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "62f983df-95ff-431b-a219-b95cdbad964a",
+    "guid": "076e1275-766d-48ef-bda7-888e230bca42",
     "name": "Spawner (306)",
     "location": [314, 1436, 16],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2744,16 +2744,16 @@
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Imp", "maxCount": 1, "probability": 100 }
+      { "name": "Imp", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9b0e9db0-18d4-4d80-ab3d-04c00833a2e2",
+    "guid": "291c275c-c7c3-4ec5-932b-99e06a514a68",
     "name": "Spawner (306)",
     "location": [350, 1441, 17],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -2762,405 +2762,405 @@
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 },
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
-      { "name": "Imp", "maxCount": 1, "probability": 100 }
+      { "name": "Imp", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e1afba89-41fe-4ff2-8e07-3aacb999dec5",
+    "guid": "52ba4d5e-4e54-4744-af45-98464b5d360d",
     "name": "Spawner (306)",
     "location": [438, 1431, 15],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
     "entries": [
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
       { "name": "AirElemental", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e981b59f-323f-4911-97ae-e38f04a8f373",
+    "guid": "66be2f1c-166a-4694-9b74-2c8a3f365304",
     "name": "Spawner (306)",
     "location": [648, 1321, -57],
     "map": "Ilshenar",
-    "count": 9,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "Wisp", "maxCount": 6, "probability": 100 },
-      { "name": "Imp", "maxCount": 2, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 6, "probability": 100 },
+      { "name": "Wisp", "maxCount": 2, "probability": 100 },
+      { "name": "Imp", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "81a92b8b-5221-4c7f-88c6-153485111ae1",
+    "guid": "98bcc57c-f24e-4764-93a9-f486a9379d2b",
     "name": "Spawner (306)",
     "location": [722, 1354, -61],
     "map": "Ilshenar",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 4, "probability": 100 }
+      { "name": "Imp", "maxCount": 4, "probability": 100 },
+      { "name": "Gazer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ded455bf-9a67-4b5a-bdb3-1cc4a9138aa0",
+    "guid": "b11e684d-6746-4c39-b7c5-2a5bea99f390",
     "name": "Spawner (306)",
     "location": [913, 935, -34],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "WaterElemental", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f940e406-1cbc-47c1-8d54-9d630a5ad3f2",
+    "guid": "298c7ddb-ebbf-4612-a854-1bc1426cccae",
     "name": "Spawner (306)",
     "location": [963, 1028, -31],
     "map": "Ilshenar",
-    "count": 7,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 40,
     "entries": [
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 2, "probability": 100 },
-      { "name": "Imp", "maxCount": 4, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "0bbfff59-31e2-4217-8634-7c55ddbb54e2",
-    "name": "Spawner (306)",
-    "location": [935, 1159, 13],
-    "map": "Ilshenar",
-    "count": 7,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 20,
-    "walkingRange": 40,
-    "entries": [
-      { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 3, "probability": 100 },
+      { "name": "Reaper", "maxCount": 2, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 4, "probability": 100 },
       { "name": "Imp", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7c1142fd-0037-4fec-8883-b1283792aa9c",
+    "guid": "3f36fa99-2950-4295-b39a-ebb0c1dd3017",
+    "name": "Spawner (306)",
+    "location": [935, 1159, 13],
+    "map": "Ilshenar",
+    "count": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 40,
+    "entries": [
+      { "name": "HeadlessOne", "maxCount": 3, "probability": 100 },
+      { "name": "Mongbat", "maxCount": 3, "probability": 100 },
+      { "name": "Imp", "maxCount": 4, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "593491fa-5902-4bbd-a248-1c0e58ea5bf2",
     "name": "Spawner (306)",
     "location": [822, 1324, -80],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
-    "entries": [{ "name": "Ettin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ettin", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a95b21c9-bee7-43eb-b3bb-eda466900e16",
+    "guid": "76b15d9f-4815-4abd-bd0d-8ebe13f45963",
     "name": "Spawner (306)",
     "location": [902, 1308, -71],
     "map": "Ilshenar",
-    "count": 7,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 40,
     "entries": [
-      { "name": "Titan", "maxCount": 1, "probability": 100 },
-      { "name": "Cyclops", "maxCount": 2, "probability": 100 },
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      { "name": "Titan", "maxCount": 2, "probability": 100 },
+      { "name": "Cyclops", "maxCount": 4, "probability": 100 },
+      { "name": "Ettin", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "95abde86-a63a-491b-9fea-b452d8e5ef89",
+    "guid": "0acc4d80-e57e-4ada-9f24-53bba1ffe5e5",
     "name": "Spawner (306)",
     "location": [646, 1209, -93],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 50,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "6c2646df-c079-439a-9635-2e313398e25d",
+    "guid": "addf87ea-2d7b-4e39-b5f1-4c0b1c3120c9",
     "name": "Spawner (306)",
     "location": [605, 1061, -84],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 45,
     "walkingRange": 55,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "70e79e3c-af87-4a82-92c4-c8018046588f",
+    "guid": "de84abd4-148d-490b-8e0c-cd8b3ad0d570",
     "name": "Spawner (306)",
     "location": [564, 1142, -99],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 45,
     "walkingRange": 65,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0d316994-c37b-4716-b634-06d48b8bb2e1",
+    "guid": "ae5290ae-eb74-40e6-abb6-cc586fa3e4cc",
     "name": "Spawner (306)",
     "location": [681, 1125, -73],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 65,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7fe9b493-4ae2-4f84-a49c-8a1d35209bea",
+    "guid": "c86d1aed-19a0-4855-9dce-86450e4b0d77",
     "name": "Spawner (306)",
     "location": [703, 984, -68],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 65,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7f05b57f-e0d8-4ed5-977f-0ab893c39ccc",
+    "guid": "dc26c928-f4d0-4d1b-a7ca-7ea4027a9a91",
     "name": "Spawner (306)",
     "location": [605, 973, -82],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 65,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "31cf340d-2a5b-4e8d-b7a3-eb7fc2c2443f",
+    "guid": "f611a42b-317a-4ca0-b501-6ddc2adb85dc",
     "name": "Spawner (306)",
     "location": [514, 1225, -66],
     "map": "Ilshenar",
-    "count": 11,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 40,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 1, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 1, "probability": 100 },
+      { "name": "Snake", "maxCount": 2, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 1, "probability": 100 },
       { "name": "Gorilla", "maxCount": 1, "probability": 100 },
       { "name": "Panther", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fcf74113-16cb-4fa2-941e-a9d85217e9b6",
+    "guid": "e62b74f0-dc0a-490a-9581-a6611b443e02",
     "name": "Spawner (306)",
     "location": [733, 1238, -68],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 65,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2683aa90-51a5-4ae0-bcb5-ec51e52b7d2f",
+    "guid": "c03f4618-eaa9-473e-b571-3d7197d1ba08",
     "name": "Spawner (306)",
     "location": [397, 958, -80],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 70,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1a9b1539-d345-4007-99cf-67e8dad2d356",
+    "guid": "9458d67e-b0f9-441b-b63a-bbf7079ae8ed",
     "name": "Spawner (306)",
     "location": [468, 874, -80],
     "map": "Ilshenar",
-    "count": 16,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 50,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 4, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 2, "probability": 100 },
-      { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 4, "probability": 100 },
+      { "name": "Boar", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 3, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "ForestOstard", "maxCount": 2, "probability": 100 },
       { "name": "Gorilla", "maxCount": 2, "probability": 100 },
       { "name": "Panther", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f6116bb4-cb79-4ee9-b14a-ce564f6bc8d1",
+    "guid": "5af10a00-c696-4cdc-a52c-aa5d1e9487a5",
     "name": "Spawner (306)",
     "location": [630, 828, -55],
     "map": "Ilshenar",
-    "count": 26,
+    "count": 29,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 85,
     "walkingRange": 110,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Snake", "maxCount": 3, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 7, "probability": 100 },
+      { "name": "Boar", "maxCount": 3, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 4, "probability": 100 },
       { "name": "ForestOstard", "maxCount": 4, "probability": 100 },
       { "name": "Gorilla", "maxCount": 4, "probability": 100 },
-      { "name": "Panther", "maxCount": 4, "probability": 100 }
+      { "name": "Panther", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "252ea116-ecbb-4db3-9bca-d3dad95f040a",
+    "guid": "f2fc6ccf-528b-4b5a-bc54-fcae4de2645a",
     "name": "Spawner (306)",
     "location": [588, 674, -60],
     "map": "Ilshenar",
-    "count": 26,
+    "count": 29,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 75,
     "walkingRange": 100,
     "entries": [
-      { "name": "TropicalBird", "maxCount": 1, "probability": 100 },
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Snake", "maxCount": 3, "probability": 100 },
-      { "name": "GiantSerpent", "maxCount": 3, "probability": 100 },
+      { "name": "TropicalBird", "maxCount": 7, "probability": 100 },
+      { "name": "Boar", "maxCount": 3, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "GiantSerpent", "maxCount": 4, "probability": 100 },
       { "name": "ForestOstard", "maxCount": 4, "probability": 100 },
       { "name": "Gorilla", "maxCount": 4, "probability": 100 },
-      { "name": "Panther", "maxCount": 4, "probability": 100 }
+      { "name": "Panther", "maxCount": 3, "probability": 100 }
     ]
   }
 ]

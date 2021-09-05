@@ -1,11 +1,11 @@
 [
   {
     "type": "Spawner",
-    "guid": "298e0088-4644-40ee-b3a8-3ed424cb3428",
+    "guid": "78418ede-6a0c-4d1e-9ee5-3b2dd75de1ed",
     "name": "Spawner (404)",
     "location": [1920, 1124, -90],
     "map": "Malas",
-    "count": 92,
+    "count": 96,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -13,31 +13,31 @@
     "walkingRange": 140,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 15, "probability": 100 },
       { "name": "Ogre", "maxCount": 15, "probability": 100 },
       { "name": "Reaper", "maxCount": 15, "probability": 100 },
       { "name": "Gargoyle", "maxCount": 15, "probability": 100 },
       { "name": "Harpy", "maxCount": 15, "probability": 100 },
-      { "name": "EarthElemental", "maxCount": 15, "probability": 100 },
-      { "name": "FireElemental", "maxCount": 15, "probability": 100 }
+      { "name": "EarthElemental", "maxCount": 10, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bef26a2c-ce48-4775-8c3f-beedb07c4cac",
+    "guid": "129d7928-4bb8-4452-ade5-c566f3ae78f8",
     "name": "Spawner (404)",
     "location": [1920, 1124, -90],
     "map": "Malas",
-    "count": 64,
+    "count": 74,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 120,
     "walkingRange": 140,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
       { "name": "Cougar", "maxCount": 5, "probability": 100 },
       { "name": "Panther", "maxCount": 5, "probability": 100 },
       { "name": "DireWolf", "maxCount": 5, "probability": 100 },
@@ -45,15 +45,15 @@
       { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
       { "name": "Bird", "maxCount": 5, "probability": 100 },
       { "name": "Eagle", "maxCount": 5, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 5, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 5, "probability": 100 },
-      { "name": "Hind", "maxCount": 8, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 8, "probability": 100 }
+      { "name": "JackRabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2ffdaef3-9733-48ce-acf7-55e0581fb6f8",
+    "guid": "fc3ec295-bbca-4eb5-97cb-e0710bc649a0",
     "name": "Spawner (404)",
     "location": [2266, 1218, -85],
     "map": "Malas",
@@ -65,30 +65,30 @@
     "walkingRange": 180,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Ghoul", "maxCount": 1, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 25, "probability": 100 },
       { "name": "Ogre", "maxCount": 25, "probability": 100 },
       { "name": "Reaper", "maxCount": 25, "probability": 100 },
       { "name": "Gargoyle", "maxCount": 25, "probability": 100 },
       { "name": "Harpy", "maxCount": 25, "probability": 100 },
-      { "name": "Nightmare", "maxCount": 25, "probability": 100 }
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0220a027-fcd7-4635-83f9-47e93b2eebba",
+    "guid": "178182a3-de8f-4be2-9cb9-8cb0c6d74e6e",
     "name": "Spawner (404)",
     "location": [2267, 1218, -85],
     "map": "Malas",
-    "count": 64,
+    "count": 74,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 150,
     "walkingRange": 180,
     "entries": [
-      { "name": "BrownBear", "maxCount": 1, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 1, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 1, "probability": 100 },
+      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
       { "name": "Cougar", "maxCount": 5, "probability": 100 },
       { "name": "Panther", "maxCount": 5, "probability": 100 },
       { "name": "DireWolf", "maxCount": 5, "probability": 100 },
@@ -96,27 +96,27 @@
       { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
       { "name": "Bird", "maxCount": 5, "probability": 100 },
       { "name": "Eagle", "maxCount": 5, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 5, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 5, "probability": 100 },
-      { "name": "Hind", "maxCount": 8, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 8, "probability": 100 }
+      { "name": "JackRabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "576b0dff-b625-4525-89de-5d964dceae25",
+    "guid": "be692040-ffdb-41a7-989d-c5d3ba4ea1e1",
     "name": "Spawner (404)",
     "location": [2303, 1258, -86],
     "map": "Malas",
-    "count": 27,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Corpser", "maxCount": 1, "probability": 100 },
-      { "name": "Ogre", "maxCount": 6, "probability": 100 },
+      { "name": "Corpser", "maxCount": 6, "probability": 100 },
+      { "name": "Ogre", "maxCount": 4, "probability": 100 },
       { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
       { "name": "FireElemental", "maxCount": 4, "probability": 100 },
       { "name": "Wraith", "maxCount": 4, "probability": 100 },
@@ -126,7 +126,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "68aa3f96-efed-4b3f-8c8a-9e745f21f3a9",
+    "guid": "c4e170ec-2f67-44dd-8fbb-edd5bbb489e0",
     "name": "Spawner (404)",
     "location": [2304, 1258, -86],
     "map": "Malas",
@@ -137,17 +137,17 @@
     "homeRange": 70,
     "walkingRange": 70,
     "entries": [
-      { "name": "Ettin", "maxCount": 1, "probability": 100 },
+      { "name": "Ettin", "maxCount": 4, "probability": 100 },
       { "name": "Reaper", "maxCount": 4, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 4, "probability": 100 },
       { "name": "Troll", "maxCount": 4, "probability": 100 },
       { "name": "Ghoul", "maxCount": 4, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 4, "probability": 100 }
+      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bb80f07f-ed76-4b49-8149-5aee649198db",
+    "guid": "f7bec035-76f2-4bc0-9d59-063c1fcddf28",
     "name": "Spawner (404)",
     "location": [1641, 1797, -110],
     "map": "Malas",
@@ -159,14 +159,14 @@
     "walkingRange": 100,
     "entries": [
       { "name": "SandVortex", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 1, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 4, "probability": 100 }
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f06edde8-500d-4fd0-a7c1-2482b8d8e58d",
+    "guid": "4ee48447-6e98-429a-b439-244147fc1c7b",
     "name": "Spawner (404)",
     "location": [1899, 1609, -110],
     "map": "Malas",
@@ -178,14 +178,14 @@
     "walkingRange": 100,
     "entries": [
       { "name": "SandVortex", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 1, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 4, "probability": 100 }
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "42ea21b5-5ccb-4dc1-9f2e-a17c76bff38e",
+    "guid": "4018d8ba-9079-4db1-aecb-c7334de8c4db",
     "name": "Spawner (404)",
     "location": [1741, 1487, -110],
     "map": "Malas",
@@ -197,14 +197,14 @@
     "walkingRange": 100,
     "entries": [
       { "name": "SandVortex", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 1, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 4, "probability": 100 }
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8909abff-c4eb-4669-961f-bb40491e6b76",
+    "guid": "4217df15-8ba5-42fc-80e5-8e7de22a5ea3",
     "name": "Spawner (404)",
     "location": [1837, 1803, -110],
     "map": "Malas",
@@ -216,134 +216,134 @@
     "walkingRange": 100,
     "entries": [
       { "name": "SandVortex", "maxCount": 1, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 1, "probability": 100 },
-      { "name": "Snake", "maxCount": 2, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 4, "probability": 100 }
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3a07f84c-ce9c-4ab9-818e-812405772434",
+    "guid": "b5991c5d-e7bc-471e-b2a9-ec64b5ebe633",
     "name": "Spawner (404)",
     "location": [1823, 1799, -90],
     "map": "Malas",
-    "count": 9,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 15,
     "entries": [
-      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 2, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
       { "name": "sphynx", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5fdc05b3-61a8-4dfd-b317-6399b7aa279c",
+    "guid": "bed05693-9e81-443b-bd5b-3c4a11fbb430",
     "name": "Spawner (404)",
     "location": [1821, 1798, -110],
     "map": "Malas",
-    "count": 9,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 15,
     "entries": [
-      { "name": "GiantRat", "maxCount": 1, "probability": 100 },
-      { "name": "Mummy", "maxCount": 4, "probability": 100 },
-      { "name": "Zombie", "maxCount": 2, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 }
+      { "name": "GiantRat", "maxCount": 4, "probability": 100 },
+      { "name": "Mummy", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b6d15758-99ff-4263-930c-f0b3dc359380",
+    "guid": "47624b12-1926-4a88-8370-152679173901",
     "name": "Spawner (404)",
     "location": [2231, 1605, -95],
     "map": "Malas",
-    "count": 27,
+    "count": 33,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 160,
     "walkingRange": 160,
     "entries": [
-      { "name": "Mongbat", "maxCount": 1, "probability": 100 },
-      { "name": "SandVortex", "maxCount": 7, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 6, "probability": 100 },
-      { "name": "Snake", "maxCount": 7, "probability": 100 },
-      { "name": "Spectre", "maxCount": 6, "probability": 100 }
+      { "name": "Mongbat", "maxCount": 7, "probability": 100 },
+      { "name": "SandVortex", "maxCount": 6, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 7, "probability": 100 },
+      { "name": "Snake", "maxCount": 6, "probability": 100 },
+      { "name": "Spectre", "maxCount": 7, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "44eaee5e-f834-4c8d-a103-64974eaa7944",
+    "guid": "03d8f05a-26a5-40e4-aadf-163a5079fea1",
     "name": "Spawner (404)",
     "location": [1466, 1418, -90],
     "map": "Malas",
-    "count": 32,
+    "count": 43,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 120,
     "walkingRange": 150,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 10, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 10, "probability": 100 },
       { "name": "VampireBat", "maxCount": 10, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 10, "probability": 100 },
-      { "name": "Treefellow", "maxCount": 10, "probability": 100 }
+      { "name": "Treefellow", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8a824e8b-62ac-4d3c-bb3f-04ca4d5ef6f6",
+    "guid": "0137720e-68d3-4dde-91fa-5e20b2dd144c",
     "name": "Spawner (404)",
     "location": [1477, 1241, -85],
     "map": "Malas",
-    "count": 8,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 70,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
-      { "name": "VampireBat", "maxCount": 2, "probability": 100 },
-      { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 3, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
       { "name": "Treefellow", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4d7fc201-971e-47a5-bea2-2a14631518ed",
+    "guid": "fc47f48c-2590-431f-a0a8-357accb94d96",
     "name": "Spawner (404)",
     "location": [1347, 1739, -110],
     "map": "Malas",
-    "count": 7,
+    "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 130,
     "walkingRange": 130,
     "entries": [
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
-      { "name": "VampireBat", "maxCount": 3, "probability": 100 },
+      { "name": "Hind", "maxCount": 3, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 3, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
-      { "name": "Sheep", "maxCount": 1, "probability": 100 }
+      { "name": "Sheep", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "71948395-5f8e-49b7-a919-15af394f7bb4",
+    "guid": "7045d1e4-a498-4079-95c9-50c5b88efd07",
     "name": "Spawner (404)",
     "location": [1327, 1146, -90],
     "map": "Malas",
@@ -362,7 +362,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "829551d6-a817-4c61-9808-1a40812d62f4",
+    "guid": "6091ade2-acd6-47e5-a9ed-e61e69ddef3e",
     "name": "Spawner (404)",
     "location": [1256, 1221, -90],
     "map": "Malas",
@@ -381,7 +381,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1e16d7a6-1c69-47cb-98df-21332c6cf5d3",
+    "guid": "06ddd223-c175-4f0d-987d-dd027f5a6daa",
     "name": "Spawner (404)",
     "location": [1345, 1314, -85],
     "map": "Malas",
@@ -400,21 +400,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "10d1de6c-b3e3-4737-bafd-2966d7b1a27f",
+    "guid": "49a978b1-8f63-4710-aff5-29c9879c489d",
     "name": "Spawner (404)",
     "location": [943, 1150, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Brigand", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Brigand", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "4eba7b60-a89c-4036-bc8b-57b98857785a",
+    "guid": "77307daf-f51a-44eb-847e-33d747156400",
     "name": "Spawner (404)",
     "location": [900, 1494, -90],
     "map": "Malas",
@@ -433,7 +433,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "96bb7256-0a45-47df-993e-60987e159127",
+    "guid": "e5aa97af-4886-4aac-ae27-fc2594e9968c",
     "name": "Spawner (404)",
     "location": [829, 1474, -85],
     "map": "Malas",
@@ -452,7 +452,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "eacb638f-823a-499c-94bc-478de6c4f18e",
+    "guid": "b1a6b874-1eff-4c33-8373-42e9fc3f03fc",
     "name": "Spawner (404)",
     "location": [989, 1419, -82],
     "map": "Malas",
@@ -471,7 +471,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "5924273c-b398-4962-b5f5-478f3fdb20fb",
+    "guid": "f15a3cb5-bcef-41b3-8012-896f497b4f4c",
     "name": "Spawner (404)",
     "location": [913, 1335, -90],
     "map": "Malas",
@@ -490,110 +490,110 @@
   },
   {
     "type": "Spawner",
-    "guid": "b576b0c6-15f5-47bd-b6fc-6d23cd539ede",
+    "guid": "6057150b-6a2c-4a9e-84ff-09b2eb09d7c9",
     "name": "Spawner (404)",
     "location": [881, 927, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b2d15f67-b51c-4b3b-b1f3-f99b740c0f00",
+    "guid": "51aed6e7-3157-4c44-bee4-c645873eff12",
     "name": "Spawner (404)",
     "location": [882, 1000, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 40,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "dcb1ced7-083e-4397-878b-d487d745e408",
+    "guid": "0bd02425-20b7-4097-ad4a-d3ad45b58c60",
     "name": "Spawner (404)",
     "location": [989, 1420, -82],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 40,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f481418f-27bc-45b7-83e3-f432d5bafaf7",
+    "guid": "7f958603-eee5-4eca-b6bd-5f1909985742",
     "name": "Spawner (404)",
     "location": [1455, 1445, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ed9cf728-cb69-403e-952b-f3025417655d",
+    "guid": "ab4611e8-c6fc-474b-93fb-28705ab8beae",
     "name": "Spawner (404)",
     "location": [1429, 1549, -110],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "4798f3dc-db98-4f40-8dcd-0292e38c98fb",
+    "guid": "ee444769-c9e0-49a7-92cc-c5251543aba6",
     "name": "Spawner (404)",
     "location": [1305, 1095, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "68959d62-4c29-492a-8615-8304eb606311",
+    "guid": "65a68d77-1b16-45c5-a249-82c14b46fec1",
     "name": "Spawner (404)",
     "location": [790, 948, -90],
     "map": "Malas",
-    "count": 6,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 120,
     "walkingRange": 140,
     "entries": [
-      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
-      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
+      { "name": "GreatHart", "maxCount": 3, "probability": 100 },
+      { "name": "Hind", "maxCount": 3, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1d4cb1c0-8fab-4aab-946c-06464cf82e42",
+    "guid": "bceb6748-c428-470f-b5f3-5a23206827e3",
     "name": "Spawner (404)",
     "location": [766, 1364, -90],
     "map": "Malas",
@@ -612,7 +612,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f5ecd677-f260-4e56-98bb-e2080c1f2e1a",
+    "guid": "2e564a2f-3d3d-4f20-9d13-2b6ce072e4f2",
     "name": "Spawner (404)",
     "location": [656, 1431, -90],
     "map": "Malas",
@@ -631,7 +631,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "590da5fe-58e7-449c-be99-0b5a2e021da3",
+    "guid": "a2969a05-f341-4ae3-9c86-8d73f2e5137a",
     "name": "Spawner (404)",
     "location": [805, 1232, -90],
     "map": "Malas",
@@ -650,26 +650,26 @@
   },
   {
     "type": "Spawner",
-    "guid": "68df3eb9-c4c9-4d8f-808e-b6cbfa2b56dd",
+    "guid": "dc030174-fcb3-4b75-89a2-ee09fd1e5bed",
     "name": "Spawner (404)",
     "location": [672, 1237, -90],
     "map": "Malas",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 60,
     "entries": [
-      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
-      { "name": "Hind", "maxCount": 1, "probability": 100 },
-      { "name": "SkitteringHopper", "maxCount": 2, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
       { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "657fd2cd-79fe-4eb3-ae47-4e58ee033fcf",
+    "guid": "9c199b72-0b1e-4f92-942f-6079389585bd",
     "name": "Spawner (404)",
     "location": [684, 1109, -90],
     "map": "Malas",
@@ -688,7 +688,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "65919756-2c6a-4aa1-bf6a-fa3e2372f181",
+    "guid": "a22024fe-91df-4af9-b037-da657e440751",
     "name": "Spawner (404)",
     "location": [1079, 1440, -90],
     "map": "Malas",
@@ -707,7 +707,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c1d33020-c660-41ba-8f6a-734b44d011aa",
+    "guid": "a7b04479-d40b-4aa5-8a35-c3d1d8ede68f",
     "name": "Spawner (404)",
     "location": [966, 1213, -90],
     "map": "Malas",
@@ -726,7 +726,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b8f4a804-ded2-41df-9033-8d1549e5158d",
+    "guid": "36b7cd97-3099-48f7-9645-9cabac74b94c",
     "name": "Spawner (404)",
     "location": [925, 1105, -90],
     "map": "Malas",
@@ -745,7 +745,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9661ed6a-7428-4fb6-970a-25325e7bdc36",
+    "guid": "9a0f12c6-e450-4880-aa98-4e0e906016b8",
     "name": "Spawner (404)",
     "location": [1049, 1332, -90],
     "map": "Malas",
@@ -764,7 +764,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0acd78d3-b8b5-4526-b85e-4f6eccc4afd2",
+    "guid": "6e505a98-ccac-4417-af44-c6bedf1806ea",
     "name": "Spawner (404)",
     "location": [1086, 1067, -90],
     "map": "Malas",
@@ -783,7 +783,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "dd0bd51a-0756-4ff9-ba19-eeea0969be65",
+    "guid": "7a2d2a5c-a7a7-449d-9765-e0bc9b226a61",
     "name": "Spawner (404)",
     "location": [1062, 988, -90],
     "map": "Malas",

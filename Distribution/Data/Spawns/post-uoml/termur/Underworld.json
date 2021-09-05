@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "62f90321-cde4-46e0-9f8e-1f43963f75a0",
+    "guid": "c59c34c6-ecf3-4243-9319-2febfdcf0e94",
     "name": "Spawner (603)",
     "location": [1127, 1202, -2],
     "map": "TerMur",
@@ -15,7 +15,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9583e3b0-f9a1-4a90-87cd-6534dd5e0f09",
+    "guid": "142fdb77-cf4f-44eb-b263-ba4d97bf16b7",
     "name": "Spawner (603)",
     "location": [1130, 1202, -2],
     "map": "TerMur",
@@ -29,7 +29,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a2a3b4e7-c64a-48a5-bc84-74f5b9e5433c",
+    "guid": "d77cab5e-bec8-46ca-96d5-1e529ab9685a",
     "name": "Spawner (603)",
     "location": [1128, 1165, -12],
     "map": "TerMur",
@@ -43,7 +43,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bef041bf-4768-4789-af37-d694c18e6b16",
+    "guid": "b00fb804-8c53-40aa-bf73-ff79d499b611",
     "name": "Spawner (603)",
     "location": [1108, 1153, -22],
     "map": "TerMur",
@@ -57,52 +57,52 @@
   },
   {
     "type": "Spawner",
-    "guid": "40cf12b0-8297-4351-b524-6815396adf41",
+    "guid": "e624e8ba-0241-4985-bfa8-748236469ac1",
     "name": "Spawner (603)",
     "location": [1110, 1169, -23],
     "map": "TerMur",
-    "count": 1,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 10,
-    "entries": [{ "name": "Slime", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Slime", "maxCount": 10, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7e9cfa6c-14dd-46a0-b8ab-132c5b86c5bf",
+    "guid": "4f51fa1e-5cb4-45ef-adc9-1251c516f1f3",
     "name": "Spawner (603)",
     "location": [1097, 1189, -38],
     "map": "TerMur",
-    "count": 1,
+    "count": 25,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 10,
-    "entries": [{ "name": "acidslug", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "acidslug", "maxCount": 25, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ffd160c1-3bff-42e7-a396-4d61fee6749e",
+    "guid": "82cb6407-a904-4657-998b-a7c546bce5f3",
     "name": "Spawner (603)",
     "location": [1039, 1185, -56],
     "map": "TerMur",
-    "count": 4,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 16,
     "walkingRange": 20,
     "entries": [
-      { "name": "bloodworm", "maxCount": 1, "probability": 100 },
-      { "name": "rotworm", "maxCount": 3, "probability": 100 }
+      { "name": "bloodworm", "maxCount": 3, "probability": 100 },
+      { "name": "rotworm", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c6b5bb2c-cb6c-48c7-8c16-82e08254a601",
+    "guid": "0828ecbb-8299-4fc9-b10d-ee60f2996a3e",
     "name": "Spawner (603)",
     "location": [1058, 1135, -37],
     "map": "TerMur",
@@ -116,35 +116,35 @@
   },
   {
     "type": "Spawner",
-    "guid": "5f3e8f8b-6c06-418f-bb0d-c0a9659abc98",
+    "guid": "ca623185-eb84-4237-8f54-bfb42ccfbee8",
     "name": "Spawner (603)",
     "location": [1064, 1106, -65],
     "map": "TerMur",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Kraken", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Kraken", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "74a17df7-1834-40c0-b888-38350ddaa645",
+    "guid": "dc25c28a-cc32-49be-8489-78333247edf8",
     "name": "Spawner (603)",
     "location": [1153, 1187, -32],
     "map": "TerMur",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 14,
     "walkingRange": 20,
-    "entries": [{ "name": "rotworm", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "rotworm", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a00f0903-176e-4b65-a3d2-5473da9116a9",
+    "guid": "f998cdfc-8753-411a-9412-1c0911f05631",
     "name": "Spawner (603)",
     "location": [1187, 1186, -40],
     "map": "TerMur",
@@ -158,25 +158,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "93b4acd1-81a3-4978-88c9-a5621960ba7e",
+    "guid": "23b5ad92-bb65-4d5c-99af-777ae8450f43",
     "name": "Spawner (603)",
     "location": [1063, 1159, -42],
     "map": "TerMur",
-    "count": 7,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "rotworm", "maxCount": 1, "probability": 100 },
-      { "name": "bloodworm", "maxCount": 3, "probability": 100 },
-      { "name": "rotworm", "maxCount": 3, "probability": 100 }
+      { "name": "rotworm", "maxCount": 3, "probability": 100 },
+      { "name": "bloodworm", "maxCount": 1, "probability": 100 },
+      { "name": "rotworm", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "83cb6b4e-1ce2-4ce9-9dfd-771e786d3d15",
+    "guid": "6a28a306-8cc5-4bbd-9f9d-ddbaa4c1f26c",
     "name": "Spawner (603)",
     "location": [1152, 1130, -42],
     "map": "TerMur",
@@ -190,7 +190,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "15e2a8a6-f805-4756-84f2-7de39b709217",
+    "guid": "889a6912-9164-40ba-a866-1a6da6452ea6",
     "name": "Spawner (603)",
     "location": [1121, 1132, -42],
     "map": "TerMur",
@@ -204,7 +204,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "c7253093-25bf-4bc9-b841-59b515c8042a",
+    "guid": "939d2aa5-208f-4610-a2c0-ea189eb32059",
     "name": "Spawner (603)",
     "location": [1150, 963, -43],
     "map": "TerMur",
@@ -218,35 +218,35 @@
   },
   {
     "type": "Spawner",
-    "guid": "259f2692-1306-42a0-8155-3800449a841f",
+    "guid": "fa514c20-fe95-45be-8af5-a6d005e04d81",
     "name": "Spawner (603)",
     "location": [1108, 1086, -60],
     "map": "TerMur",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "tanglingroots", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "tanglingroots", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b4b59332-b665-4da8-83b9-2fec3c03e231",
+    "guid": "986c8ee7-3b3c-441e-8946-4210282eaf4f",
     "name": "Spawner (603)",
     "location": [1095, 1076, -71],
     "map": "TerMur",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": -1,
-    "entries": [{ "name": "tanglingroots", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "tanglingroots", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "8e669b7d-3f70-4df4-9f89-0f811883ea39",
+    "guid": "bade7638-88a7-4b3c-b64f-3709610fe10a",
     "name": "Spawner (603)",
     "location": [1089, 1128, -42],
     "map": "TerMur",
@@ -260,7 +260,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1783fd77-742d-4000-b61f-5f7ae2996cb9",
+    "guid": "e37211fa-aec3-462b-a003-41ce01b81b8c",
     "name": "Spawner (603)",
     "location": [1104, 1128, -52],
     "map": "TerMur",
@@ -274,7 +274,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "21e1eeeb-6d2b-41dc-8200-ee977d7203a6",
+    "guid": "eea452d9-ff6e-4afe-9295-affd8f263370",
     "name": "Spawner (603)",
     "location": [1135, 1132, -42],
     "map": "TerMur",
@@ -288,57 +288,57 @@
   },
   {
     "type": "Spawner",
-    "guid": "55af6a77-60d4-4a5f-abea-7412af9d314d",
+    "guid": "91f3eb46-a4a6-47c6-a1e9-cf7dffff4eef",
     "name": "Spawner (603)",
     "location": [1015, 1118, -42],
     "map": "TerMur",
-    "count": 38,
+    "count": 64,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 14,
     "walkingRange": 25,
     "entries": [
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 8, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 8, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 8, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 8, "probability": 100 }
+      { "name": "Shade", "maxCount": 8, "probability": 100 },
+      { "name": "Spectre", "maxCount": 8, "probability": 100 },
+      { "name": "Wraith", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 8, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 4, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "77a7f94b-905f-4c25-8839-23f3e9e8884e",
+    "guid": "36f61832-f135-4efa-98f4-16bcd297f6ec",
     "name": "Spawner (603)",
     "location": [1022, 1087, -42],
     "map": "TerMur",
-    "count": 18,
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 12,
     "walkingRange": 20,
     "entries": [
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "BoneMagi", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "SkeletalMage", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
-      { "name": "SkeletalKnight", "maxCount": 3, "probability": 100 },
-      { "name": "BoneKnight", "maxCount": 3, "probability": 100 }
+      { "name": "Wraith", "maxCount": 3, "probability": 100 },
+      { "name": "Shade", "maxCount": 3, "probability": 100 },
+      { "name": "Spectre", "maxCount": 3, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 3, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 3, "probability": 100 },
+      { "name": "SkeletalMage", "maxCount": 3, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7b0b3999-9603-4754-bd12-b337906c91f0",
+    "guid": "1dd3dd3d-5465-4bce-97eb-e88e58673989",
     "name": "Spawner (603)",
     "location": [1039, 1072, -32],
     "map": "TerMur",
@@ -352,103 +352,103 @@
   },
   {
     "type": "Spawner",
-    "guid": "511b7bd6-59eb-4c2d-a5c7-d7486451e808",
+    "guid": "ffa00e7c-688a-42c2-a829-e8686d7bba6a",
     "name": "Spawner (603)",
     "location": [1191, 1022, -42],
     "map": "TerMur",
-    "count": 2,
+    "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 16,
     "walkingRange": 20,
     "entries": [
-      { "name": "GrayGoblin", "maxCount": 1, "probability": 100 },
-      { "name": "GrayGoblinMage", "maxCount": 1, "probability": 100 }
+      { "name": "GrayGoblin", "maxCount": 8, "probability": 100 },
+      { "name": "GrayGoblinMage", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a8ec7632-c02f-4a8d-89a0-0e2d919f0b57",
+    "guid": "affc2c06-9b63-449d-9c19-b3a3826e28b9",
     "name": "Spawner (603)",
     "location": [1177, 995, -27],
     "map": "TerMur",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 15,
     "entries": [
-      { "name": "GrayGoblinKeeper", "maxCount": 1, "probability": 100 },
+      { "name": "GrayGoblinKeeper", "maxCount": 2, "probability": 100 },
       { "name": "WolfSpider", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2498fb13-2bb3-4ca5-b428-10382cdcdfbd",
+    "guid": "4d42a2c4-1a24-4ed6-bc34-148de42bdf2d",
     "name": "Spawner (603)",
     "location": [1218, 1049, -42],
     "map": "TerMur",
-    "count": 2,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 20,
     "entries": [
-      { "name": "GrayGoblinMage", "maxCount": 1, "probability": 100 },
-      { "name": "GrayGoblin", "maxCount": 1, "probability": 100 }
+      { "name": "GrayGoblinMage", "maxCount": 2, "probability": 100 },
+      { "name": "GrayGoblin", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "38380b24-9b73-4a55-b213-51248c629773",
+    "guid": "277e58a3-df1b-424c-8d1e-243c7eb14340",
     "name": "Spawner (603)",
     "location": [1178, 971, -27],
     "map": "TerMur",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "GrayGoblin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GrayGoblin", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7d88168b-eb0a-4c26-b0ca-e165a35e57cf",
+    "guid": "8fc3c048-dff9-4c4e-952c-4ef7a1e18a90",
     "name": "Spawner (603)",
     "location": [1214, 1026, -22],
     "map": "TerMur",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 15,
-    "entries": [{ "name": "GrayGoblin", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GrayGoblin", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "0faeb0ed-94bc-4b99-af7e-df2008e24c99",
+    "guid": "1925adfd-93b5-4ee2-886d-68f243d3c8af",
     "name": "Spawner (603)",
     "location": [1199, 1053, -42],
     "map": "TerMur",
-    "count": 2,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 20,
     "entries": [
-      { "name": "GrayGoblinMage", "maxCount": 1, "probability": 100 },
-      { "name": "GrayGoblin", "maxCount": 1, "probability": 100 }
+      { "name": "GrayGoblinMage", "maxCount": 3, "probability": 100 },
+      { "name": "GrayGoblin", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "68b1913f-79aa-4a10-bb77-4d42f17c3b98",
+    "guid": "11155a3b-7f9d-4472-9359-2cd3b1b746fe",
     "name": "Spawner (603)",
     "location": [1204, 1041, -42],
     "map": "TerMur",
@@ -462,7 +462,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a55f910e-0c98-405e-bb97-d2209398c73b",
+    "guid": "38d513e3-3cf6-49bc-bc18-28b2736ecd66",
     "name": "Spawner (603)",
     "location": [1189, 989, -27],
     "map": "TerMur",
@@ -476,7 +476,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "aca626b4-6249-4eca-a00e-c61d86b9c219",
+    "guid": "f234c7ba-dea3-4706-b54c-de6b19cf9e39",
     "name": "Spawner (603)",
     "location": [1208, 984, -1],
     "map": "TerMur",
@@ -487,17 +487,17 @@
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "wolfspider", "maxCount": 1, "probability": 100 },
-      { "name": "GrayGoblin", "maxCount": 8, "probability": 100 }
+      { "name": "wolfspider", "maxCount": 8, "probability": 100 },
+      { "name": "GrayGoblin", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "894e6af9-11e1-467c-8210-d1fec09a26f7",
+    "guid": "922b7dbf-1106-4b28-80e2-dcfa74c26bd5",
     "name": "Spawner (603)",
     "location": [1217, 1074, -52],
     "map": "TerMur",
-    "count": 21,
+    "count": 35,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -505,17 +505,17 @@
     "walkingRange": 15,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 },
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 5, "probability": 100 },
-      { "name": "RottingCorpse", "maxCount": 5, "probability": 100 },
-      { "name": "Mummy", "maxCount": 7, "probability": 100 }
+      { "name": "Spectre", "maxCount": 5, "probability": 100 },
+      { "name": "Shade", "maxCount": 5, "probability": 100 },
+      { "name": "Wraith", "maxCount": 5, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 7, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 7, "probability": 100 },
+      { "name": "Mummy", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "39f1f7d6-d4d1-4f63-a5ae-e4a7c2e2e61d",
+    "guid": "207a5047-9320-4500-9b88-61dead080a57",
     "name": "Spawner (603)",
     "location": [1053, 861, -32],
     "map": "TerMur",
@@ -529,7 +529,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8b8754aa-1054-4a12-b9ec-b5b8ac96da4e",
+    "guid": "25149717-cb30-4532-a6c4-1f27e967b818",
     "name": "Spawner (603)",
     "location": [1094, 1002, -16],
     "map": "TerMur",
@@ -540,13 +540,13 @@
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "WolfSpider", "maxCount": 1, "probability": 100 },
-      { "name": "SentinelSpider", "maxCount": 8, "probability": 100 }
+      { "name": "WolfSpider", "maxCount": 8, "probability": 100 },
+      { "name": "SentinelSpider", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bec8ea5b-e72b-48ac-8c7e-50272a7c1252",
+    "guid": "6b73a071-9309-4dd6-9aff-c658cb412bcc",
     "name": "Spawner (603)",
     "location": [1124, 1008, -43],
     "map": "TerMur",
@@ -557,13 +557,13 @@
     "homeRange": 15,
     "walkingRange": 20,
     "entries": [
-      { "name": "WolfSpider", "maxCount": 1, "probability": 100 },
-      { "name": "BloodElemental", "maxCount": 9, "probability": 100 }
+      { "name": "WolfSpider", "maxCount": 9, "probability": 100 },
+      { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "57c2182a-cd99-4052-a103-47428f27dbfe",
+    "guid": "434332e6-3ddd-488b-9270-1839e4bdc355",
     "name": "Spawner (603)",
     "location": [1147, 993, -41],
     "map": "TerMur",
@@ -577,39 +577,39 @@
   },
   {
     "type": "Spawner",
-    "guid": "c0241f3c-405e-42f8-88d4-81e1201e831f",
+    "guid": "9624e785-8fdc-4668-82d5-6d77de98880b",
     "name": "Spawner (603)",
     "location": [1034, 1028, -43],
     "map": "TerMur",
-    "count": 3,
+    "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 6,
     "walkingRange": 10,
     "entries": [
-      { "name": "GreenGoblinAlchemist", "maxCount": 1, "probability": 100 },
-      { "name": "GreenGoblin", "maxCount": 1, "probability": 100 },
-      { "name": "GreenGoblinScout", "maxCount": 1, "probability": 100 }
+      { "name": "GreenGoblinAlchemist", "maxCount": 3, "probability": 100 },
+      { "name": "GreenGoblin", "maxCount": 3, "probability": 100 },
+      { "name": "GreenGoblinScout", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b3cbb41f-849b-40bf-8399-17ff9ee2b8c9",
+    "guid": "904fca06-c93b-439c-9fe7-586a30020f5d",
     "name": "Spawner (603)",
     "location": [1015, 1022, -43],
     "map": "TerMur",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 3,
     "walkingRange": 10,
-    "entries": [{ "name": "GreenGoblinAlchemist", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GreenGoblinAlchemist", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "d5efc35a-7cbf-41ee-a69a-b1693f161427",
+    "guid": "83664317-d423-4561-b86f-8e5f8856c7e7",
     "name": "Spawner (603)",
     "location": [1014, 1000, -43],
     "map": "TerMur",
@@ -626,42 +626,42 @@
   },
   {
     "type": "Spawner",
-    "guid": "6ec6c3e4-6611-40cb-8fd6-333e4b37b071",
+    "guid": "62a2f3ff-9ff6-46a3-9800-09bdf52d9412",
     "name": "Spawner (603)",
     "location": [1034, 1004, -43],
     "map": "TerMur",
-    "count": 2,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 7,
     "walkingRange": 15,
     "entries": [
-      { "name": "GreenGoblin", "maxCount": 1, "probability": 100 },
-      { "name": "GreenGoblinAlchemist", "maxCount": 1, "probability": 100 }
+      { "name": "GreenGoblin", "maxCount": 3, "probability": 100 },
+      { "name": "GreenGoblinAlchemist", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "788767ce-db42-47bf-a632-7bd1042dc00f",
+    "guid": "7d95236d-899f-4215-ad17-1ef9965742c4",
     "name": "Spawner (603)",
     "location": [1024, 1018, -42],
     "map": "TerMur",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 10,
-    "entries": [{ "name": "rotworm", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "rotworm", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "b7c138e4-d819-4f9e-9fff-530777aa5912",
+    "guid": "322ea15b-7a0e-4db1-a707-5d6b7f58e78a",
     "name": "Spawner (603)",
     "location": [1015, 976, -27],
     "map": "TerMur",
-    "count": 3,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -669,25 +669,25 @@
     "walkingRange": 10,
     "entries": [
       { "name": "Vernix", "maxCount": 1, "probability": 100 },
-      { "name": "GreenGoblinAlchemist", "maxCount": 1, "probability": 100 },
-      { "name": "GreenGoblin", "maxCount": 1, "probability": 100 }
+      { "name": "GreenGoblinAlchemist", "maxCount": 3, "probability": 100 },
+      { "name": "GreenGoblin", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4e7b9a80-222b-4650-aee0-4c405a2dfad9",
+    "guid": "4de54f57-f375-4acb-b7ea-00a9217addd1",
     "name": "Spawner (603)",
     "location": [1044, 976, -30],
     "map": "TerMur",
-    "count": 2,
+    "count": 24,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 17,
     "walkingRange": 25,
     "entries": [
-      { "name": "GreenGoblinAlchemist", "maxCount": 1, "probability": 100 },
-      { "name": "GreenGoblin", "maxCount": 1, "probability": 100 }
+      { "name": "GreenGoblinAlchemist", "maxCount": 12, "probability": 100 },
+      { "name": "GreenGoblin", "maxCount": 12, "probability": 100 }
     ]
   }
 ]

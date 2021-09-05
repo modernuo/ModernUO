@@ -1,90 +1,90 @@
 [
   {
     "type": "Spawner",
-    "guid": "a702eb8d-4fcf-4544-bb25-3cc1109e514c",
+    "guid": "d199d3ec-c1b5-4514-8bfa-4f4fbb61f579",
     "name": "Spawner (201)",
     "location": [6513, 871, 0],
     "map": "Felucca",
-    "count": 6,
+    "count": 102,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 35,
     "walkingRange": 35,
     "entries": [
-      { "name": "GiantSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "GiantToad", "maxCount": 1, "probability": 100 },
-      { "name": "Harpy", "maxCount": 1, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 1, "probability": 100 },
-      { "name": "Snake", "maxCount": 1, "probability": 100 },
-      { "name": "Bogling", "maxCount": 1, "probability": 100 }
+      { "name": "GiantSerpent", "maxCount": 17, "probability": 100 },
+      { "name": "GiantToad", "maxCount": 17, "probability": 100 },
+      { "name": "Harpy", "maxCount": 17, "probability": 100 },
+      { "name": "SilverSerpent", "maxCount": 17, "probability": 100 },
+      { "name": "Snake", "maxCount": 17, "probability": 100 },
+      { "name": "Bogling", "maxCount": 17, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "35dc223e-3f4c-49e3-a539-613ca77fccf2",
+    "guid": "8a810211-d3c5-40ed-acb8-c42b6da5f028",
     "name": "Spawner (201)",
     "location": [6507, 843, 0],
     "map": "Felucca",
-    "count": 7,
+    "count": 56,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Tangle", "maxCount": 1, "probability": 100 },
-      { "name": "Bogling", "maxCount": 1, "probability": 100 },
-      { "name": "Alligator", "maxCount": 1, "probability": 100 },
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Corpser", "maxCount": 1, "probability": 100 },
-      { "name": "Changeling", "maxCount": 1, "probability": 100 },
-      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+      { "name": "Tangle", "maxCount": 8, "probability": 100 },
+      { "name": "Bogling", "maxCount": 8, "probability": 100 },
+      { "name": "Alligator", "maxCount": 8, "probability": 100 },
+      { "name": "Reaper", "maxCount": 8, "probability": 100 },
+      { "name": "Corpser", "maxCount": 8, "probability": 100 },
+      { "name": "Changeling", "maxCount": 8, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1175e0e3-ee63-4568-9af4-dee601cc8e64",
+    "guid": "8fe82264-7bc0-4962-965c-af36bf738ad0",
     "name": "Spawner (201)",
     "location": [6535, 848, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Abscess", "maxCount": 1, "probability": 100 },
-      { "name": "Hydra", "maxCount": 1, "probability": 100 },
-      { "name": "BogThing", "maxCount": 1, "probability": 100 }
+      { "name": "Abscess", "maxCount": 4, "probability": 100 },
+      { "name": "Hydra", "maxCount": 4, "probability": 100 },
+      { "name": "BogThing", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "2526d506-586a-4e1f-a654-9ce43dc1bee5",
+    "guid": "b349d026-3194-4d1a-9f29-9b8f459be4d5",
     "name": "Spawner (201)",
     "location": [6518, 870, 0],
     "map": "Felucca",
-    "count": 7,
+    "count": 63,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Thrasher", "maxCount": 1, "probability": 100 },
-      { "name": "SwampTentacle", "maxCount": 1, "probability": 100 },
-      { "name": "Reaper", "maxCount": 1, "probability": 100 },
-      { "name": "Bogling", "maxCount": 1, "probability": 100 },
-      { "name": "Alligator", "maxCount": 1, "probability": 100 },
-      { "name": "Coil", "maxCount": 1, "probability": 100 },
-      { "name": "WhippingVine", "maxCount": 1, "probability": 100 }
+      { "name": "Thrasher", "maxCount": 9, "probability": 100 },
+      { "name": "SwampTentacle", "maxCount": 9, "probability": 100 },
+      { "name": "Reaper", "maxCount": 9, "probability": 100 },
+      { "name": "Bogling", "maxCount": 9, "probability": 100 },
+      { "name": "Alligator", "maxCount": 9, "probability": 100 },
+      { "name": "Coil", "maxCount": 9, "probability": 100 },
+      { "name": "WhippingVine", "maxCount": 9, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "be27af47-35c8-412b-9f81-3113600e902e",
+    "guid": "b83d3427-fbcb-4c8c-a330-faa340b6673b",
     "name": "Spawner (201)",
     "location": [6540, 872, 0],
     "map": "Felucca",
@@ -98,25 +98,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "b8b54dd6-4400-4bcf-acf7-89be12341c78",
+    "guid": "89e129a3-4792-4f6b-a2c1-d2d2f139cd86",
     "name": "Spawner (201)",
     "location": [6585, 878, 0],
     "map": "Felucca",
-    "count": 3,
+    "count": 21,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Harpy", "maxCount": 1, "probability": 100 },
-      { "name": "Saliva", "maxCount": 1, "probability": 100 },
-      { "name": "Changeling", "maxCount": 1, "probability": 100 }
+      { "name": "Harpy", "maxCount": 7, "probability": 100 },
+      { "name": "Saliva", "maxCount": 7, "probability": 100 },
+      { "name": "Changeling", "maxCount": 7, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bf379e30-e1b9-4e35-a185-2d17f079ac02",
+    "guid": "41f4d271-3758-4fea-ba48-73f83b07fdd0",
     "name": "Spawner (201)",
     "location": [6489, 897, 0],
     "map": "Felucca",
@@ -130,7 +130,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ae22187a-f01f-4970-8176-69137b98e12f",
+    "guid": "9f32c729-bf6f-40ca-803e-b04674192dd9",
     "name": "Spawner (201)",
     "location": [6518, 879, 0],
     "map": "Felucca",

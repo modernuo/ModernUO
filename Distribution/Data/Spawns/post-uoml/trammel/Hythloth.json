@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "92601aaf-0777-41d4-ba42-94fe52ddf49f",
+    "guid": "392ff493-cd17-4b2e-a84b-65de9148aa44",
     "name": "Spawner (109)",
     "location": [5923, 48, 22],
     "map": "Trammel",
@@ -18,24 +18,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "1d7dbccf-67bc-4896-927c-22784410cc79",
+    "guid": "ad8d4aa2-dca5-4329-beee-55accb654a73",
     "name": "Spawner (109)",
     "location": [5911, 55, 22],
     "map": "Trammel",
-    "count": 3,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel1", "maxCount": 2, "probability": 100 }
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
+      { "name": "TreasureChestLevel1", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "530ee447-531a-49bd-855e-3466dfe004c8",
+    "guid": "1cf7dd56-649f-4d3a-a516-25f10118bc37",
     "name": "Spawner (109)",
     "location": [5948, 49, 22],
     "map": "Trammel",
@@ -52,24 +52,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "2742a10f-7db7-48e1-9f9a-c044a8887117",
+    "guid": "3d7aac87-1027-4262-99fa-ae114cc36f9d",
     "name": "Spawner (109)",
     "location": [5954, 26, 0],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "1b6def98-4f4e-4865-bdce-ce6d57a9b97f",
+    "guid": "b3674410-813a-4b23-a2ee-35b967c63df0",
     "name": "Spawner (109)",
     "location": [5977, 49, 22],
     "map": "Trammel",
@@ -86,38 +86,38 @@
   },
   {
     "type": "Spawner",
-    "guid": "a7ba3e34-eec5-4816-b158-6e0f8f959396",
+    "guid": "590dd0b9-fd05-495c-a12d-b32e6dccfb6b",
     "name": "Spawner (109)",
     "location": [5995, 62, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "FireGargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireGargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "eea6f27e-9d47-48fb-9a76-3937acfc39c4",
+    "guid": "0d8d780e-a4dd-47d4-83ba-a964a0e06741",
     "name": "Spawner (109)",
     "location": [5970, 80, 0],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d207f116-e098-4390-9275-982df56c0564",
+    "guid": "023187d2-32e0-410a-b145-de5c11eac9a4",
     "name": "Spawner (109)",
     "location": [5994, 96, 0],
     "map": "Trammel",
@@ -128,61 +128,61 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 2, "probability": 100 }
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "68d8dbc9-dca2-4a0f-b709-4a75a6f04612",
+    "guid": "7355196d-c4c4-4973-b502-1b5f35a56ff5",
     "name": "Spawner (109)",
     "location": [5946, 75, 22],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e44fb727-0d7d-4faa-8e97-e417991faa3b",
+    "guid": "9c4a1731-92b8-4cf5-a888-af46b7f8ae2e",
     "name": "Spawner (109)",
     "location": [5940, 107, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "db341fe4-e3fb-4e1c-85a2-a431a6abcdb8",
+    "guid": "186d39ac-ecda-41a3-8cd6-869d4f371524",
     "name": "Spawner (109)",
     "location": [5915, 91, 0],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f2a9e720-ae17-485b-b4cd-cbf747e67a79",
+    "guid": "4f8de1d9-404d-477a-89e9-8939d1ca6e51",
     "name": "Spawner (109)",
     "location": [5990, 36, 22],
     "map": "Trammel",
@@ -196,21 +196,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "6dd042c3-f1a7-4532-8a3a-4b35b8c1fc45",
+    "guid": "759fd97b-f0e4-437a-859f-470588361ad7",
     "name": "Spawner (109)",
     "location": [5985, 36, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 2,
     "walkingRange": 2,
-    "entries": [{ "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "TreasureChestLevel1", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ce4448d1-d244-4755-aaf2-deacfb47cb3e",
+    "guid": "82dffbe0-5674-46fd-98e7-4176225f1ccd",
     "name": "Spawner (109)",
     "location": [5989, 25, 22],
     "map": "Trammel",
@@ -224,7 +224,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "aa831b1a-13dc-4095-8707-8bf3a444ad48",
+    "guid": "1f7ed060-7b24-4e47-9cd1-50c1023b0229",
     "name": "Spawner (109)",
     "location": [5983, 25, 22],
     "map": "Trammel",
@@ -238,7 +238,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3218cda5-c855-4a79-9777-44b340e7146c",
+    "guid": "cfb640f0-15cd-4acd-bbe2-a2f5c5356bea",
     "name": "Spawner (109)",
     "location": [5979, 26, 22],
     "map": "Trammel",
@@ -252,7 +252,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "51a9ef54-dd8b-41f2-a8a3-9fd874a9f67b",
+    "guid": "aa9ba9b0-937e-4b97-befc-467d6bd4fc25",
     "name": "Spawner (109)",
     "location": [5981, 84, 0],
     "map": "Trammel",
@@ -266,7 +266,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "99047110-8058-4881-a93e-dd78d583683b",
+    "guid": "ceb8bad6-5297-4bb4-8c79-269ab242b66a",
     "name": "Spawner (109)",
     "location": [5966, 70, 0],
     "map": "Trammel",
@@ -280,7 +280,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1193b876-e28e-4fb2-9766-ca273d6354a6",
+    "guid": "be625cb5-3be4-439b-91d0-00a143e2e1da",
     "name": "Spawner (109)",
     "location": [5958, 65, 0],
     "map": "Trammel",
@@ -294,7 +294,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d7249683-538f-4794-aced-af61c825728e",
+    "guid": "6b0ba846-a4e3-4dc0-af90-3fb449a05a6e",
     "name": "Spawner (109)",
     "location": [5937, 65, 0],
     "map": "Trammel",
@@ -308,7 +308,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "701792f8-6d1c-41d3-a145-21d159b231f2",
+    "guid": "b774f04f-88b6-4892-9cad-f6cc7394893d",
     "name": "Spawner (109)",
     "location": [5921, 81, 0],
     "map": "Trammel",
@@ -322,7 +322,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "2bc35aee-40fb-4c6b-a332-d8d641a47250",
+    "guid": "d2e8ed2e-a31c-47a2-9c12-9a367db2f95f",
     "name": "Spawner (109)",
     "location": [5972, 86, 0],
     "map": "Trammel",
@@ -336,7 +336,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "96011281-54df-4516-8b83-0313fe4ecd1c",
+    "guid": "1e352c09-8315-4d47-9805-e7eec83d5f7c",
     "name": "Spawner (109)",
     "location": [5917, 93, 0],
     "map": "Trammel",
@@ -350,7 +350,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "6734b514-79e3-4cbd-bf41-8a6677d9c97f",
+    "guid": "4697e088-dffd-492c-a800-0d2197f829da",
     "name": "Spawner (109)",
     "location": [5929, 77, 0],
     "map": "Trammel",
@@ -364,7 +364,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "cd5f584d-c61a-4729-bf07-7b5455935c0f",
+    "guid": "bf4f70e3-05a5-4f78-abe6-991199d14e41",
     "name": "Spawner (109)",
     "location": [5945, 78, 22],
     "map": "Trammel",
@@ -378,11 +378,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "8bf57e26-b431-42ea-a9e6-fb81c76decd6",
+    "guid": "6f81be01-62b1-4239-9bc1-8f5f383b7c2a",
     "name": "Spawner (109)",
     "location": [5967, 80, 0],
     "map": "Trammel",
-    "count": 2,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -390,119 +390,119 @@
     "walkingRange": 6,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
+      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "bd27f545-e0ac-48ee-9274-3889f485ff5a",
+    "guid": "0014fe39-f917-4e9b-aba2-7c8d40f9bc0e",
     "name": "Spawner (109)",
     "location": [5961, 169, 0],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "095bfc35-2921-49a9-af03-08df93e04445",
+    "guid": "37e22e58-3b9e-4520-8d0a-8a64d143263e",
     "name": "Spawner (109)",
     "location": [5992, 146, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Daemon", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Daemon", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "14f12415-66e1-4e6a-b6c4-d6a64c0b66ac",
+    "guid": "09376cbc-61f9-444f-ba71-2e371b6ef2e7",
     "name": "Spawner (109)",
     "location": [5945, 175, 0],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "766020b0-54f7-4992-9e3c-933446061133",
+    "guid": "751194fe-cfcd-46b3-83a7-20f5a620df57",
     "name": "Spawner (109)",
     "location": [5956, 145, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "aad7cfdd-c876-4c21-a802-d3fa0e527208",
+    "guid": "40b204e3-90c1-435c-b42c-6e17ca07aecd",
     "name": "Spawner (109)",
     "location": [5917, 156, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "f6eac863-9a42-462e-a2b3-da7e89771488",
+    "guid": "c07014c3-ebc9-4c82-8969-919ff82467a1",
     "name": "Spawner (109)",
     "location": [5914, 195, 22],
     "map": "Trammel",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "Imp", "maxCount": 2, "probability": 100 },
       { "name": "HellHound", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f97b5e0d-7bf5-4af1-923b-adeee8e2b6bb",
+    "guid": "309fe51b-ed65-4efc-9359-1b9dfe92327c",
     "name": "Spawner (109)",
     "location": [5918, 223, 44],
     "map": "Trammel",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "41781669-33ee-4f53-acd9-053ef0320ab1",
+    "guid": "36fbaa06-f1d9-448a-918f-0140b71527e9",
     "name": "Spawner (109)",
     "location": [5918, 235, 44],
     "map": "Trammel",
@@ -513,13 +513,13 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b4172699-dad7-4f70-bc7b-62bbe34dffa6",
+    "guid": "417775a5-22b9-4a89-a3e2-969db69088e0",
     "name": "Spawner (109)",
     "location": [5954, 225, 22],
     "map": "Trammel",
@@ -530,30 +530,30 @@
     "homeRange": 12,
     "walkingRange": 20,
     "entries": [
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 4, "probability": 100 }
+      { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "da6d92a4-9ba4-454b-a968-c44f3b135c90",
+    "guid": "4cac4e2a-5d2b-436b-bf67-0c3b3e1cedad",
     "name": "Spawner (109)",
     "location": [5986, 203, 44],
     "map": "Trammel",
-    "count": 4,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 12,
     "walkingRange": 25,
     "entries": [
-      { "name": "Gazer", "maxCount": 1, "probability": 100 },
-      { "name": "GazerLarva", "maxCount": 3, "probability": 100 }
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "GazerLarva", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "5be06de2-7dc8-4d4f-8c70-83f8c20d7ce5",
+    "guid": "1d800759-b357-479d-b7d5-b114503d205b",
     "name": "Spawner (109)",
     "location": [5983, 169, 0],
     "map": "Trammel",
@@ -567,7 +567,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d972cdd5-9f73-43de-9cc2-b7165d4467ba",
+    "guid": "79a7d26b-aaaf-4458-b14e-5e5fe996cc23",
     "name": "Spawner (109)",
     "location": [5992, 147, 0],
     "map": "Trammel",
@@ -581,7 +581,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "43c70340-89d3-467c-a1f7-fb917ec0338b",
+    "guid": "bf27573e-db6c-45a7-8494-a049003e9053",
     "name": "Spawner (109)",
     "location": [5970, 169, 0],
     "map": "Trammel",
@@ -595,7 +595,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "39180876-a5ff-40bd-9f72-abe9d1089f9e",
+    "guid": "719ebeb1-4d6e-451f-9427-9288f79efc9f",
     "name": "Spawner (109)",
     "location": [5997, 145, 0],
     "map": "Trammel",
@@ -609,7 +609,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "cd4bcfd1-f4e9-4b5b-befd-465187add3ea",
+    "guid": "dc8b46aa-2c86-4ceb-869a-13174d315b0a",
     "name": "Spawner (109)",
     "location": [5978, 185, 44],
     "map": "Trammel",
@@ -623,7 +623,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "1acb597e-9fff-4f30-9b6e-dda87f4e05b8",
+    "guid": "8eaacc24-63ec-4a73-b98a-53851ae20738",
     "name": "Spawner (109)",
     "location": [5962, 217, 22],
     "map": "Trammel",
@@ -637,7 +637,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "809add33-ae9f-4bd0-a37c-c9ab76c50ed8",
+    "guid": "7f5ecc6e-1578-4de6-b7ac-1534de17307b",
     "name": "Spawner (109)",
     "location": [5989, 186, 44],
     "map": "Trammel",
@@ -651,7 +651,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a2c9e3cf-d645-4c1c-9b65-b1bd5c76d0c0",
+    "guid": "7b59e68f-bf80-43fb-9e8f-e5e3e8a27e78",
     "name": "Spawner (109)",
     "location": [5926, 230, 44],
     "map": "Trammel",
@@ -665,45 +665,9 @@
   },
   {
     "type": "Spawner",
-    "guid": "071b620f-7e60-4146-9c13-cba6932ce593",
+    "guid": "d25420c6-ac54-4541-aff3-8647b8e414e4",
     "name": "Spawner (109)",
     "location": [6094, 154, -22],
-    "map": "Trammel",
-    "count": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 20,
-    "entries": [
-      { "name": "Imp", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "c92e77c8-2037-4b75-9026-2a38e733264a",
-    "name": "Spawner (109)",
-    "location": [6122, 170, 0],
-    "map": "Trammel",
-    "count": 5,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 10,
-    "walkingRange": 20,
-    "entries": [
-      { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 1, "probability": 100 },
-      { "name": "GazerLarva", "maxCount": 3, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "bfe91822-84e4-4f6a-aa5e-f075e899b030",
-    "name": "Spawner (109)",
-    "location": [6086, 178, 0],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
@@ -712,16 +676,34 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Balron", "maxCount": 1, "probability": 100 },
-      { "name": "Gargoyle", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 2, "probability": 100 }
+      { "name": "Imp", "maxCount": 1, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0a4f88e3-76cd-42b9-a016-edb6e81df347",
+    "guid": "44e0ebc7-35a3-4d73-b5bd-dd126f5bfef6",
     "name": "Spawner (109)",
-    "location": [6119, 219, 22],
+    "location": [6122, 170, 0],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [
+      { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "GazerLarva", "maxCount": 2, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e5f02db7-b20d-40f3-a956-f3743ab3936a",
+    "name": "Spawner (109)",
+    "location": [6086, 178, 0],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
@@ -730,28 +712,46 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
+      { "name": "Balron", "maxCount": 1, "probability": 100 },
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
       { "name": "Gazer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "cc58eb15-e524-4de5-a6e1-5e9aa366398b",
+    "guid": "4543f630-211e-4a80-a2e2-fa525bd17359",
     "name": "Spawner (109)",
-    "location": [6058, 193, 22],
+    "location": [6119, 219, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
+      { "name": "Gazer", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
-    "guid": "d83335b8-c1b8-4129-9324-87a10d0def71",
+    "guid": "0ba48140-5116-4f85-b710-79b9e0e590ad",
+    "name": "Spawner (109)",
+    "location": [6058, 193, 22],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 10,
+    "walkingRange": 20,
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1f62a7eb-c33e-41a5-bcc2-02d951cf62f7",
     "name": "Spawner (109)",
     "location": [6033, 199, 22],
     "map": "Trammel",
@@ -762,31 +762,31 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "StoneGargoyle", "maxCount": 2, "probability": 100 }
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "d81ccd78-4050-4914-bccf-ec0034b31660",
+    "guid": "4ccc4c69-5afb-476d-ba69-32b1ae382d5a",
     "name": "Spawner (109)",
     "location": [6052, 156, 0],
     "map": "Trammel",
-    "count": 6,
+    "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "Gazer", "maxCount": 2, "probability": 100 },
-      { "name": "GazerLarva", "maxCount": 3, "probability": 100 }
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "Gazer", "maxCount": 3, "probability": 100 },
+      { "name": "GazerLarva", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "968e8371-9245-4198-b431-220c415368d1",
+    "guid": "f7550505-f27c-42d5-abb5-e86a2bb12738",
     "name": "Spawner (109)",
     "location": [6121, 166, 0],
     "map": "Trammel",
@@ -800,7 +800,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "39de4454-5d55-4eca-aa2a-5a03ee6db74f",
+    "guid": "1646f89c-b0c8-4730-80bb-f107cf0aeaa9",
     "name": "Spawner (109)",
     "location": [6124, 159, 0],
     "map": "Trammel",
@@ -814,7 +814,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "55ea79a5-0bb2-41b3-9791-52477b87bbf7",
+    "guid": "5cf4e37f-60db-4372-9259-33f64d4c5823",
     "name": "Spawner (109)",
     "location": [6087, 186, 0],
     "map": "Trammel",
@@ -828,7 +828,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f2a638ca-f7fc-4567-9405-078b0c6b8134",
+    "guid": "f019683a-cc2f-4538-a656-6b2d818c4fee",
     "name": "Spawner (109)",
     "location": [6060, 158, 0],
     "map": "Trammel",
@@ -842,7 +842,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "000eff90-a55e-4063-94ae-3acd5eecbeef",
+    "guid": "cc8ee97c-71ea-4047-b1cd-bd8677d01393",
     "name": "Spawner (109)",
     "location": [6046, 199, 22],
     "map": "Trammel",
@@ -856,7 +856,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "90979a1e-1f95-4370-8311-ceba244c5e67",
+    "guid": "fe9be20c-94d7-438c-aadd-ea0b060a24b7",
     "name": "Spawner (109)",
     "location": [6041, 222, 44],
     "map": "Trammel",
@@ -870,7 +870,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0a77e5ec-e35c-4cd6-9883-92724620a460",
+    "guid": "605c7d07-d92f-4a81-80be-43ae35d77f94",
     "name": "Spawner (109)",
     "location": [6125, 221, 22],
     "map": "Trammel",
@@ -884,7 +884,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "53d247f1-aab1-4fe2-afa5-1b1a286f8377",
+    "guid": "79fe0c7d-ff1d-46fc-bb98-466a5d1e3c9d",
     "name": "Spawner (109)",
     "location": [6120, 229, 22],
     "map": "Trammel",
@@ -898,7 +898,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "71445d52-bd95-42ef-8a7c-290ea2fb831d",
+    "guid": "626b4400-8124-40ee-bb0a-7fc5bf26340c",
     "name": "Spawner (109)",
     "location": [6092, 187, 0],
     "map": "Trammel",
@@ -912,7 +912,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "7bf95b74-ec30-4eb5-8d8d-83135f415d73",
+    "guid": "ddf5aff5-67ed-4d8f-b29e-d849769463fa",
     "name": "Spawner (109)",
     "location": [6041, 230, 44],
     "map": "Trammel",
@@ -926,7 +926,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "90616667-f0cc-47da-a8ee-6636d7db5ee2",
+    "guid": "7bfcb0d1-fb3f-4c9b-8f09-554eccd451cf",
     "name": "Spawner (109)",
     "location": [6033, 205, 22],
     "map": "Trammel",
@@ -940,7 +940,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fd462c9f-a85f-4bc6-96f0-e56cf8089e4a",
+    "guid": "0b18c167-7623-4108-8fe8-17dcd50d23ce",
     "name": "Spawner (109)",
     "location": [6058, 153, 0],
     "map": "Trammel",
@@ -954,7 +954,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "728a3312-474a-47d6-9aef-01af2483cd2c",
+    "guid": "a3e60b06-4003-4099-9f1f-cfa9f8e20672",
     "name": "Spawner (109)",
     "location": [6064, 96, 22],
     "map": "Trammel",
@@ -965,84 +965,84 @@
     "homeRange": 10,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 2, "probability": 100 },
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 },
       { "name": "Imp", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "af0a7c86-30b0-41f5-b511-0d1eca78b429",
+    "guid": "658e6703-63a6-48b7-9308-fff43b399659",
     "name": "Spawner (109)",
     "location": [6081, 83, 21],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7ca81c17-70af-487c-8ce3-6c4d7602389c",
+    "guid": "be9885d2-19de-4996-bbe7-09eb17a22190",
     "name": "Spawner (109)",
     "location": [6084, 66, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "7d28ad99-44d4-4e9e-9d01-db7ea5a4663b",
+    "guid": "24c7aeb0-2e6f-4bb6-bf0f-84fa42f43eaf",
     "name": "Spawner (109)",
     "location": [6106, 67, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "1c319409-d4df-433b-9b46-515e1125119c",
+    "guid": "b201d5f8-54b1-4e70-8c76-d7fb08c0c517",
     "name": "Spawner (109)",
     "location": [6116, 86, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "FireGargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FireGargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "e4250a75-01f1-49e8-980c-27e394496dc0",
+    "guid": "7fb4bb5a-b196-46e4-858c-327a96cc2571",
     "name": "Spawner (109)",
     "location": [6099, 51, 22],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Gargoyle", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Gargoyle", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "047b9542-6862-42c5-b022-2c0677a9a5f6",
+    "guid": "d9f8f855-b927-4b72-8ff2-00f7bead656b",
     "name": "Spawner (109)",
     "location": [6107, 37, 22],
     "map": "Trammel",
@@ -1056,7 +1056,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "f9037e02-83e7-40f0-bc05-f7e6f4266ffb",
+    "guid": "d2ba64f7-0f5c-473b-aa78-6dc9ad78c4eb",
     "name": "Spawner (109)",
     "location": [6054, 45, 0],
     "map": "Trammel",
@@ -1074,7 +1074,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e25a8d05-02a3-4a9c-b5b4-e8e6f30cebad",
+    "guid": "4c604d6d-6fee-4fa0-bb7b-c10c1d017c7b",
     "name": "Spawner (109)",
     "location": [6108, 66, 0],
     "map": "Trammel",
@@ -1088,7 +1088,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "8e1e33d3-0249-4d92-bd9e-c02eeba6e05b",
+    "guid": "418e43ad-77bc-4b51-858b-f7707e886fa4",
     "name": "Spawner (109)",
     "location": [6117, 81, 0],
     "map": "Trammel",
@@ -1102,7 +1102,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "ceeecf6d-2724-43b8-b107-59dc7f941326",
+    "guid": "2a8e735b-67c5-41fe-bf8f-311b241c86c2",
     "name": "Spawner (109)",
     "location": [6058, 92, 22],
     "map": "Trammel",
@@ -1116,7 +1116,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "54e9a77e-0daf-40b9-98ff-2326c3d565da",
+    "guid": "9fec598b-4f0a-4b3f-859f-d07c8e4da68c",
     "name": "Spawner (109)",
     "location": [6113, 92, 0],
     "map": "Trammel",
@@ -1130,7 +1130,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "13c74916-d312-467d-8aae-54f8714ad2ac",
+    "guid": "573421ed-9661-470d-8afc-5b4286853866",
     "name": "Spawner (109)",
     "location": [6107, 70, 0],
     "map": "Trammel",
@@ -1144,7 +1144,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "06445764-718b-474b-9b31-87250cd1c40f",
+    "guid": "ef551356-f2aa-442f-8b05-03aeb5129f6c",
     "name": "Spawner (109)",
     "location": [6081, 44, 22],
     "map": "Trammel",
@@ -1158,7 +1158,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "99c7ca53-f01b-4f19-bd0d-c1c1e1245b67",
+    "guid": "e05189b6-600d-425b-a885-5c72737a986f",
     "name": "Spawner (109)",
     "location": [6097, 36, 22],
     "map": "Trammel",
@@ -1172,7 +1172,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "0b926a40-1777-4a71-b681-9810eacc6106",
+    "guid": "b4ab74e3-df28-499c-a752-114ce689795e",
     "name": "Spawner (109)",
     "location": [6064, 96, 22],
     "map": "Trammel",
@@ -1186,7 +1186,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "3750c413-183a-40f4-bbbe-b33c85b85179",
+    "guid": "6f4533a9-fe11-47e0-9e5b-d8d617042fbb",
     "name": "Spawner (109)",
     "location": [6086, 45, 22],
     "map": "Trammel",
@@ -1200,7 +1200,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e2e9c890-698e-42bb-b22a-00d4550431e1",
+    "guid": "0b8a38b9-3dab-4949-a10d-ed4e61cfc0f3",
     "name": "Spawner (109)",
     "location": [6108, 36, 22],
     "map": "Trammel",

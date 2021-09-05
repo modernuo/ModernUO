@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "c133f2b0-1392-47cc-aa33-cbe6d0541fe1",
+    "guid": "f0cb135a-a283-4919-815d-41c7845b4ef1",
     "name": "Spawner (402)",
     "location": [1119, 530, -90],
     "map": "Malas",
@@ -12,99 +12,99 @@
     "homeRange": 39,
     "walkingRange": 60,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 10, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
-      { "name": "Hind", "maxCount": 10, "probability": 100 }
+      { "name": "Bird", "maxCount": 10, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 10, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "fa3329f9-a567-4c16-9452-37609dbfeea1",
+    "guid": "e6e9cc57-c39f-4522-a331-fa7c14dc4ee3",
     "name": "Spawner (402)",
     "location": [1674, 659, -84],
     "map": "Malas",
-    "count": 13,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 120,
     "entries": [
-      { "name": "CrystalElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
       { "name": "Bird", "maxCount": 3, "probability": 100 },
-      { "name": "Hind", "maxCount": 3, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 }
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9bedaa38-df52-4b55-bbce-4f7556e3ab73",
+    "guid": "e3e4bdaf-d35b-4994-95f9-c92fa2e7235d",
     "name": "Spawner (402)",
     "location": [1434, 607, -89],
     "map": "Malas",
-    "count": 13,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 120,
     "entries": [
-      { "name": "CrystalElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
       { "name": "Bird", "maxCount": 3, "probability": 100 },
-      { "name": "Hind", "maxCount": 3, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 }
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e554bcf8-32d4-4a28-ae72-32c1f1a5fb3b",
+    "guid": "d7e6a5c4-b17b-4f15-b535-2db1597aba82",
     "name": "Spawner (402)",
     "location": [1194, 638, -84],
     "map": "Malas",
-    "count": 17,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 100,
     "walkingRange": 120,
     "entries": [
-      { "name": "CrystalElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 4, "probability": 100 },
       { "name": "Bird", "maxCount": 4, "probability": 100 },
-      { "name": "Hind", "maxCount": 4, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 3, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 }
+      { "name": "Hind", "maxCount": 3, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f1ab83dd-2c85-4f78-8463-6549087c9452",
+    "guid": "93bdaca0-159e-446e-9fee-45687f4c9c87",
     "name": "Spawner (402)",
     "location": [920, 356, -85],
     "map": "Malas",
-    "count": 17,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 60,
     "walkingRange": 70,
     "entries": [
-      { "name": "CrystalElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 4, "probability": 100 },
       { "name": "Bird", "maxCount": 4, "probability": 100 },
-      { "name": "Hind", "maxCount": 4, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 3, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 1, "probability": 100 }
+      { "name": "Hind", "maxCount": 3, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "95edbac7-d277-4fb0-ba0b-f4ec744d3e1d",
+    "guid": "97ce0b35-a22b-4c9b-8d8a-f3d471cc45ad",
     "name": "Spawner (402)",
     "location": [1659, 112, -80],
     "map": "Malas",
@@ -115,8 +115,8 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -125,7 +125,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "be001348-e4aa-4faa-b7c7-90edf8963709",
+    "guid": "4c5651c3-56dc-4de7-9892-45b9bd54a8e8",
     "name": "Spawner (402)",
     "location": [1869, 480, -50],
     "map": "Malas",
@@ -136,8 +136,8 @@
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -146,7 +146,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "95c2d7b4-123c-4649-859d-829a8da6ca75",
+    "guid": "638f71fc-2dcb-46bf-8af7-767e61845cc6",
     "name": "Spawner (402)",
     "location": [2121, 597, -50],
     "map": "Malas",
@@ -157,8 +157,8 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -167,7 +167,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "b30d700f-7a6b-4fc3-a20d-b245468b4471",
+    "guid": "4fcbf7ac-be8b-4b7a-add0-44887932bcde",
     "name": "Spawner (402)",
     "location": [1980, 660, -50],
     "map": "Malas",
@@ -178,8 +178,8 @@
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -188,7 +188,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "fd7d4524-3d61-4e77-a9f7-f86366cb30bf",
+    "guid": "ca9e3566-8d72-4d84-b778-7babb8abbd3b",
     "name": "Spawner (402)",
     "location": [2233, 555, -90],
     "map": "Malas",
@@ -199,8 +199,8 @@
     "homeRange": 60,
     "walkingRange": 60,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -209,7 +209,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "d6a3bfb7-8ccb-485b-ade6-d89bf10461ae",
+    "guid": "578de091-4864-44d6-ae94-5085c77e7509",
     "name": "Spawner (402)",
     "location": [1137, 223, -50],
     "map": "Malas",
@@ -220,8 +220,8 @@
     "homeRange": 20,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -230,7 +230,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "80652240-44dc-4423-9955-8deaec42bb3e",
+    "guid": "45eb30b4-2ece-49eb-b2ed-7d1d3cdfe0e5",
     "name": "Spawner (402)",
     "location": [1381, 340, -50],
     "map": "Malas",
@@ -241,8 +241,8 @@
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -251,7 +251,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "824effb8-d0af-44e9-821d-a8d5d99b21d8",
+    "guid": "4f2cf7b3-684c-4cdc-8d71-be68c6c0e179",
     "name": "Spawner (402)",
     "location": [1710, 403, -50],
     "map": "Malas",
@@ -262,8 +262,8 @@
     "homeRange": 20,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -272,7 +272,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "4570071c-17ca-4063-8de2-c849eb8d40f4",
+    "guid": "164fa9ff-20e3-49c9-a045-40a330d73b48",
     "name": "Spawner (402)",
     "location": [766, 114, -90],
     "map": "Malas",
@@ -283,8 +283,8 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -293,7 +293,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e468b85b-cb07-4f3c-9a15-fd5d9f1f8529",
+    "guid": "12acfbf4-fd22-48c9-a10e-1f55f28d35a7",
     "name": "Spawner (402)",
     "location": [1206, 191, -50],
     "map": "Malas",
@@ -304,8 +304,8 @@
     "homeRange": 20,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -314,7 +314,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "a5636fd4-8100-420c-b2e6-b53bbae0135b",
+    "guid": "9721f112-e259-4651-bbb9-2fe34dc41238",
     "name": "Spawner (402)",
     "location": [2030, 500, -50],
     "map": "Malas",
@@ -325,8 +325,8 @@
     "homeRange": 40,
     "walkingRange": 70,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -335,7 +335,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "29b02789-3c1f-4859-85e7-0cfd01a7ea43",
+    "guid": "7df43058-d9f2-4652-b335-ddd14c3c3344",
     "name": "Spawner (402)",
     "location": [1482, 347, -50],
     "map": "Malas",
@@ -346,8 +346,8 @@
     "homeRange": 40,
     "walkingRange": 60,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -356,7 +356,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9b98d83d-bd2e-43e2-ae1f-c3747e059b3f",
+    "guid": "cd546ebe-d7e6-4030-9244-cf21b9d7308c",
     "name": "Spawner (402)",
     "location": [1023, 192, -50],
     "map": "Malas",
@@ -367,8 +367,8 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -377,7 +377,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "9aa53b50-b15f-45df-8358-66d014d80a11",
+    "guid": "749f774a-2e44-4faa-9870-acd9d533b298",
     "name": "Spawner (402)",
     "location": [1274, 300, -50],
     "map": "Malas",
@@ -388,8 +388,8 @@
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -398,7 +398,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "7c45b65d-c2b1-4242-ba1b-ba6a60279714",
+    "guid": "b1ebca30-d220-44d3-897d-92ee62ebfefd",
     "name": "Spawner (402)",
     "location": [1587, 386, -50],
     "map": "Malas",
@@ -409,8 +409,8 @@
     "homeRange": 40,
     "walkingRange": 40,
     "entries": [
-      { "name": "Bird", "maxCount": 1, "probability": 100 },
-      { "name": "Walrus", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
       { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
       { "name": "IceSnake", "maxCount": 1, "probability": 100 },
@@ -419,30 +419,30 @@
   },
   {
     "type": "Spawner",
-    "guid": "e5a0ae6f-5237-4ef9-afd8-edda59bf2dd7",
+    "guid": "48594f01-b8c5-41b8-90b1-f430ecd8a829",
     "name": "Spawner (402)",
     "location": [2205, 145, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
-    "entries": [{ "name": "Unicorn", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Unicorn", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "c7ce9c1a-1be1-44f2-92f8-305a327aa23d",
+    "guid": "d07e2bcb-7925-479e-8e8b-fc53c51695dc",
     "name": "Spawner (402)",
     "location": [2291, 295, -90],
     "map": "Malas",
-    "count": 1,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 60,
     "walkingRange": 60,
-    "entries": [{ "name": "GoreFiend", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "GoreFiend", "maxCount": 6, "probability": 100 }]
   }
 ]

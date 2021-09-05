@@ -1,58 +1,58 @@
 [
   {
     "type": "Spawner",
-    "guid": "11ad276d-b8b6-4131-be82-18871447d442",
+    "guid": "b69d0e10-93b1-4c94-86bd-f56178cc6369",
     "name": "Spawner (305)",
     "location": [1444, 1519, -28],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "MushroomTrap", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "77e60f80-9d76-41c1-be20-a2e4351dff60",
+    "guid": "fe3e336f-5f07-45ea-8e49-6a4aecbe6e9e",
     "name": "Spawner (305)",
     "location": [1441, 1532, -28],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "MushroomTrap", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "3b97b437-2856-4b77-97ae-be0e254e8115",
+    "guid": "43de7746-7a8d-4609-b074-9e52c673ce36",
     "name": "Spawner (305)",
     "location": [1415, 1498, -27],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 4,
-    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "MushroomTrap", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a5ed6a3e-29f7-49b0-9deb-973cc951ced2",
+    "guid": "c988e22f-f5d1-4fb8-b14d-2c1fdde0feb6",
     "name": "Spawner (305)",
     "location": [1464, 1495, -28],
     "map": "Ilshenar",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "MushroomTrap", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "MushroomTrap", "maxCount": 4, "probability": 100 }]
   }
 ]

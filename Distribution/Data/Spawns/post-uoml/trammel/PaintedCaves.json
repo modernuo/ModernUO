@@ -1,39 +1,39 @@
 [
   {
     "type": "Spawner",
-    "guid": "c98b2a08-4828-4f08-9e9e-d5a8f6cf73d4",
+    "guid": "6e5080ca-7621-4782-9ccc-756cb595fd47",
     "name": "Spawner (114)",
     "location": [6279, 880, 1],
     "map": "Trammel",
-    "count": 11,
+    "count": 21,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Cat", "maxCount": 1, "probability": 100 },
-      { "name": "Dog", "maxCount": 1, "probability": 100 },
-      { "name": "Rat", "maxCount": 1, "probability": 100 },
       { "name": "Cat", "maxCount": 6, "probability": 100 },
+      { "name": "Dog", "maxCount": 6, "probability": 100 },
+      { "name": "Rat", "maxCount": 6, "probability": 100 },
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
       { "name": "Dog", "maxCount": 1, "probability": 100 },
       { "name": "Rat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "8a2d3da6-8b1c-4d9b-96a3-0da8f4e8b0d6",
+    "guid": "f9c928e6-453c-479b-a347-f864e12f9f10",
     "name": "Spawner (114)",
     "location": [6275, 879, -2],
     "map": "Trammel",
-    "count": 10,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
     "entries": [
-      { "name": "Troglodyte", "maxCount": 1, "probability": 100 },
+      { "name": "Troglodyte", "maxCount": 3, "probability": 100 },
       { "name": "Grobu", "maxCount": 3, "probability": 100 },
       { "name": "Lurg", "maxCount": 3, "probability": 100 },
       { "name": "GiantRat", "maxCount": 3, "probability": 100 }

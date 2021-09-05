@@ -1,21 +1,21 @@
 [
   {
     "type": "Spawner",
-    "guid": "28ec79d1-98ed-48af-82d7-93d32b0ca0e4",
+    "guid": "2e3c87a4-a142-40a0-af91-463336d1f3e5",
     "name": "Spawner (2501)",
     "location": [977, 218, 23],
     "map": "Tokuno",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "FanDancer", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FanDancer", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5f47a162-334f-4b38-9576-141f3a7470bb",
+    "guid": "554e6d8d-3717-4436-b884-4d4e172ac13d",
     "name": "Spawner (2501)",
     "location": [78, 546, -1],
     "map": "Malas",
@@ -27,13 +27,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "Succubus", "maxCount": 2, "probability": 100 }
+      { "name": "HellHound", "maxCount": 2, "probability": 100 },
+      { "name": "Succubus", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "7c9ffb2b-f328-4714-be09-d5aece528778",
+    "guid": "2de8e88f-5859-4ae2-a42d-add7960a35d3",
     "name": "Spawner (2501)",
     "location": [110, 540, -1],
     "map": "Malas",
@@ -45,13 +45,13 @@
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 1, "probability": 100 },
-      { "name": "Succubus", "maxCount": 2, "probability": 100 }
+      { "name": "HellHound", "maxCount": 2, "probability": 100 },
+      { "name": "Succubus", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "99d233d5-e6a1-4311-aec5-4e77a94b3380",
+    "guid": "cf07d1b5-3727-4beb-bab8-1acf7b339738",
     "name": "Spawner (2501)",
     "location": [96, 540, -1],
     "map": "Malas",
@@ -68,7 +68,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "20598305-e411-400c-ac04-7a9f242f1bd1",
+    "guid": "c09458b9-60e9-4ac8-9eea-fa0f870d7caa",
     "name": "Spawner (2501)",
     "location": [100, 499, -1],
     "map": "Malas",
@@ -85,25 +85,25 @@
   },
   {
     "type": "Spawner",
-    "guid": "d3a9d3a0-3939-4c8c-b0cd-aa617058e94e",
+    "guid": "9d12cbaa-2581-4f2b-aa51-c88e59b4d453",
     "name": "Spawner (2501)",
     "location": [64, 488, -1],
     "map": "Malas",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Daemon", "maxCount": 1, "probability": 100 },
+      { "name": "Daemon", "maxCount": 2, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 },
       { "name": "HordeMinion", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3699853a-c875-47a7-b2bc-92c30ca1c1b8",
+    "guid": "868b112a-e6e4-4a54-85d6-316236c20342",
     "name": "Spawner (2501)",
     "location": [70, 376, -1],
     "map": "Malas",
@@ -114,88 +114,88 @@
     "homeRange": 25,
     "walkingRange": 30,
     "entries": [
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 3, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 3, "probability": 100 },
       { "name": "HordeMinion", "maxCount": 3, "probability": 100 },
-      { "name": "Daemon", "maxCount": 3, "probability": 100 }
+      { "name": "Daemon", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "3dfaca92-2942-4c0d-a383-3396e6c945df",
+    "guid": "4b7220a5-6b41-4d6b-a8ad-8f9d22cb3c48",
     "name": "Spawner (2501)",
     "location": [120, 415, -1],
     "map": "Malas",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "HordeMinion", "maxCount": 1, "probability": 100 },
+      { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a9dd29f0-d87e-485f-9d81-30277fb082e8",
+    "guid": "7704088c-26e5-4174-9ca1-c9e0bea8928e",
     "name": "Spawner (2501)",
     "location": [99, 387, -1],
     "map": "Malas",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "HeadlessOne", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "HeadlessOne", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a0105ae2-572b-4cc4-a1c2-9400738ec531",
+    "guid": "c8fa7fec-e5c0-4338-92ec-fe1aa9c51ca8",
     "name": "Spawner (2501)",
     "location": [123, 387, -1],
     "map": "Malas",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "HeadlessOne", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "HeadlessOne", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a46fed92-bd82-4e2e-a74f-0260417d4986",
+    "guid": "0d5194a0-c1b5-4ea7-9d53-813aa8baec34",
     "name": "Spawner (2501)",
     "location": [79, 521, -1],
     "map": "Malas",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "HeadlessOne", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "HeadlessOne", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "21ed9d4d-c662-4d21-8b96-b554087cb1cc",
+    "guid": "da4ec57b-0951-4cb5-a001-14e840bd067a",
     "name": "Spawner (2501)",
     "location": [88, 332, -1],
     "map": "Malas",
-    "count": 1,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "FanDancer", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FanDancer", "maxCount": 4, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "44fbb3a0-d5bd-4f4d-915c-8fb3fe934897",
+    "guid": "2a228851-ed6a-4286-bd6c-b4b682704009",
     "name": "Spawner (2501)",
     "location": [97, 467, -1],
     "map": "Malas",
@@ -206,42 +206,42 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "HordeMinion", "maxCount": 1, "probability": 100 },
-      { "name": "HeadlessOne", "maxCount": 2, "probability": 100 },
+      { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
+      { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
       { "name": "Succubus", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "f125a240-461a-4844-bb84-4d46d5dc6971",
+    "guid": "1e808ab2-13a6-4745-9cb3-3f24fc306ee4",
     "name": "Spawner (2501)",
     "location": [111, 352, -1],
     "map": "Malas",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "HordeMinion", "maxCount": 1, "probability": 100 },
+      { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "ff39b61b-d5b3-4645-b066-41cd3dd98460",
+    "guid": "0cac6bd8-c491-4502-82d7-c2b4bb35cf3e",
     "name": "Spawner (2501)",
     "location": [173, 615, -1],
     "map": "Malas",
-    "count": 7,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "HordeMinion", "maxCount": 1, "probability": 100 },
+      { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
       { "name": "FanDancer", "maxCount": 2, "probability": 100 },
       { "name": "Oni", "maxCount": 2, "probability": 100 },
       { "name": "Daemon", "maxCount": 2, "probability": 100 }
@@ -249,24 +249,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "29fd7005-7440-47a2-bc12-23561b865f33",
+    "guid": "2e80c263-5ac6-46d8-80e5-a5fff8ba353f",
     "name": "Spawner (2501)",
     "location": [147, 646, -1],
     "map": "Malas",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
     "entries": [
-      { "name": "HeadlessOne", "maxCount": 1, "probability": 100 },
+      { "name": "HeadlessOne", "maxCount": 2, "probability": 100 },
       { "name": "FanDancer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "4cd45f6d-08c0-46bc-834a-b614d66054b5",
+    "guid": "323572bb-a7b9-45bc-83f7-78ee1237d1d0",
     "name": "Spawner (2501)",
     "location": [175, 660, -1],
     "map": "Malas",
@@ -277,28 +277,28 @@
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "HordeMinion", "maxCount": 1, "probability": 100 },
-      { "name": "HellCat", "maxCount": 3, "probability": 100 },
-      { "name": "Balron", "maxCount": 2, "probability": 100 }
+      { "name": "HordeMinion", "maxCount": 3, "probability": 100 },
+      { "name": "HellCat", "maxCount": 2, "probability": 100 },
+      { "name": "Balron", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "b7718a1a-7bad-4fc1-8d94-63c57d1d69df",
+    "guid": "92fa59de-9846-4e4f-bb6d-5069f9439e6b",
     "name": "Spawner (2501)",
     "location": [142, 692, -1],
     "map": "Malas",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "FanDancer", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "FanDancer", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "a4f22eee-b495-4433-9326-12f16b4ae0ad",
+    "guid": "b4296ce6-bf01-4e1e-b96d-905f9caac1b9",
     "name": "Spawner (2501)",
     "location": [106, 685, -1],
     "map": "Malas",
@@ -315,7 +315,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "29638623-249c-4b1e-be8d-b71431b42970",
+    "guid": "0f141ac9-1ebe-402e-9778-622966eb73fd",
     "name": "Spawner (2501)",
     "location": [110, 649, -1],
     "map": "Malas",
@@ -333,7 +333,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "35b38e40-5405-4318-9d35-c20fbccebb00",
+    "guid": "32b46dc3-ff8e-4d49-a3ce-70a9ae337165",
     "name": "Spawner (2501)",
     "location": [134, 651, -1],
     "map": "Malas",
@@ -344,8 +344,8 @@
     "homeRange": 5,
     "walkingRange": 5,
     "entries": [
-      { "name": "FanDancer", "maxCount": 1, "probability": 100 },
-      { "name": "HellHound", "maxCount": 2, "probability": 100 },
+      { "name": "FanDancer", "maxCount": 2, "probability": 100 },
+      { "name": "HellHound", "maxCount": 1, "probability": 100 },
       { "name": "HellCat", "maxCount": 1, "probability": 100 }
     ]
   }

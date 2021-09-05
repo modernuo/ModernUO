@@ -1,7 +1,7 @@
 [
   {
     "type": "Spawner",
-    "guid": "1cca4359-624c-4fd5-b1c7-e1fe4dad5d1d",
+    "guid": "4785134e-a991-47e7-8d6f-e751a507c282",
     "name": "Spawner (301)",
     "location": [50, 689, -28],
     "map": "Ilshenar",
@@ -15,24 +15,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "8fc790d1-6368-45cc-9840-414568a066d7",
+    "guid": "9b3fff72-3349-48ad-9790-87b98a1cf662",
     "name": "Spawner (301)",
     "location": [115, 716, -28],
     "map": "Ilshenar",
-    "count": 2,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
-      { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
+      { "name": "FireElemental", "maxCount": 3, "probability": 100 },
+      { "name": "LavaLizard", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e73bf66e-c460-4e2e-a000-6551a60dfea5",
+    "guid": "4ff1f0e4-d5cb-4754-8975-db274c4e2768",
     "name": "Spawner (301)",
     "location": [131, 78, 0],
     "map": "Ilshenar",
@@ -49,7 +49,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "e149f81a-15aa-4f18-9dfc-aad8ed1e70e0",
+    "guid": "b31fcf72-82fc-488e-8120-106e9ceab4a2",
     "name": "Spawner (301)",
     "location": [54, 718, -28],
     "map": "Ilshenar",
@@ -66,24 +66,24 @@
   },
   {
     "type": "Spawner",
-    "guid": "1d751ccc-ddf4-4220-9a90-e93d1873db8e",
+    "guid": "f53aaa12-167a-4904-9bdd-73567cd7e8f1",
     "name": "Spawner (301)",
     "location": [82, 718, -28],
     "map": "Ilshenar",
-    "count": 3,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "FireElemental", "maxCount": 1, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 2, "probability": 100 },
       { "name": "LavaLizard", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "396f7ed9-41ee-4183-bae0-047ae9a60869",
+    "guid": "0154796a-cabe-4f94-9f11-6aec955982a5",
     "name": "Spawner (301)",
     "location": [79, 687, -28],
     "map": "Ilshenar",

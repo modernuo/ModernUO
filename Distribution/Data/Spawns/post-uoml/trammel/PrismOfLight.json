@@ -1,57 +1,57 @@
 [
   {
     "type": "Spawner",
-    "guid": "43c4f09c-648e-4179-83ae-8e4ef6841dad",
+    "guid": "bd4faef3-ea0b-49d2-bc49-ce9d0d553633",
     "name": "Spawner (116)",
     "location": [6553, 157, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 8,
-    "entries": [{ "name": "CrystalLatticeSeeker", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "CrystalLatticeSeeker", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "4ea25962-f9fe-4495-b151-52b7730ee977",
+    "guid": "4b1d37bf-263e-4351-8d3e-927db3902f56",
     "name": "Spawner (116)",
     "location": [6474, 74, -34],
     "map": "Trammel",
-    "count": 2,
+    "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 4,
     "entries": [
-      { "name": "Rat", "maxCount": 1, "probability": 100 },
-      { "name": "IceSnake", "maxCount": 1, "probability": 100 }
+      { "name": "Rat", "maxCount": 9, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 9, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "71f01d71-507d-46d0-9b22-0316f01e7534",
+    "guid": "9ff5483f-36e6-4f94-981d-894a21537f8b",
     "name": "Spawner (116)",
     "location": [6552, 155, 0],
     "map": "Trammel",
-    "count": 8,
+    "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "Wisp", "maxCount": 1, "probability": 100 },
-      { "name": "CrystalWisp", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 5, "probability": 100 }
+      { "name": "Wisp", "maxCount": 5, "probability": 100 },
+      { "name": "CrystalWisp", "maxCount": 5, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 5, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "c909cae0-9f2d-4149-85af-dc230bb1b305",
+    "guid": "4873c0a6-e8dc-43df-9249-f771e32b4e81",
     "name": "Spawner (116)",
     "location": [6521, 139, -20],
     "map": "Trammel",
@@ -65,7 +65,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bf693f80-f748-41d4-b556-c18d92e6dbe0",
+    "guid": "880053de-54b1-467f-b42d-b406ee4c5e2c",
     "name": "Spawner (116)",
     "location": [6530, 139, -20],
     "map": "Trammel",
@@ -79,35 +79,35 @@
   },
   {
     "type": "Spawner",
-    "guid": "f28bdd43-752c-4ae6-ba33-7f190d30118f",
+    "guid": "b7fb234b-ad89-4e10-92c1-cf9ebdfb5771",
     "name": "Spawner (116)",
     "location": [6576, 91, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 4,
-    "entries": [{ "name": "CrystalSeaSerpent", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "CrystalSeaSerpent", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "4bf4dee3-2fb7-42ca-813d-745fb49e356f",
+    "guid": "5fde562c-a605-478f-91df-183bfe317469",
     "name": "Spawner (116)",
     "location": [6509, 176, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 4,
-    "entries": [{ "name": "UnfrozenMummy", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "UnfrozenMummy", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ddf8f3ed-ca9f-4a44-8f0f-522e6d1124c5",
+    "guid": "763f85b1-fd96-476c-9b47-a2715db7ee0f",
     "name": "Spawner (116)",
     "location": [6536, 79, -10],
     "map": "Trammel",
@@ -121,7 +121,7 @@
   },
   {
     "type": "Spawner",
-    "guid": "bf00c050-6ec4-4889-bef8-d89295ac09d1",
+    "guid": "f8d0b5f3-ff16-4e10-bbf7-9274fcad6474",
     "name": "Spawner (116)",
     "location": [6547, 91, -10],
     "map": "Trammel",
@@ -135,21 +135,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "61c09818-448c-4c84-bcd1-9b192d51e859",
+    "guid": "36f56ca5-8204-4334-8cb7-7d35b21c03de",
     "name": "Spawner (116)",
     "location": [6572, 89, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 4,
     "walkingRange": 4,
-    "entries": [{ "name": "CrystalHydra", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "CrystalHydra", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "48bdce76-2a97-4a1f-949e-7b909da66bfd",
+    "guid": "d1177271-505c-47d3-91e3-fc23d05414c7",
     "name": "Spawner (116)",
     "location": [6504, 181, 0],
     "map": "Trammel",
@@ -163,88 +163,88 @@
   },
   {
     "type": "Spawner",
-    "guid": "b227b628-00be-43df-a373-d33d6de9cc4c",
+    "guid": "6a58b86c-2654-402a-b606-7f33a040d373",
     "name": "Spawner (116)",
     "location": [6475, 101, -44],
     "map": "Trammel",
-    "count": 1,
+    "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "ShadowWisp", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "ShadowWisp", "maxCount": 5, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "24930ad5-94b6-4f0a-9899-31b53d95a26e",
+    "guid": "5c3e594a-7c9d-4282-a6f2-d94cb1ed33e7",
     "name": "Spawner (116)",
     "location": [6478, 174, 4],
     "map": "Trammel",
-    "count": 2,
+    "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
     "entries": [
-      { "name": "Wisp", "maxCount": 1, "probability": 100 },
-      { "name": "CrystalWisp", "maxCount": 1, "probability": 100 }
+      { "name": "Wisp", "maxCount": 6, "probability": 100 },
+      { "name": "CrystalWisp", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "a9424a61-bbcc-42e4-b705-93e2ac2fa4f8",
+    "guid": "bef9ed9a-efca-452d-8afa-dfa9c26ccb76",
     "name": "Spawner (116)",
     "location": [6566, 120, 0],
+    "map": "Trammel",
+    "count": 14,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 15,
+    "walkingRange": 15,
+    "entries": [
+      { "name": "CrystalVortex", "maxCount": 7, "probability": 100 },
+      { "name": "IceElemental", "maxCount": 7, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "94b80763-67c5-43ba-b3b3-b8f7cb79df0d",
+    "name": "Spawner (116)",
+    "location": [6534, 178, 0],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
-    "walkingRange": 15,
-    "entries": [
-      { "name": "CrystalVortex", "maxCount": 1, "probability": 100 },
-      { "name": "IceElemental", "maxCount": 1, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "95875d5b-2ec2-4a4c-8859-78aeaab0a035",
-    "name": "Spawner (116)",
-    "location": [6534, 178, 0],
-    "map": "Trammel",
-    "count": 1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
     "homeRange": 4,
     "walkingRange": 4,
-    "entries": [{ "name": "CrystalWisp", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "CrystalWisp", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "9892eac0-26db-4c9c-bb8b-3fc21bc5961f",
+    "guid": "5db6f657-7f22-42b3-80b3-e87d60bf4320",
     "name": "Spawner (116)",
     "location": [6535, 179, 0],
     "map": "Trammel",
-    "count": 8,
+    "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
     "entries": [
-      { "name": "CrystalWisp", "maxCount": 1, "probability": 100 },
-      { "name": "CrystalLatticeSeeker", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 5, "probability": 100 }
+      { "name": "CrystalWisp", "maxCount": 5, "probability": 100 },
+      { "name": "CrystalLatticeSeeker", "maxCount": 5, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 5, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "052412a1-9912-4ea5-b120-6bafeb1997f3",
+    "guid": "989ea0b8-c27b-463f-874c-e0e609b45ae2",
     "name": "Spawner (116)",
     "location": [6502, 120, -10],
     "map": "Trammel",
@@ -258,21 +258,21 @@
   },
   {
     "type": "Spawner",
-    "guid": "4a78f261-9269-4172-8adf-2b2dfbd8467c",
+    "guid": "4446d13d-a111-4d4e-9403-cc326a14d73f",
     "name": "Spawner (116)",
     "location": [6507, 151, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "Protector", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Protector", "maxCount": 3, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "ea38c0f6-c534-4117-84a8-739613bf1f82",
+    "guid": "4dbf5c58-ce99-408b-acbc-c1f3c143a828",
     "name": "Spawner (116)",
     "location": [6532, 79, -10],
     "map": "Trammel",
@@ -286,30 +286,30 @@
   },
   {
     "type": "Spawner",
-    "guid": "43b4cf92-06f8-48ac-ab1f-ead39ebd37d5",
+    "guid": "baffa7e2-c06a-4cf6-9323-f627c38bc48e",
     "name": "Spawner (116)",
     "location": [6578, 183, 31],
     "map": "Trammel",
-    "count": 1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "Ferret", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Ferret", "maxCount": 2, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "5d0b4ee4-5b4c-4e26-82f2-760d9dce1380",
+    "guid": "625273e4-0b9f-4843-8ef9-4e793b082adf",
     "name": "Spawner (116)",
     "location": [6510, 171, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 8,
     "walkingRange": 8,
-    "entries": [{ "name": "Protector", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Protector", "maxCount": 3, "probability": 100 }]
   }
 ]

@@ -1,46 +1,46 @@
 [
   {
     "type": "Spawner",
-    "guid": "5a6afe0a-d633-4e22-ae65-db1548e34fda",
+    "guid": "ad2259cc-6596-4900-97d6-8839fededa40",
     "name": "Spawner (208)",
     "location": [1369, 1475, 10],
     "map": "Felucca",
-    "count": 7,
+    "count": 11,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "944a44d9-a3e3-44c4-8a96-aef8d0252a2a",
+    "guid": "1bcb0c70-900a-4ece-bbb8-d71e5d9506dc",
     "name": "Spawner (208)",
     "location": [1285, 3731, 0],
     "map": "Felucca",
-    "count": 8,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Shade", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "0507b157-f5f3-4b00-afaf-fb7af2b21495",
+    "guid": "fc0c2cc9-bd26-4b0a-bb3f-c570f2b4c36c",
     "name": "Spawner (208)",
     "location": [2438, 1100, 8],
     "map": "Felucca",
@@ -61,11 +61,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "de687881-e2fd-4079-95f9-0bfe253e3ce4",
+    "guid": "2834f036-31bd-4fcf-823d-3dfd8bfb301a",
     "name": "Spawner (208)",
     "location": [4545, 1317, 8],
     "map": "Felucca",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -76,12 +76,12 @@
       { "name": "Shade", "maxCount": 1, "probability": 100 },
       { "name": "Wraith", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 1, "probability": 100 }
+      { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "952a1a08-6d9d-4330-bbae-890e0db5c8d5",
+    "guid": "13ecb2a1-7450-4621-ac42-aabef82ddfed",
     "name": "Spawner (208)",
     "location": [4543, 1314, 8],
     "map": "Felucca",
@@ -95,52 +95,52 @@
   },
   {
     "type": "Spawner",
-    "guid": "efe2fbb6-cb43-4a51-9b66-08aab11cb91e",
+    "guid": "04b80cf3-9a38-4415-a314-c16cce12c97a",
     "name": "Spawner (208)",
     "location": [2758, 867, 0],
     "map": "Felucca",
-    "count": 7,
+    "count": 11,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "30ab52b8-6bea-46c8-962c-0aeb2d212cb6",
+    "guid": "67bb7470-fa83-4baf-80ff-e98dc26225cf",
     "name": "Spawner (208)",
     "location": [722, 1119, 0],
     "map": "Felucca",
-    "count": 1,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Skeleton", "maxCount": 10, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "1d1d2974-7751-4d44-93d6-1948bf264eb6",
+    "guid": "23ec825e-f161-47f0-973d-7c5853910cba",
     "name": "Spawner (208)",
     "location": [3407, 2652, 48],
     "map": "Felucca",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Zombie", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
+      { "name": "Zombie", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 }
     ]
   }
 ]

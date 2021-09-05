@@ -1,46 +1,46 @@
 [
   {
     "type": "Spawner",
-    "guid": "bfb89dcf-c7c9-4025-9fc3-fff0ed402dcb",
+    "guid": "931127cf-259c-4d8e-bb7f-97e6662e98fa",
     "name": "Spawner (2108)",
     "location": [1369, 1475, 10],
     "map": "Trammel",
-    "count": 7,
+    "count": 11,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 30,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9b5da612-f580-4b8e-b4e8-7080c4bd6378",
+    "guid": "9982d3a2-9ad7-4e7c-83cd-5108f1537b39",
     "name": "Spawner (2108)",
     "location": [1285, 3731, 0],
     "map": "Trammel",
-    "count": 8,
+    "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Shade", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Shade", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9fb73e8d-bf21-4036-b7d2-f083da29959f",
+    "guid": "8a06bacb-c6b8-487d-a070-af7900747bb5",
     "name": "Spawner (2108)",
     "location": [2438, 1100, 8],
     "map": "Trammel",
@@ -61,11 +61,11 @@
   },
   {
     "type": "Spawner",
-    "guid": "26267e9d-f61a-43a8-8344-5d10017b9bb7",
+    "guid": "3d92a0fc-fb39-4ed5-9619-662689ec86cd",
     "name": "Spawner (2108)",
     "location": [4545, 1317, 8],
     "map": "Trammel",
-    "count": 5,
+    "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
@@ -76,57 +76,57 @@
       { "name": "Shade", "maxCount": 1, "probability": 100 },
       { "name": "Wraith", "maxCount": 1, "probability": 100 },
       { "name": "Skeleton", "maxCount": 1, "probability": 100 },
-      { "name": "Zombie", "maxCount": 1, "probability": 100 }
+      { "name": "Zombie", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "e3518708-8cdc-4ea7-afa7-c8e457ac1ca4",
+    "guid": "69d45380-5a19-40db-8e6a-8df4da2bf227",
     "name": "Spawner (2108)",
     "location": [2758, 867, 0],
     "map": "Trammel",
-    "count": 7,
+    "count": 11,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
     "entries": [
-      { "name": "Spectre", "maxCount": 1, "probability": 100 },
-      { "name": "Wraith", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 2, "probability": 100 },
-      { "name": "Zombie", "maxCount": 3, "probability": 100 }
+      { "name": "Spectre", "maxCount": 2, "probability": 100 },
+      { "name": "Wraith", "maxCount": 2, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "type": "Spawner",
-    "guid": "9e036d48-0239-4ace-9abc-d7f8f4297ee2",
+    "guid": "64d6904a-499c-46ac-83d2-b056796933d5",
     "name": "Spawner (2108)",
     "location": [722, 1119, 0],
     "map": "Trammel",
-    "count": 1,
+    "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "Skeleton", "maxCount": 1, "probability": 100 }]
+    "entries": [{ "name": "Skeleton", "maxCount": 10, "probability": 100 }]
   },
   {
     "type": "Spawner",
-    "guid": "50a4ab3e-1aa0-46b3-9c5b-d48615903928",
+    "guid": "e17f2633-458a-4174-81cb-0b7a2bdcdfef",
     "name": "Spawner (2108)",
     "location": [3407, 2652, 48],
     "map": "Trammel",
-    "count": 2,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
     "entries": [
-      { "name": "Zombie", "maxCount": 1, "probability": 100 },
-      { "name": "Skeleton", "maxCount": 1, "probability": 100 }
+      { "name": "Zombie", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 }
     ]
   }
 ]
