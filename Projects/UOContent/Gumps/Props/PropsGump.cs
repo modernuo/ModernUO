@@ -402,9 +402,7 @@ namespace Server.Gumps
                                     : new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page)
                             );
                         }
-                        else if (IsType(type, DecimalTypes) ||
-                                 IsType(type, NumericTypes) ||
-                                 IsParsable(type))
+                        else if (IsParsable(type))
                         {
                             from.SendGump(new SetGump(prop, from, m_Object, this));
                         }
@@ -470,40 +468,6 @@ namespace Server.Gumps
 
         private static bool HasAttribute(Type type, Type check, bool inherit) =>
             type.GetCustomAttributes(check, inherit).Length > 0;
-
-        private static bool HasImplicitCastTo(Type type, Type check)
-        {
-            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
-            {
-                if (method.Name != "op_Implicit" || !IsType(method.ReturnType, check))
-                {
-                    continue;
-                }
-
-                var parameters = method.GetParameters();
-                if (parameters.Length == 1 && IsType(parameters[0].ParameterType, type))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
-
-        private static bool IsType(Type type, Type[] check)
-        {
-            for (var i = 0; i < check.Length; ++i)
-            {
-                if (IsType(type, check[i]) || HasImplicitCastTo(type, check[i]))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         private string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
 

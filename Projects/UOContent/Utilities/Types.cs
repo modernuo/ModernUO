@@ -16,6 +16,9 @@ namespace Server
         public static readonly Type OfUInt = typeof(uint);
         public static readonly Type OfLong = typeof(long);
         public static readonly Type OfULong = typeof(ulong);
+        public static readonly Type OfFloat = typeof(float);
+        public static readonly Type OfDouble = typeof(double);
+        public static readonly Type OfDecimal = typeof(decimal);
         public static readonly Type OfObject = typeof(object);
         public static readonly Type OfBool = typeof(bool);
         public static readonly Type OfChar = typeof(char);
@@ -52,8 +55,9 @@ namespace Server
 
         public static readonly Type[] DecimalTypes =
         {
-            typeof(float),
-            typeof(double)
+            OfFloat,
+            OfDouble,
+            OfDecimal
         };
 
         public static readonly Type[] NumericTypes =
@@ -69,30 +73,24 @@ namespace Server
         };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsSerial(Type t) => t == OfSerial;
+        public static bool IsType(Type type, Type check) => check.IsAssignableFrom(type);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsType(Type t) => OfType.IsAssignableFrom(t);
+        public static bool IsChar(Type t) => IsType(t, OfChar);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsChar(Type t) => t == OfChar;
+        public static bool IsString(Type t) => IsType(t, OfString);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsString(Type t) => t == OfString;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsText(Type t) => t == OfText;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEnum(Type t) => OfEnum.IsAssignableFrom(t);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsGuid(Type t) => t == OfGuid;
+        public static bool IsText(Type t) => IsType(t, OfText);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsParsable(Type t) =>
-            IsChar(t) || IsString(t) || IsText(t) || IsGuid(t) ||
-            t == OfTimeSpan || t.IsDefined(OfParsable, false) || IsNumeric(t);
+            IsChar(t) || IsString(t) || IsType(t, OfGuid) ||
+            IsType(t, OfTimeSpan) || IsNumeric(t) || IsDecimal(t) || t.IsDefined(OfParsable, false);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDecimal(Type t) => Array.IndexOf(DecimalTypes, t) >= 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNumeric(Type t) => Array.IndexOf(NumericTypes, t) >= 0;
@@ -107,10 +105,11 @@ namespace Server
             return method?.Invoke(null, _parseParams);
         }
 
+        // Do not use this in "Parse" methods, it may cause a stack overflow
         public static string TryParse(Type type, string value, out object constructed)
         {
             constructed = null;
-            var isSerial = IsSerial(type);
+            var isSerial = IsType(type, OfSerial);
 
             if (isSerial) // mutate into int32
             {
@@ -122,7 +121,7 @@ namespace Server
                 value = null;
             }
 
-            if (IsEnum(type))
+            if (IsType(type, OfEnum))
             {
                 try
                 {
@@ -133,7 +132,7 @@ namespace Server
                     return "That is not a valid enumeration member.";
                 }
             }
-            else if (IsType(type))
+            else if (IsType(type, OfType))
             {
                 try
                 {
@@ -149,17 +148,6 @@ namespace Server
                     return "No type with that name was found.";
                 }
             }
-            else if (IsParsable(type))
-            {
-                try
-                {
-                    constructed = Parse(type, value);
-                }
-                catch
-                {
-                    return "That is not properly formatted.";
-                }
-            }
             else if (value == null)
             {
                 constructed = null;
@@ -169,6 +157,17 @@ namespace Server
                 try
                 {
                     constructed = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
+                }
+                catch
+                {
+                    return "That is not properly formatted.";
+                }
+            }
+            else if (IsParsable(type))
+            {
+                try
+                {
+                    constructed = Parse(type, value);
                 }
                 catch
                 {
