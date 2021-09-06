@@ -35,7 +35,7 @@ namespace Server.Items
     [Serializable(0, false)]
     public partial class DecorativeSwordNorth : Item
     {
-        [SerializableField(0)]
+        [SerializableField(0, getter: "private", setter: "private")]
         private InternalItem _item;
 
         [Constructible]
@@ -71,7 +71,7 @@ namespace Server.Items
         [Serializable(0, false)]
         private partial class InternalItem : Item
         {
-            [SerializableField(0)]
+            [SerializableField(0, getter: "private", setter: "private")]
             private DecorativeSwordNorth _item;
 
             public InternalItem(DecorativeSwordNorth item) : base(0x1564)
