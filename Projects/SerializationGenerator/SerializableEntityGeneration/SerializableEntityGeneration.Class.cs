@@ -171,7 +171,6 @@ namespace SerializationGenerator
             var indent = "    ";
 
             source.RecursiveGenerateClassStart(classSymbol, interfaces.ToImmutableArray(), ref indent);
-            indent += "    ";
 
             source.GenerateClassField(
                 indent,
@@ -364,7 +363,6 @@ namespace SerializationGenerator
                 source.GenerateEnumEnd($"{indent}    ");
             }
 
-            indent = indent.Substring(0, indent.Length - 4);
             source.RecursiveGenerateClassEnd(classSymbol, ref indent);
             source.GenerateNamespaceEnd();
 
@@ -420,8 +418,8 @@ namespace SerializationGenerator
         {
             do
             {
-                source.GenerateClassEnd(indent);
                 indent = indent.Substring(0, indent.Length - 4);
+                source.GenerateClassEnd(indent);
 
                 classSymbol = classSymbol.ContainingSymbol as INamedTypeSymbol;
             } while (classSymbol != null);
