@@ -49,7 +49,7 @@ namespace Server.Items
         {
             if (_item != null)
             {
-                Item.Location = new Point3D(X - 1, Y, Z);
+                _item.Location = new Point3D(X - 1, Y, Z);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Server.Items
         {
             if (_item != null)
             {
-                Item.Map = Map;
+                _item.Map = Map;
             }
         }
 
@@ -85,7 +85,7 @@ namespace Server.Items
             {
                 if (_item != null)
                 {
-                    Item.Location = new Point3D(X + 1, Y, Z);
+                    _item.Location = new Point3D(X + 1, Y, Z);
                 }
             }
 
@@ -93,7 +93,7 @@ namespace Server.Items
             {
                 if (_item != null)
                 {
-                    Item.Map = Map;
+                    _item.Map = Map;
                 }
             }
 
@@ -101,40 +101,37 @@ namespace Server.Items
             {
                 base.OnAfterDelete();
 
-                Item?.Delete();
+                _item?.Delete();
             }
         }
     }
 
-    public class DecorativeSwordWest : Item
+    [Serializable(0)]
+    public partial class DecorativeSwordWest : Item
     {
-        private InternalItem m_Item;
+        [SerializableField(0, getter: "private", setter: "private")]
+        private InternalItem _item;
 
         [Constructible]
         public DecorativeSwordWest() : base(0x1566)
         {
             Movable = false;
-
-            m_Item = new InternalItem(this);
-        }
-
-        public DecorativeSwordWest(Serial serial) : base(serial)
-        {
+            _item = new InternalItem(this);
         }
 
         public override void OnLocationChange(Point3D oldLocation)
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Location = new Point3D(X, Y - 1, Z);
+                _item.Location = new Point3D(X, Y - 1, Z);
             }
         }
 
         public override void OnMapChange()
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Map = Map;
+                _item.Map = Map;
             }
         }
 
@@ -142,55 +139,34 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            m_Item?.Delete();
+            _item?.Delete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [Serializable(0)]
+        private partial class InternalItem : Item
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Item);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Item = reader.ReadEntity<InternalItem>();
-        }
-
-        private class InternalItem : Item
-        {
-            private DecorativeSwordWest m_Item;
+            [SerializableField(0, getter: "private", setter: "private")]
+            private DecorativeSwordWest _item;
 
             public InternalItem(DecorativeSwordWest item) : base(0x1567)
             {
                 Movable = true;
-
-                m_Item = item;
-            }
-
-            public InternalItem(Serial serial) : base(serial)
-            {
+                _item = item;
             }
 
             public override void OnLocationChange(Point3D oldLocation)
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Location = new Point3D(X, Y + 1, Z);
+                    _item.Location = new Point3D(X, Y + 1, Z);
                 }
             }
 
             public override void OnMapChange()
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Map = Map;
+                    _item.Map = Map;
                 }
             }
 
@@ -198,58 +174,37 @@ namespace Server.Items
             {
                 base.OnAfterDelete();
 
-                m_Item?.Delete();
-            }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-
-                writer.Write(m_Item);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                m_Item = reader.ReadEntity<DecorativeSwordWest>();
+                _item?.Delete();
             }
         }
     }
 
-    public class DecorativeDAxeNorth : Item
+    [Serializable(0)]
+    public partial class DecorativeDAxeNorth : Item
     {
-        private InternalItem m_Item;
+        [SerializableField(0, getter: "private", setter: "private")]
+        private InternalItem _item;
 
         [Constructible]
         public DecorativeDAxeNorth() : base(0x1569)
         {
             Movable = false;
-
-            m_Item = new InternalItem(this);
-        }
-
-        public DecorativeDAxeNorth(Serial serial) : base(serial)
-        {
+            _item = new InternalItem(this);
         }
 
         public override void OnLocationChange(Point3D oldLocation)
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Location = new Point3D(X - 1, Y, Z);
+                _item.Location = new Point3D(X - 1, Y, Z);
             }
         }
 
         public override void OnMapChange()
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Map = Map;
+                _item.Map = Map;
             }
         }
 
@@ -257,55 +212,35 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            m_Item?.Delete();
+            _item?.Delete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [Serializable(0)]
+        private partial class InternalItem : Item
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Item);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Item = reader.ReadEntity<InternalItem>();
-        }
-
-        private class InternalItem : Item
-        {
-            private DecorativeDAxeNorth m_Item;
+            [SerializableField(0, getter: "private", setter: "private")]
+            private DecorativeDAxeNorth _item;
 
             public InternalItem(DecorativeDAxeNorth item) : base(0x1568)
             {
                 Movable = true;
 
-                m_Item = item;
-            }
-
-            public InternalItem(Serial serial) : base(serial)
-            {
+                _item = item;
             }
 
             public override void OnLocationChange(Point3D oldLocation)
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Location = new Point3D(X + 1, Y, Z);
+                    _item.Location = new Point3D(X + 1, Y, Z);
                 }
             }
 
             public override void OnMapChange()
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Map = Map;
+                    _item.Map = Map;
                 }
             }
 
@@ -313,58 +248,38 @@ namespace Server.Items
             {
                 base.OnAfterDelete();
 
-                m_Item?.Delete();
-            }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-
-                writer.Write(m_Item);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                m_Item = reader.ReadEntity<DecorativeDAxeNorth>();
+                _item?.Delete();
             }
         }
     }
 
-    public class DecorativeDAxeWest : Item
+    [Serializable(0)]
+    public partial class DecorativeDAxeWest : Item
     {
-        private InternalItem m_Item;
+        [SerializableField(0, getter: "private", setter: "private")]
+        private InternalItem _item;
 
         [Constructible]
         public DecorativeDAxeWest() : base(0x156A)
         {
             Movable = false;
 
-            m_Item = new InternalItem(this);
-        }
-
-        public DecorativeDAxeWest(Serial serial) : base(serial)
-        {
+            _item = new InternalItem(this);
         }
 
         public override void OnLocationChange(Point3D oldLocation)
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Location = new Point3D(X, Y - 1, Z);
+                _item.Location = new Point3D(X, Y - 1, Z);
             }
         }
 
         public override void OnMapChange()
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Map = Map;
+                _item.Map = Map;
             }
         }
 
@@ -372,55 +287,35 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            m_Item?.Delete();
+            _item?.Delete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [Serializable(0)]
+        private partial class InternalItem : Item
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Item);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Item = reader.ReadEntity<InternalItem>();
-        }
-
-        private class InternalItem : Item
-        {
-            private DecorativeDAxeWest m_Item;
+            [SerializableField(0, getter: "private", setter: "private")]
+            private DecorativeDAxeWest _item;
 
             public InternalItem(DecorativeDAxeWest item) : base(0x156B)
             {
                 Movable = true;
 
-                m_Item = item;
-            }
-
-            public InternalItem(Serial serial) : base(serial)
-            {
+                _item = item;
             }
 
             public override void OnLocationChange(Point3D oldLocation)
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Location = new Point3D(X, Y + 1, Z);
+                    _item.Location = new Point3D(X, Y + 1, Z);
                 }
             }
 
             public override void OnMapChange()
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Map = Map;
+                    _item.Map = Map;
                 }
             }
 
@@ -428,25 +323,7 @@ namespace Server.Items
             {
                 base.OnAfterDelete();
 
-                m_Item?.Delete();
-            }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-
-                writer.Write(m_Item);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                m_Item = reader.ReadEntity<DecorativeDAxeWest>();
+                _item?.Delete();
             }
         }
     }
