@@ -712,7 +712,7 @@ namespace Server.Items
         }
     }
 
-    [DynamicFliping, Flippable(0x9A8, 0xE80)]
+    [DynamicFlipping, Flippable(0x9A8, 0xE80)]
     public class MetalBox : LockableContainer
     {
         [Constructible]
@@ -744,7 +744,7 @@ namespace Server.Items
         }
     }
 
-    [DynamicFliping, Flippable(0x9AB, 0xE7C)]
+    [DynamicFlipping, Flippable(0x9AB, 0xE7C)]
     public class MetalChest : LockableContainer
     {
         [Constructible]
@@ -776,7 +776,7 @@ namespace Server.Items
         }
     }
 
-    [DynamicFliping, Flippable(0xE41, 0xE40)]
+    [DynamicFlipping, Flippable(0xE41, 0xE40)]
     public class MetalGoldenChest : LockableContainer
     {
         [Constructible]
