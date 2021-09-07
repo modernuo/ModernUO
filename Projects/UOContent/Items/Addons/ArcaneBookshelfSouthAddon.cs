@@ -6,8 +6,8 @@ namespace Server.Items
         [Constructible]
         public ArcaneBookshelfSouthAddon()
         {
-            AddComponent(new AddonComponent(0x3087), 0, 0, 0);
-            AddComponent(new AddonComponent(0x3086), 0, 1, 0);
+            AddComponent(new AddonComponent(0x3084), 0, 0, 0);
+            AddComponent(new AddonComponent(0x3085), -1, 0, 0);
         }
 
         public override BaseAddonDeed Deed => new ArcaneBookshelfSouthDeed();
