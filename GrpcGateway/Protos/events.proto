@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcGateway";
+
+package event;
+
+// The greeting service definition.
+service Events {
+  // Sends a greeting
+  rpc CharacterCreated (CharacterName) returns (GenericReply);
+  rpc WorldSave (WorldSaveDuration) returns (GenericReply);
+}
+
+// The request message containing the user's name.
+message CharacterName {
+  string name = 1;
+}
+
+message WorldSaveDuration {
+  double duration = 1;
+}
+
+message GenericReply {
+	string message = 1;
+}
+
+

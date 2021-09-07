@@ -66,6 +66,5 @@
       <Folder Include="Special Systems\Casino\Poker\" />
       <Folder Include="Special Systems\Items\Magic Jewelry\" />
       <Folder Include="Special Systems\Misc\Pirates\" />
-      <Folder Include="Special Systems\Bosses\" />
     </ItemGroup>
 </Project>

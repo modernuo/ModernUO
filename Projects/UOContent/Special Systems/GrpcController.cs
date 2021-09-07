@@ -14,16 +14,23 @@ namespace Server
         {
             
 
-            //EventSink.CharacterCreated += EventSink_CharacterCreated;
-            //EventSink.WorldSaveDone += EventSink_WorldSaveDone;
+            EventSink.CharacterCreated += EventSink_CharacterCreated;
+            EventSink.WorldSaveDone += EventSink_WorldSaveDone;
             
 
 
         }
 
+        private static void EventSink_CharacterCreated(CharacterCreatedEventArgs obj)
+        {
+            SendService.SendCharacterCreated(obj.Name);
+        }
+
         private static void EventSink_WorldSaveDone(double obj)
         {
-            Methodes.Greet();
+            SendService.SendWorldSave(obj);
         }
+
+       
     }
 }

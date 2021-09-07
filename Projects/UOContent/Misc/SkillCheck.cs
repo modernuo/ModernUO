@@ -19,7 +19,7 @@ namespace Server.Misc
         private const int
             LocationSize = 5; // The size of eeach location, make this smaller so players dont have to move as far
 
-        private static readonly bool AntiMacroCode = !Core.ML; // Change this to false to disable anti-macro code
+        private static readonly bool AntiMacroCode = false; //!Core.ML; // Change this to false to disable anti-macro code
 
         public static TimeSpan AntiMacroExpire = TimeSpan.FromMinutes(5.0); // How long do we remember targets/locations?
 
@@ -160,8 +160,7 @@ namespace Server.Misc
             gc += (skill.Cap - skill.Base) / skill.Cap;
             gc /= 2;
 
-            gc += (1.0 - chance) * (success ? 0.5 :
-                Core.AOS ? 0.0 : 0.2);
+            gc += (1.0 - chance) * (success ? 0.5 : Core.AOS ? 0.0 : 0.2);
             gc /= 2;
 
             gc *= skill.Info.GainFactor;
@@ -176,12 +175,24 @@ namespace Server.Misc
                 gc *= 2;
             }
 
+            if (from.Region.GetRegion(typeof(HouseRegion)) != null)
+            {
+                gc *= 1.25; // -25%
+            }
+                        
+            if (from.Region.GetRegion(typeof(DungeonRegion)) != null)
+            {
+                gc *= 0.50; //
+            }
+
             if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
             {
                 Gain(from, skill);
             }
 
             return success;
+
+
         }
 
         public static bool Mobile_SkillCheckTarget(
@@ -271,6 +282,7 @@ namespace Server.Misc
             {
                 var toGain = 1;
 
+
                 #region Powerhour Testing
 
                 if (PowerHour.IsActive)
@@ -343,7 +355,7 @@ namespace Server.Misc
                 Stat.Str => from.StrLock == StatLockType.Down && from.RawStr > 10,
                 Stat.Dex => from.DexLock == StatLockType.Down && from.RawDex > 10,
                 Stat.Int => from.IntLock == StatLockType.Down && from.RawInt > 10,
-                _        => false
+                _ => false
             };
         }
 
@@ -362,7 +374,7 @@ namespace Server.Misc
                 Stat.Str => from.StrLock == StatLockType.Up && from.RawStr < 125,
                 Stat.Dex => from.DexLock == StatLockType.Up && from.RawDex < 125,
                 Stat.Int => from.IntLock == StatLockType.Up && from.RawInt < 125,
-                _        => false
+                _ => false
             };
         }
 

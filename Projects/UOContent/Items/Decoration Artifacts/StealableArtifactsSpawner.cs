@@ -34,110 +34,124 @@ namespace Server.Items
 
         public static StealableEntry[] Entries { get; } =
         {
-            // Doom - Artifact rarity 1
-            new(Map.Malas, new Point3D(317, 56, -1), 72, 108, typeof(RockArtifact)),
-            new(Map.Malas, new Point3D(360, 31, 8), 72, 108, typeof(SkullCandleArtifact)),
-            new(Map.Malas, new Point3D(369, 372, -1), 72, 108, typeof(BottleArtifact)),
-            new(Map.Malas, new Point3D(378, 372, 0), 72, 108, typeof(DamagedBooksArtifact)),
-            // Doom - Artifact rarity 2
-            new(Map.Malas, new Point3D(432, 16, -1), 144, 216, typeof(StretchedHideArtifact)),
-            new(Map.Malas, new Point3D(489, 9, 0), 144, 216, typeof(BrazierArtifact)),
-            // Doom - Artifact rarity 3
-            new(Map.Malas, new Point3D(471, 96, -1), 288, 432, typeof(LampPostArtifact), GetLampPostHue()),
-            new(Map.Malas, new Point3D(421, 198, 2), 288, 432, typeof(BooksNorthArtifact)),
-            new(Map.Malas, new Point3D(431, 189, -1), 288, 432, typeof(BooksWestArtifact)),
-            new(Map.Malas, new Point3D(435, 196, -1), 288, 432, typeof(BooksFaceDownArtifact)),
-            // Doom - Artifact rarity 5
-            new(Map.Malas, new Point3D(447, 9, 8), 1152, 1728, typeof(StuddedLeggingsArtifact)),
-            new(Map.Malas, new Point3D(423, 28, 0), 1152, 1728, typeof(EggCaseArtifact)),
-            new(Map.Malas, new Point3D(347, 44, 4), 1152, 1728, typeof(SkinnedGoatArtifact)),
-            new(Map.Malas, new Point3D(497, 57, -1), 1152, 1728, typeof(GruesomeStandardArtifact)),
-            new(Map.Malas, new Point3D(381, 375, 11), 1152, 1728, typeof(BloodyWaterArtifact)),
-            new(Map.Malas, new Point3D(489, 369, 2), 1152, 1728, typeof(TarotCardsArtifact)),
-            new(Map.Malas, new Point3D(497, 369, 5), 1152, 1728, typeof(BackpackArtifact)),
-            // Doom - Artifact rarity 7
-            new(Map.Malas, new Point3D(475, 23, 4), 4608, 6912, typeof(StuddedTunicArtifact)),
-            new(Map.Malas, new Point3D(423, 28, 0), 4608, 6912, typeof(CocoonArtifact)),
-            // Doom - Artifact rarity 8
-            new(Map.Malas, new Point3D(354, 36, -1), 9216, 13824, typeof(SkinnedDeerArtifact)),
-            // Doom - Artifact rarity 9
-            new(Map.Malas, new Point3D(433, 11, -1), 18432, 27648, typeof(SaddleArtifact)),
-            new(Map.Malas, new Point3D(403, 31, 4), 18432, 27648, typeof(LeatherTunicArtifact)),
-            // Doom - Artifact rarity 10
-            new(Map.Malas, new Point3D(257, 70, -2), 36864, 55296, typeof(ZyronicClaw)),
-            new(Map.Malas, new Point3D(354, 176, 7), 36864, 55296, typeof(TitansHammer)),
-            new(Map.Malas, new Point3D(369, 389, -1), 36864, 55296, typeof(BladeOfTheRighteous)),
-            new(Map.Malas, new Point3D(467, 92, 4), 36864, 55296, typeof(InquisitorsResolution)),
-            // Doom - Artifact rarity 12
-            new(Map.Malas, new Point3D(487, 364, -1), 147456, 221184, typeof(RuinedPaintingArtifact)),
+            new(Map.Felucca, new Point3D( 2683, 2056, 17 ), 4320, 20160, typeof(DecoRock)),
+            new(Map.Felucca, new Point3D( 5511, 3116, -4 ), 4320, 20160, typeof(DecoRock2)),
+            new(Map.Felucca, new Point3D( 286, 986, 6 ), 4320, 20160, typeof(FruitBasket)),
+            new(Map.Felucca, new Point3D( 5191, 587, 0 ), 4320, 20160, typeof(ClosedBarrel)),
+            new(Map.Felucca, new Point3D( 5576, 1829, 6 ), 4320, 20160, typeof(CandleLarge)),
+            new(Map.Felucca, new Point3D( 5582, 1829, 6 ), 4320, 20160, typeof(CandleLarge)),
+            new(Map.Felucca, new Point3D( 5999, 3773, 22 ), 4320, 20160, typeof(DecoHay)),
+            new(Map.Felucca, new Point3D( 3657, 2506, 0 ), 4320, 20160, typeof(DecoFullJars3)),
+            new(Map.Felucca, new Point3D( 3787, 1121, 26 ), 4320, 20160, typeof(FruitBasket)),
+            new(Map.Felucca, new Point3D( 3683, 2204, 31 ), 4320, 20160, typeof(FruitBasket)),
+            new(Map.Felucca, new Point3D( 559, 1023, 0 ), 4320, 20160, typeof(TreeStump)),
+            new(Map.Felucca, new Point3D( 5732, 93, 0 ), 4320, 20160, typeof(EmptyJars4)),
+            new(Map.Felucca, new Point3D( 399, 1216, 0 ), 4320, 20160, typeof(RuinedBookcase)),
+            new(Map.Felucca, new Point3D( 399, 1216, 0 ), 4320, 20160, typeof(GreenDriedFlowers))
+            //// Doom - Artifact rarity 1
+            //new(Map.Malas, new Point3D(317, 56, -1), 72, 108, typeof(RockArtifact)),
+            //new(Map.Malas, new Point3D(360, 31, 8), 72, 108, typeof(SkullCandleArtifact)),
+            //new(Map.Malas, new Point3D(369, 372, -1), 72, 108, typeof(BottleArtifact)),
+            //new(Map.Malas, new Point3D(378, 372, 0), 72, 108, typeof(DamagedBooksArtifact)),
+            //// Doom - Artifact rarity 2
+            //new(Map.Malas, new Point3D(432, 16, -1), 144, 216, typeof(StretchedHideArtifact)),
+            //new(Map.Malas, new Point3D(489, 9, 0), 144, 216, typeof(BrazierArtifact)),
+            //// Doom - Artifact rarity 3
+            //new(Map.Malas, new Point3D(471, 96, -1), 288, 432, typeof(LampPostArtifact), GetLampPostHue()),
+            //new(Map.Malas, new Point3D(421, 198, 2), 288, 432, typeof(BooksNorthArtifact)),
+            //new(Map.Malas, new Point3D(431, 189, -1), 288, 432, typeof(BooksWestArtifact)),
+            //new(Map.Malas, new Point3D(435, 196, -1), 288, 432, typeof(BooksFaceDownArtifact)),
+            //// Doom - Artifact rarity 5
+            //new(Map.Malas, new Point3D(447, 9, 8), 1152, 1728, typeof(StuddedLeggingsArtifact)),
+            //new(Map.Malas, new Point3D(423, 28, 0), 1152, 1728, typeof(EggCaseArtifact)),
+            //new(Map.Malas, new Point3D(347, 44, 4), 1152, 1728, typeof(SkinnedGoatArtifact)),
+            //new(Map.Malas, new Point3D(497, 57, -1), 1152, 1728, typeof(GruesomeStandardArtifact)),
+            //new(Map.Malas, new Point3D(381, 375, 11), 1152, 1728, typeof(BloodyWaterArtifact)),
+            //new(Map.Malas, new Point3D(489, 369, 2), 1152, 1728, typeof(TarotCardsArtifact)),
+            //new(Map.Malas, new Point3D(497, 369, 5), 1152, 1728, typeof(BackpackArtifact)),
+            //// Doom - Artifact rarity 7
+            //new(Map.Malas, new Point3D(475, 23, 4), 4608, 6912, typeof(StuddedTunicArtifact)),
+            //new(Map.Malas, new Point3D(423, 28, 0), 4608, 6912, typeof(CocoonArtifact)),
+            //// Doom - Artifact rarity 8
+            //new(Map.Malas, new Point3D(354, 36, -1), 9216, 13824, typeof(SkinnedDeerArtifact)),
+            //// Doom - Artifact rarity 9
+            //new(Map.Malas, new Point3D(433, 11, -1), 18432, 27648, typeof(SaddleArtifact)),
+            //new(Map.Malas, new Point3D(403, 31, 4), 18432, 27648, typeof(LeatherTunicArtifact)),
+            //// Doom - Artifact rarity 10
+            //new(Map.Malas, new Point3D(257, 70, -2), 36864, 55296, typeof(ZyronicClaw)),
+            //new(Map.Malas, new Point3D(354, 176, 7), 36864, 55296, typeof(TitansHammer)),
+            //new(Map.Malas, new Point3D(369, 389, -1), 36864, 55296, typeof(BladeOfTheRighteous)),
+            //new(Map.Malas, new Point3D(467, 92, 4), 36864, 55296, typeof(InquisitorsResolution)),
+            //// Doom - Artifact rarity 12
+            //new(Map.Malas, new Point3D(487, 364, -1), 147456, 221184, typeof(RuinedPaintingArtifact)),
 
-            // Yomotsu Mines - Artifact rarity 1
-            new(Map.Malas, new Point3D(18, 110, -1), 72, 108, typeof(Basket1Artifact)),
-            new(Map.Malas, new Point3D(66, 114, -1), 72, 108, typeof(Basket2Artifact)),
-            // Yomotsu Mines - Artifact rarity 2
-            new(Map.Malas, new Point3D(63, 12, 11), 144, 216, typeof(Basket4Artifact)),
-            new(Map.Malas, new Point3D(5, 29, -1), 144, 216, typeof(Basket5NorthArtifact)),
-            new(Map.Malas, new Point3D(30, 81, 3), 144, 216, typeof(Basket5WestArtifact)),
-            // Yomotsu Mines - Artifact rarity 3
-            new(Map.Malas, new Point3D(115, 7, -1), 288, 432, typeof(Urn1Artifact)),
-            new(Map.Malas, new Point3D(85, 13, -1), 288, 432, typeof(Urn2Artifact)),
-            new(Map.Malas, new Point3D(110, 53, -1), 288, 432, typeof(Sculpture1Artifact)),
-            new(Map.Malas, new Point3D(108, 37, -1), 288, 432, typeof(Sculpture2Artifact)),
-            new(Map.Malas, new Point3D(121, 14, -1), 288, 432, typeof(TeapotNorthArtifact)),
-            new(Map.Malas, new Point3D(121, 115, -1), 288, 432, typeof(TeapotWestArtifact)),
-            new(Map.Malas, new Point3D(84, 40, -1), 288, 432, typeof(TowerLanternArtifact)),
-            // Yomotsu Mines - Artifact rarity 9
-            new(Map.Malas, new Point3D(94, 7, -1), 18432, 27648, typeof(ManStatuetteSouthArtifact)),
+            //// Yomotsu Mines - Artifact rarity 1
+            //new(Map.Malas, new Point3D(18, 110, -1), 72, 108, typeof(Basket1Artifact)),
+            //new(Map.Malas, new Point3D(66, 114, -1), 72, 108, typeof(Basket2Artifact)),
+            //// Yomotsu Mines - Artifact rarity 2
+            //new(Map.Malas, new Point3D(63, 12, 11), 144, 216, typeof(Basket4Artifact)),
+            //new(Map.Malas, new Point3D(5, 29, -1), 144, 216, typeof(Basket5NorthArtifact)),
+            //new(Map.Malas, new Point3D(30, 81, 3), 144, 216, typeof(Basket5WestArtifact)),
+            //// Yomotsu Mines - Artifact rarity 3
+            //new(Map.Malas, new Point3D(115, 7, -1), 288, 432, typeof(Urn1Artifact)),
+            //new(Map.Malas, new Point3D(85, 13, -1), 288, 432, typeof(Urn2Artifact)),
+            //new(Map.Malas, new Point3D(110, 53, -1), 288, 432, typeof(Sculpture1Artifact)),
+            //new(Map.Malas, new Point3D(108, 37, -1), 288, 432, typeof(Sculpture2Artifact)),
+            //new(Map.Malas, new Point3D(121, 14, -1), 288, 432, typeof(TeapotNorthArtifact)),
+            //new(Map.Malas, new Point3D(121, 115, -1), 288, 432, typeof(TeapotWestArtifact)),
+            //new(Map.Malas, new Point3D(84, 40, -1), 288, 432, typeof(TowerLanternArtifact)),
+            //// Yomotsu Mines - Artifact rarity 9
+            //new(Map.Malas, new Point3D(94, 7, -1), 18432, 27648, typeof(ManStatuetteSouthArtifact)),
 
-            // Fan Dancer's Dojo - Artifact rarity 1
-            new(Map.Malas, new Point3D(113, 640, -2), 72, 108, typeof(Basket3NorthArtifact)),
-            new(Map.Malas, new Point3D(102, 355, -1), 72, 108, typeof(Basket3WestArtifact)),
-            // Fan Dancer's Dojo - Artifact rarity 2
-            new(Map.Malas, new Point3D(99, 370, -1), 144, 216, typeof(Basket6Artifact)),
-            new(Map.Malas, new Point3D(100, 357, -1), 144, 216, typeof(ZenRock1Artifact)),
-            // Fan Dancer's Dojo - Artifact rarity 3
-            new(Map.Malas, new Point3D(73, 473, -1), 288, 432, typeof(FanNorthArtifact)),
-            new(Map.Malas, new Point3D(99, 372, -1), 288, 432, typeof(FanWestArtifact)),
-            new(Map.Malas, new Point3D(92, 326, -1), 288, 432, typeof(BowlsVerticalArtifact)),
-            new(Map.Malas, new Point3D(97, 470, -1), 288, 432, typeof(ZenRock2Artifact)),
-            new(Map.Malas, new Point3D(103, 691, -1), 288, 432, typeof(ZenRock3Artifact)),
-            // Fan Dancer's Dojo - Artifact rarity 4
-            new(Map.Malas, new Point3D(103, 336, 4), 576, 864, typeof(Painting1NorthArtifact)),
-            new(Map.Malas, new Point3D(59, 381, 4), 576, 864, typeof(Painting1WestArtifact)),
-            new(Map.Malas, new Point3D(84, 401, 2), 576, 864, typeof(Painting2NorthArtifact)),
-            new(Map.Malas, new Point3D(59, 392, 2), 576, 864, typeof(Painting2WestArtifact)),
-            new(Map.Malas, new Point3D(107, 483, -1), 576, 864, typeof(TripleFanNorthArtifact)),
-            new(Map.Malas, new Point3D(50, 475, -1), 576, 864, typeof(TripleFanWestArtifact)),
-            new(Map.Malas, new Point3D(107, 460, -1), 576, 864, typeof(BowlArtifact)),
-            new(Map.Malas, new Point3D(90, 502, -1), 576, 864, typeof(CupsArtifact)),
-            new(Map.Malas, new Point3D(107, 688, -1), 576, 864, typeof(BowlsHorizontalArtifact)),
-            new(Map.Malas, new Point3D(112, 676, -1), 576, 864, typeof(SakeArtifact)),
-            // Fan Dancer's Dojo - Artifact rarity 5
-            new(Map.Malas, new Point3D(135, 614, -1), 1152, 1728, typeof(SwordDisplay1NorthArtifact)),
-            new(Map.Malas, new Point3D(50, 482, -1), 1152, 1728, typeof(SwordDisplay1WestArtifact)),
-            new(Map.Malas, new Point3D(119, 672, -1), 1152, 1728, typeof(Painting3Artifact)),
-            // Fan Dancer's Dojo - Artifact rarity 6
-            new(Map.Malas, new Point3D(90, 326, -1), 2304, 3456, typeof(Painting4NorthArtifact)),
-            new(Map.Malas, new Point3D(99, 354, -1), 2304, 3456, typeof(Painting4WestArtifact)),
-            new(Map.Malas, new Point3D(179, 652, -1), 2304, 3456, typeof(SwordDisplay2NorthArtifact)),
-            new(Map.Malas, new Point3D(118, 627, -1), 2304, 3456, typeof(SwordDisplay2WestArtifact)),
-            // Fan Dancer's Dojo - Artifact rarity 7
-            new(Map.Malas, new Point3D(90, 483, -1), 4608, 6912, typeof(FlowersArtifact)),
-            // Fan Dancer's Dojo - Artifact rarity 8
-            new(Map.Malas, new Point3D(71, 562, -1), 9216, 13824, typeof(DolphinLeftArtifact)),
-            new(Map.Malas, new Point3D(102, 677, -1), 9216, 13824, typeof(DolphinRightArtifact)),
-            new(Map.Malas, new Point3D(61, 499, 0), 9216, 13824, typeof(SwordDisplay3SouthArtifact)),
-            new(Map.Malas, new Point3D(182, 669, -1), 9216, 13824, typeof(SwordDisplay3EastArtifact)),
-            new(Map.Malas, new Point3D(162, 647, -1), 9216, 13824, typeof(SwordDisplay4WestArtifact)),
-            new(Map.Malas, new Point3D(124, 624, 0), 9216, 13824, typeof(Painting5NorthArtifact)),
-            new(Map.Malas, new Point3D(146, 649, 2), 9216, 13824, typeof(Painting5WestArtifact)),
-            // Fan Dancer's Dojo - Artifact rarity 9
-            new(Map.Malas, new Point3D(100, 488, -1), 18432, 27648, typeof(SwordDisplay4NorthArtifact)),
-            new(Map.Malas, new Point3D(175, 606, 0), 18432, 27648, typeof(SwordDisplay5NorthArtifact)),
-            new(Map.Malas, new Point3D(157, 608, -1), 18432, 27648, typeof(SwordDisplay5WestArtifact)),
-            new(Map.Malas, new Point3D(187, 643, 1), 18432, 27648, typeof(Painting6NorthArtifact)),
-            new(Map.Malas, new Point3D(146, 623, 1), 18432, 27648, typeof(Painting6WestArtifact)),
-            new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact))
+            //// Fan Dancer's Dojo - Artifact rarity 1
+            //new(Map.Malas, new Point3D(113, 640, -2), 72, 108, typeof(Basket3NorthArtifact)),
+            //new(Map.Malas, new Point3D(102, 355, -1), 72, 108, typeof(Basket3WestArtifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 2
+            //new(Map.Malas, new Point3D(99, 370, -1), 144, 216, typeof(Basket6Artifact)),
+            //new(Map.Malas, new Point3D(100, 357, -1), 144, 216, typeof(ZenRock1Artifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 3
+            //new(Map.Malas, new Point3D(73, 473, -1), 288, 432, typeof(FanNorthArtifact)),
+            //new(Map.Malas, new Point3D(99, 372, -1), 288, 432, typeof(FanWestArtifact)),
+            //new(Map.Malas, new Point3D(92, 326, -1), 288, 432, typeof(BowlsVerticalArtifact)),
+            //new(Map.Malas, new Point3D(97, 470, -1), 288, 432, typeof(ZenRock2Artifact)),
+            //new(Map.Malas, new Point3D(103, 691, -1), 288, 432, typeof(ZenRock3Artifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 4
+            //new(Map.Malas, new Point3D(103, 336, 4), 576, 864, typeof(Painting1NorthArtifact)),
+            //new(Map.Malas, new Point3D(59, 381, 4), 576, 864, typeof(Painting1WestArtifact)),
+            //new(Map.Malas, new Point3D(84, 401, 2), 576, 864, typeof(Painting2NorthArtifact)),
+            //new(Map.Malas, new Point3D(59, 392, 2), 576, 864, typeof(Painting2WestArtifact)),
+            //new(Map.Malas, new Point3D(107, 483, -1), 576, 864, typeof(TripleFanNorthArtifact)),
+            //new(Map.Malas, new Point3D(50, 475, -1), 576, 864, typeof(TripleFanWestArtifact)),
+            //new(Map.Malas, new Point3D(107, 460, -1), 576, 864, typeof(BowlArtifact)),
+            //new(Map.Malas, new Point3D(90, 502, -1), 576, 864, typeof(CupsArtifact)),
+            //new(Map.Malas, new Point3D(107, 688, -1), 576, 864, typeof(BowlsHorizontalArtifact)),
+            //new(Map.Malas, new Point3D(112, 676, -1), 576, 864, typeof(SakeArtifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 5
+            //new(Map.Malas, new Point3D(135, 614, -1), 1152, 1728, typeof(SwordDisplay1NorthArtifact)),
+            //new(Map.Malas, new Point3D(50, 482, -1), 1152, 1728, typeof(SwordDisplay1WestArtifact)),
+            //new(Map.Malas, new Point3D(119, 672, -1), 1152, 1728, typeof(Painting3Artifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 6
+            //new(Map.Malas, new Point3D(90, 326, -1), 2304, 3456, typeof(Painting4NorthArtifact)),
+            //new(Map.Malas, new Point3D(99, 354, -1), 2304, 3456, typeof(Painting4WestArtifact)),
+            //new(Map.Malas, new Point3D(179, 652, -1), 2304, 3456, typeof(SwordDisplay2NorthArtifact)),
+            //new(Map.Malas, new Point3D(118, 627, -1), 2304, 3456, typeof(SwordDisplay2WestArtifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 7
+            //new(Map.Malas, new Point3D(90, 483, -1), 4608, 6912, typeof(FlowersArtifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 8
+            //new(Map.Malas, new Point3D(71, 562, -1), 9216, 13824, typeof(DolphinLeftArtifact)),
+            //new(Map.Malas, new Point3D(102, 677, -1), 9216, 13824, typeof(DolphinRightArtifact)),
+            //new(Map.Malas, new Point3D(61, 499, 0), 9216, 13824, typeof(SwordDisplay3SouthArtifact)),
+            //new(Map.Malas, new Point3D(182, 669, -1), 9216, 13824, typeof(SwordDisplay3EastArtifact)),
+            //new(Map.Malas, new Point3D(162, 647, -1), 9216, 13824, typeof(SwordDisplay4WestArtifact)),
+            //new(Map.Malas, new Point3D(124, 624, 0), 9216, 13824, typeof(Painting5NorthArtifact)),
+            //new(Map.Malas, new Point3D(146, 649, 2), 9216, 13824, typeof(Painting5WestArtifact)),
+            //// Fan Dancer's Dojo - Artifact rarity 9
+            //new(Map.Malas, new Point3D(100, 488, -1), 18432, 27648, typeof(SwordDisplay4NorthArtifact)),
+            //new(Map.Malas, new Point3D(175, 606, 0), 18432, 27648, typeof(SwordDisplay5NorthArtifact)),
+            //new(Map.Malas, new Point3D(157, 608, -1), 18432, 27648, typeof(SwordDisplay5WestArtifact)),
+            //new(Map.Malas, new Point3D(187, 643, 1), 18432, 27648, typeof(Painting6NorthArtifact)),
+            //new(Map.Malas, new Point3D(146, 623, 1), 18432, 27648, typeof(Painting6WestArtifact)),
+            //new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact))
         };
 
         public static Type[] TypesOfEntires
