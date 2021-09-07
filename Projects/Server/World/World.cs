@@ -652,13 +652,24 @@ namespace Server
             Serial serial = reader.ReadSerial();
             var typeT = typeof(T);
 
+            T entity;
+
             // Add to this list when creating new serializable types
             if (typeof(BaseGuild).IsAssignableTo(typeT))
             {
-                return FindGuild(serial) as T;
+                entity = FindGuild(serial) as T;
+            }
+            else
+            {
+                entity = FindEntity<IEntity>(serial) as T;
             }
 
-            return FindEntity<IEntity>(serial) as T;
+            if (entity?.Deleted == false)
+            {
+                return entity;
+            }
+
+            return entity?.Created <= reader.LastSerialized ? entity : null;
         }
 
         public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable

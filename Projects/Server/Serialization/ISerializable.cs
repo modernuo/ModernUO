@@ -20,10 +20,18 @@ namespace Server
 {
     public interface ISerializable
     {
+        DateTime Created { get;}
+
+        // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
+        DateTime LastSerialized { get; protected internal set; }
         long SavePosition { get; protected internal set; }
         BufferWriter SaveBuffer { get; protected internal set; }
         int TypeRef { get; }
         Serial Serial { get; }
+
+        // Executed on every entity, before it's serialized.
+        // For example, this is used to clean up weak references and mark them dirty.
+        void BeforeSerialize();
         void Deserialize(IGenericReader reader);
         void Serialize(IGenericWriter writer);
         void Delete();
@@ -47,6 +55,8 @@ namespace Server
         public void Serialize()
         {
             SaveBuffer ??= new BufferWriter(true);
+
+            BeforeSerialize();
 
             // Clean, don't bother serializing
             if (SavePosition > -1)

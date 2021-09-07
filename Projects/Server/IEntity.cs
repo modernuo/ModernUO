@@ -47,6 +47,10 @@ namespace Server
         {
         }
 
+        public DateTime Created { get; set; }
+
+        DateTime ISerializable.LastSerialized { get; set; } = DateTime.MaxValue;
+
         long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
@@ -102,6 +106,10 @@ namespace Server
             && p.X <= Location.m_X + range
             && p.Y >= Location.m_Y - range
             && p.Y <= Location.m_Y + range;
+
+        public void BeforeSerialize()
+        {
+        }
 
         public void Deserialize(IGenericReader reader)
         {

@@ -63,13 +63,21 @@ namespace Server.Guilds
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime Created { get; } = Core.Now;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
+
         long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
 
         public int TypeRef { get; private set; }
 
+        public abstract void BeforeSerialize();
         public abstract void Serialize(IGenericWriter writer);
+
         public abstract void Deserialize(IGenericReader reader);
         public abstract void OnDelete(Mobile mob);
 

@@ -771,6 +771,12 @@ namespace Server
             AddNameProperties(list);
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime Created { get; } = Core.Now;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
+
         long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
@@ -2571,6 +2577,10 @@ namespace Server
             {
                 VerifyCompactInfo();
             }
+        }
+
+        public virtual void BeforeSerialize()
+        {
         }
 
         public virtual void Deserialize(IGenericReader reader)

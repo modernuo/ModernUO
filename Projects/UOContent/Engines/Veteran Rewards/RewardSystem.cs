@@ -59,15 +59,8 @@ namespace Server.Engines.VeteranRewards
             return false;
         }
 
-        public static bool HasAccess(Mobile mob, RewardEntry entry)
-        {
-            if (Core.Expansion < entry.RequiredExpansion)
-            {
-                return false;
-            }
-
-            return HasAccess(mob, entry.List, out var _);
-        }
+        public static bool HasAccess(Mobile mob, RewardEntry entry) =>
+            Core.Expansion >= entry.RequiredExpansion && HasAccess(mob, entry.List, out var _);
 
         public static bool HasAccess(Mobile mob, RewardList list, out TimeSpan ts)
         {
@@ -77,7 +70,7 @@ namespace Server.Engines.VeteranRewards
                 return false;
             }
 
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 ts = TimeSpan.Zero;
                 return false;
