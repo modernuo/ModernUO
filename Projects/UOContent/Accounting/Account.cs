@@ -364,6 +364,7 @@ namespace Server.Accounting
             _password = content.Password;
             _accessLevel = content.AccessLevel;
             _flags = content.Flags;
+            // Created = content.Created;
             _lastLogin = content.LastLogin;
             _totalGold = content.TotalGold;
             _totalPlat = content.TotalPlat;

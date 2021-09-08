@@ -117,8 +117,8 @@ namespace Server
             int count;
             var version = idxReader.ReadInt32();
 
-            // Handle non-versioned (version 0). This works up to version 140 (LCM of 20 & 28)
-            if (version > idxVersion || (idx.Length - 4) / 20 == version)
+            // Handle non-versioned (version 0).
+            if (version > idxVersion || idx.Length - 4 - version * 20 == 0)
             {
                 count = version;
                 version = 0;
