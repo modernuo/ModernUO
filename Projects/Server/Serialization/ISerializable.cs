@@ -74,7 +74,7 @@ namespace Server
             }
             else
             {
-                SavePosition = -1;
+                this.MarkDirty();
             }
         }
     }
