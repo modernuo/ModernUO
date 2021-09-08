@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
     [Flippable]
@@ -17,11 +19,11 @@ namespace Server.Items
         private string m_Name;
 
         [Constructible]
-        public ParagonChest(string name, int level) : base(m_ItemIDs.RandomElement())
+        public ParagonChest(string name, int level, Mobile mobile) : base(m_ItemIDs.RandomElement())
         {
             m_Name = name;
             Hue = m_Hues.RandomElement();
-            Fill(level);
+            Fill(level, mobile);
         }
 
         public ParagonChest(Serial serial) : base(serial)
@@ -85,11 +87,11 @@ namespace Server.Items
                 0xE7C => 0x9AB,
                 0xE40 => 0xE41,
                 0xE41 => 0xE40,
-                _     => ItemID
+                _ => ItemID
             };
         }
 
-        private void Fill(int level)
+        private void Fill(int level, Mobile mobile)
         {
             TrapType = TrapType.ExplosionTrap;
             TrapPower = level * 25;
@@ -193,6 +195,47 @@ namespace Server.Items
             }
 
             DropItem(new TreasureMap(level + 1, Utility.RandomBool() ? Map.Felucca : Map.Trammel));
+
+
+            switch (Utility.Random(24))
+            {
+                case 0:
+                default: DropItem(new MJBofInvisibility()); break;
+                case 1: DropItem(new MJBofAgility()); break;
+                case 2: DropItem(new MJBofCunning()); break;
+                case 3: DropItem(new MJBofStrength()); break;
+                case 4: DropItem(new MJBofTeleport()); break;
+                case 5: DropItem(new MJBofBless()); break;
+                case 6: DropItem(new MJRofInvisibility()); break;
+                case 7: DropItem(new MJRofAgility()); break;
+                case 8: DropItem(new MJRofCunning()); break;
+                case 9: DropItem(new MJRofStrength()); break;
+                case 10: DropItem(new MJRofTeleport()); break;
+                case 11: DropItem(new MJRofBless()); break;
+                case 12: DropItem(new MJNofInvisibility()); break;
+                case 13: DropItem(new MJNofAgility()); break;
+                case 14: DropItem(new MJNofCunning()); break;
+                case 15: DropItem(new MJNofStrength()); break;
+                case 16: DropItem(new MJNofTeleport()); break;
+                case 17: DropItem(new MJNofBless()); break;
+                case 18: DropItem(new MJEofInvisibility()); break;
+                case 19: DropItem(new MJEofAgility()); break;
+                case 20: DropItem(new MJEofCunning()); break;
+                case 21: DropItem(new MJEofStrength()); break;
+                case 22: DropItem(new MJEofTeleport()); break;
+                case 23: DropItem(new MJEofBless()); break;
+            }
+
+            if (0.10 > Utility.RandomDouble())
+            {
+                if(Enum.IsDefined(typeof(MonsterStatuetteType), mobile.GetType().Name))
+                {
+                    var statuette = new MonsterStatuette((MonsterStatuetteType)Enum.Parse(typeof(MonsterStatuetteType), mobile.GetType().Name));
+                    DropItem(statuette);
+                }
+                                
+            }
+
         }
 
         public override void Serialize(IGenericWriter writer)

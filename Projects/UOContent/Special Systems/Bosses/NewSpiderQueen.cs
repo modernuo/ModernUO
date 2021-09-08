@@ -123,7 +123,7 @@ namespace Server.Mobiles
 
             if (0.10 > Utility.RandomDouble())
             {
-                switch (Utility.Random(24))
+                switch (Utility.Random(2))
                 {
                     case 0:
                         c.DropItem(new SpiderEgg());
@@ -139,37 +139,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (1.0 > Utility.RandomDouble())
-            {
-                switch (Utility.Random(24))
-                {
-                    case 0:
-                    default: c.DropItem(new MJBofInvisibility()); break;
-                    case 1: c.DropItem(new MJBofAgility()); break;
-                    case 2: c.DropItem(new MJBofCunning()); break;
-                    case 3: c.DropItem(new MJBofStrength()); break;
-                    case 4: c.DropItem(new MJBofTeleport()); break;
-                    case 5: c.DropItem(new MJBofBless()); break;
-                    case 6: c.DropItem(new MJRofInvisibility()); break;
-                    case 7: c.DropItem(new MJRofAgility()); break;
-                    case 8: c.DropItem(new MJRofCunning()); break;
-                    case 9: c.DropItem(new MJRofStrength()); break;
-                    case 10: c.DropItem(new MJRofTeleport()); break;
-                    case 11: c.DropItem(new MJRofBless()); break;
-                    case 12: c.DropItem(new MJNofInvisibility()); break;
-                    case 13: c.DropItem(new MJNofAgility()); break;
-                    case 14: c.DropItem(new MJNofCunning()); break;
-                    case 15: c.DropItem(new MJNofStrength()); break;
-                    case 16: c.DropItem(new MJNofTeleport()); break;
-                    case 17: c.DropItem(new MJNofBless()); break;
-                    case 18: c.DropItem(new MJEofInvisibility()); break;
-                    case 19: c.DropItem(new MJEofAgility()); break;
-                    case 20: c.DropItem(new MJEofCunning()); break;
-                    case 21: c.DropItem(new MJEofStrength()); break;
-                    case 22: c.DropItem(new MJEofTeleport()); break;
-                    case 23: c.DropItem(new MJEofBless()); break;
-                }
-            }
+            
         }
 
         public override void OnActionCombat()
