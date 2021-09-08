@@ -40,7 +40,7 @@ namespace SerializationGenerator
                 var propertyType = serializableProperty.Type;
                 var type = compilation.GetTypeByMetadataName(propertyType)?.IsValueType == true
                            || SymbolMetadata.IsPrimitiveFromTypeDisplayString(propertyType) && propertyType != "bool"
-                    ? $"{propertyType}?" : propertyType;
+                    ? $"{propertyType}{(serializableProperty.UsesSaveFlag == true ? "?" : "")}" : propertyType;
 
                 source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
             }
