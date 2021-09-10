@@ -105,17 +105,7 @@ namespace Server.Engines.Craft
                 AddRes(index, typeof(BlankScroll), 1044377, 10, 1044378);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(WhiteHangingLantern),
-                    1044294,
-                    1029416,
-                    65.0,
-                    90.0,
-                    typeof(Log),
-                    1044041,
-                    5,
-                    1044351
-                );
+                index = AddCraft(typeof(WhiteHangingLantern), 1044294, 1029416, 65.0, 90.0, typeof(Log), 1044041, 5, 1044351);
                 AddRes(index, typeof(BlankScroll), 1044377, 10, 1044378);
                 SetNeededExpansion(index, Expansion.SE);
 
@@ -132,17 +122,7 @@ namespace Server.Engines.Craft
 
             if (Core.AOS) // Duplicate Entries to preserve ordering depending on era
             {
-                index = AddCraft(
-                    typeof(FishingPole),
-                    1044294,
-                    1023519,
-                    68.4,
-                    93.4,
-                    typeof(Log),
-                    1044041,
-                    5,
-                    1044351
-                );
+                index = AddCraft(typeof(FishingPole), 1044294, 1023519, 68.4, 93.4, typeof(Log), 1044041, 5, 1044351 );
                 AddSkill(index, SkillName.Tailoring, 40.0, 45.0);
                 AddRes(index, typeof(Cloth), 1044286, 5, 1044287);
             }
@@ -155,77 +135,27 @@ namespace Server.Engines.Craft
                 AddRes(index, typeof(JeweledFiligree), 1072894, 1, 1053098);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(WarriorStatueSouthDeed),
-                    1044294,
-                    1072887,
-                    0.0,
-                    35.0,
-                    typeof(Log),
-                    1044041,
-                    250,
-                    1044351
-                );
+                index = AddCraft(typeof(WarriorStatueSouthDeed), 1044294, 1072887, 0.0, 35.0, typeof(Log), 1044041, 250, 1044351);
                 AddRecipe(index, 300);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(WarriorStatueEastDeed),
-                    1044294,
-                    1072888,
-                    0.0,
-                    35.0,
-                    typeof(Log),
-                    1044041,
-                    250,
-                    1044351
-                );
+                index = AddCraft(typeof(WarriorStatueEastDeed), 1044294, 1072888, 0.0, 35.0, typeof(Log), 1044041, 250, 1044351);
                 AddRecipe(index, 301);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(SquirrelStatueSouthDeed),
-                    1044294,
-                    1072884,
-                    0.0,
-                    35.0,
-                    typeof(Log),
-                    1044041,
-                    250,
-                    1044351
-                );
+                index = AddCraft(typeof(SquirrelStatueSouthDeed), 1044294, 1072884, 0.0, 35.0, typeof(Log), 1044041, 250, 1044351);
                 AddRecipe(index, 302);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(SquirrelStatueEastDeed),
-                    1044294,
-                    1073398,
-                    0.0,
-                    35.0,
-                    typeof(Log),
-                    1044041,
-                    250,
-                    1044351
-                );
+                index = AddCraft(typeof(SquirrelStatueEastDeed), 1044294, 1073398, 0.0, 35.0, typeof(Log), 1044041, 250, 1044351);
                 AddRecipe(index, 303);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(AcidProofRope),
-                    1044294,
-                    1074886,
-                    80,
-                    130.0,
-                    typeof(GreaterStrengthPotion),
-                    1073466,
-                    2,
-                    1044253
-                );
+                index = AddCraft(typeof(AcidProofRope), 1044294, 1074886, 80, 130.0, typeof(GreaterStrengthPotion), 1073466, 2, 1044253);
                 AddRes(index, typeof(ProtectionScroll), 1044395, 1, 1053098);
                 AddRes(index, typeof(SwitchItem), 1032127, 1, 1053098);
                 AddRareRecipe(index, 304);
@@ -279,46 +209,16 @@ namespace Server.Engines.Craft
                 index = AddCraft(typeof(PlainWoodenChest), 1044292, 1030251, 90.0, 115.0, typeof(Log), 1044041, 30, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(OrnateWoodenChest),
-                    1044292,
-                    1030253,
-                    90.0,
-                    115.0,
-                    typeof(Log),
-                    1044041,
-                    30,
-                    1044351
-                );
+                index = AddCraft(typeof(OrnateWoodenChest), 1044292, 1030253, 90.0, 115.0, typeof(Log), 1044041, 30, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(GildedWoodenChest),
-                    1044292,
-                    1030255,
-                    90.0,
-                    115.0,
-                    typeof(Log),
-                    1044041,
-                    30,
-                    1044351
-                );
+                index = AddCraft(typeof(GildedWoodenChest), 1044292, 1030255, 90.0, 115.0, typeof(Log), 1044041, 30, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
                 index = AddCraft(typeof(WoodenFootLocker), 1044292, 1030257, 90.0, 115.0, typeof(Log), 1044041, 30, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(FinishedWoodenChest),
-                    1044292,
-                    1030259,
-                    90.0,
-                    115.0,
-                    typeof(Log),
-                    1044041,
-                    30,
-                    1044351
-                );
+                index = AddCraft(typeof(FinishedWoodenChest), 1044292, 1030259, 90.0, 115.0, typeof(Log), 1044041, 30, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
                 index = AddCraft(typeof(TallCabinet), 1044292, 1030261, 90.0, 115.0, typeof(Log), 1044041, 35, 1044351);
@@ -346,188 +246,64 @@ namespace Server.Engines.Craft
 
             if (Core.ML)
             {
-                index = AddCraft(
-                    typeof(ArcaneBookshelfSouthDeed),
-                    1044292,
-                    1072871,
-                    94.7,
-                    119.7,
-                    typeof(Log),
-                    1044041,
-                    80,
-                    1044351
-                );
+                index = AddCraft(typeof(ArcaneBookshelfSouthDeed), 1044292, 1072871, 94.7, 119.7, typeof(Log), 1044041, 80, 1044351);
                 AddRecipe(index, 306);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(ArcaneBookshelfEastDeed),
-                    1044292,
-                    1073371,
-                    94.7,
-                    119.7,
-                    typeof(Log),
-                    1044041,
-                    80,
-                    1044351
-                );
+                index = AddCraft(typeof(ArcaneBookshelfEastDeed), 1044292, 1073371, 94.7, 119.7, typeof(Log), 1044041, 80, 1044351);
                 AddRecipe(index, 307);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                /* TODO
-                index = AddCraft( typeof( OrnateElvenChestSouthDeed ), 1044292, 1072862, 94.7, 119.7, typeof( Log ), 1044041, 40, 1044351 );
-                AddRecipe( index, 308 );
-                ForceNonExceptional( index );
-                SetNeededExpansion( index, Expansion.ML );
+                index = AddCraft( typeof(OrnateElvenChestSouthDeed), 1044292, 1072862, 94.7, 119.7, typeof(Log), 1044041, 40, 1044351);
+                AddRecipe(index, 308);
+                ForceNonExceptional(index);
+                SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft( typeof( OrnateElvenChestEastDeed ), 1044292, 1073383, 94.7, 119.7, typeof( Log ), 1044041, 40, 1044351 );
-                AddRecipe( index, 309 );
-                ForceNonExceptional( index );
-                SetNeededExpansion( index, Expansion.ML );
-                */
+                index = AddCraft( typeof(OrnateElvenChestEastDeed), 1044292, 1073383, 94.7, 119.7, typeof(Log), 1044041, 40, 1044351);
+                AddRecipe(index, 309);
+                ForceNonExceptional(index);
+                SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(ElvenDresserSouthDeed),
-                    1044292,
-                    1072864,
-                    75.0,
-                    100.0,
-                    typeof(Log),
-                    1044041,
-                    45,
-                    1044351
-                );
+                index = AddCraft(typeof(ElvenDresserSouthDeed), 1044292, 1072864, 75.0, 100.0, typeof(Log), 1044041, 45, 1044351);
                 AddRecipe(index, 310);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(ElvenDresserEastDeed),
-                    1044292,
-                    1073388,
-                    75.0,
-                    100.0,
-                    typeof(Log),
-                    1044041,
-                    45,
-                    1044351
-                );
+                index = AddCraft(typeof(ElvenDresserEastDeed), 1044292, 1073388, 75.0, 100.0, typeof(Log), 1044041, 45, 1044351);
                 AddRecipe(index, 311);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                /* TODO
-                index = AddCraft( typeof( FancyElvenArmoire ), 1044292, 1072866, 80.0, 105.0, typeof( Log ), 1044041, 60, 1044351 );
-                AddRecipe( index, 312 );
-                ForceNonExceptional( index );
-                SetNeededExpansion( index, Expansion.ML );
-                */
+                index = AddCraft( typeof(FancyElvenArmoire), 1044292, 1072866, 80.0, 105.0, typeof(Log), 1044041, 60, 1044351);
+                AddRecipe(index, 312);
+                ForceNonExceptional(index);
+                SetNeededExpansion(index, Expansion.ML);
             }
 
             // Staves and Shields
-            AddCraft(
-                typeof(ShepherdsCrook),
-                Core.ML ? 1044566 : 1044295,
-                1023713,
-                78.9,
-                103.9,
-                typeof(Log),
-                1044041,
-                7,
-                1044351
-            );
-            AddCraft(
-                typeof(QuarterStaff),
-                Core.ML ? 1044566 : 1044295,
-                1023721,
-                73.6,
-                98.6,
-                typeof(Log),
-                1044041,
-                6,
-                1044351
-            );
-            AddCraft(
-                typeof(GnarledStaff),
-                Core.ML ? 1044566 : 1044295,
-                1025112,
-                78.9,
-                103.9,
-                typeof(Log),
-                1044041,
-                7,
-                1044351
-            );
-            AddCraft(
-                typeof(WoodenShield),
-                Core.ML ? 1062760 : 1044295,
-                1027034,
-                52.6,
-                77.6,
-                typeof(Log),
-                1044041,
-                9,
-                1044351
-            );
+            AddCraft(typeof(ShepherdsCrook), Core.ML ? 1044566 : 1044295, 1023713, 78.9, 103.9, typeof(Log), 1044041, 7, 1044351);
+            AddCraft(typeof(QuarterStaff), Core.ML ? 1044566 : 1044295, 1023721, 73.6, 98.6, typeof(Log), 1044041, 6, 1044351);
+            AddCraft(typeof(GnarledStaff), Core.ML ? 1044566 : 1044295, 1025112, 78.9, 103.9, typeof(Log), 1044041, 7, 1044351);
+            AddCraft(typeof(WoodenShield), Core.ML ? 1062760 : 1044295, 1027034, 52.6, 77.6, typeof(Log), 1044041, 9, 1044351);
 
             if (!Core.AOS) // Duplicate Entries to preserve ordering depending on era
             {
-                index = AddCraft(
-                    typeof(FishingPole),
-                    Core.ML ? 1044294 : 1044295,
-                    1023519,
-                    68.4,
-                    93.4,
-                    typeof(Log),
-                    1044041,
-                    5,
-                    1044351
-                );
+                index = AddCraft(typeof(FishingPole), Core.ML ? 1044294 : 1044295, 1023519, 68.4, 93.4, typeof(Log), 1044041, 5, 1044351);
                 AddSkill(index, SkillName.Tailoring, 40.0, 45.0);
                 AddRes(index, typeof(Cloth), 1044286, 5, 1044287);
             }
 
             if (Core.SE)
             {
-                index = AddCraft(
-                    typeof(Bokuto),
-                    Core.ML ? 1044566 : 1044295,
-                    1030227,
-                    70.0,
-                    95.0,
-                    typeof(Log),
-                    1044041,
-                    6,
-                    1044351
-                );
+                index = AddCraft(typeof(Bokuto), Core.ML ? 1044566 : 1044295, 1030227, 70.0, 95.0, typeof(Log), 1044041, 6, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(Fukiya),
-                    Core.ML ? 1044566 : 1044295,
-                    1030229,
-                    60.0,
-                    85.0,
-                    typeof(Log),
-                    1044041,
-                    6,
-                    1044351
-                );
+                index = AddCraft(typeof(Fukiya), Core.ML ? 1044566 : 1044295, 1030229, 60.0, 85.0, typeof(Log), 1044041, 6, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(Tetsubo),
-                    Core.ML ? 1044566 : 1044295,
-                    1030225,
-                    80.0,
-                    140.3,
-                    typeof(Log),
-                    1044041,
-                    10,
-                    1044351
-                );
+                index = AddCraft(typeof(Tetsubo), Core.ML ? 1044566 : 1044295, 1030225, 80.0, 140.3, typeof(Log), 1044041, 10, 1044351);
                 SetNeededExpansion(index, Expansion.SE);
             }
 
@@ -541,17 +317,7 @@ namespace Server.Engines.Craft
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(ArcanistsWildStaff),
-                    1044566,
-                    1073549,
-                    63.8,
-                    113.8,
-                    typeof(Log),
-                    1044041,
-                    16,
-                    1044351
-                );
+                index = AddCraft(typeof(ArcanistsWildStaff), 1044566, 1073549, 63.8, 113.8, typeof(Log), 1044041, 16, 1044351);
                 AddRes(index, typeof(WhitePearl), 1026253, 1, 1053098);
                 AddRecipe(index, 314);
                 SetNeededExpansion(index, Expansion.ML);
@@ -566,17 +332,7 @@ namespace Server.Engines.Craft
                 AddRecipe(index, 316);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(HardenedWildStaff),
-                    1044566,
-                    1073552,
-                    63.8,
-                    113.8,
-                    typeof(Log),
-                    1044041,
-                    16,
-                    1044351
-                );
+                index = AddCraft(typeof(HardenedWildStaff), 1044566, 1073552, 63.8, 113.8, typeof(Log), 1044041, 16, 1044351);
                 AddRes(index, typeof(Turquoise), 1026250, 1, 1053098);
                 AddRecipe(index, 317);
                 SetNeededExpansion(index, Expansion.ML);
@@ -636,34 +392,14 @@ namespace Server.Engines.Craft
 
             if (Core.ML)
             {
-                index = AddCraft(
-                    typeof(TallElvenBedSouthDeed),
-                    1044290,
-                    1072858,
-                    94.7,
-                    119.7,
-                    typeof(Log),
-                    1044041,
-                    200,
-                    1044351
-                );
+                index = AddCraft(typeof(TallElvenBedSouthDeed), 1044290, 1072858, 94.7, 119.7, typeof(Log), 1044041, 200, 1044351);
                 AddSkill(index, SkillName.Tailoring, 75.0, 80.0);
                 AddRes(index, typeof(Cloth), 1044286, 100, 1044287);
                 AddRecipe(index, 320);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(TallElvenBedEastDeed),
-                    1044290,
-                    1072859,
-                    94.7,
-                    119.7,
-                    typeof(Log),
-                    1044041,
-                    200,
-                    1044351
-                );
+                index = AddCraft(typeof(TallElvenBedEastDeed), 1044290, 1072859, 94.7, 119.7, typeof(Log), 1044041, 200, 1044351);
                 AddSkill(index, SkillName.Tailoring, 75.0, 80.0);
                 AddRes(index, typeof(Cloth), 1044286, 100, 1044287);
                 AddRecipe(index, 321);
@@ -721,33 +457,13 @@ namespace Server.Engines.Craft
             index = AddCraft(typeof(TrainingDummyEastDeed), 1044297, 1044335, 68.4, 93.4, typeof(Log), 1044041, 55, 1044351);
             AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
             AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
-            index = AddCraft(
-                typeof(TrainingDummySouthDeed),
-                1044297,
-                1044336,
-                68.4,
-                93.4,
-                typeof(Log),
-                1044041,
-                55,
-                1044351
-            );
+            index = AddCraft(typeof(TrainingDummySouthDeed), 1044297, 1044336, 68.4, 93.4, typeof(Log), 1044041, 55, 1044351);
             AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
             AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
             index = AddCraft(typeof(PickpocketDipEastDeed), 1044297, 1044337, 73.6, 98.6, typeof(Log), 1044041, 65, 1044351);
             AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
             AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
-            index = AddCraft(
-                typeof(PickpocketDipSouthDeed),
-                1044297,
-                1044338,
-                73.6,
-                98.6,
-                typeof(Log),
-                1044041,
-                65,
-                1044351
-            );
+            index = AddCraft(typeof(PickpocketDipSouthDeed), 1044297, 1044338, 73.6, 98.6, typeof(Log), 1044041, 65, 1044351);
             AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
             AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
 
@@ -758,17 +474,7 @@ namespace Server.Engines.Craft
             index = AddCraft(typeof(SpinningwheelEastDeed), 1044298, 1044341, 73.6, 98.6, typeof(Log), 1044041, 75, 1044351);
             AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
             AddRes(index, typeof(Cloth), 1044286, 25, 1044287);
-            index = AddCraft(
-                typeof(SpinningwheelSouthDeed),
-                1044298,
-                1044342,
-                73.6,
-                98.6,
-                typeof(Log),
-                1044041,
-                75,
-                1044351
-            );
+            index = AddCraft(typeof(SpinningwheelSouthDeed), 1044298, 1044342, 73.6, 98.6, typeof(Log), 1044041, 75, 1044351);
             AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
             AddRes(index, typeof(Cloth), 1044286, 25, 1044287);
             index = AddCraft(typeof(LoomEastDeed), 1044298, 1044343, 84.2, 109.2, typeof(Log), 1044041, 85, 1044351);
@@ -779,80 +485,20 @@ namespace Server.Engines.Craft
             AddRes(index, typeof(Cloth), 1044286, 25, 1044287);
 
             // Cooking
-            index = AddCraft(
-                typeof(StoneOvenEastDeed),
-                Core.ML ? 1044298 : 1044299,
-                1044345,
-                68.4,
-                93.4,
-                typeof(Log),
-                1044041,
-                85,
-                1044351
-            );
+            index = AddCraft(typeof(StoneOvenEastDeed), Core.ML ? 1044298 : 1044299, 1044345, 68.4, 93.4, typeof(Log), 1044041, 85, 1044351);
             AddSkill(index, SkillName.Tinkering, 50.0, 55.0);
             AddRes(index, typeof(IronIngot), 1044036, 125, 1044037);
-            index = AddCraft(
-                typeof(StoneOvenSouthDeed),
-                Core.ML ? 1044298 : 1044299,
-                1044346,
-                68.4,
-                93.4,
-                typeof(Log),
-                1044041,
-                85,
-                1044351
-            );
+            index = AddCraft(typeof(StoneOvenSouthDeed), Core.ML ? 1044298 : 1044299, 1044346, 68.4, 93.4, typeof(Log), 1044041, 85, 1044351);
             AddSkill(index, SkillName.Tinkering, 50.0, 55.0);
             AddRes(index, typeof(IronIngot), 1044036, 125, 1044037);
-            index = AddCraft(
-                typeof(FlourMillEastDeed),
-                Core.ML ? 1044298 : 1044299,
-                1044347,
-                94.7,
-                119.7,
-                typeof(Log),
-                1044041,
-                100,
-                1044351
-            );
+            index = AddCraft(typeof(FlourMillEastDeed), Core.ML ? 1044298 : 1044299, 1044347, 94.7, 119.7, typeof(Log), 1044041, 100, 1044351);
             AddSkill(index, SkillName.Tinkering, 50.0, 55.0);
             AddRes(index, typeof(IronIngot), 1044036, 50, 1044037);
-            index = AddCraft(
-                typeof(FlourMillSouthDeed),
-                Core.ML ? 1044298 : 1044299,
-                1044348,
-                94.7,
-                119.7,
-                typeof(Log),
-                1044041,
-                100,
-                1044351
-            );
+            index = AddCraft(typeof(FlourMillSouthDeed), Core.ML ? 1044298 : 1044299, 1044348, 94.7, 119.7, typeof(Log), 1044041, 100, 1044351);
             AddSkill(index, SkillName.Tinkering, 50.0, 55.0);
             AddRes(index, typeof(IronIngot), 1044036, 50, 1044037);
-            AddCraft(
-                typeof(WaterTroughEastDeed),
-                Core.ML ? 1044298 : 1044299,
-                1044349,
-                94.7,
-                119.7,
-                typeof(Log),
-                1044041,
-                150,
-                1044351
-            );
-            AddCraft(
-                typeof(WaterTroughSouthDeed),
-                Core.ML ? 1044298 : 1044299,
-                1044350,
-                94.7,
-                119.7,
-                typeof(Log),
-                1044041,
-                150,
-                1044351
-            );
+            AddCraft(typeof(WaterTroughEastDeed), Core.ML ? 1044298 : 1044299, 1044349, 94.7, 119.7, typeof(Log), 1044041, 150, 1044351);
+            AddCraft(typeof(WaterTroughSouthDeed), Core.ML ? 1044298 : 1044299, 1044350, 94.7, 119.7, typeof(Log), 1044041, 150, 1044351);
 
             MarkOption = true;
             Repair = Core.AOS;
