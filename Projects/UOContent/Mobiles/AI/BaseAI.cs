@@ -13,7 +13,6 @@ using Server.Spells;
 using Server.Spells.Spellweaving;
 using Server.Targets;
 using MoveImpl = Server.Movement.MovementImpl;
-using Server.Mobiles.BehaviorTreeAI;
 
 namespace Server.Mobiles
 {
@@ -29,7 +28,8 @@ namespace Server.Mobiles
         AI_Berserk,
         AI_Predator,
         AI_Thief,
-        AI_BehaviorTree
+        AI_BehaviorTree,
+        AI_FireBoss
     }
 
     public enum ActionType
@@ -138,21 +138,6 @@ namespace Server.Mobiles
             }
 
             Action = ActionType.Wander;
-
-            /*
-            behaviorTree = new BehaviorTree(this.m_Mobile);
-
-            behaviorTree.AddRoot(
-                new RepeaterNode(behaviorTree,
-                    new SelectorNode(behaviorTree, new BehaviorTreeNode[1]
-                    {
-                        new SelfHealerNode(behaviorTree),
-                    })
-                )
-            );
-
-            behaviorTree.Start();
-            */
         }
 
         public ActionType Action

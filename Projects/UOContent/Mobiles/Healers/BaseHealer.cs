@@ -146,7 +146,7 @@ namespace Server.Mobiles
 
             if (!IsInvulnerable)
             {
-                AI = AIType.AI_Mage;
+                AI = AIType.AI_BehaviorTree;
                 ActiveSpeed = 0.2;
                 PassiveSpeed = 0.8;
                 RangePerception = DefaultRangePerception;

@@ -2188,6 +2188,7 @@ namespace Server.Mobiles
                     new MeleeAI(this),
                 AIType.AI_Thief => new ThiefAI(this),
                 AIType.AI_BehaviorTree => new AI.BehaviorTreeAI(this),
+                AIType.AI_FireBoss => new AI.FireBossAI(this),
                 _               => null
             };
         }

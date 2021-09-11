@@ -7,8 +7,6 @@ namespace Server.Mobiles
         {
             AI = AIType.AI_BehaviorTree;
 
-            ChangeAIType(AI);
-
             Title = "the healer";
 
             Karma = -10000;
@@ -66,8 +64,6 @@ namespace Server.Mobiles
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
-
-            AI = AIType.AI_BehaviorTree;
 
             var version = reader.ReadInt();
         }

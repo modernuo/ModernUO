@@ -84,7 +84,7 @@ namespace Server.Spells
         public virtual void OnCasterHurt()
         {
             // Confirm: Monsters and pets cannot be disturbed.
-            if (Caster.Player && IsCasting)
+            if ((Caster.Player || Caster is BehaviorMage) && IsCasting)
             {
                 var hasProtection = ProtectionSpell.Registry.TryGetValue(Caster, out var d);
                 if (!hasProtection || d < 1000 && d < Utility.Random(1000))
@@ -393,7 +393,7 @@ namespace Server.Spells
 
                 m_AnimTimer?.Stop();
 
-                if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
+                if (Core.AOS && (Caster.Player || Caster is BehaviorMage) && type == DisturbType.Hurt)
                 {
                     DoHurtFizzle();
                 }
@@ -414,7 +414,7 @@ namespace Server.Spells
 
                 Target.Cancel(Caster);
 
-                if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
+                if (Core.AOS && (Caster.Player || Caster is BehaviorMage) && type == DisturbType.Hurt)
                 {
                     DoHurtFizzle();
                 }

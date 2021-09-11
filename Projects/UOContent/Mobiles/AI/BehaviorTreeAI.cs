@@ -3,31 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Server.Mobiles.BehaviorTreeAI;
+using Server.Mobiles.BT;
 using Server.Targeting;
 
 namespace Server.Mobiles.AI
 {
     public class BehaviorTreeAI : BaseAI
     {
-        private BehaviorTree behaviorTree;
+        private Blackboard blackboard;
         public BehaviorTreeAI(BaseCreature m) : base(m)
         {
-            behaviorTree = new BehaviorTree(m);
-
-            behaviorTree.AddRoot(
-                    new SelectorNode(behaviorTree, new BehaviorTreeNode[2]
-                    {
-                        new SelfHealerNode(behaviorTree),
-                        // new MageComboNode(behaviorTree),
-                        new TapNode(
-                            behaviorTree,
-                            (mob) => mob.DebugSay("I am taking no action")
-                        )
-                    })
-            );
-
-            behaviorTree.Start();
+            blackboard = new Blackboard();
         }
 
         public override bool Think()
@@ -37,9 +23,14 @@ namespace Server.Mobiles.AI
                 return false;
             }
 
-            // behaviorTree.RunBehavior();
+            MageBehaviorTree.Instance.RunBehavior(m_Mobile, blackboard);
 
-            return base.Think();
+            return true;
+        }
+
+        public override bool DoActionWander()
+        {
+            return true;
         }
     }
 }
