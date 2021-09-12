@@ -13,6 +13,8 @@ namespace Server.Mobiles
         [Constructible]
         public BehaviorMage() : base(AIType.AI_BehaviorTree, FightMode.Evil, 2, 0, 0.01, 3)
         {
+            Debug = true;
+
             InitBody();
 
             SetStr(100, 100);
@@ -32,6 +34,7 @@ namespace Server.Mobiles
             SetSkill(SkillName.MagicResist, 100.0);
             SetSkill(SkillName.Tactics, 100.0);
             SetSkill(SkillName.Meditation, 100.0);
+            SetSkill(SkillName.Wrestling, 100.0);
 
             AddItem(new Backpack() { Movable = false });
 
