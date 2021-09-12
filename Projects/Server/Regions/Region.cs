@@ -583,6 +583,46 @@ namespace Server
             return count;
         }
 
+        public List<Item> GetItems()
+        {
+            var list = new List<Item>();
+
+            for (var i = 0; i < Sectors?.Length; i++)
+            {
+                var sector = Sectors[i];
+
+                foreach (var item in sector.Items)
+                {
+                    if (Find(item.Location, item.Map).IsPartOf(this))
+                    {
+                        list.Add(item);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        public int GetItemCount()
+        {
+            var count = 0;
+
+            for (var i = 0; i < Sectors?.Length; i++)
+            {
+                var sector = Sectors[i];
+
+                foreach (var item in sector.Items)
+                {
+                    if (Find(item.Location, item.Map).IsPartOf(this))
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
         public override string ToString() => Name ?? GetType().Name;
 
         public virtual void OnRegister()

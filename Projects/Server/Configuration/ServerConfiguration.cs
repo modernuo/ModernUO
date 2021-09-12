@@ -32,6 +32,8 @@ namespace Server
         private static ServerSettings m_Settings;
         private static bool m_Mocked;
 
+        public static List<string> AssemblyDirectories => m_Settings.AssemblyDirectories;
+
         public static List<string> DataDirectories => m_Settings.DataDirectories;
 
         public static List<IPEndPoint> Listeners => m_Settings.Listeners;

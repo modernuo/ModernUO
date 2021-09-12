@@ -171,7 +171,6 @@ namespace SerializationGenerator
             var indent = "    ";
 
             source.RecursiveGenerateClassStart(classSymbol, interfaces.ToImmutableArray(), ref indent);
-            indent += "    ";
 
             source.GenerateClassField(
                 indent,
@@ -225,12 +224,12 @@ namespace SerializationGenerator
 
                     if (attrTypeArg.Kind == TypedConstantKind.Primitive && attrTypeArg.Value is string attrStr)
                     {
-                        source.AppendLine($"{indent}    {attrStr}");
+                        source.AppendLine($"{indent}{attrStr}");
                     }
                     else
                     {
                         var attrType = (ITypeSymbol)attrTypeArg.Value;
-                        source.GenerateAttribute(attrType?.Name, ctorArgs[1].Values);
+                        source.GenerateAttribute(indent, attrType?.Name, ctorArgs[1].Values);
                     }
                 }
 
@@ -245,6 +244,7 @@ namespace SerializationGenerator
                 {
                     source.GenerateSerializableProperty(
                         compilation,
+                        indent,
                         fieldSymbol,
                         getterAccessor,
                         setterAccessor,
@@ -357,13 +357,12 @@ namespace SerializationGenerator
                 int index = 0;
                 foreach (var (order, _) in serializableFieldSaveFlags)
                 {
-                    source.GenerateEnumValue($"{indent}    ", true, serializableProperties[order].Name, index++);
+                    source.GenerateEnumValue($"{indent}        ", true, serializableProperties[order].Name, index++);
                 }
 
                 source.GenerateEnumEnd($"{indent}    ");
             }
 
-            indent = indent.Substring(0, indent.Length - 4);
             source.RecursiveGenerateClassEnd(classSymbol, ref indent);
             source.GenerateNamespaceEnd();
 
@@ -419,8 +418,8 @@ namespace SerializationGenerator
         {
             do
             {
-                source.GenerateClassEnd(indent);
                 indent = indent.Substring(0, indent.Length - 4);
+                source.GenerateClassEnd(indent);
 
                 classSymbol = classSymbol.ContainingSymbol as INamedTypeSymbol;
             } while (classSymbol != null);

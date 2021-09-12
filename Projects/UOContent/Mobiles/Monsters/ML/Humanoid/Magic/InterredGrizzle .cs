@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Server.Mobiles
 {
     public class InterredGrizzle : BaseCreature
