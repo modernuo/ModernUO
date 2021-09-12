@@ -2133,7 +2133,7 @@ namespace Server.Gumps
                                 {
                                     if (Core.SA)
                                     {
-                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*.json");
+                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*/*.json");
                                     }
                                     else
                                     {
