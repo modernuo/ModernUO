@@ -402,7 +402,7 @@ namespace Server.Gumps
                                     : new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page)
                             );
                         }
-                        else if (IsParsable(type))
+                        else if (IsType(type, OfString) || IsParsable(type))
                         {
                             from.SendGump(new SetGump(prop, from, m_Object, this));
                         }

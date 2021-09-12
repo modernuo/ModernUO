@@ -136,14 +136,17 @@ namespace Server
 
         private static void AddTimer(Timer timer, long delay)
         {
+#if DEBUG_TIMERS
+            var originalDelay = delay
+#endif
             delay = Math.Max(0, delay);
 
             var resolutionPowerOf2 = _tickRatePowerOf2;
             for (var i = 0; i < _ringLayers; i++)
             {
-                var resolution = 1 << resolutionPowerOf2;
+                var resolution = 1L << resolutionPowerOf2;
                 var nextResolutionPowerOf2 = resolutionPowerOf2 + _ringSizePowerOf2;
-                long max = 1 << nextResolutionPowerOf2;
+                var max = 1L << nextResolutionPowerOf2;
                 if (delay < max)
                 {
                     var remaining = delay & (resolution - 1);
@@ -168,13 +171,18 @@ namespace Server
 
                     _rings[i][slot] = timer;
 
-                    break;
+                    return;
                 }
 
                 // The remaining amount until we turn this ring
                 delay -= resolution * (_ringSize - _ringIndexes[i]);
                 resolutionPowerOf2 = nextResolutionPowerOf2;
             }
+
+            // TODO: Handle timers > 17yrs
+#if DEBUG_TIMERS
+            logger.Error($"Timer is more than max duration. ({originalDelay})");
+#endif
         }
 
         public static void DumpInfo(TextWriter tw)
