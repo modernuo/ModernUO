@@ -332,6 +332,10 @@ namespace Server.Items
 
         public virtual void OnComponentUsed(AddonContainerComponent c, Mobile from)
         {
+            if (!Deleted)
+            {
+                OnDoubleClick(from);
+            }
         }
     }
 }

@@ -6,6 +6,9 @@ namespace Server.Items
     [Serializable(0, false)]
     public partial class AddonContainerComponent : Item, IChoppable
     {
+        public override string DefaultName => _addon?.DefaultName;
+        public override int SpoofedItemID => 0x9AB; // Metal chest, real container
+
         [Constructible]
         public AddonContainerComponent(int itemID) : base(itemID)
         {
@@ -65,15 +68,6 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
-        {
-            // base.GetProperties(list);
-            Addon?.GetProperties(list);
-        }
-
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
-            _addon?.GetContextMenuEntries(from, list);
-
         public override void OnMapChange()
         {
             if (_addon != null)
@@ -81,6 +75,14 @@ namespace Server.Items
                 _addon.Map = Map;
             }
         }
+
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            Addon?.GetProperties(list);
+        }
+
+        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
+            _addon?.GetContextMenuEntries(from, list);
 
         public override void OnAfterDelete()
         {

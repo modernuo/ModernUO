@@ -21,7 +21,7 @@ namespace Server.Network
 {
     public static class OutgoingItemPackets
     {
-        public static int CreateWorldItem(Span<byte> buffer, Item item)
+        public static int CreateWorldItem(Span<byte> buffer, Item item, int itemIdOverride = -1)
         {
             if (buffer[0] != 0)
             {
@@ -29,7 +29,9 @@ namespace Server.Network
                 return buffer.Length;
             }
 
-            var itemID = item is BaseMulti ? item.ItemID | 0x4000 : item.ItemID & 0x3FFF;
+            // Used to exploit UO client caching to spoof non-containers that need container flags
+            var itemID = itemIdOverride > -1 ? itemIdOverride : item.ItemID;
+
             var amount = item.Amount;
             var hasAmount = amount != 0;
             var serial = hasAmount ? item.Serial.Value | 0x80000000 : item.Serial.Value & 0x7FFFFFFF;
@@ -51,7 +53,7 @@ namespace Server.Network
             writer.Write((byte)0x1A); // Packet ID
             writer.Write((ushort)length);
             writer.Write(serial);
-            writer.Write((ushort)itemID);
+            writer.Write((ushort)(item is BaseMulti ? itemID | 0x4000 : itemID & 0x3FFF));
 
             if (hasAmount)
             {
@@ -89,8 +91,18 @@ namespace Server.Network
             }
 
             Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+            int length;
 
-            var length = ns.StygianAbyss ?
+            if (item.SpoofedItemID > -1)
+            {
+                length = CreateWorldItem(buffer, item, item.SpoofedItemID);
+
+                ns.Send(buffer[..length]);
+
+                buffer[0] = 0; // Reinitialize packet
+            }
+
+            length = ns.StygianAbyss ?
                 OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.HighSeas) :
                 CreateWorldItem(buffer, item);
 
