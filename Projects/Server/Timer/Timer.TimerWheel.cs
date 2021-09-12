@@ -143,7 +143,7 @@ namespace Server
             {
                 var resolution = 1 << resolutionPowerOf2;
                 var nextResolutionPowerOf2 = resolutionPowerOf2 + _ringSizePowerOf2;
-                long max = 1 << nextResolutionPowerOf2;
+                long max = 1l << nextResolutionPowerOf2;
                 if (delay < max)
                 {
                     var remaining = delay & (resolution - 1);
