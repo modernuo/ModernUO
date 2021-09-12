@@ -2,7 +2,15 @@ using System;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    public delegate void SpinCallback(ISpinningWheel sender, Mobile from, int hue);
+
+    public interface ISpinningWheel
+    {
+        bool Spinning { get; }
+        void BeginSpin(SpinCallback callback, Mobile from, int hue);
+    }
+
+    [Serializable(0, false)]
     public partial class ElvenSpinningwheelEastAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
@@ -10,7 +18,7 @@ namespace Server.Items
         [Constructible]
         public ElvenSpinningwheelEastAddon()
         {
-            AddComponent(new AddonComponent(0x2DD9), 0, 0, 0);
+            AddComponent(new AddonComponent(0x2E3D), 0, 0, 0);
         }
 
         public override BaseAddonDeed Deed => new ElvenSpinningwheelEastDeed();
@@ -26,10 +34,9 @@ namespace Server.Items
             {
                 switch (c.ItemID)
                 {
-                    case 0x2DD9:
-                    case 0x101C:
-                    case 0x10A4:
-                        ++c.ItemID;
+                    case 0x2E3D:
+                    case 0x2E3F:
+                        --c.ItemID;
                         break;
                 }
             }
@@ -39,10 +46,9 @@ namespace Server.Items
         {
             switch (c.ItemID)
             {
-                case 0x2E3D:
-                case 0x101D:
-                case 0x10A5:
-                    --c.ItemID;
+                case 0x2E3C:
+                case 0x2E3E:
+                    ++c.ItemID;
                     break;
             }
         }
@@ -57,11 +63,9 @@ namespace Server.Items
             {
                 switch (c.ItemID)
                 {
-                    case 0x1016:
-                    case 0x101A:
-                    case 0x101D:
-                    case 0x10A5:
-                        --c.ItemID;
+                    case 0x2E3C:
+                    case 0x2E3E:
+                        ++c.ItemID;
                         break;
                 }
             }
@@ -93,7 +97,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [Serializable(0, false)]
     public partial class ElvenSpinningwheelEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -102,6 +106,7 @@ namespace Server.Items
         }
 
         public override BaseAddon Addon => new ElvenSpinningwheelEastAddon();
-        public override int LabelNumber => 1073393; // elven spinning wheel (east)
+        public override int LabelNumber => 1073393; // elven spining wheel (east)
     }
 }
+

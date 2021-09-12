@@ -981,4 +981,58 @@ namespace Server.Items
             }
         }
     }
+
+    [Furniture, Flippable(0x2DF1, 0x2DF2)]
+    public class RarewoodChest : LockableContainer
+    {
+        [Constructible]
+        public RarewoodChest() : base(0x2DF1)
+        {
+        }
+
+        public RarewoodChest(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(1); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
+    }
+
+    [Furniture, Flippable(0x2DF3, 0x2DF4)]
+    public class DecorativeBox : LockableContainer
+    {
+        [Constructible]
+        public DecorativeBox() : base(0x2DF4)
+        {
+        }
+
+        public DecorativeBox(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(1); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
+    }
 }

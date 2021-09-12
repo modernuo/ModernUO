@@ -2,14 +2,6 @@ using System;
 
 namespace Server.Items
 {
-    public delegate void SpinCallback(ISpinningWheel sender, Mobile from, int hue);
-
-    public interface ISpinningWheel
-    {
-        bool Spinning { get; }
-        void BeginSpin(SpinCallback callback, Mobile from, int hue);
-    }
-
     [Serializable(0, false)]
     public partial class SpinningwheelEastAddon : BaseAddon, ISpinningWheel
     {

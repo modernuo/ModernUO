@@ -161,7 +161,7 @@ namespace Server.Items
                     _                   => 0
                 };
 
-                return itemID == 4017 || itemID >= 6522 && itemID <= 6569;
+                return itemID == 4017 || itemID >= 6522 && itemID <= 6569 || itemID == 11736;
             }
 
             protected override void OnTarget(Mobile from, object targeted)

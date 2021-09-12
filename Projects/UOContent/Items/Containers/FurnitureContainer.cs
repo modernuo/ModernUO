@@ -166,6 +166,31 @@ namespace Server.Items
         }
     }
 
+    [Furniture, Flippable(0x2D05, 0x2D06)]
+    public class SimpleElvenArmoire : BaseContainer
+    {
+        [Constructible]
+        public SimpleElvenArmoire() : base(0x2D05) => Weight = 1.0;
+        public override int DefaultGumpID => 0x4F;
+        public override int DefaultDropSound => 0x42;
+
+        public SimpleElvenArmoire(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0); //version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            var version = reader.ReadInt();
+        }
+    }
+
     [Furniture, Flippable(0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c)]
     public class FullBookcase : BaseContainer
     {
