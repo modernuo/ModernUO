@@ -11,9 +11,9 @@ namespace Server.Mobiles
     public class BehaviorMage : BaseCreature
     {
         [Constructible]
-        public BehaviorMage() : base(AIType.AI_BehaviorTree, FightMode.Evil, 2, 0, 0.01, 3)
+        public BehaviorMage() : base(AIType.AI_BehaviorTree, FightMode.Evil, 2, 0, 0.01, 1)
         {
-            Debug = true;
+            // Debug = true;
 
             InitBody();
 

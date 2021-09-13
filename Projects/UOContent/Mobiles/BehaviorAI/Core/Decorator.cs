@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Server.Mobiles.BehaviorAI
 {
     public class Decorator : Behavior
@@ -16,14 +10,13 @@ namespace Server.Mobiles.BehaviorAI
         {
             Child = child;
         }
-        public virtual bool AddChild(Behavior child)
+        public virtual Decorator AddChild(Behavior child)
         {
             if (Child == null)
             {
                 Child = child;
-                return true;
             }
-            return false;
+            return this;
         }
         public override void Tick(BehaviorTreeContext context)
         {
@@ -34,9 +27,9 @@ namespace Server.Mobiles.BehaviorAI
                 return;
             }
         }
-        public virtual void OnChildComplete(BehaviorTreeContext context, Result result)
+        public virtual void OnChildComplete(BehaviorTreeContext context, Result lastResult)
         {
-            SetResult(context, Child.GetResult(context));
+            SetResult(context, lastResult);
         }
     }
 }

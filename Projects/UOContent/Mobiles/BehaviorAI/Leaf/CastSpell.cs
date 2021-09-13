@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Server.Spells;
 
 namespace Server.Mobiles.BehaviorAI
@@ -39,7 +34,7 @@ namespace Server.Mobiles.BehaviorAI
 
                 if (!spell.Cast())
                 {
-                    SetResult(context, Result.Running);
+                    SetResult(context, Result.Failure);
                     owner.DebugSay("Failed to cast...");
                     return;
                 }
@@ -57,7 +52,7 @@ namespace Server.Mobiles.BehaviorAI
                 owner.DebugSay("Already casting {0}...", ((Spell)owner.Spell).Name);
                 return;
             }
-            else if (!owner.Spell.IsCasting)
+            else if (!owner.Spell.IsCasting && ((Spell)owner.Spell).State == SpellState.Sequencing)
             {
                 SetResult(context, Result.Success);
                 owner.DebugSay("Finished casting {0}...", ((Spell)owner.Spell).Name);

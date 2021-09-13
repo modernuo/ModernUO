@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Mobiles.BehaviorAI
 {
@@ -36,10 +32,6 @@ namespace Server.Mobiles.BehaviorAI
                 currentChild = 0;
                 currentChildCache[context.Mobile] = currentChild;
                 SetResult(context, Result.Running);
-                if (Children[currentChild] == null)
-                {
-                    throw new NullReferenceException();
-                }
                 Tree.Enqueue(context, Children[currentChild], OnChildComplete);
             }
         }

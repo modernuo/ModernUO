@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Server.Mobiles.BehaviorAI
 {
     public delegate bool OwnerConditionPredicate(BehaviorTreeContext context);
@@ -24,6 +18,7 @@ namespace Server.Mobiles.BehaviorAI
             {
                 base.Tick(context);
             }
+            SetResult(context, Result.Failure);
         }
     }
 }

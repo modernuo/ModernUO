@@ -52,6 +52,9 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Mobiles\BehaviorAI\Sets\" />
+    </ItemGroup>
     <PropertyGroup Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>

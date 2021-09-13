@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Server.Targeting;
 
 namespace Server.Mobiles.BehaviorAI
@@ -10,14 +5,14 @@ namespace Server.Mobiles.BehaviorAI
     public delegate object DynamicTargetCallback(BehaviorTreeContext context);
     public class DynamicTarget : Behavior
     {
-        public DynamicTargetCallback Transformation { get; private set; }
+        public DynamicTargetCallback Callback { get; private set; }
         public DynamicTarget(BehaviorTree tree, DynamicTargetCallback transformation) : base(tree)
         {
-            Transformation = transformation;
+            Callback = transformation;
         }
         public override void Tick(BehaviorTreeContext context)
         {
-            if (Transformation != null)
+            if (Callback == null)
             {
                 SetResult(context, Result.Failure);
                 return;
@@ -31,7 +26,7 @@ namespace Server.Mobiles.BehaviorAI
                 return;
             }
 
-            object targeted = Transformation(context);
+            object targeted = Callback(context);
 
             if (targeted == null)
             {

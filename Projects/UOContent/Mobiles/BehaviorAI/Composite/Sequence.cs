@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Server.Mobiles.BehaviorAI
 {
     public class Sequence : Composite
@@ -19,8 +13,7 @@ namespace Server.Mobiles.BehaviorAI
                 currentChildCache.Add(context.Mobile, currentChild);
             }
 
-            Behavior child = Children[currentChild];
-
+            currentChild++;
             if (lastResult == Result.Failure)
             {
                 currentChildCache[context.Mobile] = 0;
@@ -28,23 +21,16 @@ namespace Server.Mobiles.BehaviorAI
                 return;
             }
 
-            currentChild++;
             if (currentChild >= Children.Count)
             {
                 currentChildCache[context.Mobile] = 0;
                 SetResult(context, Result.Success);
                 return;
             }
-            else
-            {
-                SetResult(context, Result.Running);
-                currentChildCache[context.Mobile] = currentChild;
-                if (Children[currentChild] == null)
-                {
-                    throw new NullReferenceException();
-                }
-                Tree.Enqueue(context, Children[currentChild], OnChildComplete);
-            }
+
+            currentChildCache[context.Mobile] = currentChild;
+            SetResult(context, Result.Running);
+            Tree.Enqueue(context, Children[currentChild], OnChildComplete);
         }
     }
 }
