@@ -78,10 +78,8 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
-        {
+        public override void GetProperties(ObjectPropertyList list) =>
             Addon?.GetProperties(list);
-        }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
             _addon?.GetContextMenuEntries(from, list);
