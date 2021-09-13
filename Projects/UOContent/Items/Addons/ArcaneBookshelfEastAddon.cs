@@ -4,15 +4,16 @@ namespace Server.Items
     public partial class ArcaneBookshelfEastAddon : BaseAddonContainer
     {
         [Constructible]
-        public ArcaneBookshelfEastAddon() : base(0x3086)
+        public ArcaneBookshelfEastAddon() : base(0x2DF0)
         {
-            AddComponent(new AddonContainerComponent(0x3087), 0, -1, 0);
+            AddComponent(new LocalizedContainerComponent(0x21A4, 1031760), 0, -1, 0);
         }
 
         public override BaseAddonContainerDeed Deed => new ArcaneBookshelfEastDeed();
         public override bool RetainDeedHue => true;
         public override int DefaultGumpID => 0x107;
         public override int DefaultDropSound => 0x42;
+        public override int LabelNumber => 1032420; // arcane bookshelf
     }
 
     [Serializable(0)]
