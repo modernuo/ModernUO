@@ -552,9 +552,6 @@ namespace Server
         public virtual int PoisonResistance => 0;
         public virtual int EnergyResistance => 0;
 
-        // Used to exploit a bug that allows flag caching by sending two world item packets
-        public virtual int SpoofedItemID => -1;
-
         [CommandProperty(AccessLevel.GameMaster)]
         public virtual int ItemID
         {

@@ -1,5 +1,8 @@
+using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using Server.ContextMenus;
+using Server.Network;
 
 namespace Server.Items
 {
@@ -7,7 +10,6 @@ namespace Server.Items
     public partial class AddonContainerComponent : Item, IChoppable
     {
         public override string DefaultName => _addon?.DefaultName;
-        public override int SpoofedItemID => 0x9AB; // Metal chest, real container
 
         [Constructible]
         public AddonContainerComponent(int itemID) : base(itemID)
@@ -89,6 +91,17 @@ namespace Server.Items
             base.OnAfterDelete();
 
             _addon?.Delete();
+        }
+
+        public override void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
+        {
+            Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+            var length = OutgoingItemPackets.CreateWorldItem(buffer, this);
+            // Use an itemid of a real container
+            BinaryPrimitives.WriteUInt16BigEndian(buffer[7..9], 0x9AB);
+            ns.Send(buffer[..length]);
+
+            base.SendWorldPacketTo(ns, world);
         }
 
         [AfterDeserialization]
