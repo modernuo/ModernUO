@@ -97,8 +97,6 @@ namespace Server.Items
             new(LightType.Circle150, 5703, 6587)
         };
 
-        public override string DefaultName => _addon?.DefaultName;
-
         [Constructible]
         public AddonComponent(int itemID) : base(itemID)
         {
@@ -145,7 +143,7 @@ namespace Server.Items
             }
         }
 
-        public override void OnDoubleClick(Mobile from) => _addon?.OnComponentUsed(this, @from);
+        public override void OnDoubleClick(Mobile from) => _addon?.OnComponentUsed(this, from);
 
         public override void OnLocationChange(Point3D old)
         {
@@ -163,7 +161,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list) => Addon?.GetProperties(list);
+        public override void GetProperties(ObjectPropertyList list) => _addon?.GetProperties(list);
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
             _addon?.GetContextMenuEntries(from, list);
