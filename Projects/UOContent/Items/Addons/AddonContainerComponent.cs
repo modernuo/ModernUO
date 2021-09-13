@@ -9,8 +9,6 @@ namespace Server.Items
     [Serializable(0, false)]
     public partial class AddonContainerComponent : Item, IChoppable
     {
-        public override string DefaultName => _addon?.DefaultName;
-
         [Constructible]
         public AddonContainerComponent(int itemID) : base(itemID)
         {
@@ -24,11 +22,11 @@ namespace Server.Items
 
         [SerializableField(0)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        public BaseAddonContainer _addon;
+        private BaseAddonContainer _addon;
 
         [SerializableField(1)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        public Point3D _offset;
+        private Point3D _offset;
 
         [Hue]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -78,8 +76,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list) =>
-            Addon?.GetProperties(list);
+        public override void GetProperties(ObjectPropertyList list) => _addon?.GetProperties(list);
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
             _addon?.GetContextMenuEntries(from, list);
@@ -96,7 +93,7 @@ namespace Server.Items
             Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
             var length = OutgoingItemPackets.CreateWorldItem(buffer, this);
             // Use an itemid of a real container
-            BinaryPrimitives.WriteUInt16BigEndian(buffer[7..9], 0x9AB);
+            BinaryPrimitives.WriteUInt16BigEndian(buffer[7..9], (ushort)(_addon?.ItemID ?? 0x9AB));
             ns.Send(buffer[..length]);
 
             base.SendWorldPacketTo(ns, world);

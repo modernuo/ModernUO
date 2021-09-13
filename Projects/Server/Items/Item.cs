@@ -1332,39 +1332,36 @@ namespace Server
 
                 if (openers != null)
                 {
-                    lock (openers)
+                    for (var i = 0; i < openers.Count; ++i)
                     {
-                        for (var i = 0; i < openers.Count; ++i)
+                        var mob = openers[i];
+
+                        var range = GetUpdateRange(mob);
+
+                        if (mob.Map != map || !mob.InRange(worldLoc, range))
                         {
-                            var mob = openers[i];
-
-                            var range = GetUpdateRange(mob);
-
-                            if (mob.Map != map || !mob.InRange(worldLoc, range))
+                            openers.RemoveAt(i--);
+                        }
+                        else
+                        {
+                            if (mob == rootParent || mob == tradeRecip)
                             {
-                                openers.RemoveAt(i--);
+                                continue;
                             }
-                            else
+
+                            var ns = mob.NetState;
+
+                            if (ns != null && mob.CanSee(this))
                             {
-                                if (mob == rootParent || mob == tradeRecip)
-                                {
-                                    continue;
-                                }
-
-                                var ns = mob.NetState;
-
-                                if (ns != null && mob.CanSee(this))
-                                {
-                                    ns.SendContainerContentUpdate(this);
-                                    SendOPLPacketTo(ns);
-                                }
+                                ns.SendContainerContentUpdate(this);
+                                SendOPLPacketTo(ns);
                             }
                         }
+                    }
 
-                        if (openers.Count == 0)
-                        {
-                            contParent.Openers = null;
-                        }
+                    if (openers.Count == 0)
+                    {
+                        contParent.Openers = null;
                     }
                 }
 
@@ -1719,6 +1716,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool GetFlag(ImplFlag flag) => (m_Flags & flag) != 0;
 
         public BounceInfo GetBounce() => LookupCompactInfo()?.m_Bounce;
@@ -2408,7 +2406,7 @@ namespace Server
         }
 
 #nullable enable
-        public void InvalidateProperties()
+        public virtual void InvalidateProperties()
         {
             if (!ObjectPropertyList.Enabled)
             {
