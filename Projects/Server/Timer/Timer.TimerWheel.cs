@@ -59,13 +59,13 @@ namespace Server
             return events;
         }
 
-        private static readonly Timer[] _executingRings = new Timer[_ringLayers];
-
         private static bool Turn()
         {
             bool events = false;
             _timerWheelExecuting = true;
             var turnNextWheel = false;
+
+            var _executingRings = new Timer[_ringLayers];
 
             // Detach the chain from the timer wheel. This allows adding timers to the same slot during execution.
             for (var i = 0; i < _ringLayers; i++)
