@@ -21,3 +21,9 @@ We greatly appreciate the support! Use one of the following platforms below:
 
 #### Venmo
 [<img alt="Venmo | Sabresite" data-canonical-src="https://user-images.githubusercontent.com/3953314/104967817-2759d880-5999-11eb-92ec-c4193da79570.png" src="https://user-images.githubusercontent.com/3953314/104967817-2759d880-5999-11eb-92ec-c4193da79570.png" width=100 />](https://venmo.com/code?user_id=1834446441414656966)
+
+#### Bitcoin
+37QmRWTCjVoNWycMpo1t5JnYVDmJTGSJ9W
+
+#### Ethereum
+0x7A9D76F497d4Ee150Ada0ea0455fF3f6e8F3b6b8

@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.302
+        dotnet-version: 5.0.401
     - name: Build
       run: ./publish.cmd
     - name: Test
