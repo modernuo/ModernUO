@@ -51,7 +51,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used
-Note: Building in Visual Studio (or Rider) will not run the schema migration. The schema migration ensures future changes
+
+**Note:** Building in Visual Studio (or Rider) will not run the schema migration. The schema migration ensures future changes
 to the code will be backward compatible.
 
 ## Running the Server
