@@ -27,7 +27,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Development
-[![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://github.com/modernuo/ModernUO.git)
+[![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://git-scm.com/downloads)
 [![.NET](https://img.shields.io/badge/.NET-%205.0.10%20SDK-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Supported IDEs
