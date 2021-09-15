@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Xml;
 using Server.Accounting.Security;
 using Server.Misc;
@@ -305,10 +304,10 @@ namespace Server.Accounting
             }
         }
 
-        public TimeSpan AccountAge => Core.Now - Created;
+        public TimeSpan AccountAge => Core.Now - ((ISerializable)this).Created;
 
         [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
-        public DateTime Created { get; set; } = Core.Now;
+        DateTime ISerializable.Created { get; set; } = Core.Now;
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
