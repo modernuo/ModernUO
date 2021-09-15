@@ -15,13 +15,13 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-![Windows 8.1/10/2016/2019](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
+[![Windows 8.1/10/2016/2019](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2019)
 ![MacOS 10/11](https://img.shields.io/badge/-big%20sur-222222?logo=apple&logoColor=white)
-![Debian 9/10](https://img.shields.io/badge/-buster-A81D33?logo=debian)
-![Ubuntu 16/18/20 LTS](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)
-![CentOS 7/8](https://img.shields.io/badge/-8.3-262577?logo=centos&logoColor=white)
-![Fedora 32/33](https://img.shields.io/badge/-33-0B57A4?logo=fedora&logoColor=white)
-![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)
+[![Debian 9/10](https://img.shields.io/badge/-buster-A81D33?logo=debian)](https://www.debian.org/distrib/)
+[![Ubuntu 16/18/20 LTS](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/download/server)
+[![CentOS 7/8](https://img.shields.io/badge/-8.3-262577?logo=centos&logoColor=white)](https://www.centos.org/download/)
+[![Fedora 32/33/34](https://img.shields.io/badge/-33-0B57A4?logo=fedora&logoColor=white)](https://getfedora.org/en/server/download/)
+[![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)](https://access.redhat.com/downloads)
 
 #### Running the server
 [![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
@@ -48,7 +48,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` - Ubuntu LTS
     - `debian.9`, `debian.10` - Debian
     - `centos.7`, `centos.8` - CentOS
-    - `fedora.32`, `fedora.33` - Fedora
+    - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used
 
