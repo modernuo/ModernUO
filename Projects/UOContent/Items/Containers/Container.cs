@@ -16,28 +16,9 @@ namespace Server.Items
         {
         }
 
-        public override int DefaultMaxWeight
-        {
-            get
-            {
-                if (IsSecure)
-                {
-                    return 0;
-                }
+        public override int DefaultMaxWeight => IsSecure ? 0 : base.DefaultMaxWeight;
 
-                return base.DefaultMaxWeight;
-            }
-        }
-
-        public override bool IsAccessibleTo(Mobile m)
-        {
-            if (!BaseHouse.CheckAccessible(m, this))
-            {
-                return false;
-            }
-
-            return base.IsAccessibleTo(m);
-        }
+        public override bool IsAccessibleTo(Mobile m) => BaseHouse.CheckAccessible(m, this) && base.IsAccessibleTo(m);
 
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
         {
