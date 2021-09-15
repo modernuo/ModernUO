@@ -47,7 +47,7 @@ namespace Server
         {
         }
 
-        public DateTime Created { get; set; }
+        DateTime ISerializable.Created { get; set; } = Core.Now;
 
         DateTime ISerializable.LastSerialized { get; set; } = DateTime.MaxValue;
 

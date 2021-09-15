@@ -305,8 +305,10 @@ namespace Server.Accounting
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime Created { get; } = Core.Now;
+        public TimeSpan AccountAge => Core.Now - Created;
+
+        [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
+        public DateTime Created { get; set; } = Core.Now;
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;

@@ -132,6 +132,7 @@ namespace Server
             {
                 var typeID = idxReader.ReadInt32();
                 var serial = idxReader.ReadUInt32();
+                var created = new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var pos = idxReader.ReadInt64();
                 var length = idxReader.ReadInt32();
@@ -150,6 +151,7 @@ namespace Server
 
                 if (ctor.Invoke(ctorArgs) is T t)
                 {
+                    t.Created = created;
                     t.LastSerialized = lastSerialized;
                     entities.Add(new EntityIndex<T>(t, typeID, pos, length));
                     map[indexer] = t;
@@ -198,7 +200,7 @@ namespace Server
                 var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
                 if (br == null)
                 {
-                    br = new BufferReader(buffer, t.Created);
+                    br = new BufferReader(buffer, t.LastSerialized);
                 }
                 else
                 {

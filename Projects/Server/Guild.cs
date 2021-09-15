@@ -63,8 +63,8 @@ namespace Server.Guilds
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime Created { get; } = Core.Now;
+        [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
+        public DateTime Created { get; set; } = Core.Now;
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
