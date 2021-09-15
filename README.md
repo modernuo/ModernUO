@@ -36,7 +36,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Getting Started
 - Install prerequisite [requirements](https://github.com/modernuo/ModernUO#requirements)
-- Clone this repository:
+- Clone this repository (or download the [latest](https://github.com/modernuo/ModernUO/archive/refs/heads/main.zip)):
   - `git clone https://github.com/modernuo/ModernUO.git`
 - Open `ModernUO.sln` to start developing
 
@@ -51,8 +51,10 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used
+Note: Building in Visual Studio (or Rider) will not run the schema migration. The schema migration ensures future changes
+to the code will be backward compatible.
 
-## Running Server
+## Running the Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
 - Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the server
 
