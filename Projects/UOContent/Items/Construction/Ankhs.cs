@@ -130,7 +130,8 @@ namespace Server.Items
 
         public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -221,7 +222,8 @@ namespace Server.Items
 
             public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-            [Hue, CommandProperty(AccessLevel.GameMaster)]
+            [Hue]
+            [CommandProperty(AccessLevel.GameMaster)]
             public override int Hue
             {
                 get => base.Hue;
@@ -317,7 +319,8 @@ namespace Server.Items
 
         public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -410,7 +413,8 @@ namespace Server.Items
 
             public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-            [Hue, CommandProperty(AccessLevel.GameMaster)]
+            [Hue]
+            [CommandProperty(AccessLevel.GameMaster)]
             public override int Hue
             {
                 get => base.Hue;

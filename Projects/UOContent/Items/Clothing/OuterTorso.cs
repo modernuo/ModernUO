@@ -479,7 +479,7 @@ namespace Server.Items
         [Constructible]
         public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override bool AllowMaleWearer => false;
     }

@@ -1281,7 +1281,8 @@ namespace Server
 
         public virtual int Luck => 0;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public int HueMod
         {
             get => m_HueMod;
@@ -1296,7 +1297,8 @@ namespace Server
             }
         }
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
             get => m_HueMod != -1 ? m_HueMod : m_Hue;
@@ -1700,18 +1702,10 @@ namespace Server
             }
         }
 
-        [Body, CommandProperty(AccessLevel.GameMaster)]
+        [CommandProperty(AccessLevel.GameMaster)]
         public Body Body
         {
-            get
-            {
-                if (IsBodyMod)
-                {
-                    return m_BodyMod;
-                }
-
-                return m_Body;
-            }
+            get => IsBodyMod ? m_BodyMod : m_Body;
             set
             {
                 if (m_Body != value && !IsBodyMod)
@@ -1724,13 +1718,6 @@ namespace Server
                     CheckStatTimers();
                 }
             }
-        }
-
-        [Body, CommandProperty(AccessLevel.GameMaster)]
-        public int BodyValue
-        {
-            get => Body.BodyID;
-            set => Body = value;
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
@@ -5199,7 +5186,7 @@ namespace Server
 
                             var map = from.Map;
 
-                            if (DragEffects && map != null && (root == null || root is Item))
+                            if (DragEffects && map != null && root is null or Item)
                             {
                                 var eable = map.GetClientsInRange(from.Location);
                                 var rootItem = root as Item;
@@ -7185,17 +7172,12 @@ namespace Server
 
         public virtual bool CanSee(object o)
         {
-            if (o is Item item)
+            return o switch
             {
-                return CanSee(item);
-            }
-
-            if (o is Mobile mobile)
-            {
-                return CanSee(mobile);
-            }
-
-            return true;
+                Item item     => CanSee(item),
+                Mobile mobile => CanSee(mobile),
+                _             => true
+            };
         }
 
         public virtual bool CanSee(Item item)
@@ -7243,7 +7225,7 @@ namespace Server
                 }
             }
 
-            return !item.Deleted && item.Map == m_Map && (item.Visible || m_AccessLevel > AccessLevel.Counselor);
+            return !item.Deleted && item.Map == m_Map && (item.Visible || item.CanSeeStaffOnly(this));
         }
 
         public virtual bool CanSee(Mobile m)

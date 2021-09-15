@@ -49,7 +49,7 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a pestilent bandage corpse";
         // Neither Stratics nor UOGuide have much description
-        // beyond being a "Grey Mummy". BodyValue, Sound and
+        // beyond being a "Grey Mummy". Body, Sound and
         // Hue are all guessed until they can be verified.
         // Loot and Fame/Karma are also guesses at this point.
         //

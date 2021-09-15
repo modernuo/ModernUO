@@ -26,12 +26,11 @@ namespace SerializationGenerator
         public static void GenerateMigrationContentStruct(
             this StringBuilder source,
             Compilation compilation,
+            string indent,
             SerializableMetadata migration,
             INamedTypeSymbol classSymbol
         )
         {
-            const string indent = "        ";
-
             source.AppendLine($"{indent}ref struct V{migration.Version}Content");
             source.AppendLine($"{indent}{{");
             var properties = migration.Properties ?? ImmutableArray<SerializableProperty>.Empty;
@@ -41,12 +40,12 @@ namespace SerializationGenerator
                 var propertyType = serializableProperty.Type;
                 var type = compilation.GetTypeByMetadataName(propertyType)?.IsValueType == true
                            || SymbolMetadata.IsPrimitiveFromTypeDisplayString(propertyType) && propertyType != "bool"
-                    ? $"{propertyType}?" : propertyType;
+                    ? $"{propertyType}{(serializableProperty.UsesSaveFlag == true ? "?" : "")}" : propertyType;
 
                 source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
             }
 
-            const string innerIndent = $"{indent}        ";
+            var innerIndent = $"{indent}        ";
 
             var usesSaveFlags = properties.Any(p => p.UsesSaveFlag == true);
 

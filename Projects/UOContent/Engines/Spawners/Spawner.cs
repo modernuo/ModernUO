@@ -87,7 +87,7 @@ namespace Server.Engines.Spawners
             c.Delete();
             remove = true;
           }
-    
+
           return base.OnDefragSpawn(entry, spawned, remove);
         }
         */

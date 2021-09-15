@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public GargishLeatherKiltType1() : base(0x311) => Weight = 4.0;
 
-        public override Race RequiredRace => Race.Gargoyle;
+        public override int RequiredRaces => Race.AllowGargoylesOnly;
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 6;
         public override int BaseColdResistance => 7;

@@ -55,6 +55,7 @@ namespace Server
     // TODO: Add SpawnMap and change Spawner.Map to use it
     public interface ISpawner : IEntity
     {
+        Guid Guid { get; }
         bool UnlinkOnTaming { get; }
         Point3D HomeLocation { get; }
         int HomeRange { get; }

@@ -50,7 +50,9 @@ namespace Server.Items
         Ringmail,
         Chainmail,
         Plate,
-        Dragon // On OSI, Dragon is seen and considered its own type.
+        Dragon,
+        Wood,
+        Stone
     }
 
     public enum ArmorMeditationAllowance

@@ -208,6 +208,12 @@ namespace Server.Items
             get => _quality;
             set
             {
+                if (World.Loading)
+                {
+                    _quality = value;
+                    return;
+                }
+
                 UnscaleDurability();
                 _quality = value;
                 ScaleDurability();
@@ -224,6 +230,12 @@ namespace Server.Items
             get => _durability;
             set
             {
+                if (World.Loading)
+                {
+                    _durability = value;
+                    return;
+                }
+
                 UnscaleDurability();
                 _durability = value;
                 ScaleDurability();
@@ -265,7 +277,11 @@ namespace Server.Items
             {
                 if (_resource != value)
                 {
-                    UnscaleDurability();
+                    if (!World.Loading)
+                    {
+                        UnscaleDurability();
+                    }
+
 
                     _resource = value;
 
@@ -276,7 +292,10 @@ namespace Server.Items
 
                     Invalidate();
                     (Parent as Mobile)?.UpdateResistances();
-                    ScaleDurability();
+                    if (!World.Loading)
+                    {
+                        ScaleDurability();
+                    }
                 }
             }
         }
@@ -320,42 +339,21 @@ namespace Server.Items
                     ar += 10 + 5 * (int)_protection;
                 }
 
-                switch (_resource)
+                ar += _resource switch
                 {
-                    case CraftResource.DullCopper:
-                        ar += 2;
-                        break;
-                    case CraftResource.ShadowIron:
-                        ar += 4;
-                        break;
-                    case CraftResource.Copper:
-                        ar += 6;
-                        break;
-                    case CraftResource.Bronze:
-                        ar += 8;
-                        break;
-                    case CraftResource.Gold:
-                        ar += 10;
-                        break;
-                    case CraftResource.Agapite:
-                        ar += 12;
-                        break;
-                    case CraftResource.Verite:
-                        ar += 14;
-                        break;
-                    case CraftResource.Valorite:
-                        ar += 16;
-                        break;
-                    case CraftResource.SpinedLeather:
-                        ar += 10;
-                        break;
-                    case CraftResource.HornedLeather:
-                        ar += 13;
-                        break;
-                    case CraftResource.BarbedLeather:
-                        ar += 16;
-                        break;
-                }
+                    CraftResource.DullCopper    => 2,
+                    CraftResource.ShadowIron    => 4,
+                    CraftResource.Copper        => 6,
+                    CraftResource.Bronze        => 8,
+                    CraftResource.Gold          => 10,
+                    CraftResource.Agapite       => 12,
+                    CraftResource.Verite        => 14,
+                    CraftResource.Valorite      => 16,
+                    CraftResource.SpinedLeather => 10,
+                    CraftResource.HornedLeather => 13,
+                    CraftResource.BarbedLeather => 16,
+                    _                           => 0
+                };
 
                 ar += -8 + 8 * (int)_quality;
                 return ScaleArmorByDurability(ar);
@@ -538,35 +536,30 @@ namespace Server.Items
             BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + _energyBonus;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public ArmorBodyType BodyPosition
-        {
-            get
+        public ArmorBodyType BodyPosition =>
+            Layer switch
             {
-                return Layer switch
-                {
-                    Layer.Neck       => ArmorBodyType.Gorget,
-                    Layer.TwoHanded  => ArmorBodyType.Shield,
-                    Layer.Gloves     => ArmorBodyType.Gloves,
-                    Layer.Helm       => ArmorBodyType.Helmet,
-                    Layer.Arms       => ArmorBodyType.Arms,
-                    Layer.InnerLegs  => ArmorBodyType.Legs,
-                    Layer.OuterLegs  => ArmorBodyType.Legs,
-                    Layer.Pants      => ArmorBodyType.Legs,
-                    Layer.InnerTorso => ArmorBodyType.Chest,
-                    Layer.OuterTorso => ArmorBodyType.Chest,
-                    Layer.Shirt      => ArmorBodyType.Chest,
-                    _                => ArmorBodyType.Gorget
-                };
-            }
-        }
+                Layer.Neck       => ArmorBodyType.Gorget,
+                Layer.TwoHanded  => ArmorBodyType.Shield,
+                Layer.Gloves     => ArmorBodyType.Gloves,
+                Layer.Helm       => ArmorBodyType.Helmet,
+                Layer.Arms       => ArmorBodyType.Arms,
+                Layer.InnerLegs  => ArmorBodyType.Legs,
+                Layer.OuterLegs  => ArmorBodyType.Legs,
+                Layer.Pants      => ArmorBodyType.Legs,
+                Layer.InnerTorso => ArmorBodyType.Chest,
+                Layer.OuterTorso => ArmorBodyType.Chest,
+                Layer.Shirt      => ArmorBodyType.Chest,
+                _                => ArmorBodyType.Gorget
+            };
 
         public static double[] ArmorScalars { get; set; } = { 0.07, 0.07, 0.14, 0.15, 0.22, 0.35 };
 
         public virtual CraftResource DefaultResource => CraftResource.Iron;
 
-        public virtual Race RequiredRace => null;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -846,20 +839,12 @@ namespace Server.Items
 
         public int ComputeStatReq(StatType type)
         {
-            int v;
-
-            if (type == StatType.Str)
+            int v = type switch
             {
-                v = StrRequirement;
-            }
-            else if (type == StatType.Dex)
-            {
-                v = DexRequirement;
-            }
-            else
-            {
-                v = IntRequirement;
-            }
+                StatType.Str => StrRequirement,
+                StatType.Dex => DexRequirement,
+                _            => IntRequirement
+            };
 
             return AOS.Scale(v, 100 - GetLowerStatReq());
         }
@@ -901,17 +886,8 @@ namespace Server.Items
             InvalidateProperties();
         }
 
-        public CraftAttributeInfo GetResourceAttrs()
-        {
-            var info = CraftResources.GetInfo(_resource);
-
-            if (info == null)
-            {
-                return CraftAttributeInfo.Blank;
-            }
-
-            return info.AttributeInfo;
-        }
+        public CraftAttributeInfo GetResourceAttrs() =>
+            CraftResources.GetInfo(_resource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
 
         public int GetProtOffset()
         {
@@ -927,31 +903,17 @@ namespace Server.Items
 
         public int GetDurabilityBonus()
         {
-            var bonus = 0;
+            var bonus = _quality == ArmorQuality.Exceptional ? 20 : 0;
 
-            if (_quality == ArmorQuality.Exceptional)
+            bonus += _durability switch
             {
-                bonus += 20;
-            }
-
-            switch (_durability)
-            {
-                case ArmorDurabilityLevel.Durable:
-                    bonus += 20;
-                    break;
-                case ArmorDurabilityLevel.Substantial:
-                    bonus += 50;
-                    break;
-                case ArmorDurabilityLevel.Massive:
-                    bonus += 70;
-                    break;
-                case ArmorDurabilityLevel.Fortified:
-                    bonus += 100;
-                    break;
-                case ArmorDurabilityLevel.Indestructible:
-                    bonus += 120;
-                    break;
-            }
+                ArmorDurabilityLevel.Durable        => 20,
+                ArmorDurabilityLevel.Substantial    => 50,
+                ArmorDurabilityLevel.Massive        => 70,
+                ArmorDurabilityLevel.Fortified      => 100,
+                ArmorDurabilityLevel.Indestructible => 120,
+                _                                   => 0
+            };
 
             if (Core.AOS)
             {
@@ -987,17 +949,8 @@ namespace Server.Items
 
                 if (item is BaseArmor armor)
                 {
-                    if (armor.RequiredRace != null && m.Race != armor.RequiredRace)
+                    if (!armor.CheckRace(m))
                     {
-                        if (armor.RequiredRace == Race.Elf)
-                        {
-                            m.SendLocalizedMessage(1072203); // Only Elves may use this.
-                        }
-                        else
-                        {
-                            m.SendMessage("Only {0} may use this.", armor.RequiredRace.PluralName);
-                        }
-
                         m.AddToBackpack(armor);
                     }
                     else if (!armor.AllowMaleWearer && !m.Female && m.AccessLevel < AccessLevel.GameMaster)
@@ -1134,15 +1087,17 @@ namespace Server.Items
         {
             var flags = (OldSaveFlag)reader.ReadEncodedInt();
 
+            Attributes = new AosAttributes(this);
+
             if (GetSaveFlag(flags, OldSaveFlag.Attributes))
             {
-                Attributes = new AosAttributes(this);
                 Attributes.Deserialize(reader);
             }
 
+            ArmorAttributes = new AosArmorAttributes(this);
+
             if (GetSaveFlag(flags, OldSaveFlag.ArmorAttributes))
             {
-                ArmorAttributes = new AosArmorAttributes(this);
                 ArmorAttributes.Deserialize(reader);
             }
 
@@ -1284,17 +1239,8 @@ namespace Server.Items
 
             if (from.AccessLevel < AccessLevel.GameMaster)
             {
-                if (RequiredRace != null && from.Race != RequiredRace)
+                if (!CheckRace(from))
                 {
-                    if (RequiredRace == Race.Elf)
-                    {
-                        from.SendLocalizedMessage(1072203); // Only Elves may use this.
-                    }
-                    else
-                    {
-                        from.SendMessage("Only {0} may use this.", RequiredRace.PluralName);
-                    }
-
                     return false;
                 }
 
@@ -1500,12 +1446,12 @@ namespace Server.Items
                 list.Add(1041350); // faction item
             }
 
-            if (RequiredRace == Race.Elf)
+            if (RequiredRaces == Race.AllowElvesOnly)
             {
                 list.Add(1075086); // Elves Only
             }
 
-            if (RequiredRace == Race.Gargoyle)
+            if (RequiredRaces == Race.AllowGargoylesOnly)
             {
                 list.Add(1111709); // Gargoyles Only
             }

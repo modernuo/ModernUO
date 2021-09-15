@@ -14,7 +14,7 @@ namespace Benchmarks
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Write(this Span<byte> data, ref int pos, Serial serial)
         {
-            BinaryPrimitives.WriteUInt32BigEndian(data.Slice(pos, 4), serial);
+            BinaryPrimitives.WriteUInt32BigEndian(data.Slice(pos, 4), serial.Value);
             pos += 4;
         }
 

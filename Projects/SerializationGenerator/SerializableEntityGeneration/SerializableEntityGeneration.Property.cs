@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -25,6 +24,7 @@ namespace SerializationGenerator
         public static void GenerateSerializableProperty(
             this StringBuilder source,
             Compilation compilation,
+            string indent,
             IFieldSymbol fieldSymbol,
             Accessibility getter,
             Accessibility? setter,
@@ -44,9 +44,8 @@ namespace SerializationGenerator
                     ) ?? false
                 );
 
-            const string indent = "        ";
-            const string innerIndent = "                ";
-            const string propertyIndent = "            ";
+            var propertyIndent = $"{indent}    ";
+            var innerIndent = $"{propertyIndent}    ";
 
             var propertyAccessor = setter > getter ? setter : getter;
             var getterAccessor = getter == propertyAccessor ? Accessibility.NotApplicable : getter;

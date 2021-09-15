@@ -1485,10 +1485,22 @@ namespace Server.Gumps
             {
                 case AccessLevel.Owner:
                 case AccessLevel.Developer:
-                case AccessLevel.Administrator: return 0x516;
-                case AccessLevel.Seer:       return 0x144;
-                case AccessLevel.GameMaster: return 0x21;
-                case AccessLevel.Counselor:  return 0x2;
+                case AccessLevel.Administrator:
+                    {
+                        return 0x516;
+                    }
+                case AccessLevel.Seer:
+                    {
+                        return 0x144;
+                    }
+                case AccessLevel.GameMaster:
+                    {
+                        return 0x21;
+                    }
+                case AccessLevel.Counselor:
+                    {
+                        return 0x2;
+                    }
                 default:
                     {
                         if (m.Kills >= 5)
@@ -1982,24 +1994,39 @@ namespace Server.Gumps
                         switch (index)
                         {
                             case 0:
-                                page = AdminGumpPage.Information_General;
-                                break;
+                                {
+                                    page = AdminGumpPage.Information_General;
+                                    break;
+                                }
                             case 1:
-                                page = AdminGumpPage.Administer;
-                                break;
+                                {
+                                    page = AdminGumpPage.Administer;
+                                    break;
+                                }
                             case 2:
-                                page = AdminGumpPage.Clients;
-                                break;
+                                {
+                                    page = AdminGumpPage.Clients;
+                                    break;
+                                }
                             case 3:
-                                page = AdminGumpPage.Accounts;
-                                break;
+                                {
+                                    page = AdminGumpPage.Accounts;
+                                    break;
+                                }
                             case 4:
-                                page = AdminGumpPage.Firewall;
-                                break;
+                                {
+                                    page = AdminGumpPage.Firewall;
+                                    break;
+                                }
                             case 5:
-                                page = AdminGumpPage.Information_Perf;
-                                break;
-                            default: return;
+                                {
+                                    page = AdminGumpPage.Information_Perf;
+                                    break;
+                                }
+                            default:
+                                {
+                                    return;
+                                }
                         }
 
                         from.SendGump(new AdminGump(from, page));
@@ -2064,68 +2091,126 @@ namespace Server.Gumps
                         switch (index)
                         {
                             case 0:
-                                page = AdminGumpPage.Administer_WorldBuilding;
-                                break;
+                                {
+                                    page = AdminGumpPage.Administer_WorldBuilding;
+                                    break;
+                                }
                             case 1:
-                                page = AdminGumpPage.Administer_Server;
-                                break;
+                                {
+                                    page = AdminGumpPage.Administer_Server;
+                                    break;
+                                }
                             case 2:
-                                page = AdminGumpPage.Administer_Access;
-                                break;
+                                {
+                                    page = AdminGumpPage.Administer_Access;
+                                    break;
+                                }
                             case 3:
-                                page = AdminGumpPage.Administer_Commands;
-                                break;
+                                {
+                                    page = AdminGumpPage.Administer_Commands;
+                                    break;
+                                }
 
                             case 101:
-                                InvokeCommand("TelGen");
-                                notice = "Teleporters have been generated.";
-                                break;
+                                {
+                                    InvokeCommand("TelGen");
+                                    notice = "Teleporters have been generated.";
+                                    break;
+                                }
                             case 102:
-                                InvokeCommand("MoonGen");
-                                notice = "Moongates have been generated.";
-                                break;
+                                {
+                                    InvokeCommand("MoonGen");
+                                    notice = "Moongates have been generated.";
+                                    break;
+                                }
                             case 104:
-                                InvokeCommand("DoorGen");
-                                notice = "Doors have been generated.";
-                                break;
+                                {
+                                    InvokeCommand("DoorGen");
+                                    notice = "Doors have been generated.";
+                                    break;
+                                }
                             case 103:
-                                InvokeCommand("GenerateSpawners ./Data/Spawns/*.json");
-                                notice = "Spawners have been generated.";
-                                break;
+                                {
+                                    if (Core.SA)
+                                    {
+                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*/*.json");
+                                    }
+                                    else
+                                    {
+                                        if (Core.ML)
+                                        {
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
+                                        }
+
+                                        if (Core.SE)
+                                        {
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
+                                        }
+
+                                        if (Core.AOS)
+                                        {
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*.json");
+                                        }
+
+                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
+                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
+                                    }
+
+                                    notice = "Spawners have been generated.";
+                                    break;
+                                }
                             case 105:
-                                InvokeCommand("SignGen");
-                                notice = "Signs have been generated.";
-                                break;
+                                {
+                                    InvokeCommand("SignGen");
+                                    notice = "Signs have been generated.";
+                                    break;
+                                }
                             case 106:
-                                InvokeCommand("Decorate");
-                                notice = "Decoration has been generated.";
-                                break;
+                                {
+                                    InvokeCommand("Decorate");
+                                    notice = "Decoration has been generated.";
+                                    break;
+                                }
 
                             case 110:
-                                InvokeCommand("Freeze");
-                                notice = "Target bounding points.";
-                                break;
+                                {
+                                    InvokeCommand("Freeze");
+                                    notice = "Target bounding points.";
+                                    break;
+                                }
                             case 120:
-                                InvokeCommand("Unfreeze");
-                                notice = "Target bounding points.";
-                                break;
+                                {
+                                    InvokeCommand("Unfreeze");
+                                    notice = "Target bounding points.";
+                                    break;
+                                }
 
                             case 200:
-                                InvokeCommand("Save");
-                                notice = "The world has been saved.";
-                                break;
+                                {
+                                    InvokeCommand("Save");
+                                    notice = "The world has been saved.";
+                                    break;
+                                }
                             case 201:
-                                Shutdown(false, true);
-                                break;
+                                {
+                                    Shutdown(false, true);
+                                    break;
+                                }
                             case 202:
-                                Shutdown(false, false);
-                                break;
+                                {
+                                    Shutdown(false, false);
+                                    break;
+                                }
                             case 203:
-                                Shutdown(true, true);
-                                break;
+                                {
+                                    Shutdown(true, true);
+                                    break;
+                                }
                             case 204:
-                                Shutdown(true, false);
-                                break;
+                                {
+                                    Shutdown(true, false);
+                                    break;
+                                }
                             case 210:
                             case 211:
                                 {
@@ -2145,38 +2230,54 @@ namespace Server.Gumps
                                 }
 
                             case 300:
-                                InvokeCommand("Kick");
-                                notice = "Target the player to kick.";
-                                break;
+                                {
+                                    InvokeCommand("Kick");
+                                    notice = "Target the player to kick.";
+                                    break;
+                                }
                             case 301:
-                                InvokeCommand("Ban");
-                                notice = "Target the player to ban.";
-                                break;
+                                {
+                                    InvokeCommand("Ban");
+                                    notice = "Target the player to ban.";
+                                    break;
+                                }
                             case 302:
-                                InvokeCommand("Firewall");
-                                notice = "Target the player to firewall.";
-                                break;
+                                {
+                                    InvokeCommand("Firewall");
+                                    notice = "Target the player to firewall.";
+                                    break;
+                                }
 
                             case 303:
-                                page = AdminGumpPage.Administer_Access_Lockdown;
-                                break;
+                                {
+                                    page = AdminGumpPage.Administer_Access_Lockdown;
+                                    break;
+                                }
 
                             case 310:
-                                InvokeCommand("Set AccessLevel Player");
-                                notice = "Target the player to change their access level. (Player)";
-                                break;
+                                {
+                                    InvokeCommand("Set AccessLevel Player");
+                                    notice = "Target the player to change their access level. (Player)";
+                                    break;
+                                }
                             case 311:
-                                InvokeCommand("Set AccessLevel Counselor");
-                                notice = "Target the player to change their access level. (Counselor)";
-                                break;
+                                {
+                                    InvokeCommand("Set AccessLevel Counselor");
+                                    notice = "Target the player to change their access level. (Counselor)";
+                                    break;
+                                }
                             case 312:
-                                InvokeCommand("Set AccessLevel GameMaster");
-                                notice = "Target the player to change their access level. (Game Master)";
-                                break;
+                                {
+                                    InvokeCommand("Set AccessLevel GameMaster");
+                                    notice = "Target the player to change their access level. (Game Master)";
+                                    break;
+                                }
                             case 313:
-                                InvokeCommand("Set AccessLevel Seer");
-                                notice = "Target the player to change their access level. (Seer)";
-                                break;
+                                {
+                                    InvokeCommand("Set AccessLevel Seer");
+                                    notice = "Target the player to change their access level. (Seer)";
+                                    break;
+                                }
 
                             case 314:
                                 {
@@ -2212,84 +2313,124 @@ namespace Server.Gumps
                                 }
 
                             case 400:
-                                notice = "Enter search terms to add objects.";
-                                break;
+                                {
+                                    notice = "Enter search terms to add objects.";
+                                    break;
+                                }
                             case 401:
-                                InvokeCommand("Remove");
-                                notice = "Target the item or mobile to remove.";
-                                break;
+                                {
+                                    InvokeCommand("Remove");
+                                    notice = "Target the item or mobile to remove.";
+                                    break;
+                                }
                             case 402:
-                                InvokeCommand("Dupe");
-                                notice = "Target the item to dupe.";
-                                break;
+                                {
+                                    InvokeCommand("Dupe");
+                                    notice = "Target the item to dupe.";
+                                    break;
+                                }
                             case 403:
-                                InvokeCommand("DupeInBag");
-                                notice = "Target the item to dupe. The item will be duped at it's current location.";
-                                break;
+                                {
+                                    InvokeCommand("DupeInBag");
+                                    notice = "Target the item to dupe. The item will be duped at it's current location.";
+                                    break;
+                                }
                             case 404:
-                                InvokeCommand("Props");
-                                notice = "Target the item or mobile to inspect.";
-                                break;
+                                {
+                                    InvokeCommand("Props");
+                                    notice = "Target the item or mobile to inspect.";
+                                    break;
+                                }
                             case 405:
-                                InvokeCommand("Skills");
-                                notice = "Target a mobile to view their skills.";
-                                break;
+                                {
+                                    InvokeCommand("Skills");
+                                    notice = "Target a mobile to view their skills.";
+                                    break;
+                                }
                             case 406:
-                                InvokeCommand("Set Blessed False");
-                                notice = "Target the mobile to make mortal.";
-                                break;
+                                {
+                                    InvokeCommand("Set Blessed False");
+                                    notice = "Target the mobile to make mortal.";
+                                    break;
+                                }
                             case 407:
-                                InvokeCommand("Set Blessed True");
-                                notice = "Target the mobile to make immortal.";
-                                break;
+                                {
+                                    InvokeCommand("Set Blessed True");
+                                    notice = "Target the mobile to make immortal.";
+                                    break;
+                                }
                             case 408:
-                                InvokeCommand("Set Squelched True");
-                                notice = "Target the mobile to squelch.";
-                                break;
+                                {
+                                    InvokeCommand("Set Squelched True");
+                                    notice = "Target the mobile to squelch.";
+                                    break;
+                                }
                             case 409:
-                                InvokeCommand("Set Squelched False");
-                                notice = "Target the mobile to unsquelch.";
-                                break;
+                                {
+                                    InvokeCommand("Set Squelched False");
+                                    notice = "Target the mobile to unsquelch.";
+                                    break;
+                                }
                             case 410:
-                                InvokeCommand("Set Frozen True");
-                                notice = "Target the mobile to freeze.";
-                                break;
+                                {
+                                    InvokeCommand("Set Frozen True");
+                                    notice = "Target the mobile to freeze.";
+                                    break;
+                                }
                             case 411:
-                                InvokeCommand("Set Frozen False");
-                                notice = "Target the mobile to unfreeze.";
-                                break;
+                                {
+                                    InvokeCommand("Set Frozen False");
+                                    notice = "Target the mobile to unfreeze.";
+                                    break;
+                                }
                             case 412:
-                                InvokeCommand("Set Hidden True");
-                                notice = "Target the mobile to hide.";
-                                break;
+                                {
+                                    InvokeCommand("Set Hidden True");
+                                    notice = "Target the mobile to hide.";
+                                    break;
+                                }
                             case 413:
-                                InvokeCommand("Set Hidden False");
-                                notice = "Target the mobile to unhide.";
-                                break;
+                                {
+                                    InvokeCommand("Set Hidden False");
+                                    notice = "Target the mobile to unhide.";
+                                    break;
+                                }
                             case 414:
-                                InvokeCommand("Kill");
-                                notice = "Target the mobile to kill.";
-                                break;
+                                {
+                                    InvokeCommand("Kill");
+                                    notice = "Target the mobile to kill.";
+                                    break;
+                                }
                             case 415:
-                                InvokeCommand("Resurrect");
-                                notice = "Target the mobile to resurrect.";
-                                break;
+                                {
+                                    InvokeCommand("Resurrect");
+                                    notice = "Target the mobile to resurrect.";
+                                    break;
+                                }
                             case 416:
-                                InvokeCommand("Move");
-                                notice = "Target the item or mobile to move.";
-                                break;
+                                {
+                                    InvokeCommand("Move");
+                                    notice = "Target the item or mobile to move.";
+                                    break;
+                                }
                             case 417:
-                                InvokeCommand("Wipe");
-                                notice = "Target bounding points.";
-                                break;
+                                {
+                                    InvokeCommand("Wipe");
+                                    notice = "Target bounding points.";
+                                    break;
+                                }
                             case 418:
-                                InvokeCommand("Tele");
-                                notice = "Choose your destination.";
-                                break;
+                                {
+                                    InvokeCommand("Tele");
+                                    notice = "Choose your destination.";
+                                    break;
+                                }
                             case 419:
-                                InvokeCommand("Multi Tele");
-                                notice = "Choose your destination.";
-                                break;
+                                {
+                                    InvokeCommand("Multi Tele");
+                                    notice = "Choose your destination.";
+                                    break;
+                                }
 
                             case 500:
                             case 501:
@@ -2377,20 +2518,30 @@ namespace Server.Gumps
                         switch (index)
                         {
                             case 400:
-                                InvokeCommand("Add");
-                                break;
+                                {
+                                    InvokeCommand("Add");
+                                    break;
+                                }
                             case 111:
-                                InvokeCommand("FreezeWorld");
-                                break;
+                                {
+                                    InvokeCommand("FreezeWorld");
+                                    break;
+                                }
                             case 112:
-                                InvokeCommand("FreezeMap");
-                                break;
+                                {
+                                    InvokeCommand("FreezeMap");
+                                    break;
+                                }
                             case 121:
-                                InvokeCommand("UnfreezeWorld");
-                                break;
+                                {
+                                    InvokeCommand("UnfreezeWorld");
+                                    break;
+                                }
                             case 122:
-                                InvokeCommand("UnfreezeMap");
-                                break;
+                                {
+                                    InvokeCommand("UnfreezeMap");
+                                    break;
+                                }
                         }
 
                         break;
@@ -2544,83 +2695,101 @@ namespace Server.Gumps
                         switch (index)
                         {
                             case 0:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_Information,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Information,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 1:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_Characters,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Characters,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 2:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_Comments,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Comments,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 3:
-                                from.SendGump(
-                                    new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, null, m_State)
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, null, m_State)
+                                    );
+                                    break;
+                                }
                             case 13:
-                                from.SendGump(
-                                    new AdminGump(from, AdminGumpPage.AccountDetails_Access, 0, null, null, m_State)
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(from, AdminGumpPage.AccountDetails_Access, 0, null, null, m_State)
+                                    );
+                                    break;
+                                }
                             case 14:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 15:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_Access_Restrictions,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_Restrictions,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 4:
-                                from.Prompt = new AddCommentPrompt(m_State as Account);
-                                from.SendMessage("Enter the new account comment.");
-                                break;
+                                {
+                                    from.Prompt = new AddCommentPrompt(m_State as Account);
+                                    from.SendMessage("Enter the new account comment.");
+                                    break;
+                                }
                             case 5:
-                                from.Prompt = new AddTagNamePrompt(m_State as Account);
-                                from.SendMessage("Enter the new tag name.");
-                                break;
+                                {
+                                    from.Prompt = new AddTagNamePrompt(m_State as Account);
+                                    from.SendMessage("Enter the new tag name.");
+                                    break;
+                                }
                             case 6:
                                 {
                                     var un = info.GetTextEntry(0)?.Text.Trim();
@@ -2727,29 +2896,33 @@ namespace Server.Gumps
                                     break;
                                 }
                             case 8:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_ChangePassword,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_ChangePassword,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 9:
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_ChangeAccess,
-                                        0,
-                                        null,
-                                        null,
-                                        m_State
-                                    )
-                                );
-                                break;
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_ChangeAccess,
+                                            0,
+                                            null,
+                                            null,
+                                            m_State
+                                        )
+                                    );
+                                    break;
+                                }
                             case 10:
                             case 11:
                                 {

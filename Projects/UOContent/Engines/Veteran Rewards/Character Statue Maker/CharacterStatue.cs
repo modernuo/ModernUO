@@ -299,7 +299,7 @@ namespace Server.Mobiles
         public void CloneBody(Mobile from)
         {
             Name = from.Name;
-            BodyValue = from.BodyValue;
+            Body = from.Body;
             Female = from.Female;
             HairItemID = from.HairItemID;
             FacialHairItemID = from.FacialHairItemID;

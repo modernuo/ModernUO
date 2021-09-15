@@ -13,7 +13,7 @@ namespace Server.Factions
             Frozen = true;
             CantWalk = true;
             Female = false;
-            BodyValue = 400;
+            Body = 400;
             Name = NameList.RandomName("male");
 
             RangeHome = 0;

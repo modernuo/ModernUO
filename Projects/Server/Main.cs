@@ -365,6 +365,7 @@ namespace Server
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHandler.AssemblyResolver;
 
             LoopContext = new EventLoopContext();
 
@@ -463,7 +464,7 @@ namespace Server
                 assemblyFiles[i] = Path.Join(BaseDirectory, "Assemblies", assemblyFiles[i]);
             }
 
-            AssemblyHandler.LoadScripts(assemblyFiles);
+            AssemblyHandler.LoadAssemblies(assemblyFiles);
 
             VerifySerialization();
 

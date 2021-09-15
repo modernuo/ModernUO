@@ -8,7 +8,6 @@ using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
-using Server.Text;
 
 namespace Server.Mobiles
 {

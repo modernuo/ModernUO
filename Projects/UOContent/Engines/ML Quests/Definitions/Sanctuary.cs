@@ -1,7 +1,6 @@
 using System;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
-using Server.Engines.Spawners;
 using Server.Items;
 using Server.Mobiles;
 
@@ -767,7 +766,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the bowcrafter";
             Race = Race.Elf;
-            BodyValue = 0x25D;
+            Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -834,7 +833,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the metal weaver";
             Race = Race.Elf;
-            BodyValue = 0x25D;
+            Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -892,7 +891,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the cloth weaver";
             Race = Race.Elf;
-            BodyValue = 0x25E;
+            Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -953,7 +952,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the guard";
             Race = Race.Elf;
-            BodyValue = 0x25E;
+            Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -1025,7 +1024,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the keeper of tradition";
             Race = Race.Elf;
-            BodyValue = 0x25E;
+            Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -1082,7 +1081,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the keeper of tradition";
             Race = Race.Elf;
-            BodyValue = 0x25D;
+            Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -1150,7 +1149,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the cook";
             Race = Race.Elf;
-            BodyValue = 0x25D;
+            Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -1213,7 +1212,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the thaumaturgist";
             Race = Race.Elf;
-            BodyValue = 0x25E;
+            Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -1274,7 +1273,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the bark weaver";
             Race = Race.Elf;
-            BodyValue = 0x25E;
+            Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -1320,7 +1319,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the wise";
             Race = Race.Elf;
-            BodyValue = 0x25D;
+            Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);

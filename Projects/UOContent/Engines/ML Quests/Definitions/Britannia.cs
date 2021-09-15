@@ -1,7 +1,6 @@
 using System;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
-using Server.Engines.Spawners;
 using Server.Items;
 using Server.Mobiles;
 
@@ -114,7 +113,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Architect's Daughter";
             Race = Race.Human;
-            BodyValue = 0x191;
+            Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);

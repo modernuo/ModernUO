@@ -119,7 +119,7 @@ namespace Server.Network
             else if (entity is Mobile mobile)
             {
                 type = 1;
-                gfx = mobile.BodyValue;
+                gfx = mobile.Body;
                 hue = mobile.Hue;
                 flags = mobile.GetPacketFlags(true);
             }
