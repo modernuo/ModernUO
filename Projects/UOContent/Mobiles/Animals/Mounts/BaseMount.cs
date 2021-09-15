@@ -43,7 +43,8 @@ namespace Server.Mobiles
         public virtual bool AllowMaleRider => true;
         public virtual bool AllowFemaleRider => true;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;

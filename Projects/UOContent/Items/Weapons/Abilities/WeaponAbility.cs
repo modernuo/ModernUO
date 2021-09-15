@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
-using Server.Network;
 using Server.Spells;
 using Server.Spells.Bushido;
 using Server.Spells.Necromancy;
@@ -132,15 +131,17 @@ namespace Server.Items
         {
             var mana = BaseMana;
 
-            var skillTotal = GetSkill(from, SkillName.Swords) + GetSkill(from, SkillName.Macing)
-                                                              + GetSkill(from, SkillName.Fencing) +
-                                                              GetSkill(from, SkillName.Archery) +
-                                                              GetSkill(from, SkillName.Parry)
-                                                              + GetSkill(from, SkillName.Lumberjacking) +
-                                                              GetSkill(from, SkillName.Stealth)
-                                                              + GetSkill(from, SkillName.Poisoning) +
-                                                              GetSkill(from, SkillName.Bushido) +
-                                                              GetSkill(from, SkillName.Ninjitsu);
+            var skillTotal =
+                GetSkill(from, SkillName.Swords) +
+                GetSkill(from, SkillName.Macing) +
+                GetSkill(from, SkillName.Fencing) +
+                GetSkill(from, SkillName.Archery) +
+                GetSkill(from, SkillName.Parry) +
+                GetSkill(from, SkillName.Lumberjacking) +
+                GetSkill(from, SkillName.Stealth) +
+                GetSkill(from, SkillName.Poisoning) +
+                GetSkill(from, SkillName.Bushido) +
+                GetSkill(from, SkillName.Ninjitsu);
 
             if (skillTotal >= 300.0)
             {
@@ -174,7 +175,7 @@ namespace Server.Items
 
         public virtual bool CheckWeaponSkill(Mobile from)
         {
-            if (!(from.Weapon is BaseWeapon weapon))
+            if (from.Weapon is not BaseWeapon weapon)
             {
                 return false;
             }
@@ -196,9 +197,11 @@ namespace Server.Items
             }
 
             /* <UBWS> */
-            if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills.Swords.Base >= reqSkill ||
-                                                             from.Skills.Macing.Base >= reqSkill ||
-                                                             from.Skills.Fencing.Base >= reqSkill))
+            if (weapon.WeaponAttributes.UseBestSkill > 0 &&
+                (from.Skills.Swords.Base >= reqSkill ||
+                 from.Skills.Macing.Base >= reqSkill ||
+                 from.Skills.Fencing.Base >= reqSkill)
+            )
             {
                 return true;
             }
@@ -319,7 +322,7 @@ namespace Server.Items
                 return false;
             }
 
-            return CheckSkills(from) && CheckMana(from, false);
+            return CheckSkills(from);
         }
 
         public static bool IsWeaponAbility(Mobile m, WeaponAbility a) =>
@@ -342,7 +345,7 @@ namespace Server.Items
                 return null;
             }
 
-            if (a?.ValidatesDuringHit == true && !a.Validate(m))
+            if (a?.ValidatesDuringHit == true && (!a.Validate(m) || !a.CheckMana(m, false)))
             {
                 ClearCurrentAbility(m);
                 return null;
@@ -365,7 +368,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (a?.Validate(m) == false)
+            if (a?.Validate(m) == false || a?.CheckMana(m, false) == false)
             {
                 ClearCurrentAbility(m);
                 return false;
@@ -394,23 +397,6 @@ namespace Server.Items
             }
         }
 
-        public static void Initialize()
-        {
-            EventSink.SetAbility += EventSink_SetAbility;
-        }
-
-        private static void EventSink_SetAbility(Mobile m, int index)
-        {
-            if (index == 0)
-            {
-                ClearCurrentAbility(m);
-            }
-            else if (index >= 1 && index < Abilities.Length)
-            {
-                SetCurrentAbility(m, Abilities[index]);
-            }
-        }
-
         private static void AddContext(Mobile m, WeaponAbilityContext context)
         {
             m_PlayersTable[m] = context;
@@ -418,19 +404,10 @@ namespace Server.Items
 
         private static void RemoveContext(Mobile m)
         {
-            var context = GetContext(m);
-
-            if (context != null)
+            if (m_PlayersTable.Remove(m, out var context))
             {
-                RemoveContext(m, context);
+                context.Timer?.Stop();
             }
-        }
-
-        private static void RemoveContext(Mobile m, WeaponAbilityContext context)
-        {
-            m_PlayersTable.Remove(m);
-
-            context.Timer.Stop();
         }
 
         private static WeaponAbilityContext GetContext(Mobile m)

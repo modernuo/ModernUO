@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Tests
 {
-    public class ServerFixture : IDisposable
+    internal class ServerFixture : IDisposable
     {
         // Global setup
         static ServerFixture()

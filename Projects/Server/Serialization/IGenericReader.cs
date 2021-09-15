@@ -106,6 +106,13 @@ namespace Server
 
             return default;
         }
+        Guid ReadGuid()
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            Read(bytes);
+            return new Guid(bytes);
+        }
+
         long Seek(long offset, SeekOrigin origin);
     }
 }

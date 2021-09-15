@@ -361,12 +361,6 @@ namespace Server.Gumps
                                 )
                             );
                         }
-                        else if (IsType(type, OfString) || IsType(type, DecimalTypes) ||
-                                 IsType(type, NumericTypes) ||
-                                 IsType(type, OfText))
-                        {
-                            from.SendGump(new SetGump(prop, from, m_Object, this));
-                        }
                         else if (IsType(type, OfPoison))
                         {
                             from.SendGump(
@@ -407,6 +401,10 @@ namespace Server.Gumps
                                     ? new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop))
                                     : new PropertiesGump(from, m_Object, m_Stack, m_List, m_Page)
                             );
+                        }
+                        else if (IsType(type, OfString) || IsParsable(type))
+                        {
+                            from.SendGump(new SetGump(prop, from, m_Object, this));
                         }
 
                         break;
@@ -471,21 +469,6 @@ namespace Server.Gumps
         private static bool HasAttribute(Type type, Type check, bool inherit) =>
             type.GetCustomAttributes(check, inherit).Length > 0;
 
-        private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
-
-        private static bool IsType(Type type, Type[] check)
-        {
-            for (var i = 0; i < check.Length; ++i)
-            {
-                if (IsType(type, check[i]))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         private string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
 
         public static string ValueToString(object obj, PropertyInfo prop)
@@ -540,7 +523,7 @@ namespace Server.Gumps
                 return $"(?) 0x{serial.Value:X}";
             }
 
-            if (o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong)
+            if (o is byte or sbyte or short or ushort or int or uint or long or ulong)
             {
                 return $"{o} (0x{o:X})";
             }
@@ -658,107 +641,6 @@ namespace Server.Gumps
             list.Sort(new GroupComparer(objectType));
 
             return list;
-        }
-
-        public static object GetObjectFromString(Type t, string s)
-        {
-            if (t == typeof(string))
-            {
-                return s;
-            }
-
-            if (t == typeof(byte) || t == typeof(sbyte) || t == typeof(short) || t == typeof(ushort) || t == typeof(int) ||
-                t == typeof(uint) || t == typeof(long) || t == typeof(ulong))
-            {
-                if (s.StartsWithOrdinal("0x"))
-                {
-                    if (t == typeof(ulong) || t == typeof(uint) || t == typeof(ushort) || t == typeof(byte))
-                    {
-                        return Convert.ChangeType(Convert.ToUInt64(s[2..], 16), t);
-                    }
-
-                    return Convert.ChangeType(Convert.ToInt64(s[2..], 16), t);
-                }
-
-                return Convert.ChangeType(s, t);
-            }
-
-            if (t == typeof(double) || t == typeof(float))
-            {
-                return Convert.ChangeType(s, t);
-            }
-
-            if (t.IsDefined(typeof(ParsableAttribute), false))
-            {
-                var parseMethod = t.GetMethod("Parse", new[] { typeof(string) });
-
-                return parseMethod?.Invoke(null, new object[] { s });
-            }
-
-            throw new Exception("bad");
-        }
-
-        private static string GetStringFromObject(object o)
-        {
-            if (o == null)
-            {
-                return "-null-";
-            }
-
-            if (o is string s)
-            {
-                return $"\"{s}\"";
-            }
-
-            if (o is bool)
-            {
-                return o.ToString();
-            }
-
-            if (o is char c)
-            {
-                return $"0x{(int)c:X} '{c}'";
-            }
-
-            if (o is Serial serial)
-            {
-                if (serial.IsValid)
-                {
-                    if (serial.IsItem)
-                    {
-                        return $"(I) 0x{serial.Value:X}";
-                    }
-
-                    if (serial.IsMobile)
-                    {
-                        return $"(M) 0x{serial.Value:X}";
-                    }
-                }
-
-                return $"(?) 0x{serial.Value:X}";
-            }
-
-            if (o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong)
-            {
-                return $"{o} (0x{o:X})";
-            }
-
-            if (o is Mobile mobile)
-            {
-                return $"(M) 0x{mobile.Serial.Value:X} \"{mobile.Name}\"";
-            }
-
-            if (o is Item item)
-            {
-                return $"(I) 0x{item.Serial.Value:X}";
-            }
-
-            if (o is Type type)
-            {
-                return type.Name;
-            }
-
-            return o.ToString();
         }
 
         private class PropertySorter : IComparer<PropertyInfo>

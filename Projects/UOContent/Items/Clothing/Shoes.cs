@@ -194,7 +194,7 @@ namespace Server.Items
 
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override bool Dye(Mobile from, DyeTub sender) => false;
     }

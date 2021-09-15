@@ -713,9 +713,14 @@ namespace Server.Items
                 list.Add(1060636); // exceptional
             }
 
-            if (RequiredRace == Race.Elf)
+            if (RequiredRaces == Race.AllowElvesOnly)
             {
                 list.Add(1075086); // Elves Only
+            }
+
+            if (RequiredRaces == Race.AllowGargoylesOnly)
+            {
+                list.Add(1111709); // Gargoyles Only
             }
 
             SkillBonuses?.GetProperties(list);

@@ -42,7 +42,7 @@ namespace Server.Items
         [Constructible]
         public ElvenShirt(int hue = 0) : base(0x3175, hue) => Weight = 2.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
     }
 
     [Serializable(0)]

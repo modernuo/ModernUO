@@ -20,7 +20,8 @@ namespace Server.Items
 
         public override bool DisplayWeight => false;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -186,6 +187,19 @@ namespace Server.Items
             }
         }
 
+        public override void InvalidateProperties()
+        {
+            base.InvalidateProperties();
+
+            if (_components != null)
+            {
+                foreach (var component in _components)
+                {
+                    component.InvalidateProperties();
+                }
+            }
+        }
+
         // Handles v0 with old Enum -> Int casting
         private void Deserialize(IGenericReader reader, int version)
         {
@@ -331,6 +345,10 @@ namespace Server.Items
 
         public virtual void OnComponentUsed(AddonContainerComponent c, Mobile from)
         {
+            if (!Deleted)
+            {
+                OnDoubleClick(from);
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Server.Items
         [Constructible]
         public HideGorget() : base(0x2B76) => Weight = 3.0;
 
-        public override Race RequiredRace => Race.Elf;
+        public override int RequiredRaces => Race.AllowElvesOnly;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

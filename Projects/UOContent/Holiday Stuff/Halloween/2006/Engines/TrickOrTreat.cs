@@ -107,7 +107,7 @@ namespace Server.Engines.Events
                 }
 
                 twin.Hue = m_From.Hue;
-                twin.BodyValue = m_From.BodyValue;
+                twin.Body = m_From.Body;
                 twin.Kills = m_From.Kills;
 
                 var point = RandomPointOneAway(m_From.X, m_From.Y, m_From.Z, m_From.Map);

@@ -1,4 +1,3 @@
-using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 namespace Benchmarks

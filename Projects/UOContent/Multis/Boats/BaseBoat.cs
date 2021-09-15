@@ -1342,7 +1342,7 @@ namespace Server.Multis
             Order = BoatOrder.Move;
 
             _moveTimerToken.Cancel();
-            Timer.StartTimer(interval, StopBoat, out _moveTimerToken);
+            Timer.StartTimer(interval, single ? 1 : 0, StopBoat, out _moveTimerToken);
 
             return true;
         }

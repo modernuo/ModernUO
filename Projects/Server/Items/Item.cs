@@ -408,6 +408,8 @@ namespace Server
 
         public virtual bool IsVirtualItem => false;
 
+        public virtual bool CanSeeStaffOnly(Mobile from) => from.AccessLevel > AccessLevel.Counselor;
+
         public virtual int LabelNumber
         {
             get
@@ -486,7 +488,8 @@ namespace Server
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
         public int PileWeight => (int)Math.Ceiling(Weight * Amount);
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public virtual int Hue
         {
             get => m_Hue;
@@ -1048,6 +1051,11 @@ namespace Server
             }
         }
 
+        public void MoveToWorld(WorldLocation worldLocation)
+        {
+            MoveToWorld(worldLocation.Location, worldLocation.Map);
+        }
+
         /// <summary>
         ///     Moves the Item to a given <paramref name="location" /> and <paramref name="map" />.
         /// </summary>
@@ -1324,39 +1332,36 @@ namespace Server
 
                 if (openers != null)
                 {
-                    lock (openers)
+                    for (var i = 0; i < openers.Count; ++i)
                     {
-                        for (var i = 0; i < openers.Count; ++i)
+                        var mob = openers[i];
+
+                        var range = GetUpdateRange(mob);
+
+                        if (mob.Map != map || !mob.InRange(worldLoc, range))
                         {
-                            var mob = openers[i];
-
-                            var range = GetUpdateRange(mob);
-
-                            if (mob.Map != map || !mob.InRange(worldLoc, range))
+                            openers.RemoveAt(i--);
+                        }
+                        else
+                        {
+                            if (mob == rootParent || mob == tradeRecip)
                             {
-                                openers.RemoveAt(i--);
+                                continue;
                             }
-                            else
+
+                            var ns = mob.NetState;
+
+                            if (ns != null && mob.CanSee(this))
                             {
-                                if (mob == rootParent || mob == tradeRecip)
-                                {
-                                    continue;
-                                }
-
-                                var ns = mob.NetState;
-
-                                if (ns != null && mob.CanSee(this))
-                                {
-                                    ns.SendContainerContentUpdate(this);
-                                    SendOPLPacketTo(ns);
-                                }
+                                ns.SendContainerContentUpdate(this);
+                                SendOPLPacketTo(ns);
                             }
                         }
+                    }
 
-                        if (openers.Count == 0)
-                        {
-                            contParent.Openers = null;
-                        }
+                    if (openers.Count == 0)
+                    {
+                        contParent.Openers = null;
                     }
                 }
 
@@ -1711,6 +1716,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool GetFlag(ImplFlag flag) => (m_Flags & flag) != 0;
 
         public BounceInfo GetBounce() => LookupCompactInfo()?.m_Bounce;
@@ -2096,6 +2102,47 @@ namespace Server
 
         public virtual bool CheckConflictingLayer(Mobile m, Item item, Layer layer) => m_Layer == layer;
 
+        // Uses Race.RaceFlag
+        public virtual int RequiredRaces => Race.AllowAllRaces;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool CheckRace(Race race) => Race.IsAllowedRace(race, RequiredRaces);
+
+        public virtual bool CheckRace(Mobile from, bool message = true)
+        {
+            var race = from.Race;
+            var requiredRaces = RequiredRaces;
+
+            if (Race.IsAllowedRace(race, requiredRaces))
+            {
+                return true;
+            }
+
+            if (!message)
+            {
+                return false;
+            }
+
+            if (requiredRaces == Race.AllowGargoylesOnly)
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1111707); // Only gargoyles can wear this.
+            }
+            else if (race == Race.Gargoyle)
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1111708); // Gargoyles can't wear this.
+            }
+            else if (requiredRaces == Race.AllowElvesOnly)
+            {
+                from.SendLocalizedMessage(1072203); // Only Elves may use this.
+            }
+            else
+            {
+                from.SendMessage($"{race.PluralName} may not use this.");
+            }
+
+            return false;
+        }
+
         public virtual bool CanEquip(Mobile m) => m_Layer != Layer.Invalid && m.FindItemOnLayer(m_Layer) == null;
 
         public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
@@ -2303,18 +2350,12 @@ namespace Server
 
                 doubled = false;
 
-                if (m_Amount <= 1)
+                itemID = m_Amount switch
                 {
-                    itemID = coinBase;
-                }
-                else if (m_Amount <= 5)
-                {
-                    itemID = coinBase + 1;
-                }
-                else // m_Amount > 5
-                {
-                    itemID = coinBase + 2;
-                }
+                    <= 1 => coinBase,
+                    <= 5 => coinBase + 1,
+                    _    => coinBase + 2
+                };
             }
 
             var bounds = ItemBounds.Table[itemID & 0x3FFF];
@@ -2365,7 +2406,7 @@ namespace Server
         }
 
 #nullable enable
-        public void InvalidateProperties()
+        public virtual void InvalidateProperties()
         {
             if (!ObjectPropertyList.Enabled)
             {

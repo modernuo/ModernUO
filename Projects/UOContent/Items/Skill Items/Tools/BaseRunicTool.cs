@@ -607,12 +607,10 @@ namespace Server.Items
                 m_Props.Set(2, true); // remove durability bonus from possible properties
             }
 
-            if (armor.RequiredRace == Race.Elf)
+            if (armor.RequiredRaces == Race.AllowElvesOnly)
             {
-                m_Props.Set(
-                    7,
-                    true
-                ); // elves inherently have night sight and elf only armor doesn't get night sight as a mod
+                // elves inherently have night sight and elf only armor doesn't get night sight as a mod
+                m_Props.Set(7, true);
             }
 
             for (var i = 0; i < attributeCount; ++i)
@@ -628,7 +626,7 @@ namespace Server.Items
 
                 switch (random)
                 {
-                    /* Begin Sheilds */
+                    /* Begin Shields */
                     case 0:
                         ApplyAttribute(primary, min, max, AosAttribute.SpellChanneling, 1, 1);
                         break;

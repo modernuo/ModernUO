@@ -39,9 +39,6 @@ namespace Server.Movement
             RunFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runFoot", RunFootDelay);
             WalkMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkMount", WalkMountDelay);
             RunMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runMount", RunMountDelay);
-
-            // Testing
-            FastwalkExemptionLevel = (AccessLevel)((int)AccessLevel.Owner + 1);
         }
 
         public static bool CheckMovement(Mobile m, Direction d, out int newZ)

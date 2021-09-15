@@ -399,7 +399,8 @@ namespace Server.Mobiles
 
             if (spell == null)
             {
-                if (!m_Mobile.DisallowAllMoves && Utility.Random((int)m_Mobile.GetDistanceToSqrt(toDispel)) == 0)
+                var distance = (int)m_Mobile.GetDistanceToSqrt(toDispel);
+                if (!m_Mobile.DisallowAllMoves && distance > 0 && Utility.Random(distance) == 0)
                 {
                     spell = new TeleportSpell(m_Mobile);
                 }

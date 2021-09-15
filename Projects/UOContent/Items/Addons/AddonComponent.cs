@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Server.ContextMenus;
 using Server.Engines.Craft;
 
 namespace Server.Items
@@ -110,7 +112,8 @@ namespace Server.Items
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         public Point3D _offset;
 
-        [Hue, CommandProperty(AccessLevel.GameMaster)]
+        [Hue]
+        [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
         {
             get => base.Hue;
@@ -140,10 +143,7 @@ namespace Server.Items
             }
         }
 
-        public override void OnDoubleClick(Mobile from)
-        {
-            _addon?.OnComponentUsed(this, from);
-        }
+        public override void OnDoubleClick(Mobile from) => _addon?.OnComponentUsed(this, from);
 
         public override void OnLocationChange(Point3D old)
         {
@@ -160,6 +160,11 @@ namespace Server.Items
                 _addon.Map = Map;
             }
         }
+
+        public override void GetProperties(ObjectPropertyList list) => _addon?.GetProperties(list);
+
+        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
+            _addon?.GetContextMenuEntries(from, list);
 
         public override void OnAfterDelete()
         {

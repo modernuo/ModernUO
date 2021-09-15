@@ -1379,7 +1379,7 @@ namespace Server.Mobiles
                         {
                             drop = true;
                         }
-                        else if (weapon.RequiredRace != null && weapon.RequiredRace != Race)
+                        else if (!weapon.CheckRace(Race))
                         {
                             drop = true;
                         }
@@ -1404,7 +1404,7 @@ namespace Server.Mobiles
                         {
                             drop = true;
                         }
-                        else if (armor.RequiredRace != null && armor.RequiredRace != Race)
+                        else if (!armor.CheckRace(Race))
                         {
                             drop = true;
                         }

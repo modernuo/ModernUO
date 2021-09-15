@@ -20,7 +20,7 @@ namespace Server.Commands.Generic
         All = Single | Global | Online | Multi | Area | Self | Region | Contained | IPAddress,
         AllMobiles = All & ~Contained,
         AllNPCs = All & ~(IPAddress | Online | Self | Contained),
-        AllItems = All & ~(IPAddress | Online | Self | Region),
+        AllItems = All & ~(IPAddress | Online | Self),
 
         Simple = Single | Multi,
         Complex = Global | Online | Area | Region | Contained | IPAddress

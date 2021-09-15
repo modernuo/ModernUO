@@ -42,12 +42,12 @@ namespace Server.Misc
                     return false; // Buns & Receding Hair
                 }
 
-                if (itemID >= 0x203B && itemID <= 0x203D)
+                if (itemID is >= 0x203B and <= 0x203D)
                 {
                     return true;
                 }
 
-                if (itemID >= 0x2044 && itemID <= 0x204A)
+                if (itemID is >= 0x2044 and <= 0x204A)
                 {
                     return true;
                 }
@@ -83,12 +83,12 @@ namespace Server.Misc
                     return false;
                 }
 
-                if (itemID >= 0x203E && itemID <= 0x2041)
+                if (itemID is >= 0x203E and <= 0x2041)
                 {
                     return true;
                 }
 
-                if (itemID >= 0x204B && itemID <= 0x204D)
+                if (itemID is >= 0x204B and <= 0x204D)
                 {
                     return true;
                 }
@@ -166,17 +166,17 @@ namespace Server.Misc
                     return true;
                 }
 
-                if (female && (itemID == 0x2FCD || itemID == 0x2FBF) || !female && (itemID == 0x2FCC || itemID == 0x2FD0))
+                if (female && itemID is 0x2FCD or 0x2FBF || !female && itemID is 0x2FCC or 0x2FD0)
                 {
                     return false;
                 }
 
-                if (itemID >= 0x2FBF && itemID <= 0x2FC2)
+                if (itemID is >= 0x2FBF and <= 0x2FC2)
                 {
                     return true;
                 }
 
-                if (itemID >= 0x2FCC && itemID <= 0x2FD1)
+                if (itemID is >= 0x2FCC and <= 0x2FD1)
                 {
                     return true;
                 }
@@ -236,17 +236,6 @@ namespace Server.Misc
 
         private class Gargoyle : Race
         {
-            // Todo Finish body hues
-            private static readonly int[] m_BodyHues =
-            {
-                0x86DB, 0x86DC, 0x86DD, 0x86DE,
-                0x86DF, 0x86E0, 0x86E1, 0x86E2,
-                0x86E3, 0x86E4, 0x86E5, 0x86E6
-                // 0x, 0x, 0x, 0x, // 86E7/86E8/86E9/86EA?
-                // 0x, 0x, 0x, 0x, // 86EB/86EC/86ED/86EE?
-                // 0x86F3, 0x86DB, 0x86DC, 0x86DD
-            };
-
             private static readonly int[] m_HornHues =
             {
                 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763,
@@ -263,11 +252,10 @@ namespace Server.Misc
             {
                 if (female == false)
                 {
-                    return itemID >= 0x4258 && itemID <= 0x425F;
+                    return itemID is >= 0x4258 and <= 0x425F;
                 }
 
-                return itemID == 0x4261 || itemID == 0x4262 || itemID >= 0x4273 && itemID <= 0x4275 || itemID == 0x42B0 ||
-                       itemID == 0x42B1 || itemID == 0x42AA || itemID == 0x42AB;
+                return itemID is 0x4261 or 0x4262 or >= 0x4273 and <= 0x4275 or 0x42B0 or 0x42B1 or 0x42AA or 0x42AB;
             }
 
             public override int RandomHair(bool female)
@@ -298,14 +286,14 @@ namespace Server.Misc
             }
 
             public override bool ValidateFacialHair(bool female, int itemID) =>
-                !female && itemID >= 0x42AD && itemID <= 0x42B0;
+                !female && itemID is >= 0x42AD and <= 0x42B0;
 
             public override int RandomFacialHair(bool female) =>
                 female ? 0 : Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
 
             public override int ClipSkinHue(int hue) => hue;
 
-            public override int RandomSkinHue() => m_BodyHues.RandomElement() | 0x8000;
+            public override int RandomSkinHue() => Utility.Random(1755, 25) | 0x8000;
 
             public override int ClipHairHue(int hue)
             {

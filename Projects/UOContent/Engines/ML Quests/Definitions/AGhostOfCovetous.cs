@@ -1,7 +1,6 @@
 using System;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
-using Server.Engines.Spawners;
 using Server.Items;
 using Server.Mobiles;
 
@@ -101,7 +100,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Apprentice Necromancer";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x83FD;
             HairItemID = 0x2048;
             HairHue = 0x463;
@@ -146,7 +145,7 @@ namespace Server.Engines.MLQuests.Definitions
         public Frederic()
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
-            BodyValue = 0x1A;
+            Body = 0x1A;
             Hue = 0x455;
             Frozen = true;
 
@@ -184,7 +183,7 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Title = "the Alchemist";
             Race = Race.Human;
-            BodyValue = 0x190;
+            Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
             InitStats(100, 100, 25);
@@ -226,7 +225,7 @@ namespace Server.Engines.MLQuests.Definitions
             : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
         {
             Title = "the Blacksmith";
-            BodyValue = 0x190;
+            Body = 0x190;
             Hue = 0x8409;
             FacialHairItemID = 0x2041;
             FacialHairHue = 0x45E;
