@@ -31,8 +31,10 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![.NET](https://img.shields.io/badge/.NET-%205.0.10%20SDK-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Supported IDEs
-[![Visual Studio](https://img.shields.io/badge/-2019-5C2D91?logo=visualstudio)](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community)
-[![Jetbrains Rider](https://img.shields.io/badge/-2021.2-bf0d22?logo=rider)](https://www.jetbrains.com/rider/download)
+[<img width="64" alt="Jetbrains Rider 2021.2" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download) &nbsp;
+[<img width="64" alt="Visual Studio 2019" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png">](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community)
+<br />
+Rider 2021 &nbsp; VS 2019
 
 ## Getting Started
 - Install prerequisite [requirements](https://github.com/modernuo/ModernUO#requirements)
