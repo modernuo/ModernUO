@@ -6,16 +6,6 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 =====
 
 ##### Ultima Online Server Emulator for the modern era!
-[![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
-<br />
-![Windows](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
-![OSX](https://img.shields.io/badge/-big%20sur-222222?logo=apple&logoColor=white)
-![Debian](https://img.shields.io/badge/-buster-A81D33?logo=debian)
-![Ubuntu](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)
-![CentOS](https://img.shields.io/badge/-8.3-262577?logo=centos&logoColor=white)
-![Fedora](https://img.shields.io/badge/-33-0B57A4?logo=fedora&logoColor=white)
-![RedHat](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)
-<br/>
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
@@ -23,16 +13,35 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build?logo=github)](https://github.com/modernuo/ModernUO/actions)
 [![AzurePipelines build](https://dev.azure.com/modernuo/modernuo/_apis/build/status/Build?branchName=main)](https://dev.azure.com/modernuo/modernuo/_build/latest?definitionId=1&branchName=main)
 
-## Building the server
-#### Requirements
-- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-- [Visual Studio 2019/2022 (v16.10 or higher)](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community) or [Rider 2021.2 or higher](https://www.jetbrains.com/rider/download)
-  - Older versions will show code errors.
-  - Build the solution in the IDE to make errors go away.
-  - Visual Studio must be restarted once after the first build as well.
+## Requirements
+#### Supported Operating Systems
+![Windows 8.1/10/2016/2019](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
+![MacOS 10/11](https://img.shields.io/badge/-big%20sur-222222?logo=apple&logoColor=white)
+![Debian 9/10](https://img.shields.io/badge/-buster-A81D33?logo=debian)
+![Ubuntu 16/18/20 LTS](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)
+![CentOS 7/8](https://img.shields.io/badge/-8.3-262577?logo=centos&logoColor=white)
+![Fedora 32/33](https://img.shields.io/badge/-33-0B57A4?logo=fedora&logoColor=white)
+![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)
 
-#### Publishing Builds
-- Using terminal or powershell: `./publish.cmd [release|debug (default: release)] [os]`
+#### Running the server
+[![.NET](https://img.shields.io/badge/.NET-%205.0-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+#### Development
+[![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://github.com/modernuo/ModernUO.git)
+[![.NET](https://img.shields.io/badge/.NET-%205.0.10%20SDK-5C2D91)](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+#### Supported IDEs
+[![Visual Studio](https://img.shields.io/badge/-2019-5C2D91?logo=visualstudio)](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community)
+[![Jetbrains Rider](https://img.shields.io/badge/-2021.2-bf0d22?logo=rider)](https://www.jetbrains.com/rider/download)
+
+## Getting Started
+- Install prerequisite [requirements](https://github.com/modernuo/ModernUO#requirements)
+- Clone this repository:
+  - `git clone https://github.com/modernuo/ModernUO.git`
+- Open `ModernUO.sln` to start developing
+
+## Building/Publishing
+- Run `./publish.cmd [release|debug (default: release)] [os]`
   - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md)
     - `win` - Windows 8.1/10/2016/2019
     - `osx` - MacOS 10.13+/11.0 (High Sierra, Mojave, Catalina, & Big Sur)
@@ -43,18 +52,9 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used
 
-## Deploying / Running Server
+## Running Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
-- Copy `Distribution` directory to the production server
-
-#### Requirements
-- [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/5.0)
-
-#### Running
-- `dotnet ModernUO.dll`
-
-#### Cleaning
-- `dotnet clean`
+- Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the server
 
 ## Thanks
 - RunUO Team & Community
