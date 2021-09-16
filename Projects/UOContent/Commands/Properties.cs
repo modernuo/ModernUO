@@ -55,11 +55,64 @@ namespace Server.Commands
             }
         }
 
-        private static bool CIEqual(string l, string r) => l.InsensitiveEquals(r);
+        public static PropertyInfo GetPropertyInfoByName(
+            Mobile from, PropertyInfo[] props, string propertyName, PropertyAccess access, ref string failReason
+        )
+        {
+            for (var i = 0; i < props.Length; i++)
+            {
+                var p = props[i];
+
+                if (!p.Name.InsensitiveEquals(propertyName))
+                {
+                    continue;
+                }
+
+                var attr = GetCPA(p);
+
+                if (attr == null)
+                {
+                    failReason = $"Property '${propertyName}' not found.";
+                    return null;
+                }
+
+                if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel)
+                {
+                    failReason =
+                        $"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{propertyName}'.";
+
+                    return null;
+                }
+
+                if ((access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel)
+                {
+                    failReason =
+                        $"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{propertyName}'.";
+
+                    return null;
+                }
+
+                if ((access & PropertyAccess.Read) != 0 && !p.CanRead)
+                {
+                    failReason = $"Property '{propertyName}' is write only.";
+                    return null;
+                }
+
+                if ((access & PropertyAccess.Write) != 0 && (!p.CanWrite && !attr.CanModify || attr.ReadOnly))
+                {
+                    failReason = $"Property '{propertyName}' is read only.";
+                    return null;
+                }
+
+                return p;
+            }
+
+            return null;
+        }
 
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
-            PropertyAccess endAccess, ref string failReason
+            PropertyAccess access, ref string failReason
         )
         {
             var split = propertyString.Split('.');
@@ -74,76 +127,18 @@ namespace Server.Commands
             for (var i = 0; i < info.Length; ++i)
             {
                 var propertyName = split[i];
-
-                if (CIEqual(propertyName, "current"))
-                {
-                    continue;
-                }
-
                 var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
-                var isFinal = i == info.Length - 1;
+                var p = GetPropertyInfoByName(from, props, propertyName, access, ref failReason);
 
-                var access = endAccess;
-
-                if (!isFinal)
+                if (p == null)
                 {
-                    access |= PropertyAccess.Read;
-                }
-
-                for (var j = 0; j < props.Length; ++j)
-                {
-                    var p = props[j];
-
-                    if (CIEqual(p.Name, propertyName))
-                    {
-                        var attr = GetCPA(p);
-
-                        if (attr == null)
-                        {
-                            failReason = $"Property '{propertyName}' not found.";
-                            return null;
-                        }
-
-                        if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel)
-                        {
-                            failReason =
-                                $"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{propertyName}'.";
-
-                            return null;
-                        }
-
-                        if ((access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel)
-                        {
-                            failReason =
-                                $"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{propertyName}'.";
-
-                            return null;
-                        }
-
-                        if ((access & PropertyAccess.Read) != 0 && !p.CanRead)
-                        {
-                            failReason = $"Property '{propertyName}' is write only.";
-                            return null;
-                        }
-
-                        if ((access & PropertyAccess.Write) != 0 && (!p.CanWrite || attr.ReadOnly) && isFinal)
-                        {
-                            failReason = $"Property '{propertyName}' is read only.";
-                            return null;
-                        }
-
-                        info[i] = p;
-                        type = p.PropertyType;
-                        break;
-                    }
-                }
-
-                if (info[i] == null)
-                {
-                    failReason = $"Property '{propertyName}' not found.";
+                    failReason ??= $"Property '{propertyName}' not found.";
                     return null;
                 }
+
+                info[i] = p;
+                type = p.PropertyType;
             }
 
             return info;
