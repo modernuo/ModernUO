@@ -26,8 +26,8 @@ namespace Server.PathAlgorithms.FastAStar
 
         private static readonly Direction[] m_Path = new Direction[AreaSize * AreaSize];
         private static readonly PathNode[] m_Nodes = new PathNode[NodeCount];
-        private  BitArray m_Touched = new(NodeCount);
-        private  BitArray m_OnOpen = new(NodeCount);
+        private static readonly BitArray m_Touched = new(NodeCount);
+        private static readonly BitArray m_OnOpen = new(NodeCount);
         private static readonly int[] m_Successors = new int[8];
 
         private static int m_xOffset, m_yOffset;
@@ -115,6 +115,7 @@ namespace Server.PathAlgorithms.FastAStar
             }
 
             m_Touched.SetAll(false);
+            m_OnOpen.SetAll(false);
 
             m_Goal = goal;
 
@@ -231,14 +232,11 @@ namespace Server.PathAlgorithms.FastAStar
                     {
                         dirs[backtrack++] = path[--pathCount];
                     }
-
-                    m_Touched = new(NodeCount);
-                    m_OnOpen = new(NodeCount);
+                 
                     return dirs;
                 }
             }
-            m_Touched = new(NodeCount);
-            m_OnOpen = new(NodeCount);
+            
             return null;
         }
 
