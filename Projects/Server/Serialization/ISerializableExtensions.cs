@@ -25,7 +25,6 @@ namespace Server
         public static void MarkDirty(this ISerializable entity)
         {
             entity.SavePosition = -1;
-            entity.LastSerialized = Core.Now;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

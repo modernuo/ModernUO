@@ -341,7 +341,7 @@ namespace Server
                 int count = 0;
 
                 var timestamp = Utility.GetTimeStamp();
-                using var op = new StreamWriter("Logs/Saves/Save-Stats-{0}.log", true);
+                using var op = new StreamWriter($"Logs/Saves/Save-Stats-{timestamp}.log", true);
 
                 for (var i = 0; i < entityTypes.Length; i++)
                 {

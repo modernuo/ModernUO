@@ -66,6 +66,7 @@ namespace Server
                 return;
             }
 
+            LastSerialized = Core.Now;
             SaveBuffer.Seek(0, SeekOrigin.Begin);
             Serialize(SaveBuffer);
 
