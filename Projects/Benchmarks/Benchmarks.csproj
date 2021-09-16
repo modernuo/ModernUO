@@ -9,7 +9,7 @@
         <SkipLocalsInitiAttribute>true</SkipLocalsInitiAttribute>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.13.0" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
     </ItemGroup>

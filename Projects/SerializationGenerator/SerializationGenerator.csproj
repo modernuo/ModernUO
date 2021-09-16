@@ -7,7 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.11.0" />
         <PackageReference Include="Humanizer.Core" Version="2.11.10" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Text.Json" Version="5.0.0" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Text.Encodings.Web" Version="5.0.0" GeneratePathProperty="true" PrivateAssets="all" />
