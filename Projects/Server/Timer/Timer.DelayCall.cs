@@ -157,7 +157,7 @@ namespace Server
             {
                 if (Running)
                 {
-                    logger.Error($"Timer is returned while still running! {new StackTrace()}");
+                    logger.Error($"Timer is returned while still running!\n{new StackTrace()}");
                     return;
                 }
 

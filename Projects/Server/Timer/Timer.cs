@@ -102,13 +102,18 @@ namespace Server
                 return;
             }
 
-            // We are at the head
-            if (_rings[_ring][_slot] == this)
+            // Do not detach if we are in the middle of executing the timer wheel for this ring/slot
+            if (!_timerWheelExecuting || _ringIndexes[_ring] != _slot)
             {
-                _rings[_ring][_slot] = _nextTimer;
+                // We are at the head
+                if (_rings[_ring][_slot] == this)
+                {
+                    _rings[_ring][_slot] = _nextTimer;
+                }
+
+                Detach();
             }
 
-            Detach();
             Running = false;
             Version++;
             var prof = GetProfile();
