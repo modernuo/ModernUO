@@ -56,7 +56,7 @@ namespace Server.Commands
         }
 
         public static PropertyInfo GetPropertyInfoByName(
-            Mobile from, PropertyInfo[] props, string propertyName, PropertyAccess access, ref string failReason
+            Mobile from, PropertyInfo[] props, string propertyName, PropertyAccess access, out string failReason
         )
         {
             for (var i = 0; i < props.Length; i++)
@@ -104,17 +104,20 @@ namespace Server.Commands
                     return null;
                 }
 
+                failReason = null;
                 return p;
             }
 
+            failReason = null;
             return null;
         }
 
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
-            PropertyAccess access, ref string failReason
+            PropertyAccess access, out string failReason
         )
         {
+            failReason = null;
             var split = propertyString.Split('.');
 
             if (split.Length == 0)
@@ -129,7 +132,7 @@ namespace Server.Commands
                 var propertyName = split[i];
                 var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
-                var p = GetPropertyInfoByName(from, props, propertyName, access, ref failReason);
+                var p = GetPropertyInfoByName(from, props, propertyName, access, out failReason);
 
                 if (p == null)
                 {
@@ -146,15 +149,15 @@ namespace Server.Commands
 
         public static PropertyInfo GetPropertyInfo(
             Mobile from, ref object obj, string propertyName, PropertyAccess access,
-            ref string failReason
+            out string failReason
         )
         {
-            var chain = GetPropertyInfoChain(from, obj.GetType(), propertyName, access, ref failReason);
+            var chain = GetPropertyInfoChain(from, obj.GetType(), propertyName, access, out failReason);
 
-            return chain == null ? null : GetPropertyInfo(ref obj, chain, ref failReason);
+            return chain == null ? null : GetPropertyInfo(ref obj, chain, out failReason);
         }
 
-        public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, ref string failReason)
+        public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, out string failReason)
         {
             if (chain == null || chain.Length == 0)
             {
@@ -178,6 +181,7 @@ namespace Server.Commands
                 }
             }
 
+            failReason = null;
             return chain[^1];
         }
 
@@ -185,14 +189,14 @@ namespace Server.Commands
         {
             var failReason = "";
 
-            var chain = GetPropertyInfoChain(from, o.GetType(), name, PropertyAccess.Read, ref failReason);
+            var chain = GetPropertyInfoChain(from, o.GetType(), name, PropertyAccess.Read, out failReason);
 
             if (chain == null || chain.Length == 0)
             {
                 return failReason;
             }
 
-            var p = GetPropertyInfo(ref o, chain, ref failReason);
+            var p = GetPropertyInfo(ref o, chain, out failReason);
 
             return p == null ? failReason : InternalGetValue(o, p, chain);
         }
@@ -241,9 +245,8 @@ namespace Server.Commands
                     return "Zero is not a valid value to offset.";
                 }
 
-                string failReason = null;
                 realObjs[i] = o;
-                realProps[i] = GetPropertyInfo(from, ref realObjs[i], name, PropertyAccess.ReadWrite, ref failReason);
+                realProps[i] = GetPropertyInfo(from, ref realObjs[i], name, PropertyAccess.ReadWrite, out var failReason);
 
                 if (failReason != null)
                 {
@@ -348,8 +351,7 @@ namespace Server.Commands
         {
             var logObject = o;
 
-            var failReason = "";
-            var p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, ref failReason);
+            var p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, out var failReason);
 
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
         }

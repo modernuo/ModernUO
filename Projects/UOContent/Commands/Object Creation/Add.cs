@@ -149,9 +149,8 @@ namespace Server.Commands
 
                 for (var i = 0; i < realProps.Length; ++i)
                 {
-                    string failReason = null;
                     var propName = props[i, 0];
-                    var thisProp = Properties.GetPropertyInfoByName(from, allProps, propName, PropertyAccess.Write, ref failReason);
+                    var thisProp = Properties.GetPropertyInfoByName(from, allProps, propName, PropertyAccess.Write, out var failReason);
 
                     if (failReason == null)
                     {

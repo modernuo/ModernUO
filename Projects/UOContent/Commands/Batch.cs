@@ -98,7 +98,7 @@ namespace Server.Commands
                                 type,
                                 bc.Object,
                                 PropertyAccess.Read,
-                                ref failReason
+                                out failReason
                             );
                         }
 
@@ -107,7 +107,7 @@ namespace Server.Commands
                             continue;
                         }
 
-                        var endProp = Properties.GetPropertyInfo(ref obj, chain, ref failReason);
+                        var endProp = Properties.GetPropertyInfo(ref obj, chain, out failReason);
 
                         if (endProp == null)
                         {
