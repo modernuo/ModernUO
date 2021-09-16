@@ -120,7 +120,7 @@ namespace Server.Commands.Generic
                                 obj.GetType(),
                                 m_Columns[i],
                                 PropertyAccess.Read,
-                                out var failReason
+                                out _
                             );
 
                             if (chain?.Length > 0)
