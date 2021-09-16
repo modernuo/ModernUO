@@ -20,6 +20,7 @@ namespace Server
 {
     public interface ISerializable
     {
+        // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
         DateTime Created { get; set; }
 
         // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
