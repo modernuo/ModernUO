@@ -181,8 +181,7 @@ namespace Server.Accounting
 
             Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out _accessLevel);
             _flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
-            // We can't actually write to this value
-            // Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), Core.Now);
+            Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), Core.Now);
             _lastLogin = Utility.GetXMLDateTime(Utility.GetText(node["lastLogin"], null), Core.Now);
 
             _totalGold = Utility.GetXMLInt32(Utility.GetText(node["totalGold"], "0"), 0);
