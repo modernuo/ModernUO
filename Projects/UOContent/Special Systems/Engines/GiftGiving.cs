@@ -42,7 +42,7 @@ namespace Server.Misc
                     continue; // not in the correct time frame
                 }
 
-                if (((ISerializable)acct).Created > giver.Start - giver.MinimumAge)
+                if (acct.Created > giver.Start - giver.MinimumAge)
                 {
                     continue; // newly created account
                 }

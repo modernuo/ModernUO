@@ -91,7 +91,7 @@ namespace Server.Items
         private void OnTick()
         {
             var now = Core.Now;
-            var age = now - ((ISerializable)this).Created;
+            var age = now - Created;
 
             if (age >= TimeSpan.FromSeconds(100.0))
             {

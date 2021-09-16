@@ -2469,14 +2469,8 @@ namespace Server
             AddNameProperties(list);
         }
 
-        private DateTime _created = Core.Now;
-
         [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
-        DateTime ISerializable.Created
-        {
-            get => _created;
-            set => _created = value;
-        }
+        public DateTime Created { get; set; } = Core.Now;
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
@@ -6254,7 +6248,7 @@ namespace Server
 
                         if (version < 33)
                         {
-                            _created = created;
+                            Created = created;
                         }
 
                         goto case 22;

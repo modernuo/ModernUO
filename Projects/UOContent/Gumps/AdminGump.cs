@@ -916,7 +916,7 @@ namespace Server.Gumps
                         }
 
                         AddLabel(20, 210, LabelHue, "Created:");
-                        AddLabel(200, 210, LabelHue, ((ISerializable)a).Created.ToString());
+                        AddLabel(200, 210, LabelHue, a.Created.ToString());
 
                         AddLabel(20, 230, LabelHue, "Last Login:");
                         AddLabel(200, 230, LabelHue, a.LastLogin.ToString());

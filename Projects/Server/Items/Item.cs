@@ -772,7 +772,7 @@ namespace Server
         }
 
         [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
-        DateTime ISerializable.Created { get; set; } = Core.Now;
+        public DateTime Created { get; set; } = Core.Now;
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;

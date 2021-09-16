@@ -304,16 +304,10 @@ namespace Server.Accounting
             }
         }
 
-        public TimeSpan AccountAge => Core.Now - ((ISerializable)this).Created;
-
-        private DateTime _created = Core.Now;
+        public TimeSpan AccountAge => Core.Now - Created;
 
         [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
-        DateTime ISerializable.Created
-        {
-            get => _created;
-            set => _created = value;
-        }
+        public DateTime Created { get; set; } = Core.Now;
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
@@ -371,7 +365,7 @@ namespace Server.Accounting
             _password = content.Password;
             _accessLevel = content.AccessLevel;
             _flags = content.Flags;
-            _created = content.Created;
+            Created = content.Created;
             _lastLogin = content.LastLogin;
             _totalGold = content.TotalGold;
             _totalPlat = content.TotalPlat;
@@ -397,7 +391,7 @@ namespace Server.Accounting
             _password = reader.ReadString();
             _accessLevel = version < 2 ? (AccessLevel)reader.ReadInt() : reader.ReadEnum<AccessLevel>();
             _flags = reader.ReadInt();
-            _created = reader.ReadDateTime();
+            Created = reader.ReadDateTime();
             _lastLogin = reader.ReadDateTime();
 
             _totalGold = reader.ReadInt();
