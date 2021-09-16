@@ -26,8 +26,8 @@ namespace Server.PathAlgorithms.FastAStar
 
         private static readonly Direction[] m_Path = new Direction[AreaSize * AreaSize];
         private static readonly PathNode[] m_Nodes = new PathNode[NodeCount];
-        private static readonly BitArray m_Touched = new(NodeCount);
-        private static readonly BitArray m_OnOpen = new(NodeCount);
+        private  BitArray m_Touched = new(NodeCount);
+        private  BitArray m_OnOpen = new(NodeCount);
         private static readonly int[] m_Successors = new int[8];
 
         private static int m_xOffset, m_yOffset;
@@ -189,11 +189,6 @@ namespace Server.PathAlgorithms.FastAStar
                         m_Nodes[newNode].z
                     );
 
-                    if (m_Nodes[newNode].total <= newTotal)
-                    {
-                        continue;
-                    }
-
                     m_Nodes[newNode].parent = bestNode;
                     m_Nodes[newNode].cost = newCost;
                     m_Nodes[newNode].total = newTotal;
@@ -237,10 +232,13 @@ namespace Server.PathAlgorithms.FastAStar
                         dirs[backtrack++] = path[--pathCount];
                     }
 
+                    m_Touched = new(NodeCount);
+                    m_OnOpen = new(NodeCount);
                     return dirs;
                 }
             }
-
+            m_Touched = new(NodeCount);
+            m_OnOpen = new(NodeCount);
             return null;
         }
 
