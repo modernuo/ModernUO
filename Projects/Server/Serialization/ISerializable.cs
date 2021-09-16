@@ -20,7 +20,7 @@ namespace Server
 {
     public interface ISerializable
     {
-        public DateTime Created { get; protected internal set; }
+        DateTime Created { get; protected internal set; }
 
         // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
         DateTime LastSerialized { get; protected internal set; }

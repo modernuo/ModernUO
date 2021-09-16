@@ -1148,9 +1148,6 @@ namespace Server
         public virtual bool ShouldCheckStatTimers => true;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime CreationTime { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public int LightLevel
         {
             get => m_LightLevel;
@@ -2472,8 +2469,14 @@ namespace Server
             AddNameProperties(list);
         }
 
+        private DateTime _created = Core.Now;
+
         [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
-        DateTime ISerializable.Created { get; set; } = Core.Now;
+        DateTime ISerializable.Created
+        {
+            get => _created;
+            set => _created = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
@@ -2489,7 +2492,7 @@ namespace Server
 
         public virtual void Serialize(IGenericWriter writer)
         {
-            writer.Write(32); // version
+            writer.Write(33); // version
 
             writer.WriteDeltaTime(LastStrGain);
             writer.WriteDeltaTime(LastIntGain);
@@ -2525,7 +2528,7 @@ namespace Server
 
             writer.Write(Corpse);
 
-            writer.Write(CreationTime);
+            // writer.Write(CreationTime);
 
             Stabled.Tidy();
             writer.Write(Stabled);
@@ -6183,6 +6186,11 @@ namespace Server
 
             switch (version)
             {
+                case 33:
+                    {
+                        // Removed created
+                        goto case 32;
+                    }
                 case 32:
                     {
                         // Removed StuckMenu
@@ -6242,7 +6250,12 @@ namespace Server
                     }
                 case 23:
                     {
-                        CreationTime = reader.ReadDateTime();
+                        var created = reader.ReadDateTime();
+
+                        if (version < 33)
+                        {
+                            _created = created;
+                        }
 
                         goto case 22;
                     }
@@ -7828,7 +7841,6 @@ namespace Server
             DamageEntries = new List<DamageEntry>();
 
             NextSkillTime = Core.TickCount;
-            CreationTime = Core.Now;
         }
 
         public virtual void Delta(MobileDelta flag)

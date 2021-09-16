@@ -24,7 +24,7 @@ namespace Server
 {
     public static class EntityPersistence
     {
-        private const int idxVersion = 1;
+        private const int _idxVersion = 1;
 
         public static void WriteEntities<I, T>(
             IIndexInfo<I> indexInfo,
@@ -58,6 +58,7 @@ namespace Server
 
                 idx.Write(e.TypeRef);
                 idx.Write(e.Serial);
+                idx.Write(e.Created.Ticks);
                 idx.Write(e.LastSerialized.Ticks);
                 idx.Write(start);
 
@@ -118,7 +119,7 @@ namespace Server
             var version = idxReader.ReadInt32();
 
             // Handle non-versioned (version 0).
-            if (version > idxVersion || idx.Length - 4 - version * 20 == 0)
+            if (version > _idxVersion || idx.Length - 4 - version * 20 == 0)
             {
                 count = version;
                 version = 0;
@@ -132,7 +133,7 @@ namespace Server
             {
                 var typeID = idxReader.ReadInt32();
                 var serial = idxReader.ReadUInt32();
-                var created = new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
+                var created = version == 0 ? DateTime.UtcNow : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var pos = idxReader.ReadInt64();
                 var length = idxReader.ReadInt32();

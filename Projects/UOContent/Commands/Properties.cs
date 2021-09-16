@@ -55,8 +55,6 @@ namespace Server.Commands
             }
         }
 
-        private static bool CIEqual(string l, string r) => l.InsensitiveEquals(r);
-
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
             PropertyAccess endAccess, ref string failReason
@@ -75,11 +73,6 @@ namespace Server.Commands
             {
                 var propertyName = split[i];
 
-                if (CIEqual(propertyName, "current"))
-                {
-                    continue;
-                }
-
                 var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
                 var isFinal = i == info.Length - 1;
@@ -95,7 +88,7 @@ namespace Server.Commands
                 {
                     var p = props[j];
 
-                    if (CIEqual(p.Name, propertyName))
+                    if (p.Name.InsensitiveEquals(propertyName))
                     {
                         var attr = GetCPA(p);
 
