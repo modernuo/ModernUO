@@ -692,7 +692,7 @@ namespace Server
                 var tile = staticTiles[i];
                 var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
-                if (id.Surface || (id.Flags & TileFlag.Wet) != 0)
+                if (id.Surface || id.Wet)
                 {
                     var tileZ = tile.Z + id.CalcHeight;
 
@@ -720,7 +720,7 @@ namespace Server
                 {
                     var id = item.ItemData;
 
-                    if (id.Surface || (id.Flags & TileFlag.Wet) != 0)
+                    if (id.Surface || id.Wet)
                     {
                         var itemZ = item.Z + id.CalcHeight;
 
