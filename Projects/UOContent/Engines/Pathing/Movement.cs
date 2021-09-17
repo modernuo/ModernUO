@@ -234,34 +234,14 @@ namespace Server.Movement
 
             GetStartZ(m, map, loc, itemsStart, out var startZ, out var startTop);
 
-            var moveIsOk = Check(
-                map,
-                m,
-                itemsForward,
-                mobsForward,
-                xForward,
-                yForward,
-                startTop,
-                startZ,
-                out newZ
-            );
+            var moveIsOk = Check(map, m, itemsForward, mobsForward, xForward, yForward, startTop, startZ, out newZ);
 
             if (moveIsOk && checkDiagonals)
             {
                 if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
                 {
                     if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, out _) ||
-                        !Check(
-                            map,
-                            m,
-                            itemsRight,
-                            mobsRight,
-                            xRight,
-                            yRight,
-                            startTop,
-                            startZ,
-                            out _
-                        ))
+                        !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, out _))
                     {
                         moveIsOk = false;
                     }
@@ -269,17 +249,7 @@ namespace Server.Movement
                 else
                 {
                     if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, out _) &&
-                        !Check(
-                            map,
-                            m,
-                            itemsRight,
-                            mobsRight,
-                            xRight,
-                            yRight,
-                            startTop,
-                            startZ,
-                            out _
-                        ))
+                        !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, out _))
                     {
                         moveIsOk = false;
                     }
@@ -359,7 +329,16 @@ namespace Server.Movement
         }
 
         private bool Check(
-            Map map, Mobile m, List<Item> items, List<Mobile> mobiles, int x, int y, int startTop, int startZ, out int newZ)
+            Map map,
+            Mobile m,
+            List<Item> items,
+            List<Mobile> mobiles,
+            int x,
+            int y,
+            int startTop,
+            int startZ,
+            out int newZ
+        )
         {
             newZ = 0;
 
