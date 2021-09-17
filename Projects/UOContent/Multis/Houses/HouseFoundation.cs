@@ -1479,12 +1479,12 @@ namespace Server.Multis
             }
 
             /* Client chose to delete a component
-               *  - Read data detailing which component to delete
-               *  - Verify component is deletable
-               *  - Remove the component
-               *  - If needed, replace removed component with a dirt tile
-               *  - Update revision
-               */
+             *  - Read data detailing which component to delete
+             *  - Verify component is deletable
+             *  - Remove the component
+             *  - If needed, replace removed component with a dirt tile
+             *  - Update revision
+             */
 
             // Read data detailing which component to delete
             var itemID = reader.ReadInt32();
@@ -1502,9 +1502,9 @@ namespace Server.Multis
             if (z == 0 && ax >= 0 && ax < mcl.Width && ay >= 0 && ay < mcl.Height - 1)
             {
                 /* Component is not deletable
-                   *  - Resend design state
-                   *  - Return without further processing
-                   */
+                 *  - Resend design state
+                 *  - Return without further processing
+                 */
 
                 design.SendDetailedInfoTo(state);
                 return;
@@ -1644,10 +1644,10 @@ namespace Server.Multis
             }
 
             /* Client chose to add a component
-               *  - Read data detailing component graphic and location
-               *  - Add component
-               *  - Update revision
-               */
+             *  - Read data detailing component graphic and location
+             *  - Add component
+             *  - Update revision
+             */
 
             // Read data detailing component graphic and location
             var itemID = reader.ReadInt32();
@@ -1690,13 +1690,13 @@ namespace Server.Multis
             }
 
             /* Client closed his house design window
-               *  - Remove design context
-               *  - Notify the client that customization has ended
-               *  - Refresh client with current visible design state
-               *  - If a signpost is needed, add it
-               *  - Eject all from house
-               *  - Restore relocated entities
-               */
+             *  - Remove design context
+             *  - Notify the client that customization has ended
+             *  - Refresh client with current visible design state
+             *  - If a signpost is needed, add it
+             *  - Eject all from house
+             *  - Restore relocated entities
+             */
 
             // Remove design context
             DesignContext.Remove(from);
@@ -1739,13 +1739,13 @@ namespace Server.Multis
             }
 
             /* Client is moving to a new floor level
-               *  - Read data detailing the target level
-               *  - Validate target level
-               *  - Update design context with new level
-               *  - Teleport mobile to new level
-               *  - Update client
-               *
-               */
+             *  - Read data detailing the target level
+             *  - Validate target level
+             *  - Update design context with new level
+             *  - Teleport mobile to new level
+             *  - Update client
+             *
+             */
 
             // Read data detailing the target level
             var newLevel = reader.ReadInt32();
