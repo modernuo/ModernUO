@@ -177,9 +177,9 @@ namespace Server.Multis
                             continue;
                         }
 
-                        var addTileFlags = TileData.ItemTable[addTile.ID & TileData.MaxItemValue].Flags;
+                        var addTileData = TileData.ItemTable[addTile.ID & TileData.MaxItemValue];
 
-                        var isFoundation = addTile.Z == 0 && (addTileFlags & TileFlag.Wall) != 0;
+                        var isFoundation = addTile.Z == 0 && addTileData.Wall;
                         var hasSurface = false;
 
                         if (isFoundation)
@@ -190,7 +190,7 @@ namespace Server.Multis
                         var addTileZ = center.Z + addTile.Z;
                         var addTileTop = addTileZ + addTile.Height;
 
-                        if ((addTileFlags & TileFlag.Surface) != 0)
+                        if (addTileData.Surface)
                         {
                             addTileTop += 16;
                         }
@@ -212,7 +212,7 @@ namespace Server.Multis
                             var oldTile = oldTiles[j];
                             var id = TileData.ItemTable[oldTile.ID & TileData.MaxItemValue];
 
-                            if ((id.Impassable || id.Surface && (id.Flags & TileFlag.Background) == 0) &&
+                            if ((id.Impassable || id.Surface && !id.Background) &&
                                 addTileTop > oldTile.Z && oldTile.Z + id.CalcHeight > addTileZ)
                             {
                                 return HousePlacementResult.BadStatic; // Broke rule #2
@@ -233,7 +233,7 @@ namespace Server.Multis
                                 {
                                     toMove.Add(item);
                                 }
-                                else if (id.Impassable || id.Surface && (id.Flags & TileFlag.Background) == 0)
+                                else if (id.Impassable || id.Surface && !id.Background)
                                 {
                                     return HousePlacementResult.BadItem; // Broke rule #2
                                 }
@@ -359,8 +359,7 @@ namespace Server.Multis
                     var tile = tiles[j];
                     var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
-                    if (id.Impassable || id.Surface && (id.Flags & TileFlag.Background) == 0 &&
-                        tile.Z + id.CalcHeight > center.Z + 2)
+                    if (id.Impassable || id.Surface && !id.Background && tile.Z + id.CalcHeight > center.Z + 2)
                     {
                         return HousePlacementResult.BadStatic; // Broke rule #1
                     }
@@ -380,8 +379,7 @@ namespace Server.Multis
 
                     var id = item.ItemData;
 
-                    if (id.Impassable || id.Surface && (id.Flags & TileFlag.Background) == 0 &&
-                        item.Z + id.CalcHeight > center.Z + 2)
+                    if (id.Impassable || id.Surface && !id.Background && item.Z + id.CalcHeight > center.Z + 2)
                     {
                         return HousePlacementResult.BadItem; // Broke rule #1
                     }

@@ -185,13 +185,13 @@ namespace Server.Multis
                     var data = TileData.ItemTable[entry.ItemId & TileData.MaxItemValue];
 
                     // door
-                    if ((data.Flags & TileFlag.Door) != 0)
+                    if (data.Door)
                     {
                         AddDoor(entry.ItemId, entry.OffsetX, entry.OffsetY, entry.OffsetZ);
                     }
                     else
                     {
-                        Item st = new Static((int)entry.ItemId);
+                        Item st = new Static(entry.ItemId);
 
                         st.MoveToWorld(new Point3D(X + entry.OffsetX, Y + entry.OffsetY, entry.OffsetZ), Map);
                         AddFixture(st);

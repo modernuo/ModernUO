@@ -24,22 +24,23 @@ namespace Server.PathAlgorithms.FastAStar
         private const int PlaneHeight = 20;
         public static PathAlgorithm Instance = new FastAStarAlgorithm();
 
-        private static readonly Direction[] m_Path = new Direction[AreaSize * AreaSize];
-        private static readonly PathNode[] m_Nodes = new PathNode[NodeCount];
-        private static readonly BitArray m_Touched = new(NodeCount);
-        private static readonly BitArray m_OnOpen = new(NodeCount);
-        private static readonly int[] m_Successors = new int[8];
+        private static readonly Direction[] _path = new Direction[AreaSize * AreaSize];
+        private static readonly PathNode[] _nodes = new PathNode[NodeCount];
+        private static readonly BitArray _touched = new(NodeCount);
+        private static readonly BitArray _onOpen = new(NodeCount);
+        private static readonly int[] _successors = new int[8];
 
-        private static int m_xOffset, m_yOffset;
-        private static int m_OpenList;
+        private static int _xOffset;
+        private static int _yOffset;
+        private static int _openList;
 
-        private Point3D m_Goal;
+        private Point3D _goal;
 
         public int Heuristic(int x, int y, int z)
         {
-            x -= m_Goal.X - m_xOffset;
-            y -= m_Goal.Y - m_yOffset;
-            z -= m_Goal.Z;
+            x -= _goal.X - _xOffset;
+            y -= _goal.Y - _yOffset;
+            z -= _goal.Z;
 
             x *= 11;
             y *= 11;
@@ -52,59 +53,59 @@ namespace Server.PathAlgorithms.FastAStar
 
         private void RemoveFromChain(int node)
         {
-            if (node < 0 || node >= NodeCount)
+            if (node is < 0 or >= NodeCount)
             {
                 return;
             }
 
-            if (!m_Touched[node] || !m_OnOpen[node])
+            if (!_touched[node] || !_onOpen[node])
             {
                 return;
             }
 
-            var prev = m_Nodes[node].prev;
-            var next = m_Nodes[node].next;
+            var prev = _nodes[node].prev;
+            var next = _nodes[node].next;
 
-            if (m_OpenList == node)
+            if (_openList == node)
             {
-                m_OpenList = next;
+                _openList = next;
             }
 
             if (prev != -1)
             {
-                m_Nodes[prev].next = next;
+                _nodes[prev].next = next;
             }
 
             if (next != -1)
             {
-                m_Nodes[next].prev = prev;
+                _nodes[next].prev = prev;
             }
 
-            m_Nodes[node].prev = -1;
-            m_Nodes[node].next = -1;
+            _nodes[node].prev = -1;
+            _nodes[node].next = -1;
         }
 
         private void AddToChain(int node)
         {
-            if (node < 0 || node >= NodeCount)
+            if (node is < 0 or >= NodeCount)
             {
                 return;
             }
 
             RemoveFromChain(node);
 
-            if (m_OpenList != -1)
+            if (_openList != -1)
             {
-                m_Nodes[m_OpenList].prev = node;
+                _nodes[_openList].prev = node;
             }
 
-            m_Nodes[node].next = m_OpenList;
-            m_Nodes[node].prev = -1;
+            _nodes[node].next = _openList;
+            _nodes[node].prev = -1;
 
-            m_OpenList = node;
+            _openList = node;
 
-            m_Touched[node] = true;
-            m_OnOpen[node] = true;
+            _touched[node] = true;
+            _onOpen[node] = true;
         }
 
         public override Direction[] Find(Mobile m, Map map, Point3D start, Point3D goal)
@@ -114,37 +115,38 @@ namespace Server.PathAlgorithms.FastAStar
                 return null;
             }
 
-            m_Touched.SetAll(false);
+            _touched.SetAll(false);
+            _onOpen.SetAll(false);
 
-            m_Goal = goal;
+            _goal = goal;
 
-            m_xOffset = (start.X + goal.X - AreaSize) / 2;
-            m_yOffset = (start.Y + goal.Y - AreaSize) / 2;
+            _xOffset = (start.X + goal.X - AreaSize) / 2;
+            _yOffset = (start.Y + goal.Y - AreaSize) / 2;
 
             var fromNode = GetIndex(start.X, start.Y, start.Z);
             var destNode = GetIndex(goal.X, goal.Y, goal.Z);
 
-            m_OpenList = fromNode;
+            _openList = fromNode;
 
-            m_Nodes[m_OpenList].cost = 0;
-            m_Nodes[m_OpenList].total = Heuristic(start.X - m_xOffset, start.Y - m_yOffset, start.Z);
-            m_Nodes[m_OpenList].parent = -1;
-            m_Nodes[m_OpenList].next = -1;
-            m_Nodes[m_OpenList].prev = -1;
-            m_Nodes[m_OpenList].z = start.Z;
+            _nodes[_openList].cost = 0;
+            _nodes[_openList].total = Heuristic(start.X - _xOffset, start.Y - _yOffset, start.Z);
+            _nodes[_openList].parent = -1;
+            _nodes[_openList].next = -1;
+            _nodes[_openList].prev = -1;
+            _nodes[_openList].z = start.Z;
 
-            m_OnOpen[m_OpenList] = true;
-            m_Touched[m_OpenList] = true;
+            _onOpen[_openList] = true;
+            _touched[_openList] = true;
 
             var bc = m as BaseCreature;
 
             int backtrack = 0, depth = 0;
 
-            var path = m_Path;
+            var path = _path;
 
-            while (m_OpenList != -1)
+            while (_openList != -1)
             {
-                var bestNode = FindBest(m_OpenList);
+                var bestNode = FindBest(_openList);
 
                 if (++depth > MaxDepth)
                 {
@@ -159,7 +161,7 @@ namespace Server.PathAlgorithms.FastAStar
 
                 MoveImpl.Goal = goal;
 
-                var vals = m_Successors;
+                var vals = _successors;
                 var count = GetSuccessors(bestNode, m, map);
 
                 MoveImpl.AlwaysIgnoreDoors = false;
@@ -175,30 +177,25 @@ namespace Server.PathAlgorithms.FastAStar
                 {
                     var newNode = vals[i];
 
-                    var wasTouched = m_Touched[newNode];
+                    var wasTouched = _touched[newNode];
 
                     if (wasTouched)
                     {
                         continue;
                     }
 
-                    var newCost = m_Nodes[bestNode].cost + 1;
+                    var newCost = _nodes[bestNode].cost + 1;
                     var newTotal = newCost + Heuristic(
                         newNode % AreaSize,
                         newNode / AreaSize % AreaSize,
-                        m_Nodes[newNode].z
+                        _nodes[newNode].z
                     );
 
-                    if (m_Nodes[newNode].total <= newTotal)
-                    {
-                        continue;
-                    }
+                    _nodes[newNode].parent = bestNode;
+                    _nodes[newNode].cost = newCost;
+                    _nodes[newNode].total = newTotal;
 
-                    m_Nodes[newNode].parent = bestNode;
-                    m_Nodes[newNode].cost = newCost;
-                    m_Nodes[newNode].total = newTotal;
-
-                    if (m_OnOpen[newNode])
+                    if (_onOpen[newNode])
                     {
                         continue;
                     }
@@ -211,7 +208,7 @@ namespace Server.PathAlgorithms.FastAStar
                     }
 
                     var pathCount = 0;
-                    var parent = m_Nodes[newNode].parent;
+                    var parent = _nodes[newNode].parent;
 
                     while (parent != -1)
                     {
@@ -222,7 +219,7 @@ namespace Server.PathAlgorithms.FastAStar
                             newNode / AreaSize % AreaSize
                         );
                         newNode = parent;
-                        parent = m_Nodes[newNode].parent;
+                        parent = _nodes[newNode].parent;
 
                         if (newNode == fromNode)
                         {
@@ -246,8 +243,8 @@ namespace Server.PathAlgorithms.FastAStar
 
         private int GetIndex(int x, int y, int z)
         {
-            x -= m_xOffset;
-            y -= m_yOffset;
+            x -= _xOffset;
+            y -= _yOffset;
             z += PlaneOffset;
             z /= PlaneHeight;
 
@@ -256,24 +253,24 @@ namespace Server.PathAlgorithms.FastAStar
 
         private int FindBest(int node)
         {
-            var least = m_Nodes[node].total;
+            var least = _nodes[node].total;
             var leastNode = node;
 
             while (node != -1)
             {
-                if (m_Nodes[node].total < least)
+                if (_nodes[node].total < least)
                 {
-                    least = m_Nodes[node].total;
+                    least = _nodes[node].total;
                     leastNode = node;
                 }
 
-                node = m_Nodes[node].next;
+                node = _nodes[node].next;
             }
 
             RemoveFromChain(leastNode);
 
-            m_Touched[leastNode] = true;
-            m_OnOpen[leastNode] = false;
+            _touched[leastNode] = true;
+            _onOpen[leastNode] = false;
 
             return leastNode;
         }
@@ -282,11 +279,11 @@ namespace Server.PathAlgorithms.FastAStar
         {
             var px = p % AreaSize;
             var py = p / AreaSize % AreaSize;
-            var pz = m_Nodes[p].z;
+            var pz = _nodes[p].z;
 
-            var p3D = new Point3D(px + m_xOffset, py + m_yOffset, pz);
+            var p3D = new Point3D(px + _xOffset, py + _yOffset, pz);
 
-            var vals = m_Successors;
+            var vals = _successors;
             var count = 0;
 
             for (var i = 0; i < 8; ++i)
@@ -332,18 +329,18 @@ namespace Server.PathAlgorithms.FastAStar
                 x += px;
                 y += py;
 
-                if (x < 0 || x >= AreaSize || y < 0 || y >= AreaSize)
+                if (x is < 0 or >= AreaSize || y is < 0 or >= AreaSize)
                 {
                     continue;
                 }
 
                 if (CalcMoves.CheckMovement(m, map, p3D, (Direction)i, out var z))
                 {
-                    var idx = GetIndex(x + m_xOffset, y + m_yOffset, z);
+                    var idx = GetIndex(x + _xOffset, y + _yOffset, z);
 
                     if (idx >= 0 && idx < NodeCount)
                     {
-                        m_Nodes[idx].z = z;
+                        _nodes[idx].z = z;
                         vals[count++] = idx;
                     }
                 }

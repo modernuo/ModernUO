@@ -13,6 +13,7 @@ namespace Server.Items
             Hue = 0x498;
             Visible = false;
             // this.Movable = false;
+
             if (prev != null)
             {
                 prev.NextPoint = this;

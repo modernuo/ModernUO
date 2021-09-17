@@ -190,7 +190,7 @@ namespace Server.Items
 
         public static void ApplyLightTo(Item item)
         {
-            if ((item.ItemData.Flags & TileFlag.LightSource) == 0)
+            if (!item.ItemData.LightSource)
             {
                 return; // not a light source
             }
