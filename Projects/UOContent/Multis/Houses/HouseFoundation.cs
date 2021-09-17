@@ -1305,7 +1305,7 @@ namespace Server.Multis
         public static bool ValidPiece(int itemID, bool roof = false)
         {
             itemID &= TileData.MaxItemValue;
-            return roof != !TileData.ItemTable[itemID].Roof && Verification.IsItemValid(itemID);
+            return roof == TileData.ItemTable[itemID].Roof && Verification.IsItemValid(itemID);
         }
 
         public static bool IsStairBlock(int id)
