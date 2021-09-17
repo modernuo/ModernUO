@@ -1305,7 +1305,7 @@ namespace Server.Multis
         public static bool ValidPiece(int itemID, bool roof = false)
         {
             itemID &= TileData.MaxItemValue;
-            return roof != ((TileData.ItemTable[itemID].Flags & TileFlag.Roof) == 0) && Verification.IsItemValid(itemID);
+            return roof != !TileData.ItemTable[itemID].Roof && Verification.IsItemValid(itemID);
         }
 
         public static bool IsStairBlock(int id)
@@ -1823,7 +1823,7 @@ namespace Server.Multis
 
                 if (mte.OffsetX == x && mte.OffsetY == y &&
                     GetZLevel(mte.OffsetZ, context.Foundation) == context.Level &&
-                    (TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
+                    TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Roof)
                 {
                     mcl.Remove(mte.ItemId, x, y, mte.OffsetZ);
                 }
@@ -1856,7 +1856,7 @@ namespace Server.Multis
             var design = context.Foundation.DesignState;
             var mcl = design.Components;
 
-            if ((TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.Roof) == 0)
+            if (!TileData.ItemTable[itemID & TileData.MaxItemValue].Roof)
             {
                 design.SendDetailedInfoTo(state);
                 return;
