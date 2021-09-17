@@ -243,8 +243,6 @@ namespace Server.Movement
                 yForward,
                 startTop,
                 startZ,
-                m.CanSwim,
-                m.CantWalk,
                 out newZ
             );
 
@@ -252,7 +250,7 @@ namespace Server.Movement
             {
                 if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
                 {
-                    if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out _) ||
+                    if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, out _) ||
                         !Check(
                             map,
                             m,
@@ -262,8 +260,6 @@ namespace Server.Movement
                             yRight,
                             startTop,
                             startZ,
-                            m.CanSwim,
-                            m.CantWalk,
                             out _
                         ))
                     {
@@ -272,7 +268,7 @@ namespace Server.Movement
                 }
                 else
                 {
-                    if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out _) &&
+                    if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, out _) &&
                         !Check(
                             map,
                             m,
@@ -282,8 +278,6 @@ namespace Server.Movement
                             yRight,
                             startTop,
                             startZ,
-                            m.CanSwim,
-                            m.CantWalk,
                             out _
                         ))
                     {
@@ -365,12 +359,12 @@ namespace Server.Movement
         }
 
         private bool Check(
-            Map map, Mobile m, List<Item> items, List<Mobile> mobiles, int x, int y, int startTop, int startZ,
-            bool canSwim, bool cantWalk, out int newZ
-        )
+            Map map, Mobile m, List<Item> items, List<Mobile> mobiles, int x, int y, int startTop, int startZ, out int newZ)
         {
             newZ = 0;
 
+            var cantWalk = m.CantWalk;
+            var canSwim = m.CanSwim;
             var tiles = map.Tiles.GetStaticTiles(x, y, true);
             var landTile = map.Tiles.GetLandTile(x, y);
             var flags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
@@ -429,8 +423,7 @@ namespace Server.Movement
 
                 var notWater = !itemData.Wet;
 
-                if (itemData.Surface && !itemData.Impassable && (!canSwim || notWater) ||
-                    cantWalk && notWater)
+                if (!itemData.Surface && itemData.Impassable && (!canSwim || notWater) || cantWalk && notWater)
                 {
                     continue;
                 }
@@ -499,10 +492,14 @@ namespace Server.Movement
                     return true;
                 }
 
+                if (!item.Movable)
+                {
+                    continue;
+                }
+
                 var notWater = !itemData.Wet;
 
-                if (item.Movable || itemData.Surface && !itemData.Impassable && (!m.CanSwim || notWater) ||
-                    cantWalk && notWater)
+                if (!itemData.Surface && itemData.Impassable && (!canSwim || notWater) || cantWalk && notWater)
                 {
                     continue;
                 }
@@ -646,25 +643,27 @@ namespace Server.Movement
 
                 var calcTop = tile.Z + id.CalcHeight;
 
-                if ((!isSet || calcTop >= zCenter) && (id.Surface || m.CanSwim && id.Wet) && loc.Z >= calcTop)
+                if (isSet && calcTop < zCenter || !id.Surface && !(m.CanSwim && id.Wet) || loc.Z < calcTop)
                 {
-                    if (m.CantWalk && !id.Wet)
-                    {
-                        continue;
-                    }
-
-                    zLow = tile.Z;
-                    zCenter = calcTop;
-
-                    var top = tile.Z + id.Height;
-
-                    if (!isSet || top > zTop)
-                    {
-                        zTop = top;
-                    }
-
-                    isSet = true;
+                    continue;
                 }
+
+                if (m.CantWalk && !id.Wet)
+                {
+                    continue;
+                }
+
+                zLow = tile.Z;
+                zCenter = calcTop;
+
+                var top = tile.Z + id.Height;
+
+                if (!isSet || top > zTop)
+                {
+                    zTop = top;
+                }
+
+                isSet = true;
             }
 
             for (var i = 0; i < itemList.Count; ++i)
@@ -675,25 +674,27 @@ namespace Server.Movement
 
                 var calcTop = item.Z + id.CalcHeight;
 
-                if ((!isSet || calcTop >= zCenter) && (id.Surface || m.CanSwim && id.Wet) && loc.Z >= calcTop)
+                if (isSet && calcTop < zCenter || !id.Surface && !(m.CanSwim && id.Wet) || loc.Z < calcTop)
                 {
-                    if (m.CantWalk && !id.Wet)
-                    {
-                        continue;
-                    }
-
-                    zLow = item.Z;
-                    zCenter = calcTop;
-
-                    var top = item.Z + id.Height;
-
-                    if (!isSet || top > zTop)
-                    {
-                        zTop = top;
-                    }
-
-                    isSet = true;
+                    continue;
                 }
+
+                if (m.CantWalk && !id.Wet)
+                {
+                    continue;
+                }
+
+                zLow = item.Z;
+                zCenter = calcTop;
+
+                var top = item.Z + id.Height;
+
+                if (!isSet || top > zTop)
+                {
+                    zTop = top;
+                }
+
+                isSet = true;
             }
 
             if (!isSet)
