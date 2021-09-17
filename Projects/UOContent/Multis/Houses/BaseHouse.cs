@@ -1471,7 +1471,7 @@ namespace Server.Multis
                 var data = TileData.ItemTable[id];
 
                 // Slanted roofs do not count; they overhang blocking south and east sides of the multi
-                if ((data.Flags & TileFlag.Roof) != 0)
+                if (data.Roof)
                 {
                     continue;
                 }
