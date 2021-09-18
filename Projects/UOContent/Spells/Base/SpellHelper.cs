@@ -220,7 +220,7 @@ namespace Server.Spells
                 }
             }
 
-            if (Core.Expansion == Expansion.AOS)
+            if (Core.AOS)
             {
                 for (var i = 0; i < m.Aggressors.Count; ++i)
                 {
