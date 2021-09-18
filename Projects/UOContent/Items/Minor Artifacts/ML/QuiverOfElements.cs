@@ -16,8 +16,8 @@ namespace Server.Items
         public override int LabelNumber => 1075040; // Quiver of the Elements
 
         public override void AlterBowDamage(
-            out int phys, out int fire, out int cold, out int pois, out int nrgy,
-            out int chaos, out int direct
+            ref int phys, ref int fire, ref int cold, ref int pois, ref int nrgy,
+            ref int chaos, ref int direct
         )
         {
             phys = fire = cold = pois = nrgy = direct = 0;
