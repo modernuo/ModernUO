@@ -6244,11 +6244,9 @@ namespace Server
                     }
                 case 23:
                     {
-                        var created = reader.ReadDateTime();
-
                         if (version < 33)
                         {
-                            Created = created;
+                            Created = reader.ReadDateTime();
                         }
 
                         goto case 22;
