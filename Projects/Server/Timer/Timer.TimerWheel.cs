@@ -45,23 +45,19 @@ namespace Server
             }
         }
 
-        public static int Slice(long tickCount)
+        public static void Slice(long tickCount)
         {
             var deltaSinceTurn = tickCount - _lastTickTurned;
-            var events = 0;
             while (deltaSinceTurn >= _tickRate)
             {
                 deltaSinceTurn -= _tickRate;
                 _lastTickTurned += _tickRate;
-                events += Turn() ? 1 : 0;
+                Turn();
             }
-
-            return events;
         }
 
-        private static bool Turn()
+        private static void Turn()
         {
-            bool events = false;
             _timerWheelExecuting = true;
             var turnNextWheel = false;
 
@@ -97,8 +93,6 @@ namespace Server
                     continue;
                 }
 
-                events = true;
-
                 do
                 {
                     var next = timer._nextTimer;
@@ -124,8 +118,6 @@ namespace Server
             }
 
             _timerWheelExecuting = false;
-
-            return events;
         }
 
         private static void Execute(Timer timer)
