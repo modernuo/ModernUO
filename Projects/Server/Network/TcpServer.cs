@@ -122,7 +122,7 @@ namespace Server.Network
             return null;
         }
 
-        public static int Slice()
+        public static void Slice()
         {
             int count = 0;
 
@@ -132,8 +132,6 @@ namespace Server.Network
                 ns.LogInfo("Connected. [{0} Online]", Instances.Count);
                 ns.Start();
             }
-
-            return count;
         }
 
         private static async void BeginAcceptingSockets(this TcpListener listener)

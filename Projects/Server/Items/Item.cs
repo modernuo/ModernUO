@@ -3249,10 +3249,8 @@ namespace Server
             m_DeltaFlags &= ~flags;
         }
 
-        public static int ProcessDeltaQueue()
+        public static void ProcessDeltaQueue()
         {
-            int count = 0;
-
             var limit = m_DeltaQueue.Count;
 
             while (m_DeltaQueue.Count > 0 && --limit >= 0)
@@ -3263,8 +3261,6 @@ namespace Server
                 {
                     continue;
                 }
-
-                count++;
 
                 item.SetFlag(ImplFlag.InQueue, false);
 
@@ -3286,8 +3282,6 @@ namespace Server
                 Console.WriteLine("Warning: {0} items left in delta queue after processing.", m_DeltaQueue.Count);
                 Utility.PopColor();
             }
-
-            return count;
         }
 
         public virtual void OnDelete()
