@@ -58,24 +58,5 @@ namespace Server.Backup
 
             return outputFile;
         }
-
-        public static void Configure()
-        {
-            var path = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "";
-            Console.WriteLine("Location: {0}", path);
-            var pathToTar = GetPathToTar();
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = pathToTar,
-                    Arguments = $"--use-compress-program {path}/zstd -cf test.tar.zst ./Assemblies",
-                    UseShellExecute = true
-                }
-            };
-
-            process.Start();
-        }
     }
 }
