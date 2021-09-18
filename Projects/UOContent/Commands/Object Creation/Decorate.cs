@@ -1078,7 +1078,7 @@ namespace Server.Commands
                     }
                 }
             }
-            else if ((TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.LightSource) != 0)
+            else if (TileData.ItemTable[itemID & TileData.MaxItemValue].LightSource)
             {
                 eable = map.GetItemsInRange(new Point3D(x, y, z), 0);
 
@@ -1100,7 +1100,7 @@ namespace Server.Commands
                                 res = true;
                             }
                         }
-                        else if ((item.ItemData.Flags & TileFlag.LightSource) != 0 && item.ItemData.Name == srcName)
+                        else if (item.ItemData.LightSource && item.ItemData.Name == srcName)
                         {
                             m_DeleteQueue.Enqueue(item);
                         }

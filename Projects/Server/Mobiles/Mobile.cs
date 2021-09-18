@@ -7848,10 +7848,8 @@ namespace Server
             }
         }
 
-        public static int ProcessDeltaQueue()
+        public static void ProcessDeltaQueue()
         {
-            int count = 0;
-
             var limit = m_DeltaQueue.Count;
 
             while (m_DeltaQueue.Count > 0 && --limit >= 0)
@@ -7862,8 +7860,6 @@ namespace Server
                 {
                     continue;
                 }
-
-                count++;
 
                 mob.m_InDeltaQueue = false;
 
@@ -7885,8 +7881,6 @@ namespace Server
                 Console.WriteLine("Warning: {0} mobiles left in delta queue after processing.", m_DeltaQueue.Count);
                 Utility.PopColor();
             }
-
-            return count;
         }
 
         public virtual void OnKillsChange(int oldValue)
