@@ -257,6 +257,17 @@ namespace Server.Spells
             return false;
         }
 
+
+        public static bool GetEastToWest(IPoint3D from,IPoint3D target)
+        {
+            var dx = from.X - target.X;
+            var dy = from.Y - target.Y;
+            var rx = (dx - dy) * 44;
+            var ry = (dx + dy) * 44;
+
+            return (rx >= 0 && ry < 0) || (ry >= 0 && rx < 0);
+        }
+
         public static bool CanRevealCaster(Mobile m) => m is BaseCreature { Controlled: false };
 
         public static void GetSurfaceTop(ref IPoint3D p)
