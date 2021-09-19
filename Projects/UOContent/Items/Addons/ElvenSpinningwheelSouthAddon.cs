@@ -13,6 +13,7 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x2E3F), 0, 0, 0);
         }
 
+        public override int LabelNumber => 1031737; // elven spinning wheel
         public override BaseAddonDeed Deed => new ElvenSpinningwheelSouthDeed();
 
         public bool Spinning => m_Timer != null;

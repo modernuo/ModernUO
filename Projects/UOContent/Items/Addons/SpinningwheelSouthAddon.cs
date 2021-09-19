@@ -13,6 +13,7 @@ namespace Server.Items
             AddComponent(new AddonComponent(0x1015), 0, 0, 0);
         }
 
+        public override int LabelNumber => 1024117; // spinning wheel
         public override BaseAddonDeed Deed => new SpinningwheelSouthDeed();
 
         public bool Spinning => m_Timer != null;

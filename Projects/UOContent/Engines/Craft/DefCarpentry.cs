@@ -205,9 +205,9 @@ namespace Server.Engines.Craft
                 index = AddCraft(typeof(OrnateElvenChair), 1044291, 1072870, 80.0, 105.0, typeof(Log), 1044041, 30, 1044351);
                 AddRecipe(index, 305);
                 SetNeededExpansion(index, Expansion.ML);
-                index = AddCraft(typeof(CozyElvenChair), 1044291, 1072872, 85.0, 110.0, typeof(Log), 1044041, 40, 1044351);
+                index = AddCraft(typeof(BigElvenChair), 1044291, 1072872, 85.0, 110.0, typeof(Log), 1044041, 40, 1044351);
                 SetNeededExpansion(index, Expansion.ML);
-                index = AddCraft(typeof(ReadingChair), 1044291, 1072873, 80.0, 105.0, typeof(Log), 1044041, 30, 1044351);
+                index = AddCraft(typeof(ElvenReadingChair), 1044291, 1072873, 80.0, 105.0, typeof(Log), 1044041, 30, 1044351);
                 SetNeededExpansion(index, Expansion.ML);
             }
 

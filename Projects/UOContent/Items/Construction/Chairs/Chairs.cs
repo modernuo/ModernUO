@@ -171,14 +171,14 @@ namespace Server.Items
     }
 
     [DynamicFliping, Flippable(0x2DEB, 0x2DEC, 0x2DED, 0x2DEE)]
-    public class CozyElvenChair : Item
+    public class BigElvenChair : Item
     {
         [Constructible]
-        public CozyElvenChair() : base(0x2DEB)
+        public BigElvenChair() : base(0x2DEB)
         {
         }
 
-        public CozyElvenChair(Serial serial) : base(serial)
+        public BigElvenChair(Serial serial) : base(serial)
         {
         }
 
@@ -198,14 +198,14 @@ namespace Server.Items
     }
 
     [DynamicFliping, Flippable(0x2DF5, 0x2DF6)]
-    public class ReadingChair : Item
+    public class ElvenReadingChair : Item
     {
         [Constructible]
-        public ReadingChair() : base(0x2DF5)
+        public ElvenReadingChair() : base(0x2DF5)
         {
         }
 
-        public ReadingChair(Serial serial) : base(serial)
+        public ElvenReadingChair(Serial serial) : base(serial)
         {
         }
 
