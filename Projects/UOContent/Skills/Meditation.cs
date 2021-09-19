@@ -71,7 +71,7 @@ namespace Server.SkillHandlers
             }
 
             var skillVal = m.Skills.Meditation.Value;
-            var chance = (50.0 + ((skillVal - (m.ManaMax - m.Mana)) * 2)) / 100;
+            var chance = (50.0 + (skillVal - (m.ManaMax - m.Mana)) * 2) / 100;
 
             if (chance > Utility.RandomDouble())
             {
