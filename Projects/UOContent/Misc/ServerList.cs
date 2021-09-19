@@ -6,39 +6,33 @@ using Server.Logging;
 
 namespace Server.Misc
 {
+    /*
+     * The default settings are configured to automatically detect your external IP address.
+     *
+     * If your public IP address cannot be determined then set your IP address in modernuo.json, for example:
+     * "serverListing.address": "1.2.3.4"
+     *
+     * If you do not plan on allowing clients outside of your LAN to connect, then set the following in modernuo.json
+     * "serverListing.address": null,
+     * "serverListing.autoDetect": false
+     *
+     * If you want players outside your LAN to be able to connect to your server and you are behind a router, you must also
+     * forward TCP port 2593 to your private IP address. The procedure for doing this varies by manufacturer but generally
+     * involves configuration of the router through your web browser.
+     *
+     * ServerList will direct connecting clients depending on both the address they are connecting from and the address and
+     * port they are connecting to. If it is determined that both ends of a connection are private IP addresses, ServerList
+     * will direct the client to the local private IP address. If a client is connecting to a local public IP address, they
+     * will be directed to whichever address and port they initially connected to. This allows multi-homed servers to function
+     * properly and fully supports listening on multiple ports. If a client with a public IP address is connecting to a
+     * locally private address, the server will direct the client to either the automatically detected IP address or the
+     * manually entered IP address or hostname, whichever is applicable. Loopback clients will be directed to loopback.
+    */
     public static class ServerList
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerList));
 
         private static IPAddress _publicAddress;
-        /*
-         * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses
-         * are private network addresses and AutoDetect is 'true' then RunUO will attempt to discover your public IP address
-         * for you automatically.
-         *
-         * If you do not plan on allowing clients outside of your LAN to connect, you can set AutoDetect to 'false' and leave
-         * Address set to 'null'.
-         *
-         * If your public IP address cannot be determined, you must change the value of Address to your public IP address
-         * manually to allow clients outside of your LAN to connect to your server. Address can be either an IP address or
-         * a hostname that will be resolved when RunUO starts.
-         *
-         * If you want players outside your LAN to be able to connect to your server and you are behind a router, you must also
-         * forward TCP port 2593 to your private IP address. The procedure for doing this varies by manufacturer but generally
-         * involves configuration of the router through your web browser.
-         *
-         * ServerList will direct connecting clients depending on both the address they are connecting from and the address and
-         * port they are connecting to. If it is determined that both ends of a connection are private IP addresses, ServerList
-         * will direct the client to the local private IP address. If a client is connecting to a local public IP address, they
-         * will be directed to whichever address and port they initially connected to. This allows multihomed servers to function
-         * properly and fully supports listening on multiple ports. If a client with a public IP address is connecting to a
-         * locally private address, the server will direct the client to either the AutoDetected IP address or the manually entered
-         * IP address or hostname, whichever is applicable. Loopback clients will be directed to loopback.
-         *
-         * If you would like to listen on additional ports (i.e. 22, 23, 80, for clients behind highly restrictive egress
-         * firewalls) or specific IP addresses you can do so by modifying the file SocketOptions.cs found in this directory.
-         */
-
         public static string Address { get; private set; }
         public static string ServerName { get; private set; }
 
