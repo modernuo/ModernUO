@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -12,7 +10,7 @@ namespace Server.Misc
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerList));
 
-        private static IPAddress m_PublicAddress;
+        private static IPAddress _publicAddress;
         /*
          * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses
          * are private network addresses and AutoDetect is 'true' then RunUO will attempt to discover your public IP address
@@ -64,7 +62,7 @@ namespace Server.Misc
             }
             else
             {
-                Resolve(Address, out m_PublicAddress);
+                Resolve(Address, out _publicAddress);
             }
 
             EventSink.ServerList += EventSink_ServerList;
@@ -84,9 +82,9 @@ namespace Server.Misc
                 if (IsPrivateNetwork(localAddress))
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
-                    if (!IsPrivateNetwork(ipep.Address) && m_PublicAddress != null)
+                    if (!IsPrivateNetwork(ipep.Address) && _publicAddress != null)
                     {
-                        localAddress = m_PublicAddress;
+                        localAddress = _publicAddress;
                     }
                 }
 
@@ -103,11 +101,11 @@ namespace Server.Misc
         {
             if (!HasPublicIPAddress())
             {
-                m_PublicAddress = FindPublicAddress();
+                _publicAddress = FindPublicAddress();
 
-                if (m_PublicAddress != null)
+                if (_publicAddress != null)
                 {
-                    logger.Information("Auto-detected public IP address ({0})", m_PublicAddress);
+                    logger.Information("Auto-detected public IP address ({0})", _publicAddress);
                 }
                 else
                 {
@@ -138,16 +136,23 @@ namespace Server.Misc
             }
         }
 
-        private static bool HasPublicIPAddress() =>
-            NetworkInterface.GetAllNetworkInterfaces()
-                .Select(adapter => adapter.GetIPProperties())
-                .Any(
-                    properties => properties.UnicastAddresses.Select(unicast => unicast.Address)
-                        .Any(
-                            ip => !IPAddress.IsLoopback(ip) && ip.AddressFamily != AddressFamily.InterNetworkV6 &&
-                                  !IsPrivateNetwork(ip)
-                        )
-                );
+        private static bool HasPublicIPAddress()
+        {
+            foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                foreach (var unicast in adapter.GetIPProperties().UnicastAddresses)
+                {
+                    var ip = unicast.Address;
+                    if (!IPAddress.IsLoopback(ip) && ip.AddressFamily != AddressFamily.InterNetworkV6 &&
+                        !IsPrivateNetwork(ip))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         // 10.0.0.0/8
         // 172.16.0.0/12
@@ -166,23 +171,8 @@ namespace Server.Misc
         {
             try
             {
-                var req = WebRequest.Create("https://api.ipify.org");
-
-                req.Timeout = 15000;
-
-                var res = req.GetResponse();
-
-                var s = res.GetResponseStream();
-
-                var sr = new StreamReader(s);
-
-                var ip = IPAddress.Parse(sr.ReadLine() ?? "");
-
-                sr.Close();
-                s.Close();
-                res.Close();
-
-                return ip;
+                using WebClient wc = new WebClient();
+                return IPAddress.Parse(wc.DownloadString("https://api.ipify.org"));
             }
             catch
             {
