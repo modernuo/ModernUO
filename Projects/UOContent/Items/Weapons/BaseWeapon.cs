@@ -1864,7 +1864,9 @@ namespace Server.Items
                 move = null;
             }
 
-            var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true;
+            WeaponAbility bladeweavingAbi;
+            var bladeweaving = Bladeweave.BladeWeaving(attacker, out bladeweavingAbi);
+            var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true || (bladeweaving && bladeweavingAbi is ArmorIgnore);
 
             var damageGiven = AOS.Damage(
                 defender,

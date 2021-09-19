@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
     /// <summary>
@@ -7,9 +9,11 @@ namespace Server.Items
     {
         public override int BaseMana => 30;
 
+        public override bool RequiresTactics(Mobile from) => false;
+
         public override bool CheckSkills(Mobile from)
         {
-            if (GetSkill(from, SkillName.Ninjitsu) < 50.0 && GetSkill(from, SkillName.Bushido) < 50.0)
+            if(Math.Max(GetSkill(from, SkillName.Ninjitsu), GetSkill(from, SkillName.Bushido)) < 50)
             {
                 // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
                 from.SendLocalizedMessage(1063347, "50");

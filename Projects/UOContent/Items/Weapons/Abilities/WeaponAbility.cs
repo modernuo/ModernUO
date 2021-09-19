@@ -38,12 +38,12 @@ namespace Server.Items
             new DualWield(),
             new DoubleShot(),
             new ArmorPierce(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
+            new Bladeweave(),
+            new ForceArrow(),
+            new LightningArrow(),
+            new PsychicAttack(),
+            new SerpentArrow(),
+            new ForceOfNature(),
             new Disrobe()
         };
 
@@ -72,7 +72,7 @@ namespace Server.Items
         public static readonly WeaponAbility DoubleShot = Abilities[22];
         public static readonly WeaponAbility ArmorPierce = Abilities[23];
 
-        public static readonly WeaponAbility Bladeweave = Abilities[24];
+        public static readonly WeaponAbility Bladeweave = Abilities[24];//TODO - test
         public static readonly WeaponAbility ForceArrow = Abilities[25];
         public static readonly WeaponAbility LightningArrow = Abilities[26];
         public static readonly WeaponAbility PsychicAttack = Abilities[27];
@@ -109,6 +109,11 @@ namespace Server.Items
 
         public virtual bool RequiresTactics(Mobile from) => true;
 
+        /// <summary>
+        /// Return priumary skill for ability. Default 70/90
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public virtual double GetRequiredSkill(Mobile from)
         {
             if (from.Weapon is BaseWeapon weapon)
@@ -121,6 +126,28 @@ namespace Server.Items
                 if (weapon.SecondaryAbility == this)
                 {
                     return 90.0;
+                }
+            }
+
+            return 200.0;
+        }
+
+        /// <summary>
+        /// Returns secondary skill for Ability. Default 30/60
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public virtual double GetRequiredSecondarySkill(Mobile from)
+        {
+            if (from.Weapon is BaseWeapon weapon)
+            {
+                if (weapon.PrimaryAbility == this || weapon.PrimaryAbility == Bladeweave)
+                {
+                    return 30.0;
+                }
+                else if (weapon.SecondaryAbility == this || weapon.SecondaryAbility == Bladeweave)
+                {
+                    return 60.0;
                 }
             }
 

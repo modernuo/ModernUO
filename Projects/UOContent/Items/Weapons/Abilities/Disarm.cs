@@ -12,33 +12,28 @@ namespace Server.Items
 
         public override int BaseMana => 20;
 
-        // No longer active in pub21:
-        /*public override bool CheckSkills( Mobile from )
-        {
-          if (!base.CheckSkills( from ))
-            return false;
+        //Disarm is special. Doesnt need tactics when wresling and tactics need is lower than fighting skill.
+        public override bool RequiresTactics(Mobile from) => false;
 
-          if (!(from.Weapon is Fists))
-            return true;
-
-          Skill skill = from.Skills.ArmsLore;
-
-          if (skill?.Base >= 80.0)
-            return true;
-
-          from.SendLocalizedMessage( 1061812 ); // You lack the required skill in armslore to perform that attack!
-
-          return false;
-        }*/
-
-        public override bool RequiresTactics(Mobile from)
+        public override bool CheckSkills(Mobile from)
         {
             if (!(from.Weapon is BaseWeapon weapon))
             {
-                return false;
+                return base.CheckSkills(from);
             }
 
-            return weapon.Skill != SkillName.Wrestling;
+            var skill = from.Skills.Tactics;
+            var skillReq = GetRequiredSecondarySkill(from);
+
+            if (skill?.Value >= skillReq)
+            {
+                return true;
+            }
+
+            //TODO - find correct message for tactics only.
+            from.SendLocalizedMessage(1079308, skillReq.ToString()); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+
+            return false;
         }
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
@@ -52,7 +47,7 @@ namespace Server.Items
 
             var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-            if (toDisarm?.Movable == false)
+            if (toDisarm is null || toDisarm?.Movable == false)
             {
                 toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
             }
@@ -76,6 +71,8 @@ namespace Server.Items
                 defender.FixedParticles(0x37BE, 232, 25, 9948, EffectLayer.LeftHand);
 
                 pack.DropItem(toDisarm);
+
+                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.NoRearm, 1075637, BlockEquipDuration, defender));
 
                 BaseWeapon.BlockEquip(defender, BlockEquipDuration);
             }
