@@ -90,13 +90,12 @@ namespace Server.Backup
 
         private class LocalBackupTimer : RealWorldTimer
         {
-            public LocalBackupTimer() : base(RealWorldTimerResolution.Hours)
+            public LocalBackupTimer() : base(RealWorldTimerResolution.Minutes)
             {
             }
 
-            public override void NewHourTick()
+            public override void NewMinuteTick()
             {
-
             }
         }
     }

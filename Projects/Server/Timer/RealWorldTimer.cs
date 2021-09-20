@@ -36,7 +36,22 @@ namespace Server
         private readonly RealWorldTimerResolution _resolution;
         private readonly DayOfWeek _startOfWeek;
 
-        public RealWorldTimer(RealWorldTimerResolution res, DayOfWeek startOfWeek = DayOfWeek.Sunday) : base(IntervalFromResolution(res), 0)
+        public DateTime LocalNow => GetLocal();
+
+        private static DateTime GetLocal()
+        {
+            var nowUtc = Core.Now;
+            if (_lastConvertedTimeUtc != nowUtc)
+            {
+                _lastConvertedTime = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, TimeZoneHandler.SystemTimeZone);
+                _lastConvertedTimeUtc = nowUtc;
+            }
+
+            return _lastConvertedTime;
+        }
+
+        public RealWorldTimer(RealWorldTimerResolution res, DayOfWeek startOfWeek = DayOfWeek.Sunday)
+            : base(IntervalFromResolution(res), 0)
         {
             _resolution = res;
             _startOfWeek = startOfWeek;
@@ -44,15 +59,10 @@ namespace Server
 
         protected override void OnTick()
         {
-            var nowUtc = Core.Now;
-            if (_lastConvertedTimeUtc != nowUtc)
-            {
-                _lastConvertedTime = TimeZoneInfo.ConvertTimeFromUtc(Core.Now, TimeZoneHandler.SystemTimeZone);
-                _lastConvertedTimeUtc = nowUtc;
-            }
+            var nowLocal = GetLocal();
 
             Utility.DateToComponents(
-                _lastConvertedTime,
+                nowLocal,
                 out _,
                 out var newMonth,
                 out var newDay,
@@ -127,6 +137,6 @@ namespace Server
                 RealWorldTimerResolution.Minutes => TimeSpan.FromSeconds(1.0),
                 RealWorldTimerResolution.Hours   => TimeSpan.FromMinutes(1.0),
                 _                                => TimeSpan.FromHours(1.0)
-            } - TimeSpan.FromMilliseconds(16);
+            } - TimeSpan.FromMilliseconds(16.0);
     }
 }

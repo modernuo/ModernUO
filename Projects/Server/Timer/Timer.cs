@@ -35,11 +35,9 @@ namespace Server
         private Timer _nextTimer;
         private Timer _prevTimer;
 
-        public Timer(TimeSpan delay) : this(delay, TimeSpan.Zero, 1)
-        {
-        }
+        public Timer(TimeSpan delay) => Init(delay, TimeSpan.Zero, 1);
 
-        public Timer(TimeSpan delay, int count) => Init(delay, delay, count);
+        public Timer(TimeSpan interval, int count) => Init(interval, interval, count);
 
         public Timer(TimeSpan delay, TimeSpan interval, int count = 0) => Init(delay, interval, count);
 
