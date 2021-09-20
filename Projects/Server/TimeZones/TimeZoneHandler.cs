@@ -19,7 +19,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Server.Json;
 
-namespace Server.Timezones
+namespace Server
 {
     /**
      * TimeZoneHandler provides a cross platform compatible way to handle system timezones.

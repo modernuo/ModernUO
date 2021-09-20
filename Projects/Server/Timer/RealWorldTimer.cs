@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using Server.Timezones;
 
 namespace Server
 {
