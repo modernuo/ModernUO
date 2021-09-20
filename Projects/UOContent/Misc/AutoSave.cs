@@ -1,16 +1,11 @@
 using System;
-using System.IO;
-using Server.Logging;
 
 namespace Server.Misc
 {
     public class AutoSave : Timer
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Persistence));
-
         public static TimeSpan Delay { get; private set; }
         public static TimeSpan Warning { get; private set; }
-        public static string BackupPath { get; private set; }
 
         public AutoSave() : base(Delay - Warning, Delay)
         {
@@ -20,7 +15,6 @@ namespace Server.Misc
 
         public static void Configure()
         {
-            BackupPath = ServerConfiguration.GetOrUpdateSetting("autosave.backupPath", "Backups/Automatic");
             Delay = ServerConfiguration.GetOrUpdateSetting("autosave.saveDelay", TimeSpan.FromMinutes(5.0));
             Warning = ServerConfiguration.GetOrUpdateSetting("autosave.warningDelay", TimeSpan.Zero);
         }
@@ -29,8 +23,6 @@ namespace Server.Misc
         {
             new AutoSave().Start();
             CommandSystem.Register("SetSaves", AccessLevel.Administrator, SetSaves_OnCommand);
-
-            EventSink.WorldSavePostSnapshot += Backup;
         }
 
         [Usage("SetSaves <true | false>"), Description("Enables or disables automatic shard saving.")]
@@ -95,20 +87,6 @@ namespace Server.Misc
             {
                 World.Save();
             }
-        }
-
-        private static void Backup(WorldSavePostSnapshotEventArgs args)
-        {
-            if (!Directory.Exists(args.OldSavePath))
-            {
-                return;
-            }
-
-            var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
-            AssemblyHandler.EnsureDirectory(BackupPath);
-            Directory.Move(args.OldSavePath, backupPath);
-
-            logger.Information($"Created backup at {backupPath}");
         }
     }
 }

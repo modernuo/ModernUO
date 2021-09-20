@@ -1639,5 +1639,26 @@ namespace Server
             dict.Clear();
             dict = null;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DateToComponents(
+            DateTime date,
+            out int year,
+            out int month,
+            out int day,
+            out DayOfWeek dayOfWeek,
+            out int hour,
+            out int min,
+            out int sec
+        )
+        {
+            year = date.Year;
+            month = date.Month;
+            day = date.Day;
+            dayOfWeek = date.DayOfWeek;
+            hour = date.Hour;
+            min = date.Minute;
+            sec = date.Second;
+        }
     }
 }

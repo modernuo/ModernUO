@@ -39,6 +39,8 @@ namespace Server
         {
         }
 
+        public Timer(TimeSpan delay, int count) => Init(delay, delay, count);
+
         public Timer(TimeSpan delay, TimeSpan interval, int count = 0) => Init(delay, interval, count);
 
         protected void Init(TimeSpan delay, TimeSpan interval, int count)
