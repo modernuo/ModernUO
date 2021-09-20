@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Reflection;
+using Server.Buffers;
 using Server.Logging;
 
 namespace Server.Backup
@@ -55,18 +55,33 @@ namespace Server.Backup
             return "bsdtar/bsdtar.exe";
         }
 
-        private static string CompressFiles(string pathsToCompress, string outputFilePath, string outputFileName)
+        private static string CompressFiles(string[] paths, string outputFilePath, string outputFileName)
         {
-            _pathToZstd ??= new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "zstd";
+            if (_pathToZstd == null)
+            {
+                var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "./";
+                var zstdFileName = $"zstd{(Core.IsWindows ? ".exe" : "")}";
+                _pathToZstd = Path.Combine(assemblyPath, zstdFileName);
+            }
+
             _pathToTar ??= GetPathToTar();
             var outputFile = $"{outputFilePath}/{outputFileName}.tar.zst";
+
+            using var builder = new ValueStringBuilder();
+            for (var i = 0; i < paths.Length; i++)
+            {
+                var path = paths[i];
+                builder.Append($"{(i > 0 ? " " : "")}\"{path}\"");
+            }
+
+            var pathsToCompress = builder.ToString();
 
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = _pathToTar,
-                    Arguments = $"--use-compress-program {_pathToZstd}/zstd -cf {outputFile} {pathsToCompress}",
+                    Arguments = $"--use-compress-program \"{_pathToZstd}/zstd\" -cf \"{outputFile}\" {pathsToCompress}",
                     UseShellExecute = true
                 }
             };
