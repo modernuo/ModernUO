@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -25,32 +26,28 @@ namespace Server
     }
 
     /**
-     * RealWorldTimer executes the Tick functions based on system timezone. Check notes in Server/TimeZones/TimeZoneHandler.cs
-     * for more information on how to manually configure your system timezone.
+     * Timer that ticks on every new minute, hour, day, week, month, and year. Execution is done against UTC.
+     * For local system timezone or specific timezone requirements use LocalRealWorldTimer.
+     *
+     * Note: If a low resolution, such as RealWorldTimerResolution.Days is specified, the timer will never execute a tick
+     * for a timeframe with more precision, such as every hour or minute. The resolution exists to minimize the amount of
+     * times the timer has to execute internally.
      */
     public class RealWorldTimer : Timer
     {
-        private static DateTime _lastConvertedTimeUtc;
-        private static DateTime _lastConvertedTime;
-
         private readonly RealWorldTimerResolution _resolution;
         private readonly DayOfWeek _startOfWeek;
 
-        public DateTime LocalNow => GetLocal();
-
-        private static DateTime GetLocal()
+        public virtual DateTime Now
         {
-            var nowUtc = Core.Now;
-            if (_lastConvertedTimeUtc != nowUtc)
-            {
-                _lastConvertedTime = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, TimeZoneHandler.SystemTimeZone);
-                _lastConvertedTimeUtc = nowUtc;
-            }
-
-            return _lastConvertedTime;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Core.Now;
         }
 
-        public RealWorldTimer(RealWorldTimerResolution res, DayOfWeek startOfWeek = DayOfWeek.Sunday)
+        public RealWorldTimer(
+            RealWorldTimerResolution res = RealWorldTimerResolution.Minutes,
+            DayOfWeek startOfWeek = DayOfWeek.Sunday
+        )
             : base(IntervalFromResolution(res), 0)
         {
             _resolution = res;
@@ -59,10 +56,8 @@ namespace Server
 
         protected override void OnTick()
         {
-            var nowLocal = GetLocal();
-
             Utility.DateToComponents(
-                nowLocal,
+                Now,
                 out _,
                 out var newMonth,
                 out var newDay,
