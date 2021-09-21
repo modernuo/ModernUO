@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Server.Json;
 
 namespace Server
 {
@@ -141,105 +144,31 @@ namespace Server
     {
         static ExpansionInfo()
         {
-            Table = new[]
+            var path = Path.Combine(Core.BaseDirectory, "Data/expansion.json");
+            var expansions = JsonConfig.Deserialize<List<ExpansionConfig>>(path);
+
+            Table = new ExpansionInfo[expansions.Count];
+
+            for (var i = 0; i < expansions.Count; i++)
             {
-                new ExpansionInfo(
-                    0,
-                    "None",
-                    ClientFlags.None,
-                    FeatureFlags.ExpansionNone,
-                    CharacterListFlags.ExpansionNone,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    1,
-                    "The Second Age",
-                    ClientFlags.Felucca,
-                    FeatureFlags.ExpansionT2A,
-                    CharacterListFlags.ExpansionT2A,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    2,
-                    "Renaissance",
-                    ClientFlags.Trammel,
-                    FeatureFlags.ExpansionUOR,
-                    CharacterListFlags.ExpansionUOR,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    3,
-                    "Third Dawn",
-                    ClientFlags.Ilshenar,
-                    FeatureFlags.ExpansionUOTD,
-                    CharacterListFlags.ExpansionUOTD,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    4,
-                    "Blackthorn's Revenge",
-                    ClientFlags.Ilshenar,
-                    FeatureFlags.ExpansionLBR,
-                    CharacterListFlags.ExpansionLBR,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    5,
-                    "Age of Shadows",
-                    ClientFlags.Malas,
-                    FeatureFlags.ExpansionAOS,
-                    CharacterListFlags.ExpansionAOS,
-                    HousingFlags.HousingAOS
-                ),
-                new ExpansionInfo(
-                    6,
-                    "Samurai Empire",
-                    ClientFlags.Tokuno,
-                    FeatureFlags.ExpansionSE,
-                    CharacterListFlags.ExpansionSE,
-                    HousingFlags.HousingSE
-                ),
-                new ExpansionInfo(
-                    7,
-                    "Mondain's Legacy",
-                    new ClientVersion("5.0.0a"),
-                    FeatureFlags.ExpansionML,
-                    CharacterListFlags.ExpansionML,
-                    HousingFlags.HousingML
-                ),
-                new ExpansionInfo(
-                    8,
-                    "Stygian Abyss",
-                    ClientFlags.TerMur,
-                    FeatureFlags.ExpansionSA,
-                    CharacterListFlags.ExpansionSA,
-                    HousingFlags.HousingSA
-                ),
-                new ExpansionInfo(
-                    9,
-                    "High Seas",
-                    new ClientVersion("7.0.9.0"),
-                    FeatureFlags.ExpansionHS,
-                    CharacterListFlags.ExpansionHS,
-                    HousingFlags.HousingHS
-                ),
-                new ExpansionInfo(
-                    10,
-                    "Time of Legends",
-                    new ClientVersion("7.0.45.65"),
-                    FeatureFlags.ExpansionTOL,
-                    CharacterListFlags.ExpansionTOL,
-                    HousingFlags.HousingTOL
-                ),
-                new ExpansionInfo(
-                    11,
-                    "Endless Journey",
-                    new ClientVersion("7.0.61.0"),
-                    FeatureFlags.ExpansionEJ,
-                    CharacterListFlags.ExpansionEJ,
-                    HousingFlags.HousingEJ
-                )
-            };
+                var expansion = expansions[i];
+                if (expansion.ClientVersion != null)
+                    Table[i] = new ExpansionInfo(
+                        i,
+                        expansion.Name,
+                        expansion.ClientVersion,
+                        expansion.FeatureFlags,
+                        expansion.CharacterListFlags,
+                        expansion.HousingFlags);
+                else
+                    Table[i] = new ExpansionInfo(
+                        i,
+                        expansion.Name,
+                        expansion.ClientFlags ?? ClientFlags.None,
+                        expansion.FeatureFlags,
+                        expansion.CharacterListFlags,
+                        expansion.HousingFlags);
+            }
         }
 
         public ExpansionInfo(
@@ -330,5 +259,15 @@ namespace Server
         }
 
         public override string ToString() => Name;
+    }
+
+    public record ExpansionConfig
+    {
+        public string Name { get; init; }
+        public ClientVersion? ClientVersion { get; init; }
+        public ClientFlags? ClientFlags { get; init; }
+        public FeatureFlags FeatureFlags { get; init; }
+        public CharacterListFlags CharacterListFlags { get; init; }
+        public HousingFlags HousingFlags { get; init; }
     }
 }
