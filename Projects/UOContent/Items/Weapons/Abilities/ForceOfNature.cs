@@ -21,32 +21,28 @@ namespace Server.Items
             defender.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
             defender.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-            if (m_Table.ContainsKey(attacker))
-                Remove(attacker);
+            Remove(attacker);
 
             ForceOfNatureTimer t = new ForceOfNatureTimer(attacker, defender);
             t.Start();
 
-            m_Table[attacker] = t;
+            _table[attacker] = t;
         }
 
-        private static readonly Dictionary<Mobile, ForceOfNatureTimer> m_Table = new Dictionary<Mobile, ForceOfNatureTimer>();
+        private static readonly Dictionary<Mobile, ForceOfNatureTimer> _table = new Dictionary<Mobile, ForceOfNatureTimer>();
 
         public static void Remove(Mobile m)
         {
-            if (m_Table.ContainsKey(m))
+            if (_table.Remove(m, out var timer))
             {
-                m_Table[m].Stop();
-                m_Table.Remove(m);
+                timer.Stop();
             }
         }
 
         public static void OnHit(Mobile from, Mobile target)
         {
-            if (m_Table.ContainsKey(from))
+            if(_table.TryGetValue(from,out var t))
             {
-                ForceOfNatureTimer t = m_Table[from];
-
                 t.Hits++;
                 t.LastHit = DateTime.UtcNow;
 
@@ -68,10 +64,8 @@ namespace Server.Items
 
         public static double GetDamageScalar(Mobile from, Mobile target)
         {
-            if (m_Table.ContainsKey(from))
+            if(_table.TryGetValue(from, out var t))
             {
-                ForceOfNatureTimer t = m_Table[from];
-
                 if (t.Target == target)
                 {
                     double bonus = Math.Min(100, Math.Max(50, from.Str - 50));
@@ -88,7 +82,7 @@ namespace Server.Items
             private readonly Mobile m_Target, m_From;
 
             private DateTime m_LastHit;
-            private int m_Tick, m_Hits;
+            private int m_Hits;
 
             public Mobile Target => m_Target;
             public Mobile From => m_From;
@@ -100,22 +94,19 @@ namespace Server.Items
             {
                 m_Target = target;
                 m_From = from;
-                m_Tick = 0;
                 m_Hits = 1;
-                m_LastHit = DateTime.UtcNow;
+                m_LastHit = Core.Now;
             }
 
             protected override void OnTick()
             {
-                m_Tick++;
-
-                if (!m_From.Alive || !m_Target.Alive || m_Target.Map != m_From.Map || m_Target.GetDistanceToSqrt(m_From.Location) > 10 || m_LastHit + TimeSpan.FromSeconds(20) < DateTime.UtcNow || m_Tick > 36)
+                if (!m_From.Alive || !m_Target.Alive || m_Target.Map != m_From.Map || m_Target.GetDistanceToSqrt(m_From.Location) > 10 || m_LastHit + TimeSpan.FromSeconds(20) < Core.Now || Index > 36)
                 {
                     Remove(m_From);
                     return;
                 }
 
-                if (m_Tick == 1)
+                if (Index == 1)
                 {
                     int damage = Utility.RandomMinMax(15, 35);
 

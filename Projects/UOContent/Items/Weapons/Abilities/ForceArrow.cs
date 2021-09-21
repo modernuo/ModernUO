@@ -28,36 +28,37 @@ namespace Server.Items
 
             ForceArrowInfo info = GetInfo(attacker, defender);
 
-            if (info == null)
-                BeginForceArrow(attacker, defender);
-            else
+            if(info == null)
             {
-                if (info.Timer != null && info.Timer.Running)
-                {
-                    info.Timer.IncreaseExpiration();
+                BeginForceArrow(attacker, defender);
+            }
+            else if (info.Timer != null && info.Timer.Running)
+            {
+                info.Timer.IncreaseExpiration();
 
-                    BuffInfo.RemoveBuff(defender, BuffIcon.ForceArrow);
-                    BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
-                }
+                BuffInfo.RemoveBuff(defender, BuffIcon.ForceArrow);
+                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
             }
 
-            Spell spell = defender.Spell as Spell;
-
-            if (spell != null && spell.IsCasting)
+            if (defender.Spell is Spell spell && spell.IsCasting)
                 spell.Disturb(DisturbType.Hurt, false, true);
         }
 
-        private static readonly Dictionary<Mobile, List<ForceArrowInfo>> m_Table = new Dictionary<Mobile, List<ForceArrowInfo>>();
+        private static readonly Dictionary<Mobile, List<ForceArrowInfo>> _table = new Dictionary<Mobile, List<ForceArrowInfo>>();
 
         public static void BeginForceArrow(Mobile attacker, Mobile defender)
         {
             ForceArrowInfo info = new ForceArrowInfo(attacker, defender);
             info.Timer = new ForceArrowTimer(info);
 
-            if (!m_Table.ContainsKey(attacker))
-                m_Table[attacker] = new List<ForceArrowInfo>();
-
-            m_Table[attacker].Add(info);
+            if (_table.TryGetValue(attacker, out var list))
+            {
+                list.Add(info);
+            }
+            else
+            {
+                _table.Add(attacker, new List<ForceArrowInfo>() { info });
+            }
 
             BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
         }
@@ -69,12 +70,9 @@ namespace Server.Items
 
             Mobile attacker = info.Attacker;
 
-            if (m_Table.ContainsKey(attacker) && m_Table[attacker].Contains(info))
+            if (_table.TryGetValue(attacker, out var list) && list.Remove(info) && list.Count == 0)
             {
-                m_Table[attacker].Remove(info);
-
-                if (m_Table[attacker].Count == 0)
-                    m_Table.Remove(attacker);
+                _table.Remove(attacker)
             }
 
             BuffInfo.RemoveBuff(info.Defender, BuffIcon.ForceArrow);
@@ -82,13 +80,13 @@ namespace Server.Items
 
         public static bool HasForceArrow(Mobile attacker, Mobile defender)
         {
-            if (!m_Table.ContainsKey(attacker))
-                return false;
-
-            foreach (ForceArrowInfo info in m_Table[attacker])
+            if (_table.TryGetValue(attacker, out var list))
             {
-                if (info.Defender == defender)
-                    return true;
+                foreach (ForceArrowInfo info in list)
+                {
+                    if (info.Defender == defender)
+                        return true;
+                }
             }
 
             return false;
@@ -96,13 +94,13 @@ namespace Server.Items
 
         public static ForceArrowInfo GetInfo(Mobile attacker, Mobile defender)
         {
-            if (!m_Table.ContainsKey(attacker))
-                return null;
-
-            foreach (ForceArrowInfo info in m_Table[attacker])
+            if(_table.TryGetValue(attacker,out var list))
             {
-                if (info.Defender == defender)
-                    return info;
+                foreach (ForceArrowInfo info in m_Table[attacker])
+                {
+                    if (info.Defender == defender)
+                        return info;
+                }
             }
 
             return null;

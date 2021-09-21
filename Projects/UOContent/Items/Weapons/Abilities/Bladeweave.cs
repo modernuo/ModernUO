@@ -22,14 +22,14 @@ namespace Server.Items
 
         public static bool BladeWeaving(Mobile attacker, out WeaponAbility a)
         {
-            BladeWeaveRedirect bwr;
-            bool success = m_NewAttack.TryGetValue(attacker, out bwr);
-            if (success)
+            if (_newAttack.TryGetValue(attacker, out var bwr))
+            {
                 a = bwr.NewAbility;
-            else
-                a = null;
+                return true;
+            }
 
-            return success;
+            a = null;
+            return false;
         }
 
         public override int BaseMana => 30;
@@ -42,7 +42,6 @@ namespace Server.Items
             int ran = -1;
 
             var requiredSecondarySkill = Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value);
-            // pokud ninjitsu nebo bushido je ober getrequired skill tak je to ok
             var canfeint = requiredSecondarySkill >= Feint.GetRequiredSecondarySkill(attacker);
             var canblock = requiredSecondarySkill >= Block.GetRequiredSecondarySkill(attacker);
 
@@ -50,13 +49,14 @@ namespace Server.Items
             {
                 ran = Utility.Random(9);
             }
-            else if (canblock)
-            {
-                ran = Utility.Random(8);
-            }
             else
             {
-                ran = Utility.RandomList(0, 1, 2, 3, 4, 5, 6, 8);
+                ran = Utility.Random(8);
+
+                if(ran == 7 && !canblock)
+                {
+                    ran = 8;
+                }
             }
 
             return GetBladeWeaveRedirect(ran).NewAbility.OnBeforeSwing(attacker, defender);
@@ -80,8 +80,7 @@ namespace Server.Items
 
         public override bool OnBeforeDamage(Mobile attacker, Mobile defender)
         {
-            BladeWeaveRedirect bwr;
-            if (m_NewAttack.TryGetValue(attacker, out bwr))
+            if (m_NewAttack.TryGetValue(attacker, out var bwr))
                 return bwr.NewAbility.OnBeforeDamage(attacker, defender);
             else
                 return base.OnBeforeDamage(attacker, defender);
