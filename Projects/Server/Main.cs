@@ -494,7 +494,7 @@ namespace Server
             try
             {
 #if DEBUG
-                var idleCPU = true;
+                const bool idleCPU = true;
 #else
                 var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif

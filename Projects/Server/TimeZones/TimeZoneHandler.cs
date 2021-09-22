@@ -72,5 +72,9 @@ namespace Server
          */
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeZoneInfo FindTimeZoneById(string id) => _timeZoneById[id];
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime ToSystemLocalTime(this DateTime date) =>
+            TimeZoneInfo.ConvertTimeFromUtc(date, SystemTimeZone);
     }
 }
