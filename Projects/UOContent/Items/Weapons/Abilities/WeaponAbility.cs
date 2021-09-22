@@ -72,7 +72,7 @@ namespace Server.Items
         public static readonly WeaponAbility DoubleShot = Abilities[22];
         public static readonly WeaponAbility ArmorPierce = Abilities[23];
 
-        public static readonly WeaponAbility Bladeweave = Abilities[24];//TODO - test
+        public static readonly WeaponAbility Bladeweave = Abilities[24];
         public static readonly WeaponAbility ForceArrow = Abilities[25];
         public static readonly WeaponAbility LightningArrow = Abilities[26];
         public static readonly WeaponAbility PsychicAttack = Abilities[27];
@@ -110,7 +110,7 @@ namespace Server.Items
         public virtual bool RequiresTactics(Mobile from) => true;
 
         /// <summary>
-        /// Return priumary skill for ability. Default 70/90
+        /// Return primary skill for ability. Default 70/90
         /// </summary>
         /// <param name="from"></param>
         /// <returns></returns>
@@ -118,12 +118,12 @@ namespace Server.Items
         {
             if (from.Weapon is BaseWeapon weapon)
             {
-                if (weapon.PrimaryAbility == this)
+                if (weapon.PrimaryAbility == this || weapon.PrimaryAbility == Bladeweave) 
                 {
                     return 70.0;
                 }
 
-                if (weapon.SecondaryAbility == this)
+                if (weapon.SecondaryAbility == this || weapon.SecondaryAbility == Bladeweave)
                 {
                     return 90.0;
                 }

@@ -18,7 +18,7 @@ namespace Server.Items
             }
         }
 
-        private static readonly Dictionary<Mobile, BladeWeaveRedirect> m_NewAttack = new Dictionary<Mobile, BladeWeaveRedirect>();
+        private static readonly Dictionary<Mobile, BladeWeaveRedirect> _newAttack = new Dictionary<Mobile, BladeWeaveRedirect>();
 
         public static bool BladeWeaving(Mobile attacker, out WeaponAbility a)
         {
@@ -39,27 +39,14 @@ namespace Server.Items
             if (!Validate(attacker) || !CheckMana(attacker, false))
                 return false;
 
-            int ran = -1;
+            //Bladeweave is only from 90 fighting and tactics skill, so you need only to check bushido/ninjitsu value over 50 to perform block and feint.
+            var requiredBushido = Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value);
 
-            var requiredSecondarySkill = Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value);
-            var canfeint = requiredSecondarySkill >= Feint.GetRequiredSecondarySkill(attacker);
-            var canblock = requiredSecondarySkill >= Block.GetRequiredSecondarySkill(attacker);
+            var ran = Utility.Random(requiredBushido >= 50 ? 9 : 7);
 
-            if (canfeint && canblock)
-            {
-                ran = Utility.Random(9);
-            }
-            else
-            {
-                ran = Utility.Random(8);
+            var newAttack = _newAttack[attacker] = GetBladeWeaveRedirect(ran);
 
-                if(ran == 7 && !canblock)
-                {
-                    ran = 8;
-                }
-            }
-
-            return GetBladeWeaveRedirect(ran).NewAbility.OnBeforeSwing(attacker, defender);
+            return newAttack.NewAbility.OnBeforeSwing(attacker, defender);
         }
 
         private static BladeWeaveRedirect GetBladeWeaveRedirect(int number)
@@ -74,13 +61,12 @@ namespace Server.Items
                 5 => new BladeWeaveRedirect(MortalStrike, 1028846),
                 6 => new BladeWeaveRedirect(ParalyzingBlow, 1028848),
                 7 => new BladeWeaveRedirect(Block, 1028853),
-                //8 => new BladeWeaveRedirect(Feint, 1028857),
                 _ => new BladeWeaveRedirect(Feint, 1028857)//8
             };
 
         public override bool OnBeforeDamage(Mobile attacker, Mobile defender)
         {
-            if (m_NewAttack.TryGetValue(attacker, out var bwr))
+            if (_newAttack.TryGetValue(attacker, out var bwr))
                 return bwr.NewAbility.OnBeforeDamage(attacker, defender);
             else
                 return base.OnBeforeDamage(attacker, defender);
@@ -90,8 +76,7 @@ namespace Server.Items
         {
             if (CheckMana(attacker, false))
             {
-                BladeWeaveRedirect bwr;
-                if (m_NewAttack.TryGetValue(attacker, out bwr))
+                if (_newAttack.TryGetValue(attacker, out var bwr))
                 {
                     attacker.SendLocalizedMessage(1072841, "#" + bwr.ClilocEntry.ToString());
                     bwr.NewAbility.OnHit(attacker, defender, damage);
@@ -99,20 +84,19 @@ namespace Server.Items
                 else
                     base.OnHit(attacker, defender, damage);
 
-                m_NewAttack.Remove(attacker);
+                _newAttack.Remove(attacker);
                 ClearCurrentAbility(attacker);
             }
         }
 
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
-            BladeWeaveRedirect bwr;
-            if (m_NewAttack.TryGetValue(attacker, out bwr))
+            if (_newAttack.TryGetValue(attacker, out var bwr))
                 bwr.NewAbility.OnMiss(attacker, defender);
             else
                 base.OnMiss(attacker, defender);
 
-            m_NewAttack.Remove(attacker);
+            _newAttack.Remove(attacker);
         }
     }
 }

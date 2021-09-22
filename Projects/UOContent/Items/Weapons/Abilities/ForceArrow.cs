@@ -72,7 +72,7 @@ namespace Server.Items
 
             if (_table.TryGetValue(attacker, out var list) && list.Remove(info) && list.Count == 0)
             {
-                _table.Remove(attacker)
+                _table.Remove(attacker);
             }
 
             BuffInfo.RemoveBuff(info.Defender, BuffIcon.ForceArrow);
@@ -96,7 +96,7 @@ namespace Server.Items
         {
             if(_table.TryGetValue(attacker,out var list))
             {
-                foreach (ForceArrowInfo info in m_Table[attacker])
+                foreach (ForceArrowInfo info in _table[attacker])
                 {
                     if (info.Defender == defender)
                         return info;
@@ -136,14 +136,14 @@ namespace Server.Items
             {
                 m_Info = info;
 
-                m_Expires = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+                m_Expires = Core.Now + TimeSpan.FromSeconds(10);
 
                 Start();
             }
 
             protected override void OnTick()
             {
-                if (m_Expires < DateTime.UtcNow)
+                if (m_Expires < Core.Now)
                 {
                     Stop();
                     EndForceArrow(m_Info);

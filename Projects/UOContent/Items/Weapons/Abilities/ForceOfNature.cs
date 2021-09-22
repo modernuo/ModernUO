@@ -44,7 +44,7 @@ namespace Server.Items
             if(_table.TryGetValue(from,out var t))
             {
                 t.Hits++;
-                t.LastHit = DateTime.UtcNow;
+                t.LastHit = Core.Now;
 
                 if (t.Hits % 12 == 0)
                 {
