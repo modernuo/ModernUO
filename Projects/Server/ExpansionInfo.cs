@@ -159,7 +159,8 @@ namespace Server
                         expansion.ClientVersion,
                         expansion.FeatureFlags,
                         expansion.CharacterListFlags,
-                        expansion.HousingFlags);
+                        expansion.HousingFlags
+                    );
                 else
                     Table[i] = new ExpansionInfo(
                         i,
@@ -167,7 +168,8 @@ namespace Server
                         expansion.ClientFlags ?? ClientFlags.None,
                         expansion.FeatureFlags,
                         expansion.CharacterListFlags,
-                        expansion.HousingFlags);
+                        expansion.HousingFlags
+                    );
             }
         }
 

@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2021 - ModernUO Development Team                            *
  * Email: hi@modernuo.com                                                *
- * File: TimeSpanConverter.cs                                            *
+ * File: FlagsConverter.cs                                               *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,16 +14,18 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-    public class FlagsConverter<T> : JsonConverter<T> where T : struct
+    public class FlagsConverter<T> : JsonConverter<T> where T : struct, Enum
     {
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var flags = 0x0;
+            var flags = 0ul;
+            var underlyingType = Enum.GetUnderlyingType(typeof(T));
 
             while (true)
             {
@@ -42,29 +44,87 @@ namespace Server.Json
 
                 reader.Read();
 
-                var val = reader.GetBoolean();
-
-                if (val)
+                if (!reader.GetBoolean() || !Enum.TryParse<T>(key, out var val))
                 {
-                    Enum.TryParse<T>(key, out var flag);
-                    flags |= (int) (object) flag;
+                    continue;
                 }
+
+                flags |= ConvertToUInt64(underlyingType, val);
             }
 
-            return (T) (object) flags;
+            switch (Type.GetTypeCode(underlyingType))
+            {
+                case TypeCode.SByte:
+                    {
+                        var num = (sbyte)flags;
+                        return Unsafe.As<sbyte, T>(ref num);
+                    }
+                case TypeCode.Byte:
+                    {
+                        var num = (byte)flags;
+                        return Unsafe.As<byte, T>(ref num);
+                    }
+                case TypeCode.Int16:
+                    {
+                        var num = (short)flags;
+                        return Unsafe.As<short, T>(ref num);
+                    }
+                case TypeCode.UInt16:
+                    {
+                        var num = (ushort)flags;
+                        return Unsafe.As<ushort, T>(ref num);
+                    }
+                case TypeCode.UInt32:
+                    {
+                        var num = (uint)flags;
+                        return Unsafe.As<uint, T>(ref num);
+                    }
+                case TypeCode.Int64:
+                    {
+                        var num = (long)flags;
+                        return Unsafe.As<long, T>(ref num);
+                    }
+                case TypeCode.UInt64:
+                    {
+                        return Unsafe.As<ulong, T>(ref flags);
+                    }
+                default:
+                    {
+                        var num = (int)flags;
+                        return Unsafe.As<int, T>(ref num);
+                    }
+            }
         }
+
+        private static ulong ConvertToUInt64(Type underlyingType, object value) =>
+            Type.GetTypeCode(underlyingType) switch
+            {
+                TypeCode.SByte  => (ulong)(sbyte)value,
+                TypeCode.Byte   => (byte)value,
+                TypeCode.Int16  => (ulong)(short)value,
+                TypeCode.UInt16 => (ushort)value,
+                TypeCode.Int32  => (ulong)(int)value,
+                TypeCode.UInt32 => (uint)value,
+                TypeCode.Int64  => (ulong)(long)value,
+                TypeCode.UInt64 => (ulong)value,
+                _               => throw new InvalidOperationException()
+            };
 
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
+            var underlyingType = Enum.GetUnderlyingType(typeof(T));
+            var intValue = ConvertToUInt64(underlyingType, value);
+
             foreach (var flagName in Enum.GetNames(typeof(T)))
             {
                 if (!flagName.StartsWith("Expansion"))
                 {
-                    var flag = Enum.Parse<T>(flagName, false);
-                    writer.WriteBoolean(flagName, ((int) (object) value & (int) (object) flag) != 0);
+                    var flag = ConvertToUInt64(underlyingType, Enum.Parse<T>(flagName, false));
+                    writer.WriteBoolean(flagName, (intValue & flag) != 0);
                 }
             }
+
             writer.WriteEndObject();
         }
     }
