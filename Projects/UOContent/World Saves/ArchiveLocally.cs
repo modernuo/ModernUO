@@ -166,7 +166,7 @@ namespace Server.Saves
             }
 
             ThreadPool.UnsafeQueueUserWorkItem(
-                (state) =>
+                _ =>
                 {
                     if (date >= _nextHourlyArchive)
                     {

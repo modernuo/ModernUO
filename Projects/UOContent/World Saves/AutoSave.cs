@@ -8,7 +8,6 @@ namespace Server.Saves
     {
         private static Timer _autoSave;
         private static bool _enabled;
-        private static bool _skippedLastSave;
         private static DateTime _nextSave;
 
         public static TimeSpan Delay { get; private set; }
@@ -20,11 +19,11 @@ namespace Server.Saves
             get => _enabled;
             set
             {
-                _skippedLastSave = true;
                 _enabled = value;
 
                 if (value)
                 {
+                    SetNextSave(Core.Now.ToSystemLocalTime());
                     _autoSave ??= new AutoSave();
                     _autoSave.Start();
                 }
@@ -89,34 +88,22 @@ namespace Server.Saves
 
         protected override void OnTick()
         {
-            if (!SavesEnabled || AutoRestart.Restarting || Core.Closing || !World.Running)
-            {
-                _skippedLastSave = true;
-                return;
-            }
-
-            var now = Core.Now;
-
-            // If a save was skipped, then reset the next save
-            if (_skippedLastSave)
-            {
-                SetNextSave(now.ToSystemLocalTime());
-            }
-
-            if (_nextSave > now)
+            if (_nextSave > Core.Now)
             {
                 return;
             }
 
-            if (Warning > TimeSpan.Zero)
+            if (SavesEnabled && !AutoRestart.Restarting && !Core.Closing && World.Running)
             {
-
-                BroadcastWarning();
-                StartTimer(Warning, Save);
-            }
-            else
-            {
-                Save();
+                if (Warning > TimeSpan.Zero)
+                {
+                    BroadcastWarning();
+                    StartTimer(Warning, Save);
+                }
+                else
+                {
+                    Save();
+                }
             }
 
             _nextSave += Delay - Warning;
