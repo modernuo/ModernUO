@@ -1,4 +1,3 @@
-using System;
 using Server.Saves;
 
 namespace Server.Commands
@@ -11,14 +10,6 @@ namespace Server.Commands
             CommandSystem.Register("SetSaves", AccessLevel.Administrator, SetAutoSaves_OnCommand);
             CommandSystem.Register("AutoSave", AccessLevel.Administrator, SetAutoSaves_OnCommand);
             CommandSystem.Register("SaveFrequency", AccessLevel.Administrator, SetSaveFrequency_OnCommand);
-            CommandSystem.Register("ArchiveNow", AccessLevel.Administrator, Archive_OnCommand);
-        }
-
-        [Usage("ArchiveNow"), Description("Archives saves (blocking).")]
-        private static void Archive_OnCommand(CommandEventArgs e)
-        {
-            ArchiveLocally.ArchiveHourlyNow(Core.Now);
-            e.Mobile.SendMessage("Completed archiving");
         }
 
         [Usage("Save"), Description("Saves the world.")]

@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Server.Buffers;
 using Server.Logging;
@@ -48,6 +49,9 @@ namespace Server.Saves
                 ArchiveSaves.Archive = Archive;
                 ArchiveSaves.Prune = Prune;
             }
+
+            // Support the Saves folder containing exactly one .tar.zst or .zip file
+            RestoreArchive();
         }
 
         public static void Initialize()
@@ -60,6 +64,96 @@ namespace Server.Saves
             _nextMonthlyArchive = date.AddDays(1 - now.Day).AddMonths(1).ToUniversalTime();
         }
 
+        private static void RestoreArchive()
+        {
+            var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
+            var files = Directory.GetFiles(savePath);
+            if (files.Length != 1)
+            {
+                return;
+            }
+
+            RestoreFromFile(files[0], savePath);
+        }
+
+        private static void RestoreFromFile(string file, string savePath)
+        {
+            var fi = new FileInfo(file);
+            var fileName = fi.Name;
+
+            if (!TryGetDate(fileName[..fileName.IndexOfOrdinal(".")], out _))
+            {
+                return;
+            }
+
+            logger.Information($"Restoring latest world save from archive {fileName}");
+
+            var tempFolder = Path.Combine(Core.BaseDirectory, "temp");
+            AssemblyHandler.EnsureDirectory(tempFolder);
+            bool successful;
+
+            if (fileName.EndsWithOrdinal(".tar.zst"))
+            {
+                successful = ExtractZstdArchive(fi.FullName, tempFolder);
+            }
+            else if (fileName.EndsWithOrdinal(".zip"))
+            {
+                ZipFile.ExtractToDirectory(fi.FullName, tempFolder);
+                successful = true;
+            }
+            else
+            {
+                logger.Information($"Unsupported archive file {fi.Name}");
+                return;
+            }
+
+            if (!successful)
+            {
+                logger.Information($"Failed to extract {fi.Name}");
+                return;
+            }
+
+            var allFolders = Directory.EnumerateDirectories(tempFolder, "????-??-??-??-??-??");
+            var worldSaveFolders = GetInRange(allFolders, DateTime.MinValue, DateTime.MaxValue);
+            var first = true;
+            foreach (var folder in worldSaveFolders)
+            {
+                if (first)
+                {
+                    first = false;
+                    Directory.Delete(savePath, true);
+                    var dirInfo = new DirectoryInfo(folder);
+                    logger.Information($"Restoring backup {dirInfo.Name}");
+                    Directory.Move(folder, savePath);
+                }
+                else
+                {
+                    Directory.Delete(folder, true);
+                }
+            }
+        }
+
+        private static bool ExtractZstdArchive(string fileNamePath, string outputDirectory)
+        {
+            _pathToZstd ??= GetPathToZstd();
+            _pathToTar ??= GetPathToTar();
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = _pathToTar,
+                    Arguments = $"--use-compress-program \"{_pathToZstd} -d\" -xf \"{fileNamePath}\" -C {outputDirectory}",
+                    UseShellExecute = true
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+
+            return process.ExitCode == 0;
+        }
+
         private static string GetPathToTar()
         {
             if (!Core.IsWindows || File.Exists(@"C:\Windows\system32\tar.exe"))
@@ -68,6 +162,13 @@ namespace Server.Saves
             }
 
             return File.Exists("bsdtar/bsdtar.exe") ? "bsdtar/bsdtar.exe" : DownloadTarForWindows();
+        }
+
+        private static string GetPathToZstd()
+        {
+            var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "./";
+            var zstdFileName = $"zstd{(Core.IsWindows ? ".exe" : "")}";
+            return Path.Combine(assemblyPath, zstdFileName);
         }
 
         private static string DownloadTarForWindows()
@@ -84,15 +185,9 @@ namespace Server.Saves
             return "bsdtar/bsdtar.exe";
         }
 
-        private static string CompressFiles(List<string> paths, string outputFilePath, string outputFileName)
+        private static string CompressFiles(List<string> paths, string relativePath, string outputFilePath, string outputFileName)
         {
-            if (_pathToZstd == null)
-            {
-                var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "./";
-                var zstdFileName = $"zstd{(Core.IsWindows ? ".exe" : "")}";
-                _pathToZstd = Path.Combine(assemblyPath, zstdFileName);
-            }
-
+            _pathToZstd ??= GetPathToZstd();
             _pathToTar ??= GetPathToTar();
             AssemblyHandler.EnsureDirectory(outputFilePath);
             var outputFile = $"{outputFilePath}/{outputFileName}.tar.zst";
@@ -101,19 +196,17 @@ namespace Server.Saves
             for (var i = 0; i < paths.Count; i++)
             {
                 var path = paths[i];
-                builder.Append($"{(i > 0 ? " " : "")}\"{path}\"");
+                builder.Append($"{(i > 0 ? " " : "")}\"{Path.GetRelativePath(relativePath, path)}\"");
             }
 
             var pathsToCompress = builder.ToString();
-
-            logger.Information($"tar --use-compress-program \"{_pathToZstd} -10\" -cf \"{outputFile}\" {pathsToCompress}");
 
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = _pathToTar,
-                    Arguments = $"--use-compress-program \"{_pathToZstd} -10\" -cf \"{outputFile}\" {pathsToCompress}",
+                    Arguments = $"--use-compress-program \"{_pathToZstd} -10\" -cf \"{outputFile}\" -C \"{relativePath}\" {pathsToCompress}",
                     UseShellExecute = true
                 }
             };
@@ -215,7 +308,12 @@ namespace Server.Saves
                 return;
             }
 
-            var archive = CompressFiles(latestFolders, Path.Combine(ArchivePath, archivePeriod.ToString()), now.ToTimeStamp());
+            var archive = CompressFiles(
+                latestFolders,
+                AutoSave.BackupPath,
+                Path.Combine(ArchivePath, archivePeriod.ToString()),
+                now.ToTimeStamp()
+            );
 
             if (archive != null)
             {
@@ -243,7 +341,7 @@ namespace Server.Saves
             var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
             foreach (var item in allItems)
             {
-                string name = files ? Path.GetFileNameWithoutExtension(item) : new DirectoryInfo(item).Name;
+                string name = files ? item[..item.IndexOfOrdinal(".")] : new DirectoryInfo(item).Name;
                 if (IsInRange(name, rangeStart, rangeEnd, out var date))
                 {
                     items.Add(date, item);
@@ -253,10 +351,14 @@ namespace Server.Saves
             return items.Values;
         }
 
-        private static bool IsInRange(string name, DateTime start, DateTime end, out DateTime date)
+        private static bool IsInRange(string name, DateTime start, DateTime end, out DateTime date) =>
+            TryGetDate(name, out date) && start <= date && end >= date;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryGetDate(string value, out DateTime date)
         {
-            var split = name.Split("-");
             // Expecting YYYY-MM-DD-HH-mm-ss
+            var split = value.Split("-");
             if (split.Length != 6)
             {
                 date = DateTime.MinValue;
@@ -280,7 +382,7 @@ namespace Server.Saves
                 return false;
             }
 
-            return start <= date && end >= date;
+            return true;
         }
     }
 }
