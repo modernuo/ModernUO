@@ -39,10 +39,6 @@ namespace Server.Json
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
 
-            options.Converters.Add(new FlagsConverterFactory<FeatureFlags>());
-            options.Converters.Add(new FlagsConverterFactory<CharacterListFlags>());
-            options.Converters.Add(new FlagsConverterFactory<HousingFlags>());
-            options.Converters.Add(new ClientVersionConverter());
             options.Converters.Add(new GuidConverterFactory());
             options.Converters.Add(new JsonStringEnumConverter());
             options.Converters.Add(new MapConverterFactory());

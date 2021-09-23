@@ -96,6 +96,26 @@ namespace Server.Json
             }
         }
 
+        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            var underlyingType = Enum.GetUnderlyingType(typeof(T));
+            var size = GetUnderlyingTypeLength(Type.GetTypeCode(underlyingType)) - 1;
+            var intValue = ConvertToUInt64(underlyingType, value);
+
+            foreach (var flagName in Enum.GetNames(typeof(T)))
+            {
+                var flagValue = Enum.Parse<T>(flagName, false);
+                var flag = ConvertToUInt64(underlyingType, flagValue);
+                if (flag == 0 || (flag & size) == 0)
+                {
+                    writer.WriteBoolean(flagName, (intValue & flag) != 0);
+                }
+            }
+
+            writer.WriteEndObject();
+        }
+
         private static ulong ConvertToUInt64(Type underlyingType, object value) =>
             Type.GetTypeCode(underlyingType) switch
             {
@@ -110,22 +130,20 @@ namespace Server.Json
                 _               => throw new InvalidOperationException()
             };
 
-        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-        {
-            writer.WriteStartObject();
-            var underlyingType = Enum.GetUnderlyingType(typeof(T));
-            var intValue = ConvertToUInt64(underlyingType, value);
-
-            foreach (var flagName in Enum.GetNames(typeof(T)))
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong GetUnderlyingTypeLength(TypeCode typeCode) =>
+            typeCode switch
             {
-                if (!flagName.StartsWith("Expansion"))
-                {
-                    var flag = ConvertToUInt64(underlyingType, Enum.Parse<T>(flagName, false));
-                    writer.WriteBoolean(flagName, (intValue & flag) != 0);
-                }
-            }
-
-            writer.WriteEndObject();
-        }
+                TypeCode.Byte   => 8,
+                TypeCode.SByte  => 8,
+                TypeCode.Int16  => 16,
+                TypeCode.UInt16 => 16,
+                TypeCode.Char   => 16,
+                TypeCode.Int32  => 32,
+                TypeCode.UInt32 => 32,
+                TypeCode.Int64  => 64,
+                TypeCode.UInt64 => 64,
+                _               => 64
+            };
     }
 }

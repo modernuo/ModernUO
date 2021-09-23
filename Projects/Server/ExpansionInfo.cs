@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 using Server.Json;
 
 namespace Server
@@ -266,10 +267,19 @@ namespace Server
     public record ExpansionConfig
     {
         public string Name { get; init; }
+
+        [JsonConverter(typeof(ClientVersionConverter))]
         public ClientVersion? ClientVersion { get; init; }
+
         public ClientFlags? ClientFlags { get; init; }
+
+        [JsonConverter(typeof(FlagsConverter<FeatureFlags>))]
         public FeatureFlags FeatureFlags { get; init; }
+
+        [JsonConverter(typeof(FlagsConverter<CharacterListFlags>))]
         public CharacterListFlags CharacterListFlags { get; init; }
+
+        [JsonConverter(typeof(FlagsConverter<HousingFlags>))]
         public HousingFlags HousingFlags { get; init; }
     }
 }
