@@ -67,23 +67,26 @@ namespace Server.Saves
         private static void RestoreArchive()
         {
             var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
-            var files = Directory.GetFiles(savePath);
-            if (files.Length != 1)
-            {
-                return;
-            }
+            var files = Directory.EnumerateFiles(savePath, "????-??-??-??-??-??.*");
+            var latestFiles = GetInRange(files, DateTime.MinValue, DateTime.MaxValue, true);
 
-            RestoreFromFile(files[0], savePath);
+            foreach (var file in latestFiles)
+            {
+                if (RestoreFromFile(file, savePath))
+                {
+                    break;
+                }
+            }
         }
 
-        private static void RestoreFromFile(string file, string savePath)
+        private static bool RestoreFromFile(string file, string savePath)
         {
             var fi = new FileInfo(file);
             var fileName = fi.Name;
 
             if (!TryGetDate(fileName[..fileName.IndexOfOrdinal(".")], out _))
             {
-                return;
+                return false;
             }
 
             logger.Information($"Restoring latest world save from archive {fileName}");
@@ -104,13 +107,13 @@ namespace Server.Saves
             else
             {
                 logger.Information($"Unsupported archive file {fi.Name}");
-                return;
+                return false;
             }
 
             if (!successful)
             {
                 logger.Information($"Failed to extract {fi.Name}");
-                return;
+                return false;
             }
 
             var allFolders = Directory.EnumerateDirectories(tempFolder, "????-??-??-??-??-??");
@@ -131,6 +134,8 @@ namespace Server.Saves
                     Directory.Delete(folder, true);
                 }
             }
+
+            return true;
         }
 
         private static bool ExtractZstdArchive(string fileNamePath, string outputDirectory)
@@ -341,7 +346,16 @@ namespace Server.Saves
             var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
             foreach (var item in allItems)
             {
-                string name = files ? item[..item.IndexOfOrdinal(".")] : new DirectoryInfo(item).Name;
+                string name;
+                if (files)
+                {
+                    var fileName = new FileInfo(item).Name;
+                    name = fileName[..fileName.IndexOfOrdinal(".")];
+                }
+                else
+                {
+                    name = new DirectoryInfo(item).Name;
+                }
                 if (IsInRange(name, rangeStart, rangeEnd, out var date))
                 {
                     items.Add(date, item);
