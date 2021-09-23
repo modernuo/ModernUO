@@ -34,10 +34,16 @@ namespace Server.Saves
         private static bool _enablePruning;
         private static ArchivePeriod _prunePeriod;
 
+        public static Action<DateTime> Archive { get; set; }
+        public static Action<DateTime> Prune { get; set; }
         public static string ArchivePath { get; private set; }
+        public static string BackupPath { get; private set; }
 
         public static void Configure()
         {
+            var defaultBackupPath = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
+            BackupPath = ServerConfiguration.GetOrUpdateSetting("autosave.backupPath", defaultBackupPath);
+
             ArchivePath = ServerConfiguration.GetOrUpdateSetting("autosave.archivePath", "Archives");
 
             var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autosave.archiveLocally", true);
@@ -46,8 +52,8 @@ namespace Server.Saves
 
             if (useLocalArchives)
             {
-                ArchiveSaves.Archive = Archive;
-                ArchiveSaves.Prune = Prune;
+                Archive = ArchiveLocally;
+                Prune = PruneLocalArchives;
             }
 
             // Support the Saves folder containing exactly one .tar.zst or .zip file
@@ -56,12 +62,30 @@ namespace Server.Saves
 
         public static void Initialize()
         {
+            EventSink.WorldSavePostSnapshot += Backup;
+
             DateTimeOffset now = Core.Now.ToSystemLocalTime();
 
             var date = now.Date;
             _nextHourlyArchive = date.AddHours(now.Hour + 1).ToUniversalTime();
             _nextDailyArchive = date.AddDays(1).ToUniversalTime();
             _nextMonthlyArchive = date.AddDays(1 - now.Day).AddMonths(1).ToUniversalTime();
+        }
+
+        private static void Backup(WorldSavePostSnapshotEventArgs args)
+        {
+            if (!Directory.Exists(args.OldSavePath))
+            {
+                return;
+            }
+
+            var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
+            AssemblyHandler.EnsureDirectory(BackupPath);
+            Directory.Move(args.OldSavePath, backupPath);
+
+            logger.Information($"Created backup at {backupPath}");
+
+            Archive?.Invoke(Core.Now);
         }
 
         private static void RestoreArchive()
@@ -222,7 +246,7 @@ namespace Server.Saves
             return process.ExitCode == 0 ? outputFile : null;
         }
 
-        public static void Prune(DateTime threshold)
+        public static void PruneLocalArchives(DateTime threshold)
         {
             if (!_enablePruning)
             {
@@ -245,13 +269,7 @@ namespace Server.Saves
             }
         }
 
-        public static void ArchiveHourlyNow(DateTime date)
-        {
-            _nextHourlyArchive = DateTime.MinValue;
-            Archive(date.AddHours(1));
-        }
-
-        public static void Archive(DateTime date)
+        public static void ArchiveLocally(DateTime date)
         {
             if (date < _nextHourlyArchive && date < _nextDailyArchive && date < _nextMonthlyArchive)
             {
@@ -287,7 +305,7 @@ namespace Server.Saves
                         _nextMonthlyArchive = lastMonth.AddMonths(2);
                     }
 
-                    ArchiveSaves.Prune?.Invoke(date);
+                    Prune?.Invoke(date);
 
                     _isArchiving = 0;
                 },
@@ -297,7 +315,7 @@ namespace Server.Saves
 
         private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, DateTime now)
         {
-            var allFolders = Directory.EnumerateDirectories(AutoSave.BackupPath, "????-??-??-??-??-??");
+            var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
 
             var rangeEnd = archivePeriod switch
             {
@@ -315,7 +333,7 @@ namespace Server.Saves
 
             var archive = CompressFiles(
                 latestFolders,
-                AutoSave.BackupPath,
+                BackupPath,
                 Path.Combine(ArchivePath, archivePeriod.ToString()),
                 now.ToTimeStamp()
             );

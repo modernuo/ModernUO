@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Server.Misc;
 
 namespace Server.Saves
@@ -12,7 +11,6 @@ namespace Server.Saves
 
         public static TimeSpan Delay { get; private set; }
         public static TimeSpan Warning { get; private set; }
-        public static string BackupPath { get; private set; }
 
         public static bool SavesEnabled
         {
@@ -37,33 +35,13 @@ namespace Server.Saves
 
         public static void Configure()
         {
-            var defaultBackupPath = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
-            BackupPath = ServerConfiguration.GetOrUpdateSetting("autosave.backupPath", defaultBackupPath);
-
             Delay = ServerConfiguration.GetOrUpdateSetting("autosave.saveDelay", TimeSpan.FromMinutes(5.0));
             Warning = ServerConfiguration.GetOrUpdateSetting("autosave.warningDelay", TimeSpan.Zero);
         }
 
         public static void Initialize()
         {
-            EventSink.WorldSavePostSnapshot += Backup;
             SavesEnabled = true;
-        }
-
-        private static void Backup(WorldSavePostSnapshotEventArgs args)
-        {
-            if (!Directory.Exists(args.OldSavePath))
-            {
-                return;
-            }
-
-            var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
-            AssemblyHandler.EnsureDirectory(BackupPath);
-            Directory.Move(args.OldSavePath, backupPath);
-
-            logger.Information($"Created backup at {backupPath}");
-
-            ArchiveSaves.Archive?.Invoke(Core.Now);
         }
 
         public static void ResetAutoSave(TimeSpan saveDelay, TimeSpan warningDelay)
