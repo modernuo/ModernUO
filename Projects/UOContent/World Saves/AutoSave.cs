@@ -68,8 +68,14 @@ namespace Server.Saves
 
         public static void ResetAutoSave(TimeSpan saveDelay, TimeSpan warningDelay)
         {
-            Delay = saveDelay;
-            Warning = warningDelay;
+            if (saveDelay != Delay || warningDelay != Warning)
+            {
+                Delay = saveDelay;
+                Warning = warningDelay;
+
+                ServerConfiguration.SetSetting("autosave.saveDelay", Delay);
+                ServerConfiguration.SetSetting("autosave.warningDelay", Warning);
+            }
 
             SavesEnabled = true;
         }
