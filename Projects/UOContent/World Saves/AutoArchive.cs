@@ -20,9 +20,9 @@ namespace Server.Saves
         Monthly
     }
 
-    public static class ArchiveLocally
+    public static class AutoArchive
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ArchiveLocally));
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoArchive));
 
         private const string _libArchiveWindowsUrl = @"https://www.libarchive.org/downloads/libarchive-v3.5.2-win64.zip";
         private static string _pathToZstd;
