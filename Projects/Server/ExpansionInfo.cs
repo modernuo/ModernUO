@@ -154,6 +154,7 @@ namespace Server
             {
                 var expansion = expansions[i];
                 if (expansion.ClientVersion != null)
+                {
                     Table[i] = new ExpansionInfo(
                         i,
                         expansion.Name,
@@ -162,7 +163,9 @@ namespace Server
                         expansion.CharacterListFlags,
                         expansion.HousingFlags
                     );
+                }
                 else
+                {
                     Table[i] = new ExpansionInfo(
                         i,
                         expansion.Name,
@@ -171,6 +174,7 @@ namespace Server
                         expansion.CharacterListFlags,
                         expansion.HousingFlags
                     );
+                }
             }
         }
 
