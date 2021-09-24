@@ -355,7 +355,7 @@ namespace Server.Saves
                 CompressionFormat.GZip => ".tar.gz",
                 CompressionFormat.LZip => ".tar.lzip",
                 CompressionFormat.Zstd => ".tar.zst",
-                _                    => ".tar"
+                _                      => ".tar"
             };
     }
 }
