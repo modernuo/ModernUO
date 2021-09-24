@@ -272,7 +272,6 @@ namespace Server
     {
         public string Name { get; init; }
 
-        [JsonConverter(typeof(ClientVersionConverter))]
         public ClientVersion? ClientVersion { get; init; }
 
         public ClientFlags? ClientFlags { get; init; }
