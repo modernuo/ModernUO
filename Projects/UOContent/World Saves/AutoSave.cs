@@ -90,7 +90,7 @@ namespace Server.Saves
                 }
             }
 
-            _nextSave += Delay - Warning;
+            _nextSave += Delay;
         }
 
         private static void BroadcastWarning()
