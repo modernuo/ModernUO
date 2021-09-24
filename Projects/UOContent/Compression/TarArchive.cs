@@ -48,12 +48,14 @@ namespace Server.Compression
 
             var compressionArg = compressionProgram ?? "-a";
 
+            Console.WriteLine($"tar {compressionArg} -xf \"{fileNamePath}\" -C \"{outputDirectory}\"");
+
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = _pathToTar,
-                    Arguments = $"{compressionArg} -xf \"{fileNamePath}\" -C {outputDirectory}",
+                    Arguments = $"{compressionArg} -xf \"{fileNamePath}\" -C \"{outputDirectory}\"",
                     UseShellExecute = true
                 }
             };

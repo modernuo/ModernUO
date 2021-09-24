@@ -20,7 +20,7 @@ namespace Server.Compression
         {
             _pathToZstd ??= GetPathToZstd();
 
-            var compressionProgram = $"--use-compress-program \"{_pathToZstd} -d";
+            var compressionProgram = $"--use-compress-program \"{_pathToZstd}\" -d";
             return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, compressionProgram);
         }
 
@@ -33,7 +33,7 @@ namespace Server.Compression
             Debug.Assert(compressionLevel is >= 1 and <= 22, $"{nameof(compressionLevel)} must be between 1 and 22");
 
             _pathToZstd ??= GetPathToZstd();
-            var compressionProgram = $"--use-compress-program \"{_pathToZstd} -{compressionLevel}\"";
+            var compressionProgram = $"--use-compress-program \"{_pathToZstd}\" -{compressionLevel}\"";
             return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, compressionProgram);
         }
     }
