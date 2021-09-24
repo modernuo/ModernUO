@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Server.Buffers;
+using Server.Compression;
 using Server.Logging;
 
 namespace Server.Saves
@@ -20,35 +16,42 @@ namespace Server.Saves
         Monthly
     }
 
+    public enum CompressionType
+    {
+        None,
+        Zip,
+        GZip,
+        LZip,
+        Zstd,
+    }
+
     public static class AutoArchive
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoArchive));
 
-        private const string _libArchiveWindowsUrl = @"https://www.libarchive.org/downloads/libarchive-v3.5.2-win64.zip";
-        private static string _pathToZstd;
-        private static string _pathToTar;
         private static int _isArchiving;
         private static DateTime _nextHourlyArchive;
         private static DateTime _nextDailyArchive;
         private static DateTime _nextMonthlyArchive;
+        private static CompressionType _compressionType;
         private static bool _enablePruning;
         private static ArchivePeriod _prunePeriod;
 
-        public static Action<DateTime> Archive { get; set; }
-        public static Action<DateTime> Prune { get; set; }
+        public static Action Archive { get; set; }
+        public static Action Prune { get; set; }
         public static string ArchivePath { get; private set; }
         public static string BackupPath { get; private set; }
 
         public static void Configure()
         {
             var defaultBackupPath = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
-            BackupPath = ServerConfiguration.GetOrUpdateSetting("autosave.backupPath", defaultBackupPath);
+            BackupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", defaultBackupPath);
+            ArchivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
+            _compressionType = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionType", CompressionType.Zstd);
 
-            ArchivePath = ServerConfiguration.GetOrUpdateSetting("autosave.archivePath", "Archives");
-
-            var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autosave.archiveLocally", true);
-            _enablePruning = ServerConfiguration.GetOrUpdateSetting("autosave.enableArchivePruning", false);
-            _prunePeriod = ServerConfiguration.GetOrUpdateSetting("autosave.pruneArchives", ArchivePeriod.Monthly);
+            var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
+            _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", false);
+            _prunePeriod = ServerConfiguration.GetOrUpdateSetting("autoArchive.pruneArchives", ArchivePeriod.Monthly);
 
             if (useLocalArchives)
             {
@@ -57,7 +60,10 @@ namespace Server.Saves
             }
 
             // Support the Saves folder containing exactly one .tar.zst or .zip file
-            RestoreArchive();
+            RestoreFromArchive();
+
+            // Prune local archives on startup if pruning is enabled
+            Prune?.Invoke();
         }
 
         public static void Initialize()
@@ -85,13 +91,20 @@ namespace Server.Saves
 
             logger.Information($"Created backup at {backupPath}");
 
-            Archive?.Invoke(Core.Now);
+            Archive?.Invoke();
         }
 
-        private static void RestoreArchive()
+        private static void RestoreFromArchive()
         {
             var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
-            var files = Directory.EnumerateFiles(savePath, "????-??-??-??-??-??.*");
+
+            var files = Directory.Exists(savePath) ? Directory.GetFiles(savePath, "????-??-??-??-??-??.*") : null;
+
+            if (files == null || files.Length == 0)
+            {
+                files = Directory.GetFiles(ArchivePath, "????-??-??-??-??-??.*", SearchOption.AllDirectories);
+            }
+
             var latestFiles = GetInRange(files, DateTime.MinValue, DateTime.MaxValue, true);
 
             foreach (var file in latestFiles)
@@ -121,11 +134,11 @@ namespace Server.Saves
 
             if (fileName.EndsWithOrdinal(".tar.zst"))
             {
-                successful = ExtractZstdArchive(fi.FullName, tempFolder);
+                successful = ZstdArchive.ExtractToDirectory(fi.FullName, tempFolder);
             }
             else if (fileName.EndsWithOrdinal(".zip"))
             {
-                ZipFile.ExtractToDirectory(fi.FullName, tempFolder);
+                TarArchive.ExtractToDirectory(fi.FullName, tempFolder);
                 successful = true;
             }
             else
@@ -162,102 +175,20 @@ namespace Server.Saves
             return true;
         }
 
-        private static bool ExtractZstdArchive(string fileNamePath, string outputDirectory)
-        {
-            _pathToZstd ??= GetPathToZstd();
-            _pathToTar ??= GetPathToTar();
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = _pathToTar,
-                    Arguments = $"--use-compress-program \"{_pathToZstd} -d\" -xf \"{fileNamePath}\" -C {outputDirectory}",
-                    UseShellExecute = true
-                }
-            };
-
-            process.Start();
-            process.WaitForExit();
-
-            return process.ExitCode == 0;
-        }
-
-        private static string GetPathToTar()
-        {
-            if (!Core.IsWindows || File.Exists(@"C:\Windows\system32\tar.exe"))
-            {
-                return "tar";
-            }
-
-            return File.Exists("bsdtar/bsdtar.exe") ? "bsdtar/bsdtar.exe" : DownloadTarForWindows();
-        }
-
-        private static string GetPathToZstd()
-        {
-            var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "./";
-            var zstdFileName = $"zstd{(Core.IsWindows ? ".exe" : "")}";
-            return Path.Combine(assemblyPath, zstdFileName);
-        }
-
-        private static string DownloadTarForWindows()
-        {
-            AssemblyHandler.EnsureDirectory("temp");
-
-            using WebClient wc = new WebClient();
-            wc.DownloadFile (new Uri(_libArchiveWindowsUrl), "temp/libarchive.zip");
-
-            ZipFile.ExtractToDirectory("temp/libarchive.zip", "temp");
-            Directory.Move("temp/libarchive/bin", "bsdtar");
-            Directory.Delete("temp", true);
-
-            return "bsdtar/bsdtar.exe";
-        }
-
-        private static string CompressFiles(List<string> paths, string relativePath, string outputFilePath, string outputFileName)
-        {
-            _pathToZstd ??= GetPathToZstd();
-            _pathToTar ??= GetPathToTar();
-            AssemblyHandler.EnsureDirectory(outputFilePath);
-            var outputFile = $"{outputFilePath}/{outputFileName}.tar.zst";
-
-            using var builder = new ValueStringBuilder();
-            for (var i = 0; i < paths.Count; i++)
-            {
-                var path = paths[i];
-                builder.Append($"{(i > 0 ? " " : "")}\"{Path.GetRelativePath(relativePath, path)}\"");
-            }
-
-            var pathsToCompress = builder.ToString();
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = _pathToTar,
-                    Arguments = $"--use-compress-program \"{_pathToZstd} -10\" -cf \"{outputFile}\" -C \"{relativePath}\" {pathsToCompress}",
-                    UseShellExecute = true
-                }
-            };
-
-            process.Start();
-            process.WaitForExit();
-
-            return process.ExitCode == 0 ? outputFile : null;
-        }
-
-        public static void PruneLocalArchives(DateTime threshold)
+        public static void PruneLocalArchives()
         {
             if (!_enablePruning)
             {
                 return;
             }
 
+            var date = Core.Now;
+
             var rangeEnd = _prunePeriod switch
             {
-                ArchivePeriod.Monthly => threshold.AddMonths(-2),
-                ArchivePeriod.Daily   => threshold.AddDays(-2),
-                _                     => threshold.AddHours(-2),
+                ArchivePeriod.Monthly => date.AddMonths(-2),
+                ArchivePeriod.Daily   => date.AddDays(-2),
+                _                     => date.AddHours(-2),
             };
 
             var allFolders = Directory.GetFiles(ArchivePath, "????-??-??-??-??-??.*", SearchOption.AllDirectories);
@@ -269,8 +200,10 @@ namespace Server.Saves
             }
         }
 
-        public static void ArchiveLocally(DateTime date)
+        public static void ArchiveLocally()
         {
+            var date = Core.Now;
+
             if (date < _nextHourlyArchive && date < _nextDailyArchive && date < _nextMonthlyArchive)
             {
                 return;
@@ -305,7 +238,7 @@ namespace Server.Saves
                         _nextMonthlyArchive = lastMonth.AddMonths(2);
                     }
 
-                    Prune?.Invoke(date);
+                    Prune?.Invoke();
 
                     _isArchiving = 0;
                 },
@@ -331,16 +264,18 @@ namespace Server.Saves
                 return;
             }
 
-            var archive = CompressFiles(
-                latestFolders,
-                BackupPath,
-                Path.Combine(ArchivePath, archivePeriod.ToString()),
-                now.ToTimeStamp()
-            );
+            var extension = _compressionType.GetFileExtension();
 
-            if (archive != null)
+            var archivePeriodStr = archivePeriod.ToString();
+            var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{now.ToTimeStamp()}{extension}");
+
+            var archiveCreated = _compressionType == CompressionType.Zstd
+                ? ZstdArchive.CreateFromPaths(latestFolders, archiveFilePath)
+                : TarArchive.CreateFromPaths(latestFolders, archiveFilePath);
+
+            if (archiveCreated)
             {
-                logger.Information($"Created {archivePeriod.ToString()?.ToLowerInvariant()} archive at {archive}");
+                logger.Information($"Created {archivePeriodStr.ToLowerInvariant()} archive at {archiveFilePath}");
 
                 // Keep the latest one, but delete the rest.
                 for (var i = 1; i < latestFolders.Count; i++)
@@ -350,7 +285,7 @@ namespace Server.Saves
             }
             else
             {
-                logger.Warning($"Failed to create {archivePeriod.ToString()?.ToLowerInvariant()} archive.");
+                logger.Warning($"Failed to create {archivePeriodStr.ToLowerInvariant()} archive.");
             }
         }
 
@@ -416,5 +351,16 @@ namespace Server.Saves
 
             return true;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GetFileExtension(this CompressionType compressionType) =>
+            compressionType switch
+            {
+                CompressionType.Zip  => ".zip",
+                CompressionType.GZip => ".tar.gz",
+                CompressionType.LZip => ".tar.lzip",
+                CompressionType.Zstd => ".tar.zst",
+                _                    => ".tar"
+            };
     }
 }
