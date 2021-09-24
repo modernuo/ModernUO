@@ -136,15 +136,10 @@ namespace Server.Saves
             {
                 successful = ZstdArchive.ExtractToDirectory(fi.FullName, tempFolder);
             }
-            else if (fileName.EndsWithOrdinal(".zip"))
+            else
             {
                 TarArchive.ExtractToDirectory(fi.FullName, tempFolder);
                 successful = true;
-            }
-            else
-            {
-                logger.Information($"Unsupported archive file {fi.Name}");
-                return false;
             }
 
             if (!successful)
