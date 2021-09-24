@@ -59,7 +59,7 @@ namespace Server.Saves
                 Prune = PruneLocalArchives;
             }
 
-            // Support the Saves folder containing exactly one .tar.zst or .zip file
+            // Restores an archive file placed in the Saves folder. Supports all compression formats.
             RestoreFromArchive();
 
             // Prune local archives on startup if pruning is enabled
@@ -187,11 +187,13 @@ namespace Server.Saves
             };
 
             var allFolders = Directory.GetFiles(ArchivePath, "????-??-??-??-??-??.*", SearchOption.AllDirectories);
-            var backups = GetInRange(allFolders, DateTime.MinValue, rangeEnd, true);
+            var archives = GetInRange(allFolders, DateTime.MinValue, rangeEnd, true);
 
-            foreach (var backup in backups)
+            foreach (var archive in archives)
             {
-                Directory.Delete(backup, true);
+                var fi = new FileInfo(archive);
+                logger.Information($"Pruning {fi.Name} archive");
+                File.Delete(archive);
             }
         }
 
@@ -280,7 +282,7 @@ namespace Server.Saves
             }
             else
             {
-                logger.Warning($"Failed to create {archivePeriodStr.ToLowerInvariant()} archive.");
+                logger.Warning($"Failed to create {archivePeriodStr.ToLowerInvariant()} archive");
             }
         }
 
