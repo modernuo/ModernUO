@@ -102,7 +102,7 @@ namespace Server.Saves
 
             if (files == null || files.Length == 0)
             {
-                files = Directory.GetFiles(ArchivePath, "????-??-??-??-??-??.*", SearchOption.AllDirectories);
+                return;
             }
 
             var latestFiles = GetInRange(files, DateTime.MinValue, DateTime.MaxValue, true);
@@ -304,6 +304,7 @@ namespace Server.Saves
                 {
                     name = new DirectoryInfo(item).Name;
                 }
+
                 if (IsInRange(name, rangeStart, rangeEnd, out var date))
                 {
                     items.Add(date, item);
