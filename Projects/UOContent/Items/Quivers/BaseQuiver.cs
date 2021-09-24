@@ -265,15 +265,9 @@ namespace Server.Items
                 list.Add(1074762, prop.ToString()); // Damage modifier: ~1_PERCENT~%
             }
 
-            AlterBowDamage(
-                out var phys,
-                out var fire,
-                out var cold,
-                out var pois,
-                out var nrgy,
-                out var chaos,
-                out var direct
-            );
+            int phys = 0, fire = 0, cold = 0, pois = 0, nrgy = 0, chaos = 0, direct = 0;
+
+            AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
 
             if (phys != 0)
             {
@@ -550,11 +544,9 @@ namespace Server.Items
         }
 
         public virtual void AlterBowDamage(
-            out int phys, out int fire, out int cold, out int pois, out int nrgy,
-            out int chaos, out int direct
+            ref int phys, ref int fire, ref int cold, ref int pois, ref int nrgy, ref int chaos, ref int direct
         )
         {
-            phys = fire = cold = pois = nrgy = chaos = direct = 0;
         }
 
         public void InvalidateWeight()
