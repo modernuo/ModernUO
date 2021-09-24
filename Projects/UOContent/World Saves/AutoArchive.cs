@@ -16,7 +16,7 @@ namespace Server.Saves
         Monthly
     }
 
-    public enum CompressionType
+    public enum CompressionFormat
     {
         None,
         Zip,
@@ -33,7 +33,7 @@ namespace Server.Saves
         private static DateTime _nextHourlyArchive;
         private static DateTime _nextDailyArchive;
         private static DateTime _nextMonthlyArchive;
-        private static CompressionType _compressionType;
+        private static CompressionFormat _compressionFormat;
         private static bool _enablePruning;
         private static ArchivePeriod _prunePeriod;
 
@@ -47,7 +47,7 @@ namespace Server.Saves
             var defaultBackupPath = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
             BackupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", defaultBackupPath);
             ArchivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
-            _compressionType = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionType", CompressionType.Zstd);
+            _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
 
             var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
             _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", false);
@@ -259,12 +259,12 @@ namespace Server.Saves
                 return;
             }
 
-            var extension = _compressionType.GetFileExtension();
+            var extension = _compressionFormat.GetFileExtension();
 
             var archivePeriodStr = archivePeriod.ToString();
             var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{now.ToTimeStamp()}{extension}");
 
-            var archiveCreated = _compressionType == CompressionType.Zstd
+            var archiveCreated = _compressionFormat == CompressionFormat.Zstd
                 ? ZstdArchive.CreateFromPaths(latestFolders, archiveFilePath)
                 : TarArchive.CreateFromPaths(latestFolders, archiveFilePath);
 
@@ -348,13 +348,13 @@ namespace Server.Saves
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetFileExtension(this CompressionType compressionType) =>
-            compressionType switch
+        private static string GetFileExtension(this CompressionFormat compressionFormat) =>
+            compressionFormat switch
             {
-                CompressionType.Zip  => ".zip",
-                CompressionType.GZip => ".tar.gz",
-                CompressionType.LZip => ".tar.lzip",
-                CompressionType.Zstd => ".tar.zst",
+                CompressionFormat.Zip  => ".zip",
+                CompressionFormat.GZip => ".tar.gz",
+                CompressionFormat.LZip => ".tar.lzip",
+                CompressionFormat.Zstd => ".tar.zst",
                 _                    => ".tar"
             };
     }
