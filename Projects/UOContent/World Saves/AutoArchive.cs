@@ -22,7 +22,6 @@ namespace Server.Saves
         None,
         Zip,
         GZip,
-        LZip,
         Zstd,
     }
 
@@ -44,8 +43,7 @@ namespace Server.Saves
 
         public static void Configure()
         {
-            var defaultBackupPath = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
-            BackupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", defaultBackupPath);
+            BackupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups/Automatic");
             ArchivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
             _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
 
@@ -54,7 +52,11 @@ namespace Server.Saves
 
             if (useLocalArchives)
             {
-                Archive = ArchiveLocally;
+                Archive = AutoArchiveLocally;
+            }
+
+            if (_enablePruning)
+            {
                 Prune = PruneLocalArchives;
             }
 
@@ -171,11 +173,6 @@ namespace Server.Saves
 
         public static void PruneLocalArchives()
         {
-            if (!_enablePruning)
-            {
-                return;
-            }
-
             // Maintain a total of 66 of the most recent archives
             PruneLocalArchives(ArchivePeriod.Hourly, 24);
             PruneLocalArchives(ArchivePeriod.Daily, 30);
@@ -206,6 +203,28 @@ namespace Server.Saves
 
         public static void ArchiveLocally()
         {
+            if (Interlocked.CompareExchange(ref _isArchiving, 0, 1) == 1)
+            {
+                return;
+            }
+
+            var date = Core.Now;
+
+            ThreadPool.UnsafeQueueUserWorkItem(
+                _ =>
+                {
+                    var lastHour = date.Date.AddHours(date.Hour);
+                    Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), date.ToTimeStamp());
+                    _nextHourlyArchive = lastHour.AddHours(2);
+
+                    _isArchiving = 0;
+                },
+                null
+            );
+        }
+
+        public static void AutoArchiveLocally()
+        {
             var date = Core.Now;
 
             if (date < _nextHourlyArchive && date < _nextDailyArchive && date < _nextMonthlyArchive)
@@ -224,21 +243,21 @@ namespace Server.Saves
                     if (date >= _nextHourlyArchive)
                     {
                         var lastHour = date.Date.AddHours(date.Hour);
-                        Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), date);
+                        Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), date.ToTimeStamp());
                         _nextHourlyArchive = lastHour.AddHours(2);
                     }
 
                     if (date >= _nextDailyArchive)
                     {
                         var yesterday = date.Date.AddDays(-1);
-                        Rollup(ArchivePeriod.Daily, yesterday, date);
+                        Rollup(ArchivePeriod.Daily, yesterday, date.ToTimeStamp());
                         _nextDailyArchive = yesterday.AddDays(2);
                     }
 
                     if (date >= _nextMonthlyArchive)
                     {
                         var lastMonth = new DateTime(date.Year, date.Month, 1).AddMonths(-1);
-                        Rollup(ArchivePeriod.Monthly, lastMonth, date);
+                        Rollup(ArchivePeriod.Monthly, lastMonth, date.ToTimeStamp());
                         _nextMonthlyArchive = lastMonth.AddMonths(2);
                     }
 
@@ -250,9 +269,10 @@ namespace Server.Saves
             );
         }
 
-        private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, DateTime now)
+        private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, string archiveNameNoExtension)
         {
             var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
 
             var rangeEnd = archivePeriod switch
@@ -272,7 +292,7 @@ namespace Server.Saves
             var extension = _compressionFormat.GetFileExtension();
 
             var archivePeriodStr = archivePeriod.ToString();
-            var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{now.ToTimeStamp()}{extension}");
+            var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{archiveNameNoExtension}{extension}");
 
             var archiveCreated = _compressionFormat == CompressionFormat.Zstd
                 ? ZstdArchive.CreateFromPaths(latestFolders, archiveFilePath)
@@ -366,7 +386,6 @@ namespace Server.Saves
             {
                 CompressionFormat.Zip  => ".zip",
                 CompressionFormat.GZip => ".tar.gz",
-                CompressionFormat.LZip => ".tar.lzip",
                 CompressionFormat.Zstd => ".tar.zst",
                 _                      => ".tar"
             };

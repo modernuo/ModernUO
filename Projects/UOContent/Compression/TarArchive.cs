@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,6 +25,29 @@ namespace Server.Compression
             return File.Exists(tarPath) ? tarPath : DownloadTarForWindows();
         }
 
+        private static int RunTar(string arguments, string compressionProgramPath)
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = _pathToTar,
+                    Arguments = arguments
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+
+            if (compressionProgramPath != null)
+            {
+                var envPaths = $"{process.StartInfo.EnvironmentVariables["PATH"]}:{compressionProgramPath}";
+                process.StartInfo.EnvironmentVariables["PATH"] = envPaths;
+            }
+
+            return process.ExitCode;
+        }
+
         private static string DownloadTarForWindows()
         {
             var tempDir = Path.Combine(Core.BaseDirectory, "temp");
@@ -42,32 +66,27 @@ namespace Server.Compression
             return Path.Combine(Core.BaseDirectory, "bsdtar/bsdtar.exe");
         }
 
-        public static bool ExtractToDirectory(string fileNamePath, string outputDirectory, string compressionProgram = null)
+        public static bool ExtractToDirectory(
+            string fileNamePath,
+            string outputDirectory,
+            string compressCommand = null,
+            string compressionProgramPath = null
+        )
         {
             _pathToTar ??= GetPathToTar();
 
-            var compressionArg = compressionProgram ?? "-a";
+            var tarFlags = compressCommand == null ? "-axf" : "-xf";
+            var useExternalCompression = compressCommand != null ? $"-I \"{compressCommand}\" " : "";
+            var arguments = $"{useExternalCompression}{tarFlags} \"{fileNamePath}\" -C \"{outputDirectory}\"";
 
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = _pathToTar,
-                    Arguments = $"{compressionArg} -xf \"{fileNamePath}\" -C \"{outputDirectory}\"",
-                    UseShellExecute = true
-                }
-            };
-
-            process.Start();
-            process.WaitForExit();
-
-            return process.ExitCode == 0;
+            return RunTar(arguments, compressionProgramPath) == 0;
         }
 
         public static bool CreateFromPaths(
             List<string> paths,
             string destinationArchiveFileName,
-            string compressionProgram = null
+            string compressCommand = null,
+            string compressionProgramPath = null
         )
         {
             _pathToTar ??= GetPathToTar();
@@ -82,25 +101,13 @@ namespace Server.Compression
                 var path = paths[i];
                 builder.Append($"{(i > 0 ? " " : "")}\"{Path.GetRelativePath(directory, path)}\"");
             }
-
             var pathsToCompress = builder.ToString();
-            var compressionArg = compressionProgram ?? "-a";
-            var arguments = $"{compressionArg} -cf \"{destinationArchiveFileName}\" -C \"{directory}\" {pathsToCompress}";
 
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = _pathToTar,
-                    Arguments = arguments,
-                    UseShellExecute = true
-                }
-            };
+            var tarFlags = compressCommand == null ? "-acf" : "-cf";
+            var useExternalCompression = compressCommand != null ? $"-I \"{compressCommand}\" " : "";
+            var arguments = $"{useExternalCompression}{tarFlags} \"{destinationArchiveFileName}\" -C \"{directory}\" {pathsToCompress}";
 
-            process.Start();
-            process.WaitForExit();
-
-            return process.ExitCode == 0;
+            return RunTar(arguments, compressionProgramPath) == 0;
         }
     }
 }

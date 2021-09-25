@@ -7,21 +7,42 @@ namespace Server.Compression
 {
     public static class ZstdArchive
     {
-        private static string _pathToZstd;
-
-        private static string GetPathToZstd()
-        {
-            var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName ?? "./";
-            var zstdFileName = $"zstd{(Core.IsWindows ? ".exe" : "")}";
-            return Path.Combine(assemblyPath, zstdFileName);
-        }
+        private static readonly string _pathToZstd = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName;
 
         public static bool ExtractToDirectory(string fileNamePath, string outputDirectory)
         {
-            _pathToZstd ??= GetPathToZstd();
+            // bsdtar has a bug and hangs, so we are doing it in two steps.
+            if (Core.IsWindows)
+            {
+                var tempTarArchive = Path.Combine(Core.BaseDirectory, "temp/temp-file.tar");
 
-            var compressionProgram = $"--use-compress-program \"{_pathToZstd} -d\"";
-            return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, compressionProgram);
+                try
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = _pathToZstd,
+                            Arguments = $"--no-progress -d \"{fileNamePath}\" -o \"${tempTarArchive}\""
+                        }
+                    };
+
+                    process.Start();
+                    process.WaitForExit();
+
+                    return process.ExitCode == 0 && TarArchive.ExtractToDirectory(tempTarArchive, outputDirectory);
+                }
+                catch
+                {
+                    return false;
+                }
+                finally
+                {
+                    File.Delete(tempTarArchive);
+                }
+            }
+
+            return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, "zstd -d", _pathToZstd);
         }
 
         public static bool CreateFromPaths(
@@ -32,9 +53,43 @@ namespace Server.Compression
         {
             Debug.Assert(compressionLevel is >= 1 and <= 22, $"{nameof(compressionLevel)} must be between 1 and 22");
 
-            _pathToZstd ??= GetPathToZstd();
-            var compressionProgram = $"--use-compress-program \"{_pathToZstd} -{compressionLevel}\"";
-            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, compressionProgram);
+            // bsdtar has a bug and hangs, so we are doing it in two steps.
+            if (Core.IsWindows)
+            {
+                var tempTarArchive = Path.Combine(Core.BaseDirectory, "temp/temp-file.tar");
+
+                try
+                {
+                    if (!TarArchive.CreateFromPaths(paths, tempTarArchive))
+                    {
+                        return false;
+                    }
+
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = $"{_pathToZstd}\\zstd.exe",
+                            Arguments = $"--no-progress -10 \"{tempTarArchive}\" -o \"{destinationArchiveFileName}\""
+                        }
+                    };
+
+                    process.Start();
+                    process.WaitForExit();
+
+                    return process.ExitCode == 0;
+                }
+                catch
+                {
+                    return false;
+                }
+                finally
+                {
+                    File.Delete(tempTarArchive);
+                }
+            }
+
+            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, $"{_pathToZstd} -10", _pathToZstd);
         }
     }
 }
