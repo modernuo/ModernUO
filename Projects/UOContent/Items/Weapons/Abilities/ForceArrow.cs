@@ -20,7 +20,7 @@ namespace Server.Items
             attacker.SendLocalizedMessage(1074381); // You fire an arrow of pure force.
             defender.SendLocalizedMessage(1074382); // You are struck by a force arrow!
 
-            if (.4 > Utility.RandomDouble())
+            if (0.4 > Utility.RandomDouble())
             {
                 defender.Combatant = null;
                 defender.Warmode = false;
@@ -28,11 +28,11 @@ namespace Server.Items
 
             ForceArrowInfo info = GetInfo(attacker, defender);
 
-            if(info == null)
+            if (info == null)
             {
                 BeginForceArrow(attacker, defender);
             }
-            else if (info.Timer != null && info.Timer.Running)
+            else if (info?.Timer.Running == true)
             {
                 info.Timer.IncreaseExpiration();
 
@@ -41,7 +41,9 @@ namespace Server.Items
             }
 
             if (defender.Spell is Spell spell && spell.IsCasting)
+            {
                 spell.Disturb(DisturbType.Hurt, false, true);
+            }
         }
 
         private static readonly Dictionary<Mobile, List<ForceArrowInfo>> _table = new Dictionary<Mobile, List<ForceArrowInfo>>();
@@ -66,7 +68,9 @@ namespace Server.Items
         public static void EndForceArrow(ForceArrowInfo info)
         {
             if (info == null)
+            {
                 return;
+            }
 
             Mobile attacker = info.Attacker;
 
@@ -94,9 +98,9 @@ namespace Server.Items
 
         public static ForceArrowInfo GetInfo(Mobile attacker, Mobile defender)
         {
-            if(_table.TryGetValue(attacker,out var list))
+            if (_table.TryGetValue(attacker,out var list))
             {
-                foreach (ForceArrowInfo info in _table[attacker])
+                foreach (ForceArrowInfo info in list)
                 {
                     if (info.Defender == defender)
                         return info;
@@ -152,7 +156,7 @@ namespace Server.Items
 
             public void IncreaseExpiration()
             {
-                m_Expires = m_Expires + TimeSpan.FromSeconds(2);
+                m_Expires += TimeSpan.FromSeconds(2);
 
                 m_Info.DefenseChanceMalus += 5;
             }

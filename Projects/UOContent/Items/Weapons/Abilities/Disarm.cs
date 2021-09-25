@@ -12,28 +12,25 @@ namespace Server.Items
 
         public override int BaseMana => 20;
 
+        public override bool RequiresTactics(Mobile from) =>
+            !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
+
         //Disarm is special. Doesnt need tactics when wresling and tactics need is lower than fighting skill.
-        public override bool RequiresTactics(Mobile from) => false;
-
-        public override bool CheckSkills(Mobile from)
+        public virtual double GetRequiredTactics(Mobile from)
         {
-            if (!(from.Weapon is BaseWeapon weapon))
+            if (from.Weapon is BaseWeapon weapon)
             {
-                return base.CheckSkills(from);
+                if (weapon.PrimaryAbility == this)
+                {
+                    return 30.0;
+                }
+                else if (weapon.SecondaryAbility == this)
+                {
+                    return 60.0;
+                }
             }
 
-            var skill = from.Skills.Tactics;
-            var skillReq = GetRequiredSecondarySkill(from);
-
-            if (skill?.Value >= skillReq)
-            {
-                return true;
-            }
-
-            //TODO - find correct message for tactics only.
-            from.SendLocalizedMessage(1079308, skillReq.ToString()); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
-
-            return false;
+            return 200.0;
         }
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
@@ -47,7 +44,7 @@ namespace Server.Items
 
             var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-            if (toDisarm is null || toDisarm?.Movable == false)
+            if (toDisarm?.Movable != false)
             {
                 toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
             }

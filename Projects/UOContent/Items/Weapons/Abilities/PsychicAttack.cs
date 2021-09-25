@@ -11,7 +11,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -23,7 +25,7 @@ namespace Server.Items
 
             if (Registry.TryGetValue(defender, out var timer))
             {
-                if(!timer.DoneIncrease)
+                if (!timer.DoneIncrease)
                 {
                     timer.SpellDamageMalus *= 2;
                     timer.ManaCostMalus *= 2;
@@ -38,14 +40,16 @@ namespace Server.Items
 
             BuffInfo.RemoveBuff(defender, BuffIcon.PsychicAttack);
 
-            string args = string.Format("{0}\t{1}", timer.SpellDamageMalus, timer.ManaCostMalus);
+            string args = string.Format($"{timer.SpellDamageMalus}\t{timer.ManaCostMalus}");
             BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.PsychicAttack, 1151296, 1151297, args));
         }
 
         public static void RemoveEffects(Mobile defender)
         {
             if (defender == null)
+            {
                 return;
+            }
 
             BuffInfo.RemoveBuff(defender, BuffIcon.PsychicAttack);
 

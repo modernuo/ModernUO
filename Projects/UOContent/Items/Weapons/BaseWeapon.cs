@@ -1024,6 +1024,7 @@ namespace Server.Items
                 }
 
                 ImmolatingWeaponSpell.StopImmolating(this);
+                ForceOfNature.Remove(m);
 
                 m.CheckStatTimers();
 
@@ -1662,6 +1663,8 @@ namespace Server.Items
                 percentageBonus += (int)(move.GetDamageScalar(attacker, defender) * 100) - 100;
             }
 
+            percentageBonus += (int)(ForceOfNature.GetDamageScalar(attacker, defender) * 100) - 100;
+
             percentageBonus += (int)(damageBonus * 100) - 100;
 
             var cs = CheckSlayers(attacker, defender);
@@ -1864,9 +1867,7 @@ namespace Server.Items
                 move = null;
             }
 
-            WeaponAbility bladeweavingAbi;
-            var bladeweaving = Bladeweave.BladeWeaving(attacker, out bladeweavingAbi);
-            var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true || (bladeweaving && bladeweavingAbi is ArmorIgnore);
+            var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true || ((Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) && bladeweavingAbi is ArmorIgnore));
 
             var damageGiven = AOS.Damage(
                 defender,
@@ -2102,6 +2103,8 @@ namespace Server.Items
 
             a?.OnHit(attacker, defender, damage);
             move?.OnHit(attacker, defender, damage);
+
+            ForceOfNature.OnHit(attacker, defender);
 
             if (defender is IHonorTarget it)
             {

@@ -12,17 +12,8 @@ namespace Server.Items
 
         public override int BaseMana => 30;
 
-        public override bool CheckSkills(Mobile from)
-        {
-            if (GetSkill(from, SkillName.Ninjitsu) < 50.0)
-            {
-                // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
-                from.SendLocalizedMessage(1063352, "50");
-                return false;
-            }
-
-            return base.CheckSkills(from);
-        }
+        public override bool RequiresSecondarySkill(Mobile from) => true;
+        public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Ninjitsu;
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {

@@ -10,7 +10,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -41,7 +43,7 @@ namespace Server.Items
 
         public static void OnHit(Mobile from, Mobile target)
         {
-            if(_table.TryGetValue(from,out var t))
+            if (_table.TryGetValue(from,out var t))
             {
                 t.Hits++;
                 t.LastHit = Core.Now;
@@ -64,7 +66,7 @@ namespace Server.Items
 
         public static double GetDamageScalar(Mobile from, Mobile target)
         {
-            if(_table.TryGetValue(from, out var t))
+            if (_table.TryGetValue(from, out var t))
             {
                 if (t.Target == target)
                 {

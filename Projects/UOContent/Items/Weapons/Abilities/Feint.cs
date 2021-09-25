@@ -11,18 +11,7 @@ namespace Server.Items
         public static Dictionary<Mobile, FeintTimer> Registry { get; } = new();
 
         public override int BaseMana => 30;
-
-        public override bool CheckSkills(Mobile from)
-        {
-            if (Math.Max(GetSkill(from, SkillName.Ninjitsu),GetSkill(from, SkillName.Bushido)) < 50.0)
-            {
-                // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
-                from.SendLocalizedMessage(1063347, "50");
-                return false;
-            }
-
-            return base.CheckSkills(from);
-        }
+        public override bool RequiresSecondarySkill(Mobile from) => true;
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {

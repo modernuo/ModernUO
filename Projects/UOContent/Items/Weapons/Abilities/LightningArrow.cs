@@ -1,4 +1,5 @@
 using Server.Spells;
+using System;
 using System.Collections.Generic;
 
 namespace Server.Items
@@ -13,22 +14,30 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
             Map map = attacker.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             BaseWeapon weapon = attacker.Weapon as BaseWeapon;
 
             if (weapon == null)
+            {
                 return;
+            }
 
             if (!CheckMana(attacker, true))
+            {
                 return;
+            }
 
             List<Mobile> targets = new List<Mobile>();
             IPooledEnumerable eable = defender.GetMobilesInRange(5);
@@ -50,21 +59,15 @@ namespace Server.Items
             eable.Free();
             defender.BoltEffect(0);
 
-            if (targets.Count > 0)
+            var mobilesLeft = Math.Min(targets.Count, 2);
+            while (mobilesLeft-- > 0)
             {
-                while (targets.Count > 2)
-                {
-                    targets.Remove(targets[Utility.Random(targets.Count)]);
-                }
+                var index = Utility.Random(targets.Count);
+                var m = targets[index];
+                targets.RemoveAt(index);
 
-                for (int i = 0; i < targets.Count; ++i)
-                {
-                    Mobile m = targets[i];
-
-                    m.BoltEffect(0);
-
-                    AOS.Damage(m, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
-                }
+                m.BoltEffect(0);
+                AOS.Damage(m, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
             }
         }
     }

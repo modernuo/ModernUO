@@ -4,27 +4,21 @@ namespace Server.Items
     {
         public override int BaseMana => 25;
 
-        public override bool CheckSkills(Mobile from)
-        {
-            //Serpent arrow is used only as secondary ability on "Elven composite longbow" so needed skill is always 60, but for sure we will use GetRequiredSecondarySkill
-            if (from.Skills.Poisoning.Value < GetRequiredSecondarySkill(from))
-            {
-                // You lack the required poisoning to perform that attack
-                from.SendLocalizedMessage(1060184);
-                return false;
-            }
-
-            return base.CheckSkills(from);
-        }
+        //Serpent arrow is used only as secondary ability on "Elven composite longbow" so needed skill is always 60, but for sure we will use GetRequiredSecondarySkill
+        public override bool RequiresSecondarySkill(Mobile from) => true;
+        public override double GetRequiredSecondarySkill(Mobile from) => 60;
+        public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Poisoning;
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
-            defender.SendLocalizedMessage(1112369); // 	You have been poisoned by a lethal arrow!
+            defender.SendLocalizedMessage(1112369); //You have been poisoned by a lethal arrow!
 
             int level;
 
