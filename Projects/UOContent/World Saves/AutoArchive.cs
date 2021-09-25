@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -35,7 +36,6 @@ namespace Server.Saves
         private static DateTime _nextMonthlyArchive;
         private static CompressionFormat _compressionFormat;
         private static bool _enablePruning;
-        private static ArchivePeriod _prunePeriod;
 
         public static Action Archive { get; set; }
         public static Action Prune { get; set; }
@@ -50,8 +50,7 @@ namespace Server.Saves
             _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
 
             var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
-            _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", false);
-            _prunePeriod = ServerConfiguration.GetOrUpdateSetting("autoArchive.pruneArchives", ArchivePeriod.Monthly);
+            _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", true);
 
             if (useLocalArchives)
             {
@@ -177,22 +176,30 @@ namespace Server.Saves
                 return;
             }
 
-            var date = Core.Now;
+            // Maintain a total of 66 of the most recent archives
+            PruneLocalArchives(ArchivePeriod.Hourly, 24);
+            PruneLocalArchives(ArchivePeriod.Daily, 30);
+            PruneLocalArchives(ArchivePeriod.Monthly, 12);
+        }
 
-            var rangeEnd = _prunePeriod switch
-            {
-                ArchivePeriod.Monthly => date.AddMonths(-2),
-                ArchivePeriod.Daily   => date.AddDays(-2),
-                _                     => date.AddHours(-2),
-            };
+        private static void PruneLocalArchives(ArchivePeriod period, int minRetained)
+        {
+            var periodStr = period.ToString();
+            var path = Path.Combine(ArchivePath, periodStr);
+            var allFiles = Directory.EnumerateFiles(path, "????-??-??-??-??-??.*");
+            var archives = GetInRange(allFiles, DateTime.MinValue, DateTime.MaxValue, true);
 
-            var allFolders = Directory.GetFiles(ArchivePath, "????-??-??-??-??-??.*", SearchOption.AllDirectories);
-            var archives = GetInRange(allFolders, DateTime.MinValue, rangeEnd, true);
-
+            var periodLowerStr = periodStr.ToLower();
             foreach (var archive in archives)
             {
+                if (minRetained > 0)
+                {
+                    minRetained--;
+                    continue;
+                }
+
                 var fi = new FileInfo(archive);
-                logger.Information($"Pruning {fi.Name} archive");
+                logger.Information($"Pruning {periodLowerStr} archive {fi.Name}");
                 File.Delete(archive);
             }
         }
@@ -245,6 +252,7 @@ namespace Server.Saves
 
         private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, DateTime now)
         {
+            var stopWatch = new Stopwatch();
             var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
 
             var rangeEnd = archivePeriod switch
@@ -272,7 +280,9 @@ namespace Server.Saves
 
             if (archiveCreated)
             {
-                logger.Information($"Created {archivePeriodStr.ToLowerInvariant()} archive at {archiveFilePath}");
+                stopWatch.Stop();
+                var elapsed = stopWatch.Elapsed.TotalSeconds;
+                logger.Information($"Created {archivePeriodStr.ToLowerInvariant()} archive at {archiveFilePath} ({elapsed:F2} seconds)");
 
                 // Keep the latest one, but delete the rest.
                 for (var i = 1; i < latestFolders.Count; i++)
