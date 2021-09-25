@@ -89,7 +89,7 @@ namespace Server.Compression
                 }
             }
 
-            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, $"{_pathToZstd} -10", _pathToZstd);
+            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, $"zstd -10", _pathToZstd);
         }
     }
 }
