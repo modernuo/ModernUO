@@ -36,14 +36,14 @@ namespace Server.Compression
                 }
             };
 
-            process.Start();
-            process.WaitForExit();
-
             if (compressionProgramPath != null)
             {
                 var envPaths = $"{process.StartInfo.EnvironmentVariables["PATH"]}:{compressionProgramPath}";
                 process.StartInfo.EnvironmentVariables["PATH"] = envPaths;
             }
+
+            process.Start();
+            process.WaitForExit();
 
             return process.ExitCode;
         }
@@ -76,7 +76,7 @@ namespace Server.Compression
             _pathToTar ??= GetPathToTar();
 
             var tarFlags = compressCommand == null ? "-axf" : "-xf";
-            var useExternalCompression = compressCommand != null ? $"-I \"{compressCommand}\" " : "";
+            var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";
             var arguments = $"{useExternalCompression}{tarFlags} \"{fileNamePath}\" -C \"{outputDirectory}\"";
 
             return RunTar(arguments, compressionProgramPath) == 0;
@@ -104,7 +104,7 @@ namespace Server.Compression
             var pathsToCompress = builder.ToString();
 
             var tarFlags = compressCommand == null ? "-acf" : "-cf";
-            var useExternalCompression = compressCommand != null ? $"-I \"{compressCommand}\" " : "";
+            var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";
             var arguments = $"{useExternalCompression}{tarFlags} \"{destinationArchiveFileName}\" -C \"{directory}\" {pathsToCompress}";
 
             return RunTar(arguments, compressionProgramPath) == 0;

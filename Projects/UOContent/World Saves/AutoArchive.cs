@@ -186,7 +186,7 @@ namespace Server.Saves
             var allFiles = Directory.EnumerateFiles(path, "????-??-??-??-??-??.*");
             var archives = GetInRange(allFiles, DateTime.MinValue, DateTime.MaxValue, true);
 
-            var periodLowerStr = periodStr.ToLower();
+            var periodLowerStr = periodStr.ToLowerInvariant();
             foreach (var archive in archives)
             {
                 if (minRetained > 0)
@@ -199,28 +199,6 @@ namespace Server.Saves
                 logger.Information($"Pruning {periodLowerStr} archive {fi.Name}");
                 File.Delete(archive);
             }
-        }
-
-        public static void ArchiveLocally()
-        {
-            if (Interlocked.CompareExchange(ref _isArchiving, 0, 1) == 1)
-            {
-                return;
-            }
-
-            var date = Core.Now;
-
-            ThreadPool.UnsafeQueueUserWorkItem(
-                _ =>
-                {
-                    var lastHour = date.Date.AddHours(date.Hour);
-                    Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), date.ToTimeStamp());
-                    _nextHourlyArchive = lastHour.AddHours(2);
-
-                    _isArchiving = 0;
-                },
-                null
-            );
         }
 
         public static void AutoArchiveLocally()
@@ -271,6 +249,10 @@ namespace Server.Saves
 
         private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, string archiveNameNoExtension)
         {
+            var archivePeriodStr = archivePeriod.ToString();
+            var archivePeriodStrLower = archivePeriodStr.ToLowerInvariant();
+
+            logger.Information($"Creating {archivePeriodStrLower} archive");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
@@ -291,7 +273,6 @@ namespace Server.Saves
 
             var extension = _compressionFormat.GetFileExtension();
 
-            var archivePeriodStr = archivePeriod.ToString();
             var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{archiveNameNoExtension}{extension}");
 
             var archiveCreated = _compressionFormat == CompressionFormat.Zstd
@@ -302,7 +283,7 @@ namespace Server.Saves
             {
                 stopWatch.Stop();
                 var elapsed = stopWatch.Elapsed.TotalSeconds;
-                logger.Information($"Created {archivePeriodStr.ToLowerInvariant()} archive at {archiveFilePath} ({elapsed:F2} seconds)");
+                logger.Information($"Created {archivePeriodStrLower} archive at {archiveFilePath} ({elapsed:F2} seconds)");
 
                 // Keep the latest one, but delete the rest.
                 for (var i = 1; i < latestFolders.Count; i++)
@@ -312,7 +293,7 @@ namespace Server.Saves
             }
             else
             {
-                logger.Warning($"Failed to create {archivePeriodStr.ToLowerInvariant()} archive");
+                logger.Warning($"Failed to create {archivePeriodStrLower} archive");
             }
         }
 

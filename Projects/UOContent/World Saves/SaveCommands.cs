@@ -11,14 +11,6 @@ namespace Server.Commands
             CommandSystem.Register("AutoSave", AccessLevel.Administrator, SetAutoSaves_OnCommand);
             CommandSystem.Register("SaveFrequency", AccessLevel.Administrator, SetSaveFrequency_OnCommand);
             CommandSystem.Register("PruneArchives", AccessLevel.Administrator, PruneArchives_OnCommand);
-            CommandSystem.Register("Archive", AccessLevel.Administrator, ArchiveLocally_OnCommand);
-        }
-
-        [Usage("Archive"), Description("Starts an async hourly archive.")]
-        private static void ArchiveLocally_OnCommand(CommandEventArgs e)
-        {
-            e.Mobile.SendMessage("Started hourly archive.");
-            AutoArchive.ArchiveLocally();
         }
 
         [Usage("PruneArchives"), Description("Prunes archives folder.")]
