@@ -70,9 +70,9 @@ namespace Server.Items
             {
                 if (t.Target == target)
                 {
-                    double bonus = Math.Min(100, Math.Max(50, from.Str - 50));
+                    var bonus = Math.Min(100, Math.Max(50, from.Str - 50));
 
-                    return (100 + bonus) / 100;
+                    return (100.0 + bonus) / 100.0;
                 }
             }
 
