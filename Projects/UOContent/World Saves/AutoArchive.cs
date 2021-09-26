@@ -86,7 +86,7 @@ namespace Server.Saves
             }
 
             var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
-            AssemblyHandler.EnsureDirectory(BackupPath);
+            AssemblyHandler.EnsureDirectory(backupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
             logger.Information($"Created backup at {backupPath}");
