@@ -11,6 +11,7 @@ using Server.Misc;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
+using Server.Saves;
 using Server.Spells;
 using Server.Targeting;
 using Server.Targets;
@@ -43,8 +44,6 @@ namespace Server.Commands
             Register("Stuck", AccessLevel.Counselor, Stuck_OnCommand);
 
             Register("Help", AccessLevel.Player, Help_OnCommand);
-
-            Register("Save", AccessLevel.Administrator, Save_OnCommand);
 
             Register("Move", AccessLevel.GameMaster, Move_OnCommand);
             Register("Client", AccessLevel.Counselor, Client_OnCommand);
@@ -457,12 +456,6 @@ namespace Server.Commands
         private static void Move_OnCommand(CommandEventArgs e)
         {
             e.Mobile.Target = new PickMoveTarget();
-        }
-
-        [Usage("Save"), Description("Saves the world.")]
-        private static void Save_OnCommand(CommandEventArgs e)
-        {
-            AutoSave.Save();
         }
 
         private static bool FixMap(ref Map map, ref Point3D loc, Item item) =>
