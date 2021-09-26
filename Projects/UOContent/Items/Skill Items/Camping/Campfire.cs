@@ -29,16 +29,12 @@ namespace Server.Items
 
             m_Entries = new List<CampfireEntry>();
 
-            Created = Core.Now;
             Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
         }
 
         public Campfire(Serial serial) : base(serial)
         {
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime Created { get; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public CampfireStatus Status

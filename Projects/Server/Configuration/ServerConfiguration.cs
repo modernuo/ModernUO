@@ -169,6 +169,17 @@ namespace Server
             return value;
         }
 
+        public static void SetSetting(string key, TimeSpan value) => SetSetting(key, value.ToString());
+
+        public static void SetSetting(string key, int value) => SetSetting(key, value.ToString());
+
+        public static void SetSetting(string key, long value) => SetSetting(key, value.ToString());
+
+        public static void SetSetting(string key, bool value) => SetSetting(key, value.ToString());
+
+        public static void SetSetting<T>(string key, T value) where T : struct, Enum =>
+            SetSetting(key, value.ToString());
+
         public static void SetSetting(string key, string value)
         {
             m_Settings.Settings[key] = value;
