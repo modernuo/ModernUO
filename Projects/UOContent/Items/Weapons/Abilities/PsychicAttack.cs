@@ -40,7 +40,7 @@ namespace Server.Items
 
             BuffInfo.RemoveBuff(defender, BuffIcon.PsychicAttack);
 
-            string args = string.Format($"{timer.SpellDamageMalus}\t{timer.ManaCostMalus}");
+            string args = $"{timer.SpellDamageMalus}\t{timer.ManaCostMalus}";
             BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.PsychicAttack, 1151296, 1151297, args));
         }
 
