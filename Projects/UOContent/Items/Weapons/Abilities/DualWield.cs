@@ -35,8 +35,8 @@ namespace Server.Items
 
             timer = new DualWieldTimer(
                 attacker,
-                (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0)
-            ); // 20-50 % increase
+                (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0) // 20-50 % increase
+            );
 
             timer.Start();
             Registry.Add(attacker, timer);
@@ -46,8 +46,7 @@ namespace Server.Items
         {
             private readonly Mobile m_Owner;
 
-            public DualWieldTimer(Mobile owner, int bonusSwingSpeed)
-                : base(TimeSpan.FromSeconds(6.0))
+            public DualWieldTimer(Mobile owner, int bonusSwingSpeed) : base(TimeSpan.FromSeconds(6.0))
             {
                 m_Owner = owner;
                 BonusSwingSpeed = bonusSwingSpeed;

@@ -37,7 +37,9 @@ namespace Server.Items
         public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
         {
             if (!Validate(attacker) || !CheckMana(attacker, false))
+            {
                 return false;
+            }
 
             //Bladeweave is only from 90 fighting and tactics skill, so you need only to check bushido/ninjitsu value over 50 to perform block and feint.
             var requiredBushido = Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value);
@@ -49,8 +51,7 @@ namespace Server.Items
             return newAttack.NewAbility.OnBeforeSwing(attacker, defender);
         }
 
-        private static BladeWeaveRedirect GetBladeWeaveRedirect(int number)
-            =>
+        private static BladeWeaveRedirect GetBladeWeaveRedirect(int number) =>
             number switch
             {
                 0 => new BladeWeaveRedirect(ArmorIgnore, 1028838),
@@ -61,16 +62,13 @@ namespace Server.Items
                 5 => new BladeWeaveRedirect(MortalStrike, 1028846),
                 6 => new BladeWeaveRedirect(ParalyzingBlow, 1028848),
                 7 => new BladeWeaveRedirect(Block, 1028853),
-                _ => new BladeWeaveRedirect(Feint, 1028857)//8
+                _ => new BladeWeaveRedirect(Feint, 1028857) //8
             };
 
-        public override bool OnBeforeDamage(Mobile attacker, Mobile defender)
-        {
-            if (_newAttack.TryGetValue(attacker, out var bwr))
-                return bwr.NewAbility.OnBeforeDamage(attacker, defender);
-            else
-                return base.OnBeforeDamage(attacker, defender);
-        }
+        public override bool OnBeforeDamage(Mobile attacker, Mobile defender) =>
+            _newAttack.TryGetValue(attacker, out var bwr)
+                ? bwr.NewAbility.OnBeforeDamage(attacker, defender)
+                : base.OnBeforeDamage(attacker, defender);
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
@@ -82,7 +80,9 @@ namespace Server.Items
                     bwr.NewAbility.OnHit(attacker, defender, damage);
                 }
                 else
+                {
                     base.OnHit(attacker, defender, damage);
+                }
 
                 _newAttack.Remove(attacker);
                 ClearCurrentAbility(attacker);
@@ -92,9 +92,13 @@ namespace Server.Items
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
             if (_newAttack.TryGetValue(attacker, out var bwr))
+            {
                 bwr.NewAbility.OnMiss(attacker, defender);
+            }
             else
+            {
                 base.OnMiss(attacker, defender);
+            }
 
             _newAttack.Remove(attacker);
         }

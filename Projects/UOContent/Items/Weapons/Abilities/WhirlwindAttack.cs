@@ -28,7 +28,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(attacker.Weapon is BaseWeapon weapon))
+            if (attacker.Weapon is not BaseWeapon weapon)
             {
                 return;
             }

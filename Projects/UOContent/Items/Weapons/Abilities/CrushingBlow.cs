@@ -16,7 +16,8 @@ namespace Server.Items
                 {
                     return 30.0;
                 }
-                else if (weapon.SecondaryAbility == this)
+
+                if (weapon.SecondaryAbility == this)
                 {
                     return 60.0;
                 }

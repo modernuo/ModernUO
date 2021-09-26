@@ -161,7 +161,8 @@ namespace Server.Items
                 {
                     return 70.0;
                 }
-                else if (weapon.SecondaryAbility == this || weapon.SecondaryAbility == Bladeweave)
+
+                if (weapon.SecondaryAbility == this || weapon.SecondaryAbility == Bladeweave)
                 {
                     return 90.0;
                 }
@@ -278,13 +279,13 @@ namespace Server.Items
         {
             return skill switch
             {
-                SkillName.Bushido => 1063347, // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!   
+                SkillName.Bushido => 1063347, // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
                 SkillName.Ninjitsu => 1063347, // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
                 SkillName.Poisoning => 1060184,// You lack the required poisoning to perform that attack
-                _ => 1157351// You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack           
+                _ => 1157351// You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
             };
         }
-        
+
 
         public virtual bool CheckSkills(Mobile from) => CheckWeaponSkill(from);
 

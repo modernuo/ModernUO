@@ -13,7 +13,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -32,7 +34,7 @@ namespace Server.Items
             {
                 BeginForceArrow(attacker, defender);
             }
-            else if (info?.Timer.Running == true)
+            else if (info.Timer.Running)
             {
                 info.Timer.IncreaseExpiration();
 
@@ -89,7 +91,9 @@ namespace Server.Items
                 foreach (ForceArrowInfo info in list)
                 {
                     if (info.Defender == defender)
+                    {
                         return true;
+                    }
                 }
             }
 
@@ -103,7 +107,9 @@ namespace Server.Items
                 foreach (ForceArrowInfo info in list)
                 {
                     if (info.Defender == defender)
+                    {
                         return info;
+                    }
                 }
             }
 

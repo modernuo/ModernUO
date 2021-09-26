@@ -22,19 +22,7 @@ namespace Server.Items
 
             Map map = attacker.Map;
 
-            if (map == null)
-            {
-                return;
-            }
-
-            BaseWeapon weapon = attacker.Weapon as BaseWeapon;
-
-            if (weapon == null)
-            {
-                return;
-            }
-
-            if (!CheckMana(attacker, true))
+            if (map == null || attacker.Weapon is not BaseWeapon weapon || !CheckMana(attacker, true))
             {
                 return;
             }
@@ -44,14 +32,10 @@ namespace Server.Items
 
             foreach (Mobile m in eable)
             {
-                if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m))
+                if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) && m?.Deleted == false &&
+                    m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+                    attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
                 {
-                    if (m == null || m.Deleted || m.Map != attacker.Map || !m.Alive || !attacker.CanSee(m) || !attacker.CanBeHarmful(m))
-                        continue;
-
-                    if (!attacker.InRange(m, weapon.MaxRange) || !attacker.InLOS(m))
-                        continue;
-
                     targets.Add(m);
                 }
             }
