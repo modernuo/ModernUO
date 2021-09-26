@@ -129,11 +129,13 @@ namespace Server
                 count = idxReader.ReadInt32();
             }
 
+            var now = DateTime.UtcNow;
+
             for (int i = 0; i < count; ++i)
             {
                 var typeID = idxReader.ReadInt32();
                 var serial = idxReader.ReadUInt32();
-                var created = version == 0 ? DateTime.UtcNow : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
+                var created = version == 0 ? now : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var pos = idxReader.ReadInt64();
                 var length = idxReader.ReadInt32();
