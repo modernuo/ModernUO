@@ -57,26 +57,25 @@ namespace Server.Saves
 
             if (_enablePruning)
             {
-                Prune = PruneLocalArchives;
+                Prune = PruneBackups;
             }
 
             // Restores an archive file placed in the Saves folder. Supports all compression formats.
             RestoreFromArchive();
 
-            // Prune local archives on startup if pruning is enabled
-            Prune?.Invoke();
+            DateTimeOffset now = Core.Now.ToSystemLocalTime();
+            var date = now.Date;
+            _nextHourlyArchive = date.AddHours(now.Hour).ToUniversalTime();
+            _nextDailyArchive = date.ToUniversalTime();
+            _nextMonthlyArchive = date.AddDays(1 - now.Day).ToUniversalTime();
+
+            // Do a local archive rollup & prune
+            AutoArchiveLocally();
         }
 
         public static void Initialize()
         {
             EventSink.WorldSavePostSnapshot += Backup;
-
-            DateTimeOffset now = Core.Now.ToSystemLocalTime();
-
-            var date = now.Date;
-            _nextHourlyArchive = date.AddHours(now.Hour + 1).ToUniversalTime();
-            _nextDailyArchive = date.AddDays(1).ToUniversalTime();
-            _nextMonthlyArchive = date.AddDays(1 - now.Day).AddMonths(1).ToUniversalTime();
         }
 
         private static void Backup(WorldSavePostSnapshotEventArgs args)
@@ -171,12 +170,21 @@ namespace Server.Saves
             return true;
         }
 
-        public static void PruneLocalArchives()
+        public static void PruneBackups()
         {
             // Maintain a total of 66 of the most recent archives
             PruneLocalArchives(ArchivePeriod.Hourly, 24);
             PruneLocalArchives(ArchivePeriod.Daily, 30);
             PruneLocalArchives(ArchivePeriod.Monthly, 12);
+
+            var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??", SearchOption.AllDirectories);
+            var latestBackupFolders = GetInRange(allFolders, DateTime.MinValue, Core.Now.AddMonths(-1));
+
+            foreach (var folder in latestBackupFolders)
+            {
+                logger.Information($"Pruning backup {folder}");
+                Directory.Delete(folder, true);
+            }
         }
 
         private static void PruneLocalArchives(ArchivePeriod period, int minRetained)
@@ -221,22 +229,22 @@ namespace Server.Saves
                     if (date >= _nextHourlyArchive)
                     {
                         var lastHour = date.Date.AddHours(date.Hour);
-                        Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), date.ToTimeStamp());
-                        _nextHourlyArchive = lastHour.AddHours(2);
+                        Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), lastHour.ToTimeStamp());
+                        _nextHourlyArchive = _nextHourlyArchive.AddHours(2);
                     }
 
                     if (date >= _nextDailyArchive)
                     {
                         var yesterday = date.Date.AddDays(-1);
-                        Rollup(ArchivePeriod.Daily, yesterday, date.ToTimeStamp());
-                        _nextDailyArchive = yesterday.AddDays(2);
+                        Rollup(ArchivePeriod.Daily, yesterday, yesterday.ToTimeStamp());
+                        _nextDailyArchive = _nextDailyArchive.AddDays(2);
                     }
 
                     if (date >= _nextMonthlyArchive)
                     {
                         var lastMonth = new DateTime(date.Year, date.Month, 1).AddMonths(-1);
-                        Rollup(ArchivePeriod.Monthly, lastMonth, date.ToTimeStamp());
-                        _nextMonthlyArchive = lastMonth.AddMonths(2);
+                        Rollup(ArchivePeriod.Monthly, lastMonth, lastMonth.ToTimeStamp());
+                        _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(2);
                     }
 
                     Prune?.Invoke();
@@ -266,7 +274,8 @@ namespace Server.Saves
 
             var latestFolders = GetInRange(allFolders, rangeStart, rangeEnd).ToList();
 
-            if (latestFolders.Count == 0)
+            // We don't want to re-archive a single save. This usually means we rebooted and found the one we purposefully left behind
+            if (latestFolders.Count <= 1)
             {
                 return;
             }

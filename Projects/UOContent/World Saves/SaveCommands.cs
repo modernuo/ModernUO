@@ -16,7 +16,7 @@ namespace Server.Commands
         [Usage("PruneArchives"), Description("Prunes archives folder.")]
         private static void PruneArchives_OnCommand(CommandEventArgs e)
         {
-            AutoArchive.PruneLocalArchives();
+            AutoArchive.PruneBackups();
         }
 
         [Usage("Save"), Description("Saves the world.")]
