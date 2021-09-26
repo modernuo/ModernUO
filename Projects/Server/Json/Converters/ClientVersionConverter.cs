@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2021 - ModernUO Development Team                            *
  * Email: hi@modernuo.com                                                *
- * File: GuidConverter.cs                                                *
+ * File: ClientVersionConverter.cs                                       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,19 +19,19 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-    public class GuidConverter : JsonConverter<Guid>
+    public class ClientVersionConverter : JsonConverter<ClientVersion>
     {
-        public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ClientVersion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (Guid.TryParse(reader.GetString()!, out var guid))
+            if (reader.TokenType == JsonTokenType.String)
             {
-                return guid;
+                return new ClientVersion(reader.GetString());
             }
 
-            throw new JsonException("Guid must be in the correct format");
+            throw new JsonException($"Value must be a string");
         }
 
-        public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
-            => writer.WriteStringValue(value.ToString());
+        public override void Write(Utf8JsonWriter writer, ClientVersion value, JsonSerializerOptions options) =>
+            writer.WriteStringValue(value.ToString());
     }
 }

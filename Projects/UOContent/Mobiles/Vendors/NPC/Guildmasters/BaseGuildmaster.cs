@@ -94,7 +94,7 @@ namespace Server.Mobiles
                     {
                         SayTo(pm, 501046); // Thou must resign from thy other guild first.
                     }
-                    else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > Core.Now)
+                    else if (pm.GameTime < JoinGameAge || pm.Created + JoinAge > Core.Now)
                     {
                         SayTo(pm, 501048); // You are too young to join my guild...
                     }
@@ -141,7 +141,7 @@ namespace Server.Mobiles
                 {
                     SayTo(pm, 501046); // Thou must resign from thy other guild first.
                 }
-                else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > Core.Now)
+                else if (pm.GameTime < JoinGameAge || pm.Created + JoinAge > Core.Now)
                 {
                     SayTo(pm, 501048); // You are too young to join my guild...
                 }

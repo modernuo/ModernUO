@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GuidConverter.cs                                                *
+ * File: DescendingComparer.cs                                           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,24 +14,11 @@
  *************************************************************************/
 
 using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
-namespace Server.Json
+namespace Server
 {
-    public class GuidConverter : JsonConverter<Guid>
-    {
-        public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (Guid.TryParse(reader.GetString()!, out var guid))
-            {
-                return guid;
-            }
-
-            throw new JsonException("Guid must be in the correct format");
-        }
-
-        public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
-            => writer.WriteStringValue(value.ToString());
+    public class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+        public int Compare(T x, T y) => y?.CompareTo(x) ?? 1;
     }
 }

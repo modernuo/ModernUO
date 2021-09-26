@@ -39,14 +39,13 @@ namespace Server
 
         void Write(DateTime value)
         {
-            var ticks = (value.Kind switch
+            // If DateTimeKind is Unspecified, we can't assume it needs to be converted.
+            if (value.Kind == DateTimeKind.Local)
             {
-                DateTimeKind.Local       => value.ToUniversalTime(),
-                DateTimeKind.Unspecified  => value.ToLocalTime().ToUniversalTime(),
-                _                        => value
-            }).Ticks;
+                value = value.ToUniversalTime();
+            }
 
-            Write(ticks);
+            Write(value.Ticks);
         }
         void WriteDeltaTime(DateTime value)
         {
@@ -59,17 +58,16 @@ namespace Server
             if (value == DateTime.MaxValue)
             {
                 Write(long.MaxValue);
+                return;
             }
 
-            var ticks = (value.Kind switch
+            if (value.Kind == DateTimeKind.Local)
             {
-                DateTimeKind.Local       => value.ToUniversalTime(),
-                DateTimeKind.Unspecified  => value.ToLocalTime().ToUniversalTime(),
-                _                        => value
-            }).Ticks;
+                value = value.ToUniversalTime();
+            }
 
             // Technically supports negative deltas for times in the past
-            Write(ticks - DateTime.UtcNow.Ticks);
+            Write(value.Ticks - DateTime.UtcNow.Ticks);
         }
         void Write(IPAddress value)
         {
