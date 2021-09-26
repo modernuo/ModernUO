@@ -1867,7 +1867,10 @@ namespace Server.Items
                 move = null;
             }
 
-            var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true || ((Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) && bladeweavingAbi is ArmorIgnore));
+            var ignoreArmor = a is ArmorIgnore ||
+                              move?.IgnoreArmor(attacker) == true ||
+                              Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) &&
+                              bladeweavingAbi is ArmorIgnore;
 
             var damageGiven = AOS.Damage(
                 defender,
@@ -1984,8 +1987,8 @@ namespace Server.Items
                             mobile.LocalOverheadMessage(
                                 MessageType.Regular,
                                 0x3B2,
-                                1061121
-                            ); // Your equipment is severely damaged.
+                                1061121 // Your equipment is severely damaged.
+                            );
                         }
                     }
                     else
