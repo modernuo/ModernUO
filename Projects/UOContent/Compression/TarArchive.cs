@@ -75,9 +75,8 @@ namespace Server.Compression
         {
             _pathToTar ??= GetPathToTar();
 
-            var tarFlags = compressCommand == null ? "-axf" : "-xf";
             var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";
-            var arguments = $"{useExternalCompression}{tarFlags} \"{fileNamePath}\" -C \"{outputDirectory}\"";
+            var arguments = $"{useExternalCompression} -xf \"{fileNamePath}\" -C \"{outputDirectory}\"";
 
             return RunTar(arguments, compressionProgramPath) == 0;
         }
