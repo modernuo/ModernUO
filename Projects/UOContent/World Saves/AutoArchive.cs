@@ -63,11 +63,11 @@ namespace Server.Saves
             // Restores an archive file placed in the Saves folder. Supports all compression formats.
             RestoreFromArchive();
 
-            DateTimeOffset now = Core.Now.ToSystemLocalTime();
+            DateTimeOffset now = Core.Now;
             var date = now.Date;
-            _nextHourlyArchive = date.AddHours(now.Hour).ToUniversalTime();
-            _nextDailyArchive = date.ToUniversalTime();
-            _nextMonthlyArchive = date.AddDays(1 - now.Day).ToUniversalTime();
+            _nextHourlyArchive = date.AddHours(now.Hour);
+            _nextDailyArchive = date;
+            _nextMonthlyArchive = date.AddDays(1 - now.Day);
 
             // Do a local archive rollup & prune
             AutoArchiveLocally();
