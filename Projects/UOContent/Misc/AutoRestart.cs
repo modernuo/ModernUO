@@ -1,4 +1,5 @@
 using System;
+using Server.Saves;
 
 namespace Server.Misc
 {
@@ -12,15 +13,15 @@ namespace Server.Misc
             get => _enabled;
             set
             {
+                _enabled = value;
+
                 if (value)
                 {
-                    _enabled = true;
                     _autoRestart ??= new AutoRestart();
                     _autoRestart.Start();
                 }
                 else
                 {
-                    _enabled = false;
                     _autoRestart?.Stop();
                     _autoRestart = null;
                 }
@@ -29,21 +30,20 @@ namespace Server.Misc
 
         private static readonly TimeSpan RestartTime = TimeSpan.FromHours(2.0); // time of day at which to restart
 
-        private static readonly TimeSpan
-            RestartDelay =
-                TimeSpan.Zero; // how long the server should remain active before restart (period of 'server wars')
+        // how long the server should remain active before restart (period of 'server wars')
+        private static readonly TimeSpan RestartDelay = TimeSpan.Zero;
 
-        private static readonly TimeSpan
-            WarningDelay = TimeSpan.FromMinutes(1.0); // at what interval should the shutdown message be displayed?
+        // at what interval should the shutdown message be displayed?
+        private static readonly TimeSpan WarningDelay = TimeSpan.FromMinutes(1.0);
 
         private static DateTime m_RestartTime;
 
         public AutoRestart() : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
         {
 
-            m_RestartTime = DateTime.UtcNow.Date + RestartTime;
+            m_RestartTime = Core.Now.Date + RestartTime;
 
-            if (m_RestartTime < DateTime.UtcNow)
+            if (m_RestartTime < Core.Now)
             {
                 m_RestartTime += TimeSpan.FromDays(1.0);
             }
@@ -71,7 +71,7 @@ namespace Server.Misc
             {
                 e.Mobile.SendMessage("You have initiated server shutdown.");
                 Enabled = true;
-                m_RestartTime = DateTime.UtcNow;
+                m_RestartTime = Core.Now;
             }
         }
 
@@ -92,7 +92,7 @@ namespace Server.Misc
                 return;
             }
 
-            if (DateTime.UtcNow < m_RestartTime)
+            if (Core.Now < m_RestartTime)
             {
                 return;
             }

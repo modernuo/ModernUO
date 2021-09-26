@@ -1786,7 +1786,7 @@ namespace Server.Items
 
             if (Core.ML && this is BaseRanged && attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)
             {
-                quiver.AlterBowDamage(out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct);
+                quiver.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
             }
 
             if (Consecrated)

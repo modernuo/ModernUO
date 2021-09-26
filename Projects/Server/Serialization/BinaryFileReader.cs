@@ -30,6 +30,8 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Close() => _reader.Close();
 
+        public DateTime LastSerialized { get; init; }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(bool intern = false)
         {

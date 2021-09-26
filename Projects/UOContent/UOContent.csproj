@@ -30,6 +30,9 @@
         <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\zstd" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\zstd.exe" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
@@ -40,6 +43,7 @@
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.9.1" />
+        <PackageReference Include="Zstd.Binaries" Version="1.0.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
