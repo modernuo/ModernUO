@@ -260,7 +260,6 @@ namespace Server.Saves
             var archivePeriodStr = archivePeriod.ToString();
             var archivePeriodStrLower = archivePeriodStr.ToLowerInvariant();
 
-            logger.Information($"Creating {archivePeriodStrLower} archive");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
@@ -281,9 +280,9 @@ namespace Server.Saves
             }
 
             var extension = _compressionFormat.GetFileExtension();
-
             var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{archiveNameNoExtension}{extension}");
 
+            logger.Information($"Creating {archivePeriodStrLower} archive");
             var archiveCreated = _compressionFormat == CompressionFormat.Zstd
                 ? ZstdArchive.CreateFromPaths(latestFolders, archiveFilePath)
                 : TarArchive.CreateFromPaths(latestFolders, archiveFilePath);
