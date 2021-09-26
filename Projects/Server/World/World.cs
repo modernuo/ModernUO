@@ -47,6 +47,7 @@ namespace Server
 
         private static string _tempSavePath; // Path to the temporary folder for the save
         private static string _savePath; // Path to "Saves" folder
+        private static bool _enableSaveStats;
 
         public const bool DirtyTrackingEnabled = false;
         public const uint ItemOffset = 0x40000000;
@@ -144,6 +145,7 @@ namespace Server
             _tempSavePath = Path.Combine(Core.BaseDirectory, tempSavePath);
             var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
             _savePath = Path.Combine(Core.BaseDirectory, savePath);
+            _enableSaveStats = ServerConfiguration.GetOrUpdateSetting("world.enableSaveStats", false);
 
             // Mobiles & Items
             Persistence.Register("Mobiles & Items", SaveEntities, WriteEntities, LoadEntities, 1);
@@ -341,7 +343,10 @@ namespace Server
                 int count = 0;
 
                 var timestamp = Utility.GetTimeStamp();
-                using var op = new StreamWriter($"Logs/Saves/Save-Stats-{timestamp}.log", true);
+                var saveStatsPath = Path.Combine(Core.BaseDirectory, $"Logs/Saves/Save-Stats-{timestamp}.log");
+                AssemblyHandler.EnsureDirectory(saveStatsPath);
+
+                using var op = new StreamWriter(saveStatsPath, true);
 
                 for (var i = 0; i < entityTypes.Length; i++)
                 {
@@ -373,7 +378,10 @@ namespace Server
             EntityPersistence.WriteEntities(itemIndexInfo, Items, ItemTypes, basePath, out var itemCounts);
             EntityPersistence.WriteEntities(guildIndexInfo, Guilds, GuildTypes, basePath, out var guildCounts);
 
-            TraceSave(mobileCounts?.ToList(), itemCounts?.ToList(), guildCounts?.ToList());
+            if (_enableSaveStats)
+            {
+                TraceSave(mobileCounts?.ToList(), itemCounts?.ToList(), guildCounts?.ToList());
+            }
         }
 
         public static void WriteFiles(object state)
