@@ -181,6 +181,20 @@ namespace Server
 
             return path;
         }
+
+        public static void EnsureDirectory(FileInfo fi)
+        {
+            var dir = fi.DirectoryName;
+            if (dir != null)
+            {
+                Directory.CreateDirectory(dir);
+            }
+        }
+
+        public static void EnsureDirectory(DirectoryInfo di)
+        {
+            Directory.CreateDirectory(di.FullName);
+        }
     }
 
     public class TypeCache
