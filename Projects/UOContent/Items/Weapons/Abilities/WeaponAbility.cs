@@ -486,10 +486,7 @@ namespace Server.Items
         {
             private readonly Mobile m_Mobile;
 
-            public WeaponAbilityTimer(Mobile from) : base(TimeSpan.FromSeconds(3.0))
-            {
-                m_Mobile = from;
-            }
+            public WeaponAbilityTimer(Mobile from) : base(TimeSpan.FromSeconds(3.0)) => m_Mobile = from;
 
             protected override void OnTick()
             {

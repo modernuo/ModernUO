@@ -29,8 +29,7 @@ namespace Server.Items
 
             var modifier =
                 (int)(30.0 *
-                      ((Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value) -
-                        50.0) / 70.0));
+                      ((Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value) - 50.0) / 70.0));
 
             if (_table.TryGetValue(attacker, out var info))
             {

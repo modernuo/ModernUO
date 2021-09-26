@@ -12,8 +12,7 @@ namespace Server.Items
 
         public override int BaseMana => 20;
 
-        public override bool RequiresTactics(Mobile from) =>
-            !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
+        public override bool RequiresTactics(Mobile from) => from.Weapon is not BaseWeapon { Skill: SkillName.Wrestling };
 
         //Disarm is special. Doesnt need tactics when wresling and tactics need is lower than fighting skill.
         public virtual double GetRequiredTactics(Mobile from)
@@ -56,7 +55,7 @@ namespace Server.Items
             {
                 attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
             }
-            else if (!Core.ML && toDisarm == null || toDisarm is BaseShield || toDisarm is Spellbook)
+            else if (!Core.ML && toDisarm == null || toDisarm is BaseShield or Spellbook)
             {
                 attacker.SendLocalizedMessage(1060849); // Your target is already unarmed!
             }

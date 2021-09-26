@@ -60,35 +60,33 @@ namespace Server.Items
 
         public class PsychicAttackTimer : Timer
         {
-            private readonly Mobile m_Defender;
-            private int m_SpellDamageMalus;
-            private int m_ManaCostMalus;
-            private bool m_DoneIncrease;
+            private readonly Mobile _defender;
+            private int _spellDamageMalus;
+            private int _manaCostMalus;
 
             public int SpellDamageMalus
             {
-                get { return m_SpellDamageMalus; }
-                set { m_SpellDamageMalus = value; m_DoneIncrease = true; }
+                get => _spellDamageMalus;
+                set { _spellDamageMalus = value; DoneIncrease = true; }
             }
             public int ManaCostMalus
             {
-                get { return m_ManaCostMalus; }
-                set { m_ManaCostMalus = value; m_DoneIncrease = true; }
+                get => _manaCostMalus;
+                set { _manaCostMalus = value; DoneIncrease = true; }
             }
-            public bool DoneIncrease => m_DoneIncrease;
+            public bool DoneIncrease { get; private set; }
 
-            public PsychicAttackTimer(Mobile defender)
-                : base(TimeSpan.FromSeconds(10))
+            public PsychicAttackTimer(Mobile defender) : base(TimeSpan.FromSeconds(10))
             {
-                m_Defender = defender;
-                m_SpellDamageMalus = 15;
-                m_ManaCostMalus = 15;
-                m_DoneIncrease = false;
+                _defender = defender;
+                _spellDamageMalus = 15;
+                _manaCostMalus = 15;
+                DoneIncrease = false;
             }
 
             protected override void OnTick()
             {
-                RemoveEffects(m_Defender);
+                RemoveEffects(_defender);
             }
         }
     }

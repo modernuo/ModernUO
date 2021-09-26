@@ -35,10 +35,8 @@ namespace Server.Items
 
             timer = new FeintTimer(
                 defender,
-                (int)(20.0 + 3.0 * (Math.Max(
-                    attacker.Skills.Ninjitsu.Value,
-                    attacker.Skills.Bushido.Value
-                ) - 50.0) / 7.0)
+                (int)(20.0 + 3.0 *
+                    (Math.Max(attacker.Skills.Ninjitsu.Value, attacker.Skills.Bushido.Value) - 50.0) / 7.0)
             ); // 20-50 % decrease
 
             timer.Start();

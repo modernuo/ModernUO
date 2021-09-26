@@ -118,53 +118,46 @@ namespace Server.Items
 
         public class ForceArrowInfo
         {
-            private readonly Mobile m_Attacker;
-            private readonly Mobile m_Defender;
-            private ForceArrowTimer m_Timer;
-            private int m_DefenseChanceMalus;
-
-            public Mobile Attacker => m_Attacker;
-            public Mobile Defender => m_Defender;
-            public ForceArrowTimer Timer { get { return m_Timer; } set { m_Timer = value; } }
-            public int DefenseChanceMalus { get { return m_DefenseChanceMalus; } set { m_DefenseChanceMalus = value; } }
+            public Mobile Attacker { get; }
+            public Mobile Defender { get; }
+            public ForceArrowTimer Timer { get; set; }
+            public int DefenseChanceMalus { get; set; }
 
             public ForceArrowInfo(Mobile attacker, Mobile defender)
             {
-                m_Attacker = attacker;
-                m_Defender = defender;
-                m_DefenseChanceMalus = 10;
+                Attacker = attacker;
+                Defender = defender;
+                DefenseChanceMalus = 10;
             }
         }
 
         public class ForceArrowTimer : Timer
         {
-            private readonly ForceArrowInfo m_Info;
-            private DateTime m_Expires;
+            private readonly ForceArrowInfo _info;
+            private DateTime _expires;
 
             public ForceArrowTimer(ForceArrowInfo info)
                 : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1))
             {
-                m_Info = info;
-
-                m_Expires = Core.Now + TimeSpan.FromSeconds(10);
+                _info = info;
+                _expires = Core.Now + TimeSpan.FromSeconds(10);
 
                 Start();
             }
 
             protected override void OnTick()
             {
-                if (m_Expires < Core.Now)
+                if (_expires < Core.Now)
                 {
                     Stop();
-                    EndForceArrow(m_Info);
+                    EndForceArrow(_info);
                 }
             }
 
             public void IncreaseExpiration()
             {
-                m_Expires += TimeSpan.FromSeconds(2);
-
-                m_Info.DefenseChanceMalus += 5;
+                _expires += TimeSpan.FromSeconds(2);
+                _info.DefenseChanceMalus += 5;
             }
         }
     }

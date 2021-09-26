@@ -66,14 +66,10 @@ namespace Server.Items
 
         public static double GetDamageScalar(Mobile from, Mobile target)
         {
-            if (_table.TryGetValue(from, out var t))
+            if (_table.TryGetValue(from, out var t) && t.Target == target)
             {
-                if (t.Target == target)
-                {
-                    var bonus = Math.Min(100, Math.Max(50, from.Str - 50));
-
-                    return (100.0 + bonus) / 100.0;
-                }
+                var bonus = Math.Min(100, Math.Max(50, from.Str - 50));
+                return (100.0 + bonus) / 100.0;
             }
 
             return 1.0;
@@ -81,30 +77,25 @@ namespace Server.Items
 
         private class ForceOfNatureTimer : Timer
         {
-            private readonly Mobile m_Target, m_From;
-
-            private DateTime m_LastHit;
-            private int m_Hits;
-
-            public Mobile Target => m_Target;
-            public Mobile From => m_From;
-            public int Hits { get { return m_Hits; } set { m_Hits = value; } }
-            public DateTime LastHit { get { return m_LastHit; } set { m_LastHit = value; } }
+            public Mobile Target { get; }
+            public Mobile From { get; }
+            public int Hits { get; set; }
+            public DateTime LastHit { get; set; }
 
             public ForceOfNatureTimer(Mobile from, Mobile target)
                 : base(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
             {
-                m_Target = target;
-                m_From = from;
-                m_Hits = 1;
-                m_LastHit = Core.Now;
+                Target = target;
+                From = from;
+                Hits = 1;
+                LastHit = Core.Now;
             }
 
             protected override void OnTick()
             {
-                if (!m_From.Alive || !m_Target.Alive || m_Target.Map != m_From.Map || m_Target.GetDistanceToSqrt(m_From.Location) > 10 || m_LastHit + TimeSpan.FromSeconds(20) < Core.Now || Index > 36)
+                if (!From.Alive || !Target.Alive || Target.Map != From.Map || Target.GetDistanceToSqrt(From.Location) > 10 || LastHit + TimeSpan.FromSeconds(20) < Core.Now || Index > 36)
                 {
-                    Remove(m_From);
+                    Remove(From);
                     return;
                 }
 
@@ -112,7 +103,7 @@ namespace Server.Items
                 {
                     int damage = Utility.RandomMinMax(15, 35);
 
-                    AOS.Damage(m_From, m_From, damage, false, 0, 0, 0, 0, 0, 0, 100, false, false, false);
+                    AOS.Damage(From, From, damage, false, 0, 0, 0, 0, 0, 0, 100, false, false, false);
                 }
             }
         }

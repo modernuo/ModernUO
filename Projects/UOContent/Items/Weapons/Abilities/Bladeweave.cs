@@ -8,8 +8,8 @@ namespace Server.Items
     {
         private class BladeWeaveRedirect
         {
-            public WeaponAbility NewAbility;
-            public int ClilocEntry;
+            public readonly WeaponAbility NewAbility;
+            public readonly int ClilocEntry;
 
             public BladeWeaveRedirect(WeaponAbility ability, int cliloc)
             {
@@ -18,7 +18,7 @@ namespace Server.Items
             }
         }
 
-        private static readonly Dictionary<Mobile, BladeWeaveRedirect> _newAttack = new Dictionary<Mobile, BladeWeaveRedirect>();
+        private static readonly Dictionary<Mobile, BladeWeaveRedirect> _newAttack = new();
 
         public static bool BladeWeaving(Mobile attacker, out WeaponAbility a)
         {
@@ -76,7 +76,7 @@ namespace Server.Items
             {
                 if (_newAttack.TryGetValue(attacker, out var bwr))
                 {
-                    attacker.SendLocalizedMessage(1072841, "#" + bwr.ClilocEntry.ToString());
+                    attacker.SendLocalizedMessage(1072841, $"#{bwr.ClilocEntry}");
                     bwr.NewAbility.OnHit(attacker, defender, damage);
                 }
                 else
