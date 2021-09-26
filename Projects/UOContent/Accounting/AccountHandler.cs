@@ -241,7 +241,7 @@ namespace Server.Misc
                 {
                     res = DeleteResultType.CharBeingPlayed;
                 }
-                else if (RestrictDeletion && Core.Now < m.CreationTime + DeleteDelay)
+                else if (RestrictDeletion && Core.Now < m.Created + DeleteDelay)
                 {
                     res = DeleteResultType.CharTooYoung;
                 }

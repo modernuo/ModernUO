@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GuidConverter.cs                                                *
+ * File: TimeZoneWithRegions.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,25 +13,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
+namespace Server
 {
-    public class GuidConverter : JsonConverter<Guid>
+    public record TimeZoneWithRegions
     {
-        public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (Guid.TryParse(reader.GetString()!, out var guid))
-            {
-                return guid;
-            }
+        [JsonPropertyName("timezone")]
+        public string TimeZone { get; init; }
 
-            throw new JsonException("Guid must be in the correct format");
-        }
-
-        public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
-            => writer.WriteStringValue(value.ToString());
+        [JsonPropertyName("regions")]
+        public string[] Regions { get; init; }
     }
 }

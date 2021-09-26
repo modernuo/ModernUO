@@ -21,6 +21,9 @@ namespace Server
 {
     public interface IGenericReader
     {
+        // Used to determine valid Entity deserialization
+        DateTime LastSerialized { get; init; }
+
         string ReadString(bool intern = false);
         long ReadLong();
         ulong ReadULong();

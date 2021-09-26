@@ -87,7 +87,7 @@ namespace Server.Misc
 
             if (Required != null && version < Required && (m_OldClientResponse == OldClientResponse.Kick ||
                                                            m_OldClientResponse == OldClientResponse.LenientKick &&
-                                                           Core.Now - state.Mobile.CreationTime > m_AgeLeniency &&
+                                                           Core.Now - state.Mobile.Created > m_AgeLeniency &&
                                                            state.Mobile is PlayerMobile mobile &&
                                                            mobile.GameTime > m_GameTimeLeniency))
             {
