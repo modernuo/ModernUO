@@ -538,15 +538,12 @@ namespace Server.Network
             ThreadPool.UnsafeQueueUserWorkItem(SendTask, null);
         }
 
-        // Return true if there was any data to be processed. False otherwise. Used for idle detection.
-        public bool HandleReceive()
+        public void HandleReceive()
         {
             if (!Running)
             {
-                return false;
+                return;
             }
-
-            bool active = false;
 
             var reader = RecvPipe.Reader;
 
@@ -562,9 +559,6 @@ namespace Server.Network
                     {
                         break;
                     }
-
-                    // There was at least some data found, so it's not idle.
-                    active = true;
 
                     var packetReader = new CircularBufferReader(result.Buffer);
                     var packetId = packetReader.ReadByte();
@@ -583,7 +577,7 @@ namespace Server.Network
                             case ProtocolState.Uninitialized:
                                 {
                                     HandleError(packetId, packetLength);
-                                    return true;
+                                    return;
                                 }
 
                             case ProtocolState.AwaitingSeed:
@@ -604,7 +598,7 @@ namespace Server.Network
                                         if (seed == 0)
                                         {
                                             HandleError(0, 0);
-                                            return true;
+                                            return;
                                         }
 
                                         _seed = seed;
@@ -626,7 +620,7 @@ namespace Server.Network
                                     {
                                         LogInfo("Possible encrypted client detected, disconnecting...");
                                         HandleError(packetId, packetLength);
-                                        return true;
+                                        return;
                                     }
 
                                     _parserState = ParserState.ProcessingPacket;
@@ -643,7 +637,7 @@ namespace Server.Network
                                     if (packetId != 0xA0)
                                     {
                                         HandleError(packetId, packetLength);
-                                        return true;
+                                        return;
                                     }
 
                                     _parserState = ParserState.ProcessingPacket;
@@ -665,7 +659,7 @@ namespace Server.Network
                                     _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.AwaitingSeed;
 #endif
-                                    return true;
+                                    return;
                                 }
 
                             case ProtocolState.GameServer_AwaitingGameServerLogin:
@@ -673,7 +667,7 @@ namespace Server.Network
                                     if (packetId != 0x91 && packetId != 0x80)
                                     {
                                         HandleError(packetId, packetLength);
-                                        return true;
+                                        return;
                                     }
 
                                     _parserState = ParserState.ProcessingPacket;
@@ -719,8 +713,6 @@ namespace Server.Network
                 TraceException(ex);
                 Disconnect("Exception during HandleReceive");
             }
-
-            return active;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -962,19 +954,12 @@ namespace Server.Network
             }
         }
 
-        public static int HandleAllReceives()
+        public static void HandleAllReceives()
         {
-            int count = 0;
-
             foreach (var ns in TcpServer.Instances)
             {
-                if (ns.HandleReceive())
-                {
-                    count++;
-                }
+                ns.HandleReceive();
             }
-
-            return count;
         }
 
         public void Flush()
@@ -995,13 +980,11 @@ namespace Server.Network
             }
         }
 
-        public static int Slice()
+        public static void Slice()
         {
-            int count = 0;
             while (FlushPending.Count != 0)
             {
                 FlushPending.Dequeue()?.Flush();
-                count++;
             }
 
             while (Disposed.TryDequeue(out var ns))
@@ -1009,8 +992,6 @@ namespace Server.Network
                 TcpServer.Instances.Remove(ns);
                 ns.Dispose();
             }
-
-            return count;
         }
 
         public void CheckAlive(long curTicks)

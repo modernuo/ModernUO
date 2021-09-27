@@ -1751,14 +1751,12 @@ namespace Server.Mobiles
 
             var speed = ComputeMovementSpeed(d);
 
-            bool res;
-
             if (!Alive)
             {
                 MovementImpl.IgnoreMovableImpassables = true;
             }
 
-            res = base.Move(d);
+            var res = base.Move(d);
 
             MovementImpl.IgnoreMovableImpassables = false;
 

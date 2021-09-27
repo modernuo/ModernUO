@@ -8,14 +8,16 @@
         <OutDir>..\..\Distribution\Assemblies</OutDir>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
-        <Message Text="Deleting source generated files..." />
-        <Delete Files="Generated\**" ContinueOnError="true" />
         <Message Text="Removing distribution assemblies..." />
         <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MimeKit.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.FileSystemGlobbing.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Serilog.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Serilog.Sinks.Async.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Serilog.Sinks.Console.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\System.Security.Cryptography.Pkcs.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ref\$(AssemblyName).dll" ContinueOnError="true" />
@@ -28,18 +30,20 @@
         <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
-        <Delete Files="Generated\**\*" ContinueOnError="true" />
-        <RemoveDir Directories="Generated" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\zstd" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\zstd.exe" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
-        <PackageReference Include="MailKit" Version="2.14.0" />
+        <PackageReference Include="MailKit" Version="2.15.0" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="5.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.9.1" />
+        <PackageReference Include="Zstd.Binaries" Version="1.0.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
@@ -52,18 +56,4 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
-    <PropertyGroup Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
-    </PropertyGroup>
-    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
-        <ItemGroup>
-            <Compile Remove="Generated\**" />
-        </ItemGroup>
-    </Target>
-    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
-        <ItemGroup>
-            <Compile Include="Generated\**" />
-        </ItemGroup>
-    </Target>
 </Project>

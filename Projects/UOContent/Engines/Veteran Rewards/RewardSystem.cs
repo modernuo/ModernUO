@@ -59,15 +59,8 @@ namespace Server.Engines.VeteranRewards
             return false;
         }
 
-        public static bool HasAccess(Mobile mob, RewardEntry entry)
-        {
-            if (Core.Expansion < entry.RequiredExpansion)
-            {
-                return false;
-            }
-
-            return HasAccess(mob, entry.List, out var _);
-        }
+        public static bool HasAccess(Mobile mob, RewardEntry entry) =>
+            Core.Expansion >= entry.RequiredExpansion && HasAccess(mob, entry.List, out var _);
 
         public static bool HasAccess(Mobile mob, RewardList list, out TimeSpan ts)
         {
@@ -77,13 +70,13 @@ namespace Server.Engines.VeteranRewards
                 return false;
             }
 
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 ts = TimeSpan.Zero;
                 return false;
             }
 
-            ts = list.Age - (Core.Now - acct.Created);
+            ts = list.Age - acct.AccountAge;
 
             return ts <= TimeSpan.Zero;
         }
@@ -98,12 +91,8 @@ namespace Server.Engines.VeteranRewards
             return GetRewardLevel(acct);
         }
 
-        public static int GetRewardLevel(Account acct)
-        {
-            var totalTime = Core.Now - acct.Created;
-
-            return Math.Max((int)(totalTime.TotalDays / RewardInterval.TotalDays), 0);
-        }
+        public static int GetRewardLevel(Account acct) =>
+            Math.Max((int)(acct.AccountAge.TotalDays / RewardInterval.TotalDays), 0);
 
         public static bool HasHalfLevel(Mobile mob)
         {
@@ -115,14 +104,7 @@ namespace Server.Engines.VeteranRewards
             return HasHalfLevel(acct);
         }
 
-        public static bool HasHalfLevel(Account acct)
-        {
-            var totalTime = Core.Now - acct.Created;
-
-            var level = totalTime.TotalDays / RewardInterval.TotalDays;
-
-            return level >= 0.5;
-        }
+        public static bool HasHalfLevel(Account acct) => acct.AccountAge.TotalDays / RewardInterval.TotalDays >= 0.5;
 
         public static bool ConsumeRewardPoint(Mobile mob)
         {

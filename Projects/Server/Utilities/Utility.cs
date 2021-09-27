@@ -927,14 +927,11 @@ namespace Server
             return outputList;
         }
 
-        public static bool ToBoolean(string value)
-        {
-#pragma warning disable CA1806 // Do not ignore method results
-            bool.TryParse(value, out var b);
-#pragma warning restore CA1806 // Do not ignore method results
-
-            return b;
-        }
+        public static bool ToBoolean(string value) =>
+            bool.TryParse(value, out var b) && b ||
+            value.InsensitiveEquals("enabled") ||
+            value.InsensitiveEquals("on") ||
+            !value.InsensitiveEquals("disabled") && !value.InsensitiveEquals("off");
 
         public static double ToDouble(string value)
         {
@@ -1484,7 +1481,10 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetTimeStamp() => Core.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        public static string GetTimeStamp() => Core.Now.ToTimeStamp();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToTimeStamp(this DateTime dt) => dt.ToString("yyyy-MM-dd-HH-mm-ss");
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Add<T>(ref List<T> list, T value)
@@ -1638,6 +1638,27 @@ namespace Server
         {
             dict.Clear();
             dict = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DateToComponents(
+            DateTime date,
+            out int year,
+            out int month,
+            out int day,
+            out DayOfWeek dayOfWeek,
+            out int hour,
+            out int min,
+            out int sec
+        )
+        {
+            year = date.Year;
+            month = date.Month;
+            day = date.Day;
+            dayOfWeek = date.DayOfWeek;
+            hour = date.Hour;
+            min = date.Minute;
+            sec = date.Second;
         }
     }
 }

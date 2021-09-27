@@ -54,10 +54,8 @@ namespace Server.Engines.Craft
             {
                 var type = item.GetType();
 
-                var isAnvil = type.IsDefined(typeofAnvil, false) || item.ItemID == 4015 || item.ItemID == 4016 ||
-                              item.ItemID == 0x2DD5 || item.ItemID == 0x2DD6;
-                var isForge = type.IsDefined(typeofForge, false) || item.ItemID == 4017 ||
-                              item.ItemID >= 6522 && item.ItemID <= 6569 || item.ItemID == 0x2DD8;
+                var isAnvil = type.IsDefined(typeofAnvil, false) || item.ItemID is 4015 or 4016 or 11733 or 11734;
+                var isForge = type.IsDefined(typeofForge, false) || item.ItemID is 4017 or >= 6522 and <= 6569 or 11736;
 
                 if (isAnvil || isForge)
                 {
@@ -88,8 +86,8 @@ namespace Server.Engines.Craft
                     {
                         var id = tiles[i].ID;
 
-                        var isAnvil = id == 4015 || id == 4016 || id == 0x2DD5 || id == 0x2DD6;
-                        var isForge = id == 4017 || id >= 6522 && id <= 6569 || id == 0x2DD8;
+                        var isAnvil = id is 4015 or 4016 or 11733 or 11734;
+                        var isForge = id is 4017 or >= 6522 and <= 6569 or 11736;
 
                         if (isAnvil || isForge)
                         {
@@ -229,56 +227,16 @@ namespace Server.Engines.Craft
                 index = AddCraft(typeof(PlateMempo), 1011078, 1030180, 80.0, 130.0, typeof(IronIngot), 1044036, 18, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(PlateDo),
-                    1011078,
-                    1030184,
-                    80.0,
-                    130.0,
-                    typeof(IronIngot),
-                    1044036,
-                    28,
-                    1044037 // Double check skill
-                );
+                index = AddCraft(typeof(PlateDo), 1011078, 1030184, 87.0, 137.0, typeof(IronIngot), 1044036, 28, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(PlateHiroSode),
-                    1011078,
-                    1030187,
-                    80.0,
-                    130.0,
-                    typeof(IronIngot),
-                    1044036,
-                    16,
-                    1044037
-                );
+                index = AddCraft(typeof(PlateHiroSode), 1011078, 1030187, 80.0, 130.0, typeof(IronIngot), 1044036, 16, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(PlateSuneate),
-                    1011078,
-                    1030195,
-                    65.0,
-                    115.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(PlateSuneate), 1011078, 1030195, 65.0, 115.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(PlateHaidate),
-                    1011078,
-                    1030200,
-                    65.0,
-                    115.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(PlateHaidate), 1011078, 1030200, 65.0, 115.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
             }
 
@@ -290,108 +248,28 @@ namespace Server.Engines.Craft
 
             if (Core.SE)
             {
-                index = AddCraft(
-                    typeof(ChainHatsuburi),
-                    1011079,
-                    1030175,
-                    30.0,
-                    80.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(ChainHatsuburi), 1011079, 1030175, 30.0, 80.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(PlateHatsuburi),
-                    1011079,
-                    1030176,
-                    45.0,
-                    95.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(PlateHatsuburi), 1011079, 1030176, 45.0, 95.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(HeavyPlateJingasa),
-                    1011079,
-                    1030178,
-                    45.0,
-                    95.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(HeavyPlateJingasa), 1011079, 1030178, 45.0, 95.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(LightPlateJingasa),
-                    1011079,
-                    1030188,
-                    45.0,
-                    95.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(LightPlateJingasa), 1011079, 1030188, 45.0, 95.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(SmallPlateJingasa),
-                    1011079,
-                    1030191,
-                    45.0,
-                    95.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(SmallPlateJingasa), 1011079, 1030191, 45.0, 95.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(DecorativePlateKabuto),
-                    1011079,
-                    1030179,
-                    90.0,
-                    140.0,
-                    typeof(IronIngot),
-                    1044036,
-                    25,
-                    1044037
-                );
+                index = AddCraft(typeof(DecorativePlateKabuto), 1011079, 1030179, 90.0, 140.0, typeof(IronIngot), 1044036, 25, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(PlateBattleKabuto),
-                    1011079,
-                    1030192,
-                    90.0,
-                    140.0,
-                    typeof(IronIngot),
-                    1044036,
-                    25,
-                    1044037
-                );
+                index = AddCraft(typeof(PlateBattleKabuto), 1011079, 1030192, 90.0, 140.0, typeof(IronIngot), 1044036, 25, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
-                index = AddCraft(
-                    typeof(StandardPlateKabuto),
-                    1011079,
-                    1030196,
-                    90.0,
-                    140.0,
-                    typeof(IronIngot),
-                    1044036,
-                    25,
-                    1044037
-                );
+                index = AddCraft(typeof(StandardPlateKabuto), 1011079, 1030196, 90.0, 140.0, typeof(IronIngot), 1044036, 25, 1044037);
                 SetNeededExpansion(index, Expansion.SE);
 
                 if (Core.ML)
@@ -399,30 +277,10 @@ namespace Server.Engines.Craft
                     index = AddCraft(typeof(Circlet), 1011079, 1032645, 62.1, 112.1, typeof(IronIngot), 1044036, 6, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(RoyalCirclet),
-                        1011079,
-                        1032646,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        6,
-                        1044037
-                    );
+                    index = AddCraft(typeof(RoyalCirclet), 1011079, 1032646, 70.0, 120.0, typeof(IronIngot), 1044036, 6, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(GemmedCirclet),
-                        1011079,
-                        1032647,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        6,
-                        1044037
-                    );
+                    index = AddCraft(typeof(GemmedCirclet), 1011079, 1032647, 75.0, 125.0, typeof(IronIngot), 1044036, 6, 1044037);
                     AddRes(index, typeof(Tourmaline), 1044237, 1, 1044240);
                     AddRes(index, typeof(Amethyst), 1044236, 1, 1044240);
                     AddRes(index, typeof(BlueDiamond), 1032696, 1, 1044240);
@@ -484,108 +342,28 @@ namespace Server.Engines.Craft
 
                 if (Core.ML)
                 {
-                    index = AddCraft(
-                        typeof(RadiantScimitar),
-                        1011081,
-                        1031571,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(RadiantScimitar), 1011081, 1031571, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(WarCleaver),
-                        1011081,
-                        1031567,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(WarCleaver), 1011081, 1031567, 70.0, 120.0, typeof(IronIngot), 1044036, 18, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(ElvenSpellblade),
-                        1011081,
-                        1031564,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(ElvenSpellblade), 1011081, 1031564, 70.0, 120.0, typeof(IronIngot), 1044036, 14, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(AssassinSpike),
-                        1011081,
-                        1031565,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        9,
-                        1044037
-                    );
+                    index = AddCraft(typeof(AssassinSpike), 1011081, 1031565, 70.0, 120.0, typeof(IronIngot), 1044036, 9, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(Leafblade),
-                        1011081,
-                        1031566,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        12,
-                        1044037
-                    );
+                    index = AddCraft(typeof(Leafblade), 1011081, 1031566, 70.0, 120.0, typeof(IronIngot), 1044036, 12, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(RuneBlade),
-                        1011081,
-                        1031570,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(RuneBlade), 1011081, 1031570, 70.0, 120.0, typeof(IronIngot), 1044036, 15, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(ElvenMachete),
-                        1011081,
-                        1031573,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(ElvenMachete), 1011081, 1031573, 70.0, 120.0, typeof(IronIngot), 1044036, 14, 1044037);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(RuneCarvingKnife),
-                        1011081,
-                        1072915,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        9,
-                        1044037
-                    );
+                    index = AddCraft(typeof(RuneCarvingKnife), 1011081, 1072915, 70.0, 120.0, typeof(IronIngot), 1044036, 9, 1044037);
                     AddRes(index, typeof(DreadHornMane), 1032682, 1, 1053098);
                     AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
                     AddRes(index, typeof(Muculent), 1032680, 10, 1053098);
@@ -593,17 +371,7 @@ namespace Server.Engines.Craft
                     ForceNonExceptional(index);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(ColdForgedBlade),
-                        1011081,
-                        1072916,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(ColdForgedBlade), 1011081, 1072916, 70.0, 120.0, typeof(IronIngot), 1044036, 18, 1044037);
                     AddRes(index, typeof(GrizzledBones), 1032684, 1, 1053098);
                     AddRes(index, typeof(Taint), 1032684, 10, 1053098);
                     AddRes(index, typeof(Blight), 1032675, 10, 1053098);
@@ -611,17 +379,7 @@ namespace Server.Engines.Craft
                     ForceNonExceptional(index);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(OverseerSunderedBlade),
-                        1011081,
-                        1072920,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(OverseerSunderedBlade), 1011081, 1072920, 70.0, 120.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(GrizzledBones), 1032684, 1, 1053098);
                     AddRes(index, typeof(Blight), 1032675, 10, 1053098);
                     AddRes(index, typeof(Scourge), 1032677, 10, 1053098);
@@ -629,17 +387,7 @@ namespace Server.Engines.Craft
                     ForceNonExceptional(index);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(LuminousRuneBlade),
-                        1011081,
-                        1072922,
-                        70.0,
-                        120.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(LuminousRuneBlade), 1011081, 1072922, 70.0, 120.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(GrizzledBones), 1032684, 1, 1053098);
                     AddRes(index, typeof(Corruption), 1032676, 10, 1053098);
                     AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
@@ -647,439 +395,147 @@ namespace Server.Engines.Craft
                     ForceNonExceptional(index);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(TrueSpellblade),
-                        1011081,
-                        1073513,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(TrueSpellblade), 1011081, 1073513, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(BlueDiamond), 1032696, 1, 1044240);
                     AddRecipe(index, 4);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(IcySpellblade),
-                        1011081,
-                        1073514,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(IcySpellblade), 1011081, 1073514, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(Turquoise), 1032691, 1, 1044240);
                     AddRecipe(index, 5);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(FierySpellblade),
-                        1011081,
-                        1073515,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(FierySpellblade), 1011081, 1073515, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(FireRuby), 1032695, 1, 1044240);
                     AddRecipe(index, 6);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(SpellbladeOfDefense),
-                        1011081,
-                        1073516,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(SpellbladeOfDefense), 1011081, 1073516, 75.0, 125.0, typeof(IronIngot), 1044036, 18, 1044037);
                     AddRes(index, typeof(WhitePearl), 1032694, 1, 1044240);
                     AddRecipe(index, 7);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(TrueAssassinSpike),
-                        1011081,
-                        1073517,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        9,
-                        1044037
-                    );
+                    index = AddCraft(typeof(TrueAssassinSpike), 1011081, 1073517, 75.0, 125.0, typeof(IronIngot), 1044036, 9, 1044037);
                     AddRes(index, typeof(DarkSapphire), 1032690, 1, 1044240);
                     AddRecipe(index, 8);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(ChargedAssassinSpike),
-                        1011081,
-                        1073518,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        9,
-                        1044037
-                    );
+                    index = AddCraft(typeof(ChargedAssassinSpike), 1011081, 1073518, 75.0, 125.0, typeof(IronIngot), 1044036, 9, 1044037);
                     AddRes(index, typeof(EcruCitrine), 1032693, 1, 1044240);
                     AddRecipe(index, 9);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(MagekillerAssassinSpike),
-                        1011081,
-                        1073519,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        9,
-                        1044037
-                    );
+                    index = AddCraft(typeof(MagekillerAssassinSpike), 1011081, 1073519, 75.0, 125.0, typeof(IronIngot), 1044036, 9, 1044037);
                     AddRes(index, typeof(BrilliantAmber), 1032697, 1, 1044240);
                     AddRecipe(index, 10);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(WoundingAssassinSpike),
-                        1011081,
-                        1073520,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        9,
-                        1044037
-                    );
+                    index = AddCraft(typeof(WoundingAssassinSpike), 1011081, 1073520, 75.0, 125.0, typeof(IronIngot), 1044036, 9, 1044037);
                     AddRes(index, typeof(PerfectEmerald), 1032692, 1, 1044240);
                     AddRecipe(index, 11);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(TrueLeafblade),
-                        1011081,
-                        1073521,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        12,
-                        1044037
-                    );
+                    index = AddCraft(typeof(TrueLeafblade), 1011081, 1073521, 75.0, 125.0, typeof(IronIngot), 1044036, 12, 1044037);
                     AddRes(index, typeof(BlueDiamond), 1032696, 1, 1044240);
                     AddRecipe(index, 12);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(Luckblade),
-                        1011081,
-                        1073522,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        12,
-                        1044037
-                    );
+                    index = AddCraft(typeof(Luckblade), 1011081, 1073522, 75.0, 125.0, typeof(IronIngot), 1044036, 12, 1044037);
                     AddRes(index, typeof(WhitePearl), 1032694, 1, 1044240);
                     AddRecipe(index, 13);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(MagekillerLeafblade),
-                        1011081,
-                        1073523,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        12,
-                        1044037
-                    );
+                    index = AddCraft(typeof(MagekillerLeafblade), 1011081, 1073523, 75.0, 125.0, typeof(IronIngot), 1044036, 12, 1044037);
                     AddRes(index, typeof(FireRuby), 1032695, 1, 1044240);
                     AddRecipe(index, 14);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(LeafbladeOfEase),
-                        1011081,
-                        1073524,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        12,
-                        1044037
-                    );
+                    index = AddCraft(typeof(LeafbladeOfEase), 1011081, 1073524, 75.0, 125.0, typeof(IronIngot), 1044036, 12, 1044037);
                     AddRes(index, typeof(PerfectEmerald), 1032692, 1, 1044240);
                     AddRecipe(index, 15);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(KnightsWarCleaver),
-                        1011081,
-                        1073525,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(KnightsWarCleaver), 1011081, 1073525, 75.0, 125.0, typeof(IronIngot), 1044036, 18, 1044037);
                     AddRes(index, typeof(PerfectEmerald), 1032692, 1, 1044240);
                     AddRecipe(index, 16);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    // TODO
-                    index = AddCraft(
-                        typeof(ButchersWarCleaver),
-                        1011081,
-                        1073526,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(ButchersWarCleaver), 1011081, 1073526, 75.0, 125.0, typeof(IronIngot), 1044036, 18, 1044037);
                     AddRes(index, typeof(Turquoise), 1032691, 1, 1044240);
                     AddRecipe(index, 17);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(SerratedWarCleaver),
-                        1011081,
-                        1073527,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(SerratedWarCleaver), 1011081, 1073527, 75.0, 125.0, typeof(IronIngot), 1044036, 18, 1044037);
                     AddRes(index, typeof(EcruCitrine), 1032693, 1, 1044240);
                     AddRecipe(index, 18);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(TrueWarCleaver),
-                        1011081,
-                        1073528,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        18,
-                        1044037
-                    );
+                    index = AddCraft(typeof(TrueWarCleaver), 1011081, 1073528, 75.0, 125.0, typeof(IronIngot), 1044036, 18, 1044037);
                     AddRes(index, typeof(BrilliantAmber), 1032697, 1, 1044240);
                     AddRecipe(index, 19);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(AdventurersMachete),
-                        1011081,
-                        1073533,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(AdventurersMachete), 1011081, 1073533, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(WhitePearl), 1032694, 1, 1044240);
                     AddRecipe(index, 20);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(OrcishMachete),
-                        1011081,
-                        1073534,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(OrcishMachete), 1011081, 1073534, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(Scourge), 1072136, 1, 1042081);
                     AddRecipe(index, 21);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(MacheteOfDefense),
-                        1011081,
-                        1073535,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(MacheteOfDefense), 1011081, 1073535, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(BrilliantAmber), 1032697, 1, 1044240);
                     AddRecipe(index, 22);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(DiseasedMachete),
-                        1011081,
-                        1073536,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        14,
-                        1044037
-                    );
+                    index = AddCraft(typeof(DiseasedMachete), 1011081, 1073536, 75.0, 125.0, typeof(IronIngot), 1044036, 14, 1044037);
                     AddRes(index, typeof(Blight), 1072134, 1, 1042081);
                     AddRecipe(index, 23);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    // TODO
-                    index = AddCraft(
-                        typeof(Runesabre),
-                        1011081,
-                        1073537,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(Runesabre), 1011081, 1073537, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(Turquoise), 1032691, 1, 1044240);
                     AddRecipe(index, 24);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(MagesRuneBlade),
-                        1011081,
-                        1073538,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(MagesRuneBlade), 1011081, 1073538, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(BlueDiamond), 1032696, 1, 1044240);
                     AddRecipe(index, 25);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(RuneBladeOfKnowledge),
-                        1011081,
-                        1073539,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(RuneBladeOfKnowledge), 1011081, 1073539, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(EcruCitrine), 1032693, 1, 1044240);
                     AddRecipe(index, 26);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(CorruptedRuneBlade),
-                        1011081,
-                        1073540,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(CorruptedRuneBlade), 1011081, 1073540, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(Corruption), 1072135, 1, 1042081);
                     AddRecipe(index, 27);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(TrueRadiantScimitar),
-                        1011081,
-                        1073541,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(TrueRadiantScimitar), 1011081, 1073541, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(BrilliantAmber), 1032697, 1, 1044240);
                     AddRecipe(index, 28);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(DarkglowScimitar),
-                        1011081,
-                        1073542,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(DarkglowScimitar), 1011081, 1073542, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(DarkSapphire), 1032690, 1, 1044240);
                     AddRecipe(index, 29);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(IcyScimitar),
-                        1011081,
-                        1073543,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(IcyScimitar), 1011081, 1073543, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(DarkSapphire), 1032690, 1, 1044240);
                     AddRecipe(index, 30);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(TwinklingScimitar),
-                        1011081,
-                        1073544,
-                        75.0,
-                        125.0,
-                        typeof(IronIngot),
-                        1044036,
-                        15,
-                        1044037
-                    );
+                    index = AddCraft(typeof(TwinklingScimitar), 1011081, 1073544, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                     AddRes(index, typeof(DarkSapphire), 1032690, 1, 1044240);
                     AddRecipe(index, 31);
                     SetNeededExpansion(index, Expansion.ML);
 
-                    index = AddCraft(
-                        typeof(BoneMachete),
-                        1011081,
-                        1020526,
-                        45.0,
-                        95.0,
-                        typeof(IronIngot),
-                        1044036,
-                        20,
-                        1044037
-                    );
+                    index = AddCraft(typeof(BoneMachete), 1011081, 1020526, 45.0, 95.0, typeof(IronIngot), 1044036, 20, 1044037);
                     AddRes(index, typeof(Bone), 1049064, 6, 1049063);
                     AddQuestRecipe(index, 32);
                     SetNeededExpansion(index, Expansion.ML);
@@ -1099,17 +555,7 @@ namespace Server.Engines.Craft
                 index = AddCraft(typeof(OrnateAxe), 1011082, 1031572, 70.0, 120.0, typeof(IronIngot), 1044036, 18, 1044037);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(GuardianAxe),
-                    1011082,
-                    1073545,
-                    75.0,
-                    125.0,
-                    typeof(IronIngot),
-                    1044036,
-                    15,
-                    1044037
-                );
+                index = AddCraft(typeof(GuardianAxe), 1011082, 1073545, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                 AddRes(index, typeof(BlueDiamond), 1032696, 1, 1044240);
                 AddRecipe(index, 33);
                 SetNeededExpansion(index, Expansion.ML);
@@ -1119,32 +565,12 @@ namespace Server.Engines.Craft
                 AddRecipe(index, 34);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(ThunderingAxe),
-                    1011082,
-                    1073547,
-                    75.0,
-                    125.0,
-                    typeof(IronIngot),
-                    1044036,
-                    15,
-                    1044037
-                );
+                index = AddCraft(typeof(ThunderingAxe), 1011082, 1073547, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                 AddRes(index, typeof(EcruCitrine), 1032693, 1, 1044240);
                 AddRecipe(index, 35);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(HeavyOrnateAxe),
-                    1011082,
-                    1073548,
-                    75.0,
-                    125.0,
-                    typeof(IronIngot),
-                    1044036,
-                    15,
-                    1044037
-                );
+                index = AddCraft(typeof(HeavyOrnateAxe), 1011082, 1073548, 75.0, 125.0, typeof(IronIngot), 1044036, 15, 1044037);
                 AddRes(index, typeof(Turquoise), 1032691, 1, 1044240);
                 AddRecipe(index, 36);
                 SetNeededExpansion(index, Expansion.ML);
@@ -1209,30 +635,10 @@ namespace Server.Engines.Craft
 
             if (Core.ML)
             {
-                index = AddCraft(
-                    typeof(DiamondMace),
-                    1011084,
-                    1031556,
-                    70.0,
-                    120.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(DiamondMace), 1011084, 1031556, 70.0, 120.0, typeof(IronIngot), 1044036, 20, 1044037);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(ShardThrasher),
-                    1011084,
-                    1072918,
-                    70.0,
-                    120.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(ShardThrasher), 1011084, 1072918, 70.0, 120.0, typeof(IronIngot), 1044036, 20, 1044037);
                 AddRes(index, typeof(EyeOfTheTravesty), 1073126, 1, 1042081);
                 AddRes(index, typeof(Muculent), 1072139, 10, 1042081);
                 AddRes(index, typeof(Corruption), 1072135, 10, 1042081);
@@ -1245,47 +651,17 @@ namespace Server.Engines.Craft
                 AddRecipe(index, 38);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(EmeraldMace),
-                    1011084,
-                    1073530,
-                    75.0,
-                    125.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(EmeraldMace), 1011084, 1073530, 75.0, 125.0, typeof(IronIngot), 1044036, 20, 1044037);
                 AddRes(index, typeof(PerfectEmerald), 1032692, 1, 1044240);
                 AddRecipe(index, 39);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(SapphireMace),
-                    1011084,
-                    1073531,
-                    75.0,
-                    125.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(SapphireMace), 1011084, 1073531, 75.0, 125.0, typeof(IronIngot), 1044036, 20, 1044037);
                 AddRes(index, typeof(DarkSapphire), 1032690, 1, 1044240);
                 AddRecipe(index, 40);
                 SetNeededExpansion(index, Expansion.ML);
 
-                index = AddCraft(
-                    typeof(SilverEtchedMace),
-                    1011084,
-                    1073532,
-                    75.0,
-                    125.0,
-                    typeof(IronIngot),
-                    1044036,
-                    20,
-                    1044037
-                );
+                index = AddCraft(typeof(SilverEtchedMace), 1011084, 1073532, 75.0, 125.0, typeof(IronIngot), 1044036, 20, 1044037);
                 AddRes(index, typeof(BlueDiamond), 1032696, 1, 1044240);
                 AddRecipe(index, 41);
                 SetNeededExpansion(index, Expansion.ML);

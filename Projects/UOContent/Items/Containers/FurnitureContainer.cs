@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Server.Items
 {
-    [Furniture, Flippable(0x2815, 0x2816)]
+    [Furniture]
+    [Flippable(0x2815, 0x2816)]
     public class TallCabinet : BaseContainer
     {
         [Constructible]
@@ -26,7 +27,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2817, 0x2818)]
+    [Furniture]
+    [Flippable(0x2817, 0x2818)]
     public class ShortCabinet : BaseContainer
     {
         [Constructible]
@@ -49,7 +51,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2857, 0x2858)]
+    [Furniture]
+    [Flippable(0x2857, 0x2858)]
     public class RedArmoire : BaseContainer
     {
         [Constructible]
@@ -72,7 +75,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x285D, 0x285E)]
+    [Furniture]
+    [Flippable(0x285D, 0x285E)]
     public class CherryArmoire : BaseContainer
     {
         [Constructible]
@@ -95,7 +99,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x285B, 0x285C)]
+    [Furniture]
+    [Flippable(0x285B, 0x285C)]
     public class MapleArmoire : BaseContainer
     {
         [Constructible]
@@ -118,7 +123,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2859, 0x285A)]
+    [Furniture]
+    [Flippable(0x2859, 0x285A)]
     public class ElegantArmoire : BaseContainer
     {
         [Constructible]
@@ -141,7 +147,30 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c)]
+    [Furniture]
+    [Serializable(0)]
+    [Flippable(0x2D07, 0x2D08)]
+    public partial class FancyElvenArmoire : BaseContainer
+    {
+        [Constructible]
+        public FancyElvenArmoire() : base(0x2D07) => Weight = 1.0;
+        public override int DefaultGumpID => 0x4E;
+        public override int DefaultDropSound => 0x42;
+    }
+
+    [Furniture]
+    [Serializable(0)]
+    [Flippable(0x2D05, 0x2D06)]
+    public partial class SimpleElvenArmoire : BaseContainer
+    {
+        [Constructible]
+        public SimpleElvenArmoire() : base(0x2D05) => Weight = 1.0;
+        public override int DefaultGumpID => 0x4F;
+        public override int DefaultDropSound => 0x42;
+    }
+
+    [Furniture]
+    [Flippable(0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c)]
     public class FullBookcase : BaseContainer
     {
         [Constructible]
@@ -164,7 +193,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xa9d, 0xa9e)]
+    [Furniture]
+    [Flippable(0xa9d, 0xa9e)]
     public class EmptyBookcase : BaseContainer
     {
         [Constructible]
@@ -195,7 +225,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xa2c, 0xa34)]
+    [Furniture]
+    [Flippable(0xa2c, 0xa34)]
     public class Drawer : BaseContainer
     {
         [Constructible]
@@ -218,7 +249,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xa30, 0xa38)]
+    [Furniture]
+    [Flippable(0xa30, 0xa38)]
     public class FancyDrawer : BaseContainer
     {
         [Constructible]
@@ -241,7 +273,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xa4f, 0xa53)]
+    [Furniture]
+    [Flippable(0xa4f, 0xa53)]
     public class Armoire : BaseContainer
     {
         [Constructible]
@@ -274,7 +307,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xa4d, 0xa51)]
+    [Furniture]
+    [Flippable(0xa4d, 0xa51)]
     public class FancyArmoire : BaseContainer
     {
         [Constructible]

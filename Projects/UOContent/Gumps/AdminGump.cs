@@ -2133,7 +2133,7 @@ namespace Server.Gumps
                                 {
                                     if (Core.SA)
                                     {
-                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*.json");
+                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*/*.json");
                                     }
                                     else
                                     {
@@ -2696,9 +2696,9 @@ namespace Server.Gumps
                         {
                             case 0:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_Information,
                                             0,
                                             null,
@@ -2710,9 +2710,9 @@ namespace Server.Gumps
                                 }
                             case 1:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_Characters,
                                             0,
                                             null,
@@ -2724,9 +2724,9 @@ namespace Server.Gumps
                                 }
                             case 2:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_Comments,
                                             0,
                                             null,
@@ -2738,23 +2738,23 @@ namespace Server.Gumps
                                 }
                             case 3:
                                 {
-                                    @from.SendGump(
-                                        new AdminGump(@from, AdminGumpPage.AccountDetails_Tags, 0, null, null, m_State)
+                                    from.SendGump(
+                                        new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, null, m_State)
                                     );
                                     break;
                                 }
                             case 13:
                                 {
-                                    @from.SendGump(
-                                        new AdminGump(@from, AdminGumpPage.AccountDetails_Access, 0, null, null, m_State)
+                                    from.SendGump(
+                                        new AdminGump(from, AdminGumpPage.AccountDetails_Access, 0, null, null, m_State)
                                     );
                                     break;
                                 }
                             case 14:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_Access_ClientIPs,
                                             0,
                                             null,
@@ -2766,9 +2766,9 @@ namespace Server.Gumps
                                 }
                             case 15:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_Access_Restrictions,
                                             0,
                                             null,
@@ -2780,14 +2780,14 @@ namespace Server.Gumps
                                 }
                             case 4:
                                 {
-                                    @from.Prompt = new AddCommentPrompt(m_State as Account);
-                                    @from.SendMessage("Enter the new account comment.");
+                                    from.Prompt = new AddCommentPrompt(m_State as Account);
+                                    from.SendMessage("Enter the new account comment.");
                                     break;
                                 }
                             case 5:
                                 {
-                                    @from.Prompt = new AddTagNamePrompt(m_State as Account);
-                                    @from.SendMessage("Enter the new tag name.");
+                                    from.Prompt = new AddTagNamePrompt(m_State as Account);
+                                    from.SendMessage("Enter the new tag name.");
                                     break;
                                 }
                             case 6:
@@ -2897,9 +2897,9 @@ namespace Server.Gumps
                                 }
                             case 8:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_ChangePassword,
                                             0,
                                             null,
@@ -2911,9 +2911,9 @@ namespace Server.Gumps
                                 }
                             case 9:
                                 {
-                                    @from.SendGump(
+                                    from.SendGump(
                                         new AdminGump(
-                                            @from,
+                                            from,
                                             AdminGumpPage.AccountDetails_ChangeAccess,
                                             0,
                                             null,
