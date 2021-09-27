@@ -65,7 +65,7 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            Item?.Delete();
+            _item?.Delete();
         }
 
         [Serializable(0, false)]
