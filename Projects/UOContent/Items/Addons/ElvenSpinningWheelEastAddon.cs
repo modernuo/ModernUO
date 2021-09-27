@@ -11,18 +11,19 @@ namespace Server.Items
     }
 
     [Serializable(0)]
-    public partial class ElvenSpinningwheelEastAddon : BaseAddon, ISpinningWheel
+    [TypeAlias("Server.Items.ElvenSpinningwheelEastAddon")]
+    public partial class ElvenSpinningWheelEastAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
 
         [Constructible]
-        public ElvenSpinningwheelEastAddon()
+        public ElvenSpinningWheelEastAddon()
         {
             AddComponent(new AddonComponent(0x2E3D), 0, 0, 0);
         }
 
         public override int LabelNumber => 1031737; // elven spinning wheel
-        public override BaseAddonDeed Deed => new ElvenSpinningwheelEastDeed();
+        public override BaseAddonDeed Deed => new ElvenSpinningWheelEastDeed();
 
         public bool Spinning => m_Timer != null;
 
@@ -79,9 +80,9 @@ namespace Server.Items
             private readonly SpinCallback m_Callback;
             private readonly Mobile m_From;
             private readonly int m_Hue;
-            private readonly ElvenSpinningwheelEastAddon m_Wheel;
+            private readonly ElvenSpinningWheelEastAddon m_Wheel;
 
-            public SpinTimer(ElvenSpinningwheelEastAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
+            public SpinTimer(ElvenSpinningWheelEastAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
                 TimeSpan.FromSeconds(3.0)
             )
             {
@@ -99,14 +100,15 @@ namespace Server.Items
     }
 
     [Serializable(0)]
-    public partial class ElvenSpinningwheelEastDeed : BaseAddonDeed
+    [TypeAlias("Server.Items.ElvenSpinningwheelEastDeed")]
+    public partial class ElvenSpinningWheelEastDeed : BaseAddonDeed
     {
         [Constructible]
-        public ElvenSpinningwheelEastDeed()
+        public ElvenSpinningWheelEastDeed()
         {
         }
 
-        public override BaseAddon Addon => new ElvenSpinningwheelEastAddon();
+        public override BaseAddon Addon => new ElvenSpinningWheelEastAddon();
         public override int LabelNumber => 1073393; // elven spinning wheel (east)
     }
 }
