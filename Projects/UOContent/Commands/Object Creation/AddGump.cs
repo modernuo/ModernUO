@@ -86,10 +86,14 @@ namespace Server.Gumps
                 (m_Page + 1) * 10 < searchResults.Length ? 0x7FFF : 0x5EF7
             );
         }
-
-        public static void Initialize()
+        private static void Sciter_OnCommand(CommandEventArgs e)
+        {
+            e.Mobile.SendGump(new SciterTestGump(e.Mobile));
+        }
+            public static void Initialize()
         {
             CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
+            CommandSystem.Register("t", AccessLevel.GameMaster, Sciter_OnCommand);
         }
 
         [Usage("AddMenu [searchString]"), Description(

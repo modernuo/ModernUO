@@ -349,7 +349,7 @@ namespace Server.Network
                 {
                     continue;
                 }
-
+                var isWebResponse = gump.UseWebRender;
                 var buttonExists = buttonID == 0; // 0 is always 'close'
 
                 if (!buttonExists)
@@ -370,7 +370,7 @@ namespace Server.Network
                     }
                 }
 
-                if (!buttonExists)
+                if (!isWebResponse && !buttonExists)
                 {
                     state.LogInfo("Invalid gump response, disconnecting...");
                     var exception = new InvalidGumpResponseException($"Button {buttonID} doesn't exist");
@@ -384,7 +384,7 @@ namespace Server.Network
 
                 var switchCount = reader.ReadInt32();
 
-                if (switchCount < 0 || switchCount > gump.m_Switches)
+                if (!isWebResponse && (switchCount < 0 || switchCount > gump.m_Switches))
                 {
                     state.LogInfo("Invalid gump response, disconnecting...");
                     var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
@@ -405,7 +405,7 @@ namespace Server.Network
 
                 var textCount = reader.ReadInt32();
 
-                if (textCount < 0 || textCount > gump.m_TextEntries)
+                if (!isWebResponse && (textCount < 0 || textCount > gump.m_TextEntries))
                 {
                     state.LogInfo("Invalid gump response, disconnecting...");
                     var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
@@ -440,7 +440,8 @@ namespace Server.Network
                     textEntries[i] = new TextRelay(entryID, text);
                 }
 
-                state.RemoveGump(gump);
+                if (!isWebResponse)
+                    state.RemoveGump(gump);
 
                 var prof = GumpProfile.Acquire(gump.GetType());
 

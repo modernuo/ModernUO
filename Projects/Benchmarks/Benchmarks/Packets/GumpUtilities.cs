@@ -14,6 +14,11 @@ namespace Server.Tests.Network
             IGumpWriter disp = new DisplayGumpFast(g);
             // IGumpWriter disp = new DisplayGumpPacked(g);
 
+            if (g.UseWebRender)
+            {
+                disp.AppendLayout(Gump.WebRender);
+            }
+
             if (!g.Draggable)
             {
                 disp.AppendLayout(Gump.NoMove);
