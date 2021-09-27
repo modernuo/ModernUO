@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    [Furniture, Flippable(0xB4F, 0xB4E, 0xB50, 0xB51)]
+    [Furniture]
+    [Flippable(0xB4F, 0xB4E, 0xB50, 0xB51)]
     public class FancyWoodenChairCushion : Item
     {
         [Constructible]
@@ -30,7 +31,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB53, 0xB52, 0xB54, 0xB55)]
+    [Furniture]
+    [Flippable(0xB53, 0xB52, 0xB54, 0xB55)]
     public class WoodenChairCushion : Item
     {
         [Constructible]
@@ -60,7 +62,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB57, 0xB56, 0xB59, 0xB58)]
+    [Furniture]
+    [Flippable(0xB57, 0xB56, 0xB59, 0xB58)]
     public class WoodenChair : Item
     {
         [Constructible]
@@ -90,7 +93,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB5B, 0xB5A, 0xB5C, 0xB5D)]
+    [Furniture]
+    [Flippable(0xB5B, 0xB5A, 0xB5C, 0xB5D)]
     public class BambooChair : Item
     {
         [Constructible]
