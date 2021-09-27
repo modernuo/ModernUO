@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenSpinningwheelSouthAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
@@ -49,7 +49,6 @@ namespace Server.Items
         public void EndSpin(SpinCallback callback, Mobile from, int hue)
         {
             m_Timer?.Stop();
-
             m_Timer = null;
 
             foreach (var c in Components)
@@ -90,7 +89,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenSpinningwheelSouthDeed : BaseAddonDeed
     {
         [Constructible]

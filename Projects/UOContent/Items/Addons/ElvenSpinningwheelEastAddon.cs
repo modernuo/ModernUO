@@ -10,7 +10,7 @@ namespace Server.Items
         void BeginSpin(SpinCallback callback, Mobile from, int hue);
     }
 
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenSpinningwheelEastAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
@@ -98,7 +98,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [Serializable(0)]
     public partial class ElvenSpinningwheelEastDeed : BaseAddonDeed
     {
         [Constructible]
