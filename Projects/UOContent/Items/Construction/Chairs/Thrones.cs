@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    [Furniture, Flippable(0xB32, 0xB33)]
+    [Furniture]
+    [Flippable(0xB32, 0xB33)]
     public class Throne : Item
     {
         [Constructible]
@@ -30,7 +31,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB2E, 0xB2F, 0xB31, 0xB30)]
+    [Furniture]
+    [Flippable(0xB2E, 0xB2F, 0xB31, 0xB30)]
     public class WoodenThrone : Item
     {
         [Constructible]
