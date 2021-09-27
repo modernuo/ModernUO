@@ -172,18 +172,24 @@ namespace Server.Saves
 
         public static void PruneBackups()
         {
-            // Maintain a total of 66 of the most recent archives
-            PruneLocalArchives(ArchivePeriod.Hourly, 24);
-            PruneLocalArchives(ArchivePeriod.Daily, 30);
-            PruneLocalArchives(ArchivePeriod.Monthly, 12);
-
-            var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??", SearchOption.AllDirectories);
-            var latestBackupFolders = GetInRange(allFolders, DateTime.MinValue, Core.Now.AddMonths(-1));
-
-            foreach (var folder in latestBackupFolders)
+            if (Directory.Exists(ArchivePath))
             {
-                logger.Information($"Pruning backup {folder}");
-                Directory.Delete(folder, true);
+                // Maintain a total of 66 of the most recent archives
+                PruneLocalArchives(ArchivePeriod.Hourly, 24);
+                PruneLocalArchives(ArchivePeriod.Daily, 30);
+                PruneLocalArchives(ArchivePeriod.Monthly, 12);
+            }
+
+            if (Directory.Exists(BackupPath))
+            {
+                var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??", SearchOption.AllDirectories);
+                var latestBackupFolders = GetInRange(allFolders, DateTime.MinValue, Core.Now.AddMonths(-1));
+
+                foreach (var folder in latestBackupFolders)
+                {
+                    logger.Information($"Pruning backup {folder}");
+                    Directory.Delete(folder, true);
+                }
             }
         }
 
@@ -257,12 +263,16 @@ namespace Server.Saves
 
         private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, string archiveNameNoExtension)
         {
+            if (!Directory.Exists(BackupPath))
+            {
+                return;
+            }
+
             var archivePeriodStr = archivePeriod.ToString();
             var archivePeriodStrLower = archivePeriodStr.ToLowerInvariant();
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            AssemblyHandler.EnsureDirectory(BackupPath);
             var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
 
             var rangeEnd = archivePeriod switch
@@ -281,7 +291,10 @@ namespace Server.Saves
             }
 
             var extension = _compressionFormat.GetFileExtension();
-            var archiveFilePath = Path.Combine(ArchivePath, archivePeriodStr, $"{archiveNameNoExtension}{extension}");
+            var archivePath = Path.Combine(ArchivePath, archivePeriodStr);
+            AssemblyHandler.EnsureDirectory(archivePath);
+
+            var archiveFilePath = Path.Combine(archivePath, $"{archiveNameNoExtension}{extension}");
 
             logger.Information($"Creating {archivePeriodStrLower} archive");
             var archiveCreated = _compressionFormat == CompressionFormat.Zstd
