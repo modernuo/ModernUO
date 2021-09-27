@@ -98,6 +98,6 @@ namespace Server.Items
         }
 
         public override BaseAddon Addon => new ElvenSpinningwheelSouthAddon();
-        public override int LabelNumber => 1072878; // elven spining wheel (south
+        public override int LabelNumber => 1072878; // elven spinning wheel (south)
     }
 }
