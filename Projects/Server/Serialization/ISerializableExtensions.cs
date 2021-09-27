@@ -28,6 +28,13 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Delete(this ISerializable entity, IEntity toDelete)
+        {
+            toDelete?.Delete();
+            entity.MarkDirty();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Add<T>(this ISerializable entity, ICollection<T> list, T value)
         {
             list.Add(value);

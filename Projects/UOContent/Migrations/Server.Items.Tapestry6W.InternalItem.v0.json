@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.Tapestry6W.InternalItem",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Items.Tapestry6W",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
