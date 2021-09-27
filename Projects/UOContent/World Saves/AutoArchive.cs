@@ -86,7 +86,7 @@ namespace Server.Saves
             }
 
             var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
-            AssemblyHandler.EnsureDirectory(backupPath);
+            AssemblyHandler.EnsureDirectory(BackupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
             logger.Information($"Created backup at {backupPath}");
@@ -262,6 +262,7 @@ namespace Server.Saves
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
+            AssemblyHandler.EnsureDirectory(BackupPath);
             var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
 
             var rangeEnd = archivePeriod switch
