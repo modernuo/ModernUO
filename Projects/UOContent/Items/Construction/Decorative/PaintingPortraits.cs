@@ -45,10 +45,6 @@ namespace Server.Items
     {
         [Constructible]
         public LadyPortrait1() : base(0x0EA6) => Movable = false;
-
-        public LadyPortrait1(Serial serial) : base(serial)
-        {
-        }
     }
 
     [Serializable(0, false)]
