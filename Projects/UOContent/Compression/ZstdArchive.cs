@@ -69,7 +69,7 @@ namespace Server.Compression
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = $"{_pathToZstd}\\zstd.exe",
+                            FileName = Path.Combine(_pathToZstd, "zstd.exe"),
                             Arguments = $"--no-progress -10 \"{tempTarArchive}\" -o \"{destinationArchiveFileName}\""
                         }
                     };
@@ -89,7 +89,7 @@ namespace Server.Compression
                 }
             }
 
-            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, $"zstd -10", _pathToZstd);
+            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, "zstd -10", _pathToZstd);
         }
     }
 }

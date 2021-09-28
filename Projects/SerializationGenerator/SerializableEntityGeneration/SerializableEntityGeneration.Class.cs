@@ -190,7 +190,7 @@ namespace SerializationGenerator
                     ) != null
             ) : null;
 
-            var serializablePropertySet = new SortedSet<SerializableProperty>(new SerializablePropertyComparer());
+            var serializablePropertySet = new SortedDictionary<SerializableProperty, ISymbol>(new SerializablePropertyComparer());
 
             foreach (var fieldOrPropertySymbol in fieldsAndProperties)
             {
@@ -267,10 +267,16 @@ namespace SerializationGenerator
                     serializableFieldSaveFlagMethods
                 );
 
-                serializablePropertySet.Add(serializableProperty);
+                serializablePropertySet.Add(serializableProperty, fieldOrPropertySymbol);
             }
 
-            var serializableProperties = serializablePropertySet.ToImmutableArray();
+            var serializableFields = serializablePropertySet.Keys.ToImmutableArray();
+            var serializableProperties = serializablePropertySet.Select(
+                kvp => kvp.Key with
+                {
+                    Name = (kvp.Value as IFieldSymbol)?.GetPropertyName() ?? ((IPropertySymbol)kvp.Value).Name
+                }
+            ).ToImmutableArray();
 
             // If we are not inheriting ISerializable, then we need to define some stuff
             if (!(isOverride || embedded))
@@ -323,6 +329,7 @@ namespace SerializationGenerator
                 indent,
                 isOverride,
                 encodedVersion,
+                serializableFields,
                 serializableProperties,
                 serializableFieldSaveFlags
             );
@@ -337,6 +344,7 @@ namespace SerializationGenerator
                 version,
                 encodedVersion,
                 migrations,
+                serializableFields,
                 serializableProperties,
                 parentFieldOrProperty,
                 serializableFieldSaveFlags

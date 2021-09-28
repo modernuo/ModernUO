@@ -404,7 +404,6 @@ namespace Server.Commands
             TryParse(p.PropertyType, value, out var toSet) ??
             SetDirect(from, logobj, o, p, pname, toSet, shouldLog);
 
-
         private class PropsTarget : Target
         {
             public PropsTarget() : base(-1, true, TargetFlags.None)

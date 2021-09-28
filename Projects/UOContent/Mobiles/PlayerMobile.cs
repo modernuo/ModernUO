@@ -767,7 +767,6 @@ namespace Server.Mobiles
             }
         }
 
-
         public void ClearQuestArrow() => m_QuestArrow = null;
 
         public override void ToggleFlying()
