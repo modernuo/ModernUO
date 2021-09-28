@@ -2660,11 +2660,6 @@ namespace Server
                             m_ItemID = reader.ReadEncodedInt();
                         }
 
-                        if (GetType().Name == "ArmorOfFortune")
-                        {
-                            Console.WriteLine("AoF");
-                        }
-
                         if (GetSaveFlag(flags, SaveFlag.Hue))
                         {
                             m_Hue = reader.ReadEncodedInt();
