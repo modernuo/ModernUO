@@ -68,9 +68,16 @@ namespace Server
 
         private static DelayCallTimer GetFromPool()
         {
+            if (_poolHead == null)
+            {
+                return null;
+            }
+
             var timer = _poolHead;
             _poolHead = _poolHead._nextTimer as DelayCallTimer;
             timer.Detach();
+            _poolCount--;
+
             return timer;
         }
 
