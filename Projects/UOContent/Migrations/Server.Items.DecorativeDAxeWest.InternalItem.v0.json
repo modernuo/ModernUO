@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.DecorativeDAxeWest.InternalItem",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Items.DecorativeDAxeWest",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
