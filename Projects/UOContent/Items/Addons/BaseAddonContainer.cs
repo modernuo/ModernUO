@@ -51,7 +51,7 @@ namespace Server.Items
             {
                 if (_rawResource != value)
                 {
-                    _rawResource = value;
+                    RawResource = value;
                     Hue = CraftResources.GetHue(_rawResource);
 
                     InvalidateProperties();

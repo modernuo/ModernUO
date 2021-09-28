@@ -132,7 +132,7 @@ namespace Server.Items
             get => _rawResource;
             set
             {
-                _rawResource = value;
+                RawResource = value;
                 Hue = CraftResources.GetHue(_rawResource);
                 InvalidateProperties();
                 this.MarkDirty();

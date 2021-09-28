@@ -282,7 +282,7 @@ namespace Server.Items
                 {
                     UnscaleDurability();
 
-                    _rawResource = value;
+                    RawResource = value;
 
                     if (CraftItem.RetainsColor(GetType()))
                     {
