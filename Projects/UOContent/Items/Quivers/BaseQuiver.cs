@@ -181,19 +181,29 @@ namespace Server.Items
 
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
         {
-            if (CheckType(item))
+            if (!CheckType(item))
             {
-                return Items.Count >= DefaultMaxItems && !checkItems && Ammo?.Deleted == false &&
-                    Ammo.Amount + item.Amount <= m_Capacity || item.Amount <= m_Capacity &&
-                    base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
+                if (message)
+                {
+                    m.SendLocalizedMessage( 1074836 ); // The container can not hold that type of object.
+                }
+
+                return false;
             }
 
-            if (message)
+            if (Items.Count < DefaultMaxItems)
             {
-                m.SendLocalizedMessage(1074836); // The container can not hold that type of object.
+                return item.Amount <= m_Capacity && base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
             }
 
-            return false;
+            if (checkItems)
+            {
+                return false;
+            }
+
+            Item ammo = Ammo;
+
+            return ammo?.Deleted == false && ammo.Amount + item.Amount <= m_Capacity;
         }
 
         public override void AddItem(Item dropped)

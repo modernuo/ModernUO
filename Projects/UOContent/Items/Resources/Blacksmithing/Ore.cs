@@ -25,7 +25,7 @@ namespace Server.Items
         {
             get
             {
-                if (_resource >= CraftResource.DullCopper && _resource <= CraftResource.Valorite)
+                if (_resource is >= CraftResource.DullCopper and <= CraftResource.Valorite)
                 {
                     return 1042845 + (_resource - CraftResource.DullCopper);
                 }
@@ -161,7 +161,11 @@ namespace Server.Items
                     _                   => 0
                 };
 
+<<<<<<< HEAD
                 return itemID == 4017 || itemID >= 6522 && itemID <= 6569 || itemID == 11736;
+=======
+                return itemID is 4017 or >= 6522 and <= 6569 or 11736;
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8
             }
 
             protected override void OnTarget(Mobile from, object targeted)

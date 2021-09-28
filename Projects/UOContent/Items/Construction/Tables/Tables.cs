@@ -50,7 +50,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB90, 0xB7D)]
+    [Furniture]
+    [Flippable(0xB90, 0xB7D)]
     public class LargeTable : Item
     {
         [Constructible]
@@ -80,7 +81,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB35, 0xB34)]
+    [Furniture]
+    [Flippable(0xB35, 0xB34)]
     public class Nightstand : Item
     {
         [Constructible]
@@ -110,7 +112,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xB8F, 0xB7C)]
+    [Furniture]
+    [Flippable(0xB8F, 0xB7C)]
     public class YewWoodTable : Item
     {
         [Constructible]

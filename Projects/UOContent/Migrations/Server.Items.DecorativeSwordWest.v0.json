@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.DecorativeSwordWest",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Items.DecorativeSwordWest.InternalItem",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

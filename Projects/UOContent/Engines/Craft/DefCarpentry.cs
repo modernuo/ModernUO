@@ -543,12 +543,20 @@ namespace Server.Engines.Craft
 
             if (Core.ML)
             {
+<<<<<<< HEAD
                 index = AddCraft(typeof(ElvenSpinningwheelEastDeed), 1044298, 1073393, 75.0, 100.0, typeof(Log), 1044041, 60, 1044351);
+=======
+                index = AddCraft(typeof(ElvenSpinningWheelEastDeed), 1044298, 1073393, 75.0, 100.0, typeof(Log), 1044041, 60, 1044351);
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8
                 AddSkill(index, SkillName.Tailoring, 65.0, 85.0);
                 AddRes(index, typeof(Cloth), 1044286, 40, 1044287);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
+<<<<<<< HEAD
                 index = AddCraft(typeof(ElvenSpinningwheelSouthDeed), 1044298, 1072878, 75.0, 100.0, typeof(Log), 1044041, 60, 1044351);
+=======
+                index = AddCraft(typeof(ElvenSpinningWheelSouthDeed), 1044298, 1072878, 75.0, 100.0, typeof(Log), 1044041, 60, 1044351);
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8
                 AddSkill(index, SkillName.Tailoring, 65.0, 85.0);
                 AddRes(index, typeof(Cloth), 1044286, 40, 1044287);
                 ForceNonExceptional(index);
@@ -561,10 +569,17 @@ namespace Server.Engines.Craft
                 SetNeededExpansion(index, Expansion.ML);
             }
 
+<<<<<<< HEAD
             index = AddCraft(typeof(SpinningwheelEastDeed), 1044298, 1044341, 73.6, 98.6, typeof(Log), 1044041, 75, 1044351);
             AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
             AddRes(index, typeof(Cloth), 1044286, 25, 1044287);
             index = AddCraft(typeof(SpinningwheelSouthDeed), 1044298, 1044342, 73.6, 98.6, typeof(Log), 1044041, 75, 1044351);
+=======
+            index = AddCraft(typeof(SpinningWheelEastDeed), 1044298, 1044341, 73.6, 98.6, typeof(Log), 1044041, 75, 1044351);
+            AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
+            AddRes(index, typeof(Cloth), 1044286, 25, 1044287);
+            index = AddCraft(typeof(SpinningWheelSouthDeed), 1044298, 1044342, 73.6, 98.6, typeof(Log), 1044041, 75, 1044351);
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8
             AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
             AddRes(index, typeof(Cloth), 1044286, 25, 1044287);
             index = AddCraft(typeof(LoomEastDeed), 1044298, 1044343, 84.2, 109.2, typeof(Log), 1044041, 85, 1044351);

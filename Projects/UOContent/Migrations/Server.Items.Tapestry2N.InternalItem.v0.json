@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.Tapestry2N.InternalItem",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Items.Tapestry2N",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

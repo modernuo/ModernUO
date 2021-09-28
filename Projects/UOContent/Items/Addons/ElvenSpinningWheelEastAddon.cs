@@ -10,19 +10,29 @@ namespace Server.Items
         void BeginSpin(SpinCallback callback, Mobile from, int hue);
     }
 
+<<<<<<< HEAD:Projects/UOContent/Items/Addons/ElvenSpinningwheelEastAddon.cs
     [Serializable(0, false)]
     public partial class ElvenSpinningwheelEastAddon : BaseAddon, ISpinningWheel
+=======
+    [Serializable(0)]
+    [TypeAlias("Server.Items.ElvenSpinningwheelEastAddon")]
+    public partial class ElvenSpinningWheelEastAddon : BaseAddon, ISpinningWheel
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8:Projects/UOContent/Items/Addons/ElvenSpinningWheelEastAddon.cs
     {
         private Timer m_Timer;
 
         [Constructible]
-        public ElvenSpinningwheelEastAddon()
+        public ElvenSpinningWheelEastAddon()
         {
             AddComponent(new AddonComponent(0x2E3D), 0, 0, 0);
         }
 
         public override int LabelNumber => 1031737; // elven spinning wheel
+<<<<<<< HEAD:Projects/UOContent/Items/Addons/ElvenSpinningwheelEastAddon.cs
         public override BaseAddonDeed Deed => new ElvenSpinningwheelEastDeed();
+=======
+        public override BaseAddonDeed Deed => new ElvenSpinningWheelEastDeed();
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8:Projects/UOContent/Items/Addons/ElvenSpinningWheelEastAddon.cs
 
         public bool Spinning => m_Timer != null;
 
@@ -79,9 +89,9 @@ namespace Server.Items
             private readonly SpinCallback m_Callback;
             private readonly Mobile m_From;
             private readonly int m_Hue;
-            private readonly ElvenSpinningwheelEastAddon m_Wheel;
+            private readonly ElvenSpinningWheelEastAddon m_Wheel;
 
-            public SpinTimer(ElvenSpinningwheelEastAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
+            public SpinTimer(ElvenSpinningWheelEastAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
                 TimeSpan.FromSeconds(3.0)
             )
             {
@@ -98,16 +108,27 @@ namespace Server.Items
         }
     }
 
+<<<<<<< HEAD:Projects/UOContent/Items/Addons/ElvenSpinningwheelEastAddon.cs
     [Serializable(0, false)]
     public partial class ElvenSpinningwheelEastDeed : BaseAddonDeed
+=======
+    [Serializable(0)]
+    [TypeAlias("Server.Items.ElvenSpinningwheelEastDeed")]
+    public partial class ElvenSpinningWheelEastDeed : BaseAddonDeed
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8:Projects/UOContent/Items/Addons/ElvenSpinningWheelEastAddon.cs
     {
         [Constructible]
-        public ElvenSpinningwheelEastDeed()
+        public ElvenSpinningWheelEastDeed()
         {
         }
 
+<<<<<<< HEAD:Projects/UOContent/Items/Addons/ElvenSpinningwheelEastAddon.cs
         public override BaseAddon Addon => new ElvenSpinningwheelEastAddon();
         public override int LabelNumber => 1073393; // elven spining wheel (east)
+=======
+        public override BaseAddon Addon => new ElvenSpinningWheelEastAddon();
+        public override int LabelNumber => 1073393; // elven spinning wheel (east)
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8:Projects/UOContent/Items/Addons/ElvenSpinningWheelEastAddon.cs
     }
 }
 

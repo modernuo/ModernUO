@@ -1,5 +1,6 @@
 namespace Server.Items
 {
+<<<<<<< HEAD
     [Furniture, Flippable(0x2DDD, 0x2DDE)]
     public class ElvenPodium : Item
     {
@@ -23,5 +24,14 @@ namespace Server.Items
 
             var version = reader.ReadInt();
         }
+=======
+    [Furniture]
+    [Serializable(0)]
+    [Flippable(0x2DDD, 0x2DDE)]
+    public partial class ElvenPodium : Item
+    {
+        [Constructible]
+        public ElvenPodium() : base(0x2DDD) => Weight = 2.0;
+>>>>>>> 990d151ef302b70bb21d4b3e94b8df73ad7c9ef8
     }
 }
