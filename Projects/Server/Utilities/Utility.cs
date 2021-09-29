@@ -484,7 +484,6 @@ namespace Server
                         break;
                     }
 
-
                     num = BinaryPrimitives.ReadUInt16BigEndian(ip.Slice(byteIndex, 2));
                     byteIndex += 2;
 

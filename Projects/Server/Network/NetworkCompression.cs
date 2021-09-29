@@ -125,7 +125,6 @@ namespace Server.Network
             return outputIdx;
         }
 
-
         public static int Compress(CircularBuffer<byte> input, CircularBuffer<byte> output)
         {
             if (input.Length > DefiniteOverflow)
