@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 namespace Server.Network
 {
-    public class PollGroup : IDisposable
+    public sealed class PollGroup : IDisposable
     {
         [Flags]
         private enum epoll_flags : int
@@ -58,10 +58,13 @@ namespace Server.Network
         {
             [FieldOffset(0)]
             public int fd;
+
             [FieldOffset(0)]
             public IntPtr ptr;
+
             [FieldOffset(0)]
             public uint u32;
+
             [FieldOffset(0)]
             public ulong u64;
         }
@@ -107,14 +110,7 @@ namespace Server.Network
 
         public PollGroup()
         {
-            if (Core.IsWindows)
-            {
-                _ephnd = Windows.epoll_create1(epoll_flags.NONE);
-            }
-            else
-            {
-                _ephnd = Unix.epoll_create1(epoll_flags.NONE);
-            }
+            _ephnd = Core.IsWindows ? Windows.epoll_create1(epoll_flags.NONE) : Unix.epoll_create1(epoll_flags.NONE);
 
             if (_ephnd == 0)
             {
@@ -124,7 +120,14 @@ namespace Server.Network
 
         public void Dispose()
         {
-            Windows.epoll_close(_ephnd);
+            if (Core.IsWindows)
+            {
+                Windows.epoll_close(_ephnd);
+            }
+            else
+            {
+                Unix.epoll_close(_ephnd);
+            }
         }
 
         public void Add(NetState state)
@@ -135,7 +138,11 @@ namespace Server.Network
             };
             ev.data.ptr = (IntPtr)state._handle;
 
-            int rc = Windows.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev);
+            var rc = Core.IsWindows ?
+                Windows.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev) :
+                Unix.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev);
+
+
             if (rc != 0)
             {
                 throw new Exception($"epoll_ctl failed with error code {Marshal.GetLastWin32Error()}");
@@ -150,7 +157,10 @@ namespace Server.Network
             };
             ev.data.ptr = (IntPtr)state._handle;
 
-            int rc = Windows.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev);
+            var rc = Core.IsWindows ?
+                Windows.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev) :
+                Unix.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev);
+
             if (rc != 0)
             {
                 throw new Exception($"epoll_ctl failed with error code {Marshal.GetLastWin32Error()}");
@@ -166,7 +176,9 @@ namespace Server.Network
                 _events = new epoll_event[states.Length];
             }
 
-            var rc = Windows.epoll_wait(_ephnd, _events, states.Length, 0);
+            var rc = Core.IsWindows ?
+                Windows.epoll_wait(_ephnd, _events, states.Length, 0) :
+                Unix.epoll_wait(_ephnd, _events, states.Length, 0);
 
             if (rc <= 0)
             {
