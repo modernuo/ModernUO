@@ -143,7 +143,7 @@ namespace Server
                 _continuation?.Invoke();
             }
 
-            protected override void OnDetach()
+            internal override void OnDetach()
             {
                 if (Running)
                 {
@@ -157,14 +157,14 @@ namespace Server
                     // Version++;
 
 #if DEBUG_TIMERS
-                _stackTraces.Remove(GetHashCode());
+                    _stackTraces.Remove(GetHashCode());
 #endif
 
                     if (_poolCount >= _poolCapacity)
                     {
 #if DEBUG_TIMERS
-                    logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
-                    _allowFinalization = true;
+                        logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
+                        _allowFinalization = true;
 #endif
                         return;
                     }

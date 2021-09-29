@@ -46,7 +46,4 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Serialization\Attributes\SerializableFieldSaveValueDefaultAttribute.cs" />
-    </ItemGroup>
 </Project>

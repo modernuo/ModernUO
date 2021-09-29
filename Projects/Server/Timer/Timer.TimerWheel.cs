@@ -113,6 +113,11 @@ namespace Server
                         }
                     }
 
+                    if (!timer.Running)
+                    {
+                        timer.OnDetach();
+                    }
+
                     timer = next;
                 } while (timer != null);
             }
@@ -150,7 +155,7 @@ namespace Server
         private static void AddTimer(Timer timer, long delay)
         {
 #if DEBUG_TIMERS
-            var originalDelay = delay
+            var originalDelay = delay;
 #endif
             delay = Math.Max(0, delay);
 

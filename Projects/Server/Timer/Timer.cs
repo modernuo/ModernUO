@@ -151,11 +151,9 @@ namespace Server
 
             _nextTimer = null;
             _prevTimer = null;
-
-            OnDetach();
         }
 
-        protected virtual void OnDetach()
+        internal virtual void OnDetach()
         {
         }
     }
