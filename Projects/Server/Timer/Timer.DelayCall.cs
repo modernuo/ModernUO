@@ -181,7 +181,7 @@ namespace Server
                 if (timer != null)
                 {
 #if DEBUG_TIMERS
-                    logger.Information($"Pool count: {_poolCount} / {_poolCapacity}");
+                    logger.Information($"Getting from pool: ({_poolCount} / {_poolCapacity})");
 #endif
 
                     timer.Init(delay, interval, count);

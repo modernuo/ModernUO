@@ -62,7 +62,7 @@ namespace Server
             _poolHead = head;
             _poolCount += amount;
 #if DEBUG_TIMERS
-            logger.Information($"Pool count: {_poolCount} / {_poolCapacity}");
+            logger.Information($"Returning to pool. ({_poolCount} / {_poolCapacity})");
 #endif
         }
 
@@ -84,7 +84,7 @@ namespace Server
         internal static void RefillPool(int amount, out DelayCallTimer head, out DelayCallTimer tail)
         {
 #if DEBUG_TIMERS
-                logger.Information($"Filling pool with {amount} timers.");
+            logger.Information($"Filling pool with {amount} timers.");
 #endif
 
             head = null;
