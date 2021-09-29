@@ -290,10 +290,10 @@ namespace Server.Saves
                 return;
             }
 
-            var extension = _compressionFormat.GetFileExtension();
             var archivePath = Path.Combine(ArchivePath, archivePeriodStr);
             AssemblyHandler.EnsureDirectory(archivePath);
 
+            var extension = _compressionFormat.GetFileExtension();
             var archiveFilePath = Path.Combine(archivePath, $"{archiveNameNoExtension}{extension}");
 
             logger.Information($"Creating {archivePeriodStrLower} archive");
