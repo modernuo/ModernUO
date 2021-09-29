@@ -516,7 +516,6 @@ namespace Server
 
                     // Handle networking
                     TcpServer.Slice();
-                    NetState.HandleAllReceives();
                     NetState.Slice();
 
                     // Execute captured post-await methods (like Timer.Pause)

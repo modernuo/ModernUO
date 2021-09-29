@@ -23,6 +23,8 @@ namespace Server.Network
 {
     public interface ISocket
     {
+        public IntPtr Handle { get; }
+
         public EndPoint LocalEndPoint { get; }
 
         public EndPoint RemoteEndPoint { get; }
@@ -32,6 +34,8 @@ namespace Server.Network
         public int Send(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
         public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
+
+        public int Receive(IList<ArraySegment<byte>> buffers, SocketFlags flags);
 
         public void Shutdown(SocketShutdown how);
 

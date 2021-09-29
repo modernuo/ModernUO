@@ -32,7 +32,7 @@ namespace Server.Network
 
             foreach (var ns in TcpServer.Instances)
             {
-                file.WriteLine($"{ns}, {ns._recvState}, {ns._sendState}, {ns._protocolState}, {ns._parserState}");
+                file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
             }
         }
     }
