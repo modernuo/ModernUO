@@ -112,6 +112,7 @@ namespace Server.Network
             RecvPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(RecvPipeSize));
             SendPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(SendPipeSize));
             _nextActivityCheck = Core.TickCount + 30000;
+            ConnectedOn = Core.Now;
 
             try
             {
@@ -125,7 +126,18 @@ namespace Server.Network
                 _toString = "(error)";
             }
 
-            ConnectedOn = Core.Now;
+            _handle = GCHandle.Alloc(this);
+
+            try
+            {
+                _pollGroup.Add(this);
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex);
+                Disconnect("Unable to add socket to poll group");
+            }
+
             CreatedCallback?.Invoke(this);
         }
 
@@ -497,6 +509,8 @@ namespace Server.Network
             {
                 return;
             }
+
+            ReceiveData();
 
             var reader = RecvPipe.Reader;
 
@@ -953,7 +967,7 @@ namespace Server.Network
                 return;
             }
 
-            _running = true;
+            _running = false;
 
             try
             {

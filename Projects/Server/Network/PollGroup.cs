@@ -189,9 +189,7 @@ namespace Server.Network
 
             for (int i = 0; i < rc; i++)
             {
-                NetState state = ((GCHandle)_events[i].data.ptr).Target as NetState;
-
-                if (state == null)
+                if (((GCHandle)_events[i].data.ptr).Target is not NetState state)
                 {
                     continue;
                 }
