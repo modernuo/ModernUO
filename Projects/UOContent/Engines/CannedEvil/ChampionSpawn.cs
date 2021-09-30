@@ -410,7 +410,6 @@ namespace Server.Engines.CannedEvil
                 }
             }
 
-
             // Justice reward
             var pm = (PlayerMobile)killer;
             for (var j = 0; j < pm.JusticeProtectors.Count; ++j)

@@ -257,7 +257,6 @@ namespace Server.Spells
             return false;
         }
 
-
         public static bool GetEastToWest(IPoint3D from,IPoint3D target)
         {
             var dx = from.X - target.X;
