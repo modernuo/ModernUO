@@ -1158,6 +1158,13 @@ namespace Server.Items
 
                 bonus = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
 
+                var info = ForceArrow.GetInfo(attacker, defender);
+
+                if (info != null && info.Defender == defender)
+                {
+                    bonus -= info.DefenseChanceMalus;
+                }
+
                 if (DivineFurySpell.UnderEffect(defender))
                 {
                     bonus -= 20; // defender loses 20% bonus when they're under divine fury
@@ -2149,6 +2156,11 @@ namespace Server.Items
 
                 // SDI bonus
                 damageBonus += AosAttributes.GetValue(attacker, AosAttribute.SpellDamage);
+
+                if(PsychicAttack.Registry.TryGetValue(attacker,out var timer))
+                {
+                    damageBonus -= timer.SpellDamageMalus;
+                }
 
                 var context = TransformationSpellHelper.GetContext(attacker);
 
