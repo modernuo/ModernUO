@@ -13,7 +13,7 @@
       ]
     },
     {
-      "name": "Resource",
+      "name": "RawResource",
       "type": "Server.Items.CraftResource",
       "rule": "EnumMigrationRule"
     }

@@ -719,7 +719,6 @@ namespace Server.Misc
         public static bool VerifyProfession(int profession) =>
             profession >= 0 && (profession < 4 || Core.AOS && profession < 6 || Core.SE && profession < 8);
 
-
         private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
         {
             if (Core.ML)
@@ -1012,7 +1011,7 @@ namespace Server.Misc
                             //EquipItem(new DreadSword()); //NOT IMPLEMENTED
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
-                            EquipItem(new GargishLeatherKiltType1());  
+                            EquipItem(new GargishLeatherKiltType1());
                             EquipItem(new GargishLeatherLegsType1());
                         }
                         else
@@ -1060,7 +1059,7 @@ namespace Server.Misc
                             //EquipItem(new GlassSword());  //NOT IMPLEMENTED
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
-                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherKiltType1());
                             EquipItem(new GargishLeatherLegsType1());
                         }
                         else
@@ -1106,7 +1105,7 @@ namespace Server.Misc
                             //EquipItem(new GlassSword()); // IMPLEMENTION NEEDED
                             //EquipItem(new GargishStoneChestType1());
                             //EquipItem(new GargishStoneArmsType1());
-                            //EquipItem(new GargishStoneKiltType1()); 
+                            //EquipItem(new GargishStoneKiltType1());
                             //EquipItem(new GargishStoneLegsType1());
                         }
                         else
@@ -1152,7 +1151,7 @@ namespace Server.Misc
                             //EquipItem(new GargishTalwar()); // IMPLEMENTION NEEDED
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
-                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherKiltType1());
                             EquipItem(new GargishLeatherLegsType1());
                         }
                         else
@@ -1176,7 +1175,7 @@ namespace Server.Misc
                 case 7: // Ninja
                     {
                         addSkillItems = false;
-                        
+
 
                         int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89 };
                         // TODO: Verify that's ALL the hues for that above.
@@ -1194,7 +1193,7 @@ namespace Server.Misc
                             //EquipItem(new DualPointedSpear()); //IMPLEMENTION NEEDED
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
-                            EquipItem(new GargishLeatherKiltType1()); 
+                            EquipItem(new GargishLeatherKiltType1());
                             EquipItem(new GargishLeatherLegsType1());
                         }
                         else
