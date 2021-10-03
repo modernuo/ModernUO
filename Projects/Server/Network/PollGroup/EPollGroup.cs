@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: PollGroup.cs                                                    *
+ * File: EPollGroup.cs                                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 namespace Server.Network
 {
-    public sealed class PollGroup : IDisposable
+    public sealed class EPollGroup : IPollGroup
     {
         [Flags]
         private enum epoll_flags : int
@@ -91,7 +91,7 @@ namespace Server.Network
             public static extern int epoll_wait(int epfd, [In, Out] epoll_event[] ee, int maxevents, int timeout);
         }
 
-        private static class Unix
+        private static class Linux
         {
             [DllImport("libc", SetLastError = true)]
             public static extern int epoll_create1(epoll_flags flags);
@@ -106,13 +106,13 @@ namespace Server.Network
             public static extern int epoll_wait(int epfd, [In, Out] epoll_event[] ee, int maxevents, int timeout);
         }
 
-        private readonly int _ephnd;
+        private readonly int _epHndle;
 
-        public PollGroup()
+        public EPollGroup()
         {
-            _ephnd = Core.IsWindows ? Windows.epoll_create1(epoll_flags.NONE) : Unix.epoll_create1(epoll_flags.NONE);
+            _epHndle = Core.IsWindows ? Windows.epoll_create1(epoll_flags.NONE) : Linux.epoll_create1(epoll_flags.NONE);
 
-            if (_ephnd == 0)
+            if (_epHndle == 0)
             {
                 throw new Exception("Unable to initialize poll group");
             }
@@ -122,11 +122,11 @@ namespace Server.Network
         {
             if (Core.IsWindows)
             {
-                Windows.epoll_close(_ephnd);
+                Windows.epoll_close(_epHndle);
             }
             else
             {
-                Unix.epoll_close(_ephnd);
+                Linux.epoll_close(_epHndle);
             }
         }
 
@@ -136,11 +136,12 @@ namespace Server.Network
             {
                 events = epoll_events.EPOLLIN | epoll_events.EPOLLERR
             };
+
             ev.data.ptr = (IntPtr)state._handle;
 
             var rc = Core.IsWindows ?
-                Windows.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev) :
-                Unix.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev);
+                Windows.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev) :
+                Linux.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev);
 
 
             if (rc != 0)
@@ -158,8 +159,8 @@ namespace Server.Network
             ev.data.ptr = (IntPtr)state._handle;
 
             var rc = Core.IsWindows ?
-                Windows.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev) :
-                Unix.epoll_ctl(_ephnd, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev);
+                Windows.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev) :
+                Linux.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev);
 
             if (rc != 0)
             {
@@ -177,8 +178,8 @@ namespace Server.Network
             }
 
             var rc = Core.IsWindows ?
-                Windows.epoll_wait(_ephnd, _events, states.Length, 0) :
-                Unix.epoll_wait(_ephnd, _events, states.Length, 0);
+                Windows.epoll_wait(_epHndle, _events, states.Length, 0) :
+                Linux.epoll_wait(_epHndle, _events, states.Length, 0);
 
             if (rc <= 0)
             {

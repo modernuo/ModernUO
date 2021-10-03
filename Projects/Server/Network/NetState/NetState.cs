@@ -49,7 +49,7 @@ namespace Server.Network
         private const int PacketPerSecondThreshold = 3000;
 
         private static NetState[] _polledStates = new NetState[2048];
-        private static readonly PollGroup _pollGroup = new();
+        private static readonly IPollGroup _pollGroup = PollGroup.Create();
         private static readonly Queue<NetState> FlushPending = new(2048);
         private static readonly Queue<NetState> FlushedPartials = new(2048);
         private static readonly ConcurrentQueue<NetState> Disposed = new();
