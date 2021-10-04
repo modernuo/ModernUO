@@ -475,14 +475,9 @@ namespace Server.Movement
                     return true;
                 }
 
-                if (!item.Movable)
-                {
-                    continue;
-                }
-
                 var notWater = !itemData.Wet;
 
-                if (!itemData.Surface && itemData.Impassable && (!canSwim || notWater) || cantWalk && notWater)
+                if (item.Movable || !itemData.Surface && itemData.Impassable && (!canSwim || notWater) || cantWalk && notWater)
                 {
                     continue;
                 }
