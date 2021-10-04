@@ -212,9 +212,13 @@ namespace Server.Movement
                         continue;
                     }
 
-                    if (item.AtWorldPoint(xStart, yStart) || sectorStartIsForward && item.AtWorldPoint(xForward, yForward))
+                    if (item.AtWorldPoint(xStart, yStart))
                     {
                         itemsStart.Add(item);
+                    }
+                    else if (sectorStartIsForward && item.AtWorldPoint(xForward, yForward))
+                    {
+                        itemsForward.Add(item);
                     }
                 }
 
@@ -619,10 +623,9 @@ namespace Server.Movement
             {
                 var tile = staticTiles[i];
                 var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-
                 var calcTop = tile.Z + id.CalcHeight;
 
-                if (isSet && calcTop < zCenter || !id.Surface && !(m.CanSwim && id.Wet) || loc.Z < calcTop)
+                if (isSet && calcTop < zCenter || loc.Z < calcTop || !id.Surface && !(m.CanSwim && id.Wet))
                 {
                     continue;
                 }
@@ -648,12 +651,10 @@ namespace Server.Movement
             for (var i = 0; i < itemList.Count; ++i)
             {
                 var item = itemList[i];
-
                 var id = item.ItemData;
-
                 var calcTop = item.Z + id.CalcHeight;
 
-                if (isSet && calcTop < zCenter || !id.Surface && !(m.CanSwim && id.Wet) || loc.Z < calcTop)
+                if (isSet && calcTop < zCenter || loc.Z < calcTop || !id.Surface && !(m.CanSwim && id.Wet))
                 {
                     continue;
                 }
