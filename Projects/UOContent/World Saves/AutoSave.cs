@@ -77,7 +77,7 @@ namespace Server.Saves
                 return;
             }
 
-            if (SavesEnabled && !AutoRestart.Restarting && !Core.Closing && World.Running)
+            if (SavesEnabled && !AutoRestart.Restarting && !Core.Closing && !World.Saving)
             {
                 if (Warning > TimeSpan.Zero)
                 {

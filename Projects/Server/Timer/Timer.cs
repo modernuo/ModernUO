@@ -116,8 +116,8 @@ namespace Server
 
             Running = false;
             Version++;
-            var prof = GetProfile();
 
+            var prof = GetProfile();
             if (prof != null)
             {
                 prof.Stopped++;
@@ -151,6 +151,10 @@ namespace Server
 
             _nextTimer = null;
             _prevTimer = null;
+        }
+
+        internal virtual void OnDetach()
+        {
         }
     }
 }

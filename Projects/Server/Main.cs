@@ -55,7 +55,8 @@ namespace Server
         public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
         public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
         public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-        public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
+        public static readonly bool IsBSD = IsDarwin || IsFreeBSD;
+        public static readonly bool Unix = IsBSD || IsLinux;
 
         private const string AssembliesConfiguration = "Data/assemblies.json";
 
@@ -516,7 +517,6 @@ namespace Server
 
                     // Handle networking
                     TcpServer.Slice();
-                    NetState.HandleAllReceives();
                     NetState.Slice();
 
                     // Execute captured post-await methods (like Timer.Pause)

@@ -150,6 +150,7 @@ namespace Server
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Impassable | TileFlag.Surface];
+            set => this[TileFlag.Impassable | TileFlag.Surface] = value;
         }
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
