@@ -41,7 +41,7 @@ namespace Server.Items
                 return false;
             }
 
-            //Bladeweave is only from 90 fighting and tactics skill, so you need only to check bushido/ninjitsu value over 50 to perform block and feint.
+            // Bladeweave is only from 90 fighting and tactics skill, so you need only to check bushido/ninjitsu value over 50 to perform block and feint.
             var requiredBushido = Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value);
 
             var ran = Utility.Random(requiredBushido >= 50 ? 9 : 7);
