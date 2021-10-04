@@ -29,6 +29,7 @@ namespace Server.Saves
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoArchive));
 
+        private static string _tempArchivePath;
         private static int _isArchiving;
         private static DateTime _nextHourlyArchive;
         private static DateTime _nextDailyArchive;
@@ -40,11 +41,20 @@ namespace Server.Saves
         public static Action Prune { get; set; }
         public static string ArchivePath { get; private set; }
         public static string BackupPath { get; private set; }
+        public static string AutomaticBackupPath { get; private set; }
 
         public static void Configure()
         {
-            BackupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups/Automatic");
-            ArchivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
+            var tempArchivePath = ServerConfiguration.GetSetting("autoArchive.tempArchivePath", Path.GetTempPath());
+            _tempArchivePath = PathUtility.GetFullPath(tempArchivePath);
+
+            var backupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups");
+            BackupPath = PathUtility.GetFullPath(backupPath);
+            AutomaticBackupPath = Path.Combine(backupPath, "Automatic");
+
+            var archivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
+            ArchivePath = PathUtility.GetFullPath(archivePath);
+
             _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
 
             var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
@@ -85,8 +95,7 @@ namespace Server.Saves
                 return;
             }
 
-            var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
-            AssemblyHandler.EnsureDirectory(BackupPath);
+            var backupPath = PathUtility.GetFullPath(AutomaticBackupPath, Utility.GetTimeStamp());
             Directory.Move(args.OldSavePath, backupPath);
 
             logger.Information($"Created backup at {backupPath}");
@@ -97,7 +106,6 @@ namespace Server.Saves
         private static void RestoreFromArchive()
         {
             var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
-
             var files = Directory.Exists(savePath) ? Directory.GetFiles(savePath, "????-??-??-??-??-??.*") : null;
 
             if (files == null || files.Length == 0)
@@ -128,17 +136,16 @@ namespace Server.Saves
 
             logger.Information($"Restoring latest world save from archive {fileName}");
 
-            var tempFolder = Path.Combine(Core.BaseDirectory, "temp");
-            AssemblyHandler.EnsureDirectory(tempFolder);
+            var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
             bool successful;
 
             if (fileName.EndsWithOrdinal(".tar.zst"))
             {
-                successful = ZstdArchive.ExtractToDirectory(fi.FullName, tempFolder);
+                successful = ZstdArchive.ExtractToDirectory(fi.FullName, tempPath);
             }
             else
             {
-                TarArchive.ExtractToDirectory(fi.FullName, tempFolder);
+                TarArchive.ExtractToDirectory(fi.FullName, tempPath);
                 successful = true;
             }
 
@@ -148,7 +155,7 @@ namespace Server.Saves
                 return false;
             }
 
-            var allFolders = Directory.EnumerateDirectories(tempFolder, "????-??-??-??-??-??");
+            var allFolders = Directory.EnumerateDirectories(tempPath, "????-??-??-??-??-??");
             var worldSaveFolders = GetInRange(allFolders, DateTime.MinValue, DateTime.MaxValue);
             var first = true;
             foreach (var folder in worldSaveFolders)
@@ -180,9 +187,9 @@ namespace Server.Saves
                 PruneLocalArchives(ArchivePeriod.Monthly, 12);
             }
 
-            if (Directory.Exists(BackupPath))
+            if (Directory.Exists(AutomaticBackupPath))
             {
-                var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??", SearchOption.AllDirectories);
+                var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath, "????-??-??-??-??-??", SearchOption.AllDirectories);
                 var latestBackupFolders = GetInRange(allFolders, DateTime.MinValue, Core.Now.AddMonths(-1));
 
                 foreach (var folder in latestBackupFolders)
@@ -196,8 +203,13 @@ namespace Server.Saves
         private static void PruneLocalArchives(ArchivePeriod period, int minRetained)
         {
             var periodStr = period.ToString();
-            var path = Path.Combine(ArchivePath, periodStr);
-            var allFiles = Directory.EnumerateFiles(path, "????-??-??-??-??-??.*");
+            var archivePath = Path.Combine(ArchivePath, periodStr);
+            if (!Directory.Exists(archivePath))
+            {
+                return;
+            }
+
+            var allFiles = Directory.EnumerateFiles(archivePath, "????-??-??-??-??-??.*");
             var archives = GetInRange(allFiles, DateTime.MinValue, DateTime.MaxValue, true);
 
             var periodLowerStr = periodStr.ToLowerInvariant();
@@ -263,7 +275,7 @@ namespace Server.Saves
 
         private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, string archiveNameNoExtension)
         {
-            if (!Directory.Exists(BackupPath))
+            if (!Directory.Exists(AutomaticBackupPath))
             {
                 return;
             }
@@ -273,7 +285,7 @@ namespace Server.Saves
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
+            var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath, "????-??-??-??-??-??");
 
             var rangeEnd = archivePeriod switch
             {
@@ -290,8 +302,7 @@ namespace Server.Saves
                 return;
             }
 
-            var archivePath = Path.Combine(ArchivePath, archivePeriodStr);
-            AssemblyHandler.EnsureDirectory(archivePath);
+            var archivePath = PathUtility.EnsureDirectory(Path.Combine(ArchivePath, archivePeriodStr));
 
             var extension = _compressionFormat.GetFileExtension();
             var archiveFilePath = Path.Combine(archivePath, $"{archiveNameNoExtension}{extension}");

@@ -50,8 +50,7 @@ namespace Server.Compression
 
         private static string DownloadTarForWindows()
         {
-            var tempDir = Path.Combine(Core.BaseDirectory, "temp");
-            AssemblyHandler.EnsureDirectory("temp");
+            var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
 
             var libarchiveFile = Path.Combine(tempDir, "libarchive.zip");
             using WebClient wc = new WebClient();
@@ -90,7 +89,7 @@ namespace Server.Compression
         {
             _pathToTar ??= GetPathToTar();
 
-            AssemblyHandler.EnsureDirectory(new FileInfo(destinationArchiveFileName));
+            new FileInfo(destinationArchiveFileName).EnsureDirectory();
             var di = new DirectoryInfo(paths[0]);
             var directory = di.Parent!.FullName;
 
