@@ -21,7 +21,7 @@ namespace Server.Network
     public sealed class EPollGroup : IPollGroup
     {
         [Flags]
-        private enum epoll_flags : int
+        private enum epoll_flags
         {
             NONE = 0,
             CLOEXEC = 0x02000000,
@@ -174,7 +174,8 @@ namespace Server.Network
         {
             if (states.Length > _events.Length)
             {
-                _events = new epoll_event[states.Length];
+                var newLength = Math.Max(states.Length, _events.Length + (_events.Length >> 2));
+                _events = new epoll_event[newLength];
             }
 
             var rc = Core.IsWindows ?

@@ -106,17 +106,12 @@ namespace Server.Network
         }
 
         private static readonly kevent[] _singleEvent = new kevent[1];
-        private static readonly IntPtr _timeoutPtr;
-        private static readonly timespec _timeout;
         private static readonly IntPtr _zeroTimeoutPtr;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private static readonly timespec _zeroTimeout;
 
         static KQueuePollGroup()
         {
-            _timeout = new timespec(10, 0);
-            _timeoutPtr = Marshal.AllocHGlobal(Marshal.SizeOf<timespec>());
-            Marshal.StructureToPtr(_timeout, _timeoutPtr, false);
-
             _zeroTimeout = new timespec(0, 0);
             _zeroTimeoutPtr = Marshal.AllocHGlobal(Marshal.SizeOf<timespec>());
             Marshal.StructureToPtr(_zeroTimeout, _zeroTimeoutPtr, false);
@@ -153,7 +148,7 @@ namespace Server.Network
                     udata = udata
                 };
 
-                var rc = kevent(kq, _singleEvent, 1, null, 0, _timeoutPtr);
+                var rc = kevent(kq, _singleEvent, 1, null, 0, _zeroTimeoutPtr);
                 if (rc != 0)
                 {
                     throw new Exception($"kqueue failed to {flags} with error code {Marshal.GetLastWin32Error()}");
@@ -180,7 +175,11 @@ namespace Server.Network
             }
         }
 
-        public void Dispose() => BSD.close(_kqueueHndle);
+        public void Dispose()
+        {
+            BSD.close(_kqueueHndle);
+            Marshal.FreeHGlobal(_zeroTimeoutPtr);
+        }
 
         public void Add(NetState state)
         {
@@ -220,7 +219,8 @@ namespace Server.Network
         {
             if (states.Length > _events.Length)
             {
-                _events = new kevent[states.Length];
+                var newLength = Math.Max(states.Length, _events.Length + (_events.Length >> 2));
+                _events = new kevent[newLength];
             }
 
             var rc = BSD.kevent(_kqueueHndle, null, 0, _events, _events.Length, _zeroTimeoutPtr);
