@@ -32,6 +32,12 @@ namespace Server.Network
             get => _connection;
         }
 
+        public IntPtr Handle
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _connection.Handle;
+        }
+
         public EndPoint LocalEndPoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,6 +63,10 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
             _connection.ReceiveAsync(buffers, flags);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Receive(IList<ArraySegment<byte>> buffers, SocketFlags flags) =>
+            _connection.Receive(buffers, flags);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Shutdown(SocketShutdown how) => _connection.Shutdown(how);
