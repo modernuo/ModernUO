@@ -30,7 +30,7 @@ namespace Server.Items
 
             ClearCurrentAbility(attacker);
 
-            if (!(attacker.Weapon is BaseWeapon weapon))
+            if (attacker.Weapon is not BaseWeapon weapon)
             {
                 return;
             }
