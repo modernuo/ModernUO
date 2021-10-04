@@ -1,6 +1,7 @@
 namespace Server.Items
 {
-    [Furniture, Flippable(0x2bd9, 0x2bda)]
+    [Furniture]
+    [Flippable(0x2bd9, 0x2bda)]
     public class GreenStocking : BaseContainer
     {
         [Constructible]
@@ -28,7 +29,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2bdb, 0x2bdc)]
+    [Furniture]
+    [Flippable(0x2bdb, 0x2bdc)]
     public class RedStocking : BaseContainer
     {
         [Constructible]

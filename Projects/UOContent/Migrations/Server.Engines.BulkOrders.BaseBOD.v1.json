@@ -17,6 +17,11 @@
       "ruleArguments": [
         ""
       ]
+    },
+    {
+      "name": "Material",
+      "type": "Server.Engines.BulkOrders.BulkMaterialType",
+      "rule": "EnumMigrationRule"
     }
   ]
 }

@@ -31,6 +31,12 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     </Target>
+    <ItemGroup Condition="'$(IsWindows)'=='true' OR '$(IsWindows)'==''">
+        <Content Include="wepoll.dll">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
@@ -45,8 +51,5 @@
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Serialization\Attributes\SerializableFieldSaveValueDefaultAttribute.cs" />
     </ItemGroup>
 </Project>

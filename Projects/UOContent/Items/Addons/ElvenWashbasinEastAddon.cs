@@ -1,27 +1,29 @@
 namespace Server.Items
 {
     [Serializable(0)]
-    public partial class ElvenWashBasinEastAddon : BaseAddon
+    public partial class ElvenWashBasinEastAddon : BaseAddonContainer
     {
         [Constructible]
-        public ElvenWashBasinEastAddon()
+        public ElvenWashBasinEastAddon() : base(0x30E0)
         {
-            AddComponent(new AddonComponent(0x30DF), 0, 0, 0);
-            AddComponent(new AddonComponent(0x30E0), 0, 1, 0);
+            AddComponent(new AddonContainerComponent(0x30DF), 0, -1, 0);
         }
 
-        public override BaseAddonDeed Deed => new ElvenWashBasinEastDeed();
+        public override BaseAddonContainerDeed Deed => new ElvenWashBasinEastDeed();
+        public override bool RetainDeedHue => true;
+        public override int DefaultGumpID => 0x0104;
+        public override int DefaultDropSound => 0x0042;
     }
 
     [Serializable(0)]
-    public partial class ElvenWashBasinEastDeed : BaseAddonDeed
+    public partial class ElvenWashBasinEastDeed : BaseAddonContainerDeed
     {
         [Constructible]
         public ElvenWashBasinEastDeed()
         {
         }
 
-        public override BaseAddon Addon => new ElvenWashBasinEastAddon();
+        public override BaseAddonContainer Addon => new ElvenWashBasinEastAddon();
         public override int LabelNumber => 1073387; // elven wash basin (east)
     }
 }

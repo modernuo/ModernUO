@@ -12,6 +12,10 @@ namespace Server.Items
 
         public override bool RequiresTactics(Mobile from) => false;
 
+        public override bool RequiresSecondarySkill(Mobile from) => true;
+        public override double GetRequiredSecondarySkill(Mobile from) => 80;
+        public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Stealth;
+
         public override bool CheckSkills(Mobile from)
         {
             if (!base.CheckSkills(from))
