@@ -8,7 +8,7 @@ namespace Server.Items
         public GnarledStaff() : base(0x13F8) => Weight = 3.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
-        public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
+        public override WeaponAbility SecondaryAbility => WeaponAbility.ForceOfNature;
 
         public override int AosStrengthReq => 20;
         public override int AosMinDamage => 15;

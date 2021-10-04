@@ -110,7 +110,6 @@ namespace Server.Network
                 parentSerial = Serial.Zero;
             }
 
-
             var writer = new SpanWriter(stackalloc byte[15]);
             writer.Write((byte)0x2E); // Packet ID
             writer.Write(item.Serial);

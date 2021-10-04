@@ -37,7 +37,6 @@ namespace Server.Network
             writer.Write((byte)0xBA); // Packet ID
             writer.Write(command);
 
-
             if (ns.HighSeas)
             {
                 writer.Write((short)x);

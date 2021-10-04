@@ -38,12 +38,12 @@ namespace Server.Items
             new DualWield(),
             new DoubleShot(),
             new ArmorPierce(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
+            new Bladeweave(),
+            new ForceArrow(),
+            new LightningArrow(),
+            new PsychicAttack(),
+            new SerpentArrow(),
+            new ForceOfNature(),
             new Disrobe()
         };
 
@@ -109,16 +109,60 @@ namespace Server.Items
 
         public virtual bool RequiresTactics(Mobile from) => true;
 
+        public virtual bool RequiresSecondarySkill(Mobile from) => false;
+
+        /// <summary>
+        /// Return primary skill for ability. Default 70/90
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
         public virtual double GetRequiredSkill(Mobile from)
         {
             if (from.Weapon is BaseWeapon weapon)
             {
-                if (weapon.PrimaryAbility == this)
+                if (weapon.PrimaryAbility == this || weapon.PrimaryAbility == Bladeweave)
                 {
                     return 70.0;
                 }
 
-                if (weapon.SecondaryAbility == this)
+                if (weapon.SecondaryAbility == this || weapon.SecondaryAbility == Bladeweave)
+                {
+                    return 90.0;
+                }
+            }
+
+            return 200.0;
+        }
+
+        /// <summary>
+        /// Returns secondary skill for Ability. Default 50.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public virtual double GetRequiredSecondarySkill(Mobile from) => 50.0;
+
+        /// <summary>
+        /// Return secondary skillName. Default bushido/ninjitsu
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public virtual SkillName GetSecondarySkillName(Mobile from) => from.Skills[SkillName.Ninjitsu].Base > from.Skills[SkillName.Bushido].Base ? SkillName.Ninjitsu : SkillName.Bushido;
+
+        /// <summary>
+        /// Returns tactics needed for Ability. Default 70/90.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public virtual double GetRequiredTactics(Mobile from)
+        {
+            if (from.Weapon is BaseWeapon weapon)
+            {
+                if (weapon.PrimaryAbility == this || weapon.PrimaryAbility == Bladeweave)
+                {
+                    return 70.0;
+                }
+
+                if (weapon.SecondaryAbility == this || weapon.SecondaryAbility == Bladeweave)
                 {
                     return 90.0;
                 }
@@ -184,10 +228,29 @@ namespace Server.Items
             var reqSkill = GetRequiredSkill(from);
             var reqTactics = Core.ML && RequiresTactics(from);
 
-            if (Core.ML && reqTactics && from.Skills.Tactics.Base < reqSkill)
+            if (reqTactics && from.Skills.Tactics.Base < GetRequiredTactics(from))
             {
                 // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
                 from.SendLocalizedMessage(1079308, reqSkill.ToString());
+                return false;
+            }
+
+            var reqSecondarySkill = GetRequiredSecondarySkill(from);
+            SkillName secondarySkill = GetSecondarySkillName(from);
+
+            if (RequiresSecondarySkill(from) && from.Skills[secondarySkill].Base < reqSecondarySkill)
+            {
+                int loc = GetSkillLocalization(secondarySkill);
+
+                if (loc == 1060184)
+                {
+                    from.SendLocalizedMessage(loc);
+                }
+                else
+                {
+                    from.SendLocalizedMessage(loc, reqSecondarySkill.ToString());
+                }
+
                 return false;
             }
 
@@ -207,19 +270,22 @@ namespace Server.Items
             }
             /* </UBWS> */
 
-            if (reqTactics)
-            {
-                // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
-                from.SendLocalizedMessage(1079308, reqSkill.ToString());
-            }
-            else
-            {
-                // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
-                from.SendLocalizedMessage(1060182, reqSkill.ToString());
-            }
+            // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
+            from.SendLocalizedMessage(1060182, reqSkill.ToString());
 
             return false;
         }
+        private int GetSkillLocalization(SkillName skill)
+        {
+            return skill switch
+            {
+                SkillName.Bushido   => 1063347, // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                SkillName.Ninjitsu  => 1063347, // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+                SkillName.Poisoning => 1060184, // You lack the required poisoning to perform that attack
+                _                   => 1157351 // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+            };
+        }
+
 
         public virtual bool CheckSkills(Mobile from) => CheckWeaponSkill(from);
 
@@ -420,10 +486,7 @@ namespace Server.Items
         {
             private readonly Mobile m_Mobile;
 
-            public WeaponAbilityTimer(Mobile from) : base(TimeSpan.FromSeconds(3.0))
-            {
-                m_Mobile = from;
-            }
+            public WeaponAbilityTimer(Mobile from) : base(TimeSpan.FromSeconds(3.0)) => m_Mobile = from;
 
             protected override void OnTick()
             {

@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DumpNetStates.cs                                                *
+ * File: PollGroup.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,27 +13,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.IO;
+using System;
 
 namespace Server.Network
 {
-    public static class DumpNetStates
+    public interface IPollGroup : IDisposable
     {
-        public static void Initialize()
+        void Add(NetState state);
+        void Remove(NetState state);
+        int Poll(ref NetState[] states);
+    }
+
+    public static class PollGroup
+    {
+        public static IPollGroup Create()
         {
-            CommandSystem.Register("DumpNetStates", AccessLevel.Administrator, DumpNetStatesCommand);
-        }
-
-        public static void DumpNetStatesCommand(CommandEventArgs args)
-        {
-            using var file = new StreamWriter("netstatedump.csv");
-
-            file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
-
-            foreach (var ns in TcpServer.Instances)
+            if (Core.IsBSD)
             {
-                file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
+                return new KQueuePollGroup();
             }
+
+            return new EPollGroup();
         }
     }
 }
