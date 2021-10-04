@@ -212,9 +212,13 @@ namespace Server.Movement
                         continue;
                     }
 
-                    if (item.AtWorldPoint(xStart, yStart) || sectorStartIsForward && item.AtWorldPoint(xForward, yForward))
+                    if (item.AtWorldPoint(xStart, yStart))
                     {
                         itemsStart.Add(item);
+                    }
+                    else if (sectorStartIsForward && item.AtWorldPoint(xForward, yForward))
+                    {
+                        itemsForward.Add(item);
                     }
                 }
 
