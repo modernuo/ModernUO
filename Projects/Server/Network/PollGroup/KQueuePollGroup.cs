@@ -131,7 +131,7 @@ namespace Server.Network
             public static extern int kqueue();
 
             [DllImport("libc", SetLastError = true)]
-            public static extern int kevent(int kq, kevent[] changelist, int nchanges, kevent[] eventlist, int nevents, IntPtr timeout);
+            public static extern int kevent(int kq, kevent[] changelist, int nchanges, [In, Out] kevent[] eventlist, int nevents, IntPtr timeout);
 
             public static int kevent(
                 int kq,
@@ -188,7 +188,8 @@ namespace Server.Network
                 _kqueueHndle,
                 state.Connection.Handle,
                 kqueue_filter.READ | kqueue_filter.WRITE,
-                kqueue_flags.ADD | kqueue_flags.CLEAR
+                kqueue_flags.ADD | kqueue_flags.CLEAR,
+                udata: (IntPtr)state._handle
             );
 
             if (rc != 0)
@@ -204,7 +205,7 @@ namespace Server.Network
                 state.Connection.Handle,
                 kqueue_filter.READ | kqueue_filter.WRITE,
                 kqueue_flags.DELETE,
-                udata: state._handle.AddrOfPinnedObject()
+                udata: (IntPtr)state._handle
             );
 
             if (rc != 0)
