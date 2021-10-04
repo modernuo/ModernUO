@@ -17,7 +17,7 @@ namespace Server.Items
 
         public override int BaseMana => 30;
 
-        //When using Wrestling, tactics isnt needed.
+        // When using Wrestling, tactics isnt needed.
         public override bool RequiresTactics(Mobile from) =>
             !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
 
