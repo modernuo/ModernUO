@@ -14,7 +14,7 @@ namespace Server.Items
 
         public override bool RequiresTactics(Mobile from) => from.Weapon is not BaseWeapon { Skill: SkillName.Wrestling };
 
-        //Disarm is special. Doesnt need tactics when wresling and tactics need is lower than fighting skill.
+        // Disarm is special. Doesnt need tactics when wresling and tactics need is lower than fighting skill.
         public virtual double GetRequiredTactics(Mobile from)
         {
             if (from.Weapon is BaseWeapon weapon)
