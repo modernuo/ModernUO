@@ -95,7 +95,7 @@ namespace Server.Saves
                 return;
             }
 
-            var backupPath = PathUtility.GetFullPath(AutomaticBackupPath, Utility.GetTimeStamp());
+            var backupPath = PathUtility.GetFullPath(Utility.GetTimeStamp(), AutomaticBackupPath);
             Directory.Move(args.OldSavePath, backupPath);
 
             logger.Information($"Created backup at {backupPath}");
