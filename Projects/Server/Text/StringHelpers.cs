@@ -169,6 +169,28 @@ namespace Server
             return str;
         }
 
+        public static string TrimMultiline(this string str, string lineSeparator = "\n")
+        {
+            var parts = str.Split(lineSeparator);
+            for (var i = 0; i < parts.Length; i++)
+            {
+                parts[i] = parts[i].Trim();
+            }
+
+            return string.Join(lineSeparator, parts);
+        }
+
+        public static string IndentMultiline(this string str, string indent = "\t", string lineSeparator = "\n")
+        {
+            var parts = str.Split(lineSeparator);
+            for (var i = 0; i < parts.Length; i++)
+            {
+                parts[i] = $"{indent}{parts[i]}";
+            }
+
+            return string.Join(lineSeparator, parts);
+        }
+
         public static List<string> Wrap(this string value, int perLine, int maxLines)
         {
             if ((value = value?.Trim() ?? "").Length <= 0)

@@ -1331,28 +1331,6 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Max<T>(T val, T max) where T : IComparable<T> => val.CompareTo(max) > 0 ? val : max;
 
-        public static string TrimMultiline(this string str, string lineSeparator = "\n")
-        {
-            var parts = str.Split(lineSeparator);
-            for (var i = 0; i < parts.Length; i++)
-            {
-                parts[i] = parts[i].Trim();
-            }
-
-            return string.Join(lineSeparator, parts);
-        }
-
-        public static string IndentMultiline(this string str, string indent = "\t", string lineSeparator = "\n")
-        {
-            var parts = str.Split(lineSeparator);
-            for (var i = 0; i < parts.Length; i++)
-            {
-                parts[i] = $"{indent}{parts[i]}";
-            }
-
-            return string.Join(lineSeparator, parts);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Tidy<T>(this List<T> list) where T : ISerializable
         {
