@@ -108,7 +108,7 @@ namespace Server.Saves
         {
             var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
             var allFiles = Directory.Exists(savePath) ? Directory.EnumerateFiles(savePath) : null;
-            var latestFiles = LatestByDatedName(allFiles, DateTime.MinValue, DateTime.MaxValue, true);
+            var latestFiles = PathsByTimestampName(allFiles, true);
 
             foreach (var file in latestFiles)
             {
@@ -144,7 +144,7 @@ namespace Server.Saves
             }
 
             var allFolders = Directory.EnumerateDirectories(tempPath);
-            var worldSaveFolders = LatestByDatedName(allFolders, DateTime.MinValue, DateTime.MaxValue);
+            var worldSaveFolders = PathsByTimestampName(allFolders);
             foreach (var folder in worldSaveFolders)
             {
                 Directory.Delete(savePath, true);
@@ -175,12 +175,22 @@ namespace Server.Saves
             }
 
             var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
-            var latestBackupFolders = LatestByDatedName(allFolders, DateTime.MinValue, Core.Now.AddMonths(-1));
+            var threshold = Core.Now.AddMonths(-1);
 
-            foreach (var folder in latestBackupFolders)
+            foreach (var folder in allFolders)
             {
-                logger.Information($"Pruning backup {folder}");
-                Directory.Delete(folder, true);
+                var dirName = new DirectoryInfo(folder).Name;
+
+                if (!TryGetDate(dirName, out var date))
+                {
+                    continue;
+                }
+
+                if (date < threshold)
+                {
+                    logger.Information($"Pruning old backup {folder}");
+                    Directory.Delete(folder, true);
+                }
             }
         }
 
@@ -194,7 +204,7 @@ namespace Server.Saves
             }
 
             var allFiles = Directory.EnumerateFiles(archivePath);
-            var archives = LatestByDatedName(allFiles, DateTime.MinValue, DateTime.MaxValue, true);
+            var archives = PathsByTimestampName(allFiles, true);
 
             var periodLowerStr = periodStr.ToLowerInvariant();
             foreach (var archive in archives)
@@ -260,6 +270,7 @@ namespace Server.Saves
                 return;
             }
 
+            var currentRangeStart = Core.Now.ArchivePeriodStart(archivePeriod);
             var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
 
             var items = new Dictionary<DateTime, SortedDictionary<DateTime, string>>();
@@ -273,6 +284,12 @@ namespace Server.Saves
                 }
 
                 var rangeStart = date.ArchivePeriodStart(archivePeriod);
+
+                // Only archive the past
+                if (rangeStart >= currentRangeStart)
+                {
+                    continue;
+                }
 
                 if (items.TryGetValue(rangeStart, out var value))
                 {
@@ -318,11 +335,11 @@ namespace Server.Saves
                     var elapsed = stopWatch.Elapsed.TotalSeconds;
                     logger.Information($"Created {archivePeriodStrLower} archive at {archiveFilePath} ({elapsed:F2} seconds)");
 
-                    var i = 0;
+                    var i = minimum;
                     foreach (var backup in backups)
                     {
                         // Keep the latest one, but delete the rest.
-                        if (i++ == 0)
+                        if (i-- > 0)
                         {
                             continue;
                         }
@@ -341,16 +358,16 @@ namespace Server.Saves
 
         private static bool CreateArchive(string archiveFilePath, string relativeTo, IEnumerable<string> backups) =>
             _compressionFormat == CompressionFormat.Zstd
-                ? ZstdArchive.CreateFromPaths(backups, relativeTo, archiveFilePath)
-                : TarArchive.CreateFromPaths(backups, relativeTo, archiveFilePath);
+                ? ZstdArchive.CreateFromPaths(backups, archiveFilePath, relativeTo)
+                : TarArchive.CreateFromPaths(backups, archiveFilePath, relativeTo);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string ToTimeStamp(this DateTime date, ArchivePeriod archivePeriod) =>
             archivePeriod switch
             {
-                ArchivePeriod.Monthly => date.ToString("YYYY-MM"),
-                ArchivePeriod.Daily   => date.ToString("YYYY-MM-dd"),
-                ArchivePeriod.Hourly  => date.ToString("YYYY-MM-dd-HH"),
+                ArchivePeriod.Monthly => date.ToString("yyyy-MM"),
+                ArchivePeriod.Daily   => date.ToString("yyyy-MM-dd"),
+                ArchivePeriod.Hourly  => date.ToString("yyyy-MM-dd-HH"),
                 _                     => date.ToTimeStamp()
             };
 
@@ -364,19 +381,23 @@ namespace Server.Saves
                 _                     => date
             };
 
-        private static IEnumerable<string> LatestByDatedName(
-            IEnumerable<string> allItems,
-            DateTime rangeStart,
-            DateTime rangeEnd,
-            bool files = false
-        )
+        private static IEnumerable<string> PathsByTimestampName(IEnumerable<string> allItems, bool files = false)
         {
             var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
             foreach (var item in allItems)
             {
-                var name = files ? Path.GetFileNameWithoutExtension(item) : new DirectoryInfo(item).Name;
+                string name;
+                if (files)
+                {
+                    var fileName = new FileInfo(item).Name;
+                    name = fileName[..fileName.IndexOf('.')];
+                }
+                else
+                {
+                    name = new DirectoryInfo(item).Name;
+                }
 
-                if (IsInRange(name, rangeStart, rangeEnd, out var date))
+                if (TryGetDate(name, out var date))
                 {
                     items.Add(date, item);
                 }
@@ -385,28 +406,24 @@ namespace Server.Saves
             return items.Values;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsInRange(string name, DateTime start, DateTime end, out DateTime date) =>
-            TryGetDate(name, out date) && start <= date && end >= date;
-
         private static bool TryGetDate(string value, out DateTime date)
         {
             Span<int> parts = stackalloc int[] { 0, 1, 1, 0, 0, 0 };
 
-            var i = 0;
-            foreach (var part in value.Tokenize('-'))
-            {
-                parts[i++] = int.Parse(part);
-            }
-
-            if (i == 0)
-            {
-                date = DateTime.MinValue;
-                return false;
-            }
-
             try
             {
+                var i = 0;
+                foreach (var part in value.Tokenize('-'))
+                {
+                    parts[i++] = int.Parse(part);
+                }
+
+                if (i == 0)
+                {
+                    date = DateTime.MinValue;
+                    return false;
+                }
+
                 date = new DateTime(
                     parts[0],
                     parts[1],
@@ -420,6 +437,7 @@ namespace Server.Saves
             }
             catch
             {
+                logger.Warning($"Path was not in the correct date format: {value}");
                 date = DateTime.MinValue;
                 return false;
             }

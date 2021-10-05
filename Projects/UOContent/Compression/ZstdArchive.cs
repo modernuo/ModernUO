@@ -42,7 +42,7 @@ namespace Server.Compression
                 }
             }
 
-            return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, "zstd -d", _pathToZstd);
+            return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, "zstd -q -d", _pathToZstd);
         }
 
         public static bool CreateFromPaths(
@@ -87,7 +87,7 @@ namespace Server.Compression
                 }
             }
 
-            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, relativeTo, "zstd", _pathToZstd);
+            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, relativeTo, "zstd -q", _pathToZstd);
         }
     }
 }

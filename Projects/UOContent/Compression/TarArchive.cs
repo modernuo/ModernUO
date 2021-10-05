@@ -75,7 +75,7 @@ namespace Server.Compression
             _pathToTar ??= GetPathToTar();
 
             var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";
-            var arguments = $"{useExternalCompression} -xqf \"{fileNamePath}\" -C \"{outputDirectory}\"";
+            var arguments = $"{useExternalCompression} -xf \"{fileNamePath}\" -C \"{outputDirectory}\"";
 
             return RunTar(arguments, compressionProgramPath) == 0;
         }
@@ -100,7 +100,7 @@ namespace Server.Compression
             }
             var pathsToCompress = builder.ToString();
 
-            var tarFlags = compressCommand == null ? "-acqf" : "-cqf";
+            var tarFlags = compressCommand == null ? "-acf" : "-cf";
             var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";
             var arguments = $"{useExternalCompression}{tarFlags} \"{destinationArchiveFileName}\" -C \"{relativeTo}\" {pathsToCompress}";
 
