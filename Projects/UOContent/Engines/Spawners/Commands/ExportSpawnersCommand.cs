@@ -53,7 +53,7 @@ namespace Server.Engines.Spawners
                 if (!Path.IsPathRooted(path))
                 {
                     path = Path.Combine(Core.BaseDirectory, path);
-                    AssemblyHandler.EnsureDirectory(directory);
+                    PathUtility.EnsureDirectory(directory);
                 }
                 else if (!Directory.Exists(directory))
                 {
