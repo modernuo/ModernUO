@@ -45,7 +45,7 @@ namespace Server.Saves
 
         public static void Configure()
         {
-            var tempArchivePath = ServerConfiguration.GetSetting("autoArchive.tempArchivePath", Path.GetTempPath());
+            var tempArchivePath = ServerConfiguration.GetSetting("autoArchive.tempArchivePath", "temp");
             _tempArchivePath = PathUtility.GetFullPath(tempArchivePath);
 
             var backupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups");

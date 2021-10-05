@@ -142,7 +142,7 @@ namespace Server
 
         public static void Configure()
         {
-            var tempSavePath = ServerConfiguration.GetSetting("world.tempSavePath", Path.GetTempPath());
+            var tempSavePath = ServerConfiguration.GetSetting("world.tempSavePath", "temp");
             _tempSavePath = PathUtility.GetFullPath(tempSavePath);
 
             var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
