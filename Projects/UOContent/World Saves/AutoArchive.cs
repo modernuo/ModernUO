@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Microsoft.Toolkit.HighPerformance;
 using Server.Compression;
 using Server.Logging;
 
@@ -29,6 +29,7 @@ namespace Server.Saves
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoArchive));
 
+        private static string _tempArchivePath;
         private static int _isArchiving;
         private static DateTime _nextHourlyArchive;
         private static DateTime _nextDailyArchive;
@@ -40,15 +41,24 @@ namespace Server.Saves
         public static Action Prune { get; set; }
         public static string ArchivePath { get; private set; }
         public static string BackupPath { get; private set; }
+        public static string AutomaticBackupPath { get; private set; }
 
         public static void Configure()
         {
-            BackupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups/Automatic");
-            ArchivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
-            _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
+            var tempArchivePath = ServerConfiguration.GetSetting("autoArchive.tempArchivePath", "temp");
+            _tempArchivePath = PathUtility.GetFullPath(tempArchivePath);
+
+            var backupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups");
+            BackupPath = PathUtility.GetFullPath(backupPath);
+            AutomaticBackupPath = Path.Combine(BackupPath, "Automatic");
+
+            var archivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
+            ArchivePath = PathUtility.GetFullPath(archivePath);
 
             var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
             _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", true);
+
+            _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
 
             if (useLocalArchives)
             {
@@ -85,8 +95,8 @@ namespace Server.Saves
                 return;
             }
 
-            var backupPath = Path.Combine(BackupPath, Utility.GetTimeStamp());
-            AssemblyHandler.EnsureDirectory(BackupPath);
+            Directory.CreateDirectory(AutomaticBackupPath);
+            var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
             Directory.Move(args.OldSavePath, backupPath);
 
             logger.Information($"Created backup at {backupPath}");
@@ -97,20 +107,16 @@ namespace Server.Saves
         private static void RestoreFromArchive()
         {
             var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
-
-            var files = Directory.Exists(savePath) ? Directory.GetFiles(savePath, "????-??-??-??-??-??.*") : null;
-
-            if (files == null || files.Length == 0)
+            if (!Directory.Exists(savePath))
             {
                 return;
             }
 
-            var latestFiles = GetInRange(files, DateTime.MinValue, DateTime.MaxValue, true);
-
-            foreach (var file in latestFiles)
+            foreach (var file in PathsByTimestampName(savePath, true))
             {
                 if (RestoreFromFile(file, savePath))
                 {
+                    File.Delete(file);
                     break;
                 }
             }
@@ -128,19 +134,10 @@ namespace Server.Saves
 
             logger.Information($"Restoring latest world save from archive {fileName}");
 
-            var tempFolder = Path.Combine(Core.BaseDirectory, "temp");
-            AssemblyHandler.EnsureDirectory(tempFolder);
-            bool successful;
-
-            if (fileName.EndsWithOrdinal(".tar.zst"))
-            {
-                successful = ZstdArchive.ExtractToDirectory(fi.FullName, tempFolder);
-            }
-            else
-            {
-                TarArchive.ExtractToDirectory(fi.FullName, tempFolder);
-                successful = true;
-            }
+            var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
+            var successful = fileName.EndsWithOrdinal(".tar.zst")
+                ? ZstdArchive.ExtractToDirectory(fi.FullName, tempPath)
+                : TarArchive.ExtractToDirectory(fi.FullName, tempPath);
 
             if (!successful)
             {
@@ -148,24 +145,16 @@ namespace Server.Saves
                 return false;
             }
 
-            var allFolders = Directory.EnumerateDirectories(tempFolder, "????-??-??-??-??-??");
-            var worldSaveFolders = GetInRange(allFolders, DateTime.MinValue, DateTime.MaxValue);
-            var first = true;
-            foreach (var folder in worldSaveFolders)
+            foreach (var folder in PathsByTimestampName(tempPath))
             {
-                if (first)
-                {
-                    first = false;
-                    Directory.Delete(savePath, true);
-                    var dirInfo = new DirectoryInfo(folder);
-                    logger.Information($"Restoring backup {dirInfo.Name}");
-                    Directory.Move(folder, savePath);
-                }
-                else
-                {
-                    Directory.Delete(folder, true);
-                }
+                Directory.Delete(savePath, true);
+                var dirInfo = new DirectoryInfo(folder);
+                logger.Information($"Restoring backup {dirInfo.Name}");
+                Directory.Move(folder, savePath);
+                break;
             }
+
+            Directory.Delete(tempPath, true);
 
             return true;
         }
@@ -180,14 +169,26 @@ namespace Server.Saves
                 PruneLocalArchives(ArchivePeriod.Monthly, 12);
             }
 
-            if (Directory.Exists(BackupPath))
+            if (!Directory.Exists(AutomaticBackupPath))
             {
-                var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??", SearchOption.AllDirectories);
-                var latestBackupFolders = GetInRange(allFolders, DateTime.MinValue, Core.Now.AddMonths(-1));
+                return;
+            }
 
-                foreach (var folder in latestBackupFolders)
+            var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
+            var threshold = Core.Now.AddMonths(-1);
+
+            foreach (var folder in allFolders)
+            {
+                var dirName = new DirectoryInfo(folder).Name;
+
+                if (!TryGetDate(dirName, out var date))
                 {
-                    logger.Information($"Pruning backup {folder}");
+                    continue;
+                }
+
+                if (date < threshold)
+                {
+                    logger.Information($"Pruning old backup {folder}");
                     Directory.Delete(folder, true);
                 }
             }
@@ -196,12 +197,14 @@ namespace Server.Saves
         private static void PruneLocalArchives(ArchivePeriod period, int minRetained)
         {
             var periodStr = period.ToString();
-            var path = Path.Combine(ArchivePath, periodStr);
-            var allFiles = Directory.EnumerateFiles(path, "????-??-??-??-??-??.*");
-            var archives = GetInRange(allFiles, DateTime.MinValue, DateTime.MaxValue, true);
+            var archivePath = Path.Combine(ArchivePath, periodStr);
+            if (!Directory.Exists(archivePath))
+            {
+                return;
+            }
 
             var periodLowerStr = periodStr.ToLowerInvariant();
-            foreach (var archive in archives)
+            foreach (var archive in PathsByTimestampName(archivePath, true))
             {
                 if (minRetained > 0)
                 {
@@ -234,98 +237,150 @@ namespace Server.Saves
                 {
                     if (date >= _nextHourlyArchive)
                     {
-                        var lastHour = date.Date.AddHours(date.Hour);
-                        Rollup(ArchivePeriod.Hourly, lastHour.AddHours(-1), lastHour.ToTimeStamp());
-                        _nextHourlyArchive = _nextHourlyArchive.AddHours(2);
+                        Rollup(ArchivePeriod.Hourly);
+                        _nextHourlyArchive = _nextHourlyArchive.AddHours(1);
                     }
 
                     if (date >= _nextDailyArchive)
                     {
-                        var yesterday = date.Date.AddDays(-1);
-                        Rollup(ArchivePeriod.Daily, yesterday, yesterday.ToTimeStamp());
-                        _nextDailyArchive = _nextDailyArchive.AddDays(2);
+                        Rollup(ArchivePeriod.Daily);
+                        _nextDailyArchive = _nextDailyArchive.AddDays(1);
                     }
 
                     if (date >= _nextMonthlyArchive)
                     {
-                        var lastMonth = new DateTime(date.Year, date.Month, 1).AddMonths(-1);
-                        Rollup(ArchivePeriod.Monthly, lastMonth, lastMonth.ToTimeStamp());
-                        _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(2);
+                        Rollup(ArchivePeriod.Monthly);
+                        _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(1);
                     }
 
                     Prune?.Invoke();
-
                     _isArchiving = 0;
                 },
                 null
             );
         }
 
-        private static void Rollup(ArchivePeriod archivePeriod, DateTime rangeStart, string archiveNameNoExtension)
+        private static void Rollup(ArchivePeriod archivePeriod)
         {
-            if (!Directory.Exists(BackupPath))
+            if (!Directory.Exists(AutomaticBackupPath))
             {
                 return;
+            }
+
+            var currentRangeStart = Core.Now.ArchivePeriodStart(archivePeriod);
+            var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
+
+            var items = new Dictionary<DateTime, SortedDictionary<DateTime, string>>();
+            foreach (var path in allFolders)
+            {
+                var dirName = new DirectoryInfo(path).Name;
+
+                if (!TryGetDate(dirName, out var date))
+                {
+                    continue;
+                }
+
+                var rangeStart = date.ArchivePeriodStart(archivePeriod);
+
+                // Only archive the past
+                if (rangeStart >= currentRangeStart)
+                {
+                    continue;
+                }
+
+                if (items.TryGetValue(rangeStart, out var value))
+                {
+                    value.Add(date, path);
+                }
+                else
+                {
+                    value = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>())
+                    {
+                        { date, path }
+                    };
+
+                    items.Add(rangeStart, value);
+                }
             }
 
             var archivePeriodStr = archivePeriod.ToString();
+            var archivePath = PathUtility.EnsureDirectory(Path.Combine(ArchivePath, archivePeriodStr));
             var archivePeriodStrLower = archivePeriodStr.ToLowerInvariant();
-
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var allFolders = Directory.EnumerateDirectories(BackupPath, "????-??-??-??-??-??");
-
-            var rangeEnd = archivePeriod switch
-            {
-                ArchivePeriod.Monthly => rangeStart.AddMonths(1),
-                ArchivePeriod.Daily   => rangeStart.AddDays(1),
-                _  => rangeStart.AddHours(1),
-            };
-
-            var latestFolders = GetInRange(allFolders, rangeStart, rangeEnd).ToList();
-
-            // We don't want to re-archive a single save. This usually means we rebooted and found the one we purposefully left behind
-            if (latestFolders.Count <= 1)
-            {
-                return;
-            }
-
-            var archivePath = Path.Combine(ArchivePath, archivePeriodStr);
-            AssemblyHandler.EnsureDirectory(archivePath);
-
             var extension = _compressionFormat.GetFileExtension();
-            var archiveFilePath = Path.Combine(archivePath, $"{archiveNameNoExtension}{extension}");
 
-            logger.Information($"Creating {archivePeriodStrLower} archive");
-            var archiveCreated = _compressionFormat == CompressionFormat.Zstd
-                ? ZstdArchive.CreateFromPaths(latestFolders, archiveFilePath)
-                : TarArchive.CreateFromPaths(latestFolders, archiveFilePath);
+            // Leave behind 1 hourly for daily, 1 daily for monthly.
+            var minimum = archivePeriod != ArchivePeriod.Monthly ? 1 : 0;
 
-            if (archiveCreated)
+            foreach (var (rangeStart, sortedBackups) in items)
             {
-                stopWatch.Stop();
-                var elapsed = stopWatch.Elapsed.TotalSeconds;
-                logger.Information($"Created {archivePeriodStrLower} archive at {archiveFilePath} ({elapsed:F2} seconds)");
-
-                // Keep the latest one, but delete the rest.
-                for (var i = 1; i < latestFolders.Count; i++)
+                var backups = sortedBackups.Values;
+                if (backups.Count == 0)
                 {
-                    Directory.Delete(latestFolders[i], true);
+                    continue;
                 }
-            }
-            else
-            {
-                logger.Warning($"Failed to create {archivePeriodStrLower} archive");
+
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var fileName = $"{rangeStart.ToTimeStamp(archivePeriod)}{extension}";
+                var archiveFilePath = Path.Combine(archivePath, fileName);
+
+                var archiveCreated = CreateArchive(archiveFilePath, AutomaticBackupPath, backups);
+
+                if (archiveCreated)
+                {
+                    var elapsed = stopWatch.Elapsed.TotalSeconds;
+                    logger.Information($"Created {archivePeriodStrLower} archive at {archiveFilePath} ({elapsed:F2} seconds)");
+
+                    var i = minimum;
+                    foreach (var backup in backups)
+                    {
+                        // Keep the latest one, but delete the rest.
+                        if (i-- > 0)
+                        {
+                            continue;
+                        }
+
+                        Directory.Delete(backup, true);
+                    }
+                }
+                else
+                {
+                    logger.Warning($"Failed to create {archivePeriodStrLower} archive");
+                }
+
+                stopWatch.Stop();
             }
         }
 
-        private static IEnumerable<string> GetInRange(
-            IEnumerable<string> allItems,
-            DateTime rangeStart,
-            DateTime rangeEnd,
-            bool files = false
-        )
+        private static bool CreateArchive(string archiveFilePath, string relativeTo, IEnumerable<string> backups) =>
+            _compressionFormat == CompressionFormat.Zstd
+                ? ZstdArchive.CreateFromPaths(backups, archiveFilePath, relativeTo)
+                : TarArchive.CreateFromPaths(backups, archiveFilePath, relativeTo);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string ToTimeStamp(this DateTime date, ArchivePeriod archivePeriod) =>
+            archivePeriod switch
+            {
+                ArchivePeriod.Monthly => date.ToString("yyyy-MM"),
+                ArchivePeriod.Daily   => date.ToString("yyyy-MM-dd"),
+                ArchivePeriod.Hourly  => date.ToString("yyyy-MM-dd-HH"),
+                _                     => date.ToTimeStamp()
+            };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static DateTime ArchivePeriodStart(this DateTime date, ArchivePeriod archivePeriod) =>
+            archivePeriod switch
+            {
+                ArchivePeriod.Monthly => date.Date.AddDays(-(date.Day - 1)),
+                ArchivePeriod.Daily   => date.Date,
+                ArchivePeriod.Hourly  => date.Date.AddHours(date.Hour),
+                _                     => date
+            };
+
+        private static IEnumerable<string> PathsByTimestampName(string path, bool files = false)
         {
+            var allItems = files ? Directory.GetFiles(path) : Directory.GetDirectories(path);
             var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
             foreach (var item in allItems)
             {
@@ -333,14 +388,14 @@ namespace Server.Saves
                 if (files)
                 {
                     var fileName = new FileInfo(item).Name;
-                    name = fileName[..fileName.IndexOfOrdinal(".")];
+                    name = fileName[..fileName.IndexOf('.')];
                 }
                 else
                 {
                     name = new DirectoryInfo(item).Name;
                 }
 
-                if (IsInRange(name, rangeStart, rangeEnd, out var date))
+                if (TryGetDate(name, out var date))
                 {
                     items.Add(date, item);
                 }
@@ -349,38 +404,41 @@ namespace Server.Saves
             return items.Values;
         }
 
-        private static bool IsInRange(string name, DateTime start, DateTime end, out DateTime date) =>
-            TryGetDate(name, out date) && start <= date && end >= date;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryGetDate(string value, out DateTime date)
         {
-            // Expecting YYYY-MM-DD-HH-mm-ss
-            var split = value.Split("-");
-            if (split.Length != 6)
-            {
-                date = DateTime.MinValue;
-                return false;
-            }
+            Span<int> parts = stackalloc int[] { 0, 1, 1, 0, 0, 0 };
 
             try
             {
+                var i = 0;
+                foreach (var part in value.Tokenize('-'))
+                {
+                    parts[i++] = int.Parse(part);
+                }
+
+                if (i == 0)
+                {
+                    date = DateTime.MinValue;
+                    return false;
+                }
+
                 date = new DateTime(
-                    int.Parse(split[0]),
-                    int.Parse(split[1]),
-                    int.Parse(split[2]),
-                    int.Parse(split[3]),
-                    int.Parse(split[4]),
-                    int.Parse(split[5])
+                    parts[0],
+                    parts[1],
+                    parts[2],
+                    parts[3],
+                    parts[4],
+                    parts[5],
+                    DateTimeKind.Utc
                 );
+                return true;
             }
             catch
             {
+                logger.Warning($"Path was not in the correct date format: {value}");
                 date = DateTime.MinValue;
                 return false;
             }
-
-            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

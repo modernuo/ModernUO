@@ -40,7 +40,7 @@ namespace Server
 
             var path = Path.Combine(savePath, typeName);
 
-            AssemblyHandler.EnsureDirectory(path);
+            PathUtility.EnsureDirectory(path);
 
             string idxPath = Path.Combine(path, $"{typeName}.idx");
             string tdbPath = Path.Combine(path, $"{typeName}.tdb");

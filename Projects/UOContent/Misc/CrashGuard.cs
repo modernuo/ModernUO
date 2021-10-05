@@ -4,6 +4,7 @@ using System.IO;
 using Server.Accounting;
 using Server.Logging;
 using Server.Network;
+using Server.Saves;
 
 namespace Server.Misc
 {
@@ -76,24 +77,23 @@ namespace Server.Misc
             }
         }
 
-        private static void CopyFile(string rootOrigin, string rootBackup, string path)
+        private static void DirectoryCopy(string sourceDirName, string destDirName)
         {
-            var originPath = Path.Combine(rootOrigin, path);
-            if (!File.Exists(originPath))
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
             {
-                return;
+                string tempPath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(tempPath, false);
             }
 
-            var backupPath = Path.Combine(rootBackup, path);
-            Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
-
-            try
+            foreach (DirectoryInfo subdir in dirs)
             {
-                File.Copy(originPath, backupPath);
-            }
-            catch
-            {
-                // ignored
+                string tempPath = Path.Combine(destDirName, subdir.Name);
+                DirectoryCopy(subdir.FullName, tempPath);
             }
         }
 
@@ -105,26 +105,12 @@ namespace Server.Misc
             {
                 var timeStamp = Utility.GetTimeStamp();
 
-                var root = Core.BaseDirectory;
-                var rootBackup = Path.Combine(root, $"Backups/Crashed/{timeStamp}/");
-                var rootOrigin = Path.Combine(root, "Saves/");
-
-                // Copy files
-                CopyFile(rootOrigin, rootBackup, "Accounts/Accounts.xml");
-
-                CopyFile(rootOrigin, rootBackup, "Items/Items.bin");
-                CopyFile(rootOrigin, rootBackup, "Items/Items.idx");
-                CopyFile(rootOrigin, rootBackup, "Items/Items.tdb");
-
-                CopyFile(rootOrigin, rootBackup, "Mobiles/Mobiles.bin");
-                CopyFile(rootOrigin, rootBackup, "Mobiles/Mobiles.idx");
-                CopyFile(rootOrigin, rootBackup, "Mobiles/Mobiles.tdb");
-
-                CopyFile(rootOrigin, rootBackup, "Guilds/Guilds.bin");
-                CopyFile(rootOrigin, rootBackup, "Guilds/Guilds.idx");
-
-                CopyFile(rootOrigin, rootBackup, "Regions/Regions.bin");
-                CopyFile(rootOrigin, rootBackup, "Regions/Regions.idx");
+                var backupPath = PathUtility.EnsureDirectory(Path.Combine(AutoArchive.BackupPath, "Crashed", timeStamp));
+                var savePath = World.SavePath;
+                if (Directory.Exists(savePath))
+                {
+                    DirectoryCopy(savePath, backupPath);
+                }
 
                 logger.Information("Backup done");
             }
@@ -160,7 +146,7 @@ namespace Server.Misc
 
                     try
                     {
-                        op.WriteLine("Mobiles: {0}", World.Mobiles.Count);
+                        op.WriteLine($"Accounts: {Accounts.Count}");
                     }
                     catch
                     {
@@ -169,15 +155,23 @@ namespace Server.Misc
 
                     try
                     {
-                        op.WriteLine("Items: {0}", World.Items.Count);
+                        op.WriteLine($"Mobiles: {World.Mobiles.Count}");
                     }
                     catch
                     {
                         // ignored
                     }
 
-                    op.WriteLine("Exception:");
-                    op.WriteLine(e.Exception);
+                    try
+                    {
+                        op.WriteLine($"Items: {World.Items.Count}");
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+
+                    op.WriteLine($"Exception: {e.Exception}");
                     op.WriteLine();
 
                     op.WriteLine("Clients:");
@@ -186,22 +180,22 @@ namespace Server.Misc
                     {
                         var states = TcpServer.Instances;
 
-                        op.WriteLine("- Count: {0}", states.Count);
+                        op.WriteLine($"- Count: {states.Count}");
 
                         foreach (var ns in TcpServer.Instances)
                         {
-                            op.Write("+ {0}:", ns);
+                            op.Write($"+ {ns}:");
 
                             if (ns.Account is Account a)
                             {
-                                op.Write(" (account = {0})", a.Username);
+                                op.Write($" (account = {a.Username})");
                             }
 
                             var m = ns.Mobile;
 
                             if (m != null)
                             {
-                                op.Write(" (mobile = 0x{0:X} '{1}')", m.Serial.Value, m.Name);
+                                op.Write($" (mobile = 0x{m.Serial.Value:X} '{m.Name}')");
                             }
 
                             op.WriteLine();

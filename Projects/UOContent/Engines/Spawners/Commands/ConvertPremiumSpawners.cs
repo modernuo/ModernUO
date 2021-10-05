@@ -77,7 +77,7 @@ namespace Server.Engines.Spawners
                 {
                     var stemDir = stem[..^file.Name.Length];
                     var fullOutputDir = Path.Combine(outputDir, stemDir);
-                    AssemblyHandler.EnsureDirectory(fullOutputDir);
+                    PathUtility.EnsureDirectory(fullOutputDir);
 
                     var outputFileName = $"{file.Name[..^file.Extension.Length]}.json";
                     ParsePremiumSpawnerFile(file.FullName, Path.Combine(fullOutputDir, outputFileName), options);

@@ -46,7 +46,6 @@ namespace Server
         private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
         private static string _tempSavePath; // Path to the temporary folder for the save
-        private static string _savePath; // Path to "Saves" folder
         private static bool _enableSaveStats;
 
         public const bool DirtyTrackingEnabled = false;
@@ -130,6 +129,8 @@ namespace Server
         internal static List<Type> MobileTypes { get; } = new();
         internal static List<Type> GuildTypes { get; } = new();
 
+        public static string SavePath { get; private set; }
+
         public static WorldState WorldState { get; private set; }
         public static bool Saving => WorldState == WorldState.Saving;
         public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
@@ -141,10 +142,12 @@ namespace Server
 
         public static void Configure()
         {
-            var tempSavePath = ServerConfiguration.GetOrUpdateSetting("world.tempSavePath", "temp");
-            _tempSavePath = Path.Combine(Core.BaseDirectory, tempSavePath);
+            var tempSavePath = ServerConfiguration.GetSetting("world.tempSavePath", "temp");
+            _tempSavePath = PathUtility.GetFullPath(tempSavePath);
+
             var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
-            _savePath = Path.Combine(Core.BaseDirectory, savePath);
+            SavePath = PathUtility.GetFullPath(savePath);
+
             _enableSaveStats = ServerConfiguration.GetOrUpdateSetting("world.enableSaveStats", false);
 
             // Mobiles & Items
@@ -256,7 +259,7 @@ namespace Server
             logger.Information("Loading world");
             var watch = Stopwatch.StartNew();
 
-            Persistence.Load(_savePath);
+            Persistence.Load(SavePath);
             EventSink.InvokeWorldLoad();
 
             ProcessSafetyQueues();
@@ -344,7 +347,7 @@ namespace Server
 
                 var timestamp = Utility.GetTimeStamp();
                 var saveStatsPath = Path.Combine(Core.BaseDirectory, $"Logs/Saves/Save-Stats-{timestamp}.log");
-                AssemblyHandler.EnsureDirectory(saveStatsPath);
+                PathUtility.EnsureDirectory(saveStatsPath);
 
                 using var op = new StreamWriter(saveStatsPath, true);
 
@@ -388,7 +391,7 @@ namespace Server
         {
             Exception exception = null;
 
-            var tempPath = Path.Combine(_tempSavePath, Utility.GetTimeStamp());
+            var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
 
             try
             {
@@ -417,8 +420,8 @@ namespace Server
             {
                 try
                 {
-                    EventSink.InvokeWorldSavePostSnapshot(_savePath, tempPath);
-                    Directory.Move(tempPath, _savePath);
+                    EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
+                    Directory.Move(tempPath, SavePath);
                 }
                 catch (Exception ex)
                 {
