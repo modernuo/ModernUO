@@ -107,10 +107,12 @@ namespace Server.Saves
         private static void RestoreFromArchive()
         {
             var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
-            var allFiles = Directory.Exists(savePath) ? Directory.EnumerateFiles(savePath) : null;
-            var latestFiles = PathsByTimestampName(allFiles, true);
+            if (!Directory.Exists(savePath))
+            {
+                return;
+            }
 
-            foreach (var file in latestFiles)
+            foreach (var file in PathsByTimestampName(savePath, true))
             {
                 if (RestoreFromFile(file, savePath))
                 {
@@ -143,9 +145,7 @@ namespace Server.Saves
                 return false;
             }
 
-            var allFolders = Directory.EnumerateDirectories(tempPath);
-            var worldSaveFolders = PathsByTimestampName(allFolders);
-            foreach (var folder in worldSaveFolders)
+            foreach (var folder in PathsByTimestampName(tempPath))
             {
                 Directory.Delete(savePath, true);
                 var dirInfo = new DirectoryInfo(folder);
@@ -203,11 +203,8 @@ namespace Server.Saves
                 return;
             }
 
-            var allFiles = Directory.EnumerateFiles(archivePath);
-            var archives = PathsByTimestampName(allFiles, true);
-
             var periodLowerStr = periodStr.ToLowerInvariant();
-            foreach (var archive in archives)
+            foreach (var archive in PathsByTimestampName(archivePath, true))
             {
                 if (minRetained > 0)
                 {
@@ -381,8 +378,9 @@ namespace Server.Saves
                 _                     => date
             };
 
-        private static IEnumerable<string> PathsByTimestampName(IEnumerable<string> allItems, bool files = false)
+        private static IEnumerable<string> PathsByTimestampName(string path, bool files = false)
         {
+            var allItems = files ? Directory.GetFiles(path) : Directory.GetDirectories(path);
             var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
             foreach (var item in allItems)
             {
