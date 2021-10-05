@@ -50,7 +50,7 @@ namespace Server.Saves
 
             var backupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups");
             BackupPath = PathUtility.GetFullPath(backupPath);
-            AutomaticBackupPath = Path.Combine(backupPath, "Automatic");
+            AutomaticBackupPath = Path.Combine(BackupPath, "Automatic");
 
             var archivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
             ArchivePath = PathUtility.GetFullPath(archivePath);
@@ -95,7 +95,8 @@ namespace Server.Saves
                 return;
             }
 
-            var backupPath = PathUtility.GetFullPath(Utility.GetTimeStamp(), AutomaticBackupPath);
+            Directory.CreateDirectory(AutomaticBackupPath);
+            var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
             Directory.Move(args.OldSavePath, backupPath);
 
             logger.Information($"Created backup at {backupPath}");
