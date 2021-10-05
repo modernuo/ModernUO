@@ -390,7 +390,7 @@ namespace Server.Saves
 
         private static bool TryGetDate(string value, out DateTime date)
         {
-            Span<int> parts = stackalloc int[] { 0, 0, 1, 0, 0, 0 };
+            Span<int> parts = stackalloc int[] { 0, 1, 1, 0, 0, 0 };
 
             var i = 0;
             foreach (var part in value.Tokenize('-'))
