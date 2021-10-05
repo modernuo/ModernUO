@@ -317,7 +317,7 @@ namespace Server.Saves
             foreach (var (rangeStart, sortedBackups) in items)
             {
                 var backups = sortedBackups.Values;
-                if (backups.Count <= minimum)
+                if (backups.Count == 0)
                 {
                     continue;
                 }
