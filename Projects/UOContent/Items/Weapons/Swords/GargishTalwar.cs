@@ -1,12 +1,11 @@
 namespace Server.Items
 {
     [Flippable(0x908, 0x4075)]
-    [TypeAlias("Server.Items.GargishTalwar")]
     [Serializable(0)]
-    public partial class Talwar : BaseSword
+    public partial class GargishTalwar : BaseSword
     {
         [Constructible]
-        public Talwar() : base(0x908)
+        public GargishTalwar() : base(0x908)
         {
         }
 
