@@ -93,16 +93,16 @@ namespace Server.Network
 
         private static class Linux
         {
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_create1(epoll_flags flags);
 
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_close(int epfd);
 
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_ctl(int epfd, epoll_op op, int fd, ref epoll_event ee);
 
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_wait(int epfd, [In, Out] epoll_event[] ee, int maxevents, int timeout);
         }
 
