@@ -69,10 +69,12 @@ namespace Server.Network
             public ulong u64;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Explicit)]
         private struct epoll_event
         {
+            [FieldOffset(0)]
             public epoll_events events;
+            [FieldOffset(4)]
             public epoll_data data;
         }
 
@@ -93,16 +95,16 @@ namespace Server.Network
 
         private static class Linux
         {
-            [DllImport("libc.so.6", SetLastError = true)]
+            [DllImport("libc", SetLastError = true)]
             public static extern int epoll_create1(epoll_flags flags);
 
-            [DllImport("libc.so.6", SetLastError = true)]
+            [DllImport("libc", SetLastError = true)]
             public static extern int epoll_close(int epfd);
 
-            [DllImport("libc.so.6", SetLastError = true)]
+            [DllImport("libc", SetLastError = true)]
             public static extern int epoll_ctl(int epfd, epoll_op op, int fd, ref epoll_event ee);
 
-            [DllImport("libc.so.6", SetLastError = true)]
+            [DllImport("libc", SetLastError = true)]
             public static extern int epoll_wait(int epfd, [In, Out] epoll_event[] ee, int maxevents, int timeout);
         }
 
