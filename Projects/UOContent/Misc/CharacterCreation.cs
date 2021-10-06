@@ -1282,6 +1282,42 @@ namespace Server.Misc
             EquipItem(new Robe(hue));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Item SwordsWeapon(int raceFlag) =>
+            raceFlag switch
+            {
+                Race.AllowElvesOnly     => new RuneBlade(),
+                Race.AllowGargoylesOnly => new DreadSword(),
+                _                       => new Katana()
+            };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Item MacingWeapon(int raceFlag) =>
+            raceFlag switch
+            {
+                Race.AllowElvesOnly     => new DiamondMace(),
+                Race.AllowGargoylesOnly => null, // new DiscMace(),
+                _                       => new Club()
+            };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Item FencingWeapon(int raceFlag) =>
+            raceFlag switch
+            {
+                Race.AllowElvesOnly     => new Leafblade(),
+                Race.AllowGargoylesOnly => null, // new BloodBlade(),
+                _                       => new Kryss()
+            };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Item StaffWeapon(int raceFlag) =>
+            raceFlag switch
+            {
+                Race.AllowElvesOnly     => new WildStaff(),
+                Race.AllowGargoylesOnly => null, // new SerpentStoneStaff(),
+                _                       => new GnarledStaff()
+            };
+
         private static void AddSkillItems(SkillName skill, Mobile m)
         {
             var raceFlag = m.Race.RaceFlag;
@@ -1333,15 +1369,9 @@ namespace Server.Misc
                     {
                         Item item = Utility.Random(3) switch
                         {
-                            0 when elf      => new Leafblade(),
-                            0 when gargoyle => null, // new BloodBlade(),
-                            0               => new Kryss(),
-                            1 when elf      => new RuneBlade(),
-                            1 when gargoyle => null, // new GlassSword(),
-                            1               => new Katana(),
-                            _ when elf      => new DiamondMace(),
-                            _ when gargoyle => null, // new DiscMace()
-                            _               => new Club()
+                            0 => FencingWeapon(raceFlag),
+                            1 => MacingWeapon(raceFlag),
+                            _ => SwordsWeapon(raceFlag)
                         };
                         EquipItem(item);
 
@@ -1349,14 +1379,7 @@ namespace Server.Misc
                     }
                 case SkillName.Begging:
                     {
-                        Item item = raceFlag switch
-                        {
-                            Race.AllowElvesOnly     => new WildStaff(),
-                            Race.AllowGargoylesOnly => null, // new SerpentStoneStaff(),
-                            _                       => new GnarledStaff()
-                        };
-
-                        EquipItem(item);
+                        EquipItem(StaffWeapon(raceFlag));
                         break;
                     }
                 case SkillName.Blacksmith:
@@ -1448,14 +1471,7 @@ namespace Server.Misc
                     }
                 case SkillName.Fencing:
                     {
-                        Item item = raceFlag switch
-                        {
-                            Race.AllowElvesOnly     => new Leafblade(),
-                            Race.AllowGargoylesOnly => null, // new BloodBlade(),
-                            _                       => new Kryss()
-                        };
-
-                        EquipItem(item);
+                        EquipItem(FencingWeapon(raceFlag));
                         break;
                     }
                 case SkillName.Fishing:
@@ -1503,14 +1519,7 @@ namespace Server.Misc
                     }
                 case SkillName.ItemID:
                     {
-                        Item item = raceFlag switch
-                        {
-                            Race.AllowElvesOnly     => new WildStaff(),
-                            Race.AllowGargoylesOnly => null, // new SerpentStoneStaff(),
-                            _                       => new GnarledStaff()
-                        };
-
-                        EquipItem(item);
+                        EquipItem(StaffWeapon(raceFlag));
                         break;
                     }
                 case SkillName.Lockpicking:
@@ -1525,14 +1534,7 @@ namespace Server.Misc
                     }
                 case SkillName.Macing:
                     {
-                        Item item = raceFlag switch
-                        {
-                            Race.AllowElvesOnly     => new DiamondMace(),
-                            Race.AllowGargoylesOnly => null, // new DiscMace(),
-                            _                       => new Club()
-                        };
-
-                        EquipItem(item);
+                        EquipItem(MacingWeapon(raceFlag));
                         break;
                     }
                 case SkillName.Magery:
@@ -1643,13 +1645,7 @@ namespace Server.Misc
                 case SkillName.Tactics:
                 case SkillName.Swords:
                     {
-                        Item item = raceFlag switch
-                        {
-                            Race.AllowElvesOnly     => new RuneBlade(),
-                            Race.AllowGargoylesOnly => new DreadSword(),
-                            _                       => new Katana()
-                        };
-                        EquipItem(item);
+                        EquipItem(SwordsWeapon(raceFlag));
 
                         break;
                     }
