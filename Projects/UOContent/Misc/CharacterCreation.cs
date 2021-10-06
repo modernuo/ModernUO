@@ -1008,7 +1008,7 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            //EquipItem(new DreadSword()); //NOT IMPLEMENTED
+                            EquipItem(new DreadSword());
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
                             EquipItem(new GargishLeatherKiltType1());
@@ -1056,7 +1056,7 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            //EquipItem(new GlassSword());  //NOT IMPLEMENTED
+                            EquipItem(new GlassSword());
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
                             EquipItem(new GargishLeatherKiltType1());
@@ -1074,10 +1074,8 @@ namespace Server.Misc
                             EquipItem(new Sandals(0x8FD));
                         }
 
-                        Spellbook
-                            book = new NecromancerSpellbook(
-                                (ulong)0x8981
-                            ); // animate dead, evil omen, pain spike, summon familiar, wraith form
+                        // animate dead, evil omen, pain spike, summon familiar, wraith form
+                        Spellbook book = new NecromancerSpellbook(0x8981ul);
 
                         PackItem(book);
 
@@ -1102,11 +1100,11 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            //EquipItem(new GlassSword()); // IMPLEMENTION NEEDED
-                            //EquipItem(new GargishStoneChestType1());
-                            //EquipItem(new GargishStoneArmsType1());
-                            //EquipItem(new GargishStoneKiltType1());
-                            //EquipItem(new GargishStoneLegsType1());
+                            EquipItem(new GlassSword());
+                            EquipItem(m.Female ? new GargishStoneChestType2() : new GargishStoneChestType1());
+                            EquipItem(m.Female ? new GargishStoneArmsType2() : new GargishStoneArmsType1());
+                            EquipItem(m.Female ? new GargishStoneKiltType2() : new GargishStoneKiltType1());
+                            EquipItem(m.Female ? new GargishStoneLegsType2() : new GargishStoneLegsType1());
                         }
                         else
                         {
@@ -1148,7 +1146,7 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            //EquipItem(new GargishTalwar()); // IMPLEMENTION NEEDED
+                            EquipItem(new Talwar());
                             EquipItem(new GargishLeatherChestType1());
                             EquipItem(new GargishLeatherArmsType1());
                             EquipItem(new GargishLeatherKiltType1());
