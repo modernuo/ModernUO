@@ -1076,10 +1076,10 @@ namespace Server.Misc
                         else if (gargoyle)
                         {
                             EquipItem(new GargishTalwar());
-                            EquipItem(NecroHue(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1()));
-                            EquipItem(NecroHue(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1()));
-                            EquipItem(NecroHue(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1()));
-                            EquipItem(NecroHue(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1()));
+                            EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
+                            EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
+                            EquipItem(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
+                            EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
                         }
                         else
                         {
@@ -1118,10 +1118,10 @@ namespace Server.Misc
                         else if (gargoyle)
                         {
                             //EquipItem(new DualPointedSpear()); //IMPLEMENTATION NEEDED
-                            EquipItem(NecroHue(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1()));
-                            EquipItem(NecroHue(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1()));
-                            EquipItem(NecroHue(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1()));
-                            EquipItem(NecroHue(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1()));
+                            EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
+                            EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
+                            EquipItem(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
+                            EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
                         }
                         else
                         {
@@ -1137,10 +1137,7 @@ namespace Server.Misc
                         PackItem(new SmokeBomb());
                         PackItem(new SmokeBomb());
                         PackItem(new SmokeBomb());
-
-                        Spellbook book = new BookOfNinjitsu();
-                        PackItem(book);
-
+                        PackItem(new BookOfNinjitsu());
                         break;
                     }
             }
@@ -1324,7 +1321,7 @@ namespace Server.Misc
             var human = m.Race == Race.Human;
             var elf = m.Race == Race.Elf;
             var gargoyle = m.Race == Race.Gargoyle;
-            var elfOrHuman = Race.IsAllowedRace(m.Race, Race.AllowHumanOrElves);
+            var elfOrHuman = elf || human;
 
             switch (skill)
             {
@@ -1685,6 +1682,20 @@ namespace Server.Misc
                             _                                     => new LeatherGloves()
                         };
                         EquipItem(item);
+                        break;
+                    }
+                case SkillName.Throwing:
+                    {
+                        if (gargoyle)
+                        {
+                            // EquipItem(new Boomerang());
+                        }
+
+                        break;
+                    }
+                case SkillName.Mysticism:
+                    {
+                        // PackItem(new MysticBook(0xAB));
                         break;
                     }
             }
