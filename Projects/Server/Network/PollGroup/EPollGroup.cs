@@ -53,7 +53,7 @@ namespace Server.Network
             EPOLL_CTL_MOD = 3,
         }
 
-        [StructLayout(LayoutKind.Explicit)]
+        [StructLayout(LayoutKind.Explicit, Size = 8)]
         private struct epoll_data
         {
             [FieldOffset(0)]
@@ -69,7 +69,7 @@ namespace Server.Network
             public ulong u64;
         }
 
-        [StructLayout(LayoutKind.Explicit)]
+        [StructLayout(LayoutKind.Explicit, Pack = 4)]
         private struct epoll_event
         {
             [FieldOffset(0)]
@@ -95,16 +95,16 @@ namespace Server.Network
 
         private static class Linux
         {
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_create1(epoll_flags flags);
 
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_close(int epfd);
 
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_ctl(int epfd, epoll_op op, int fd, ref epoll_event ee);
 
-            [DllImport("libc", SetLastError = true)]
+            [DllImport("libc.so.6", SetLastError = true)]
             public static extern int epoll_wait(int epfd, [In, Out] epoll_event[] ee, int maxevents, int timeout);
         }
 
