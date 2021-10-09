@@ -314,7 +314,7 @@ namespace Server.Saves
             foreach (var (rangeStart, sortedBackups) in items)
             {
                 var backups = sortedBackups.Values;
-                if (backups.Count == 0)
+                if (backups.Count <= minimum)
                 {
                     continue;
                 }
@@ -397,7 +397,9 @@ namespace Server.Saves
 
                 if (TryGetDate(name, out var date))
                 {
-                    items.Add(date, item);
+                    // Might give wrong results if there is a file that matches:
+                    // Example: 2021-09-01, and 2021-09-01-00
+                    items[date] = item;
                 }
             }
 
@@ -435,7 +437,6 @@ namespace Server.Saves
             }
             catch
             {
-                logger.Warning($"Path was not in the correct date format: {value}");
                 date = DateTime.MinValue;
                 return false;
             }
