@@ -9,7 +9,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestGlobalLightLevel()
         {
-            byte lightLevel = 5;
+            const byte lightLevel = 5;
             var expected = new GlobalLightLevel(lightLevel).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
