@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace Server.Network
@@ -181,14 +182,14 @@ namespace Server.Network
             Marshal.FreeHGlobal(_zeroTimeoutPtr);
         }
 
-        public void Add(NetState state)
+        public void Add(Socket socket, GCHandle handle)
         {
             var rc = BSD.kevent(
                 _kqueueHndle,
-                state.Connection.Handle,
+                socket.Handle,
                 kqueue_filter.READ | kqueue_filter.WRITE,
                 kqueue_flags.ADD | kqueue_flags.CLEAR,
-                udata: (IntPtr)state._handle
+                udata: (IntPtr)handle
             );
 
             if (rc != 0)
@@ -197,14 +198,13 @@ namespace Server.Network
             }
         }
 
-        public void Remove(NetState state)
+        public void Remove(Socket socket)
         {
             var rc = BSD.kevent(
                 _kqueueHndle,
-                state.Connection.Handle,
+                socket.Handle,
                 kqueue_filter.READ | kqueue_filter.WRITE,
-                kqueue_flags.DELETE,
-                udata: (IntPtr)state._handle
+                kqueue_flags.DELETE
             );
 
             if (rc != 0)
@@ -215,11 +215,11 @@ namespace Server.Network
 
         private kevent[] _events = new kevent[2048];
 
-        public int Poll(ref NetState[] states)
+        public int Poll(ref GCHandle[] handles)
         {
-            if (states.Length > _events.Length)
+            if (handles.Length > _events.Length)
             {
-                var newLength = Math.Max(states.Length, _events.Length + (_events.Length >> 2));
+                var newLength = Math.Max(handles.Length, _events.Length + (_events.Length >> 2));
                 _events = new kevent[newLength];
             }
 
@@ -230,19 +230,12 @@ namespace Server.Network
                 return rc;
             }
 
-            int count = 0;
-
             for (int i = 0; i < rc; i++)
             {
-                if (((GCHandle)_events[i].udata).Target is not NetState state)
-                {
-                    continue;
-                }
-
-                states[count++] = state;
+                handles[i] = (GCHandle)_events[i].udata;
             }
 
-            return count;
+            return rc;
         }
     }
 }
