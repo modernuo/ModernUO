@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace Server.Network
@@ -53,23 +54,20 @@ namespace Server.Network
             EPOLL_CTL_MOD = 3,
         }
 
-        [StructLayout(LayoutKind.Explicit)]
+        [StructLayout(LayoutKind.Explicit, Size = 8)]
         private struct epoll_data
         {
             [FieldOffset(0)]
             public int fd;
-
             [FieldOffset(0)]
             public IntPtr ptr;
-
             [FieldOffset(0)]
             public uint u32;
-
             [FieldOffset(0)]
             public ulong u64;
         }
 
-        [StructLayout(LayoutKind.Explicit)]
+        [StructLayout(LayoutKind.Explicit, Pack = 4)]
         private struct epoll_event
         {
             [FieldOffset(0)]
@@ -109,10 +107,12 @@ namespace Server.Network
         }
 
         private readonly int _epHndle;
+        private readonly bool _isWindows;
 
         public EPollGroup()
         {
-            _epHndle = Core.IsWindows ? Windows.epoll_create1(epoll_flags.NONE) : Linux.epoll_create1(epoll_flags.NONE);
+            _isWindows = Core.IsWindows;
+            _epHndle = _isWindows ? Windows.epoll_create1(epoll_flags.NONE) : Linux.epoll_create1(epoll_flags.NONE);
 
             if (_epHndle == 0)
             {
@@ -122,7 +122,7 @@ namespace Server.Network
 
         public void Dispose()
         {
-            if (Core.IsWindows)
+            if (_isWindows)
             {
                 Windows.epoll_close(_epHndle);
             }
@@ -132,18 +132,18 @@ namespace Server.Network
             }
         }
 
-        public void Add(NetState state)
+        public void Add(Socket socket, GCHandle handle)
         {
             var ev = new epoll_event
             {
                 events = epoll_events.EPOLLIN | epoll_events.EPOLLERR
             };
 
-            ev.data.ptr = (IntPtr)state._handle;
+            ev.data.ptr = (IntPtr)handle;
 
-            var rc = Core.IsWindows ?
-                Windows.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev) :
-                Linux.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_ADD, (int)state.Connection.Handle, ref ev);
+            var rc = _isWindows ?
+                Windows.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_ADD, (int)socket.Handle, ref ev) :
+                Linux.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_ADD, (int)socket.Handle, ref ev);
 
 
             if (rc != 0)
@@ -152,17 +152,13 @@ namespace Server.Network
             }
         }
 
-        public void Remove(NetState state)
+        public void Remove(Socket socket)
         {
-            var ev = new epoll_event
-            {
-                events = epoll_events.EPOLLIN | epoll_events.EPOLLERR,
-            };
-            ev.data.ptr = (IntPtr)state._handle;
+            var ev = new epoll_event { events = epoll_events.EPOLLIN | epoll_events.EPOLLERR };
 
-            var rc = Core.IsWindows ?
-                Windows.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev) :
-                Linux.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_DEL, (int)state.Connection.Handle, ref ev);
+            var rc = _isWindows ?
+                Windows.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_DEL, (int)socket.Handle, ref ev) :
+                Linux.epoll_ctl(_epHndle, epoll_op.EPOLL_CTL_DEL, (int)socket.Handle, ref ev);
 
             if (rc != 0)
             {
@@ -172,36 +168,29 @@ namespace Server.Network
 
         private epoll_event[] _events = new epoll_event[2048];
 
-        public int Poll(ref NetState[] states)
+        public int Poll(ref GCHandle[] handles)
         {
-            if (states.Length > _events.Length)
+            if (handles.Length > _events.Length)
             {
-                var newLength = Math.Max(states.Length, _events.Length + (_events.Length >> 2));
+                var newLength = Math.Max(handles.Length, _events.Length + (_events.Length >> 2));
                 _events = new epoll_event[newLength];
             }
 
-            var rc = Core.IsWindows ?
-                Windows.epoll_wait(_epHndle, _events, states.Length, 0) :
-                Linux.epoll_wait(_epHndle, _events, states.Length, 0);
+            var rc = _isWindows ?
+                Windows.epoll_wait(_epHndle, _events, handles.Length, 0) :
+                Linux.epoll_wait(_epHndle, _events, handles.Length, 0);
 
             if (rc <= 0)
             {
                 return rc;
             }
 
-            int count = 0;
-
             for (int i = 0; i < rc; i++)
             {
-                if (((GCHandle)_events[i].data.ptr).Target is not NetState state)
-                {
-                    continue;
-                }
-
-                states[count++] = state;
+                handles[i] = (GCHandle)_events[i].data.ptr;
             }
 
-            return count;
+            return rc;
         }
 
     }

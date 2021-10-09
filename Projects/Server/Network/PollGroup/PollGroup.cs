@@ -14,14 +14,16 @@
  *************************************************************************/
 
 using System;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace Server.Network
 {
     public interface IPollGroup : IDisposable
     {
-        void Add(NetState state);
-        void Remove(NetState state);
-        int Poll(ref NetState[] states);
+        void Add(Socket sock, GCHandle handle);
+        void Remove(Socket sock);
+        int Poll(ref GCHandle[] handles);
     }
 
     public static class PollGroup
