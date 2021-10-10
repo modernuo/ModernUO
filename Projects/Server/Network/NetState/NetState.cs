@@ -159,6 +159,8 @@ namespace Server.Network
             set => _packetEncoder = value;
         }
 
+        public int CurrentPacket { get; internal set; }
+
         public bool SentFirstPacket { get; set; }
 
         public bool BlockAllPackets { get; set; }

@@ -1,0 +1,354 @@
+Begin
+	Name			Adventurer
+	TrueName	"Adventurer"
+	Desc			0
+	TopLevel	true
+	Gump			5547
+	Type			Category
+	Children	ArcherCat,MagicianCat,WarriorCat
+End
+
+Begin
+	Name			Merchant
+	TrueName	"Merchant"
+	Desc			1
+	TopLevel	true
+	Gump			5571
+	Type			Category
+	Children	Craftsman,Tradesman
+End
+
+Begin
+	Name			ArcherCat
+	TrueName	"Archer"
+	Desc			2
+	TopLevel	false
+	Gump			5551
+	Type			Category
+	Children	Archer,ArcherBard,ArcherMedic,ArcherRanger
+End
+
+Begin
+	Name			MagicianCat
+	TrueName	"Magician"
+	Desc			3
+	TopLevel	false
+	Gump			5569
+	Type			Category
+	Children	BattleMage,PureMage,Warlock
+End
+
+Begin
+	Name			WarriorCat
+	TrueName	"Warrior"
+	Desc			4
+	TopLevel	false
+	Gump			5587
+	Type			Category
+	Children	WarriorBard,MaceFighter,Fencer,Swordsman
+End
+
+Begin
+	Name			Craftsman
+	TrueName	"Craftsman"
+	Desc			5
+	TopLevel	false
+	Gump			5559
+	Type			Category
+	Children	Blacksmith,Carpenter,Tailor,Tinker
+End
+
+Begin
+	Name			Tradesman
+	TrueName	"Tradesman"
+	Desc			6
+	TopLevel	false
+	Gump			5583
+	Type			Category
+	Children	AnimalTamer,Fisherman,Prospector,Sorcerer
+End
+
+Begin
+	Name			Archer
+	TrueName	"Archer"
+	Desc			7
+	TopLevel	false
+	Gump			5551
+	Type			Profession
+	Skill			Archery	50
+	Skill			Bowcraft 25
+	Skill			Lumberjacking 25
+	Stat			Str 45
+	Stat			Dex 10
+	Stat			Int 10
+End
+
+Begin
+	Name			ArcherBard
+	TrueName	"Bard"
+	Desc			8
+	TopLevel	false
+	Gump			5553
+	Type			Profession
+	Skill			Musicianship	50
+	Skill			Provocation		40
+	Skill			Archery			10
+	Stat			Str 45
+	Stat			Dex 10
+	Stat			Int 10
+End
+
+Begin
+	Name			ArcherMedic
+	TrueName	"Field Medic"
+	Desc			9
+	TopLevel	false
+	Gump			5563
+	Type			Profession
+	Skill			Archery			40
+	Skill			Healing			30
+	Skill			Anatomy			30
+	Stat			Str	35
+	Stat			Dex 20
+	Stat			Int 10
+End
+
+Begin
+	Name			ArcherRanger
+	TrueName	"Ranger"
+	Desc			10
+	TopLevel	false
+	Gump			5575
+	Type			Profession
+	Skill			Archery			50
+	Skill			Tracking		25
+	Skill			AnimalTaming	25
+	Stat			Str	45
+	Stat			Dex 10
+	Stat			Int 10
+End
+
+Begin
+	Name			BattleMage
+	TrueName	"Battle Mage"
+	Desc			11
+	TopLevel	false
+	Gump			5557
+	Type			Profession
+	Skill			Magery				40
+	Skill			MaceFighting	30
+	Skill			Healing				30
+	Stat			Str 35
+	Stat			Dex 10
+	Stat			Int 20
+End
+
+Begin
+	Name			PureMage
+	TrueName	"Pure Mage"
+	Desc			12
+	TopLevel	false
+	Gump			5569
+	Type			Profession
+	Skill			Magery			50
+	Skill			EvaluateIntelligence	25
+	Skill			ResistingSpells		25
+	Stat			Str 35
+	Stat			Dex 10
+	Stat			Int 20
+End
+
+Begin
+	Name			Warlock
+	TrueName	"Warlock"
+	Desc			13
+	TopLevel	false
+	Gump			5585
+	Type			Profession
+	Skill			Swordsmanship		40
+	Skill			Magery					40
+	Skill			ResistingSpells			20
+	Stat			Str							35
+	Stat			Dex							10
+	Stat			Int							20
+End
+
+Begin
+	Name			WarriorBard
+	TrueName	"Bard"
+	Desc			14
+	TopLevel	false
+	Gump			5553
+	Type			Profession
+	Skill			Musicianship		50
+	Skill			Provocation			40
+	Skill			Swordsmanship		10
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Fencer
+	TrueName	"Fencer"
+	Desc			15
+	TopLevel	false
+	Gump			5561
+	Type			Profession
+	Skill			Fencing					50
+	Skill			Parrying				25
+	Skill			Anatomy					25
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			MaceFighter
+	TrueName	"Mace Fighter"
+	Desc			16
+	TopLevel	false
+	Gump			5567
+	Type			Profession
+	Skill			MaceFighting		50
+	Skill			Parrying				25
+	Skill			Anatomy					25
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Swordsman
+	TrueName	"Swordsman"
+	Desc			17
+	TopLevel	false
+	Gump			5577
+	Type			Profession
+	Skill			Swordsmanship		50
+	Skill			Parrying				25
+	Skill			Anatomy					25
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Blacksmith
+	TrueName	"Blacksmith"
+	Desc			18
+	TopLevel	false
+	Gump			5555
+	Type			Profession
+	Skill			Blacksmith			50
+	Skill			Mining					50
+	Skill			Tinkering				0
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Carpenter
+	TrueName	"Carpenter"
+	Desc			19
+	TopLevel	false
+	Gump			5559
+	Type			Profession
+	Skill			Carpentry				50
+	Skill			Lumberjacking		40
+	Skill			Bowcraft				10
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Sorcerer
+	TrueName	"Sorcerer"
+	Desc			20
+	TopLevel	false
+	Gump			5569
+	Type			Profession
+	Skill			Alchemy					35
+	Skill			Inscription			35
+	Skill			Magery					30
+	Stat			Str							35
+	Stat			Dex							10
+	Stat			Int							20
+End
+
+Begin
+	Name			Tailor
+	TrueName	"Tailor"
+	Desc			21
+	TopLevel	false
+	Gump			5579
+	Type			Profession
+	Skill			Tailoring				50
+	Skill			Tracking				40
+	Skill			Healing					10
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Tinker
+	TrueName	"Tinker"
+	Desc			22
+	TopLevel	false
+	Gump			5581
+	Type			Profession
+	Skill			Tinkering				50
+	Skill			Mining					25
+	Skill			Lumberjacking		25
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			AnimalTamer
+	TrueName	"Animal Tamer"
+	Desc			23
+	TopLevel	false
+	Gump			5549
+	Type			Profession
+	Skill			AnimalTaming		50
+	Skill			Tracking				25
+	Skill			AnimalLore			25
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Fisherman
+	TrueName	"Fisherman"
+	Desc			24
+	TopLevel	false
+	Gump			5565
+	Type			Profession
+	Skill			Fishing					50
+	Skill			Cooking					45
+	Skill			Camping					5
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End
+
+Begin
+	Name			Prospector
+	TrueName	"Prospector"
+	Desc			25
+	TopLevel	false
+	Gump			5573
+	Type			Profession
+	Skill			Mining					40
+	Skill			Lumberjacking		40
+	Skill			Hiding			20
+	Stat			Str							45
+	Stat			Dex							10
+	Stat			Int							10
+End

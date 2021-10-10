@@ -462,9 +462,7 @@ namespace Server.Misc
             bank.DropItem(new DyeTub());
             bank.DropItem(new DyeTub());
             bank.DropItem(new BlackDyeTub());
-
-            var darkRedTub = new DyeTub { DyedHue = 0x485, Redyable = false };
-            bank.DropItem(darkRedTub);
+            bank.DropItem(new DyeTub { DyedHue = 0x485, Redyable = false });
 
             // Some food
             bank.DropItem(MakeNewbie(new Apple(1000)));
@@ -1102,7 +1100,6 @@ namespace Server.Misc
                 case 7: // Ninja
                     {
                         addSkillItems = false;
-
 
                         int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89 };
                         // TODO: Verify that's ALL the hues for that above.
