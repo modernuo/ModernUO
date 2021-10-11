@@ -423,7 +423,6 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            EquipItem(new DreadSword());
                             EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
                             EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
                             EquipItem(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
@@ -1099,6 +1098,7 @@ namespace Server.Misc
                         PackInstrument();
                         break;
                     }
+                case SkillName.Stealing:
                 case SkillName.Snooping:
                     {
                         PackItem(new Lockpick(20));
@@ -1107,11 +1107,6 @@ namespace Server.Misc
                 case SkillName.SpiritSpeak:
                     {
                         EquipItem(new Cloak(0x455));
-                        break;
-                    }
-                case SkillName.Stealing:
-                    {
-                        PackItem(new Lockpick(20));
                         break;
                     }
                 case SkillName.Tactics:
@@ -1125,6 +1120,13 @@ namespace Server.Misc
                     {
                         PackItem(new BoltOfCloth());
                         PackItem(new SewingKit());
+                        break;
+                    }
+                case SkillName.Tinkering:
+                    {
+                        PackItem(new TinkerTools());
+                        PackItem(new IronIngot(50));
+                        EquipItem(new HalfApron(Utility.RandomYellowHue()));
                         break;
                     }
                 case SkillName.Tracking:
