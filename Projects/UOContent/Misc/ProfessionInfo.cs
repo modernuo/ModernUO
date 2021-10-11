@@ -1,13 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Server
 {
     public class ProfessionInfo
     {
         public static ProfessionInfo[] Professions { get; }
+
+        private static bool TryGetSkillName(string name, out SkillName skillName)
+        {
+            if (Enum.TryParse(name, out skillName))
+            {
+                return true;
+            }
+
+            var lowerName = name.ToLowerInvariant().Replace(" ", "");
+
+            foreach (var so in SkillInfo.Table)
+            {
+                if (lowerName == so.ProfessionSkillName.ToLowerInvariant())
+                {
+                    skillName = (SkillName)so.SkillID;
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
 
         static ProfessionInfo()
         {
@@ -80,25 +101,31 @@ namespace Server
                         }
 
                         cols = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
+                        var key = cols[0].ToLowerInvariant();
+                        var value = cols[1].Trim('"');
 
-                        switch (cols[0].ToLowerInvariant())
+                        if (key == "type" && value != "profession")
+                        {
+                            break;
+                        }
+
+                        switch (key)
                         {
                             case "truename":
                                 {
-                                    prof.Name = cols[1].Trim('"');
-
+                                    prof.Name = value;
                                     ++valid;
                                 }
                                 break;
                             case "nameid":
-                                prof.NameID = Utility.ToInt32(cols[1]);
+                                prof.NameID = Utility.ToInt32(value);
                                 break;
                             case "descid":
-                                prof.DescID = Utility.ToInt32(cols[1]);
+                                prof.DescID = Utility.ToInt32(value);
                                 break;
                             case "desc":
                                 {
-                                    prof.ID = int.Parse(cols[1]);
+                                    prof.ID = Utility.ToInt32(value);
                                     if (prof.ID > maxProf)
                                     {
                                         maxProf = prof.ID;
@@ -108,26 +135,19 @@ namespace Server
                                 }
                                 break;
                             case "toplevel":
-                                prof.TopLevel = Utility.ToBoolean(cols[1]);
+                                prof.TopLevel = Utility.ToBoolean(value);
                                 break;
                             case "gump":
-                                prof.GumpID = Utility.ToInt32(cols[1]);
+                                prof.GumpID = Utility.ToInt32(value);
                                 break;
                             case "skill":
                                 {
-                                    if (!Enum.TryParse(cols[1], out SkillName skill))
+                                    if (!TryGetSkillName(value, out var skillName))
                                     {
-                                        var info = SkillInfo.Table.FirstOrDefault(o => o.Name.InsensitiveContains(cols[1]));
-
-                                        if (info == null)
-                                        {
-                                            break;
-                                        }
-
-                                        skill = (SkillName)info.SkillID;
+                                        break;
                                     }
 
-                                    prof.Skills[skills++] = new SkillNameValue(skill, Utility.ToInt32(cols[2]));
+                                    prof.Skills[skills++] = new SkillNameValue(skillName, Utility.ToInt32(cols[2]));
 
                                     if (skills == prof.Skills.Length)
                                     {
@@ -137,8 +157,7 @@ namespace Server
                                 break;
                             case "stat":
                                 {
-                                    StatType stat;
-                                    if (!Enum.TryParse(cols[1], out stat))
+                                    if (!Enum.TryParse(value, out StatType stat))
                                     {
                                         break;
                                     }

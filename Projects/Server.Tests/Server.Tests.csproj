@@ -16,8 +16,11 @@
         </DataFiles>
     </ItemGroup>
     <ItemGroup>
-      <Content Include="..\..\Distribution\Data\Professions\T2A\prof.txt">
+      <Content Include="..\..\Distribution\Data\Professions\None\prof.txt">
         <Link>Data\Professions\T2A\prof.txt</Link>
+      </Content>
+      <Content Include="..\..\Distribution\Data\Professions\all-profession-skill-names.txt">
+        <Link>Data\Professions\all-profession-skill-names.txt</Link>
       </Content>
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
