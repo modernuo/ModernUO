@@ -14,7 +14,7 @@ namespace Server.Misc
 
         private static readonly TimeSpan BadStartMessageDelay = TimeSpan.FromSeconds(3.5);
 
-        private static readonly CityInfo m_NewHavenInfo =
+        private static readonly CityInfo _newHavenInfo =
             new("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel);
 
         private static Mobile m_Mobile;
@@ -41,62 +41,6 @@ namespace Server.Misc
             PackItem(new Gold(1000)); // Starting gold can be customized here
             PackItem(new Dagger());
             PackItem(new Candle());
-        }
-
-        private static void AddShirt(Mobile m, int shirtHue)
-        {
-            var hue = Utility.ClipDyedHue(shirtHue & 0x3FFF);
-
-            if (m.Race == Race.Elf)
-            {
-                EquipItem(new ElvenShirt(hue), true);
-            }
-            else
-            {
-                Item shirt = Utility.Random(3) switch
-                {
-                    0 => new Shirt(hue),
-                    1 => new FancyShirt(hue),
-                    _ => new Doublet(hue)
-                };
-
-                EquipItem(shirt, true);
-            }
-        }
-
-        private static void AddPants(Mobile m, int pantsHue)
-        {
-            var hue = Utility.ClipDyedHue(pantsHue & 0x3FFF);
-
-            if (m.Race == Race.Elf)
-            {
-                EquipItem(new ElvenPants(hue), true);
-            }
-            else
-            {
-                var female = m.Female;
-                Item pants = Utility.RandomBool() switch
-                {
-                    true when female  => new Skirt(hue),
-                    true              => new LongPants(hue),
-                    false when female => new Kilt(hue),
-                    false             => new ShortPants(hue)
-                };
-
-                EquipItem(pants, true);
-            }
-        }
-
-        private static void AddShoes(Mobile m)
-        {
-            if (m.Race == Race.Elf)
-            {
-                EquipItem(new ElvenBoots(), true);
-            }
-            else
-            {
-                EquipItem(new Shoes(Utility.RandomYellowHue()), true);
-            }
         }
 
         private static Mobile CreateMobile(Account a)
@@ -225,7 +169,7 @@ namespace Server.Misc
         {
             if (Core.ML)
             {
-                return m_NewHavenInfo; // We don't get the client Version until AFTER Character creation
+                return _newHavenInfo; // We don't get the client Version until AFTER Character creation
             }
 
             var useHaven = isYoung;
@@ -233,9 +177,11 @@ namespace Server.Misc
             var flags = args.State?.Flags ?? ClientFlags.None;
             var m = args.Mobile;
 
-            switch (args.Profession)
+            var profession = ProfessionInfo.Professions[args.Profession];
+
+            switch (profession.Name.ToLowerInvariant())
             {
-                case 4: // Necro
+                case "necromancer":
                     {
                         if ((flags & ClientFlags.Malas) != 0)
                         {
@@ -255,11 +201,11 @@ namespace Server.Misc
 
                         break;
                     }
-                case 5: // Paladin
+                case "paladin":
                     {
-                        return m_NewHavenInfo;
+                        return _newHavenInfo;
                     }
-                case 6: // Samurai
+                case "samurai":
                     {
                         if ((flags & ClientFlags.Tokuno) != 0)
                         {
@@ -279,7 +225,7 @@ namespace Server.Misc
 
                         break;
                     }
-                case 7: // Ninja
+                case "ninja":
                     {
                         if ((flags & ClientFlags.Tokuno) != 0)
                         {
@@ -301,7 +247,7 @@ namespace Server.Misc
                     }
             }
 
-            return useHaven ? m_NewHavenInfo : args.City;
+            return useHaven ? _newHavenInfo : args.City;
         }
 
         private static void FixStats(ref int str, ref int dex, ref int intel, int max)
@@ -394,8 +340,10 @@ namespace Server.Misc
 
         private static void SetSkills(Mobile m, SkillNameValue[] skills, int prof)
         {
+            ProfessionInfo profession = null;
             if (prof > 0 && prof < ProfessionInfo.Professions.Length)
             {
+                profession = ProfessionInfo.Professions[prof];
                 skills = ProfessionInfo.Professions[prof].Skills;
             }
             else if (!ValidSkills(skills))
@@ -407,9 +355,12 @@ namespace Server.Misc
             var elf = m.Race == Race.Elf;
             var gargoyle = m.Race == Race.Gargoyle;
 
-            switch (prof)
+            switch (profession?.Name.ToLowerInvariant())
             {
-                case 1: // Warrior
+                case { } p when p.EndsWithOrdinal("fighter"):
+                case "swordsman":
+                case "fencer":
+                case "warrior":
                     {
                         if (elf)
                         {
@@ -425,7 +376,7 @@ namespace Server.Misc
                         {
                             EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
                             EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
-                            EquipItem(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
+                            EquipItem(m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
                             EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
                         }
                         else
@@ -440,7 +391,7 @@ namespace Server.Misc
                         }
                         break;
                     }
-                case 4: // Necromancer
+                case "necromancer":
                     {
                         Container regs = new BagOfNecroReagents { LootType = LootType.Regular };
 
@@ -471,7 +422,7 @@ namespace Server.Misc
                             EquipItem(new GlassSword());
                             EquipItem(NecroHue(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1()));
                             EquipItem(NecroHue(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1()));
-                            EquipItem(NecroHue(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1()));
+                            EquipItem(NecroHue(m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1()));
                             EquipItem(NecroHue(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1()));
                         }
                         else
@@ -493,7 +444,7 @@ namespace Server.Misc
 
                         break;
                     }
-                case 5: // Paladin
+                case "paladin":
                     {
                         if (elf)
                         {
@@ -535,7 +486,7 @@ namespace Server.Misc
                         break;
                     }
 
-                case 6: // Samurai
+                case "samurai":
                     {
                         addSkillItems = false;
 
@@ -553,7 +504,7 @@ namespace Server.Misc
                             EquipItem(new GargishTalwar());
                             EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
                             EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
-                            EquipItem(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
+                            EquipItem(m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
                             EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
                         }
                         else
@@ -574,7 +525,7 @@ namespace Server.Misc
 
                         break;
                     }
-                case 7: // Ninja
+                case "ninja":
                     {
                         addSkillItems = false;
 
@@ -594,7 +545,7 @@ namespace Server.Misc
                             //EquipItem(new DualPointedSpear()); //IMPLEMENTATION NEEDED
                             EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
                             EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
-                            EquipItem(m.Female ?  new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
+                            EquipItem(m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
                             EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
                         }
                         else
@@ -683,6 +634,62 @@ namespace Server.Misc
             else
             {
                 item.Delete();
+            }
+        }
+
+        private static void AddShirt(Mobile m, int shirtHue)
+        {
+            var hue = Utility.ClipDyedHue(shirtHue & 0x3FFF);
+
+            if (m.Race == Race.Elf)
+            {
+                EquipItem(new ElvenShirt(hue), true);
+            }
+            else
+            {
+                Item shirt = Utility.Random(3) switch
+                {
+                    0 => new Shirt(hue),
+                    1 => new FancyShirt(hue),
+                    _ => new Doublet(hue)
+                };
+
+                EquipItem(shirt, true);
+            }
+        }
+
+        private static void AddPants(Mobile m, int pantsHue)
+        {
+            var hue = Utility.ClipDyedHue(pantsHue & 0x3FFF);
+
+            if (m.Race == Race.Elf)
+            {
+                EquipItem(new ElvenPants(hue), true);
+            }
+            else
+            {
+                var female = m.Female;
+                Item pants = Utility.RandomBool() switch
+                {
+                    true when female  => new Skirt(hue),
+                    true              => new LongPants(hue),
+                    false when female => new Kilt(hue),
+                    false             => new ShortPants(hue)
+                };
+
+                EquipItem(pants, true);
+            }
+        }
+
+        private static void AddShoes(Mobile m)
+        {
+            if (m.Race == Race.Elf)
+            {
+                EquipItem(new ElvenBoots(), true);
+            }
+            else
+            {
+                EquipItem(new Shoes(Utility.RandomYellowHue()), true);
             }
         }
 
