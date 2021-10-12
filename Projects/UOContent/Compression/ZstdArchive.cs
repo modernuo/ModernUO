@@ -23,8 +23,8 @@ namespace Server.Compression
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = _pathToZstd,
-                            Arguments = $"-q -d \"{fileNamePath}\" -o \"${tempTarArchive}\""
+                            FileName = Path.Combine(_pathToZstd, "zstd.exe"),
+                            Arguments = $"-q -d \"{fileNamePath}\" -o \"{tempTarArchive}\""
                         }
                     };
 
