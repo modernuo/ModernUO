@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Network;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Accounting;
@@ -48,7 +49,7 @@ namespace Server.Network
         private const int MenuCap = 512;
         private const int PacketPerSecondThreshold = 3000;
 
-        private static NetState[] _polledStates = new NetState[2048];
+        private static GCHandle[] _polledStates = new GCHandle[2048];
         private static readonly IPollGroup _pollGroup = PollGroup.Create();
         private static readonly Queue<NetState> FlushPending = new(2048);
         private static readonly Queue<NetState> FlushedPartials = new(2048);
@@ -101,7 +102,7 @@ namespace Server.Network
             Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
         }
 
-        public NetState(ISocket connection)
+        public NetState(Socket connection)
         {
             Connection = connection;
             Seeded = false;
@@ -130,7 +131,7 @@ namespace Server.Network
 
             try
             {
-                _pollGroup.Add(this);
+                _pollGroup.Add(connection, _handle);
             }
             catch (Exception ex)
             {
@@ -171,7 +172,7 @@ namespace Server.Network
 
         public Pipe<byte> SendPipe { get; }
 
-        public ISocket Connection { get; }
+        public Socket Connection { get; }
 
         public bool CompressionEnabled { get; set; }
 
@@ -885,8 +886,8 @@ namespace Server.Network
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _polledStates[i].HandleReceive();
-                    _polledStates[i] = null;
+                    (_polledStates[i].Target as NetState)?.HandleReceive();
+                    _polledStates[i] = default;
                 }
             }
 
@@ -1032,7 +1033,7 @@ namespace Server.Network
             TcpServer.Instances.Remove(this);
             try
             {
-                _pollGroup.Remove(this);
+                _pollGroup.Remove(Connection);
             }
             catch (Exception ex)
             {

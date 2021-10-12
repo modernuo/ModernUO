@@ -196,7 +196,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        var ns = new NetState(new NetworkSocket(socket));
+                        var ns = new NetState(socket);
                         _connectedQueue.Enqueue(ns);
                     }
                 }
