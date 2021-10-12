@@ -357,40 +357,6 @@ namespace Server.Misc
 
             switch (profession?.Name.ToLowerInvariant())
             {
-                case { } p when p.EndsWithOrdinal("fighter"):
-                case "swordsman":
-                case "fencer":
-                case "warrior":
-                    {
-                        if (elf)
-                        {
-                            EquipItem(new Circlet());
-                            EquipItem(new HideGorget());
-                            EquipItem(new HideChest());
-                            EquipItem(new HidePauldrons());
-                            EquipItem(new HideGloves());
-                            EquipItem(new HidePants());
-                            EquipItem(new ElvenBoots());
-                        }
-                        else if (gargoyle)
-                        {
-                            EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
-                            EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
-                            EquipItem(m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
-                            EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
-                        }
-                        else
-                        {
-                            EquipItem(new Bascinet());
-                            EquipItem(new StuddedGorget());
-                            EquipItem(new StuddedChest());
-                            EquipItem(new StuddedArms());
-                            EquipItem(new StuddedGloves());
-                            EquipItem(new StuddedLegs());
-                            EquipItem(new ThighBoots());
-                        }
-                        break;
-                    }
                 case "necromancer":
                     {
                         Container regs = new BagOfNecroReagents { LootType = LootType.Regular };
@@ -485,7 +451,6 @@ namespace Server.Misc
 
                         break;
                     }
-
                 case "samurai":
                     {
                         addSkillItems = false;
@@ -563,6 +528,40 @@ namespace Server.Misc
                         PackItem(new SmokeBomb());
                         PackItem(new SmokeBomb());
                         PackItem(new BookOfNinjitsu());
+                        break;
+                    }
+                case "swordsman":
+                case "fencer":
+                case "warrior":
+                case "mace fighter":
+                    {
+                        if (elf)
+                        {
+                            EquipItem(new Circlet());
+                            EquipItem(new HideGorget());
+                            EquipItem(new HideChest());
+                            EquipItem(new HidePauldrons());
+                            EquipItem(new HideGloves());
+                            EquipItem(new HidePants());
+                            EquipItem(new ElvenBoots());
+                        }
+                        else if (gargoyle)
+                        {
+                            EquipItem(m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
+                            EquipItem(m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
+                            EquipItem(m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
+                            EquipItem(m.Female ? new GargishLeatherLegsType2() : new GargishLeatherLegsType1());
+                        }
+                        else
+                        {
+                            EquipItem(new Bascinet());
+                            EquipItem(new StuddedGorget());
+                            EquipItem(new StuddedChest());
+                            EquipItem(new StuddedArms());
+                            EquipItem(new StuddedGloves());
+                            EquipItem(new StuddedLegs());
+                            EquipItem(new ThighBoots());
+                        }
                         break;
                     }
             }

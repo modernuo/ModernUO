@@ -55,7 +55,6 @@ namespace Server
             if (File.Exists(file))
             {
                 using var s = File.OpenText(file);
-                string[] cols;
 
                 while (!s.EndOfStream)
                 {
@@ -100,7 +99,7 @@ namespace Server
                             break;
                         }
 
-                        cols = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
+                        var cols = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
                         var key = cols[0].ToLowerInvariant();
                         var value = cols[1].Trim('"');
 
