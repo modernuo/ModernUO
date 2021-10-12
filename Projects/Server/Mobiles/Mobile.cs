@@ -916,8 +916,15 @@ namespace Server
                     else
                     {
                         m_NetState.SendChangeCombatant(m_Combatant.Serial);
-                        Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
-                        Timer.StartTimer(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
+                        if (!_expireCombatantTimerToken.Running)
+                        {
+                            Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
+                        }
+
+                        if (!_combatTimerToken.Running)
+                        {
+                            Timer.StartTimer(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
+                        }
 
                         if (CanBeHarmful(m_Combatant, false))
                         {
