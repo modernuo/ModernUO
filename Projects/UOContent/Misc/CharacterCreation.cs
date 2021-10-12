@@ -163,7 +163,7 @@ namespace Server.Misc
         }
 
         public static bool VerifyProfession(int profession) =>
-            profession >= 0 && (profession < 4 || Core.AOS && profession < 6 || Core.SE && profession < 8);
+            profession >= 0 && profession < ProfessionInfo.Professions.Length;
 
         private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
         {
@@ -341,7 +341,7 @@ namespace Server.Misc
         private static void SetSkills(Mobile m, SkillNameValue[] skills, int prof)
         {
             ProfessionInfo profession = null;
-            if (prof > 0 && prof < ProfessionInfo.Professions.Length)
+            if (prof > 0)
             {
                 profession = ProfessionInfo.Professions[prof];
                 skills = ProfessionInfo.Professions[prof].Skills;
