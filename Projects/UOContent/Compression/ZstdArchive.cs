@@ -14,7 +14,8 @@ namespace Server.Compression
             // bsdtar has a bug and hangs, so we are doing it in two steps.
             if (Core.IsWindows)
             {
-                var tempTarArchive = Path.Combine(Core.BaseDirectory, "temp/temp-file.tar");
+                var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
+                var tempTarArchive = Path.Combine(tempDir, "temp-file.tar");
 
                 try
                 {
@@ -22,8 +23,8 @@ namespace Server.Compression
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = _pathToZstd,
-                            Arguments = $"-q -d \"{fileNamePath}\" -o \"${tempTarArchive}\""
+                            FileName = Path.Combine(_pathToZstd, "zstd.exe"),
+                            Arguments = $"-q -d \"{fileNamePath}\" -o \"{tempTarArchive}\""
                         }
                     };
 
@@ -54,11 +55,12 @@ namespace Server.Compression
             // bsdtar has a bug and hangs, so we are doing it in two steps.
             if (Core.IsWindows)
             {
-                var tempTarArchive = Path.Combine(Core.BaseDirectory, "temp/temp-file.tar");
+                var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
+                var tempTarArchive = Path.Combine(tempDir, "temp-file.tar");
 
                 try
                 {
-                    if (!TarArchive.CreateFromPaths(paths, relativeTo, tempTarArchive))
+                    if (!TarArchive.CreateFromPaths(paths, tempTarArchive, relativeTo))
                     {
                         return false;
                     }
@@ -83,7 +85,7 @@ namespace Server.Compression
                 }
                 finally
                 {
-                    File.Delete(tempTarArchive);
+                    Directory.Delete(tempDir, true);
                 }
             }
 

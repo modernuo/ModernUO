@@ -68,7 +68,11 @@ namespace Server.Misc
             {
                 var ns = e.State;
 
-                var ipep = (IPEndPoint)ns.Connection.LocalEndPoint;
+                var ipep = (IPEndPoint)ns.Connection?.LocalEndPoint;
+                if (ipep == null)
+                {
+                    return;
+                }
 
                 var localAddress = ipep.Address;
                 var localPort = ipep.Port;
@@ -76,7 +80,7 @@ namespace Server.Misc
                 if (IsPrivateNetwork(localAddress))
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
-                    if (!IsPrivateNetwork(ipep.Address) && _publicAddress != null)
+                    if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
                     }
