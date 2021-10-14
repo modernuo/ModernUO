@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Items;
@@ -11,6 +12,62 @@ namespace Server.Misc
     public static class CharacterCreation
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(CharacterCreation));
+
+        private static readonly HashSet<SkillName> _allowedStartingSkills = new()
+        {
+            SkillName.Alchemy,
+            SkillName.Anatomy,
+            SkillName.AnimalLore,
+            SkillName.AnimalTaming,
+            SkillName.Archery,
+            SkillName.ArmsLore,
+            SkillName.Begging,
+            SkillName.Blacksmith,
+            SkillName.Fletching,
+            SkillName.Bushido,
+            SkillName.Camping,
+            SkillName.Carpentry,
+            SkillName.Cartography,
+            SkillName.Chivalry,
+            SkillName.Cooking,
+            SkillName.DetectHidden,
+            SkillName.Discordance,
+            SkillName.EvalInt,
+            SkillName.Fencing,
+            SkillName.Fishing,
+            SkillName.Focus,
+            SkillName.Forensics,
+            SkillName.Healing,
+            SkillName.Herding,
+            SkillName.Hiding,
+            SkillName.Inscribe,
+            SkillName.ItemID,
+            SkillName.Lockpicking,
+            SkillName.Lumberjacking,
+            SkillName.Macing,
+            SkillName.Magery,
+            SkillName.Meditation,
+            SkillName.Mining,
+            SkillName.Musicianship,
+            SkillName.Necromancy,
+            SkillName.Ninjitsu,
+            SkillName.Parry,
+            SkillName.Peacemaking,
+            SkillName.Poisoning,
+            SkillName.Provocation,
+            SkillName.MagicResist,
+            SkillName.Snooping,
+            SkillName.SpiritSpeak,
+            SkillName.Stealing,
+            SkillName.Swords,
+            SkillName.Tactics,
+            SkillName.Tailoring,
+            SkillName.TasteID,
+            SkillName.Tinkering,
+            SkillName.Tracking,
+            SkillName.Veterinary,
+            SkillName.Wrestling
+        };
 
         private static readonly TimeSpan BadStartMessageDelay = TimeSpan.FromSeconds(3.5);
 
@@ -110,7 +167,7 @@ namespace Server.Misc
             AddBackpack(newChar);
 
             SetStats(newChar, state, args.Str, args.Dex, args.Int);
-            SetSkills(newChar, args.Skills, args.Profession);
+            SetSkills(newChar, args.Skills, args.Profession, args.ShirtHue, args.PantsHue);
 
             var race = newChar.Race;
 
@@ -124,13 +181,6 @@ namespace Server.Misc
             {
                 newChar.FacialHairItemID = args.BeardID;
                 newChar.FacialHairHue = race.ClipHairHue(args.BeardHue & 0x3FFF);
-            }
-
-            if (args.Profession <= 3)
-            {
-                AddShirt(newChar, args.ShirtHue);
-                AddPants(newChar, args.PantsHue);
-                AddShoes(newChar);
             }
 
             if (TestCenter.Enabled)
@@ -319,16 +369,19 @@ namespace Server.Misc
 
             for (var i = 0; i < skills.Length; ++i)
             {
-                if (skills[i].Value is < 0 or > 50)
+                var (name, value) = skills[i];
+
+                if (value is < 0 or > 50)
                 {
                     return false;
                 }
 
-                total += skills[i].Value;
+                total += value;
 
                 for (var j = i + 1; j < skills.Length; ++j)
                 {
-                    if (skills[j].Value > 0 && skills[j].Name == skills[i].Name)
+                    var (nameCheck, valueCheck) = skills[j];
+                    if (valueCheck > 0 && nameCheck == name)
                     {
                         return false;
                     }
@@ -338,7 +391,7 @@ namespace Server.Misc
             return total is 100 or 120;
         }
 
-        private static void SetSkills(Mobile m, SkillNameValue[] skills, int prof)
+        private static void SetSkills(Mobile m, SkillNameValue[] skills, int prof, int shirtHue, int pantsHue)
         {
             ProfessionInfo profession = null;
             if (prof > 0)
@@ -346,7 +399,7 @@ namespace Server.Misc
                 profession = ProfessionInfo.Professions[prof];
                 skills = ProfessionInfo.Professions[prof].Skills;
             }
-            else if (!ValidSkills(skills))
+            else if (!ValidSkills(skills)) // This does not check for skills that are not allowed by expansion
             {
                 return;
             }
@@ -566,22 +619,28 @@ namespace Server.Misc
                     }
             }
 
+            if (addSkillItems)
+            {
+                AddShirt(m, shirtHue);
+                AddPants(m, pantsHue);
+                AddShoes(m);
+            }
+
             for (var i = 0; i < skills.Length; ++i)
             {
-                var snv = skills[i];
+                var (name, value) = skills[i];
 
-                if (snv.Value > 0 && (snv.Name != SkillName.Stealth || prof == 7) && snv.Name != SkillName.RemoveTrap &&
-                    snv.Name != SkillName.Spellweaving)
+                if (value > 0 && (prof > 0 || _allowedStartingSkills.Contains(name)))
                 {
-                    var skill = m.Skills[snv.Name];
+                    var skill = m.Skills[name];
 
                     if (skill != null)
                     {
-                        skill.BaseFixedPoint = snv.Value * 10;
+                        skill.BaseFixedPoint = value * 10;
 
                         if (addSkillItems)
                         {
-                            AddSkillItems(snv.Name, m);
+                            AddSkillItems(name, m);
                         }
                     }
                 }
@@ -976,7 +1035,7 @@ namespace Server.Misc
                     }
                 case SkillName.Herding:
                     {
-                        EquipItem(elf ? new WildStaff() : new ShepherdsCrook());
+                        EquipItem(new ShepherdsCrook());
                         break;
                     }
                 case SkillName.Hiding:

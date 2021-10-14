@@ -87,18 +87,7 @@ namespace Server
         public Race Race { get; }
     }
 
-    public record struct SkillNameValue
-    {
-        public SkillName Name { get; }
-
-        public int Value { get; }
-
-        public SkillNameValue(SkillName name, int value)
-        {
-            Name = name;
-            Value = value;
-        }
-    }
+    public readonly record struct SkillNameValue(SkillName Name, int Value);
 
     public record struct StatNameValue
     {
