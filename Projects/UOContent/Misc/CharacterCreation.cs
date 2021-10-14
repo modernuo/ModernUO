@@ -832,7 +832,7 @@ namespace Server.Misc
             raceFlag switch
             {
                 Race.AllowElvesOnly     => new DiamondMace(),
-                Race.AllowGargoylesOnly => null, // new DiscMace(),
+                Race.AllowGargoylesOnly => new DiscMace(),
                 _                       => new Club()
             };
 
@@ -841,7 +841,7 @@ namespace Server.Misc
             raceFlag switch
             {
                 Race.AllowElvesOnly     => new Leafblade(),
-                Race.AllowGargoylesOnly => null, // new BloodBlade(),
+                Race.AllowGargoylesOnly => new BloodBlade(),
                 _                       => new Kryss()
             };
 
@@ -850,7 +850,7 @@ namespace Server.Misc
             raceFlag switch
             {
                 Race.AllowElvesOnly     => new WildStaff(),
-                Race.AllowGargoylesOnly => null, // new SerpentStoneStaff(),
+                Race.AllowGargoylesOnly => new SerpentstoneStaff(),
                 _                       => new GnarledStaff()
             };
 
@@ -1065,7 +1065,7 @@ namespace Server.Misc
                     }
                 case SkillName.Lumberjacking:
                     {
-                        EquipItem(elfOrHuman ? new Hatchet() : null); // new DualShortAxes()
+                        EquipItem(elfOrHuman ? new Hatchet() : new DualShortAxes());
                         break;
                     }
                 case SkillName.Macing:
@@ -1138,7 +1138,7 @@ namespace Server.Misc
                     {
                         if (gargoyle)
                         {
-                            // EquipItem(new GargishWoodenShield());
+                            EquipItem(new GargishWoodenShield());
                         }
                         else
                         {
