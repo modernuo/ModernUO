@@ -431,7 +431,7 @@ namespace Server.Misc
                             EquipItem(m, NecroHue(new LeafGloves()));
                             EquipItem(m, NecroHue(new LeafGorget()));
                             EquipItem(m, NecroHue(new LeafLegs()));
-                            m. EquipItem(new ElvenBoots());
+                            EquipItem(m, new ElvenBoots());
                         }
                         else if (gargoyle)
                         {
@@ -555,7 +555,7 @@ namespace Server.Misc
                         }
                         else if (gargoyle)
                         {
-                            // EquipItem(new DualPointedSpear());
+                            EquipItem(m, new DualPointedSpear());
                             EquipItem(m, m.Female ? new GargishLeatherChestType2() : new GargishLeatherChestType1());
                             EquipItem(m, m.Female ? new GargishLeatherArmsType2() : new GargishLeatherArmsType1());
                             EquipItem(m, m.Female ? new GargishLeatherKiltType2() : new GargishLeatherKiltType1());
@@ -564,8 +564,8 @@ namespace Server.Misc
                         else
                         {
                             EquipItem(m, new Tekagi());
-                            m. EquipItem(new TattsukeHakama(hues.RandomElement()));
-                            m. EquipItem(new HakamaShita(0x2C3));
+                            EquipItem(m, new TattsukeHakama(hues.RandomElement()));
+                            EquipItem(m, new HakamaShita(0x2C3));
                             EquipItem(m, new NinjaTabi(0x2C3));
                             EquipItem(m, new Kasa());
                         }
