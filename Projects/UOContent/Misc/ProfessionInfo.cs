@@ -194,16 +194,11 @@ namespace Server
         }
 
         public int ID { get; private set; }
-
         public string Name { get; private set; }
-
         public int NameID { get; private set; }
         public int DescID { get; private set; }
-
         public bool TopLevel { get; private set; }
-
         public int GumpID { get; private set; }
-
         public SkillNameValue[] Skills { get; }
         public StatNameValue[] Stats { get; }
     }

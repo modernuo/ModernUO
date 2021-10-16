@@ -163,7 +163,7 @@ namespace Server.Misc
 
             newChar.AddBackpack();
 
-            SetStats(newChar, state, args.Str, args.Dex, args.Int);
+            SetStats(newChar, state, args.Stats, args.Profession);
             SetSkills(newChar, args.Skills, args.Profession, args.ShirtHue, args.PantsHue);
 
             var race = newChar.Race;
@@ -297,48 +297,31 @@ namespace Server.Misc
             return useHaven ? _newHavenInfo : args.City;
         }
 
-        private static void FixStats(ref int str, ref int dex, ref int intel, int max)
+        private static void SetStats(Mobile m, NetState state, StatNameValue[] stats, int prof)
         {
-            var vMax = max - 30;
+            var maxStats = state.NewCharacterCreation ? 90 : 80;
 
-            var vStr = Math.Max(str - 10, 0);
-            var vDex = Math.Max(dex - 10, 0);
-            var vInt = Math.Max(intel - 10, 0);
+            var str = 0;
+            var dex = 0;
+            var intel = 0;
 
-            var total = vStr + vDex + vInt;
-
-            if (total == 0 || total == vMax)
+            if (prof > 0)
             {
-                return;
+                stats = ProfessionInfo.Professions[prof].Stats ?? stats;
             }
 
-            var scalar = vMax / (double)total;
+            for (var i = 0; i < stats.Length; i++)
+            {
+                var (statType, value) = stats[i];
+                switch (statType)
+                {
+                    case StatType.Str: str = value; break;
+                    case StatType.Dex: dex = value; break;
+                    case StatType.Int: intel = value; break;
+                }
+            }
 
-            vStr = (int)(vStr * scalar);
-            vDex = (int)(vDex * scalar);
-            vInt = (int)(vInt * scalar);
-
-            FixStat(ref vStr, vStr + vDex + vInt - vMax, vMax);
-            FixStat(ref vDex, vStr + vDex + vInt - vMax, vMax);
-            FixStat(ref vInt, vStr + vDex + vInt - vMax, vMax);
-
-            str = vStr + 10;
-            dex = vDex + 10;
-            intel = vInt + 10;
-        }
-
-        private static void FixStat(ref int stat, int diff, int max)
-        {
-            stat = Math.Clamp(stat + diff, 0, max);
-        }
-
-        private static void SetStats(Mobile m, NetState state, int str, int dex, int intel)
-        {
-            var max = state.NewCharacterCreation ? 90 : 80;
-
-            FixStats(ref str, ref dex, ref intel, max);
-
-            if (str is < 10 or > 60 || dex is < 10 or > 60 || intel is < 10 or > 60 || str + dex + intel != max)
+            if (str is < 10 or > 60 || dex is < 10 or > 60 || intel is < 10 or > 60 || str + dex + intel != maxStats)
             {
                 str = 10;
                 dex = 10;
