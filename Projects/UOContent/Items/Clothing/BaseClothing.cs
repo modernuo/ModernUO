@@ -624,7 +624,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is BaseClothing clothing))
+            if (newItem is not BaseClothing clothing)
             {
                 return;
             }
