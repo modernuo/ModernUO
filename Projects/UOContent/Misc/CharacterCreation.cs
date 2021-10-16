@@ -909,7 +909,7 @@ namespace Server.Misc
                     {
                         m.PackItem(new Arrow(25));
 
-                        m.EquipItem(RangedWeapon(raceFlag));
+                        EquipItem(m, RangedWeapon(raceFlag));
 
                         break;
                     }
@@ -930,7 +930,7 @@ namespace Server.Misc
                         Item staff = raceFlag switch
                         {
                             Race.AllowElvesOnly     => new WildStaff(),
-                            Race.AllowGargoylesOnly => new SerpentstoneStaff(),
+                            Race.AllowGargoylesOnly => new GlassStaff(),
                             _                       => new GnarledStaff()
                         };
 
@@ -1216,7 +1216,6 @@ namespace Server.Misc
                     {
                         m.PackItem(new TinkerTools());
                         m.PackItem(new IronIngot(50));
-                        EquipItem(m, new HalfApron(Utility.RandomYellowHue()));
                         break;
                     }
                 case SkillName.Tracking:
