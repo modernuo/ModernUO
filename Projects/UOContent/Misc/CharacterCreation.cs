@@ -803,6 +803,19 @@ namespace Server.Misc
             m.PackItem(item);
         }
 
+        private static void PackTinkerPart(this Mobile m)
+        {
+            Item item = Utility.Random(4) switch
+            {
+                0  => new Axle(),
+                1  => new Gears(),
+                2  => new Hinge(),
+                3  => new Springs()
+            };
+
+            m.PackItem(item);
+        }
+
         private static Item NecroHue(Item item)
         {
             item.Hue = 0x2C3;
@@ -1214,8 +1227,13 @@ namespace Server.Misc
                     }
                 case SkillName.Tinkering:
                     {
+                        if (!Core.AOS)
+                        {
+                            m.PackTinkerPart();
+                            m.PackTinkerPart();
+                            m.PackTinkerPart();
+                        }
                         m.PackItem(new TinkerTools());
-                        m.PackItem(new IronIngot(50));
                         break;
                     }
                 case SkillName.Tracking:
