@@ -847,29 +847,12 @@ namespace Server.Misc
             };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Item StaffWeapon(int raceFlag) =>
-            raceFlag switch
-            {
-                Race.AllowElvesOnly     => new WildStaff(),
-                Race.AllowGargoylesOnly => new SerpentstoneStaff(),
-                _                       => new GnarledStaff()
-            };
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Item RangedWeapon(int raceFlag) =>
             raceFlag switch
             {
                 Race.AllowElvesOnly     => new ElvenCompositeLongbow(),
                 Race.AllowGargoylesOnly => new SerpentstoneStaff(),
                 _                       => new GnarledStaff()
-            };
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Item ShepherdsCrook(int raceFlag) =>
-            raceFlag switch
-            {
-                Race.AllowElvesOnly     => new WildStaff(), // This is stupid...
-                _                       => new ShepherdsCrook()
             };
 
         private static void AddSkillItems(this Mobile m, SkillName skill)
@@ -900,14 +883,26 @@ namespace Server.Misc
                     }
                 case SkillName.AnimalLore:
                     {
-                        EquipItem(m, ShepherdsCrook(raceFlag));
+                        if (elf)
+                        {
+                            EquipItem(m, new WildStaff());
+                        }
+                        else
+                        {
+                            EquipItem(m, new ShepherdsCrook());
+                        }
+
                         EquipItem(m, Robe(raceFlag, female, Utility.RandomGreenHue()));
 
                         break;
                     }
                 case SkillName.AnimalTaming:
                     {
-                        EquipItem(m, ShepherdsCrook(raceFlag));
+                        if (human)
+                        {
+                            EquipItem(m, new ShepherdsCrook());
+                        }
+
                         break;
                     }
                 case SkillName.Archery:
@@ -932,7 +927,14 @@ namespace Server.Misc
                     }
                 case SkillName.Begging:
                     {
-                        EquipItem(m, StaffWeapon(raceFlag));
+                        Item staff = raceFlag switch
+                        {
+                            Race.AllowElvesOnly     => new WildStaff(),
+                            Race.AllowGargoylesOnly => new SerpentstoneStaff(),
+                            _                       => new GnarledStaff()
+                        };
+
+                        EquipItem(m, staff);
                         break;
                     }
                 case SkillName.Blacksmith:
@@ -1050,7 +1052,7 @@ namespace Server.Misc
                     }
                 case SkillName.Herding:
                     {
-                        m.EquipItem(ShepherdsCrook(raceFlag));
+                        EquipItem(m, new ShepherdsCrook());
                         break;
                     }
                 case SkillName.Hiding:
@@ -1070,7 +1072,14 @@ namespace Server.Misc
                     }
                 case SkillName.ItemID:
                     {
-                        EquipItem(m, StaffWeapon(raceFlag));
+                        Item staff = raceFlag switch
+                        {
+                            Race.AllowElvesOnly     => new WildStaff(),
+                            Race.AllowGargoylesOnly => new SerpentstoneStaff(),
+                            _                       => new GnarledStaff()
+                        };
+
+                        EquipItem(m, staff);
                         break;
                     }
                 case SkillName.Lockpicking:
