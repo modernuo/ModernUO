@@ -72,7 +72,6 @@ namespace Server.Network
                 return;
             }
 
-
             e.Mobile.SendMessage("Packet 0x{0:X} throttle is currently {1}ms.", packetID, Delays[packetID]);
         }
 
@@ -94,7 +93,6 @@ namespace Server.Network
                 e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
                 return;
             }
-
 
             if (delay > 5000)
             {

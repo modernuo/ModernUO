@@ -38,12 +38,7 @@ namespace Server.Spells.Fourth
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var dx = Caster.Location.X - p.X;
-                var dy = Caster.Location.Y - p.Y;
-                var rx = (dx - dy) * 44;
-                var ry = (dx + dy) * 44;
-
-                bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
 
                 Effects.PlaySound(new Point3D(p), Caster.Map, 0x20C);
 

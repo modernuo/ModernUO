@@ -149,46 +149,16 @@ namespace Server.Commands
 
                 for (var i = 0; i < realProps.Length; ++i)
                 {
-                    PropertyInfo thisProp = null;
-
                     var propName = props[i, 0];
+                    var thisProp = Properties.GetPropertyInfoByName(from, allProps, propName, PropertyAccess.Write, out var failReason);
 
-                    for (var j = 0; thisProp == null && j < allProps.Length; ++j)
+                    if (failReason == null)
                     {
-                        if (propName.InsensitiveEquals(allProps[j].Name))
-                        {
-                            thisProp = allProps[j];
-                        }
-                    }
-
-                    if (thisProp == null)
-                    {
-                        from.SendMessage("Property not found: {0}", propName);
+                        realProps[i] = thisProp;
                     }
                     else
                     {
-                        var attr = GetCPA(thisProp);
-
-                        if (attr == null)
-                        {
-                            from.SendMessage("Property ({0}) not found.", propName);
-                        }
-                        else if (from.AccessLevel < attr.WriteLevel)
-                        {
-                            from.SendMessage(
-                                "Setting this property ({0}) requires at least {1} access level.",
-                                propName,
-                                Mobile.GetAccessLevelName(attr.WriteLevel)
-                            );
-                        }
-                        else if (!thisProp.CanWrite || attr.ReadOnly)
-                        {
-                            from.SendMessage("Property ({0}) is read only.", propName);
-                        }
-                        else
-                        {
-                            realProps[i] = thisProp;
-                        }
+                        from.SendMessage(failReason);
                     }
                 }
             }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Xml;
 using Server.Accounting.Security;
@@ -11,7 +10,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    [Serializable(3)]
+    [Serializable(4)]
     public partial class Account : IAccount, IComparable<Account>, ISerializable
     {
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
@@ -33,10 +32,7 @@ namespace Server.Accounting
         [SerializableField(4)]
         private int _flags;
 
-        [SerializableField(5, setter: "private")]
-        private DateTime _created;
-
-        [SerializableField(6)]
+        [SerializableField(5)]
         private DateTime _lastLogin;
 
         /// <summary>
@@ -44,7 +40,7 @@ namespace Server.Accounting
         ///     The value does not include the value of Platinum and ranges from
         ///     0 to 999,999,999 by default.
         /// </summary>
-        [SerializableField(7, setter: "private")]
+        [SerializableField(6, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         public int _totalGold;
 
@@ -54,16 +50,16 @@ namespace Server.Accounting
         ///     0 to 2,147,483,647 by default.
         ///     One Platinum represents the value of CurrencyThreshold in Gold.
         /// </summary>
-        [SerializableField(8, setter: "private")]
+        [SerializableField(7, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         public int _totalPlat;
 
-        [SerializableField(9, "private", "private")]
+        [SerializableField(8, "private", "private")]
         private Mobile[] _mobiles;
 
         private List<AccountComment> _comments;
 
-        [SerializableField(10)]
+        [SerializableField(9)]
         public List<AccountComment> Comments
         {
             get => _comments ??= new List<AccountComment>();
@@ -76,7 +72,7 @@ namespace Server.Accounting
 
         private List<AccountTag> _tags;
 
-        [SerializableField(11)]
+        [SerializableField(10)]
         public List<AccountTag> Tags
         {
             get => _tags ??= new List<AccountTag>();
@@ -87,14 +83,14 @@ namespace Server.Accounting
             }
         }
 
-        [SerializableField(12)]
+        [SerializableField(11)]
         private IPAddress[] _loginIPs;
 
         /// <summary>
         ///     List of IP addresses for restricted access. '*' wildcard supported. If the array contains zero entries, all IP addresses
         ///     are allowed.
         /// </summary>
-        [SerializableField(13)]
+        [SerializableField(12)]
         private string[] _ipRestrictions;
 
         private TimeSpan _totalGameTime;
@@ -103,7 +99,7 @@ namespace Server.Accounting
         ///     Gets the total game time of this account, also considering the game time of characters
         ///     that have been deleted.
         /// </summary>
-        [SerializableField(14)]
+        [SerializableField(13)]
         public TimeSpan TotalGameTime
         {
             get
@@ -125,7 +121,7 @@ namespace Server.Accounting
             }
         }
 
-        [SerializableField(15)]
+        [SerializableField(14)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         private string _email;
 
@@ -139,7 +135,7 @@ namespace Server.Accounting
 
             _accessLevel = AccessLevel.Player;
 
-            _created = _lastLogin = Core.Now;
+            _lastLogin = Core.Now;
             _totalGameTime = TimeSpan.Zero;
 
             _mobiles = new Mobile[7];
@@ -184,7 +180,7 @@ namespace Server.Accounting
 
             Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out _accessLevel);
             _flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
-            _created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), Core.Now);
+            Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), Core.Now);
             _lastLogin = Utility.GetXMLDateTime(Utility.GetText(node["lastLogin"], null), Core.Now);
 
             _totalGold = Utility.GetXMLInt32(Utility.GetText(node["totalGold"], "0"), 0);
@@ -306,9 +302,21 @@ namespace Server.Accounting
             }
         }
 
+        public TimeSpan AccountAge => Core.Now - Created;
+
+        [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
+        public DateTime Created { get; set; } = Core.Now;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
+
         public int TypeRef { get; private set; }
 
         public Serial Serial { get; set; }
+
+        public void BeforeSerialize()
+        {
+        }
 
         [AfterDeserialization]
         private void AfterDeserialization()
@@ -346,77 +354,6 @@ namespace Server.Accounting
             {
                 CheckYoung();
             }
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            if (version != 2)
-            {
-                // Due to a bug where we were not versioning at all, reset so we don't have an issue deserializing
-                reader.Seek(0, SeekOrigin.Begin);
-            }
-
-            _username = reader.ReadString();
-            _passwordAlgorithm = version < 2 ? (PasswordProtectionAlgorithm)reader.ReadInt() : reader.ReadEnum<PasswordProtectionAlgorithm>();
-            _password = reader.ReadString();
-            _accessLevel = version < 2 ? (AccessLevel)reader.ReadInt() : reader.ReadEnum<AccessLevel>();
-            _flags = reader.ReadInt();
-            _created = reader.ReadDateTime();
-            _lastLogin = reader.ReadDateTime();
-
-            _totalGold = reader.ReadInt();
-            _totalPlat = reader.ReadInt();
-
-            var length = reader.ReadInt();
-            _mobiles = new Mobile[length];
-            for (int i = 0; i < length; i++)
-            {
-                _mobiles[i] = reader.ReadEntity<Mobile>();
-            }
-
-            length = reader.ReadInt();
-            _comments = length > 0 ? new List<AccountComment>(length) : null;
-            for (int i = 0; i < length; i++)
-            {
-                _comments!.Add(new AccountComment(reader));
-            }
-
-            length = reader.ReadInt();
-            _tags = length > 0 ? new List<AccountTag>(length) : null;
-            for (int i = 0; i < length; i++)
-            {
-                _tags!.Add(new AccountTag(reader));
-            }
-
-            length = reader.ReadInt();
-            _loginIPs = new IPAddress[length];
-            for (int i = 0; i < length; i++)
-            {
-                if (version < 2)
-                {
-                    if (IPAddress.TryParse(reader.ReadString(), out var address))
-                    {
-                        _loginIPs[i] = Utility.Intern(address);
-                    }
-                }
-                else
-                {
-                    _loginIPs[i] = reader.ReadIPAddress();
-                }
-            }
-
-            length = reader.ReadInt();
-            _ipRestrictions = new string[length];
-            for (int i = 0; i < length; i++)
-            {
-                _ipRestrictions[i] = reader.ReadString();
-            }
-
-            _totalGameTime = reader.ReadTimeSpan();
-
-            _email = reader.ReadString();
-
-            Timer.StartTimer(AfterDeserialization);
         }
 
         /// <summary>

@@ -104,11 +104,28 @@ namespace Server
         }
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public int CalcHeight => (Flags & TileFlag.Bridge) != 0 ? _height / 2 : _height;
+        public int CalcHeight => Bridge ? _height / 2 : _height;
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Door
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this[TileFlag.Door];
+            set => this[TileFlag.Door] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Background
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this[TileFlag.Background];
+            set => this[TileFlag.Background] = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Bridge
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Bridge];
             set => this[TileFlag.Bridge] = value;
         }
@@ -116,6 +133,7 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Wall
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Wall];
             set => this[TileFlag.Wall] = value;
         }
@@ -123,13 +141,22 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Window
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Window];
             set => this[TileFlag.Window] = value;
+        }
+
+        public bool ImpassableSurface
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this[TileFlag.Impassable | TileFlag.Surface];
+            set => this[TileFlag.Impassable | TileFlag.Surface] = value;
         }
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Impassable
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Impassable];
             set => this[TileFlag.Impassable] = value;
         }
@@ -137,6 +164,7 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Surface
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Surface];
             set => this[TileFlag.Surface] = value;
         }
@@ -144,6 +172,7 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool Roof
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.Roof];
             set => this[TileFlag.Roof] = value;
         }
@@ -151,8 +180,17 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool LightSource
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[TileFlag.LightSource];
             set => this[TileFlag.LightSource] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool Wet
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this[TileFlag.Wet];
+            set => this[TileFlag.Wet] = value;
         }
 
         public bool this[TileFlag flag]

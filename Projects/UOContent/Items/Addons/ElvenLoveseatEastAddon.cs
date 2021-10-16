@@ -6,8 +6,8 @@ namespace Server.Items
         [Constructible]
         public ElvenLoveseatEastAddon()
         {
-            AddComponent(new AddonComponent(0x3089), 0, 0, 0);
-            AddComponent(new AddonComponent(0x3088), 1, 0, 0);
+            AddComponent(new AddonComponent(0x308A), 0, 0, 0);
+            AddComponent(new AddonComponent(0x308B), 0, -1, 0);
         }
 
         public override BaseAddonDeed Deed => new ElvenLoveseatEastDeed();

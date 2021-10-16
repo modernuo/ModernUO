@@ -86,7 +86,7 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsParsable(Type t) =>
-            IsChar(t) || IsString(t) || IsType(t, OfGuid) ||
+            IsChar(t) || IsType(t, OfGuid) ||
             IsType(t, OfTimeSpan) || IsNumeric(t) || IsDecimal(t) || t.IsDefined(OfParsable, false);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -126,59 +126,59 @@ namespace Server
                 try
                 {
                     constructed = Enum.Parse(type, value ?? "", true);
+                    return null;
                 }
                 catch
                 {
                     return "That is not a valid enumeration member.";
                 }
             }
-            else if (IsType(type, OfType))
+
+            if (IsType(type, OfType))
             {
                 try
                 {
                     constructed = AssemblyHandler.FindTypeByName(value);
 
-                    if (constructed == null)
-                    {
-                        return "No type with that name was found.";
-                    }
+                    return constructed == null ? "No type with that name was found." : null;
                 }
                 catch
                 {
                     return "No type with that name was found.";
                 }
             }
-            else if (value == null)
+
+            if (value == null)
             {
                 constructed = null;
+                return null;
             }
-            else if (value.StartsWithOrdinal("0x") && IsNumeric(type))
+
+            if (IsType(type, OfString))
+            {
+                constructed = value;
+                return null;
+            }
+
+            if (value.StartsWithOrdinal("0x") && IsNumeric(type))
             {
                 try
                 {
                     constructed = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
+                    return null;
                 }
                 catch
                 {
                     return "That is not properly formatted.";
                 }
             }
-            else if (IsParsable(type))
+
+            if (IsParsable(type))
             {
                 try
                 {
                     constructed = Parse(type, value);
-                }
-                catch
-                {
-                    return "That is not properly formatted.";
-                }
-            }
-            else
-            {
-                try
-                {
-                    constructed = Convert.ChangeType(value, type);
+                    return null;
                 }
                 catch
                 {
@@ -186,13 +186,20 @@ namespace Server
                 }
             }
 
-            if (isSerial) // mutate back
+            try
             {
-                constructed = (Serial)(constructed ?? Serial.MinusOne);
-            }
+                constructed = Convert.ChangeType(value, type);
+                if (isSerial) // mutate back
+                {
+                    constructed = (Serial)(constructed ?? Serial.MinusOne);
+                }
 
-            constructed = constructed;
-            return null;
+                return null;
+            }
+            catch
+            {
+                return "That is not properly formatted.";
+            }
         }
     }
 }

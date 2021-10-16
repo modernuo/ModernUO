@@ -12,17 +12,8 @@ namespace Server.Items
 
         public override int BaseMana => 30;
 
-        public override bool CheckSkills(Mobile from)
-        {
-            if (GetSkill(from, SkillName.Ninjitsu) < 50.0)
-            {
-                // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
-                from.SendLocalizedMessage(1063352, "50");
-                return false;
-            }
-
-            return base.CheckSkills(from);
-        }
+        public override bool RequiresSecondarySkill(Mobile from) => true;
+        public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Ninjitsu;
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
@@ -44,8 +35,8 @@ namespace Server.Items
 
             timer = new DualWieldTimer(
                 attacker,
-                (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0)
-            ); // 20-50 % increase
+                (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0) // 20-50 % increase
+            );
 
             timer.Start();
             Registry.Add(attacker, timer);
@@ -55,8 +46,7 @@ namespace Server.Items
         {
             private readonly Mobile m_Owner;
 
-            public DualWieldTimer(Mobile owner, int bonusSwingSpeed)
-                : base(TimeSpan.FromSeconds(6.0))
+            public DualWieldTimer(Mobile owner, int bonusSwingSpeed) : base(TimeSpan.FromSeconds(6.0))
             {
                 m_Owner = owner;
                 BonusSwingSpeed = bonusSwingSpeed;

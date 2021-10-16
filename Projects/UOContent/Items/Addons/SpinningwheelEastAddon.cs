@@ -2,26 +2,20 @@ using System;
 
 namespace Server.Items
 {
-    public delegate void SpinCallback(ISpinningWheel sender, Mobile from, int hue);
-
-    public interface ISpinningWheel
-    {
-        bool Spinning { get; }
-        void BeginSpin(SpinCallback callback, Mobile from, int hue);
-    }
-
     [Serializable(0, false)]
-    public partial class SpinningwheelEastAddon : BaseAddon, ISpinningWheel
+    [TypeAlias("Server.Items.SpinningwheelEastAddon")]
+    public partial class SpinningWheelEastAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
 
         [Constructible]
-        public SpinningwheelEastAddon()
+        public SpinningWheelEastAddon()
         {
             AddComponent(new AddonComponent(0x1019), 0, 0, 0);
         }
 
-        public override BaseAddonDeed Deed => new SpinningwheelEastDeed();
+        public override int LabelNumber => 1024117; // spinning wheel
+        public override BaseAddonDeed Deed => new SpinningWheelEastDeed();
 
         public bool Spinning => m_Timer != null;
 
@@ -84,9 +78,9 @@ namespace Server.Items
             private readonly SpinCallback m_Callback;
             private readonly Mobile m_From;
             private readonly int m_Hue;
-            private readonly SpinningwheelEastAddon m_Wheel;
+            private readonly SpinningWheelEastAddon m_Wheel;
 
-            public SpinTimer(SpinningwheelEastAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
+            public SpinTimer(SpinningWheelEastAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
                 TimeSpan.FromSeconds(3.0)
             )
             {
@@ -104,14 +98,15 @@ namespace Server.Items
     }
 
     [Serializable(0, false)]
-    public partial class SpinningwheelEastDeed : BaseAddonDeed
+    [TypeAlias("Server.Items.SpinningwheelEastDeed")]
+    public partial class SpinningWheelEastDeed : BaseAddonDeed
     {
         [Constructible]
-        public SpinningwheelEastDeed()
+        public SpinningWheelEastDeed()
         {
         }
 
-        public override BaseAddon Addon => new SpinningwheelEastAddon();
-        public override int LabelNumber => 1044341; // spining wheel (east)
+        public override BaseAddon Addon => new SpinningWheelEastAddon();
+        public override int LabelNumber => 1044341; // spinning wheel (east)
     }
 }

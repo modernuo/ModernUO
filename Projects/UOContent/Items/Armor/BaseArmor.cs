@@ -114,7 +114,11 @@ namespace Server.Items
         private ArmorProtectionLevel _protection = ArmorProtectionLevel.Regular;
 
         // Field 14
-        private CraftResource _resource;
+        [SerializableField(14, "private", "private")]
+        private CraftResource _rawResource;
+
+        [SerializableFieldSaveFlag(14)]
+        private bool ShouldSerializeResource() => _rawResource != DefaultResource;
 
         // Field 15
         private int _armorBase = -1;
@@ -163,8 +167,8 @@ namespace Server.Items
         {
             _crafter = null;
 
-            _resource = DefaultResource;
-            Hue = CraftResources.GetHue(_resource);
+            _rawResource = DefaultResource;
+            Hue = CraftResources.GetHue(_rawResource);
 
             _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
@@ -268,40 +272,30 @@ namespace Server.Items
         [SerializableFieldSaveFlag(13)]
         private bool ShouldSerializeProtectionLevel() => _protection != ArmorProtectionLevel.Regular;
 
-        [SerializableField(14)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => _resource;
+            get => _rawResource;
             set
             {
-                if (_resource != value)
+                if (_rawResource != value)
                 {
-                    if (!World.Loading)
-                    {
-                        UnscaleDurability();
-                    }
+                    UnscaleDurability();
 
-
-                    _resource = value;
+                    RawResource = value;
 
                     if (CraftItem.RetainsColor(GetType()))
                     {
-                        Hue = CraftResources.GetHue(_resource);
+                        Hue = CraftResources.GetHue(_rawResource);
                     }
 
                     Invalidate();
                     (Parent as Mobile)?.UpdateResistances();
-                    if (!World.Loading)
-                    {
-                        ScaleDurability();
-                    }
+
+                    ScaleDurability();
                 }
             }
         }
-
-        [SerializableFieldSaveFlag(14)]
-        private bool ShouldSerializeResource() => _resource != DefaultResource;
 
         [SerializableFieldDefault(14)]
         private CraftResource ResourceDefaultValue() => DefaultResource;
@@ -339,7 +333,7 @@ namespace Server.Items
                     ar += 10 + 5 * (int)_protection;
                 }
 
-                ar += _resource switch
+                ar += _rawResource switch
                 {
                     CraftResource.DullCopper    => 2,
                     CraftResource.ShadowIron    => 4,
@@ -557,7 +551,6 @@ namespace Server.Items
 
         public virtual CraftResource DefaultResource => CraftResource.Iron;
 
-
         [Hue]
         [CommandProperty(AccessLevel.GameMaster)]
         public override int Hue
@@ -681,7 +674,7 @@ namespace Server.Items
             {
                 try
                 {
-                    var res = CraftResources.GetInfo(_resource).ResourceTypes[0].CreateInstance<Item>();
+                    var res = CraftResources.GetInfo(_rawResource).ResourceTypes[0].CreateInstance<Item>();
 
                     ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
                     return true;
@@ -887,7 +880,7 @@ namespace Server.Items
         }
 
         public CraftAttributeInfo GetResourceAttrs() =>
-            CraftResources.GetInfo(_resource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
+            CraftResources.GetInfo(_rawResource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
 
         public int GetProtOffset()
         {
@@ -919,7 +912,7 @@ namespace Server.Items
             {
                 bonus += ArmorAttributes.DurabilityBonus;
 
-                var resInfo = CraftResources.GetInfo(_resource);
+                var resInfo = CraftResources.GetInfo(_rawResource);
                 CraftAttributeInfo attrInfo = null;
 
                 if (resInfo != null)
@@ -992,7 +985,7 @@ namespace Server.Items
 
             var v = ArmorAttributes.LowerStatReq;
 
-            var info = CraftResources.GetInfo(_resource);
+            var info = CraftResources.GetInfo(_rawResource);
 
             var attrInfo = info?.AttributeInfo;
 
@@ -1051,9 +1044,9 @@ namespace Server.Items
                 SkillBonuses.AddTo(m);
             }
 
-            if (_resource == CraftResource.None)
+            if (_rawResource == CraftResource.None)
             {
-                _resource = DefaultResource;
+                _rawResource = DefaultResource;
             }
 
             var strBonus = ComputeStatBonus(StatType.Str);
@@ -1164,7 +1157,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, OldSaveFlag.Resource))
             {
-                _resource = (CraftResource)reader.ReadEncodedInt();
+                _rawResource = (CraftResource)reader.ReadEncodedInt();
             }
 
             if (GetSaveFlag(flags, OldSaveFlag.BaseArmor))
@@ -1370,7 +1363,7 @@ namespace Server.Items
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
-            var oreType = _resource switch
+            var oreType = _rawResource switch
             {
                 CraftResource.DullCopper    => 1053108,
                 CraftResource.ShadowIron    => 1053107,
@@ -1430,7 +1423,7 @@ namespace Server.Items
             return Attributes.SpellChanneling != 0;
         }
 
-        public virtual int GetLuckBonus() => CraftResources.GetInfo(_resource)?.AttributeInfo?.ArmorLuck ?? 0;
+        public virtual int GetLuckBonus() => CraftResources.GetInfo(_rawResource)?.AttributeInfo?.ArmorLuck ?? 0;
 
         public override void GetProperties(ObjectPropertyList list)
         {

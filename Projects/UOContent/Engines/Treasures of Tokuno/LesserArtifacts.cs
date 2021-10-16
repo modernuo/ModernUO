@@ -783,7 +783,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2811, 0x2812)]
+    [Furniture]
+    [Flippable(0x2811, 0x2812)]
     public class ChestOfHeirlooms : LockableContainer
     {
         [Constructible]

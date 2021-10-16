@@ -20,8 +20,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Network;
 using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Runtime.InteropServices;
 using Server.Accounting;
 using Server.Diagnostics;
 using Server.Gumps;
@@ -43,12 +44,15 @@ namespace Server.Network
 
         private const int RecvPipeSize = 1024 * 64;
         private const int SendPipeSize = 1024 * 256;
-        private static int GumpCap = 512;
-        private static int HuePickerCap = 512;
-        private static int MenuCap = 512;
-        private static int PacketPerSecondThreshold = 3000;
+        private const int GumpCap = 512;
+        private const int HuePickerCap = 512;
+        private const int MenuCap = 512;
+        private const int PacketPerSecondThreshold = 3000;
 
+        private static GCHandle[] _polledStates = new GCHandle[2048];
+        private static readonly IPollGroup _pollGroup = PollGroup.Create();
         private static readonly Queue<NetState> FlushPending = new(2048);
+        private static readonly Queue<NetState> FlushedPartials = new(2048);
         private static readonly ConcurrentQueue<NetState> Disposed = new();
 
         public static NetStateCreatedCallback CreatedCallback { get; set; }
@@ -56,7 +60,7 @@ namespace Server.Network
         private readonly string _toString;
         private ClientVersion _version;
         private long _nextActivityCheck;
-        private int _running;
+        private bool _running = true;
         private volatile DecodePacket _packetDecoder;
         private volatile EncodePacket _packetEncoder;
         private bool _flushQueued;
@@ -66,14 +70,12 @@ namespace Server.Network
 
         internal int _authId;
         internal int _seed;
-        internal ParserState _parserState = ParserState.Uninitialized;
-        internal ProtocolState _protocolState = ProtocolState.Uninitialized;
-        internal RecvState _recvState = RecvState.Uninitialized;
-        internal SendState _sendState = SendState.Uninitialized;
+        internal ParserState _parserState = ParserState.AwaitingNextPacket;
+        internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
+        internal GCHandle _handle;
 
         internal enum ParserState
         {
-            Uninitialized,
             AwaitingNextPacket,
             AwaitingPartialPacket,
             ProcessingPacket,
@@ -83,7 +85,6 @@ namespace Server.Network
 
         internal enum ProtocolState
         {
-            Uninitialized,
             AwaitingSeed, // Based on the way the seed arrives, we know if this is a login server or a game server connection
 
             LoginServer_AwaitingLogin,
@@ -96,38 +97,12 @@ namespace Server.Network
             Error
         }
 
-        internal enum RecvState
-        {
-            Uninitialized,
-            AwaitingMemory,
-            AwaitingRecv,
-            DataReceived,
-            Exited,
-        }
-
-        internal enum SendState
-        {
-            Uninitialized,
-            AwaitingData,
-            Sending,
-            SendCompleted,
-            Exited,
-        }
-
-        public static void Configure()
-        {
-            GumpCap = ServerConfiguration.GetOrUpdateSetting("netstate.gumpCap", GumpCap);
-            HuePickerCap = ServerConfiguration.GetOrUpdateSetting("netstate.huePickerCap", HuePickerCap);
-            MenuCap = ServerConfiguration.GetOrUpdateSetting("netstate.menuCap", MenuCap);
-            PacketPerSecondThreshold = ServerConfiguration.GetOrUpdateSetting("netstate.packetsPerSecondThreshold", PacketPerSecondThreshold);
-        }
-
         public static void Initialize()
         {
             Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
         }
 
-        public NetState(ISocket connection)
+        public NetState(Socket connection)
         {
             Connection = connection;
             Seeded = false;
@@ -138,6 +113,7 @@ namespace Server.Network
             RecvPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(RecvPipeSize));
             SendPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(SendPipeSize));
             _nextActivityCheck = Core.TickCount + 30000;
+            ConnectedOn = Core.Now;
 
             try
             {
@@ -151,7 +127,17 @@ namespace Server.Network
                 _toString = "(error)";
             }
 
-            ConnectedOn = Core.Now;
+            _handle = GCHandle.Alloc(this);
+
+            try
+            {
+                _pollGroup.Add(connection, _handle);
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex);
+                Disconnect("Unable to add socket to poll group");
+            }
 
             CreatedCallback?.Invoke(this);
         }
@@ -174,17 +160,13 @@ namespace Server.Network
             set => _packetEncoder = value;
         }
 
+        public int CurrentPacket { get; internal set; }
+
         public bool SentFirstPacket { get; set; }
 
         public bool BlockAllPackets { get; set; }
 
         public List<SecureTrade> Trades { get; }
-
-        public bool Running
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _running == 1;
-        }
 
         public bool Seeded { get; set; }
 
@@ -192,7 +174,7 @@ namespace Server.Network
 
         public Pipe<byte> SendPipe { get; }
 
-        public ISocket Connection { get; }
+        public Socket Connection { get; }
 
         public bool CompressionEnabled { get; set; }
 
@@ -524,36 +506,21 @@ namespace Server.Network
             }
         }
 
-        internal void Start()
+        public void HandleReceive()
         {
-            if (Interlocked.CompareExchange(ref _running, 1, 0) == 1 || Connection == null)
+            if (!_running)
             {
                 return;
             }
 
-            _parserState = ParserState.AwaitingNextPacket;
-            _protocolState = ProtocolState.AwaitingSeed;
-
-            ThreadPool.UnsafeQueueUserWorkItem(RecvTask, null);
-            ThreadPool.UnsafeQueueUserWorkItem(SendTask, null);
-        }
-
-        // Return true if there was any data to be processed. False otherwise. Used for idle detection.
-        public bool HandleReceive()
-        {
-            if (!Running)
-            {
-                return false;
-            }
-
-            bool active = false;
+            ReceiveData();
 
             var reader = RecvPipe.Reader;
 
             try
             {
                 // Process as many packets as we can synchronously
-                while (Running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error)
+                while (_running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error)
                 {
                     var result = reader.TryRead();
                     var length = result.Length;
@@ -562,9 +529,6 @@ namespace Server.Network
                     {
                         break;
                     }
-
-                    // There was at least some data found, so it's not idle.
-                    active = true;
 
                     var packetReader = new CircularBufferReader(result.Buffer);
                     var packetId = packetReader.ReadByte();
@@ -580,12 +544,6 @@ namespace Server.Network
                     {
                         switch (_protocolState)
                         {
-                            case ProtocolState.Uninitialized:
-                                {
-                                    HandleError(packetId, packetLength);
-                                    return true;
-                                }
-
                             case ProtocolState.AwaitingSeed:
                                 {
                                     if (packetId == 0xEF)
@@ -604,7 +562,7 @@ namespace Server.Network
                                         if (seed == 0)
                                         {
                                             HandleError(0, 0);
-                                            return true;
+                                            return;
                                         }
 
                                         _seed = seed;
@@ -626,7 +584,7 @@ namespace Server.Network
                                     {
                                         LogInfo("Possible encrypted client detected, disconnecting...");
                                         HandleError(packetId, packetLength);
-                                        return true;
+                                        return;
                                     }
 
                                     _parserState = ParserState.ProcessingPacket;
@@ -643,7 +601,7 @@ namespace Server.Network
                                     if (packetId != 0xA0)
                                     {
                                         HandleError(packetId, packetLength);
-                                        return true;
+                                        return;
                                     }
 
                                     _parserState = ParserState.ProcessingPacket;
@@ -665,7 +623,7 @@ namespace Server.Network
                                     _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.AwaitingSeed;
 #endif
-                                    return true;
+                                    return;
                                 }
 
                             case ProtocolState.GameServer_AwaitingGameServerLogin:
@@ -673,7 +631,7 @@ namespace Server.Network
                                     if (packetId != 0x91 && packetId != 0x80)
                                     {
                                         HandleError(packetId, packetLength);
-                                        return true;
+                                        return;
                                     }
 
                                     _parserState = ParserState.ProcessingPacket;
@@ -719,8 +677,6 @@ namespace Server.Network
                 TraceException(ex);
                 Disconnect("Exception during HandleReceive");
             }
-
-            return active;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -811,83 +767,56 @@ namespace Server.Network
             return ParserState.AwaitingNextPacket;
         }
 
-        private async void SendTask(object state)
+        private bool Flush()
         {
+            _flushQueued = false;
+
+            if (Connection == null)
+            {
+                return true;
+            }
+
+            SendPipe.Writer.Flush();
+
             var reader = SendPipe.Reader;
+            var result = reader.TryRead();
+
+            if (result.IsClosed || result.Length == 0)
+            {
+                return true;
+            }
+
+            var bytesWritten = 0;
 
             try
             {
-                while (Running)
-                {
-                    _sendState = SendState.AwaitingData;
-
-                    var result = await reader.Read();
-
-                    if (result.IsClosed || !Running)
-                    {
-                        break;
-                    }
-
-                    if (result.Length <= 0)
-                    {
-                        continue;
-                    }
-
-                    _sendState = SendState.Sending;
-
-                    var bytesWritten = await Connection.SendAsync(result.Buffer, SocketFlags.None);
-
-                    _sendState = SendState.SendCompleted;
-
-                    if (bytesWritten > 0)
-                    {
-                        _nextActivityCheck = Core.TickCount + 90000;
-                        reader.Advance((uint)bytesWritten);
-                    }
-                }
-
-                // Grab any remaining data and flush it
-                var data = reader.TryRead();
-
-                if (data.Length > 0)
-                {
-                    _sendState = SendState.Sending;
-                    Connection.Send(data.Buffer, SocketFlags.None);
-
-                    reader.Advance((uint)data.Length);
-                }
+                bytesWritten = Connection.Send(result.Buffer, SocketFlags.None);
             }
             catch (SocketException ex)
             {
-                // If the user closes the connection (or the recv side does)
-                // between the check for m_Running above and the call to SendAsync,
-                // we can still get a socket exception here. That's ok.
+                // Socket exceptions are generally ok, just spammy
 #if DEBUG
                 Console.WriteLine(ex);
 #endif
+
+                Disconnect(string.Empty);
             }
             catch (Exception ex)
             {
 #if DEBUG
                 Console.WriteLine(ex);
 #endif
+                Disconnect($"Disconnected with error: {ex}");
                 TraceException(ex);
             }
-            finally
-            {
-                try
-                {
-                    Connection.Shutdown(SocketShutdown.Both);
-                    Connection.Close();
-                }
-                catch (Exception ex)
-                {
-                    TraceException(ex);
-                }
 
-                Disconnect("Exiting SendTask.");
-                _sendState = SendState.Exited;
+            if (bytesWritten > 0)
+            {
+                _nextActivityCheck = Core.TickCount + 90000;
+                reader.Advance((uint)bytesWritten);
             }
+
+            return bytesWritten == result.Length;
         }
 
         private void DecodePacket(ArraySegment<byte>[] buffer, ref int length)
@@ -896,47 +825,21 @@ namespace Server.Network
             _packetDecoder?.Invoke(cBuffer, ref length);
         }
 
-        private async void RecvTask(object state)
+        private void ReceiveData()
         {
-            var socket = Connection;
             var writer = RecvPipe.Writer;
+            var result = writer.TryGetMemory();
+
+            if (result.IsClosed || result.Length == 0)
+            {
+                return;
+            }
+
+            var bytesWritten = 0;
 
             try
             {
-                while (Running)
-                {
-                    _recvState = RecvState.AwaitingMemory;
-                    var result = await writer.GetMemory();
-
-                    if (result.IsClosed || !Running)
-                    {
-                        break;
-                    }
-
-                    if (result.Length <= 0)
-                    {
-                        continue;
-                    }
-
-                    _recvState = RecvState.AwaitingRecv;
-
-                    var bytesWritten = await socket.ReceiveAsync(result.Buffer, SocketFlags.None);
-                    if (bytesWritten <= 0)
-                    {
-                        break;
-                    }
-
-                    _recvState = RecvState.DataReceived;
-
-                    DecodePacket(result.Buffer, ref bytesWritten);
-
-                    writer.Advance((uint)bytesWritten);
-                    _nextActivityCheck = Core.TickCount + 90000;
-
-                    // No need to flush
-                }
-
-                Disconnect(string.Empty);
+                bytesWritten = Connection.Receive(result.Buffer, SocketFlags.None);
             }
             catch (SocketException ex)
             {
@@ -953,38 +856,20 @@ namespace Server.Network
 #if DEBUG
                 Console.WriteLine(ex);
 #endif
-                Disconnect("RecvTask exited unexpectedly.");
+                Disconnect($"Disconnected with error: {ex}");
                 TraceException(ex);
             }
-            finally
-            {
-                _recvState = RecvState.Exited;
-            }
-        }
 
-        public static int HandleAllReceives()
-        {
-            int count = 0;
-
-            foreach (var ns in TcpServer.Instances)
+            if (bytesWritten <= 0)
             {
-                if (ns.HandleReceive())
-                {
-                    count++;
-                }
+                Disconnect(string.Empty);
+                return;
             }
 
-            return count;
-        }
+            DecodePacket(result.Buffer, ref bytesWritten);
 
-        public void Flush()
-        {
-            if (Connection != null)
-            {
-                SendPipe.Writer.Flush();
-            }
-
-            _flushQueued = false;
+            writer.Advance((uint)bytesWritten);
+            _nextActivityCheck = Core.TickCount + 90000;
         }
 
         public static void FlushAll()
@@ -995,22 +880,38 @@ namespace Server.Network
             }
         }
 
-        public static int Slice()
+        public static void Slice()
         {
-            int count = 0;
-            while (FlushPending.Count != 0)
+            int count = _pollGroup.Poll(ref _polledStates);
+
+            if (count > 0)
             {
-                FlushPending.Dequeue()?.Flush();
-                count++;
+                for (int i = 0; i < count; i++)
+                {
+                    (_polledStates[i].Target as NetState)?.HandleReceive();
+                    _polledStates[i] = default;
+                }
             }
 
+            while (FlushPending.TryDequeue(out var ns))
+            {
+                if (!ns.Flush())
+                {
+                    // Incomplete data, so we need to requeue
+                    FlushedPartials.Enqueue(ns);
+                }
+            }
+
+            var hasDisposes = !Disposed.IsEmpty;
             while (Disposed.TryDequeue(out var ns))
             {
-                TcpServer.Instances.Remove(ns);
                 ns.Dispose();
             }
 
-            return count;
+            if (hasDisposes)
+            {
+                _pollGroup.Poll(ref _polledStates);
+            }
         }
 
         public void CheckAlive(long curTicks)
@@ -1064,10 +965,12 @@ namespace Server.Network
 
         public void Disconnect(string reason)
         {
-            if (Interlocked.CompareExchange(ref _running, 0, 1) == 0)
+            if (!_running)
             {
                 return;
             }
+
+            _running = false;
 
             try
             {
@@ -1082,7 +985,6 @@ namespace Server.Network
             }
 
             _disconnectReason = reason;
-
             Disposed.Enqueue(this);
         }
 
@@ -1114,6 +1016,11 @@ namespace Server.Network
         {
             TraceDisconnect(_disconnectReason, _toString);
 
+            if (_running)
+            {
+                throw new Exception("Disconnected a NetState that is still running.");
+            }
+
 #if THREADGUARD
             if (Thread.CurrentThread != Core.Thread)
             {
@@ -1125,8 +1032,18 @@ namespace Server.Network
             }
 #endif
 
-            RecvPipe.Writer.Close();
-            SendPipe.Writer.Close();
+            TcpServer.Instances.Remove(this);
+            try
+            {
+                _pollGroup.Remove(Connection);
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex);
+            }
+
+            Connection.Close();
+            _handle.Free();
 
             var m = Mobile;
             Mobile = null;

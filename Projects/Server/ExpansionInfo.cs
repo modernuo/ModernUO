@@ -1,4 +1,23 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: ExpansionInfo.cs                                                *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json.Serialization;
+using Server.Json;
 
 namespace Server
 {
@@ -139,107 +158,63 @@ namespace Server
 
     public class ExpansionInfo
     {
+        public static string GetEraFolder(string parentDirectory)
+        {
+            var expansion = Core.Expansion;
+            var folders = Directory.GetDirectories(
+                parentDirectory,
+                "*",
+                new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
+            );
+
+            while (expansion-- >= 0)
+            {
+                foreach (var folder in folders)
+                {
+                    var di = new DirectoryInfo(folder);
+                    if (di.Name.InsensitiveEquals(expansion.ToString()))
+                    {
+                        return folder;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         static ExpansionInfo()
         {
-            Table = new[]
+            var path = Path.Combine(Core.BaseDirectory, "Data/expansion.json");
+            var expansions = JsonConfig.Deserialize<List<ExpansionConfig>>(path);
+
+            Table = new ExpansionInfo[expansions.Count];
+
+            for (var i = 0; i < expansions.Count; i++)
             {
-                new ExpansionInfo(
-                    0,
-                    "None",
-                    ClientFlags.None,
-                    FeatureFlags.ExpansionNone,
-                    CharacterListFlags.ExpansionNone,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    1,
-                    "The Second Age",
-                    ClientFlags.Felucca,
-                    FeatureFlags.ExpansionT2A,
-                    CharacterListFlags.ExpansionT2A,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    2,
-                    "Renaissance",
-                    ClientFlags.Trammel,
-                    FeatureFlags.ExpansionUOR,
-                    CharacterListFlags.ExpansionUOR,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    3,
-                    "Third Dawn",
-                    ClientFlags.Ilshenar,
-                    FeatureFlags.ExpansionUOTD,
-                    CharacterListFlags.ExpansionUOTD,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    4,
-                    "Blackthorn's Revenge",
-                    ClientFlags.Ilshenar,
-                    FeatureFlags.ExpansionLBR,
-                    CharacterListFlags.ExpansionLBR,
-                    HousingFlags.None
-                ),
-                new ExpansionInfo(
-                    5,
-                    "Age of Shadows",
-                    ClientFlags.Malas,
-                    FeatureFlags.ExpansionAOS,
-                    CharacterListFlags.ExpansionAOS,
-                    HousingFlags.HousingAOS
-                ),
-                new ExpansionInfo(
-                    6,
-                    "Samurai Empire",
-                    ClientFlags.Tokuno,
-                    FeatureFlags.ExpansionSE,
-                    CharacterListFlags.ExpansionSE,
-                    HousingFlags.HousingSE
-                ),
-                new ExpansionInfo(
-                    7,
-                    "Mondain's Legacy",
-                    new ClientVersion("5.0.0a"),
-                    FeatureFlags.ExpansionML,
-                    CharacterListFlags.ExpansionML,
-                    HousingFlags.HousingML
-                ),
-                new ExpansionInfo(
-                    8,
-                    "Stygian Abyss",
-                    ClientFlags.TerMur,
-                    FeatureFlags.ExpansionSA,
-                    CharacterListFlags.ExpansionSA,
-                    HousingFlags.HousingSA
-                ),
-                new ExpansionInfo(
-                    9,
-                    "High Seas",
-                    new ClientVersion("7.0.9.0"),
-                    FeatureFlags.ExpansionHS,
-                    CharacterListFlags.ExpansionHS,
-                    HousingFlags.HousingHS
-                ),
-                new ExpansionInfo(
-                    10,
-                    "Time of Legends",
-                    new ClientVersion("7.0.45.65"),
-                    FeatureFlags.ExpansionTOL,
-                    CharacterListFlags.ExpansionTOL,
-                    HousingFlags.HousingTOL
-                ),
-                new ExpansionInfo(
-                    11,
-                    "Endless Journey",
-                    new ClientVersion("7.0.61.0"),
-                    FeatureFlags.ExpansionEJ,
-                    CharacterListFlags.ExpansionEJ,
-                    HousingFlags.HousingEJ
-                )
-            };
+                var expansion = expansions[i];
+                if (expansion.ClientVersion != null)
+                {
+                    Table[i] = new ExpansionInfo(
+                        i,
+                        expansion.Name,
+                        expansion.ClientVersion,
+                        expansion.FeatureFlags,
+                        expansion.CharacterListFlags,
+                        expansion.HousingFlags
+                    );
+                }
+                else
+                {
+                    Table[i] = new ExpansionInfo(
+                        i,
+                        expansion.Name,
+                        expansion.ClientFlags ?? ClientFlags.None,
+                        expansion.FeatureFlags,
+                        expansion.CharacterListFlags,
+                        expansion.HousingFlags
+                    );
+                }
+            }
         }
 
         public ExpansionInfo(
@@ -330,5 +305,23 @@ namespace Server
         }
 
         public override string ToString() => Name;
+    }
+
+    public record ExpansionConfig
+    {
+        public string Name { get; init; }
+
+        public ClientVersion? ClientVersion { get; init; }
+
+        public ClientFlags? ClientFlags { get; init; }
+
+        [JsonConverter(typeof(FlagsConverter<FeatureFlags>))]
+        public FeatureFlags FeatureFlags { get; init; }
+
+        [JsonConverter(typeof(FlagsConverter<CharacterListFlags>))]
+        public CharacterListFlags CharacterListFlags { get; init; }
+
+        [JsonConverter(typeof(FlagsConverter<HousingFlags>))]
+        public HousingFlags HousingFlags { get; init; }
     }
 }

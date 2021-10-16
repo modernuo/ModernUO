@@ -16,28 +16,9 @@ namespace Server.Items
         {
         }
 
-        public override int DefaultMaxWeight
-        {
-            get
-            {
-                if (IsSecure)
-                {
-                    return 0;
-                }
+        public override int DefaultMaxWeight => IsSecure ? 0 : base.DefaultMaxWeight;
 
-                return base.DefaultMaxWeight;
-            }
-        }
-
-        public override bool IsAccessibleTo(Mobile m)
-        {
-            if (!BaseHouse.CheckAccessible(m, this))
-            {
-                return false;
-            }
-
-            return base.IsAccessibleTo(m);
-        }
+        public override bool IsAccessibleTo(Mobile m) => BaseHouse.CheckAccessible(m, this) && base.IsAccessibleTo(m);
 
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
         {
@@ -597,7 +578,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x9AA, 0xE7D)]
+    [Furniture]
+    [Flippable(0x9AA, 0xE7D)]
     public class WoodenBox : LockableContainer
     {
         [Constructible]
@@ -622,7 +604,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x9A9, 0xE7E)]
+    [Furniture]
+    [Flippable(0x9A9, 0xE7E)]
     public class SmallCrate : LockableContainer
     {
         [Constructible]
@@ -652,7 +635,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xE3F, 0xE3E)]
+    [Furniture]
+    [Flippable(0xE3F, 0xE3E)]
     public class MediumCrate : LockableContainer
     {
         [Constructible]
@@ -682,7 +666,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xE3D, 0xE3C)]
+    [Furniture]
+    [Flippable(0xE3D, 0xE3C)]
     public class LargeCrate : LockableContainer
     {
         [Constructible]
@@ -712,7 +697,7 @@ namespace Server.Items
         }
     }
 
-    [DynamicFliping, Flippable(0x9A8, 0xE80)]
+    [DynamicFlipping, Flippable(0x9A8, 0xE80)]
     public class MetalBox : LockableContainer
     {
         [Constructible]
@@ -744,7 +729,7 @@ namespace Server.Items
         }
     }
 
-    [DynamicFliping, Flippable(0x9AB, 0xE7C)]
+    [DynamicFlipping, Flippable(0x9AB, 0xE7C)]
     public class MetalChest : LockableContainer
     {
         [Constructible]
@@ -776,7 +761,7 @@ namespace Server.Items
         }
     }
 
-    [DynamicFliping, Flippable(0xE41, 0xE40)]
+    [DynamicFlipping, Flippable(0xE41, 0xE40)]
     public class MetalGoldenChest : LockableContainer
     {
         [Constructible]
@@ -808,7 +793,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0xe43, 0xe42)]
+    [Furniture]
+    [Flippable(0xe43, 0xe42)]
     public class WoodenChest : LockableContainer
     {
         [Constructible]
@@ -838,7 +824,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x280B, 0x280C)]
+    [Furniture]
+    [Flippable(0x280B, 0x280C)]
     public class PlainWoodenChest : LockableContainer
     {
         [Constructible]
@@ -870,7 +857,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x280D, 0x280E)]
+    [Furniture]
+    [Flippable(0x280D, 0x280E)]
     public class OrnateWoodenChest : LockableContainer
     {
         [Constructible]
@@ -902,7 +890,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x280F, 0x2810)]
+    [Furniture]
+    [Flippable(0x280F, 0x2810)]
     public class GildedWoodenChest : LockableContainer
     {
         [Constructible]
@@ -934,7 +923,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2811, 0x2812)]
+    [Furniture]
+    [Flippable(0x2811, 0x2812)]
     public class WoodenFootLocker : LockableContainer
     {
         [Constructible]
@@ -969,7 +959,8 @@ namespace Server.Items
         }
     }
 
-    [Furniture, Flippable(0x2813, 0x2814)]
+    [Furniture]
+    [Flippable(0x2813, 0x2814)]
     public class FinishedWoodenChest : LockableContainer
     {
         [Constructible]
@@ -998,6 +989,28 @@ namespace Server.Items
             {
                 Weight = -1;
             }
+        }
+    }
+
+    [Furniture]
+    [Serializable(0)]
+    [Flippable(0x2DF1, 0x2DF2)]
+    public partial class RarewoodChest : LockableContainer
+    {
+        [Constructible]
+        public RarewoodChest() : base(0x2DF1)
+        {
+        }
+    }
+
+    [Furniture]
+    [Serializable(0)]
+    [Flippable(0x2DF3, 0x2DF4)]
+    public partial class DecorativeBox : LockableContainer
+    {
+        [Constructible]
+        public DecorativeBox() : base(0x2DF4)
+        {
         }
     }
 }

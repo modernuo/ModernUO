@@ -3,17 +3,19 @@ using System;
 namespace Server.Items
 {
     [Serializable(0)]
-    public partial class ElvenSpinningwheelSouthAddon : BaseAddon, ISpinningWheel
+    [TypeAlias("Server.Items.ElvenSpinningwheelSouthAddon")]
+    public partial class ElvenSpinningWheelSouthAddon : BaseAddon, ISpinningWheel
     {
         private Timer m_Timer;
 
         [Constructible]
-        public ElvenSpinningwheelSouthAddon()
+        public ElvenSpinningWheelSouthAddon()
         {
-            AddComponent(new AddonComponent(0x2DDA), 0, 0, 0);
+            AddComponent(new AddonComponent(0x2E3F), 0, 0, 0);
         }
 
-        public override BaseAddonDeed Deed => new ElvenSpinningwheelSouthDeed();
+        public override int LabelNumber => 1031737; // elven spinning wheel
+        public override BaseAddonDeed Deed => new ElvenSpinningWheelSouthDeed();
 
         public bool Spinning => m_Timer != null;
 
@@ -26,11 +28,9 @@ namespace Server.Items
             {
                 switch (c.ItemID)
                 {
-                    case 0x1015:
-                    case 0x1019:
-                    case 0x101C:
-                    case 0x10A4:
-                        ++c.ItemID;
+                    case 0x2E3D:
+                    case 0x2E3F:
+                        --c.ItemID;
                         break;
                 }
             }
@@ -40,11 +40,9 @@ namespace Server.Items
         {
             switch (c.ItemID)
             {
-                case 0x1016:
-                case 0x101A:
-                case 0x101D:
-                case 0x10A5:
-                    --c.ItemID;
+                case 0x2E3C:
+                case 0x2E3E:
+                    ++c.ItemID;
                     break;
             }
         }
@@ -52,18 +50,15 @@ namespace Server.Items
         public void EndSpin(SpinCallback callback, Mobile from, int hue)
         {
             m_Timer?.Stop();
-
             m_Timer = null;
 
             foreach (var c in Components)
             {
                 switch (c.ItemID)
                 {
-                    case 0x1016:
-                    case 0x101A:
-                    case 0x101D:
-                    case 0x10A5:
-                        --c.ItemID;
+                    case 0x2E3C:
+                    case 0x2E3E:
+                        ++c.ItemID;
                         break;
                 }
             }
@@ -76,9 +71,9 @@ namespace Server.Items
             private readonly SpinCallback m_Callback;
             private readonly Mobile m_From;
             private readonly int m_Hue;
-            private readonly ElvenSpinningwheelSouthAddon m_Wheel;
+            private readonly ElvenSpinningWheelSouthAddon m_Wheel;
 
-            public SpinTimer(ElvenSpinningwheelSouthAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
+            public SpinTimer(ElvenSpinningWheelSouthAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
                 TimeSpan.FromSeconds(3.0)
             )
             {
@@ -96,14 +91,15 @@ namespace Server.Items
     }
 
     [Serializable(0)]
-    public partial class ElvenSpinningwheelSouthDeed : BaseAddonDeed
+    [TypeAlias("Server.Items.ElvenSpinningwheelSouthDeed")]
+    public partial class ElvenSpinningWheelSouthDeed : BaseAddonDeed
     {
         [Constructible]
-        public ElvenSpinningwheelSouthDeed()
+        public ElvenSpinningWheelSouthDeed()
         {
         }
 
-        public override BaseAddon Addon => new ElvenSpinningwheelSouthAddon();
-        public override int LabelNumber => 1072878; // spinning wheel (south)
+        public override BaseAddon Addon => new ElvenSpinningWheelSouthAddon();
+        public override int LabelNumber => 1072878; // elven spinning wheel (south)
     }
 }

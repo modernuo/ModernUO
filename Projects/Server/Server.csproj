@@ -12,40 +12,31 @@
         <Version>0.0.0</Version>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
-        <Message Text="Deleting source generated files..." />
-        <Delete Files="Generated\**" ContinueOnError="true" />
         <Message Text="Removing distribution files..." />
-        <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Serilog.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Serilog.Sinks.Async.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Serilog.Sinks.Console.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
-        <Delete Files="Generated\**\*" ContinueOnError="true" />
-        <RemoveDir Directories="Generated" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\PollGroup.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ref\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.Sinks.Async.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.Sinks.Console.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\wepoll.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
+        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.0" />
+        <PackageReference Include="PollGroup" Version="1.1.0" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
-            <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-            <OutputItemType>Analyzer</OutputItemType>
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <PrivateAssets>all</PrivateAssets>
-        </ProjectReference>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">
@@ -58,21 +49,4 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Serialization\Attributes\SerializableFieldSaveValueDefaultAttribute.cs" />
-    </ItemGroup>
-    <PropertyGroup Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
-    </PropertyGroup>
-    <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
-        <ItemGroup>
-            <Compile Remove="Generated\**" />
-        </ItemGroup>
-    </Target>
-    <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile" Condition="'$(RiderVersion)' != '' AND $([MSBuild]::VersionLessThan($(RiderVersion), '2021.2.0'))">
-        <ItemGroup>
-            <Compile Include="Generated\**" />
-        </ItemGroup>
-    </Target>
 </Project>

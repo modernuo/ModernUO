@@ -29,6 +29,7 @@ namespace SerializationGenerator
             string indent,
             bool isOverride,
             bool encodedVersion,
+            ImmutableArray<SerializableProperty> fields,
             ImmutableArray<SerializableProperty> properties,
             SortedDictionary<int, SerializableFieldSaveFlagMethods> serializableFieldSaveFlagMethodsDictionary
         )
@@ -74,30 +75,34 @@ namespace SerializationGenerator
                 source.AppendLine($"{bodyIndent}writer.WriteEnum(saveFlags);");
             }
 
-            foreach (var property in properties)
+            for (var i = 0; i < properties.Length; i++)
             {
+                var field = fields[i];
+                var property = properties[i];
                 if (serializableFieldSaveFlagMethodsDictionary.ContainsKey(property.Order))
                 {
                     // Special case
                     if (property.Type != "bool")
                     {
                         source.AppendLine($"\n{bodyIndent}if ((saveFlags & SaveFlag.{property.Name}) != 0)\n{bodyIndent}{{");
-                        SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
-                            source,
-                            innerIndent,
-                            property
-                        );
+                        SerializableMigrationRulesEngine.Rules[property.Rule]
+                            .GenerateSerializationMethod(
+                                source,
+                                innerIndent,
+                                field
+                            );
                         source.AppendLine($"{bodyIndent}}}");
                     }
                 }
                 else
                 {
                     source.AppendLine();
-                    SerializableMigrationRulesEngine.Rules[property.Rule].GenerateSerializationMethod(
-                        source,
-                        bodyIndent,
-                        property
-                    );
+                    SerializableMigrationRulesEngine.Rules[property.Rule]
+                        .GenerateSerializationMethod(
+                            source,
+                            bodyIndent,
+                            field
+                        );
                 }
             }
 

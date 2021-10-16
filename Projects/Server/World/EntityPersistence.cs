@@ -24,6 +24,8 @@ namespace Server
 {
     public static class EntityPersistence
     {
+        private const int _idxVersion = 1;
+
         public static void WriteEntities<I, T>(
             IIndexInfo<I> indexInfo,
             Dictionary<I, T> entities,
@@ -38,7 +40,7 @@ namespace Server
 
             var path = Path.Combine(savePath, typeName);
 
-            AssemblyHandler.EnsureDirectory(path);
+            PathUtility.EnsureDirectory(path);
 
             string idxPath = Path.Combine(path, $"{typeName}.idx");
             string tdbPath = Path.Combine(path, $"{typeName}.tdb");
@@ -48,6 +50,7 @@ namespace Server
             using var tdb = new BinaryFileWriter(tdbPath, false);
             using var bin = new BinaryFileWriter(binPath, true);
 
+            idx.Write(1); // Version
             idx.Write(entities.Count);
             foreach (var e in entities.Values)
             {
@@ -55,6 +58,8 @@ namespace Server
 
                 idx.Write(e.TypeRef);
                 idx.Write(e.Serial);
+                idx.Write(e.Created.Ticks);
+                idx.Write(e.LastSerialized.Ticks);
                 idx.Write(start);
 
                 e.SerializeTo(bin);
@@ -110,12 +115,28 @@ namespace Server
 
             List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
 
-            var count = idxReader.ReadInt32();
+            int count;
+            var version = idxReader.ReadInt32();
+
+            // Handle non-versioned (version 0).
+            if (version > _idxVersion || idx.Length - 4 - version * 20 == 0)
+            {
+                count = version;
+                version = 0;
+            }
+            else
+            {
+                count = idxReader.ReadInt32();
+            }
+
+            var now = DateTime.UtcNow;
 
             for (int i = 0; i < count; ++i)
             {
                 var typeID = idxReader.ReadInt32();
-                var number = idxReader.ReadUInt32();
+                var serial = idxReader.ReadUInt32();
+                var created = version == 0 ? now : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
+                var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
                 var pos = idxReader.ReadInt64();
                 var length = idxReader.ReadInt32();
 
@@ -127,12 +148,14 @@ namespace Server
                 }
 
                 ConstructorInfo ctor = objs.Item1;
-                I indexer = indexInfo.CreateIndex(number);
+                I indexer = indexInfo.CreateIndex(serial);
 
                 ctorArgs[0] = indexer;
 
                 if (ctor.Invoke(ctorArgs) is T t)
                 {
+                    t.Created = created;
+                    t.LastSerialized = lastSerialized;
                     entities.Add(new EntityIndex<T>(t, typeID, pos, length));
                     map[indexer] = t;
                 }
@@ -180,7 +203,7 @@ namespace Server
                 var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
                 if (br == null)
                 {
-                    br = new BufferReader(buffer);
+                    br = new BufferReader(buffer, t.LastSerialized);
                 }
                 else
                 {

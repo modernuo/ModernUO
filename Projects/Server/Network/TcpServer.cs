@@ -84,6 +84,14 @@ namespace Server.Network
             Listeners = listeners.ToArray();
         }
 
+        public static void Shutdown()
+        {
+            foreach (var listener in Listeners)
+            {
+                listener.Server.Close();
+            }
+        }
+
         public static IEnumerable<IPEndPoint> GetListeningAddresses(IPEndPoint ipep) =>
             NetworkInterface.GetAllNetworkInterfaces().SelectMany(adapter =>
                 adapter.GetIPProperties().UnicastAddresses
@@ -93,12 +101,19 @@ namespace Server.Network
 
         public static TcpListener CreateListener(IPEndPoint ipep)
         {
-            var listener = new TcpListener(ipep);
-            listener.Server.ExclusiveAddressUse = false;
+            var listener = new TcpListener(ipep)
+            {
+                Server =
+                {
+                    LingerState = new LingerOption(false, 0),
+                    ExclusiveAddressUse = true,
+                    NoDelay = true
+                }
+            };
 
             try
             {
-                listener.Start(8);
+                listener.Start(32);
                 return listener;
             }
             catch (SocketException se)
@@ -122,7 +137,7 @@ namespace Server.Network
             return null;
         }
 
-        public static int Slice()
+        public static void Slice()
         {
             int count = 0;
 
@@ -130,10 +145,7 @@ namespace Server.Network
             {
                 Instances.Add(ns);
                 ns.LogInfo("Connected. [{0} Online]", Instances.Count);
-                ns.Start();
             }
-
-            return count;
         }
 
         private static async void BeginAcceptingSockets(this TcpListener listener)
@@ -184,7 +196,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        var ns = new NetState(new NetworkSocket(socket));
+                        var ns = new NetState(socket);
                         _connectedQueue.Enqueue(ns);
                     }
                 }

@@ -1,0 +1,118 @@
+Begin
+	Name			Samurai
+	TrueName		"Samurai"
+	NameId			1062948
+	DescId			1062950
+	Desc			6
+	TopLevel		true
+	Gump			5591
+	Type			Profession
+	Skill			Bushido			50
+	Skill			Swordsmanship		50
+	Skill			Wrestling		0					
+	Stat			Str			40
+	Stat			Dex			30
+	Stat			Int			10
+End
+
+Begin
+	Name			Ninja
+	TrueName		"Ninja"
+	NameId			1062949
+	DescId			1062951
+	Desc			7
+	TopLevel		true
+	Gump			5589
+	Type			Profession
+	Skill			Ninjitsu		50
+	Skill			Hiding			50
+	Skill			Wrestling		0					
+	Stat			Str			40
+	Stat			Dex			30
+	Stat			Int			10
+End
+
+Begin
+	Name			Paladin
+	TrueName		"Paladin"
+	NameId			1061177
+	DescId			1061227
+	Desc			5
+	TopLevel		true
+	Gump			5587
+	Type			Profession
+	Skill			Chivalry		50
+	Skill			Tactics 		50
+	Skill			Wrestling		0					
+	Stat			Str			45
+	Stat			Dex			20
+	Stat			Int			15
+End
+
+Begin
+	Name			Necromancer
+	TrueName		"Necromancer"
+	NameId			1061178
+	DescId			1061228
+	Desc			4
+	TopLevel		true
+	Gump			5557
+	Type			Profession
+	Skill			Necromancy		50
+	Skill			Swordsmanship 		30
+	Skill			Tactics 		20
+	Stat			Str			25
+	Stat			Dex			20
+	Stat			Int			35
+End
+
+Begin
+	Name			Warrior
+	TrueName		"Warrior"
+	NameId			1061180
+	DescId			1061230
+	Desc			1
+	TopLevel		true
+	Gump			5577
+	Type			Profession
+	Skill			Tactics			50
+	Skill			Healing			45
+	Skill			Swordsmanship		5
+	Stat			Str			35
+	Stat			Dex			35
+	Stat			Int			10
+End
+
+Begin
+	Name			Mage
+	TrueName		"Mage"
+	NameId			1061179
+	DescId			1061229
+	Desc			2
+	TopLevel		true
+	Gump			5569
+	Type			Profession
+	Skill			Magery			50
+	Skill			Meditation		50
+	Skill			Wrestling		0					
+	Stat			Str			25
+	Stat			Dex			10
+	Stat			Int			45
+End
+
+Begin
+	Name			Blacksmith
+	TrueName		"Blacksmith"
+	NameId			1061181
+	DescId			1061231
+	Desc			3
+	TopLevel		true
+	Gump			5555
+	Type			Profession
+	Skill			Blacksmith		50
+	Skill			Tinkering		45
+	Skill			Mining			5
+	Stat			Str			60
+	Stat			Dex			10
+	Stat			Int			10
+End

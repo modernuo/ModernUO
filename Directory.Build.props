@@ -57,9 +57,9 @@
         <PackageReference Include="Serilog" Version="2.10.0" />
         <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.220">
+        <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
+            <Version>3.4.240</Version>
             <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <AdditionalFiles Include=".\Rules.ruleset" />
     </ItemGroup>

@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-        token: ${{ secrets.ACCESS_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv

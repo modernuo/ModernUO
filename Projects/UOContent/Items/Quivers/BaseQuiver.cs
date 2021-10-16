@@ -181,19 +181,29 @@ namespace Server.Items
 
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
         {
-            if (CheckType(item))
+            if (!CheckType(item))
             {
-                return Items.Count >= DefaultMaxItems && !checkItems && Ammo?.Deleted == false &&
-                    Ammo.Amount + item.Amount <= m_Capacity || item.Amount <= m_Capacity &&
-                    base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
+                if (message)
+                {
+                    m.SendLocalizedMessage( 1074836 ); // The container can not hold that type of object.
+                }
+
+                return false;
             }
 
-            if (message)
+            if (Items.Count < DefaultMaxItems)
             {
-                m.SendLocalizedMessage(1074836); // The container can not hold that type of object.
+                return item.Amount <= m_Capacity && base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
             }
 
-            return false;
+            if (checkItems)
+            {
+                return false;
+            }
+
+            Item ammo = Ammo;
+
+            return ammo?.Deleted == false && ammo.Amount + item.Amount <= m_Capacity;
         }
 
         public override void AddItem(Item dropped)
@@ -265,15 +275,9 @@ namespace Server.Items
                 list.Add(1074762, prop.ToString()); // Damage modifier: ~1_PERCENT~%
             }
 
-            AlterBowDamage(
-                out var phys,
-                out var fire,
-                out var cold,
-                out var pois,
-                out var nrgy,
-                out var chaos,
-                out var direct
-            );
+            int phys = 0, fire = 0, cold = 0, pois = 0, nrgy = 0, chaos = 0, direct = 0;
+
+            AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
 
             if (phys != 0)
             {
@@ -550,11 +554,9 @@ namespace Server.Items
         }
 
         public virtual void AlterBowDamage(
-            out int phys, out int fire, out int cold, out int pois, out int nrgy,
-            out int chaos, out int direct
+            ref int phys, ref int fire, ref int cold, ref int pois, ref int nrgy, ref int chaos, ref int direct
         )
         {
-            phys = fire = cold = pois = nrgy = chaos = direct = 0;
         }
 
         public void InvalidateWeight()

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
@@ -55,7 +56,8 @@ namespace Server
         public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
         public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
         public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-        public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
+        public static readonly bool IsBSD = IsDarwin || IsFreeBSD;
+        public static readonly bool Unix = IsBSD || IsLinux;
 
         private const string AssembliesConfiguration = "Data/assemblies.json";
 
@@ -155,6 +157,11 @@ namespace Server
             set => _now = value;
         }
 
+        private static long _cycleIndex = 1;
+        private static float[] _cyclesPerSecond = new float[100];
+
+        public static float CyclesPerSecond => _cyclesPerSecond[(_cycleIndex - 1) % _cyclesPerSecond.Length];
+
         public static bool MultiProcessor { get; private set; }
 
         public static int ProcessorCount { get; private set; }
@@ -241,6 +248,17 @@ namespace Server
             foreach (var p in ServerConfiguration.DataDirectories)
             {
                 fullPath = Path.Combine(p, path);
+
+                if (IsLinux)
+                {
+                    var fi = new FileInfo(fullPath);
+                    fullPath = fi.Directory!.EnumerateFiles(
+                        fi.Name,
+                        new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
+                    ).FirstOrDefault()?.FullName;
+
+                    break;
+                }
 
                 if (File.Exists(fullPath))
                 {
@@ -488,40 +506,51 @@ namespace Server
         {
             try
             {
+#if DEBUG
+                const bool idleCPU = true;
+#else
+                var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
+#endif
+
+                long last = TickCount;
                 const int interval = 100;
-                int idleCount = 0;
+                const float ticksPerSecond = 1000 * interval;
+
+                int sample = 0;
 
                 while (!Closing)
                 {
                     _tickCount = TickCount;
                     _now = DateTime.UtcNow;
 
-                    var events = Mobile.ProcessDeltaQueue();
-                    events += Item.ProcessDeltaQueue();
-                    events += Timer.Slice(_tickCount);
+                    Mobile.ProcessDeltaQueue();
+                    Item.ProcessDeltaQueue();
+                    Timer.Slice(_tickCount);
 
                     // Handle networking
-                    events += TcpServer.Slice();
-                    events += NetState.HandleAllReceives();
-                    events += NetState.Slice();
+                    TcpServer.Slice();
+                    NetState.Slice();
 
                     // Execute captured post-await methods (like Timer.Pause)
-                    events += LoopContext.ExecuteTasks();
+                    LoopContext.ExecuteTasks();
 
                     Timer.CheckTimerPool(); // Check for pool depletion so we can async refill it.
 
                     _tickCount = 0;
                     _now = DateTime.MinValue;
 
-                    if (events > 0)
+                    if (idleCPU && ++sample % interval == 0)
                     {
-                        idleCount = 0;
-                        continue;
-                    }
+                        var now = TickCount;
 
-                    if (++idleCount > interval)
-                    {
-                        Thread.Sleep(1);
+                        var cyclesPerSecond = ticksPerSecond / (now - last);
+                        _cyclesPerSecond[_cycleIndex++ % _cyclesPerSecond.Length] = cyclesPerSecond;
+                        last = now;
+
+                        if (cyclesPerSecond > 80)
+                        {
+                            Thread.Sleep(2);
+                        }
                     }
                 }
             }

@@ -9,7 +9,8 @@ namespace Server.Items
         [SerializableField(0, setter: "private")]
         private List<AddonContainerComponent> _components;
 
-        private CraftResource _resource;
+        [SerializableField(1, "private", "private")]
+        private CraftResource _rawResource;
 
         public BaseAddonContainer(int itemID) : base(itemID)
         {
@@ -42,17 +43,16 @@ namespace Server.Items
             }
         }
 
-        [SerializableField(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => _resource;
+            get => _rawResource;
             set
             {
-                if (_resource != value)
+                if (_rawResource != value)
                 {
-                    _resource = value;
-                    Hue = CraftResources.GetHue(_resource);
+                    RawResource = value;
+                    Hue = CraftResources.GetHue(_rawResource);
 
                     InvalidateProperties();
                     this.MarkDirty();
@@ -171,9 +171,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(_resource))
+            if (!CraftResources.IsStandard(_rawResource))
             {
-                list.Add(CraftResources.GetLocalizationNumber(_resource));
+                list.Add(CraftResources.GetLocalizationNumber(_rawResource));
             }
         }
 
@@ -187,11 +187,24 @@ namespace Server.Items
             }
         }
 
+        public override void InvalidateProperties()
+        {
+            base.InvalidateProperties();
+
+            if (_components != null)
+            {
+                foreach (var component in _components)
+                {
+                    component.InvalidateProperties();
+                }
+            }
+        }
+
         // Handles v0 with old Enum -> Int casting
         private void Deserialize(IGenericReader reader, int version)
         {
             _components = reader.ReadEntityList<AddonContainerComponent>();
-            _resource = version == 1 ? reader.ReadEnum<CraftResource>() : (CraftResource)reader.ReadInt();
+            _rawResource = version == 1 ? reader.ReadEnum<CraftResource>() : (CraftResource)reader.ReadInt();
         }
 
         [AfterDeserialization]
@@ -332,6 +345,10 @@ namespace Server.Items
 
         public virtual void OnComponentUsed(AddonContainerComponent c, Mobile from)
         {
+            if (!Deleted)
+            {
+                OnDoubleClick(from);
+            }
         }
     }
 }

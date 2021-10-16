@@ -46,7 +46,7 @@ namespace Server
         private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
         private static string _tempSavePath; // Path to the temporary folder for the save
-        private static string _savePath; // Path to "Saves" folder
+        private static bool _enableSaveStats;
 
         public const bool DirtyTrackingEnabled = false;
         public const uint ItemOffset = 0x40000000;
@@ -129,9 +129,11 @@ namespace Server
         internal static List<Type> MobileTypes { get; } = new();
         internal static List<Type> GuildTypes { get; } = new();
 
+        public static string SavePath { get; private set; }
+
         public static WorldState WorldState { get; private set; }
         public static bool Saving => WorldState == WorldState.Saving;
-        public static bool Running => WorldState != WorldState.Loading && WorldState != WorldState.Initial;
+        public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
         public static bool Loading => WorldState == WorldState.Loading;
 
         public static Dictionary<Serial, Mobile> Mobiles { get; private set; }
@@ -140,10 +142,13 @@ namespace Server
 
         public static void Configure()
         {
-            var tempSavePath = ServerConfiguration.GetOrUpdateSetting("world.tempSavePath", "temp");
-            _tempSavePath = Path.Combine(Core.BaseDirectory, tempSavePath);
+            var tempSavePath = ServerConfiguration.GetSetting("world.tempSavePath", "temp");
+            _tempSavePath = PathUtility.GetFullPath(tempSavePath);
+
             var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
-            _savePath = Path.Combine(Core.BaseDirectory, savePath);
+            SavePath = PathUtility.GetFullPath(savePath);
+
+            _enableSaveStats = ServerConfiguration.GetOrUpdateSetting("world.enableSaveStats", false);
 
             // Mobiles & Items
             Persistence.Register("Mobiles & Items", SaveEntities, WriteEntities, LoadEntities, 1);
@@ -254,7 +259,7 @@ namespace Server
             logger.Information("Loading world");
             var watch = Stopwatch.StartNew();
 
-            Persistence.Load(_savePath);
+            Persistence.Load(SavePath);
             EventSink.InvokeWorldLoad();
 
             ProcessSafetyQueues();
@@ -341,7 +346,10 @@ namespace Server
                 int count = 0;
 
                 var timestamp = Utility.GetTimeStamp();
-                using var op = new StreamWriter("Logs/Saves/Save-Stats-{0}.log", true);
+                var saveStatsPath = Path.Combine(Core.BaseDirectory, $"Logs/Saves/Save-Stats-{timestamp}.log");
+                PathUtility.EnsureDirectory(saveStatsPath);
+
+                using var op = new StreamWriter(saveStatsPath, true);
 
                 for (var i = 0; i < entityTypes.Length; i++)
                 {
@@ -373,14 +381,17 @@ namespace Server
             EntityPersistence.WriteEntities(itemIndexInfo, Items, ItemTypes, basePath, out var itemCounts);
             EntityPersistence.WriteEntities(guildIndexInfo, Guilds, GuildTypes, basePath, out var guildCounts);
 
-            TraceSave(mobileCounts?.ToList(), itemCounts?.ToList(), guildCounts?.ToList());
+            if (_enableSaveStats)
+            {
+                TraceSave(mobileCounts?.ToList(), itemCounts?.ToList(), guildCounts?.ToList());
+            }
         }
 
         public static void WriteFiles(object state)
         {
             Exception exception = null;
 
-            var tempPath = Path.Combine(_tempSavePath, Utility.GetTimeStamp());
+            var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
 
             try
             {
@@ -409,8 +420,8 @@ namespace Server
             {
                 try
                 {
-                    EventSink.InvokeWorldSavePostSnapshot(_savePath, tempPath);
-                    Directory.Move(tempPath, _savePath);
+                    EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
+                    Directory.Move(tempPath, SavePath);
                 }
                 catch (Exception ex)
                 {
@@ -652,13 +663,24 @@ namespace Server
             Serial serial = reader.ReadSerial();
             var typeT = typeof(T);
 
+            T entity;
+
             // Add to this list when creating new serializable types
             if (typeof(BaseGuild).IsAssignableTo(typeT))
             {
-                return FindGuild(serial) as T;
+                entity = FindGuild(serial) as T;
+            }
+            else
+            {
+                entity = FindEntity<IEntity>(serial) as T;
             }
 
-            return FindEntity<IEntity>(serial) as T;
+            if (entity?.Deleted == false)
+            {
+                return entity;
+            }
+
+            return entity?.Created <= reader.LastSerialized ? entity : null;
         }
 
         public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable

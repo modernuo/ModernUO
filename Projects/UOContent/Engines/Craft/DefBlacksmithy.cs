@@ -54,10 +54,8 @@ namespace Server.Engines.Craft
             {
                 var type = item.GetType();
 
-                var isAnvil = type.IsDefined(typeofAnvil, false) || item.ItemID == 4015 || item.ItemID == 4016 ||
-                              item.ItemID == 0x2DD5 || item.ItemID == 0x2DD6;
-                var isForge = type.IsDefined(typeofForge, false) || item.ItemID == 4017 ||
-                              item.ItemID >= 6522 && item.ItemID <= 6569 || item.ItemID == 0x2DD8;
+                var isAnvil = type.IsDefined(typeofAnvil, false) || item.ItemID is 4015 or 4016 or 11733 or 11734;
+                var isForge = type.IsDefined(typeofForge, false) || item.ItemID is 4017 or >= 6522 and <= 6569 or 11736;
 
                 if (isAnvil || isForge)
                 {
@@ -88,8 +86,8 @@ namespace Server.Engines.Craft
                     {
                         var id = tiles[i].ID;
 
-                        var isAnvil = id == 4015 || id == 4016 || id == 0x2DD5 || id == 0x2DD6;
-                        var isForge = id == 4017 || id >= 6522 && id <= 6569 || id == 0x2DD8;
+                        var isAnvil = id is 4015 or 4016 or 11733 or 11734;
+                        var isForge = id is 4017 or >= 6522 and <= 6569 or 11736;
 
                         if (isAnvil || isForge)
                         {

@@ -1024,6 +1024,7 @@ namespace Server.Items
                 }
 
                 ImmolatingWeaponSpell.StopImmolating(this);
+                ForceOfNature.Remove(m);
 
                 m.CheckStatTimers();
 
@@ -1156,6 +1157,13 @@ namespace Server.Items
                 ourValue = (atkValue + 20.0) * (100 + bonus);
 
                 bonus = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
+
+                var info = ForceArrow.GetInfo(attacker, defender);
+
+                if (info != null && info.Defender == defender)
+                {
+                    bonus -= info.DefenseChanceMalus;
+                }
 
                 if (DivineFurySpell.UnderEffect(defender))
                 {
@@ -1662,6 +1670,8 @@ namespace Server.Items
                 percentageBonus += (int)(move.GetDamageScalar(attacker, defender) * 100) - 100;
             }
 
+            percentageBonus += (int)(ForceOfNature.GetDamageScalar(attacker, defender) * 100) - 100;
+
             percentageBonus += (int)(damageBonus * 100) - 100;
 
             var cs = CheckSlayers(attacker, defender);
@@ -1786,7 +1796,7 @@ namespace Server.Items
 
             if (Core.ML && this is BaseRanged && attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)
             {
-                quiver.AlterBowDamage(out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct);
+                quiver.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
             }
 
             if (Consecrated)
@@ -1864,7 +1874,10 @@ namespace Server.Items
                 move = null;
             }
 
-            var ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true;
+            var ignoreArmor = a is ArmorIgnore ||
+                              move?.IgnoreArmor(attacker) == true ||
+                              Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) &&
+                              bladeweavingAbi is ArmorIgnore;
 
             var damageGiven = AOS.Damage(
                 defender,
@@ -1981,8 +1994,8 @@ namespace Server.Items
                             mobile.LocalOverheadMessage(
                                 MessageType.Regular,
                                 0x3B2,
-                                1061121
-                            ); // Your equipment is severely damaged.
+                                1061121 // Your equipment is severely damaged.
+                            );
                         }
                     }
                     else
@@ -2101,6 +2114,8 @@ namespace Server.Items
             a?.OnHit(attacker, defender, damage);
             move?.OnHit(attacker, defender, damage);
 
+            ForceOfNature.OnHit(attacker, defender);
+
             if (defender is IHonorTarget it)
             {
                 it.ReceivedHonorContext?.OnTargetHit(attacker);
@@ -2141,6 +2156,11 @@ namespace Server.Items
 
                 // SDI bonus
                 damageBonus += AosAttributes.GetValue(attacker, AosAttribute.SpellDamage);
+
+                if(PsychicAttack.Registry.TryGetValue(attacker,out var timer))
+                {
+                    damageBonus -= timer.SpellDamageMalus;
+                }
 
                 var context = TransformationSpellHelper.GetContext(attacker);
 

@@ -2,13 +2,16 @@
 /Distribution/ModernUO
 /Distribution/ModernUO.*
 /Distribution/Assemblies
+/Distribution/bsdtar
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json
 /Distribution/Configuration/throttles.json
 /Distribution/Logs
+/Distribution/Archives
 /Distribution/Backups
 /Distribution/Saves
 /Distribution/docs
+/Distribution/temp
 /Distribution/*.dylib
 /Distribution/*.so
 /Distribution/*.dll

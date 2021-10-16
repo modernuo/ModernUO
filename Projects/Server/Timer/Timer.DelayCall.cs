@@ -71,7 +71,7 @@ namespace Server
         public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
         {
             DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
-            t._selfReturn = true;
+            t._returnOnDetach = true;
             t.Start();
 
 #if DEBUG_TIMERS
@@ -115,7 +115,7 @@ namespace Server
 
         public sealed class DelayCallTimer : Timer, INotifyCompletion
         {
-            internal bool _selfReturn;
+            internal bool _returnOnDetach;
 #if DEBUG_TIMERS
             internal bool _allowFinalization;
 #endif
@@ -143,57 +143,50 @@ namespace Server
                 _continuation?.Invoke();
             }
 
-            public override void Stop()
-            {
-                base.Stop();
-
-                if (_selfReturn)
-                {
-                    Return();
-                }
-            }
-
-            internal void Return()
+            internal override void OnDetach()
             {
                 if (Running)
                 {
-                    logger.Error($"Timer is returned while still running! {new StackTrace()}");
+                    logger.Error($"Timer is returned while still running!\n{new StackTrace()}");
                     return;
                 }
 
-                Version++; // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
-
-#if DEBUG_TIMERS
-                _stackTraces.Remove(GetHashCode());
-#endif
-
-                if (_poolCount >= _poolCapacity)
+                if (_returnOnDetach)
                 {
-#if DEBUG_TIMERS
-                    logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
-                    _allowFinalization = true;
-#endif
-                    return;
-                }
+                    // Increment the version so if this is called from OnTick() and another timer is started, we don't have a problem
+                    // Version++;
 
-                _continuation = null;
-                ReturnToPool(1, this, this);
+#if DEBUG_TIMERS
+                    _stackTraces.Remove(GetHashCode());
+#endif
+
+                    if (_poolCount >= _poolCapacity)
+                    {
+#if DEBUG_TIMERS
+                        logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
+                        _allowFinalization = true;
+#endif
+                        return;
+                    }
+
+                    _continuation = null;
+                    _returnOnDetach = false;
+                    ReturnToPool(1, this, this);
+                }
             }
 
             public static DelayCallTimer GetTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
             {
-                if (_poolHead != null)
+                var timer = GetFromPool();
+                if (timer != null)
                 {
-                    _poolCount--;
 #if DEBUG_TIMERS
-                    logger.Information($"Pool count: {_poolCount} / {_poolCapacity}");
+                    logger.Information($"Getting from pool: ({_poolCount} / {_poolCapacity})");
 #endif
-
-                    var timer = GetFromPool();
 
                     timer.Init(delay, interval, count);
                     timer._continuation = callback;
-                    timer._selfReturn = false;
+                    timer._returnOnDetach = false;
 #if DEBUG_TIMERS
                     timer._allowFinalization = false;
 #endif

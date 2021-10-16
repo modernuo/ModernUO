@@ -117,7 +117,6 @@ namespace Server.Gumps
             }
         }
 
-
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             object toSet = null;

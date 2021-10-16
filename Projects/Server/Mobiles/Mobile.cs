@@ -916,8 +916,15 @@ namespace Server
                     else
                     {
                         m_NetState.SendChangeCombatant(m_Combatant.Serial);
-                        Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
-                        Timer.StartTimer(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
+                        if (!_expireCombatantTimerToken.Running)
+                        {
+                            Timer.StartTimer(ExpireCombatantDelay, ExpireCombatant, out _expireCombatantTimerToken);
+                        }
+
+                        if (!_combatTimerToken.Running)
+                        {
+                            Timer.StartTimer(TimeSpan.FromSeconds(0.01), 0, CheckCombatTime, out _combatTimerToken);
+                        }
 
                         if (CanBeHarmful(m_Combatant, false))
                         {
@@ -1146,9 +1153,6 @@ namespace Server
         public bool Squelched { get; set; }
 
         public virtual bool ShouldCheckStatTimers => true;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime CreationTime { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int LightLevel
@@ -2472,6 +2476,12 @@ namespace Server
             AddNameProperties(list);
         }
 
+        [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
+        public DateTime Created { get; set; } = Core.Now;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
+
         long ISerializable.SavePosition { get; set; } = -1;
 
         BufferWriter ISerializable.SaveBuffer { get; set; }
@@ -2483,7 +2493,7 @@ namespace Server
 
         public virtual void Serialize(IGenericWriter writer)
         {
-            writer.Write(32); // version
+            writer.Write(33); // version
 
             writer.WriteDeltaTime(LastStrGain);
             writer.WriteDeltaTime(LastIntGain);
@@ -2519,7 +2529,7 @@ namespace Server
 
             writer.Write(Corpse);
 
-            writer.Write(CreationTime);
+            // writer.Write(CreationTime);
 
             Stabled.Tidy();
             writer.Write(Stabled);
@@ -6167,12 +6177,21 @@ namespace Server
         {
         }
 
+        public virtual void BeforeSerialize()
+        {
+        }
+
         public virtual void Deserialize(IGenericReader reader)
         {
             var version = reader.ReadInt();
 
             switch (version)
             {
+                case 33:
+                    {
+                        // Removed created
+                        goto case 32;
+                    }
                 case 32:
                     {
                         // Removed StuckMenu
@@ -6232,7 +6251,10 @@ namespace Server
                     }
                 case 23:
                     {
-                        CreationTime = reader.ReadDateTime();
+                        if (version < 33)
+                        {
+                            Created = reader.ReadDateTime();
+                        }
 
                         goto case 22;
                     }
@@ -7818,7 +7840,6 @@ namespace Server
             DamageEntries = new List<DamageEntry>();
 
             NextSkillTime = Core.TickCount;
-            CreationTime = Core.Now;
         }
 
         public virtual void Delta(MobileDelta flag)
@@ -7848,10 +7869,8 @@ namespace Server
             }
         }
 
-        public static int ProcessDeltaQueue()
+        public static void ProcessDeltaQueue()
         {
-            int count = 0;
-
             var limit = m_DeltaQueue.Count;
 
             while (m_DeltaQueue.Count > 0 && --limit >= 0)
@@ -7862,8 +7881,6 @@ namespace Server
                 {
                     continue;
                 }
-
-                count++;
 
                 mob.m_InDeltaQueue = false;
 
@@ -7885,8 +7902,6 @@ namespace Server
                 Console.WriteLine("Warning: {0} mobiles left in delta queue after processing.", m_DeltaQueue.Count);
                 Utility.PopColor();
             }
-
-            return count;
         }
 
         public virtual void OnKillsChange(int oldValue)

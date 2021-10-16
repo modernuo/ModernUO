@@ -35,9 +35,9 @@ namespace Server
         private Timer _nextTimer;
         private Timer _prevTimer;
 
-        public Timer(TimeSpan delay) : this(delay, TimeSpan.Zero, 1)
-        {
-        }
+        public Timer(TimeSpan delay) => Init(delay, TimeSpan.Zero, 1);
+
+        public Timer(TimeSpan interval, int count) => Init(interval, interval, count);
 
         public Timer(TimeSpan delay, TimeSpan interval, int count = 0) => Init(delay, interval, count);
 
@@ -102,17 +102,22 @@ namespace Server
                 return;
             }
 
-            // We are at the head
-            if (_rings[_ring][_slot] == this)
+            // Do not detach if we are in the middle of executing the timer wheel for this ring/slot
+            if (!_timerWheelExecuting || _ringIndexes[_ring] != _slot)
             {
-                _rings[_ring][_slot] = _nextTimer;
+                // We are at the head
+                if (_rings[_ring][_slot] == this)
+                {
+                    _rings[_ring][_slot] = _nextTimer;
+                }
+
+                Detach();
             }
 
-            Detach();
             Running = false;
             Version++;
-            var prof = GetProfile();
 
+            var prof = GetProfile();
             if (prof != null)
             {
                 prof.Stopped++;
@@ -146,6 +151,10 @@ namespace Server
 
             _nextTimer = null;
             _prevTimer = null;
+        }
+
+        internal virtual void OnDetach()
+        {
         }
     }
 }

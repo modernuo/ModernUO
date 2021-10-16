@@ -767,7 +767,6 @@ namespace Server.Mobiles
             }
         }
 
-
         public void ClearQuestArrow() => m_QuestArrow = null;
 
         public override void ToggleFlying()
@@ -804,14 +803,21 @@ namespace Server.Mobiles
                 switch (type)
                 {
                     case BlockMountType.Dazed:
-                        SendLocalizedMessage(1112457);
-                        break; // You are still too dazed to fly.
+                        {
+                            SendLocalizedMessage(1112457); // You are still too dazed to fly.
+                            break;
+                        }
                     case BlockMountType.BolaRecovery:
-                        SendLocalizedMessage(1112455);
-                        break; // You cannot fly while recovering from a bola throw.
+                        {
+                            SendLocalizedMessage(1112455); // You cannot fly while recovering from a bola throw.
+                            break;
+                        }
                     case BlockMountType.DismountRecovery:
-                        SendLocalizedMessage(1112456);
-                        break; // You cannot fly while recovering from a dismount maneuver.
+                        {
+                            // You cannot fly while recovering from a dismount maneuver.
+                            SendLocalizedMessage(1112456);
+                            break;
+                        }
                 }
             }
             else if (Hits < 25) // TODO confirm
@@ -901,7 +907,7 @@ namespace Server.Mobiles
             var type = item.GetType();
 
             if (type.IsDefined(typeof(FurnitureAttribute), true) ||
-                type.IsDefined(typeof(DynamicFlipingAttribute), true))
+                type.IsDefined(typeof(DynamicFlippingAttribute), true))
             {
                 var objs = type.GetCustomAttributes(typeof(FlippableAttribute), true);
 
@@ -1751,14 +1757,12 @@ namespace Server.Mobiles
 
             var speed = ComputeMovementSpeed(d);
 
-            bool res;
-
             if (!Alive)
             {
                 MovementImpl.IgnoreMovableImpassables = true;
             }
 
-            res = base.Move(d);
+            var res = base.Move(d);
 
             MovementImpl.IgnoreMovableImpassables = false;
 
@@ -3207,7 +3211,6 @@ namespace Server.Mobiles
 
             RecentlyReported ??= new List<Mobile>();
 
-            // Professions weren't verified on 1.0 RC0
             if (!CharacterCreation.VerifyProfession(Profession))
             {
                 Profession = 0;
