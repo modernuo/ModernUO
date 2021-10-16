@@ -13,13 +13,14 @@ namespace Server.Misc
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(CharacterCreation));
 
-        // Allowed skills that are not race specific
+        // Allowed skills that are not race or era specific
         private static readonly HashSet<SkillName> _allowedStartingSkills = new()
         {
             SkillName.Alchemy,
             SkillName.Anatomy,
             SkillName.AnimalLore,
             SkillName.AnimalTaming,
+            SkillName.Archery,
             SkillName.ArmsLore,
             SkillName.Begging,
             SkillName.Blacksmith,
@@ -40,6 +41,7 @@ namespace Server.Misc
             SkillName.Healing,
             SkillName.Herding,
             SkillName.Hiding,
+            SkillName.Imbuing,
             SkillName.Inscribe,
             SkillName.ItemID,
             SkillName.Lockpicking,
@@ -49,6 +51,7 @@ namespace Server.Misc
             SkillName.Meditation,
             SkillName.Mining,
             SkillName.Musicianship,
+            SkillName.Mysticism,
             SkillName.Necromancy,
             SkillName.Ninjitsu,
             SkillName.Parry,
@@ -63,6 +66,7 @@ namespace Server.Misc
             SkillName.Tactics,
             SkillName.Tailoring,
             SkillName.TasteID,
+            SkillName.Throwing,
             SkillName.Tinkering,
             SkillName.Tracking,
             SkillName.Veterinary,
@@ -343,7 +347,7 @@ namespace Server.Misc
             m.Name = name;
         }
 
-        private static bool ValidSkills(SkillNameValue[] skills)
+        private static bool ValidSkills(int raceFlag, SkillNameValue[] skills)
         {
             var total = 0;
 
@@ -351,7 +355,36 @@ namespace Server.Misc
             {
                 var (name, value) = skills[i];
 
-                if (value is < 0 or > 50)
+                if (value is < 0 or > 50 || !_allowedStartingSkills.Contains(name))
+                {
+                    return false;
+                }
+
+                if (!Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry)
+                {
+                    return false;
+                }
+
+                if (!Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido)
+                {
+                    return false;
+                }
+
+                if (Core.SA)
+                {
+                    if (raceFlag == Race.AllowGargoylesOnly)
+                    {
+                        if (name == SkillName.Archery)
+                        {
+                            return false;
+                        }
+                    }
+                    else if (name == SkillName.Throwing)
+                    {
+                        return false;
+                    }
+                }
+                else if (name is SkillName.Throwing or SkillName.Imbuing)
                 {
                     return false;
                 }
@@ -379,7 +412,7 @@ namespace Server.Misc
                 profession = ProfessionInfo.Professions[prof];
                 skills = ProfessionInfo.Professions[prof]?.Skills ?? skills;
             }
-            else if (!ValidSkills(skills)) // This does not check for skills that are not allowed by expansion
+            else if (!ValidSkills(m.Race.RaceFlag, skills)) // This does not check for skills that are not allowed by expansion
             {
                 return;
             }
@@ -612,22 +645,12 @@ namespace Server.Misc
                     continue;
                 }
 
-                if (prof > 0 ||
-                    m.Race == Race.Gargoyle && name == SkillName.Throwing ||
-                    m.Race != Race.Gargoyle && name == SkillName.Archery ||
-                    _allowedStartingSkills.Contains(name))
-                {
-                    var skill = m.Skills[name];
+                var skill = m.Skills[name];
 
-                    if (skill != null)
-                    {
-                        skill.BaseFixedPoint = value * 10;
-                        m.AddSkillItems(name);
-                    }
-                }
-                else
+                if (skill != null)
                 {
-                    skills[i] = default;
+                    skill.BaseFixedPoint = value * 10;
+                    m.AddSkillItems(name);
                 }
             }
         }
