@@ -347,46 +347,24 @@ namespace Server.Misc
             m.Name = name;
         }
 
-        private static bool ValidSkills(int raceFlag, SkillNameValue[] skills)
+        private static bool ValidateSkills(int raceFlag, SkillNameValue[] skills)
         {
             var total = 0;
 
             for (var i = 0; i < skills.Length; ++i)
             {
                 var (name, value) = skills[i];
+                var notValid = value is < 0 or > 50 || !_allowedStartingSkills.Contains(name) ||
+                               !Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry ||
+                               !Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido ||
+                               Core.SA && (raceFlag == Race.AllowGargoylesOnly && name == SkillName.Archery ||
+                                           raceFlag != Race.AllowGargoylesOnly && name == SkillName.Throwing) ||
+                               !Core.SA && name is SkillName.Throwing or SkillName.Imbuing;
 
-                if (value is < 0 or > 50 || !_allowedStartingSkills.Contains(name))
+                if (notValid)
                 {
-                    return false;
-                }
-
-                if (!Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry)
-                {
-                    return false;
-                }
-
-                if (!Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido)
-                {
-                    return false;
-                }
-
-                if (Core.SA)
-                {
-                    if (raceFlag == Race.AllowGargoylesOnly)
-                    {
-                        if (name == SkillName.Archery)
-                        {
-                            return false;
-                        }
-                    }
-                    else if (name == SkillName.Throwing)
-                    {
-                        return false;
-                    }
-                }
-                else if (name is SkillName.Throwing or SkillName.Imbuing)
-                {
-                    return false;
+                    skills[i] = default;
+                    continue;
                 }
 
                 total += value;
@@ -412,7 +390,7 @@ namespace Server.Misc
                 profession = ProfessionInfo.Professions[prof];
                 skills = ProfessionInfo.Professions[prof]?.Skills ?? skills;
             }
-            else if (!ValidSkills(m.Race.RaceFlag, skills)) // This does not check for skills that are not allowed by expansion
+            else if (!ValidateSkills(m.Race.RaceFlag, skills)) // This does not check for skills that are not allowed by expansion
             {
                 return;
             }
@@ -635,6 +613,12 @@ namespace Server.Misc
                 m.AddShirt(shirtHue);
                 m.AddPants(pantsHue);
                 m.AddShoes();
+
+                // All elves get a wild staff
+                if (elf)
+                {
+                    EquipItem(m, new WildStaff());
+                }
             }
 
             for (var i = 0; i < skills.Length; ++i)
