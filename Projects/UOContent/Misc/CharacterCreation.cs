@@ -226,7 +226,7 @@ namespace Server.Misc
 
             var profession = ProfessionInfo.Professions[args.Profession];
 
-            switch (profession.Name.ToLowerInvariant())
+            switch (profession?.Name.ToLowerInvariant())
             {
                 case "necromancer":
                     {
@@ -307,7 +307,7 @@ namespace Server.Misc
 
             if (prof > 0)
             {
-                stats = ProfessionInfo.Professions[prof].Stats ?? stats;
+                stats = ProfessionInfo.Professions[prof]?.Stats ?? stats;
             }
 
             for (var i = 0; i < stats.Length; i++)
@@ -377,7 +377,7 @@ namespace Server.Misc
             if (prof > 0)
             {
                 profession = ProfessionInfo.Professions[prof];
-                skills = ProfessionInfo.Professions[prof].Skills;
+                skills = ProfessionInfo.Professions[prof]?.Skills ?? skills;
             }
             else if (!ValidSkills(skills)) // This does not check for skills that are not allowed by expansion
             {
