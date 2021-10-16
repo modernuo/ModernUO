@@ -89,6 +89,16 @@ namespace Server.Spells.Ninjitsu
             }
         }
 
+        public override void OnClearMove(Mobile from)
+        {
+            base.OnClearMove(from);
+
+            if (m_Table.Remove(from, out var t))
+            {
+                t.Stop();
+            }
+        }
+
         private class DeathStrikeTimer : Timer
         {
             public readonly Mobile m_Attacker;
@@ -114,8 +124,6 @@ namespace Server.Spells.Ninjitsu
 
             public void ProcessDeathStrike()
             {
-                int damage;
-
                 var ninjitsu = m_Attacker.Skills.Ninjitsu.Value;
                 var stalkingBonus = Tracking.GetStalkingBonus(m_Attacker, m_Target);
 
@@ -124,6 +132,7 @@ namespace Server.Spells.Ninjitsu
                     var scalar = Math.Min(1, (m_Attacker.Skills.Hiding.Value +
                                               m_Attacker.Skills.Stealth.Value) / 220);
 
+                    int damage;
                     // New formula doesn't apply DamageBonus anymore, caps must be, directly, 60/30.
                     if (Steps >= 5)
                     {
@@ -138,6 +147,8 @@ namespace Server.Spells.Ninjitsu
                     {
                         damage /= 2;
                     }
+
+                    m_Target.Damage(damage, m_Attacker); // Damage is direct.
                 }
                 else
                 {
@@ -145,15 +156,9 @@ namespace Server.Spells.Ninjitsu
                     var baseDamage = ninjitsu / divisor * 10;
 
                     var maxDamage = Steps >= 5 ? 62 : 22;
-                    damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + m_DamageBonus;
-                }
+                    var damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + m_DamageBonus;
 
-                if (Core.ML)
-                {
-                    m_Target.Damage(damage, m_Attacker); // Damage is direct.
-                }
-                else
-                {
+                    // Damage is physical.
                     AOS.Damage(
                         m_Target,
                         m_Attacker,
@@ -169,7 +174,7 @@ namespace Server.Spells.Ninjitsu
                         false,
                         false,
                         true
-                    ); // Damage is physical.
+                    );
                 }
 
                 Stop();
