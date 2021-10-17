@@ -12,19 +12,15 @@ namespace Server.Mobiles.BehaviorAI
         }
         public virtual Decorator AddChild(Behavior child)
         {
-            if (Child == null)
-            {
-                Child = child;
-            }
+            Child ??= child;
             return this;
         }
         public override void Tick(BehaviorTreeContext context)
         {
-            if (Child != null && GetResult(context) != Result.Running)
+            if (Child != null && GetResult(context) != Result.Terminated)
             {
                 Tree.Enqueue(context, Child, OnChildComplete);
                 SetResult(context, Result.Running);
-                return;
             }
         }
         public virtual void OnChildComplete(BehaviorTreeContext context, Result lastResult)

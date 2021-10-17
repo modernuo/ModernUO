@@ -27,7 +27,7 @@ namespace Server.Mobiles.BehaviorAI
                 currentChildCache.Add(context.Mobile, currentChild);
             }
 
-            if (GetResult(context) != Result.Running)
+            if (GetResult(context) != Result.Terminated)
             {
                 currentChild = 0;
                 currentChildCache[context.Mobile] = currentChild;

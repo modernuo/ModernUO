@@ -9,12 +9,12 @@ namespace Server.Mobiles.BehaviorAI
     public class BehaviorTree
     {
         public Behavior Root { get; private set; }
-        private Dictionary<BaseCreature, Queue<BehaviorQueueEntry>> behaviorQueueCache;
-        private Dictionary<BaseCreature, bool> executingCache;
+        private readonly Dictionary<BaseCreature, Queue<BehaviorQueueEntry>> _behaviorQueueCache;
+        private readonly Dictionary<BaseCreature, bool> _executingCache;
         public BehaviorTree()
         {
-            behaviorQueueCache = new Dictionary<BaseCreature, Queue<BehaviorQueueEntry>>();
-            executingCache = new Dictionary<BaseCreature, bool>();
+            _behaviorQueueCache = new Dictionary<BaseCreature, Queue<BehaviorQueueEntry>>();
+            _executingCache = new Dictionary<BaseCreature, bool>();
         }
         public bool TryAddRoot(Composite behavior)
         {
@@ -38,30 +38,29 @@ namespace Server.Mobiles.BehaviorAI
         }
         public virtual void Tick(BehaviorTreeContext context)
         {
-            if (!executingCache.TryGetValue(context.Mobile, out bool executing))
+            if (!_executingCache.TryGetValue(context.Mobile, out bool executing))
             {
                 executing = false;
-                executingCache[context.Mobile] = executing;
+                _executingCache[context.Mobile] = executing;
             }
 
             if (!executing)
             {
-                executingCache[context.Mobile] = true;
+                _executingCache[context.Mobile] = true;
                 Queue<BehaviorQueueEntry> queue = getQueue(context);
                 queue.Enqueue(null);
                 while (Step(context))
                 {
                 }
-                executingCache[context.Mobile] = false;
+                _executingCache[context.Mobile] = false;
             }
         }
         public virtual bool Step(BehaviorTreeContext context)
         {
             Queue<BehaviorQueueEntry> queue = getQueue(context);
-
             BehaviorQueueEntry current = queue.Dequeue();
 
-            if (current == null || current.Behavior == null || current.Context == null)
+            if (current?.Behavior == null || current.Context == null)
             {
                 return false;
             }
@@ -70,10 +69,8 @@ namespace Server.Mobiles.BehaviorAI
 
             if (!current.Behavior.IsRunning(current.Context))
             {
-                if (current.Observer != null)
-                {
-                    current.Observer(current.Context, current.Behavior.GetResult(current.Context));
-                }
+                current.Observer?.Invoke(current.Context, current.Behavior.GetResult(current.Context));
+                current.Behavior.SetResult(context, Result.Terminated);
                 return true;
             }
 
@@ -86,20 +83,20 @@ namespace Server.Mobiles.BehaviorAI
         }
         public void Enqueue(BehaviorTreeContext context, Behavior behavior, BehaviorObserver observer)
         {
-            if (!behaviorQueueCache.TryGetValue(context.Mobile, out Queue<BehaviorQueueEntry> queue))
+            if (!_behaviorQueueCache.TryGetValue(context.Mobile, out Queue<BehaviorQueueEntry> queue))
             {
                 queue = new Queue<BehaviorQueueEntry>();
-                behaviorQueueCache.Add(context.Mobile, queue);
+                _behaviorQueueCache.Add(context.Mobile, queue);
             }
 
             queue.Enqueue(new BehaviorQueueEntry(context, behavior, observer));
         }
         private Queue<BehaviorQueueEntry> getQueue(BehaviorTreeContext context)
         {
-            if (!behaviorQueueCache.TryGetValue(context.Mobile, out Queue<BehaviorQueueEntry> queue))
+            if (!_behaviorQueueCache.TryGetValue(context.Mobile, out Queue<BehaviorQueueEntry> queue))
             {
                 queue = new Queue<BehaviorQueueEntry>();
-                behaviorQueueCache.Add(context.Mobile, queue);
+                _behaviorQueueCache.Add(context.Mobile, queue);
             }
 
             return queue;
@@ -195,38 +192,18 @@ namespace Server.Mobiles.BehaviorAI
                 {
                     var random = Utility.Random(0, 32);
 
-                    Direction direction;
-
-                    switch (random)
+                    Direction direction = random switch
                     {
-                        case 0:
-                            direction = Direction.Up;
-                            break;
-                        case 1:
-                            direction = Direction.North;
-                            break;
-                        case 2:
-                            direction = Direction.Left;
-                            break;
-                        case 3:
-                            direction = Direction.West;
-                            break;
-                        case 5:
-                            direction = Direction.Down;
-                            break;
-                        case 6:
-                            direction = Direction.South;
-                            break;
-                        case 7:
-                            direction = Direction.Right;
-                            break;
-                        case 8:
-                            direction = Direction.East;
-                            break;
-                        default:
-                            direction = mob.Direction;
-                            break;
-                    }
+                        0 => Direction.Up,
+                        1 => Direction.North,
+                        2 => Direction.Left,
+                        3 => Direction.West,
+                        5 => Direction.Down,
+                        6 => Direction.South,
+                        7 => Direction.Right,
+                        8 => Direction.East,
+                        _ => mob.Direction
+                    };
 
                     DoMove(context, direction, run);
                 }
@@ -327,7 +304,9 @@ namespace Server.Mobiles.BehaviorAI
                     }
 
                     if (obstacles.Count > 0)
+                    {
                         blocked = true;
+                    }
 
                     while (obstacles.Count > 0)
                     {

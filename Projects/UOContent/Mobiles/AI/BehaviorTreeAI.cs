@@ -13,8 +13,8 @@ namespace Server.Mobiles.AI
     public class BehaviorTreeAI : BaseAI
     {
         private Blackboard blackboard;
-        private BehaviorTree behaviorTree;
-        private BehaviorTreeContext behaviorTreeContext;
+        private readonly BehaviorTree behaviorTree;
+        private readonly BehaviorTreeContext behaviorTreeContext;
         public BehaviorTreeAI(BaseCreature m) : base(m)
         {
             // blackboard = new Blackboard();
@@ -25,13 +25,13 @@ namespace Server.Mobiles.AI
                 new Selector(behaviorTree)
                     .AddChild(new MageCombat(behaviorTree))
                     .AddChild(new MagePassive(behaviorTree))
-            /*
-            new Sequence(behaviorTree)
-                .AddChild(new Condition(behaviorTree, (context) => context.Mobile.RawStr - context.Mobile.Str == 0))
-                .AddChild(new CastSpell(behaviorTree, (context) => new BlessSpell(context.Mobile)))
-                .AddChild(new WaitForTarget(behaviorTree))
-                .AddChild(new DynamicTarget(behaviorTree, (context) => context.Mobile))
-            */
+                /*
+                new Sequence(behaviorTree)
+                    .AddChild(new Condition(behaviorTree, (context) => context.Mobile.RawStr - context.Mobile.Str == 0))
+                    .AddChild(new CastSpell(behaviorTree, (context) => new BlessSpell(context.Mobile)))
+                    .AddChild(new WaitForTarget(behaviorTree))
+                    .AddChild(new DynamicTarget(behaviorTree, (context) => context.Mobile))
+                */
             );
 
             behaviorTree.Start(behaviorTreeContext);

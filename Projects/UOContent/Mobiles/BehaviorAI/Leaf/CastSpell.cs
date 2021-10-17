@@ -41,18 +41,22 @@ namespace Server.Mobiles.BehaviorAI
 
                 owner.DebugSay("Casting {0}...", spell.Name);
                 if (!string.IsNullOrEmpty(spell.Mantra))
+                {
                     owner.PublicOverheadMessage(Network.MessageType.Spell, owner.SpeechHue, false, spell.Mantra, false);
+                }
 
                 SetResult(context, Result.Running);
                 return;
             }
-            else if (owner.Spell.IsCasting)
+
+            if (owner.Spell.IsCasting)
             {
                 SetResult(context, Result.Running);
                 owner.DebugSay("Already casting {0}...", ((Spell)owner.Spell).Name);
                 return;
             }
-            else if (!owner.Spell.IsCasting && ((Spell)owner.Spell).State == SpellState.Sequencing)
+
+            if (!owner.Spell.IsCasting && ((Spell)owner.Spell).State == SpellState.Sequencing)
             {
                 SetResult(context, Result.Success);
                 owner.DebugSay("Finished casting {0}...", ((Spell)owner.Spell).Name);

@@ -40,16 +40,20 @@ namespace Server.Mobiles.BT
                 }
 
                 if (!string.IsNullOrEmpty(spell.Mantra))
+                {
                     mob.PublicOverheadMessage(Network.MessageType.Spell, 0, false, spell.Mantra, false);
+                }
 
                 return Result.Running;
             }
-            else if (mob.Spell.IsCasting)
+
+            if (mob.Spell.IsCasting)
             {
                 mob.DebugSay("Still casting...");
                 return Result.Running;
             }
-            else if (!mob.Spell.IsCasting)
+
+            if (!mob.Spell.IsCasting)
             {
                 mob.DebugSay("Finished casting...");
                 return Result.Success;

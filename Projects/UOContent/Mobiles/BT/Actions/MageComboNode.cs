@@ -73,14 +73,18 @@ namespace Server.Mobiles.BT
             }
 
             if (mob.Combatant.Meditating)
+            {
                 return true;
+            }
 
             return false;
         }
         private static bool shouldContinueCombo(BaseCreature mob, Blackboard board)
         {
             if (mob.Combatant == null || mob.Combatant.Deleted)
+            {
                 return false;
+            }
 
             if (mob.Combatant.HitsMax - mob.Combatant.Hits >= 70)
             {

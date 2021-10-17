@@ -7,13 +7,15 @@ namespace Server.Mobiles.BehaviorAI
     {
         Success,
         Failure,
-        Running
+        Running,
+        Terminated
     }
     public abstract class Behavior
     {
         public BehaviorTree Tree { get; protected set; }
         public BehaviorObserver Observer { get; protected set; }
-        private Dictionary<BaseCreature, Result> lastResultCache;
+        private readonly Dictionary<BaseCreature, Result> lastResultCache;
+
         public virtual bool IsRunning(BehaviorTreeContext context) => GetResult(context) == Result.Running;
         public Behavior(BehaviorTree tree)
         {
@@ -30,14 +32,15 @@ namespace Server.Mobiles.BehaviorAI
         {
             if (!lastResultCache.TryGetValue(context.Mobile, out Result result))
             {
-                result = Result.Failure;
+                result = Result.Terminated;
                 lastResultCache.Add(context.Mobile, result);
             }
+
             return result;
         }
         public void SetResult(BehaviorTreeContext context, Result result)
         {
-            if (!lastResultCache.TryGetValue(context.Mobile, out Result old))
+            if (!lastResultCache.TryGetValue(context.Mobile, out _))
             {
                 lastResultCache.Add(context.Mobile, Result.Failure);
             }
