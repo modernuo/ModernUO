@@ -9,7 +9,7 @@ namespace Server.Spells.Fourth
 {
     public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Fire Field",
             "In Flam Grav",
             215,
@@ -20,7 +20,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,11 +28,7 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 

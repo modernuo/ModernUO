@@ -1,10 +1,11 @@
+using System;
 using Server.Targeting;
 
 namespace Server.Spells.First
 {
     public class MagicArrowSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Arrow",
             "In Por Ylem",
             212,
@@ -12,32 +13,29 @@ namespace Server.Spells.First
             Reagent.SulfurousAsh
         );
 
-        public MagicArrowSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicArrowSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
         public override SpellCircle Circle => SpellCircle.First;
 
-        public override bool DelayedDamageStacking => !Core.AOS;
+        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
         public override bool DelayedDamage => true;
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 var source = Caster;
 
                 SpellHelper.Turn(source, m);
+
+                if (Core.SA && HasDelayedDamageContext(m))
+                {
+                    DoHurtFizzle();
+                    return;
+                }
 
                 SpellHelper.CheckReflect((int)Circle, ref source, ref m);
 

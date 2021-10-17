@@ -5,7 +5,7 @@ namespace Server.Spells.Sixth
 {
     public class ExplosionSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Explosion",
             "Vas Ort Flam",
             230,
@@ -15,37 +15,32 @@ namespace Server.Spells.Sixth
         );
 
         public ExplosionSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
         public override SpellCircle Circle => SpellCircle.Sixth;
 
-        public override bool DelayedDamageStacking => !Core.AOS;
+        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
         public override bool DelayedDamage => false;
 
         public void Target(Mobile m)
         {
-            if (m == null)
+            if (Core.SA && HasDelayedDamageContext(m))
             {
+                DoHurtFizzle();
                 return;
             }
 
-            if (!Caster.CanSee(m))
+            if (Caster.CanBeHarmful(m) && CheckSequence())
             {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (Caster.CanBeHarmful(m) && CheckSequence())
-            {
-                Mobile attacker = Caster, defender = m;
+                Mobile defender = m;
 
                 SpellHelper.Turn(Caster, m);
-
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
-                var t = new InternalTimer(this, attacker, defender, m);
-                t.Start();
+                var t = new InternalTimer(this, Caster, defender, m).Start();
             }
 
             FinishSequence();
@@ -71,7 +66,7 @@ namespace Server.Spells.Sixth
                 m_Defender = defender;
                 m_Target = target;
 
-                m_Spell?.StartDelayedDamageContext(attacker, this);
+                m_Spell?.StartDelayedDamageContext(m_Attacker, this);
             }
 
             protected override void OnTick()

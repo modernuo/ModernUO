@@ -5,7 +5,7 @@ namespace Server.Spells.Mysticism
 {
     public class EagleStrikeSpell : MysticSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Eagle Strike",
             "Kal Por Xen",
             -1,
@@ -16,32 +16,39 @@ namespace Server.Spells.Mysticism
             Reagent.MandrakeRoot
         );
 
-        public EagleStrikeSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+        public EagleStrikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.25);
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.00);
 
         public override double RequiredSkill => 20.0;
         public override int RequiredMana => 9;
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
             if (CheckHSequence(m))
             {
-                /* Conjures a magical eagle that assaults the Target with
-                 * its talons, dealing energy damage.
-                 */
+                /* Conjures a magical eagle that assaults the Target with its talons, dealing energy damage. */
 
                 SpellHelper.Turn(Caster, m);
 
-                SpellHelper.CheckReflect(2, Caster, ref m);
+                if (Core.SA && HasDelayedDamageContext(m))
+                {
+                    DoHurtFizzle();
+                    return;
+                }
+
+                var source = Caster;
+
+                if (SpellHelper.CheckReflect(2, ref source, ref m))
+                {
+                    Timer.StartTimer(TimeSpan.FromSeconds(0.5), () =>
+                    {
+                        source.MovingEffect(m, 0x407A, 8, 1, false, true, 0, 0);
+                        source.PlaySound(0x2EE);
+                    });
+                }
 
                 Caster.MovingParticles(m, 0x407A, 7, 0, false, true, 0, 0, 0xBBE, 0xFA6, 0xFFFF, 0);
                 Caster.PlaySound(0x2EE);

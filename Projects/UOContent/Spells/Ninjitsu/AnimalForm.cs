@@ -18,20 +18,20 @@ namespace Server.Spells.Ninjitsu
             NoSkill
         }
 
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Animal Form",
             null,
             -1,
             9002
         );
 
-        private static readonly Dictionary<Mobile, int> m_LastAnimalForms = new();
-        private static readonly Dictionary<Mobile, AnimalFormContext> m_Table = new();
+        private static readonly Dictionary<Mobile, int> _lastAnimalForms = new();
+        private static readonly Dictionary<Mobile, AnimalFormContext> _table = new();
 
         private bool m_WasMoving;
 
         public AnimalForm(Mobile caster, Item scroll)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -136,9 +136,9 @@ namespace Server.Spells.Ninjitsu
                 if (mana > Caster.Mana)
                 {
                     Caster.SendLocalizedMessage(
-                        1060174,
+                        1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                         mana.ToString()
-                    ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                    );
                 }
                 else if (context != null)
                 {
@@ -184,7 +184,7 @@ namespace Server.Spells.Ninjitsu
             FinishSequence();
         }
 
-        public int GetLastAnimalForm(Mobile m) => m_LastAnimalForms.TryGetValue(m, out var value) ? value : -1;
+        public int GetLastAnimalForm(Mobile m) => _lastAnimalForms.TryGetValue(m, out var value) ? value : -1;
 
         public static MorphResult Morph(Mobile m, int entryID)
         {
@@ -195,15 +195,15 @@ namespace Server.Spells.Ninjitsu
 
             var entry = Entries[entryID];
 
-            m_LastAnimalForms[m] = entryID; // On OSI, it's the last /attempted/ one not the last succeeded one
+            _lastAnimalForms[m] = entryID; // On OSI, it's the last /attempted/ one not the last succeeded one
 
             if (m.Skills.Ninjitsu.Value < entry.ReqSkill)
             {
                 var args = $"{entry.ReqSkill:F1}\t{SkillName.Ninjitsu}\t ";
                 m.SendLocalizedMessage(
-                    1063013,
+                    1063013, // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
                     args
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                );
                 return MorphResult.NoSkill;
             }
 
@@ -262,8 +262,7 @@ namespace Server.Spells.Ninjitsu
                 m.AddSkillMod(stealingMod);
             }
 
-            Timer timer = new AnimalFormTimer(m, bodyMod, hueMod);
-            timer.Start();
+            Timer timer = new AnimalFormTimer(m, bodyMod, hueMod).Start();
 
             AddContext(m, new AnimalFormContext(timer, mod, entry.SpeedBoost, entry.Type, stealingMod));
             m.CheckStatTimers();
@@ -272,7 +271,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddContext(Mobile m, AnimalFormContext context)
         {
-            m_Table[m] = context;
+            _table[m] = context;
 
             if (context.Type == typeof(BakeKitsune) || context.Type == typeof(GreyWolf))
             {
@@ -292,7 +291,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void RemoveContext(Mobile m, AnimalFormContext context, bool resetGraphics)
         {
-            m_Table.Remove(m);
+            _table.Remove(m);
 
             if (context.SpeedBoost)
             {
@@ -324,9 +323,9 @@ namespace Server.Spells.Ninjitsu
             context.Timer.Stop();
         }
 
-        public static AnimalFormContext GetContext(Mobile m) => m_Table.TryGetValue(m, out var context) ? context : null;
+        public static AnimalFormContext GetContext(Mobile m) => _table.TryGetValue(m, out var context) ? context : null;
 
-        public static bool UnderTransformation(Mobile m) => m_Table.ContainsKey(m);
+        public static bool UnderTransformation(Mobile m) => _table.ContainsKey(m);
 
         public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
@@ -539,82 +538,82 @@ namespace Server.Spells.Ninjitsu
 
     public class AnimalFormTimer : Timer
     {
-        private readonly int m_Body;
-        private readonly int m_Hue;
-        private readonly Mobile m_Mobile;
-        private int m_Counter;
-        private Mobile m_LastTarget;
+        private readonly int _body;
+        private readonly int _hue;
+        private readonly Mobile _mobile;
+        private int _counter;
+        private Mobile _lastTarget;
 
         public AnimalFormTimer(Mobile from, int body, int hue)
             : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
         {
-            m_Mobile = from;
-            m_Body = body;
-            m_Hue = hue;
-            m_Counter = 0;
+            _mobile = from;
+            _body = body;
+            _hue = hue;
+            _counter = 0;
         }
 
         protected override void OnTick()
         {
-            if (m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Body != m_Body || m_Mobile.Hue != m_Hue)
+            if (_mobile.Deleted || !_mobile.Alive || _mobile.Body != _body || _mobile.Hue != _hue)
             {
-                AnimalForm.RemoveContext(m_Mobile, true);
+                AnimalForm.RemoveContext(_mobile, true);
                 Stop();
                 return;
             }
 
-            if (m_Body == 0x115) // Cu Sidhe
+            if (_body == 0x115) // Cu Sidhe
             {
-                if (m_Counter++ >= 8)
+                if (_counter++ >= 8)
                 {
-                    if (m_Mobile.Hits < m_Mobile.HitsMax && m_Mobile.Backpack != null)
+                    if (_mobile.Hits < _mobile.HitsMax && _mobile.Backpack != null)
                     {
-                        var b = m_Mobile.Backpack.FindItemByType<Bandage>();
+                        var b = _mobile.Backpack.FindItemByType<Bandage>();
 
                         if (b != null)
                         {
-                            m_Mobile.Hits += Utility.RandomMinMax(20, 50);
+                            _mobile.Hits += Utility.RandomMinMax(20, 50);
                             b.Consume();
                         }
                     }
 
-                    m_Counter = 0;
+                    _counter = 0;
                 }
             }
-            else if (m_Body == 0x114) // Reptalon
+            else if (_body == 0x114) // Reptalon
             {
-                if (m_Mobile.Combatant != null && m_Mobile.Combatant != m_LastTarget)
+                if (_mobile.Combatant != null && _mobile.Combatant != _lastTarget)
                 {
-                    m_Counter = 1;
-                    m_LastTarget = m_Mobile.Combatant;
+                    _counter = 1;
+                    _lastTarget = _mobile.Combatant;
                 }
 
-                if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
-                    m_Counter-- <= 0)
+                if (_mobile.Warmode && _lastTarget?.Alive == true && _lastTarget?.Deleted != true &&
+                    _counter-- <= 0)
                 {
-                    if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&
-                        m_LastTarget.InRange(m_Mobile.Location, BaseCreature.DefaultRangePerception) &&
-                        m_Mobile.InLOS(m_LastTarget))
+                    if (_mobile.CanBeHarmful(_lastTarget) && _lastTarget.Map == _mobile.Map &&
+                        _lastTarget.InRange(_mobile.Location, BaseCreature.DefaultRangePerception) &&
+                        _mobile.InLOS(_lastTarget))
                     {
-                        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_LastTarget);
-                        m_Mobile.Freeze(TimeSpan.FromSeconds(1));
-                        m_Mobile.PlaySound(0x16A);
+                        _mobile.Direction = _mobile.GetDirectionTo(_lastTarget);
+                        _mobile.Freeze(TimeSpan.FromSeconds(1));
+                        _mobile.PlaySound(0x16A);
 
-                        StartTimer(TimeSpan.FromSeconds(1.3), () => BreathEffect_Callback(m_LastTarget));
+                        StartTimer(TimeSpan.FromSeconds(1.3), () => BreathEffect_Callback(_lastTarget));
                     }
 
-                    m_Counter = Math.Min((int)m_Mobile.GetDistanceToSqrt(m_LastTarget), 10);
+                    _counter = Math.Min((int)_mobile.GetDistanceToSqrt(_lastTarget), 10);
                 }
             }
         }
 
         public void BreathEffect_Callback(Mobile target)
         {
-            if (m_Mobile.CanBeHarmful(target))
+            if (_mobile.CanBeHarmful(target))
             {
-                m_Mobile.RevealingAction();
-                m_Mobile.PlaySound(0x227);
-                Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0);
+                _mobile.RevealingAction();
+                _mobile.PlaySound(0x227);
+                Effects.SendMovingEffect(_mobile, target, 0x36D4, 5, 0);
 
                 StartTimer(TimeSpan.FromSeconds(1), () => BreathDamage_Callback(target));
             }
@@ -622,11 +621,11 @@ namespace Server.Spells.Ninjitsu
 
         public void BreathDamage_Callback(Mobile target)
         {
-            if (m_Mobile.CanBeHarmful(target))
+            if (_mobile.CanBeHarmful(target))
             {
-                m_Mobile.RevealingAction();
-                m_Mobile.DoHarmful(target);
-                AOS.Damage(target, m_Mobile, 20, !target.Player, 0, 100, 0, 0, 0);
+                _mobile.RevealingAction();
+                _mobile.DoHarmful(target);
+                AOS.Damage(target, _mobile, 20, !target.Player, 0, 100, 0, 0, 0);
             }
         }
     }

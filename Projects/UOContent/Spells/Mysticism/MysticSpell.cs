@@ -4,8 +4,7 @@ namespace Server.Spells.Mysticism
 {
     public abstract class MysticSpell : Spell
     {
-        public MysticSpell(Mobile caster, Item scroll, SpellInfo info)
-            : base(caster, scroll, info)
+        public MysticSpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
         }
 
@@ -46,19 +45,17 @@ namespace Server.Spells.Mysticism
 
             if (Caster.Mana < mana)
             {
-                Caster.SendLocalizedMessage(
-                    1060174,
-                    mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                Caster.SendLocalizedMessage(1060174, mana.ToString());
                 return false;
             }
 
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
                 Caster.SendLocalizedMessage(
-                    1063013,
+                    1063013, // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
                     $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t "
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                );
                 return false;
             }
 

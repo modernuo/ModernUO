@@ -46,18 +46,18 @@ namespace Server.Spells.Ninjitsu
             {
                 var args = $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t ";
                 Caster.SendLocalizedMessage(
-                    1063013,
+                    1063013, // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
                     args
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                );
                 return false;
             }
 
             if (Caster.Mana < mana)
             {
                 Caster.SendLocalizedMessage(
-                    1060174,
+                    1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                     mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                );
                 return false;
             }
 
@@ -71,18 +71,18 @@ namespace Server.Spells.Ninjitsu
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
                 Caster.SendLocalizedMessage(
-                    1063352,
+                    1063352, // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
                     RequiredSkill.ToString("F1")
-                ); // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                );
                 return false;
             }
 
             if (Caster.Mana < mana)
             {
                 Caster.SendLocalizedMessage(
-                    1060174,
+                    1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                     mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                );
                 return false;
             }
 

@@ -5,7 +5,7 @@ namespace Server.Spells.Mysticism
 {
     public class NetherCycloneSpell : MysticSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Nether Cyclone",
             "Grav Hur",
             -1,
@@ -16,13 +16,11 @@ namespace Server.Spells.Mysticism
             Reagent.Bloodmoss
         );
 
-        public NetherCycloneSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+        public NetherCycloneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.5);
-
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
         public override double RequiredSkill => 83.0;
         public override int RequiredMana => 50;
 

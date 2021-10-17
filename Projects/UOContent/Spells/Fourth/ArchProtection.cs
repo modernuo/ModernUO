@@ -9,7 +9,7 @@ namespace Server.Spells.Fourth
 {
     public class ArchProtectionSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Arch Protection",
             "Vas Uus Sanct",
             Core.AOS ? 239 : 215,
@@ -20,9 +20,9 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, int> _Table = new();
+        private static readonly Dictionary<Mobile, int> _table = new();
 
-        public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -30,11 +30,7 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
@@ -112,12 +108,12 @@ namespace Server.Spells.Fourth
 
         private static void AddEntry(Mobile m, int v)
         {
-            _Table[m] = v;
+            _table[m] = v;
         }
 
         public static void RemoveEntry(Mobile m)
         {
-            if (_Table.Remove(m, out var v))
+            if (_table.Remove(m, out var v))
             {
                 m.EndAction<ArchProtectionSpell>();
                 m.VirtualArmorMod -= Math.Min(v, m.VirtualArmorMod);

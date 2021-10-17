@@ -6,7 +6,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class KiAttack : NinjaMove
     {
-        private static readonly Dictionary<Mobile, KiAttackTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, KiAttackTimer> _table = new();
 
         public override int BaseMana => 25;
         public override double RequiredSkill => 80.0;
@@ -22,7 +22,7 @@ namespace Server.Spells.Ninjitsu
             }
 
             var t = new KiAttackTimer(from);
-            m_Table[from] = t;
+            _table[from] = t;
             t.Start();
         }
 
@@ -53,7 +53,6 @@ namespace Server.Spells.Ninjitsu
             /*
              * Pub40 changed pvp damage max to 55%
              */
-
             return 1.0 + GetBonus(attacker) / (Core.ML && attacker.Player && defender.Player ? 40 : 10);
         }
 
@@ -64,6 +63,8 @@ namespace Server.Spells.Ninjitsu
                 return;
             }
 
+            ClearCurrentMove(attacker);
+
             if (GetBonus(attacker) == 0.0)
             {
                 attacker.SendLocalizedMessage(1063101); // You were too close to your target to cause any additional damage.
@@ -73,20 +74,17 @@ namespace Server.Spells.Ninjitsu
                 attacker.FixedParticles(0x37BE, 1, 5, 0x26BD, 0x0, 0x1, EffectLayer.Waist);
                 attacker.PlaySound(0x510);
 
-                attacker.SendLocalizedMessage(
-                    1063100
-                ); // Your quick flight to your target causes extra damage as you strike!
+                // Your quick flight to your target causes extra damage as you strike!
+                attacker.SendLocalizedMessage(1063100);
                 defender.FixedParticles(0x37BE, 1, 5, 0x26BD, 0, 0x1, EffectLayer.Waist);
 
                 CheckGain(attacker);
             }
-
-            ClearCurrentMove(attacker);
         }
 
         public override void OnClearMove(Mobile from)
         {
-            if (m_Table.Remove(from, out var t))
+            if (_table.Remove(from, out var t))
             {
                 t.Stop();
             }
@@ -94,34 +92,34 @@ namespace Server.Spells.Ninjitsu
 
         public static double GetBonus(Mobile from)
         {
-            if (!m_Table.TryGetValue(from, out var t))
+            if (!_table.TryGetValue(from, out var t))
             {
                 return 0;
             }
 
-            var xDelta = t.m_Location.X - from.X;
-            var yDelta = t.m_Location.Y - from.Y;
+            var xDelta = t._location.X - from.X;
+            var yDelta = t._location.Y - from.Y;
 
             return Math.Min(Math.Sqrt(xDelta * xDelta + yDelta * yDelta), 20.0);
         }
 
         private class KiAttackTimer : Timer
         {
-            public readonly Mobile m_Mobile;
-            public Point3D m_Location;
+            public readonly Mobile _mobile;
+            public Point3D _location;
 
             public KiAttackTimer(Mobile m) : base(TimeSpan.FromSeconds(2.0))
             {
-                m_Mobile = m;
-                m_Location = m.Location;
+                _mobile = m;
+                _location = m.Location;
             }
 
             protected override void OnTick()
             {
-                ClearCurrentMove(m_Mobile);
-                m_Mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
+                ClearCurrentMove(_mobile);
+                _mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
 
-                m_Table.Remove(m_Mobile);
+                _table.Remove(_mobile);
             }
         }
     }

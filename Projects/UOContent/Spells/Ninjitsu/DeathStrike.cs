@@ -8,7 +8,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class DeathStrike : NinjaMove
     {
-        private static readonly Dictionary<Mobile, DeathStrikeTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, DeathStrikeTimer> _table = new();
 
         public override int BaseMana => 30;
         public override double RequiredSkill => 85.0;
@@ -29,19 +29,15 @@ namespace Server.Spells.Ninjitsu
 
             var ninjitsu = attacker.Skills.Ninjitsu.Value;
 
-            double chance;
-
             // TODO: should be defined onHit method, what if the player hit and remove the weapon before process? ;)
             var isRanged = attacker.Weapon is BaseRanged;
 
-            if (ninjitsu < 100) // This formula is an approximation from OSI data.  TODO: find correct formula
+            // This formula is an approximation from OSI data.  TODO: find correct formula
+            double chance = ninjitsu switch
             {
-                chance = 30 + (ninjitsu - 85) * 2.2;
-            }
-            else
-            {
-                chance = 63 + (ninjitsu - 100) * 1.1;
-            }
+                < 100 => 30 + (ninjitsu - 85) * 2.2,
+                _     => 63 + (ninjitsu - 100) * 1.1
+            };
 
             if (chance / 100 < Utility.RandomDouble())
             {
@@ -51,7 +47,7 @@ namespace Server.Spells.Ninjitsu
 
             var damageBonus = 0;
 
-            if (m_Table.Remove(defender, out var timer))
+            if (_table.Remove(defender, out var timer))
             {
                 defender.SendLocalizedMessage(1063092); // Your opponent lands another Death Strike!
 
@@ -74,7 +70,7 @@ namespace Server.Spells.Ninjitsu
 
             var t = new DeathStrikeTimer(defender, attacker, damageBonus, isRanged);
 
-            m_Table[defender] = t;
+            _table[defender] = t;
 
             t.Start();
 
@@ -83,37 +79,27 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddStep(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var timer) && ++timer.Steps >= 5)
+            if (_table.TryGetValue(m, out var timer) && ++timer.Steps >= 5)
             {
                 timer.ProcessDeathStrike();
             }
         }
 
-        public override void OnClearMove(Mobile from)
-        {
-            base.OnClearMove(from);
-
-            if (m_Table.Remove(from, out var t))
-            {
-                t.Stop();
-            }
-        }
-
         private class DeathStrikeTimer : Timer
         {
-            public readonly Mobile m_Attacker;
-            public readonly int m_DamageBonus;
-            public readonly bool m_isRanged;
-            public readonly Mobile m_Target;
+            private readonly Mobile _attacker;
+            private readonly int _damageBonus;
+            private readonly bool _isRanged;
+            private readonly Mobile _target;
             public int Steps { get; set; }
 
-            internal DeathStrikeTimer(Mobile target, Mobile attacker, int damageBonus, bool isRanged)
+            public DeathStrikeTimer(Mobile target, Mobile attacker, int damageBonus, bool isRanged)
                 : base(TimeSpan.FromSeconds(5.0))
             {
-                m_Target = target;
-                m_Attacker = attacker;
-                m_DamageBonus = damageBonus;
-                m_isRanged = isRanged;
+                _target = target;
+                _attacker = attacker;
+                _damageBonus = damageBonus;
+                _isRanged = isRanged;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -124,13 +110,13 @@ namespace Server.Spells.Ninjitsu
 
             public void ProcessDeathStrike()
             {
-                var ninjitsu = m_Attacker.Skills.Ninjitsu.Value;
-                var stalkingBonus = Tracking.GetStalkingBonus(m_Attacker, m_Target);
+                var ninjitsu = _attacker.Skills.Ninjitsu.Value;
+                var stalkingBonus = Tracking.GetStalkingBonus(_attacker, _target);
 
                 if (Core.ML)
                 {
-                    var scalar = Math.Min(1, (m_Attacker.Skills.Hiding.Value +
-                                              m_Attacker.Skills.Stealth.Value) / 220);
+                    var scalar = Math.Min(1, (_attacker.Skills.Hiding.Value +
+                                              _attacker.Skills.Stealth.Value) / 220);
 
                     int damage;
                     // New formula doesn't apply DamageBonus anymore, caps must be, directly, 60/30.
@@ -143,12 +129,12 @@ namespace Server.Spells.Ninjitsu
                         damage = (int)Math.Floor(Math.Min(30, ninjitsu / 9 * (0.3 + 0.7 * scalar) + stalkingBonus));
                     }
 
-                    if (m_isRanged)
+                    if (_isRanged)
                     {
                         damage /= 2;
                     }
 
-                    m_Target.Damage(damage, m_Attacker); // Damage is direct.
+                    _target.Damage(damage, _attacker); // Damage is direct.
                 }
                 else
                 {
@@ -156,12 +142,12 @@ namespace Server.Spells.Ninjitsu
                     var baseDamage = ninjitsu / divisor * 10;
 
                     var maxDamage = Steps >= 5 ? 62 : 22;
-                    var damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + m_DamageBonus;
+                    var damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + _damageBonus;
 
                     // Damage is physical.
                     AOS.Damage(
-                        m_Target,
-                        m_Attacker,
+                        _target,
+                        _attacker,
                         damage,
                         true,
                         100,
@@ -175,9 +161,10 @@ namespace Server.Spells.Ninjitsu
                         false,
                         true
                     );
-                }
 
-                Stop();
+                    Stop();
+                    _table.Remove(_target);
+                }
             }
         }
     }

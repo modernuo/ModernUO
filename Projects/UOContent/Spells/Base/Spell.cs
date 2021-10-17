@@ -24,8 +24,7 @@ namespace Server.Spells
         // the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
         // of course, two MA's won't.
 
-        private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable =
-            new();
+        private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable = new();
 
         private AnimTimer m_AnimTimer;
 
@@ -60,13 +59,17 @@ namespace Server.Spells
 
         public virtual bool DelayedDamage => false;
 
-        public virtual bool DelayedDamageStacking => true;
+        public static readonly Type[] AOSNoDelayedDamageStackingSelf = Core.AOS ? Array.Empty<Type>() : null;
+
+        // Null means stacking is allowed while empty indicates no stacking with self
+        // More than zero means no stacking with self and other spells
+        public virtual Type[] DelayedDamageSpellFamilyStacking => null;
 
         public virtual bool BlockedByHorrificBeast => true;
         public virtual bool BlockedByAnimalForm => true;
         public virtual bool BlocksMovement => true;
 
-        public virtual bool CheckNextSpellTime => !(Scroll is BaseWand);
+        public virtual bool CheckNextSpellTime => Scroll is not BaseWand;
 
         public virtual int CastRecoveryBase => 6;
         public virtual int CastRecoveryFastScalar => 1;
@@ -149,21 +152,38 @@ namespace Server.Spells
 
         public void StartDelayedDamageContext(Mobile m, Timer t)
         {
-            if (DelayedDamageStacking)
+            var damageStacking = DelayedDamageSpellFamilyStacking;
+            if (damageStacking == null)
             {
                 return; // Sanity
             }
 
-            if (!m_ContextTable.TryGetValue(GetType(), out var contexts))
+            var type = GetType();
+
+            if (!m_ContextTable.TryGetValue(type, out var context))
             {
-                m_ContextTable[GetType()] = contexts = new DelayedDamageContextWrapper();
+                m_ContextTable[type] = context = new DelayedDamageContextWrapper();
+
+                for (int i = 0; i < damageStacking.Length; i++)
+                {
+                    m_ContextTable.Add(damageStacking[i], context);
+                }
             }
 
-            contexts.Add(m, t);
+            context.Add(m, t);
         }
+
+        public bool HasDelayedDamageContext(Mobile m) =>
+            DelayedDamageSpellFamilyStacking != null &&
+            m_ContextTable.TryGetValue(GetType(), out var context) && context.Contains(m);
 
         public void RemoveDelayedDamageContext(Mobile m)
         {
+            if (DelayedDamageSpellFamilyStacking == null)
+            {
+                return; // Sanity
+            }
+
             if (m_ContextTable.TryGetValue(GetType(), out var contexts))
             {
                 contexts.Remove(m);
@@ -379,7 +399,7 @@ namespace Server.Spells
 
             if (State == SpellState.Casting)
             {
-                if (!firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First)
+                if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
                 {
                     return;
                 }
@@ -390,7 +410,6 @@ namespace Server.Spells
                 OnDisturb(type, true);
 
                 m_CastTimer?.Stop();
-
                 m_AnimTimer?.Stop();
 
                 if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
@@ -402,7 +421,7 @@ namespace Server.Spells
             }
             else if (State == SpellState.Sequencing)
             {
-                if (!firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First)
+                if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
                 {
                     return;
                 }
@@ -849,10 +868,14 @@ namespace Server.Spells
                 m_Contexts.Add(m, t);
             }
 
+            public bool Contains(Mobile m) => m_Contexts.ContainsKey(m);
+
             public void Remove(Mobile m)
             {
-                m_Contexts.Remove(m);
-                // TODO: Should we stop the timer?
+                if (m_Contexts.Remove(m, out var t))
+                {
+                    t.Stop();
+                }
             }
         }
 

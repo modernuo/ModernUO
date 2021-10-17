@@ -30,6 +30,11 @@ namespace Server.Spells
             }
         }
 
+        protected override void OnCantSeeTarget(Mobile from, object o)
+        {
+            from.SendLocalizedMessage(500237); // Target can not be seen.
+        }
+
         protected override void OnTargetOutOfLOS(Mobile from, object o)
         {
             if (!m_CheckLOS)

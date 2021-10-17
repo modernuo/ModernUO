@@ -151,7 +151,7 @@ namespace Server.Misc
 
             pm.ToTTotalMonsterFame += (int)(bc.Fame * (1 + Math.Sqrt(pm.Luck) / 100));
 
-            // This is the Exponentional regression with only 2 datapoints.
+            // This is the Exponential regression with only 2 datapoints.
             // A log. func would also work, but it didn't make as much sense.
             // This function isn't OSI exact being that I don't know OSI's func they used ;p
             var x = pm.ToTTotalMonsterFame;
@@ -263,16 +263,12 @@ namespace Server.Mobiles
         {
             if (m.Alive && m is PlayerMobile pm)
             {
-                var range = 3;
-
-                if (pm.Alive && (Z - pm.Z).Abs() < 16 && InRange(m, range) && !InRange(oldLocation, range))
+                if (pm.Alive && (Z - pm.Z).Abs() < 16 && InRange(m, 3) && !InRange(oldLocation, 3))
                 {
                     if (pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward)
                     {
-                        SayTo(
-                            pm,
-                            1070980
-                        ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
+                        // Congratulations! You have turned in enough minor treasures to earn a greater reward.
+                        SayTo(pm, 1070980);
 
                         pm.CloseGump<ToTTurnInGump>(); // Sanity
 
@@ -285,18 +281,16 @@ namespace Server.Mobiles
                     {
                         if (pm.ToTItemsTurnedIn == 0)
                         {
-                            SayTo(
-                                pm,
-                                1071013
-                            ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                            // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                            SayTo(pm, 1071013);
                         }
                         else
                         {
                             SayTo(
                                 pm,
-                                1070981,
+                                1070981, // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
                                 $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
-                            ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+                            );
                         }
 
                         var buttons = ToTTurnInGump.FindRedeemableItems(pm);
@@ -331,7 +325,7 @@ namespace Server.Gumps
         public ItemTileButtonInfo(Item i) : base(
             i.ItemID,
             i.Hue,
-            i.Name == null || i.Name.Length <= 0 ? i.LabelNumber : i.Name
+            i.Name is not { Length: > 0 } ? i.LabelNumber : i.Name
         ) =>
             Item = i;
 
@@ -343,11 +337,9 @@ namespace Server.Gumps
         private readonly Mobile m_Collector;
 
         public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) : base(
-            1071012,
+            1071012, // Click a minor artifact to give it to Ihara Soko.
             buttons.ToList<ImageTileButtonInfo>()
-        ) // Click a minor artifact to give it to Ihara Soko.
-            =>
-                m_Collector = collector;
+        ) => m_Collector = collector;
 
         public static List<ItemTileButtonInfo> FindRedeemableItems(Mobile m)
         {
@@ -400,10 +392,8 @@ namespace Server.Gumps
 
             if (++pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward)
             {
-                m_Collector.SayTo(
-                    pm,
-                    1070980
-                ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
+                // Congratulations! You have turned in enough minor treasures to earn a greater reward.
+                m_Collector.SayTo(pm, 1070980);
 
                 pm.CloseGump<ToTTurnInGump>(); // Sanity
 
@@ -416,9 +406,9 @@ namespace Server.Gumps
             {
                 m_Collector.SayTo(
                     pm,
-                    1070981,
+                    1070981, // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
                     $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
-                ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+                );
 
                 var buttons = FindRedeemableItems(pm);
 
@@ -433,26 +423,24 @@ namespace Server.Gumps
 
         public override void HandleCancel(NetState sender)
         {
-            if (!(sender.Mobile is PlayerMobile pm) || !pm.InRange(m_Collector.Location, 7))
+            if (sender.Mobile is not PlayerMobile pm || !pm.InRange(m_Collector.Location, 7))
             {
                 return;
             }
 
             if (pm.ToTItemsTurnedIn == 0)
             {
-                m_Collector.SayTo(
-                    pm,
-                    1071013
-                ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                m_Collector.SayTo(pm, 1071013);
             }
-            else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward
-            ) // This case should ALWAYS be true with this gump, jsut a sanity check
+            // This case should ALWAYS be true with this gump, just a sanity check
+            else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward)
             {
                 m_Collector.SayTo(
                     pm,
-                    1070981,
+                    1070981, // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
                     $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
-                ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+                );
             }
             else
             {
@@ -611,11 +599,11 @@ namespace Server.Gumps
                 pm.ToTItemsTurnedIn -= TreasuresOfTokuno.ItemsPerReward;
                 m_Collector.SayTo(
                     pm,
-                    1070984,
-                    item.Name == null || item.Name.Length <= 0
+                    1070984, // You have earned the gratitude of the Empire. I have placed the ~1_OBJTYPE~ in your backpack.
+                    item.Name is not { Length: > 0 }
                         ? $"#{item.LabelNumber}"
                         : item.Name
-                ); // You have earned the gratitude of the Empire. I have placed the ~1_OBJTYPE~ in your backpack.
+                );
             }
             else
             {
@@ -634,19 +622,17 @@ namespace Server.Gumps
 
             if (pm.ToTItemsTurnedIn == 0)
             {
-                m_Collector.SayTo(
-                    pm,
-                    1071013
-                ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
+                m_Collector.SayTo(pm, 1071013);
             }
-            else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward
-            ) // This and above case should ALWAYS be FALSE with this gump, jsut a sanity check
+            // This and above case should ALWAYS be FALSE with this gump, just a sanity check
+            else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward)
             {
                 m_Collector.SayTo(
                     pm,
-                    1070981,
+                    1070981, // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
                     $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"
-                ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
+                );
             }
             else
             {

@@ -164,36 +164,33 @@ namespace Server.Targeting
             {
                 OnTargetOutOfRange(from, targeted);
             }
-            else
+            else if (!from.CanSee(targeted))
             {
-                if (!from.CanSee(targeted))
-                {
-                    OnCantSeeTarget(from, targeted);
-                }
-                else if (CheckLOS && !from.InLOS(targeted))
-                {
-                    OnTargetOutOfLOS(from, targeted);
-                }
-                else if (item?.InSecureTrade == true)
-                {
-                    OnTargetInSecureTrade(from, targeted);
-                }
-                else if (item?.IsAccessibleTo(from) == false)
-                {
-                    OnTargetNotAccessible(from, targeted);
-                }
-                else if (item?.CheckTarget(from, this, targeted) == false)
-                {
-                    OnTargetUntargetable(from, targeted);
-                }
-                else if (mobile?.CheckTarget(from, this, mobile) == false)
-                {
-                    OnTargetUntargetable(from, mobile);
-                }
-                else if (from.Region.OnTarget(from, this, targeted))
-                {
-                    OnTarget(from, targeted);
-                }
+                OnCantSeeTarget(from, targeted);
+            }
+            else if (CheckLOS && !from.InLOS(targeted))
+            {
+                OnTargetOutOfLOS(from, targeted);
+            }
+            else if (item?.InSecureTrade == true)
+            {
+                OnTargetInSecureTrade(from, targeted);
+            }
+            else if (item?.IsAccessibleTo(from) == false)
+            {
+                OnTargetNotAccessible(from, targeted);
+            }
+            else if (item?.CheckTarget(from, this, targeted) == false)
+            {
+                OnTargetUntargetable(from, targeted);
+            }
+            else if (mobile?.CheckTarget(from, this, mobile) == false)
+            {
+                OnTargetUntargetable(from, mobile);
+            }
+            else if (from.Region.OnTarget(from, this, targeted))
+            {
+                OnTarget(from, targeted);
             }
 
             OnTargetFinish(from);

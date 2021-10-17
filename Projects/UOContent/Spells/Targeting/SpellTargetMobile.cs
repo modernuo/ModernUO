@@ -16,9 +16,17 @@ namespace Server.Spells
 
         public ISpell Spell => m_Spell;
 
+        protected override void OnCantSeeTarget(Mobile from, object o)
+        {
+            from.SendLocalizedMessage(500237); // Target can not be seen.
+        }
+
         protected override void OnTarget(Mobile from, object o)
         {
-            m_Spell.Target(o as Mobile);
+            if (o is Mobile m)
+            {
+                m_Spell.Target(m);
+            }
         }
 
         protected override void OnTargetFinish(Mobile from)

@@ -5,12 +5,12 @@ namespace Server.Spells
 {
     public abstract class MagerySpell : Spell
     {
-        private const double ChanceOffset = 20.0, ChanceLength = 100.0 / 7.0;
+        private const double ChanceOffset = 20.0;
+        private const double ChanceLength = 100.0 / 7.0;
 
         private static readonly int[] m_ManaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
-        public MagerySpell(Mobile caster, Item scroll, SpellInfo info)
-            : base(caster, scroll, info)
+        public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
         }
 
@@ -80,12 +80,13 @@ namespace Server.Spells
 
         public virtual double GetResistPercentForCircle(Mobile target, SpellCircle circle)
         {
-            var firstPercent = target.Skills.MagicResist.Value / 5.0;
-            var secondPercent = target.Skills.MagicResist.Value -
+            var magicResist = target.Skills.MagicResist.Value;
+            var firstPercent = magicResist / 5.0;
+            var secondPercent = magicResist -
                                 ((Caster.Skills[CastSkill].Value - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
 
-            return (firstPercent > secondPercent ? firstPercent : secondPercent) /
-                   2.0; // Seems should be about half of what stratics says.
+            // Seems should be about half of what stratics says.
+            return (firstPercent > secondPercent ? firstPercent : secondPercent) / 2.0;
         }
 
         public virtual double GetResistPercent(Mobile target) => GetResistPercentForCircle(target, Circle);

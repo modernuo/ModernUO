@@ -9,7 +9,7 @@ namespace Server.Spells.Mysticism
 {
     public class StoneFormSpell : MysticSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Stone Form",
             "In Rel Ylem",
             -1,
@@ -19,15 +19,13 @@ namespace Server.Spells.Mysticism
             Reagent.Garlic
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
+        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
-        public StoneFormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+        public StoneFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
-
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.25);
         public override double RequiredSkill => 33.0;
         public override int RequiredMana => 11;
 
@@ -36,7 +34,7 @@ namespace Server.Spells.Mysticism
             EventSink.PlayerDeath += OnPlayerDeath;
         }
 
-        public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
+        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
         public override bool CheckCast()
         {
@@ -118,7 +116,7 @@ namespace Server.Spells.Mysticism
                         Caster.AddResistanceMod(mods[i]);
                     }
 
-                    m_Table[Caster] = mods;
+                    _table[Caster] = mods;
 
                     Caster.PlaySound(0x65A);
                     Caster.Delta(MobileDelta.Resistances);
@@ -145,7 +143,7 @@ namespace Server.Spells.Mysticism
 
         public static void RemoveEffects(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mods))
+            if (!_table.Remove(m, out var mods))
             {
                 return;
             }

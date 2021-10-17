@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Arch Cure",
             "Vas An Nox",
             215,
@@ -18,7 +18,7 @@ namespace Server.Spells.Fourth
             Reagent.MandrakeRoot
         );
 
-        public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -29,11 +29,7 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 

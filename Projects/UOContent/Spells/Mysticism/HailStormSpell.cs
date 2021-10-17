@@ -5,7 +5,7 @@ namespace Server.Spells.Mysticism
 {
     public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Hail Storm",
             "Kal Des Ylem",
             -1,
@@ -16,12 +16,11 @@ namespace Server.Spells.Mysticism
             Reagent.MandrakeRoot
         );
 
-        public HailStormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+        public HailStormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.0);
 
         public override double RequiredSkill => 70.0;
         public override int RequiredMana => 40;
@@ -30,9 +29,8 @@ namespace Server.Spells.Mysticism
         {
             if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
-                /* Summons a storm of hailstones that strikes all Targets
-                 * within a radius around the Target's Location, dealing
-                 * cold damage.
+                /* Summons a storm of hailstones that strikes all Targets within a radius around the Target's Location,
+                 * dealing cold damage.
                  */
 
                 SpellHelper.Turn(Caster, p);

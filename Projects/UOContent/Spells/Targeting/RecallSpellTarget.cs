@@ -57,9 +57,9 @@ namespace Server.Spells
                         MessageType.Regular,
                         0x3B2,
                         3,
-                        502357,
+                        502357, // I can not recall from that object.
                         from.Name
-                    ); // I can not recall from that object.
+                    );
                 }
             }
             else if (o is HouseRaffleDeed deed && deed.ValidLocation())
@@ -74,9 +74,9 @@ namespace Server.Spells
                     MessageType.Regular,
                     0x3B2,
                     3,
-                    502357,
+                    502357, // I can not recall from that object.
                     from.Name
-                ); // I can not recall from that object.
+                );
             }
         }
 

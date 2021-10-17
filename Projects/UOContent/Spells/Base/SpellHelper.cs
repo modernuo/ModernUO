@@ -185,7 +185,7 @@ namespace Server.Spells
 
         public static void Turn(Mobile from, object to)
         {
-            if (!(to is IPoint3D target))
+            if (to is not IPoint3D target)
             {
                 return;
             }
@@ -920,13 +920,13 @@ namespace Server.Spells
         }
 
         // magic reflection
-        public static void CheckReflect(int circle, Mobile caster, ref Mobile target)
-        {
+        public static bool CheckReflect(int circle, Mobile caster, ref Mobile target) =>
             CheckReflect(circle, ref caster, ref target);
-        }
 
-        public static void CheckReflect(int circle, ref Mobile caster, ref Mobile target)
+        public static bool CheckReflect(int circle, ref Mobile caster, ref Mobile target)
         {
+            var reflect = false;
+
             if (target.MagicDamageAbsorb > 0)
             {
                 ++circle;
@@ -934,41 +934,26 @@ namespace Server.Spells
                 target.MagicDamageAbsorb -= circle;
 
                 // This order isn't very intuitive, but you have to nullify reflect before target gets switched
-
-                var reflect = target.MagicDamageAbsorb >= 0;
-
-                (target as BaseCreature)?.CheckReflect(caster, ref reflect);
-
+                reflect = target.MagicDamageAbsorb >= 0;
                 if (target.MagicDamageAbsorb <= 0)
                 {
                     target.MagicDamageAbsorb = 0;
                     DefensiveSpell.Nullify(target);
                 }
-
-                if (reflect)
-                {
-                    target.FixedEffect(0x37B9, 10, 5);
-
-                    var temp = caster;
-                    caster = target;
-                    target = temp;
-                }
             }
-            else if (target is BaseCreature creature)
+
+            if (target is BaseCreature creature)
             {
-                var reflect = false;
-
                 creature.CheckReflect(caster, ref reflect);
-
-                if (reflect)
-                {
-                    creature.FixedEffect(0x37B9, 10, 5);
-
-                    var temp = caster;
-                    caster = creature;
-                    target = temp;
-                }
             }
+
+            if (reflect)
+            {
+                target.FixedEffect(0x37B9, 10, 5);
+                (caster, target) = (target, caster);
+            }
+
+            return reflect;
         }
 
         public static void Damage(Spell spell, Mobile target, double damage)
@@ -1136,7 +1121,7 @@ namespace Server.Spells
                 m_Damage = damage;
                 m_Spell = s;
 
-                if (m_Spell?.DelayedDamage == true && !m_Spell.DelayedDamageStacking)
+                if (m_Spell?.DelayedDamage == true)
                 {
                     m_Spell.StartDelayedDamageContext(target, this);
                 }
@@ -1145,7 +1130,6 @@ namespace Server.Spells
             protected override void OnTick()
             {
                 (m_From as BaseCreature)?.AlterSpellDamageTo(m_Target, ref m_Damage);
-
                 (m_Target as BaseCreature)?.AlterSpellDamageFrom(m_From, ref m_Damage);
 
                 m_Target.Damage(m_Damage);
@@ -1184,7 +1168,8 @@ namespace Server.Spells
                 m_Chaos = chaos;
                 m_DFA = dfa;
                 m_Spell = s;
-                if (m_Spell?.DelayedDamage == true && !m_Spell.DelayedDamageStacking)
+
+                if (m_Spell?.DelayedDamage == true)
                 {
                     m_Spell.StartDelayedDamageContext(target, this);
                 }
@@ -1229,7 +1214,7 @@ namespace Server.Spells
 
     public static class TransformationSpellHelper
     {
-        private static readonly Dictionary<Mobile, TransformContext> m_Table = new();
+        private static readonly Dictionary<Mobile, TransformContext> _table = new();
 
         public static bool CheckCast(Mobile caster, Spell spell)
         {
@@ -1256,7 +1241,7 @@ namespace Server.Spells
 
         public static bool OnCast(Mobile caster, Spell spell)
         {
-            if (!(spell is ITransformationSpell transformSpell))
+            if (spell is not ITransformationSpell transformSpell)
             {
                 return false;
             }
@@ -1363,7 +1348,7 @@ namespace Server.Spells
 
         public static void AddContext(Mobile m, TransformContext context)
         {
-            m_Table[m] = context;
+            _table[m] = context;
         }
 
         public static void RemoveContext(Mobile m, bool resetGraphics)
@@ -1378,7 +1363,7 @@ namespace Server.Spells
 
         public static void RemoveContext(Mobile m, TransformContext context, bool resetGraphics)
         {
-            if (!m_Table.Remove(m))
+            if (!_table.Remove(m))
             {
                 return;
             }
@@ -1402,7 +1387,7 @@ namespace Server.Spells
 
         public static TransformContext GetContext(Mobile m)
         {
-            m_Table.TryGetValue(m, out var context);
+            _table.TryGetValue(m, out var context);
 
             return context;
         }

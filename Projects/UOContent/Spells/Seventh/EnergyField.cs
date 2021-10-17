@@ -8,7 +8,7 @@ namespace Server.Spells.Seventh
 {
     public class EnergyFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Energy Field",
             "In Sanct Grav",
             221,
@@ -20,7 +20,7 @@ namespace Server.Spells.Seventh
             Reagent.SulfurousAsh
         );
 
-        public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,11 +28,7 @@ namespace Server.Spells.Seventh
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
@@ -50,10 +46,8 @@ namespace Server.Spells.Seventh
                 }
                 else
                 {
-                    duration = TimeSpan.FromSeconds(
-                        Caster.Skills.Magery.Value * 0.28 +
-                        2.0
-                    ); // (28% of magery) + 2.0 seconds
+                    // (28% of magery) + 2.0 seconds
+                    duration = TimeSpan.FromSeconds(Caster.Skills.Magery.Value * 0.28 + 2.0);
                 }
 
                 var itemID = eastToWest ? 0x3946 : 0x3956;

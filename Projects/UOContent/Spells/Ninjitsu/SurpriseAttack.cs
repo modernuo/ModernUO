@@ -6,8 +6,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class SurpriseAttack : NinjaMove
     {
-        private static readonly Dictionary<Mobile, SurpriseAttackInfo>
-            m_Table = new();
+        private static readonly Dictionary<Mobile, SurpriseAttackTimer> _table = new();
 
         public override int BaseMana => 20;
         public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
@@ -59,10 +58,9 @@ namespace Server.Spells.Ninjitsu
 
             var malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 
-            var info = new SurpriseAttackInfo(defender, malus);
-            Timer.StartTimer(TimeSpan.FromSeconds(8.0), () => EndSurprise(info), out info._timerToken);
-
-            m_Table[defender] = info;
+            var t = new SurpriseAttackTimer(defender, malus);
+            _table[defender] = t;
+            t.Start();
 
             CheckGain(attacker);
         }
@@ -78,39 +76,38 @@ namespace Server.Spells.Ninjitsu
 
         public static bool GetMalus(Mobile target, ref int malus)
         {
-            if (!m_Table.TryGetValue(target, out var info))
+            if (!_table.TryGetValue(target, out var info))
             {
                 return false;
             }
 
-            malus = info.m_Malus;
+            malus = info._malus;
             return true;
         }
 
         private static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var info))
+            if (_table.Remove(m, out var t))
             {
-                info._timerToken.Cancel();
+                t.Stop();
             }
         }
 
-        private static void EndSurprise(SurpriseAttackInfo info)
+        private class SurpriseAttackTimer : Timer
         {
-            StopTimer(info.m_Target);
-            info.m_Target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
-        }
+            public readonly int _malus;
+            public readonly Mobile _target;
 
-        private class SurpriseAttackInfo
-        {
-            public readonly int m_Malus;
-            public readonly Mobile m_Target;
-            public TimerExecutionToken _timerToken;
-
-            public SurpriseAttackInfo(Mobile target, int effect)
+            public SurpriseAttackTimer(Mobile target, int effect) : base(TimeSpan.FromSeconds(8.0))
             {
-                m_Target = target;
-                m_Malus = effect;
+                _target = target;
+                _malus = effect;
+            }
+
+            protected override void OnTick()
+            {
+                StopTimer(_target);
+                _target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
             }
         }
     }

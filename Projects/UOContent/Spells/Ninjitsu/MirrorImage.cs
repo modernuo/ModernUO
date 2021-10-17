@@ -10,16 +10,16 @@ namespace Server.Spells.Ninjitsu
 {
     public class MirrorImage : NinjaSpell
     {
-        private static readonly Dictionary<Mobile, int> m_CloneCount = new();
+        private static readonly Dictionary<Mobile, int> _cloneCount = new();
 
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mirror Image",
             null,
             -1,
             9002
         );
 
-        public MirrorImage(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public MirrorImage(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 
@@ -30,7 +30,7 @@ namespace Server.Spells.Ninjitsu
 
         public override bool BlockedByAnimalForm => false;
 
-        public static bool HasClone(Mobile m) => m_CloneCount.ContainsKey(m);
+        public static bool HasClone(Mobile m) => _cloneCount.ContainsKey(m);
 
         public static void AddClone(Mobile m)
         {
@@ -39,23 +39,23 @@ namespace Server.Spells.Ninjitsu
                 return;
             }
 
-            m_CloneCount[m] = 1 + (m_CloneCount.TryGetValue(m, out var count) ? count : 0);
+            _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
         }
 
         public static void RemoveClone(Mobile m)
         {
-            if (m == null || !m_CloneCount.TryGetValue(m, out var count))
+            if (m == null || !_cloneCount.TryGetValue(m, out var count))
             {
                 return;
             }
 
             if (count <= 1)
             {
-                m_CloneCount.Remove(m);
+                _cloneCount.Remove(m);
             }
             else
             {
-                m_CloneCount[m]--;
+                _cloneCount[m]--;
             }
         }
 
@@ -101,9 +101,8 @@ namespace Server.Spells.Ninjitsu
             }
             else if (Caster.Followers + 1 > Caster.FollowersMax)
             {
-                Caster.SendLocalizedMessage(
-                    1063133
-                ); // You cannot summon a mirror image because you have too many followers.
+                // You cannot summon a mirror image because you have too many followers.
+                Caster.SendLocalizedMessage(1063133);
             }
             else if (TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell)))
             {
@@ -124,13 +123,14 @@ namespace Server.Spells.Ninjitsu
 
 namespace Server.Mobiles
 {
-    public class Clone : BaseCreature
+    [Serializable(0)]
+    public partial class Clone : BaseCreature
     {
-        private Mobile m_Caster;
+        private Mobile _caster;
 
         public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
         {
-            m_Caster = caster;
+            _caster = caster;
 
             Body = caster.Body;
 
@@ -173,11 +173,7 @@ namespace Server.Mobiles
             new UnsummonTimer(caster, this, duration).Start();
             SummonEnd = Core.Now + duration;
 
-            MirrorImage.AddClone(m_Caster);
-        }
-
-        public Clone(Serial serial) : base(serial)
-        {
+            MirrorImage.AddClone(_caster);
         }
 
         protected override BaseAI ForcedAI => new CloneAI(this);
@@ -189,14 +185,12 @@ namespace Server.Mobiles
 
         public override bool IsHumanInTown() => false;
 
-        private Item CloneItem(Item item)
-        {
-            var newItem = new Item(item.ItemID);
-            newItem.Hue = item.Hue;
-            newItem.Layer = item.Layer;
-
-            return newItem;
-        }
+        private Item CloneItem(Item item) =>
+            new(item.ItemID)
+            {
+                Hue = item.Hue,
+                Layer = item.Layer
+            };
 
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
@@ -218,34 +212,17 @@ namespace Server.Mobiles
 
         public override void OnAfterDelete()
         {
-            MirrorImage.RemoveClone(m_Caster);
+            MirrorImage.RemoveClone(_caster);
             base.OnAfterDelete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_Caster);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Caster = reader.ReadEntity<Mobile>();
-
-            MirrorImage.AddClone(m_Caster);
+            MirrorImage.AddClone(_caster);
         }
     }
-}
 
-namespace Server.Mobiles
-{
     public class CloneAI : BaseAI
     {
         public CloneAI(Clone m) : base(m) => m.CurrentSpeed = m.ActiveSpeed;
