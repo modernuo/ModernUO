@@ -18,10 +18,8 @@ namespace Server.Spells.Necromancy
 
         public override bool ClearHandsOnCast => false;
 
-        public override double CastDelayFastScalar =>
-            Core.SE
-                ? base.CastDelayFastScalar
-                : 0; // Necromancer spells are not affected by fast cast items, though they are by fast cast recovery
+        // Necromancer spells are not affected by fast cast items, though they are by fast cast recovery
+        public override double CastDelayFastScalar => Core.SE ? base.CastDelayFastScalar : 0;
 
         public override int ComputeKarmaAward()
         {
@@ -29,8 +27,8 @@ namespace Server.Spells.Necromancy
             // int karma = -(70 + (10 * (int)Circle));
             var karma = -(40 + (int)(10 * (CastDelayBase.TotalSeconds / CastDelaySecondsPerTick)));
 
-            if (Core.ML
-            ) // Pub 36: "Added a new property called Increased Karma Loss which grants higher karma loss for casting necromancy spells."
+            // Pub 36: "Added a new property called Increased Karma Loss which grants higher karma loss for casting necromancy spells."
+            if (Core.ML)
             {
                 karma += AOS.Scale(karma, AosAttributes.GetValue(Caster, AosAttribute.IncreasedKarmaLoss));
             }

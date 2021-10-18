@@ -19,9 +19,7 @@ namespace Server.Spells.Mysticism
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.75);
-        public override double RequiredSkill => 58.0;
-        public override int RequiredMana => 20;
+        public override SpellCircle Circle => SpellCircle.Sixth;
         public override bool DelayedDamage => true;
 
         public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;

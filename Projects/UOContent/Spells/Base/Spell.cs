@@ -675,11 +675,6 @@ namespace Server.Spells
             return TimeSpan.FromSeconds((double)delay / CastRecoveryPerSecond);
         }
 
-        // public virtual int CastDelayBase{ get{ return 3; } }
-        // public virtual int CastDelayFastScalar{ get{ return 1; } }
-        // public virtual int CastDelayPerSecond{ get{ return 4; } }
-        // public virtual int CastDelayMinimum{ get{ return 1; } }
-
         public virtual TimeSpan GetCastDelay()
         {
             if (Scroll is BaseWand)
@@ -693,7 +688,7 @@ namespace Server.Spells
             // Paladins with magery of 70.0 or above are subject to a faster casting cap of 2
             var fcMax = 4;
 
-            if (CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy ||
+            if (CastSkill is SkillName.Magery or SkillName.Necromancy ||
                 CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0)
             {
                 fcMax = 2;
@@ -777,12 +772,9 @@ namespace Server.Spells
 
                     Scroll.Movable = m;
                 }
-                else
+                else if (ClearHandsOnCast)
                 {
-                    if (ClearHandsOnCast)
-                    {
-                        Caster.ClearHands();
-                    }
+                    Caster.ClearHands();
                 }
 
                 var karma = ComputeKarmaAward();

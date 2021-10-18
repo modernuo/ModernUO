@@ -8,8 +8,7 @@ namespace Server.Spells.Spellweaving
     {
         private int m_CastTimeFocusLevel;
 
-        public ArcanistSpell(Mobile caster, Item scroll, SpellInfo info)
-            : base(caster, scroll, info)
+        public ArcanistSpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
         }
 
@@ -34,7 +33,7 @@ namespace Server.Spells.Spellweaving
             from.Holding as ArcaneFocus ?? from.Backpack?.FindItemByType<ArcaneFocus>();
 
         public static bool CheckExpansion(Mobile from) =>
-            !(from is PlayerMobile) || from.NetState?.SupportsExpansion(Expansion.ML) == true;
+            from is not PlayerMobile || from.NetState?.SupportsExpansion(Expansion.ML) == true;
 
         public override bool CheckCast()
         {
