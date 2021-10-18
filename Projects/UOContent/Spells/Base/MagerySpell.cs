@@ -7,7 +7,7 @@ namespace Server.Spells
     {
         private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
         private static readonly double[] _requiredSkill =
-            Core.AOS ? new[] { 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
+            Core.ML ? new[] { 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
                 new[] { 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
 
         public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
