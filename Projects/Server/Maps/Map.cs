@@ -57,84 +57,116 @@ namespace Server
             return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile.Location));
         }
 
-        public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds) =>
-            SelectEntities(s, true, true, bounds);
-
-        public static IEnumerable<IEntity> SelectEntities(Sector s, bool items, bool mobiles, Rectangle2D bounds)
+        public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds)
         {
-            var eable = Enumerable.Empty<IEntity>();
-            if (mobiles)
+            List<IEntity> entities = new(s.Mobiles.Count + s.Items.Count);
+            for (int i = s.Mobiles.Count - 1, j = s.Items.Count - 1; i >= 0 || j >= 0; --i, --j)
             {
-                eable = eable.Union(s.Mobiles.Where(o => o?.Deleted == false));
+                if (j >= 0)
+                {
+                    Item item = s.Items[j];
+                    if (item != null && !item.Deleted && item.Parent == null && bounds.Contains(item.Location))
+                    {
+                        entities.Add(item);
+                    }
+                }
+                if (i >= 0)
+                {
+                    Mobile mob = s.Mobiles[i];
+                    if (mob != null && !mob.Deleted && bounds.Contains(mob.Location))
+                    {
+                        entities.Add(mob);
+                    }
+                }
             }
-
-            if (items)
-            {
-                eable = eable.Union(s.Items.Where(o => o?.Deleted == false && o.Parent == null));
-            }
-
-            return eable.Where(o => bounds.Contains(o.Location));
+            return entities;
         }
 
         public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
         {
-            return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o.Location));
+            List<T> entities = new(s.Mobiles.Count);
+            Type type = typeof(T);
+            for (int i = s.Mobiles.Count - 1; i >= 0; --i)
+            {
+                Mobile mob = s.Mobiles[i];
+                if (mob != null && !mob.Deleted && bounds.Contains(mob.Location) && type.IsAssignableFrom(mob.GetType()))
+                    entities.Add(mob as T);
+            }
+            return entities;
         }
 
         public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
         {
-            return s.Items.OfType<T>()
-                .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o.Location));
+            List<T> entities = new(s.Items.Count);
+            Type type = typeof(T);
+            for (int i = s.Items.Count - 1; i >= 0; --i)
+            {
+                Item item = s.Items[i];
+                if (item != null && !item.Deleted && item.Parent == null && bounds.Contains(item.Location) && type.IsAssignableFrom(item.GetType()))
+                    entities.Add(item as T);
+            }
+            return entities;
         }
 
         public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
         {
-            return s.Multis.Where(o => o?.Deleted == false && bounds.Contains(o.Location));
+            List<BaseMulti> entities = new(s.Multis.Count);
+            for (int i = s.Multis.Count - 1; i >= 0; --i)
+            {
+                BaseMulti item = s.Multis[i];
+                if (item != null && !item.Deleted && bounds.Contains(item.Location))
+                    entities.Add(item);
+            }
+            return entities;
         }
 
         public static IEnumerable<StaticTile[]> SelectMultiTiles(Sector s, Rectangle2D bounds)
         {
-            foreach (var o in s.Multis.Where(o => o?.Deleted == false))
+            for (int l = s.Multis.Count - 1; l >= 0; --l)
             {
-                var c = o.Components;
-
-                int x, y, xo, yo;
-                StaticTile[] t, r;
-
-                for (x = bounds.Start.X; x < bounds.End.X; x++)
+                BaseMulti o = s.Multis[l];
+                if (o != null && !o.Deleted)
                 {
-                    xo = x - (o.X + c.Min.X);
+                    MultiComponentList c = o.Components;
 
-                    if (xo < 0 || xo >= c.Width)
+                    int x, y, xo, yo;
+                    StaticTile[] t, r;
+
+                    for (x = bounds.Start.X; x < bounds.End.X; x++)
                     {
-                        continue;
-                    }
+                        xo = x - (o.X + c.Min.X);
 
-                    for (y = bounds.Start.Y; y < bounds.End.Y; y++)
-                    {
-                        yo = y - (o.Y + c.Min.Y);
-
-                        if (yo < 0 || yo >= c.Height)
+                        if (xo < 0 || xo >= c.Width)
                         {
                             continue;
                         }
 
-                        t = c.Tiles[xo][yo];
-
-                        if (t.Length <= 0)
+                        for (y = bounds.Start.Y; y < bounds.End.Y; y++)
                         {
-                            continue;
+                            yo = y - (o.Y + c.Min.Y);
+
+                            if (yo < 0 || yo >= c.Height)
+                            {
+                                continue;
+                            }
+
+                            t = c.Tiles[xo][yo];
+
+                            if (t.Length <= 0)
+                            {
+                                continue;
+                            }
+
+                            r = new StaticTile[t.Length];
+
+                            for (var i = 0; i < t.Length; i++)
+                            {
+                                r[i] = t[i];
+                                r[i].Z += o.Z;
+                            }
+
+                            yield return r;
                         }
-
-                        r = new StaticTile[t.Length];
-
-                        for (var i = 0; i < t.Length; i++)
-                        {
-                            r[i] = t[i];
-                            r[i].Z += o.Z;
-                        }
-
-                        yield return r;
                     }
                 }
             }
