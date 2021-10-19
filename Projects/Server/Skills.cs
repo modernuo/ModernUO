@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Network;
 
@@ -384,7 +385,8 @@ namespace Server
     {
         public SkillInfo(
             int skillID, string name, double strScale, double dexScale, double intScale, string title,
-            SkillUseCallback callback, double strGain, double dexGain, double intGain, double gainFactor
+            SkillUseCallback callback, double strGain, double dexGain, double intGain, double gainFactor,
+            string professionSkillName = null
         )
         {
             Name = name;
@@ -398,7 +400,7 @@ namespace Server
             DexGain = dexGain;
             IntGain = intGain;
             GainFactor = gainFactor;
-
+            ProfessionSkillName = professionSkillName ?? Name.Replace(" ", "");
             StatTotal = strScale + dexScale + intScale;
         }
 
@@ -426,25 +428,27 @@ namespace Server
 
         public double GainFactor { get; set; }
 
+        public string ProfessionSkillName { get; set; }
+
         public static SkillInfo[] Table { get; set; } =
         {
             new(0, "Alchemy", 0.0, 5.0, 5.0, "Alchemist", null, 0.0, 0.5, 0.5, 1.0),
             new(1, "Anatomy", 0.0, 0.0, 0.0, "Biologist", null, 0.15, 0.15, 0.7, 1.0),
             new(2, "Animal Lore", 0.0, 0.0, 0.0, "Naturalist", null, 0.0, 0.0, 1.0, 1.0),
-            new(3, "Item Identification", 0.0, 0.0, 0.0, "Merchant", null, 0.0, 0.0, 1.0, 1.0),
+            new(3, "Item Identification", 0.0, 0.0, 0.0, "Merchant", null, 0.0, 0.0, 1.0, 1.0, "ItemID"),
             new(4, "Arms Lore", 0.0, 0.0, 0.0, "Weapon Master", null, 0.75, 0.15, 0.1, 1.0),
             new(5, "Parrying", 7.5, 2.5, 0.0, "Duelist", null, 0.75, 0.25, 0.0, 1.0),
             new(6, "Begging", 0.0, 0.0, 0.0, "Beggar", null, 0.0, 0.0, 0.0, 1.0),
-            new(7, "Blacksmithy", 10.0, 0.0, 0.0, "Blacksmith", null, 1.0, 0.0, 0.0, 1.0),
-            new(8, "Bowcraft/Fletching", 6.0, 16.0, 0.0, "Bowyer", null, 0.6, 1.6, 0.0, 1.0),
+            new(7, "Blacksmithy", 10.0, 0.0, 0.0, "Blacksmith", null, 1.0, 0.0, 0.0, 1.0, "Blacksmith"),
+            new(8, "Bowcraft/Fletching", 6.0, 16.0, 0.0, "Bowyer", null, 0.6, 1.6, 0.0, 1.0, "Bowcraft"),
             new(9, "Peacemaking", 0.0, 0.0, 0.0, "Pacifier", null, 0.0, 0.0, 0.0, 1.0),
             new(10, "Camping", 20.0, 15.0, 15.0, "Explorer", null, 2.0, 1.5, 1.5, 1.0),
             new(11, "Carpentry", 20.0, 5.0, 0.0, "Carpenter", null, 2.0, 0.5, 0.0, 1.0),
             new(12, "Cartography", 0.0, 7.5, 7.5, "Cartographer", null, 0.0, 0.75, 0.75, 1.0),
             new(13, "Cooking", 0.0, 20.0, 30.0, "Chef", null, 0.0, 2.0, 3.0, 1.0),
             new(14, "Detecting Hidden", 0.0, 0.0, 0.0, "Scout", null, 0.0, 0.4, 0.6, 1.0),
-            new(15, "Discordance", 0.0, 2.5, 2.5, "Demoralizer", null, 0.0, 0.25, 0.25, 1.0),
-            new(16, "Evaluating Intelligence", 0.0, 0.0, 0.0, "Scholar", null, 0.0, 0.0, 1.0, 1.0),
+            new(15, "Discordance", 0.0, 2.5, 2.5, "Demoralizer", null, 0.0, 0.25, 0.25, 1.0, "Enticement"),
+            new(16, "Evaluating Intelligence", 0.0, 0.0, 0.0, "Scholar", null, 0.0, 0.0, 1.0, 1.0, "EvaluateIntelligence"),
             new(17, "Healing", 6.0, 6.0, 8.0, "Healer", null, 0.6, 0.6, 0.8, 1.0),
             new(18, "Fishing", 0.0, 0.0, 0.0, "Fisherman", null, 0.5, 0.5, 0.0, 1.0),
             new(19, "Forensic Evaluation", 0.0, 0.0, 0.0, "Detective", null, 0.0, 0.2, 0.8, 1.0),
@@ -476,7 +480,7 @@ namespace Server
             new(45, "Mining", 20.0, 0.0, 0.0, "Miner", null, 2.0, 0.0, 0.0, 1.0),
             new(46, "Meditation", 0.0, 0.0, 0.0, "Stoic", null, 0.0, 0.0, 0.0, 1.0),
             new(47, "Stealth", 0.0, 0.0, 0.0, "Rogue", null, 0.0, 0.0, 0.0, 1.0),
-            new(48, "Remove Trap", 0.0, 0.0, 0.0, "Trap Specialist", null, 0.0, 0.0, 0.0, 1.0),
+            new(48, "Remove Trap", 0.0, 0.0, 0.0, "Trap Specialist", null, 0.0, 0.0, 0.0, 1.0, "Disarm"),
             new(49, "Necromancy", 0.0, 0.0, 0.0, "Necromancer", null, 0.0, 0.0, 0.0, 1.0),
             new(50, "Focus", 0.0, 0.0, 0.0, "Driven", null, 0.0, 0.0, 0.0, 1.0),
             new(51, "Chivalry", 0.0, 0.0, 0.0, "Paladin", null, 0.0, 0.0, 0.0, 1.0),
@@ -892,16 +896,16 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SkillsEnumerator GetEnumerator() => new(m_Skills);
+        public Enumerator GetEnumerator() => new(m_Skills);
 
-        public ref struct SkillsEnumerator
+        public ref struct Enumerator
         {
             private readonly Skill[] _skills;
             private int _index;
             private Skill _current;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal SkillsEnumerator(Skill[] skills)
+            internal Enumerator(Skill[] skills)
             {
                 _skills = skills;
                 _index = 0;
