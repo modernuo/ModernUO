@@ -18,14 +18,19 @@ namespace Server.QuestSystemAdvanced
         public static void Initialize()
         {
             Quests.Clear();
-            //LoadQuests(null);
-            //CommandSystem.Register("LoadQuests", AccessLevel.GameMaster, GenerateQuests_OnCommand);
+            LoadQuests(null);
+            CommandSystem.Register("LoadQuests", AccessLevel.GameMaster, GenerateQuests_OnCommand);
         }
 
         private static void GenerateQuests_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
             LoadQuests(from);
+        }
+
+        public static QuestDefinition GetQuestById(int id)
+        {
+            return Quests.Find(x => x.ID == id);
         }
 
         private static void LoadQuests(Mobile from)
@@ -35,7 +40,7 @@ namespace Server.QuestSystemAdvanced
 
             var di = new DirectoryInfo(Core.BaseDirectory);
 
-            var files = di.GetFiles("questsystem.json", SearchOption.AllDirectories);
+            var files = di.GetFiles("questsystemadvanced.json", SearchOption.AllDirectories);
 
             if (files.Length == 0)
             {
@@ -80,20 +85,7 @@ namespace Server.QuestSystemAdvanced
             for (int i = 0; i < quests.Count; i++)
             {
                 var json = quests[i];
-                var type = AssemblyHandler.FindTypeByName(json.Type);
-
-                if (type == null || !typeof(QuestDefinition).IsAssignableFrom(type))
-                {
-                    var failure = $"QuestSystem: Invalid quest type {json.Type ?? "(-null-)"} ({i})";
-                    if (!failures.Contains(failure))
-                    {
-                        failures.Add(failure);
-                        if (from != null)
-                            from.SendMessage(failure);
-                    }
-
-                    continue;
-                }
+                
 
                 json.GetProperty("ID", options, out int id);
                 json.GetProperty("Title", options, out string title);

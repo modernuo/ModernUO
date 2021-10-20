@@ -9,6 +9,7 @@ namespace Server.QuestSystemAdvanced
     public class RewardDefinition
     {
         public string ItemName { get; set; } = "";
+        public int ItemImage { get; set; } = 0;
         public int Amount { get; set; } = 0;
         public bool DropToBackpack { get; set; } = false;
     }

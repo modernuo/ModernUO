@@ -1,0 +1,32 @@
+[
+    {
+        "ID": 1,
+        "Title": "Find the spider queen",
+        "Description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+        "Rewards": [
+            {
+                "ItemName": "a spider minion",
+                "ItemImage": 8532,
+                "Amount": 1,
+                "DropToBackpack": true
+            },
+            {
+                "ItemName": "gold",
+                "ItemImage": 3823,
+                "Amount": 6000,
+                "DropToBackpack": true
+            }
+        ],
+        "XP": 90,
+        "IsQuestChainElement": false,
+        "ParentQuestID": 0,
+        "QuestTaskList": [
+            {
+                "ID": 1,
+                "Type": "Kill",
+                "EntityName": 1,
+                "Amount": 1
+            }
+        ]
+    }
+]
