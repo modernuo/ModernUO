@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Server.Collections;
 
 namespace Server.Spells.Mysticism
 {
@@ -37,14 +37,13 @@ namespace Server.Spells.Mysticism
 
                 SpellHelper.Turn(Caster, p);
 
-                var targets = new List<Mobile>();
-
                 var map = Caster.Map;
-
-                var pvp = false;
 
                 if (map != null)
                 {
+                    using var pool = PooledRefQueue<Mobile>.Create();
+                    var pvp = false;
+
                     PlayEffect(loc, Caster.Map);
 
                     foreach (var m in map.GetMobilesInRange(loc, 2))
@@ -61,7 +60,7 @@ namespace Server.Spells.Mysticism
                                 continue;
                             }
 
-                            targets.Add(m);
+                            pool.Enqueue(m);
 
                             if (m.Player)
                             {
@@ -69,20 +68,21 @@ namespace Server.Spells.Mysticism
                             }
                         }
                     }
-                }
 
-                var damage = GetNewAosDamage(51, 1, 5, pvp);
-                var reduction = (GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 1200.0;
+                    var damage = GetNewAosDamage(51, 1, 5, pvp);
+                    var reduction = (GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 1200.0;
 
-                foreach (var m in targets)
-                {
-                    Caster.DoHarmful(m);
-                    SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
+                    while (pool.Count > 0)
+                    {
+                        var m = pool.Dequeue();
+                        Caster.DoHarmful(m);
+                        SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
 
-                    var resistedReduction = reduction - m.Skills.MagicResist.Value / 800.0;
+                        var resistedReduction = reduction - m.Skills.MagicResist.Value / 800.0;
 
-                    m.Stam -= (int)(m.StamMax * resistedReduction);
-                    m.Mana -= (int)(m.ManaMax * resistedReduction);
+                        m.Stam -= (int)(m.StamMax * resistedReduction);
+                        m.Mana -= (int)(m.ManaMax * resistedReduction);
+                    }
                 }
             }
 

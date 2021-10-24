@@ -497,7 +497,7 @@ namespace Server.Spells
             {
                 Caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
             }
-            else if (!(Scroll is BaseWand) && (Caster.Paralyzed || Caster.Frozen))
+            else if (Scroll is not BaseWand && (Caster.Paralyzed || Caster.Frozen))
             {
                 Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
             }
@@ -520,7 +520,7 @@ namespace Server.Spells
                     State = SpellState.Casting;
                     Caster.Spell = this;
 
-                    if (!(Scroll is BaseWand) && RevealOnCast)
+                    if (Scroll is not BaseWand && RevealOnCast)
                     {
                         Caster.RevealingAction();
                     }

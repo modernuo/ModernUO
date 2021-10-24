@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Spells.Necromancy;
@@ -31,18 +31,14 @@ namespace Server.Spells.Chivalry
         {
             if (CheckSequence())
             {
-                var targets = new List<Mobile>();
+                using var pool = PooledRefQueue<Mobile>.Create();
 
                 foreach (var m in Caster.GetMobilesInRange(3)) // TODO: Validate range
                 {
-                    if (m is BaseCreature creature && creature.IsAnimatedDead)
+                    if (m is not BaseCreature { IsAnimatedDead: true } && Caster != m && m.InLOS(Caster) &&
+                        Caster.CanBeBeneficial(m, false, true) && m is not Golem)
                     {
-                        continue;
-                    }
-
-                    if (Caster != m && m.InLOS(Caster) && Caster.CanBeBeneficial(m, false, true) && !(m is Golem))
-                    {
-                        targets.Add(m);
+                        pool.Enqueue(m);
                     }
                 }
 
@@ -61,9 +57,9 @@ namespace Server.Spells.Chivalry
                 // TODO: Is there really a resurrection chance?
                 var resChance = 0.1 + 0.9 * Caster.Karma / 10000.0d;
 
-                for (var i = 0; i < targets.Count; ++i)
+                while (pool.Count > 0)
                 {
-                    var m = targets[i];
+                    var m = pool.Dequeue();
 
                     if (!m.Alive)
                     {
@@ -80,85 +76,85 @@ namespace Server.Spells.Chivalry
                             m.SendGump(new ResurrectGump(m, Caster));
                             sacrifice = true;
                         }
+
+                        continue;
                     }
-                    else
+
+                    var sendEffect = false;
+
+                    if (m.Poisoned && m.CurePoison(Caster))
                     {
-                        var sendEffect = false;
+                        Caster.DoBeneficial(m);
 
-                        if (m.Poisoned && m.CurePoison(Caster))
+                        if (Caster != m)
                         {
-                            Caster.DoBeneficial(m);
-
-                            if (Caster != m)
-                            {
-                                Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
-                            }
-
-                            m.SendLocalizedMessage(1010059); // You have been cured of all poisons.
-                            sendEffect = true;
-                            sacrifice = true;
+                            Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
                         }
 
-                        if (m.Hits < m.HitsMax)
-                        {
-                            var toHeal = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
+                        m.SendLocalizedMessage(1010059); // You have been cured of all poisons.
+                        sendEffect = true;
+                        sacrifice = true;
+                    }
 
-                            Caster.DoBeneficial(m);
-                            m.Heal(toHeal, Caster);
-                            sendEffect = true;
-                        }
+                    if (m.Hits < m.HitsMax)
+                    {
+                        var toHeal = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
 
-                        StatMod mod;
+                        Caster.DoBeneficial(m);
+                        m.Heal(toHeal, Caster);
+                        sendEffect = true;
+                    }
 
-                        mod = m.GetStatMod("[Magic] Str Offset");
-                        if (mod?.Offset < 0)
-                        {
-                            m.RemoveStatMod("[Magic] Str Offset");
-                            sendEffect = true;
-                        }
+                    StatMod mod;
 
-                        mod = m.GetStatMod("[Magic] Dex Offset");
-                        if (mod?.Offset < 0)
-                        {
-                            m.RemoveStatMod("[Magic] Dex Offset");
-                            sendEffect = true;
-                        }
+                    mod = m.GetStatMod("[Magic] Str Offset");
+                    if (mod?.Offset < 0)
+                    {
+                        m.RemoveStatMod("[Magic] Str Offset");
+                        sendEffect = true;
+                    }
 
-                        mod = m.GetStatMod("[Magic] Int Offset");
-                        if (mod?.Offset < 0)
-                        {
-                            m.RemoveStatMod("[Magic] Int Offset");
-                            sendEffect = true;
-                        }
+                    mod = m.GetStatMod("[Magic] Dex Offset");
+                    if (mod?.Offset < 0)
+                    {
+                        m.RemoveStatMod("[Magic] Dex Offset");
+                        sendEffect = true;
+                    }
 
-                        if (m.Paralyzed)
-                        {
-                            m.Paralyzed = false;
-                            sendEffect = true;
-                        }
+                    mod = m.GetStatMod("[Magic] Int Offset");
+                    if (mod?.Offset < 0)
+                    {
+                        m.RemoveStatMod("[Magic] Int Offset");
+                        sendEffect = true;
+                    }
 
-                        if (EvilOmenSpell.TryEndEffect(m))
-                        {
-                            sendEffect = true;
-                        }
+                    if (m.Paralyzed)
+                    {
+                        m.Paralyzed = false;
+                        sendEffect = true;
+                    }
 
-                        if (StrangleSpell.RemoveCurse(m))
-                        {
-                            sendEffect = true;
-                        }
+                    if (EvilOmenSpell.TryEndEffect(m))
+                    {
+                        sendEffect = true;
+                    }
 
-                        if (CorpseSkinSpell.RemoveCurse(m))
-                        {
-                            sendEffect = true;
-                        }
+                    if (StrangleSpell.RemoveCurse(m))
+                    {
+                        sendEffect = true;
+                    }
 
-                        // TODO: Should this remove blood oath? Pain spike?
+                    if (CorpseSkinSpell.RemoveCurse(m))
+                    {
+                        sendEffect = true;
+                    }
 
-                        if (sendEffect)
-                        {
-                            m.FixedParticles(0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head);
-                            sacrifice = true;
-                        }
+                    // TODO: Should this remove blood oath? Pain spike?
+
+                    if (sendEffect)
+                    {
+                        m.FixedParticles(0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head);
+                        sacrifice = true;
                     }
                 }
 

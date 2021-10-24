@@ -46,9 +46,8 @@ namespace Server.Spells.Spellweaving
 
             if (!CheckExpansion(caster))
             {
-                caster.SendLocalizedMessage(
-                    1072176
-                ); // You must upgrade to the Mondain's Legacy Expansion Pack before using that ability
+                // You must upgrade to the Mondain's Legacy Expansion Pack before using that ability
+                caster.SendLocalizedMessage(1072176);
                 return false;
             }
 
@@ -58,9 +57,8 @@ namespace Server.Spells.Spellweaving
 
                 if (context?.Spellweaving != true)
                 {
-                    mobile.SendLocalizedMessage(
-                        1073220
-                    ); // You must have completed the epic arcanist quest to use this ability.
+                    // You must have completed the epic arcanist quest to use this ability.
+                    mobile.SendLocalizedMessage(1073220);
                     return false;
                 }
             }
@@ -69,19 +67,15 @@ namespace Server.Spells.Spellweaving
 
             if (caster.Mana < mana)
             {
-                caster.SendLocalizedMessage(
-                    1060174,
-                    mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                caster.SendLocalizedMessage(1060174, mana.ToString());
                 return false;
             }
 
             if (caster.Skills[CastSkill].Value < RequiredSkill)
             {
-                caster.SendLocalizedMessage(
-                    1063013,
-                    $"{RequiredSkill:F1}\t{"#1044114"}"
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                caster.SendLocalizedMessage(1063013, $"{RequiredSkill:F1}\t{"#1044114"}");
                 return false;
             }
 
@@ -136,17 +130,12 @@ namespace Server.Spells.Spellweaving
                 (50 + 2 * (GetResistSkill(m) - GetDamageSkill(Caster))) /
                 100; // TODO: According to the guide this is it.. but.. is it correct per OSI?
 
-            if (percent <= 0)
+            return percent switch
             {
-                return false;
-            }
-
-            if (percent >= 1.0)
-            {
-                return true;
-            }
-
-            return percent >= Utility.RandomDouble();
+                <= 0   => false,
+                >= 1.0 => true,
+                _      => percent >= Utility.RandomDouble()
+            };
         }
     }
 }

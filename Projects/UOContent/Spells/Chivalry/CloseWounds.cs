@@ -38,7 +38,7 @@ namespace Server.Spells.Chivalry
             {
                 Caster.SendLocalizedMessage(1060178); // You are too far away to perform that action!
             }
-            else if (m is BaseCreature creature && creature.IsAnimatedDead)
+            else if (m is BaseCreature { IsAnimatedDead: true })
             {
                 Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
             }

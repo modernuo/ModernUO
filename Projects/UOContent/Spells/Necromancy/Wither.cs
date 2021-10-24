@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 
@@ -17,8 +17,7 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        public WitherSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public WitherSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -42,7 +41,7 @@ namespace Server.Spells.Necromancy
 
                 if (map != null)
                 {
-                    var targets = new List<Mobile>();
+                    using var pool = PooledRefQueue<Mobile>.Create();
 
                     var cbc = Caster as BaseCreature;
                     var isMonster = cbc?.Controlled == false && !cbc.Summoned;
@@ -67,7 +66,7 @@ namespace Server.Spells.Necromancy
                                 }
                             }
 
-                            targets.Add(m);
+                            pool.Enqueue(m);
                         }
                     }
 
@@ -84,9 +83,9 @@ namespace Server.Spells.Necromancy
                         0
                     );
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    while (pool.Count > 0)
                     {
-                        var m = targets[i];
+                        var m = pool.Dequeue();
 
                         Caster.DoHarmful(m);
                         m.FixedParticles(0x374A, 1, 15, 9502, 97, 3, (EffectLayer)255);
