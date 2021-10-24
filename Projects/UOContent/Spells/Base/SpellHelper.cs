@@ -865,17 +865,6 @@ namespace Server.Spells
             return x < 0 || y < 0 || x >= map.Width || y >= map.Height;
         }
 
-        // towns
-        public static bool IsTown(IPoint3D ip, Mobile caster)
-        {
-            if (ip is Item item)
-            {
-                ip = item.GetWorldLocation();
-            }
-
-            return IsTown(new Point3D(ip), caster);
-        }
-
         public static bool IsTown(Point3D loc, Mobile caster)
         {
             var map = caster.Map;
@@ -898,15 +887,8 @@ namespace Server.Spells
             return reg?.IsDisabled() == false;
         }
 
-        public static bool CheckTown(IPoint3D ip, Mobile caster)
-        {
-            if (ip is Item item)
-            {
-                ip = item.GetWorldLocation();
-            }
-
-            return CheckTown(new Point3D(ip), caster);
-        }
+        public static bool CheckTown(IPoint3D ip, Mobile caster) =>
+            CheckTown((ip as Item)?.GetWorldLocation() ?? new Point3D(ip), caster);
 
         public static bool CheckTown(Point3D loc, Mobile caster)
         {
@@ -981,19 +963,20 @@ namespace Server.Spells
             {
                 (from as BaseCreature)?.AlterSpellDamageTo(target, ref iDamage);
 
-                (target as BaseCreature)?.AlterSpellDamageFrom(from, ref iDamage);
+                var bcTarget = target as BaseCreature;
+                bcTarget?.AlterSpellDamageFrom(from, ref iDamage);
 
                 target.Damage(iDamage, from);
+
+                if (from != null)
+                {
+                    bcTarget?.OnHarmfulSpell(from);
+                    bcTarget?.OnDamagedBySpell(from);
+                }
             }
             else
             {
                 new SpellDamageTimer(spell, target, from, iDamage, delay).Start();
-            }
-
-            if (target is BaseCreature c && from != null && delay == TimeSpan.Zero)
-            {
-                c.OnHarmfulSpell(from);
-                c.OnDamagedBySpell(from);
             }
         }
 
@@ -1056,6 +1039,8 @@ namespace Server.Spells
                     DoLeech(damageGiven, from, target);
                 }
 
+                Mysticism.SpellPlagueSpell.OnMobileDamaged(target);
+
                 WeightOverloading.DFA = DFAlgorithm.Standard;
             }
             else
@@ -1072,6 +1057,11 @@ namespace Server.Spells
 
         public static void DoLeech(int damageGiven, Mobile from, Mobile target)
         {
+            if (target == null)
+            {
+                return;
+            }
+
             var context = TransformationSpellHelper.GetContext(from);
 
             if (context == null) /* cleanup */
@@ -1177,10 +1167,9 @@ namespace Server.Spells
 
             protected override void OnTick()
             {
-                var bcFrom = m_From as BaseCreature;
                 var bcTarg = m_Target as BaseCreature;
 
-                if (bcFrom != null && m_Target != null)
+                if (m_From is BaseCreature bcFrom && m_Target != null)
                 {
                     bcFrom.AlterSpellDamageTo(m_Target, ref m_Damage);
                 }
@@ -1206,6 +1195,8 @@ namespace Server.Spells
                     bcTarg.OnHarmfulSpell(m_From);
                     bcTarg.OnDamagedBySpell(m_From);
                 }
+
+                Mysticism.SpellPlagueSpell.OnMobileDamaged(m_Target);
 
                 m_Spell?.RemoveDelayedDamageContext(m_Target);
             }

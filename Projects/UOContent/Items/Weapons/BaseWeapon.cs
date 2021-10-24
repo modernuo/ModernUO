@@ -723,12 +723,12 @@ namespace Server.Items
 
                 if (canSwing)
                 {
-                    canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
+                    canSwing = attacker.Spell is not Spell sp || !sp.IsCasting || !sp.BlocksMovement;
                 }
 
                 if (canSwing)
                 {
-                    canSwing = !(attacker is PlayerMobile p) || p.PeacedUntil <= Core.Now;
+                    canSwing = attacker is not PlayerMobile p || p.PeacedUntil <= Core.Now;
                 }
             }
 
@@ -786,7 +786,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is BaseWeapon weap))
+            if (newItem is not BaseWeapon weap)
             {
                 return;
             }
@@ -877,8 +877,8 @@ namespace Server.Items
                 return true;
             }
 
-            if (Layer == Layer.OneHanded && layer == Layer.TwoHanded && !(item is BaseShield) &&
-                !(item is BaseEquipableLight))
+            if (Layer == Layer.OneHanded && layer == Layer.TwoHanded && item is not BaseShield &&
+                item is not BaseEquipableLight)
             {
                 m.SendLocalizedMessage(500215); // You can only wield one weapon at a time.
                 return true;
@@ -1418,7 +1418,7 @@ namespace Server.Items
                 return defender.CheckSkill(SkillName.Parry, chance);
             }
 
-            if (defender.Weapon is Fists || defender.Weapon is BaseRanged)
+            if (defender.Weapon is Server.Items.Fists or BaseRanged)
             {
                 return false;
             }
@@ -1590,7 +1590,7 @@ namespace Server.Items
                 return 0;
             }
 
-            if (!(attacker is BaseCreature bc) || bc.PackInstinct == PackInstinct.None || !bc.Controlled && !bc.Summoned)
+            if (attacker is not BaseCreature bc || bc.PackInstinct == PackInstinct.None || !bc.Controlled && !bc.Summoned)
             {
                 return 0;
             }
@@ -1902,7 +1902,6 @@ namespace Server.Items
                 var lifeLeech = 0;
                 var stamLeech = 0;
                 var manaLeech = 0;
-                int wraithLeech;
 
                 if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
                     Utility.Random(100))
@@ -1936,9 +1935,7 @@ namespace Server.Items
 
                 if (context?.Type == typeof(WraithFormSpell))
                 {
-                    wraithLeech =
-                        5 + (int)(15 * attacker.Skills.SpiritSpeak.Value /
-                                  100); // Wraith form gives an additional 5-20% mana leech
+                    var wraithLeech = 5 + (int)(15 * attacker.Skills.SpiritSpeak.Value / 100);
 
                     // Mana leeched by the Wraith Form spell is actually stolen, not just leeched.
                     defender.Mana -= AOS.Scale(damageGiven, wraithLeech);
@@ -1967,10 +1964,10 @@ namespace Server.Items
                 }
             }
 
-            if (m_MaxHits > 0 && (MaxRange <= 1 && (defender is Slime || defender is AcidElemental) ||
+            if (m_MaxHits > 0 && (MaxRange <= 1 && defender is Slime or AcidElemental ||
                                   Utility.RandomDouble() < .04)) // Stratics says 50% chance, seems more like 4%..
             {
-                if (MaxRange <= 1 && (defender is Slime || defender is AcidElemental))
+                if (MaxRange <= 1 && defender is Slime or AcidElemental)
                 {
                     attacker.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500263); // *Acid blood scars your weapon!*
                 }
@@ -1979,29 +1976,26 @@ namespace Server.Items
                 {
                     HitPoints += 2;
                 }
+                else if (m_Hits > 0)
+                {
+                    --HitPoints;
+                }
+                else if (m_MaxHits > 1)
+                {
+                    --MaxHitPoints;
+
+                    if (Parent is Mobile mobile)
+                    {
+                        mobile.LocalOverheadMessage(
+                            MessageType.Regular,
+                            0x3B2,
+                            1061121 // Your equipment is severely damaged.
+                        );
+                    }
+                }
                 else
                 {
-                    if (m_Hits > 0)
-                    {
-                        --HitPoints;
-                    }
-                    else if (m_MaxHits > 1)
-                    {
-                        --MaxHitPoints;
-
-                        if (Parent is Mobile mobile)
-                        {
-                            mobile.LocalOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                1061121 // Your equipment is severely damaged.
-                            );
-                        }
-                    }
-                    else
-                    {
-                        Delete();
-                    }
+                    Delete();
                 }
             }
 
@@ -2121,7 +2115,7 @@ namespace Server.Items
                 it.ReceivedHonorContext?.OnTargetHit(attacker);
             }
 
-            if (!(this is BaseRanged))
+            if (this is not BaseRanged)
             {
                 if (AnimalForm.UnderTransformation(attacker, typeof(GiantSerpent)))
                 {
@@ -2157,7 +2151,7 @@ namespace Server.Items
                 // SDI bonus
                 damageBonus += AosAttributes.GetValue(attacker, AosAttribute.SpellDamage);
 
-                if(PsychicAttack.Registry.TryGetValue(attacker,out var timer))
+                if (PsychicAttack.Registry.TryGetValue(attacker,out var timer))
                 {
                     damageBonus -= timer.SpellDamageMalus;
                 }
@@ -2633,7 +2627,7 @@ namespace Server.Items
             var damage = (int)ScaleDamageOld(attacker, GetBaseDamage(attacker), true);
 
             // pre-AOS, halve damage if the defender is a player or the attacker is not a player
-            if (defender is PlayerMobile || !(attacker is PlayerMobile))
+            if (defender is PlayerMobile || attacker is not PlayerMobile)
             {
                 damage = (int)(damage / 2.0);
             }

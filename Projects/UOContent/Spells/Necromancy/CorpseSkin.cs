@@ -17,6 +17,14 @@ namespace Server.Spells.Necromancy
 
         private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
+        private static readonly ResistanceMod[] _mods =
+        {
+            new(ResistanceType.Fire, -15),
+            new(ResistanceType.Poison, -15),
+            new(ResistanceType.Cold, +10),
+            new(ResistanceType.Physical, +10)
+        };
+
         public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
@@ -69,24 +77,16 @@ namespace Server.Spells.Necromancy
 
                 var duration = TimeSpan.FromSeconds((ss - mr) / 2.5 + 40.0);
 
-                ResistanceMod[] mods =
-                {
-                    new(ResistanceType.Fire, -15),
-                    new(ResistanceType.Poison, -15),
-                    new(ResistanceType.Cold, +10),
-                    new(ResistanceType.Physical, +10)
-                };
-
-                timer = new ExpireTimer(m, mods, duration);
+                timer = new ExpireTimer(m, duration);
                 timer.Start();
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration, m));
 
                 _table[m] = timer;
 
-                for (var i = 0; i < mods.Length; ++i)
+                for (var i = 0; i < _mods.Length; ++i)
                 {
-                    m.AddResistanceMod(mods[i]);
+                    m.AddResistanceMod(_mods[i]);
                 }
 
                 HarmfulSpell(m);
@@ -115,19 +115,17 @@ namespace Server.Spells.Necromancy
         private class ExpireTimer : Timer
         {
             private readonly Mobile m_Mobile;
-            private readonly ResistanceMod[] m_Mods;
 
-            public ExpireTimer(Mobile m, ResistanceMod[] mods, TimeSpan delay) : base(delay)
+            public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
             {
                 m_Mobile = m;
-                m_Mods = mods;
             }
 
             public void DoExpire()
             {
-                for (var i = 0; i < m_Mods.Length; ++i)
+                for (var i = 0; i < _mods.Length; ++i)
                 {
-                    m_Mobile.RemoveResistanceMod(m_Mods[i]);
+                    m_Mobile.RemoveResistanceMod(_mods[i]);
                 }
 
                 Stop();

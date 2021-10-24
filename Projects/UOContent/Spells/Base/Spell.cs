@@ -179,7 +179,7 @@ namespace Server.Spells
 
         public void RemoveDelayedDamageContext(Mobile m)
         {
-            if (DelayedDamageSpellFamilyStacking == null)
+            if (m == null || DelayedDamageSpellFamilyStacking == null)
             {
                 return; // Sanity
             }

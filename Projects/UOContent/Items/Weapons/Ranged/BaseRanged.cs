@@ -53,7 +53,7 @@ namespace Server.Items
 
                     if (canSwing)
                     {
-                        canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
+                        canSwing = attacker.Spell is not Spell sp || !sp.IsCasting || !sp.BlocksMovement;
                     }
                 }
 

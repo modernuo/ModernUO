@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        private static readonly Dictionary<Mobile, Mobile> m_OathTable = new();
+        private static readonly Dictionary<Mobile, Mobile> _oathTable = new();
         private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
         public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
@@ -34,15 +34,15 @@ namespace Server.Spells.Necromancy
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }
             // only PlayerMobile and BaseCreature implement blood oath checking
-            else if (Caster == m || !(m is PlayerMobile || m is BaseCreature))
+            else if (Caster == m || m is not (PlayerMobile or BaseCreature))
             {
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }
-            else if (m_OathTable.ContainsKey(Caster))
+            else if (_oathTable.ContainsKey(Caster))
             {
                 Caster.SendLocalizedMessage(1061607); // You are already bonded in a Blood Oath.
             }
-            else if (m_OathTable.ContainsKey(m))
+            else if (_oathTable.ContainsKey(m))
             {
                 if (m.Player)
                 {
@@ -68,8 +68,8 @@ namespace Server.Spells.Necromancy
                 _table.TryGetValue(m, out var timer);
                 timer?.DoExpire();
 
-                m_OathTable[Caster] = Caster;
-                m_OathTable[m] = Caster;
+                _oathTable[Caster] = Caster;
+                _oathTable[m] = Caster;
 
                 m.Spell?.OnCasterHurt();
 
@@ -109,7 +109,7 @@ namespace Server.Spells.Necromancy
         }
 
         public static Mobile GetBloodOath(Mobile m) =>
-            m == null || m_OathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
+            m == null || _oathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
 
         private class ExpireTimer : Timer
         {
@@ -138,12 +138,12 @@ namespace Server.Spells.Necromancy
 
             public void DoExpire()
             {
-                if (m_OathTable.Remove(m_Caster))
+                if (_oathTable.Remove(m_Caster))
                 {
                     m_Caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
                 }
 
-                if (m_OathTable.Remove(m_Target))
+                if (_oathTable.Remove(m_Target))
                 {
                     m_Target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
                 }

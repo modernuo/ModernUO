@@ -18,8 +18,7 @@ namespace Server.Spells.Necromancy
 
         private static readonly Dictionary<Mobile, DefaultSkillMod> _table = new();
 
-        public EvilOmenSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public EvilOmenSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -30,7 +29,7 @@ namespace Server.Spells.Necromancy
 
         public void Target(Mobile m)
         {
-            if (!(m is BaseCreature || m is PlayerMobile))
+            if (m is not (BaseCreature or PlayerMobile))
             {
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }

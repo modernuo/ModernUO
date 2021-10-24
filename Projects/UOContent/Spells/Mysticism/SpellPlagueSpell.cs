@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Mysticism
 {
-    public class SpellPlagueSpell : MysticSpell
+    public class SpellPlagueSpell : MysticSpell, ISpellTargetingMobile
     {
         private static readonly SpellInfo _info = new(
             "Spell Plague",
@@ -32,7 +32,7 @@ namespace Server.Spells.Mysticism
 
         public override void OnCast()
         {
-            Caster.Target = new InternalTarget(this);
+            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
         }
 
         public void Target(Mobile targeted)
@@ -74,19 +74,18 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
-        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
-
         public static void RemoveEffect(Mobile m)
         {
-            if (_table.TryGetValue(m, out var context))
+            if (_table.Remove(m, out var timer))
             {
-                context.EndPlague(false);
+                timer.Stop();
+                BuffInfo.RemoveBuff(m, BuffIcon.SpellPlague);
             }
         }
 
-        public static void CheckPlague(Mobile m)
+        public static void OnMobileDamaged(Mobile m)
         {
-            if (_table.TryGetValue(m, out var context))
+            if (m != null && _table.TryGetValue(m, out var context))
             {
                 context.OnDamage();
             }
@@ -97,7 +96,7 @@ namespace Server.Spells.Mysticism
             RemoveEffect(m);
         }
 
-        protected void VisualEffect(Mobile to)
+        private static void VisualEffect(Mobile to)
         {
             to.PlaySound(0x658);
 
@@ -107,108 +106,93 @@ namespace Server.Spells.Mysticism
 
         private class SpellPlagueTimer : Timer
         {
-            private readonly SpellPlagueSpell m_Owner;
-            private readonly Mobile m_Target;
-            private int m_Explosions;
-            private DateTime m_LastExploded;
-            private SpellPlagueTimer m_Next;
+            private readonly SpellPlagueSpell _owner;
+            private readonly Mobile _target;
+            private int _explosions;
+            private DateTime _nextExplosion;
+            private SpellPlagueTimer _next;
 
             public SpellPlagueTimer(SpellPlagueSpell owner, Mobile target) : base(TimeSpan.FromSeconds(8.0))
             {
-                m_Owner = owner;
-                m_Target = target;
+                _owner = owner;
+                _target = target;
             }
 
             public void SetNext(SpellPlagueTimer timer)
             {
-                if (m_Next == null)
+                if (_next == null)
                 {
-                    m_Next = timer;
+                    _next = timer;
                 }
                 else
                 {
-                    m_Next.SetNext(timer);
+                    _next.SetNext(timer);
                 }
             }
 
             public void StartPlague()
             {
                 BuffInfo.AddBuff(
-                    m_Target,
-                    new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5), m_Target)
+                    _target,
+                    new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5), _target)
                 );
 
+                _nextExplosion = Core.Now + TimeSpan.FromSeconds(1);
                 Start();
             }
 
             public void OnDamage()
             {
-                if (DateTime.Now <= m_LastExploded + TimeSpan.FromSeconds(2.0))
+                if (Core.Now < _nextExplosion)
                 {
                     return;
                 }
 
-                var exploChance = 90 - m_Explosions * 30;
+                var exploChance = 90 - _explosions * 30;
 
-                var resist = m_Target.Skills.MagicResist.Value;
+                var resist = _target.Skills.MagicResist.Fixed - 700;
 
-                if (resist >= 70)
+                if (resist > 0)
                 {
-                    exploChance -= (int)((resist - 70.0) * 3.0 / 10.0);
+                    exploChance -= resist / 100 * 3;
                 }
 
                 if (exploChance > Utility.Random(100))
                 {
-                    m_Owner.VisualEffect(m_Target);
+                    VisualEffect(_target);
 
-                    var damage = m_Owner.GetNewAosDamage(15 + m_Explosions * 3, 1, 5, m_Target);
+                    // TODO: Add SDI bonus for Core.EJ (Publish 96)
+                    var damage = _owner.GetNewAosDamage(15 + _explosions * 3, 1, 5, _target);
 
-                    m_Explosions++;
-                    m_LastExploded = DateTime.Now;
+                    _explosions++;
+                    _nextExplosion = Core.Now + TimeSpan.FromSeconds(1);
 
-                    SpellHelper.Damage(m_Owner, m_Target, damage, 0, 0, 0, 0, 0, 100);
+                    SpellHelper.Damage(_owner, _target, damage, 0, 0, 0, 0, 0, 100);
 
-                    if (m_Explosions >= 3)
+                    if (_explosions >= 3)
                     {
-                        EndPlague();
+                        Stop();
+                        DoNextPlague();
                     }
                 }
             }
 
-            public void EndPlague(bool restart = true)
+            private void DoNextPlague()
             {
-                if (restart && m_Next != null)
+                if (_next != null)
                 {
-                    _table[m_Target] = m_Next;
-                    m_Next.StartPlague();
+                    _table[_target] = _next;
+                    _next.StartPlague();
                 }
                 else
                 {
-                    _table.Remove(m_Target);
-                    BuffInfo.RemoveBuff(m_Target, BuffIcon.SpellPlague);
-                }
-            }
-        }
-
-        private class InternalTarget : Target
-        {
-            private readonly SpellPlagueSpell m_Owner;
-
-            public InternalTarget(SpellPlagueSpell owner)
-                : base(12, false, TargetFlags.Harmful) =>
-                m_Owner = owner;
-
-            protected override void OnTarget(Mobile from, object o)
-            {
-                if (o is Mobile mobile)
-                {
-                    m_Owner.Target(mobile);
+                    RemoveEffect(_target);
                 }
             }
 
-            protected override void OnTargetFinish(Mobile from)
+            protected override void OnTick()
             {
-                m_Owner.FinishSequence();
+                DoNextPlague();
             }
         }
     }

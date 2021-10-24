@@ -23,7 +23,9 @@ namespace Server.Spells.Mysticism
 
         public void Target(IPoint3D p)
         {
-            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            var loc = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
+
+            if (SpellHelper.CheckTown(loc, Caster) && CheckSequence())
             {
                 /* Summons a gale of lethal winds that strikes all Targets within a radius around
                  * the Target's Location, dealing chaos damage. In addition to inflicting damage,
@@ -35,11 +37,6 @@ namespace Server.Spells.Mysticism
 
                 SpellHelper.Turn(Caster, p);
 
-                if (p is Item item)
-                {
-                    p = item.GetWorldLocation();
-                }
-
                 var targets = new List<Mobile>();
 
                 var map = Caster.Map;
@@ -48,8 +45,6 @@ namespace Server.Spells.Mysticism
 
                 if (map != null)
                 {
-                    var loc = new Point3D(p);
-
                     PlayEffect(loc, Caster.Map);
 
                     foreach (var m in map.GetMobilesInRange(loc, 2))
