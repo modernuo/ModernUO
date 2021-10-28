@@ -292,7 +292,7 @@ namespace Server.Items
 
             if (weapon.Poison != null && weapon.PoisonCharges > 0)
             {
-                if (EvilOmenSpell.TryEndEffect(target))
+                if (EvilOmenSpell.EndEffect(target))
                 {
                     target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
                 }

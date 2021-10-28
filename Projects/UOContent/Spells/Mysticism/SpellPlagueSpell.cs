@@ -74,13 +74,16 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
-        public static void RemoveEffect(Mobile m)
+        public static bool RemoveEffect(Mobile m)
         {
             if (_table.Remove(m, out var timer))
             {
                 timer.Stop();
                 BuffInfo.RemoveBuff(m, BuffIcon.SpellPlague);
+                return true;
             }
+
+            return false;
         }
 
         public static void OnMobileDamaged(Mobile m)

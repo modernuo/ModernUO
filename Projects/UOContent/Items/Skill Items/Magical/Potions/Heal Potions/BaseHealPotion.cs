@@ -46,11 +46,8 @@ namespace Server.Items
             {
                 if (from.Poisoned || MortalStrike.IsWounded(from))
                 {
-                    from.LocalOverheadMessage(
-                        MessageType.Regular,
-                        0x22,
-                        1005000
-                    ); // You can not heal yourself in your current state.
+                    // You can not heal yourself in your current state.
+                    from.LocalOverheadMessage(MessageType.Regular, 0x22, 1005000);
                 }
                 else
                 {
@@ -69,19 +66,15 @@ namespace Server.Items
                     }
                     else
                     {
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x22,
-                            500235
-                        ); // You must wait 10 seconds before using another healing potion.
+                        // You must wait 10 seconds before using another healing potion.
+                        from.LocalOverheadMessage(MessageType.Regular, 0x22, 500235);
                     }
                 }
             }
             else
             {
-                from.SendLocalizedMessage(
-                    1049547
-                ); // You decide against drinking this potion, as you are already at full health.
+                // You decide against drinking this potion, as you are already at full health.
+                from.SendLocalizedMessage(1049547);
             }
         }
     }

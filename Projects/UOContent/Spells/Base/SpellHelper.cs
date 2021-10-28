@@ -334,7 +334,7 @@ namespace Server.Spells
         public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration)
         {
             var offset = -curse;
-            var name = $"[Magic] {type} Offset";
+            var name = $"[Magic] {type} Curse";
 
             var mod = target.GetStatMod(name);
 

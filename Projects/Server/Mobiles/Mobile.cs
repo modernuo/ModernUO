@@ -3278,16 +3278,21 @@ namespace Server
 
         public virtual void UpdateResistances()
         {
-            Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+            bool delta = false;
 
-            var delta = false;
-
-            for (var i = 0; i < Resistances.Length; ++i)
+            if (Resistances == null)
             {
-                if (Resistances[i] != int.MinValue)
+                Resistances = new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+            }
+            else
+            {
+                for (var i = 0; i < Resistances.Length; ++i)
                 {
-                    Resistances[i] = int.MinValue;
-                    delta = true;
+                    if (Resistances[i] != int.MinValue)
+                    {
+                        Resistances[i] = int.MinValue;
+                        delta = true;
+                    }
                 }
             }
 

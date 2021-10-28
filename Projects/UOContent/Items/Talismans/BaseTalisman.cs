@@ -1241,9 +1241,7 @@ namespace Server.Items
                             0x100
                         );
 
-                        StatMod mod;
-
-                        mod = target.GetStatMod("[Magic] Str Offset");
+                        StatMod mod = target.GetStatMod("[Magic] Str Offset");
                         if (mod?.Offset < 0)
                         {
                             target.RemoveStatMod("[Magic] Str Offset");
@@ -1263,7 +1261,7 @@ namespace Server.Items
 
                         target.Paralyzed = false;
 
-                        EvilOmenSpell.TryEndEffect(target);
+                        EvilOmenSpell.EndEffect(target);
                         StrangleSpell.RemoveCurse(target);
                         CorpseSkinSpell.RemoveCurse(target);
                         CurseSpell.RemoveEffect(target);

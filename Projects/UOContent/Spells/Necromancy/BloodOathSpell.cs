@@ -102,10 +102,15 @@ namespace Server.Spells.Necromancy
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static void RemoveCurse(Mobile m)
+        public static bool RemoveCurse(Mobile m)
         {
-            _table.TryGetValue(m, out var t);
-            t?.DoExpire();
+            if (_table.TryGetValue(m, out var t))
+            {
+                t?.DoExpire();
+                return true;
+            }
+
+            return false;
         }
 
         public static Mobile GetBloodOath(Mobile m) =>

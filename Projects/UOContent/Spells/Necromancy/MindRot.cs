@@ -68,15 +68,18 @@ namespace Server.Spells.Necromancy
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static void ClearMindRotScalar(Mobile m)
+        public static bool ClearMindRotScalar(Mobile m)
         {
             if (_table.Remove(m, out var timer))
             {
                 timer.Stop();
                 m.SendLocalizedMessage(1060872); // Your mind feels normal again.
+                BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
+
+                return true;
             }
 
-            BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
+            return false;
         }
 
         public static bool HasMindRotScalar(Mobile m) => _table.ContainsKey(m);

@@ -1342,7 +1342,7 @@ namespace Server.Mobiles
                 amount = (int)(amount * BonusPetDamageScalar);
             }
 
-            if (EvilOmenSpell.TryEndEffect(this))
+            if (EvilOmenSpell.EndEffect(this))
             {
                 amount = (int)(amount * 1.25);
             }
@@ -1393,7 +1393,7 @@ namespace Server.Mobiles
                 return ApplyPoisonResult.Immune;
             }
 
-            if (EvilOmenSpell.TryEndEffect(this))
+            if (EvilOmenSpell.EndEffect(this))
             {
                 poison = PoisonImpl.IncreaseLevel(poison);
             }

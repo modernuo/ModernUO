@@ -7,7 +7,7 @@ namespace Server
 {
     public class BuffInfo
     {
-        private TimerExecutionToken _timerToken;
+        private readonly TimerExecutionToken _timerToken;
 
         public BuffInfo(BuffIcon iconID, int titleCliloc)
             : this(iconID, titleCliloc, titleCliloc + 1)
@@ -26,7 +26,7 @@ namespace Server
         {
         }
 
-        // Only the timed one needs to Mobile to know when to automagically remove it.
+        // Only the timed one needs the Mobile to know when to automagically remove it.
         public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m)
             : this(iconID, titleCliloc, secondaryCliloc)
         {

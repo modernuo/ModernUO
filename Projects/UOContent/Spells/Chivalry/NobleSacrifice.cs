@@ -134,7 +134,7 @@ namespace Server.Spells.Chivalry
                         sendEffect = true;
                     }
 
-                    if (EvilOmenSpell.TryEndEffect(m))
+                    if (EvilOmenSpell.EndEffect(m))
                     {
                         sendEffect = true;
                     }
