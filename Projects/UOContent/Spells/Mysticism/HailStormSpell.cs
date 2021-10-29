@@ -45,24 +45,17 @@ namespace Server.Spells.Mysticism
 
                     foreach (var m in map.GetMobilesInRange(loc, 2))
                     {
-                        if (m == Caster)
+                        if (m == Caster || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false)
+                            || !Caster.CanSee(m) || !Caster.InLOS(m))
                         {
                             continue;
                         }
 
-                        if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && Caster.CanSee(m))
+                        pool.Enqueue(m);
+
+                        if (m.Player)
                         {
-                            if (!Caster.InLOS(m))
-                            {
-                                continue;
-                            }
-
-                            pool.Enqueue(m);
-
-                            if (m.Player)
-                            {
-                                pvp = true;
-                            }
+                            pvp = true;
                         }
                     }
 
@@ -98,7 +91,9 @@ namespace Server.Spells.Mysticism
 
         private static void PlaySingleEffect(Point3D p, Map map, int a, int b, int c, int d)
         {
-            int x = p.X, y = p.Y, z = p.Z + 18;
+            var x = p.X;
+            var y = p.Y;
+            var z = p.Z + 18;
 
             SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + c, z));
             SendEffectPacket(p, map, new Point3D(x + b, y + c, z), new Point3D(x + b, y + c, z));
