@@ -185,12 +185,12 @@ namespace Server.Spells
                     // Register( 678, typeof( Mysticism.HealingStoneSpell ) );
                     // Register( 679, typeof( Mysticism.PurgeMagicSpell ) );
                     // Register( 680, typeof( Mysticism.EnchantSpell ) );
-                    // Register( 681, typeof( Mysticism.SleepSpell ) );
+                    Register(681, typeof(SleepSpell));
                     Register(682, typeof(EagleStrikeSpell));
                     Register(683, typeof(AnimatedWeaponSpell));
                     Register(684, typeof(StoneFormSpell));
                     // Register( 685, typeof( Mysticism.SpellTriggerSpell ) );
-                    // Register( 686, typeof( Mysticism.MassSleepSpell ) );
+                    Register(686, typeof(MassSleepSpell));
                     Register(687, typeof(CleansingWindsSpell));
                     Register(688, typeof(BombardSpell));
                     Register(689, typeof(SpellPlagueSpell));

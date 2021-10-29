@@ -55,30 +55,30 @@ namespace Server.Spells.Mysticism
                 }
                 else
                 {
-                    DoSleep(m, TimeSpan.FromSeconds(duration));
+                    DoSleep(Caster, m, TimeSpan.FromSeconds(duration));
                 }
             }
 
             FinishSequence();
         }
 
-        public static void DoSleep(Mobile target, TimeSpan duration)
+        public static void DoSleep(Mobile caster, Mobile m, TimeSpan duration)
         {
-            target.Combatant = null;
-            target.NetState.SendSpeedControl(SpeedControlSetting.Walk);
+            m.Combatant = null;
+            m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
 
-            if (_table.TryGetValue(target, out var timer))
+            if (_table.TryGetValue(m, out var timer))
             {
                 timer.Stop();
             }
 
-            timer = new SleepTimer(target, (long)duration.TotalMilliseconds);
+            timer = new SleepTimer(m, (long)duration.TotalMilliseconds);
             timer.Start();
-            _table[target] = timer;
+            _table[m] = timer;
 
-            BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Sleep, 1080139, 1080140, duration, target));
-
-            target.Delta(MobileDelta.WeaponDamage);
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Sleep, 1080139, 1080140, duration, m));
+            m.Delta(MobileDelta.WeaponDamage);
+            caster.DoHarmful(m);
         }
 
         public static bool UnderEffect(Mobile from) => _table.ContainsKey(from);

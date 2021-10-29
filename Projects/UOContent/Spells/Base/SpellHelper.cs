@@ -448,26 +448,8 @@ namespace Server.Spells
             var bcFrom = from as BaseCreature;
             var bcTarg = to as BaseCreature;
 
-            PlayerMobile pmFrom;
-            PlayerMobile pmTarg;
-
-            if (bcFrom?.Summoned == true)
-            {
-                pmFrom = bcFrom.SummonMaster as PlayerMobile;
-            }
-            else
-            {
-                pmFrom = from as PlayerMobile;
-            }
-
-            if (bcTarg?.Summoned == true)
-            {
-                pmTarg = bcTarg.SummonMaster as PlayerMobile;
-            }
-            else
-            {
-                pmTarg = to as PlayerMobile;
-            }
+            var pmFrom = (bcFrom?.Summoned == true ? bcFrom.SummonMaster : from) as PlayerMobile;
+            var pmTarg = (bcTarg?.Summoned == true ? bcTarg.SummonMaster : to) as PlayerMobile;
 
             if (pmFrom?.DuelContext != null && pmFrom.DuelContext == pmTarg?.DuelContext && pmFrom.DuelContext.Started &&
                 pmFrom.DuelPlayer != null && pmTarg?.DuelPlayer != null)
