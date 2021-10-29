@@ -83,7 +83,27 @@ namespace Server.Spells.Mysticism
 
         public static bool UnderEffect(Mobile from) => _table.ContainsKey(from);
 
-        public class SleepTimer : Timer
+        public static bool EndSleep(Mobile m)
+        {
+            if (_table.Remove(m, out var timer))
+            {
+                m.NetState.SendSpeedControl(SpeedControlSetting.Disable);
+
+                timer.Stop();
+
+                BuffInfo.RemoveBuff(m, BuffIcon.Sleep);
+
+                _immunity.Add(m);
+                Timer.StartTimer(TimeSpan.FromSeconds(m.Skills[SkillName.MagicResist].Value / 10), () => _immunity.Remove(m));
+
+                m.Delta(MobileDelta.WeaponDamage);
+                return true;
+            }
+
+            return false;
+        }
+
+        private class SleepTimer : Timer
         {
             private readonly Mobile _mobile;
             private readonly long _end;
@@ -106,26 +126,6 @@ namespace Server.Spells.Mysticism
                     Effects.SendTargetParticles(_mobile, 0x3779, 1, 32, 0x13BA, EffectLayer.Head);
                 }
             }
-        }
-
-        public static bool EndSleep(Mobile m)
-        {
-            if (_table.Remove(m, out var timer))
-            {
-                m.NetState.SendSpeedControl(SpeedControlSetting.Disable);
-
-                timer.Stop();
-
-                BuffInfo.RemoveBuff(m, BuffIcon.Sleep);
-
-                _immunity.Add(m);
-                Timer.StartTimer(TimeSpan.FromSeconds(m.Skills[SkillName.MagicResist].Value / 10), () => _immunity.Remove(m));
-
-                m.Delta(MobileDelta.WeaponDamage);
-                return true;
-            }
-
-            return false;
         }
     }
 }
