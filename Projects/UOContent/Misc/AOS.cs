@@ -5,6 +5,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
 using Server.Spells.Fifth;
+using Server.Spells.Mysticism;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Seventh;
 
@@ -209,7 +210,16 @@ namespace Server
                 }
             }
 
+            if (totalDamage <= 0)
+            {
+                return 0;
+            }
+
             m.Damage(totalDamage, from);
+
+            // TODO: Move all of this somewhere else
+            SleepSpell.EndSleep(m);
+
             return totalDamage;
         }
 
@@ -548,6 +558,35 @@ namespace Server
                     {
                         value += attrs[attribute];
                     }
+                }
+            }
+
+            if (attribute == AosAttribute.CastSpeed)
+            {
+                if (SleepSpell.UnderEffect(m))
+                {
+                    value -= 2;
+                }
+            }
+            else if (attribute == AosAttribute.CastRecovery)
+            {
+                if (SleepSpell.UnderEffect(m))
+                {
+                    value -= 3;
+                }
+            }
+            else if (attribute == AosAttribute.WeaponSpeed)
+            {
+                if (SleepSpell.UnderEffect(m))
+                {
+                    value -= 45;
+                }
+            }
+            else if (attribute == AosAttribute.AttackChance)
+            {
+                if (SleepSpell.UnderEffect(m))
+                {
+                    value -= 45;
                 }
             }
 

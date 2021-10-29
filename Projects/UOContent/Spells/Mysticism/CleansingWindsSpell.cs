@@ -147,11 +147,10 @@ namespace Server.Spells.Mysticism
 
             // End sleep spell
 
-            // if (SleepSpell.IsUnderSleepEffects(m))
-            // {
-            //     SleepSpell.EndSleep(m);
-            //     curseLevel += 2;
-            //}
+             if (SleepSpell.EndSleep(m))
+             {
+                 curseLevel += 2;
+            }
 
             if (EvilOmenSpell.EndEffect(m))
             {
