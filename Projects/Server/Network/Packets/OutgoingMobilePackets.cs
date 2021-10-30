@@ -17,7 +17,6 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.HighPerformance;
 
 namespace Server.Network;
 
@@ -26,7 +25,7 @@ public static class OutgoingMobilePackets
     public const int BondedStatusPacketLength = 11;
     public const int DeathAnimationPacketLength = 13;
     public const int MobileMovingPacketLength = 17;
-    public const int MobileMovingPacketCacheHeight = 16; // 8 notoriety, 2 client versions
+    public const int MobileMovingPacketCacheHeight = 7 * 2; // 7 notoriety, 2 client versions
     public const int MobileMovingPacketCacheByteLength = MobileMovingPacketLength * MobileMovingPacketCacheHeight;
     public const int AttributeMaximum = 100;
     public const int MobileAttributePacketLength = 9;
@@ -35,14 +34,10 @@ public static class OutgoingMobilePackets
     public const int NewMobileAnimationPacketLength = 10;
     public const int MobileHealthbarPacketLength = 12;
     public const int MobileStatusCompactLength = 43;
-    public const int MobileStatusMaxLength = 121;
-
-    public static bool ExtendedStatus { get; set; }
-
-    public static void Initialize()
-    {
-        ExtendedStatus = ServerConfiguration.GetOrUpdateSetting("extendedStatus", false);
-    }
+    public const int MobileStatusLength = 70;
+    public const int MobileStatusAOSLength = 88;
+    public const int MobileStatusMLLength = 91;
+    public const int MobileStatusHSLength = 121;
 
     public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
     {
@@ -62,7 +57,7 @@ public static class OutgoingMobilePackets
 
     public static void SendBondedStatus(this NetState ns, Serial serial, bool bonded)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -94,7 +89,7 @@ public static class OutgoingMobilePackets
 
     public static void SendDeathAnimation(this NetState ns, Serial killed, Serial corpse)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -133,7 +128,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileMoving(this NetState ns, Mobile target, int noto)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -144,21 +139,22 @@ public static class OutgoingMobilePackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendMobileMovingUsingCache(this NetState ns, Span2D<byte> cache, Mobile source, Mobile target) =>
+    public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile source, Mobile target) =>
         ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
 
-    // Requires a buffer of 16 packets, 17bytes per packet (272 bytes).
-    // Requires cache to have the first byte of each packet zeroed.
-    public static void SendMobileMovingUsingCache(this NetState ns, Span2D<byte> cache, Mobile target, int noto)
+    // Requires a buffer of 14 packets, 17 bytes per packet (238 bytes).
+    // Requires cache to have the first byte of each packet initially zeroed.
+    public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
 
         var stygianAbyss = ns.StygianAbyss;
-        var row = noto * 2 + (stygianAbyss ? 1 : 0);
-        var buffer = cache.GetRowSpan(row);
+        // Indexes 0-6 for pre-SA, and 7-13 for SA
+        var row = noto + (stygianAbyss ? 6 : -1);
+        var buffer = cache.Slice(row * MobileMovingPacketLength, MobileMovingPacketLength);
         CreateMobileMoving(buffer, target, noto, stygianAbyss);
 
         ns.Send(buffer);
@@ -199,7 +195,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileHits(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -224,7 +220,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileMana(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -249,7 +245,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileStam(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -274,7 +270,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileAttributes(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -302,7 +298,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileName(this NetState ns, Mobile m)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -343,7 +339,7 @@ public static class OutgoingMobilePackets
         Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
     )
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -368,7 +364,7 @@ public static class OutgoingMobilePackets
 
     public static void SendNewMobileAnimation(this NetState ns, Serial mobile, int action, int frameCount, int delay)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -380,7 +376,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileHealthbar(this NetState ns, Mobile m, Healthbar healthbar)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -431,11 +427,11 @@ public static class OutgoingMobilePackets
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
-        CreateMobileStatus(buffer, null, m, 0, canBeRenamed);
+        CreateMobileStatus(buffer, m, 0, canBeRenamed);
 
     public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -456,16 +452,18 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[MobileStatusMaxLength];
         int version;
+        int length;
 
         if (beholder != beheld)
         {
             version = 0;
+            length = MobileStatusCompactLength;
         }
-        else if (Core.HS && ns.ExtendedStatus)
+        else if (ns.ExtendedStatus)
         {
             version = 6;
+            length = MobileStatusHSLength;
         }
         else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
         {
@@ -473,24 +471,30 @@ public static class OutgoingMobilePackets
              * For the ML era, the version value must be 5 if the original UO distribution
              * is used and the client is not lower than version 5
              */
-            version = ExtendedStatus ? 6 : 5;
+            version = 5;
+            length = MobileStatusMLLength;
+        }
+        else if (Core.AOS)
+        {
+            version = 4;
+            length = MobileStatusAOSLength;
         }
         else
         {
-            version = Core.AOS ? 4 : 3;
+            version = 3;
+            length = MobileStatusLength;
         }
 
-        var length = CreateMobileStatus(buffer, beholder, beheld, version, beheld.CanBeRenamedBy(beholder));
-        ns.Send(buffer[..length]);
+        Span<byte> buffer = stackalloc byte[length];
+        CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder));
+        ns.Send(buffer);
     }
 
-    public static int CreateMobileStatus(
-        Span<byte> buffer, Mobile beholder, Mobile beheld, int version, bool canBeRenamed
-    )
+    public static void CreateMobileStatus(Span<byte> buffer, Mobile beheld, int version, bool canBeRenamed)
     {
         if (buffer[0] != 0)
         {
-            return buffer.Length;
+            return;
         }
 
         var name = beheld.Name ?? "";
@@ -507,7 +511,7 @@ public static class OutgoingMobilePackets
         if (version <= 0)
         {
             writer.WritePacketLength();
-            return writer.Position;
+            return;
         }
 
         writer.Write(beheld.Female);
@@ -563,12 +567,11 @@ public static class OutgoingMobilePackets
         }
 
         writer.WritePacketLength();
-        return writer.Position;
     }
 
     public static void SendMobileUpdate(this NetState ns, Mobile m)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
@@ -591,7 +594,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
     {
-        if (ns.CannotSendPackets())
+        if (ns == null)
         {
             return;
         }
