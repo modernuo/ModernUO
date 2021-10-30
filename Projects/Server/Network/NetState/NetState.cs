@@ -30,6 +30,7 @@ using Server.HuePickers;
 using Server.Items;
 using Server.Logging;
 using Server.Menus;
+using Server.Text;
 
 namespace Server.Network
 {
@@ -97,6 +98,17 @@ namespace Server.Network
             Error
         }
 
+        private static string _packetLoggingPath;
+        private static bool _enablePacketLogging;
+
+        public static void Configure()
+        {
+            // This makes the server VERY slow. Only enable it to troubleshoot!
+            _enablePacketLogging = ServerConfiguration.GetOrUpdateSetting("netstate.enablePacketLogging", false);
+
+            _packetLoggingPath = ServerConfiguration.GetSetting("netstate.packetLoggingPath", Path.Combine(Core.BaseDirectory, "Packets"));
+        }
+
         public static void Initialize()
         {
             Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
@@ -137,6 +149,11 @@ namespace Server.Network
             {
                 TraceException(ex);
                 Disconnect("Unable to add socket to poll group");
+            }
+
+            if (_enablePacketLogging)
+            {
+                StartPacketLog();
             }
 
             CreatedCallback?.Invoke(this);
@@ -486,6 +503,11 @@ namespace Server.Network
                     buffer.CopyFrom(span);
                 }
 
+                if (_enablePacketLogging)
+                {
+                    LogPacket(span, ReadOnlySpan<byte>.Empty, false);
+                }
+
                 SendPipe.Writer.Advance((uint)length);
 
                 if (!_flushQueued)
@@ -503,6 +525,73 @@ namespace Server.Network
 #endif
                 TraceException(ex);
                 Disconnect("Exception while sending.");
+            }
+        }
+
+        private void StartPacketLog()
+        {
+            try
+            {
+                var logDir = Path.Combine(_packetLoggingPath, _toString);
+                PathUtility.EnsureDirectory(logDir);
+                var logPath = Path.Combine(logDir, "packets.log");
+                using var op = new StreamWriter(logPath, true);
+
+                op.WriteLine(">>>>>>>>>> Logging started {0:yyyy/MM/dd HH:mm::ss} <<<<<<<<<<", Core.Now);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        private void LogPacket(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, bool incoming)
+        {
+            try
+            {
+                var logDir = Path.Combine(_packetLoggingPath, _toString);
+                PathUtility.EnsureDirectory(logDir);
+                var logPath = Path.Combine(logDir, "packets.log");
+
+                var incomingOrOutgoing = $"{(incoming ? "Client" : "Server")} -> {(incoming ? "Server" : "Client")}";
+                var totalLength = first.Length + second.Length;
+
+                using var op = new StreamWriter(logPath, true);
+                op.WriteLine("{0:HH:mm:ss.ffff}: {1} {2:X2} (Length: {3})", Core.Now, incomingOrOutgoing, first[0], totalLength);
+                op.WriteLine("        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F");
+                op.WriteLine("       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --");
+
+                var lines = totalLength / 16 + 1;
+                Span<byte> line = stackalloc byte[16];
+                for (var i = 0; i < lines; i++)
+                {
+                    var start = i * 16;
+                    var length = Math.Min(totalLength - start, 16);
+                    if (start < first.Length)
+                    {
+                        var firstLength = Math.Min(length, first.Length - start);
+                        first.Slice(start, firstLength).CopyTo(line);
+
+                        if (firstLength < length)
+                        {
+                            second[..(length - first.Length - start)].CopyTo(line[(length - firstLength)..]);
+                        }
+                    }
+                    else
+                    {
+                        second.Slice(start - first.Length, length).CopyTo(line);
+                    }
+
+                    op.WriteLine("{0:X4}   {1}", start, ((ReadOnlySpan<byte>)line).ToSpacedHexString());
+                }
+
+                op.WriteLine();
+                op.WriteLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                // ignored
             }
         }
 
@@ -759,6 +848,11 @@ namespace Server.Network
             }
 
             UpdatePacketCount(packetId);
+
+            if (_enablePacketLogging)
+            {
+                LogPacket(packetReader.First, packetReader.Second, true);
+            }
 
             handler.OnReceive(this, packetReader, ref packetLength);
 
