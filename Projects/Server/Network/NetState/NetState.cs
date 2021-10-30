@@ -589,7 +589,6 @@ namespace Server.Network
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
                 // ignored
             }
         }
