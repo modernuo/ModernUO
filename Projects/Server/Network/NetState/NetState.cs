@@ -505,7 +505,7 @@ namespace Server.Network
 
                 if (_enablePacketLogging)
                 {
-                    LogPacket(span, ReadOnlySpan<byte>.Empty, false);
+                    LogPacket(span, ReadOnlySpan<byte>.Empty, span.Length, false);
                 }
 
                 SendPipe.Writer.Advance((uint)length);
@@ -538,6 +538,8 @@ namespace Server.Network
                 using var op = new StreamWriter(logPath, true);
 
                 op.WriteLine(">>>>>>>>>> Logging started {0:yyyy/MM/dd HH:mm::ss} <<<<<<<<<<", Core.Now);
+                op.WriteLine();
+                op.WriteLine();
             }
             catch (Exception e)
             {
@@ -545,7 +547,7 @@ namespace Server.Network
             }
         }
 
-        private void LogPacket(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, bool incoming)
+        private void LogPacket(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, int totalLength, bool incoming)
         {
             try
             {
@@ -554,35 +556,32 @@ namespace Server.Network
                 var logPath = Path.Combine(logDir, "packets.log");
 
                 var incomingOrOutgoing = $"{(incoming ? "Client" : "Server")} -> {(incoming ? "Server" : "Client")}";
-                var totalLength = first.Length + second.Length;
 
                 using var op = new StreamWriter(logPath, true);
-                op.WriteLine("{0:HH:mm:ss.ffff}: {1} {2:X2} (Length: {3})", Core.Now, incomingOrOutgoing, first[0], totalLength);
+                op.WriteLine("{0:HH:mm:ss.ffff}: {1} 0x{2:X2} (Length: {3})", Core.Now, incomingOrOutgoing, first[0], totalLength);
                 op.WriteLine("        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F");
                 op.WriteLine("       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --");
 
-                var lines = totalLength / 16 + 1;
                 Span<byte> line = stackalloc byte[16];
-                for (var i = 0; i < lines; i++)
+                for (var i = 0; i < totalLength; i += 16)
                 {
-                    var start = i * 16;
-                    var length = Math.Min(totalLength - start, 16);
-                    if (start < first.Length)
+                    var length = Math.Min(totalLength - i, 16);
+                    if (i < first.Length)
                     {
-                        var firstLength = Math.Min(length, first.Length - start);
-                        first.Slice(start, firstLength).CopyTo(line);
+                        var firstLength = Math.Min(length, first.Length - i);
+                        first.Slice(i, firstLength).CopyTo(line);
 
                         if (firstLength < length)
                         {
-                            second[..(length - first.Length - start)].CopyTo(line[(length - firstLength)..]);
+                            second[..(length - first.Length - i)].CopyTo(line[(length - firstLength)..]);
                         }
                     }
                     else
                     {
-                        second.Slice(start - first.Length, length).CopyTo(line);
+                        second.Slice(i - first.Length, length).CopyTo(line);
                     }
 
-                    op.WriteLine("{0:X4}   {1}", start, ((ReadOnlySpan<byte>)line).ToSpacedHexString());
+                    op.WriteLine("{0:X4}   {1}", i, ((ReadOnlySpan<byte>)line[..length]).ToSpacedHexString());
                 }
 
                 op.WriteLine();
@@ -851,7 +850,7 @@ namespace Server.Network
 
             if (_enablePacketLogging)
             {
-                LogPacket(packetReader.First, packetReader.Second, true);
+                LogPacket(packetReader.First, packetReader.Second, packetLength, true);
             }
 
             handler.OnReceive(this, packetReader, ref packetLength);
