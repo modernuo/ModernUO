@@ -11,6 +11,7 @@ using System.Xml;
 using Microsoft.Toolkit.HighPerformance;
 using Server.Buffers;
 using Server.Random;
+using Server.Text;
 
 namespace Server
 {
@@ -632,207 +633,42 @@ namespace Server
             }
         }
 
-        public static void FormatBuffer(TextWriter output, Stream input, int length)
+        public static void FormatBuffer(this TextWriter op, ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, int totalLength)
         {
-            output.WriteLine("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F");
-            output.WriteLine("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --");
+            op.WriteLine("        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F");
+            op.WriteLine("       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --");
 
-            var byteIndex = 0;
-
-            var whole = length >> 4;
-            var rem = length & 0xF;
-
-            for (var i = 0; i < whole; ++i, byteIndex += 16)
+            if (totalLength <= 0)
             {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(16);
-
-                for (var j = 0; j < 16; ++j)
-                {
-                    var c = input.ReadByte();
-
-                    bytes.Append(c.ToString("X2"));
-
-                    if (j != 7)
-                    {
-                        bytes.Append(' ');
-                    }
-                    else
-                    {
-                        bytes.Append("  ");
-                    }
-
-                    if (c >= 0x20 && c < 0x7F)
-                    {
-                        chars.Append((char)c);
-                    }
-                    else
-                    {
-                        chars.Append('.');
-                    }
-                }
-
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
+                op.WriteLine("0000   ");
+                return;
             }
 
-            if (rem != 0)
+            Span<byte> lineBytes = stackalloc byte[16];
+            Span<char> lineChars = stackalloc char[47];
+            for (var i = 0; i < totalLength; i += 16)
             {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(rem);
-
-                for (var j = 0; j < 16; ++j)
+                var length = Math.Min(totalLength - i, 16);
+                if (i < first.Length)
                 {
-                    if (j < rem)
+                    var firstLength = Math.Min(length, first.Length - i);
+                    first.Slice(i, firstLength).CopyTo(lineBytes);
+
+                    if (firstLength < length)
                     {
-                        var c = input.ReadByte();
-
-                        bytes.Append(c.ToString("X2"));
-
-                        if (j != 7)
-                        {
-                            bytes.Append(' ');
-                        }
-                        else
-                        {
-                            bytes.Append("  ");
-                        }
-
-                        if (c >= 0x20 && c < 0x7F)
-                        {
-                            chars.Append((char)c);
-                        }
-                        else
-                        {
-                            chars.Append('.');
-                        }
-                    }
-                    else
-                    {
-                        bytes.Append("   ");
+                        second[..(length - first.Length - i)].CopyTo(lineBytes[(length - firstLength)..]);
                     }
                 }
-
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
-            }
-        }
-
-        public static void FormatBuffer(TextWriter output, params Memory<byte>[] mems)
-        {
-            output.WriteLine("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F");
-            output.WriteLine("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --");
-
-            var byteIndex = 0;
-
-            var length = 0;
-            for (var i = 0; i < mems.Length; i++)
-            {
-                length += mems[i].Length;
-            }
-
-            var position = 0;
-            var memIndex = 0;
-            var span = mems[memIndex].Span;
-
-            var whole = length >> 4;
-            var rem = length & 0xF;
-
-            for (var i = 0; i < whole; ++i, byteIndex += 16)
-            {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(16);
-
-                for (var j = 0; j < 16; ++j)
+                else
                 {
-                    var c = span[position++];
-                    if (position > span.Length)
-                    {
-                        span = mems[memIndex++].Span;
-                        position = 0;
-                    }
-
-                    bytes.Append(c.ToString("X2"));
-
-                    if (j != 7)
-                    {
-                        bytes.Append(' ');
-                    }
-                    else
-                    {
-                        bytes.Append("  ");
-                    }
-
-                    if (c >= 0x20 && c < 0x7F)
-                    {
-                        chars.Append((char)c);
-                    }
-                    else
-                    {
-                        chars.Append('.');
-                    }
+                    second.Slice(i - first.Length, length).CopyTo(lineBytes);
                 }
 
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
-            }
+                var charsWritten = ((ReadOnlySpan<byte>)lineBytes[..length]).ToSpacedHexString(lineChars);
 
-            if (rem != 0)
-            {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(rem);
-
-                for (var j = 0; j < 16; ++j)
-                {
-                    if (j < rem)
-                    {
-                        var c = span[position++];
-                        if (position > span.Length)
-                        {
-                            span = mems[memIndex++].Span;
-                            position = 0;
-                        }
-
-                        bytes.Append(c.ToString("X2"));
-
-                        if (j != 7)
-                        {
-                            bytes.Append(' ');
-                        }
-                        else
-                        {
-                            bytes.Append("  ");
-                        }
-
-                        if (c >= 0x20 && c < 0x7F)
-                        {
-                            chars.Append((char)c);
-                        }
-                        else
-                        {
-                            chars.Append('.');
-                        }
-                    }
-                    else
-                    {
-                        bytes.Append("   ");
-                    }
-                }
-
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
+                op.Write("{0:X4}   ", i);
+                op.Write(lineChars[..charsWritten]);
+                op.WriteLine();
             }
         }
 

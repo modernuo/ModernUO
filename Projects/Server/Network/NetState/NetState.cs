@@ -73,6 +73,7 @@ namespace Server.Network
         internal ParserState _parserState = ParserState.AwaitingNextPacket;
         internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
         internal GCHandle _handle;
+        private bool _packetLogging;
 
         internal enum ParserState
         {
@@ -95,6 +96,13 @@ namespace Server.Network
             GameServer_LoggedIn,
 
             Error
+        }
+
+        private static string _packetLoggingPath;
+
+        public static void Configure()
+        {
+            _packetLoggingPath = ServerConfiguration.GetSetting("netstate.packetLoggingPath", Path.Combine(Core.BaseDirectory, "Packets"));
         }
 
         public static void Initialize()
@@ -140,6 +148,21 @@ namespace Server.Network
             }
 
             CreatedCallback?.Invoke(this);
+        }
+
+        // Only use this for debugging. This will make your server very slow!
+        public bool PacketLogging
+        {
+            get => _packetLogging;
+            set
+            {
+                _packetLogging = value;
+
+                if (_packetLogging)
+                {
+                    StartPacketLog();
+                }
+            }
         }
 
         public DateTime ConnectedOn { get; }
@@ -486,6 +509,11 @@ namespace Server.Network
                     buffer.CopyFrom(span);
                 }
 
+                if (PacketLogging)
+                {
+                    LogPacket(span, ReadOnlySpan<byte>.Empty, span.Length, false);
+                }
+
                 SendPipe.Writer.Advance((uint)length);
 
                 if (!_flushQueued)
@@ -503,6 +531,48 @@ namespace Server.Network
 #endif
                 TraceException(ex);
                 Disconnect("Exception while sending.");
+            }
+        }
+
+        private void StartPacketLog()
+        {
+            try
+            {
+                var logDir = Path.Combine(_packetLoggingPath, _toString);
+                PathUtility.EnsureDirectory(logDir);
+                var logPath = Path.Combine(logDir, "packets.log");
+                using var op = new StreamWriter(logPath, true);
+
+                op.WriteLine(">>>>>>>>>> Logging started {0:yyyy/MM/dd HH:mm::ss} <<<<<<<<<<", Core.Now);
+                op.WriteLine();
+                op.WriteLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        private void LogPacket(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, int totalLength, bool incoming)
+        {
+            try
+            {
+                var logDir = Path.Combine(_packetLoggingPath, _toString);
+                PathUtility.EnsureDirectory(logDir);
+                var logPath = Path.Combine(logDir, "packets.log");
+
+                const string incomingStr = "Client -> Server";
+                const string outgoingStr = "Server -> Client";
+
+                using var sw = new StreamWriter(logPath, true);
+                sw.WriteLine($"{Core.Now:HH:mm:ss.ffff}: {(incoming ? incomingStr : outgoingStr)} 0x{first[0]:X2} (Length: {totalLength})");
+                sw.FormatBuffer(first, second, totalLength);
+                sw.WriteLine();
+                sw.WriteLine();
+            }
+            catch
+            {
+                // ignored
             }
         }
 
@@ -759,6 +829,11 @@ namespace Server.Network
             }
 
             UpdatePacketCount(packetId);
+
+            if (PacketLogging)
+            {
+                LogPacket(packetReader.First, packetReader.Second, packetLength, true);
+            }
 
             handler.OnReceive(this, packetReader, ref packetLength);
 
