@@ -62,12 +62,9 @@ namespace Server.Network
 
             try
             {
-                using var sw = new StreamWriter("Packets.log", true);
-
+                using var sw = new StreamWriter("unhandled-packets.log", true);
                 sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, _first[0]);
-
-                Utility.FormatBuffer(sw, _first.ToArray(), _second.ToArray());
-
+                sw.FormatBuffer(_first, _second, Length);
                 sw.WriteLine();
                 sw.WriteLine();
             }
