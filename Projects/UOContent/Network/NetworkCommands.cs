@@ -42,7 +42,7 @@ namespace Server.Network
             }
             else if (from != pm && from.AccessLevel < pm.AccessLevel)
             {
-                LogFailure("You do not have permission to enable packet logging for this staff member.");
+                LogFailure("You do not have the required access level to do this.");
             }
             else
             {
@@ -52,6 +52,8 @@ namespace Server.Network
                     from,
                     $"{from.AccessLevel} {CommandLogging.Format(from)} {enabled} packet logging for {pm.Account.Username} ({pm.NetState})"
                 );
+
+                AddResponse($"Packet logging has been {enabled} for {pm.Account.Username} ({pm.NetState})");
             }
         }
     }
