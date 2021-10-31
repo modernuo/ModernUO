@@ -638,6 +638,12 @@ namespace Server
             op.WriteLine("        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F");
             op.WriteLine("       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --");
 
+            if (totalLength == 0)
+            {
+                op.WriteLine("0000   ");
+                return;
+            }
+
             Span<byte> lineBytes = stackalloc byte[16];
             Span<char> lineChars = stackalloc char[47];
             for (var i = 0; i < totalLength; i += 16)
