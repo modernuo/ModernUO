@@ -32,6 +32,10 @@ namespace Server.Network
         public int Position { get; private set; }
         public int Remaining => Length - Position;
 
+        // Only used for debugging!
+        public ReadOnlySpan<byte> First => _first;
+        public ReadOnlySpan<byte> Second => _second;
+
         public CircularBufferReader(ref CircularBuffer<byte> buffer) : this(buffer.GetSpan(0), buffer.GetSpan(1))
         {
         }
@@ -58,12 +62,9 @@ namespace Server.Network
 
             try
             {
-                using var sw = new StreamWriter("Packets.log", true);
-
+                using var sw = new StreamWriter("unhandled-packets.log", true);
                 sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, _first[0]);
-
-                Utility.FormatBuffer(sw, _first.ToArray(), new Memory<byte>(_second.ToArray()));
-
+                sw.FormatBuffer(_first, _second, Length);
                 sw.WriteLine();
                 sw.WriteLine();
             }

@@ -1,0 +1,125 @@
+Begin
+	Name			Samurai
+	TrueName		"Samurai"
+	NameId			1062948
+	DescId			1062950
+	Desc			6
+	TopLevel		true
+	Gump			5591
+	Type			Profession
+	Skill			Bushido			30
+	Skill			Swordsmanship		30
+	Skill			Focus		30					
+	Skill			Parrying	30
+	Stat			Str			40
+	Stat			Dex			30
+	Stat			Int			20
+End
+
+Begin
+	Name			Ninja
+	TrueName		"Ninja"
+	NameId			1062949
+	DescId			1062951
+	Desc			7
+	TopLevel		true
+	Gump			5589
+	Type			Profession
+	Skill			Ninjitsu		30
+	Skill			Hiding			30
+	Skill			Fencing		30					
+	Skill			Stealth		30
+	Stat			Str			40
+	Stat			Dex			30
+	Stat			Int			20
+End
+
+Begin
+	Name			Paladin
+	TrueName		"Paladin"
+	NameId			1061177
+	DescId			1061227
+	Desc			5
+	TopLevel		true
+	Gump			5587
+	Type			Profession
+	Skill			Chivalry		30
+	Skill			Tactics 		30
+	Skill			Focus 		30
+	Skill			Swordsmanship		30					
+	Stat			Str			45
+	Stat			Dex			20
+	Stat			Int			25
+End
+
+Begin
+	Name			Necromancer
+	TrueName		"Necromancer"
+	NameId			1061178
+	DescId			1061228
+	Desc			4
+	TopLevel		true
+	Gump			5557
+	Type			Profession
+	Skill			Necromancy		30
+	Skill			Spirit Speak	30
+	Skill			Swordsmanship 		30
+	Skill			Meditation 		30
+	Stat			Str			25
+	Stat			Dex			20
+	Stat			Int			45
+End
+
+Begin
+	Name			Warrior
+	TrueName		"Warrior"
+	NameId			1061180
+	DescId			1061230
+	Desc			1
+	TopLevel		true
+	Gump			5577
+	Type			Profession
+	Skill			Tactics			30
+	Skill			Healing			30
+	Skill			Swordsmanship		30
+	Skill			Anatomy		30
+	Stat			Str			45
+	Stat			Dex			35
+	Stat			Int			10
+End
+
+Begin
+	Name			Mage
+	TrueName		"Mage"
+	NameId			1061179
+	DescId			1061229
+	Desc			2
+	TopLevel		true
+	Gump			5569
+	Type			Profession
+	Skill			Magery			30
+	Skill			Meditation		30
+	Skill			Evaluate Intelligence	30
+	Skill			Wrestling		30					
+	Stat			Str			25
+	Stat			Dex			20
+	Stat			Int			45
+End
+
+Begin
+	Name			Blacksmith
+	TrueName		"Blacksmith"
+	NameId			1061181
+	DescId			1061231
+	Desc			3
+	TopLevel		true
+	Gump			5555
+	Type			Profession
+	Skill			Blacksmith		30
+	Skill			Tinkering		30
+	Skill			Mining			30
+	Skill			Tailoring		30
+	Stat			Str			60
+	Stat			Dex			15
+	Stat			Int			15
+End

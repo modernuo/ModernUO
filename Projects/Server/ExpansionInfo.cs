@@ -158,6 +158,30 @@ namespace Server
 
     public class ExpansionInfo
     {
+        public static string GetEraFolder(string parentDirectory)
+        {
+            var expansion = Core.Expansion;
+            var folders = Directory.GetDirectories(
+                parentDirectory,
+                "*",
+                new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
+            );
+
+            while (expansion-- >= 0)
+            {
+                foreach (var folder in folders)
+                {
+                    var di = new DirectoryInfo(folder);
+                    if (di.Name.InsensitiveEquals(expansion.ToString()))
+                    {
+                        return folder;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         static ExpansionInfo()
         {
             var path = Path.Combine(Core.BaseDirectory, "Data/expansion.json");
