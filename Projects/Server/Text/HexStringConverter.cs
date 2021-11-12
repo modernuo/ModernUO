@@ -59,6 +59,27 @@ namespace Server.Text
             return result;
         }
 
+        public static unsafe int ToSpacedHexString(this ReadOnlySpan<byte> bytes, Span<char> result)
+        {
+            var charsWritten = 0;
+            fixed (char* resultP = result)
+            {
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    var resultP2 = (uint*)(resultP + charsWritten);
+                    *resultP2 = m_Lookup32Chars[bytes[i]];
+                    charsWritten += 2;
+
+                    if (i < bytes.Length - 1)
+                    {
+                        *(resultP + charsWritten++) = ' ';
+                    }
+                }
+            }
+
+            return charsWritten;
+        }
+
         public static string ToDelimitedHexString(this byte[] bytes) => ((ReadOnlySpan<byte>)bytes).ToDelimitedHexString();
 
         public static unsafe string ToDelimitedHexString(this ReadOnlySpan<byte> bytes)
