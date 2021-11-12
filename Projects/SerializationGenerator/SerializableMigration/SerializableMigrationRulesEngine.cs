@@ -33,6 +33,7 @@ namespace SerializableMigration
                 new ListMigrationRule(),
                 new ArrayMigrationRule(),
                 new HashSetMigrationRule(),
+                new DictionaryMigrationRule(),
                 new KeyValuePairMigrationRule(),
                 new PrimitiveTypeMigrationRule(),
                 new PrimitiveUOTypeMigrationRule(),
