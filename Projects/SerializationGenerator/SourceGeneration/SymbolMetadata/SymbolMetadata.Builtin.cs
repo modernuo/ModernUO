@@ -19,6 +19,7 @@ namespace SerializationGenerator
 {
     public static partial class SymbolMetadata
     {
+        public const string DICTIONARY_CLASS = "System.Collections.Generic.Dictionary`2";
         public const string LIST_CLASS = "System.Collections.Generic.List`1";
         public const string HASHSET_CLASS = "System.Collections.Generic.HashSet`1";
         public const string IPADDRESS_CLASS = "System.Net.IPAddress";
@@ -43,15 +44,21 @@ namespace SerializationGenerator
                 SymbolEqualityComparer.Default
             ) == true;
 
-        public static bool IsList(this ISymbol symbol, Compilation compilation) =>
+        public static bool IsDictionary(this ISymbol symbol, Compilation compilation) =>
             (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
-                compilation.GetTypeByMetadataName(LIST_CLASS),
+                compilation.GetTypeByMetadataName(DICTIONARY_CLASS),
                 SymbolEqualityComparer.Default
             ) == true;
 
         public static bool IsHashSet(this ISymbol symbol, Compilation compilation) =>
             (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
                 compilation.GetTypeByMetadataName(HASHSET_CLASS),
+                SymbolEqualityComparer.Default
+            ) == true;
+
+        public static bool IsList(this ISymbol symbol, Compilation compilation) =>
+            (symbol as INamedTypeSymbol)?.ConstructedFrom.Equals(
+                compilation.GetTypeByMetadataName(LIST_CLASS),
                 SymbolEqualityComparer.Default
             ) == true;
 

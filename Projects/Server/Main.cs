@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
@@ -247,6 +248,17 @@ namespace Server
             foreach (var p in ServerConfiguration.DataDirectories)
             {
                 fullPath = Path.Combine(p, path);
+
+                if (IsLinux)
+                {
+                    var fi = new FileInfo(fullPath);
+                    fullPath = fi.Directory!.EnumerateFiles(
+                        fi.Name,
+                        new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
+                    ).FirstOrDefault()?.FullName;
+
+                    break;
+                }
 
                 if (File.Exists(fullPath))
                 {
