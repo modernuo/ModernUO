@@ -10,6 +10,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance;
 using Server.Buffers;
+using Server.Collections;
 using Server.Random;
 using Server.Text;
 
@@ -1186,6 +1187,45 @@ namespace Server
         public static void Tidy<T>(this HashSet<T> set) where T : ISerializable
         {
             set.RemoveWhere(entry => entry?.Deleted != false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Tidy<K, V>(this Dictionary<K, V> dictionary)
+        {
+            var serializable = typeof(ISerializable);
+            var serializableKey = typeof(K).IsAssignableTo(serializable);
+            var serializableValue = typeof(V).IsAssignableTo(serializable);
+
+            if (!serializableKey && !serializableValue)
+            {
+                return;
+            }
+
+            using var queue = PooledRefQueue<K>.Create();
+            foreach (var (key, value) in dictionary)
+            {
+                if (serializableKey)
+                {
+                    if (key == null || ((ISerializable)key).Deleted)
+                    {
+                        queue.Enqueue(key);
+                    }
+                }
+                else
+                {
+                    if (value == null || ((ISerializable)value).Deleted)
+                    {
+                        queue.Enqueue(key);
+                    }
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                dictionary.Remove(queue.Dequeue());
+            }
+
+            dictionary.TrimExcess();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
