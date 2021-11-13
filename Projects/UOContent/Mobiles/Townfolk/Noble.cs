@@ -25,7 +25,6 @@ namespace Server.Mobiles
         {
             return Utility.Random(6) switch
             {
-                0 => 0,
                 1 => Utility.RandomBlueHue(),
                 2 => Utility.RandomGreenHue(),
                 3 => Utility.RandomRedHue(),
