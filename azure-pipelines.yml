@@ -27,7 +27,7 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release win
     displayName: 'Build'
-  - script: dotnet test --no-restore
+  - script: dotnet test --no-restore --framework net6.0
     displayName: 'Test'
 
 - job: BuildLinux
@@ -76,5 +76,5 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release $(os)
     displayName: 'Build'
-  - script: dotnet test --no-restore
+  - script: dotnet test --no-restore --framework net6.0
     displayName: 'Test'
