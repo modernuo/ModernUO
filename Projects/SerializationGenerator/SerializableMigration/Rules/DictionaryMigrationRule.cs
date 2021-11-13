@@ -24,7 +24,6 @@ namespace SerializableMigration
 {
     public class DictionaryMigrationRule : ISerializableMigrationRule
     {
-        private const string KEY_VALUE_PAIR_DELIMITER = "----";
         public string RuleName => nameof(DictionaryMigrationRule);
 
         public bool GenerateRuleState(
@@ -81,7 +80,7 @@ namespace SerializableMigration
             var valueArgumentsLength = serializableValueProperty.RuleArguments?.Length ?? 0;
             var index = 0;
 
-            ruleArguments = new string[keyArgumentsLength + valueArgumentsLength + 6];
+            ruleArguments = new string[7 + keyArgumentsLength + valueArgumentsLength];
             ruleArguments[index++] = extraOptions;
             ruleArguments[index++] = keySymbolType.ToDisplayString();
             ruleArguments[index++] = serializableKeyProperty.Rule;
@@ -118,7 +117,7 @@ namespace SerializableMigration
             var index = 1;
             var keyType = ruleArguments![index++];
 
-            var keyElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments![index++]];
+            var keyElementRule = SerializableMigrationRulesEngine.Rules[ruleArguments[index++]];
             var keyRuleArguments = new string[int.Parse(ruleArguments[index++])];
 
             if (keyRuleArguments.Length > 0)
@@ -241,7 +240,7 @@ namespace SerializableMigration
                 RuleArguments = valueRuleArguments
             };
 
-            keyElementRule.GenerateSerializationMethod(source, $"{indent}        ", serializableValueElement);
+            valueElementRule.GenerateSerializationMethod(source, $"{indent}        ", serializableValueElement);
 
             source.AppendLine($"{indent}    }}");
             source.AppendLine($"{indent}}}");

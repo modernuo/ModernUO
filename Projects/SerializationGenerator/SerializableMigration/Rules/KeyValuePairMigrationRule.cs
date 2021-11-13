@@ -74,7 +74,7 @@ namespace SerializableMigration
             var index = 0;
 
             // Key
-            ruleArguments = new string[5 + keyArgumentsLength + valueArgumentsLength];
+            ruleArguments = new string[6 + keyArgumentsLength + valueArgumentsLength];
             ruleArguments[index++] = ""; // Extra options
             ruleArguments[index++] = keySymbolType.ToDisplayString();
             ruleArguments[index++] = keySerializedProperty.Rule;
