@@ -6,7 +6,7 @@ using Server.Collections;
 namespace Benchmarks
 {
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class BenchmarkOrderedHashSet
     {
         private readonly string[] _iterations = new string[16];

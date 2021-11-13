@@ -7,7 +7,7 @@ using Server.Buffers;
 namespace Benchmarks.BenchmarkUtilities
 {
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class BenchmarkStringHelpers
     {
         private readonly string[] names =
