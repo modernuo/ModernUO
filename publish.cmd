@@ -32,8 +32,8 @@ dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
-dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+echo dotnet publish ${config} ${os} --framework net6.0 --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+dotnet publish ${config} ${os} --framework net6.0 --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 
 echo dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
 dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
@@ -65,8 +65,8 @@ dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
-dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+echo dotnet publish %config% %os% --framework net6.0 --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+dotnet publish %config% %os% --framework net6.0 --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 
 echo dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
 dotnet build -c Release Projects/SerializationSchemaGenerator/SerializationSchemaGenerator.csproj
