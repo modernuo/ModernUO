@@ -206,7 +206,8 @@ namespace Server.Regions
         }
 
         public override bool OnDecay(Item item) =>
-            (!House.HasLockedDownItem(item) && !House.HasSecureItem(item) || !House.IsInside(item)) && base.OnDecay(item);
+            !House.IsInside(item) && (!House.HasLockedDownItem(item) || !House.HasSecureItem(item)) && base.OnDecay(item);
+
 
         public override TimeSpan GetLogoutDelay(Mobile m)
         {
