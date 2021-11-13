@@ -150,7 +150,7 @@ namespace SerializableMigration
                 RuleArguments = valueRuleArguments
             };
 
-            keyRule.GenerateDeserializationMethod(
+            valueRule.GenerateDeserializationMethod(
                 source,
                 indent,
                 serializableValueProperty,
@@ -214,7 +214,7 @@ namespace SerializableMigration
                 RuleArguments = valueRuleArguments
             };
 
-            keyRule.GenerateSerializationMethod(
+            valueRule.GenerateSerializationMethod(
                 source,
                 indent,
                 serializableValueProperty
