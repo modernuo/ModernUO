@@ -68,8 +68,7 @@ namespace Server.Compression
 
             ZipFile.ExtractToDirectory(libarchiveFile, tempDir);
             var libArchivePath = Path.Combine(tempDir, "libarchive");
-            Directory.Move(Path.Combine(libArchivePath, "bin"), "bsdtar");
-            Directory.Delete(libArchivePath, true);
+            PathUtility.MoveDirectory(Path.Combine(libArchivePath, "bin"), Path.Combine(Core.BaseDirectory, "bsdtar"));
             File.Delete(libarchiveFile);
 
             return Path.Combine(Core.BaseDirectory, "bsdtar/bsdtar.exe");

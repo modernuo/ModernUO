@@ -31,9 +31,12 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![.NET](https://img.shields.io/badge/.NET-%206.0%20SDK-5C2D91)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Supported IDEs
+&nbsp;
 [<img width="64" alt="Jetbrains Rider 2021.3" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [<img width="64" alt="Visual Studio 2022" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png">](https://visualstudio.microsoft.com/downloads)
 <br />
+Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visual Studio 2022+
 ###### Note: VS Code is not currently supported.
 
 ## Getting Started
