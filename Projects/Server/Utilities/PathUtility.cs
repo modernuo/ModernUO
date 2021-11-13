@@ -70,10 +70,10 @@ namespace Server
             foreach (var file in Directory.EnumerateFiles(sourcePath, "*", searchOptions))
             {
                 var fi = new FileInfo(file);
-                var fileDirectory = fi.DirectoryName!;
-                EnsureDirectory(fileDirectory);
-                var relativePath = Path.GetRelativePath(sourcePath, fileDirectory);
-                fi.CopyTo(Path.Combine(destinationPath, relativePath, fi.Name));
+                var relativePath = Path.GetRelativePath(sourcePath, fi.DirectoryName!);
+                var destFolder = Path.Combine(destinationPath, relativePath);
+                EnsureDirectory(destFolder);
+                fi.CopyTo(Path.Combine(destFolder, fi.Name));
             }
         }
 
