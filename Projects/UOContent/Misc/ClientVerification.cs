@@ -81,23 +81,21 @@ namespace Server.Misc
                 return;
             }
 
-            if (Required != null && version < Required && (m_InvalidClientResponse == InvalidClientResponse.Kick ||
+            if (Required != null && (m_InvalidClientResponse == InvalidClientResponse.Kick ||
                                                            m_InvalidClientResponse == InvalidClientResponse.LenientKick &&
                                                            Core.Now - state.Mobile.Created > m_AgeLeniency &&
                                                            state.Mobile is PlayerMobile mobile &&
                                                            mobile.GameTime > m_GameTimeLeniency))
             {
-                kickMessage = $"This server requires your client version be at least {Required}.";
+                if (version < Required)
+                {
+                    kickMessage = $"This server requires your client version be {Required}.";
+                }
+               /*else if (version > Required)
+                {
+                    kickMessage = $"This server requires your client version be {Required}.";
+                }*/ //----OPTIONAL TO RESTRICT NEWER CLIENTS----
             }
-
-            /*else if (Required != null && version > Required && (m_InvalidClientResponse == InvalidClientResponse.Kick ||
-                                                           m_InvalidClientResponse == InvalidClientResponse.LenientKick &&
-                                                           Core.Now - state.Mobile.Created > m_AgeLeniency &&
-                                                           state.Mobile is PlayerMobile mobile &&
-                                                           mobile.GameTime > m_GameTimeLeniency))
-            {
-                kickMessage = $"This server requires your client version be {Required}.";
-            }*/ //----OPTIONAL TO RESTRICT NEWER CLIENTS----
 
             else if (!AllowGod || !AllowRegular || !AllowUOTD)
             {
