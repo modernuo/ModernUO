@@ -34,7 +34,7 @@ namespace Server.Json
             {
                 WriteIndented = true,
                 AllowTrailingCommas = true,
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };

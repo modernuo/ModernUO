@@ -55,9 +55,9 @@ namespace Server.Accounting.Security
         {
             var passwordProtection = algorithm switch
             {
-                PasswordProtectionAlgorithm.MD5    => MD5PasswordProtection.Instance,
-                PasswordProtectionAlgorithm.SHA1   => SHA1PasswordProtection.Instance,
-                PasswordProtectionAlgorithm.SHA2   => SHA2PasswordProtection.Instance,
+                PasswordProtectionAlgorithm.MD5    => HashAlgorithmPasswordProtection.MD5Instance,
+                PasswordProtectionAlgorithm.SHA1   => HashAlgorithmPasswordProtection.SHA1Instance,
+                PasswordProtectionAlgorithm.SHA2   => HashAlgorithmPasswordProtection.SHA2Instance,
                 PasswordProtectionAlgorithm.PBKDF2 => PBKDF2PasswordProtection.Instance,
                 PasswordProtectionAlgorithm.Argon2 => Argon2PasswordProtection.Instance,
                 PasswordProtectionAlgorithm.None   => throw new Exception("Do not use PasswordProtectionAlgorithm.None"),
