@@ -39,7 +39,7 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
         <PackageReference Include="MailKit" Version="2.15.0" />
-        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.0" />
         <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.9.1" />

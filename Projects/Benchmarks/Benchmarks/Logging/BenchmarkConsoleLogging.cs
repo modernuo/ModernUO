@@ -6,7 +6,7 @@ using Serilog.Core;
 
 namespace Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class BenchmarkConsoleLogging
     {
         private const string text = "Sample message";

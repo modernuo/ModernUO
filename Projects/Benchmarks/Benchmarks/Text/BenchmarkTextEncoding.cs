@@ -5,7 +5,7 @@ using Server.Text;
 namespace Benchmarks.BenchmarkText
 {
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class BenchmarkTextEncoding
     {
         private const string text =

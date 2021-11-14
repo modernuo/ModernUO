@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Running;
+using Benchmarks.Benchmarks.Rng;
 
 namespace Benchmarks
 {
@@ -16,6 +17,7 @@ namespace Benchmarks
             // var gumpPacket = BenchmarkRunner.Run<OutgoingGumpPacketBenchmarks>();
             MapSelectors.Init();
             var gumpPacket = BenchmarkRunner.Run<MapSelectors>();
+            // var rngTest = BenchmarkRunner.Run<BenchmarkXoshiro>();
         }
     }
 }
