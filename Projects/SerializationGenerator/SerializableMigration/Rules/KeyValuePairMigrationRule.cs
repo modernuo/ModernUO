@@ -41,12 +41,12 @@ namespace SerializableMigration
                 return false;
             }
 
-            var typeArguments = namedTypeSymbol.TypeArguments;
+            var keySymbolType = namedTypeSymbol.TypeArguments[0];
 
             var keySerializedProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
                 compilation,
                 "key",
-                typeArguments[0],
+                keySymbolType,
                 0,
                 attributes,
                 serializableTypes,
@@ -55,10 +55,12 @@ namespace SerializableMigration
                 null
             );
 
+            var valueSymbolType = namedTypeSymbol.TypeArguments[1];
+
             var valueSerializedProperty = SerializableMigrationRulesEngine.GenerateSerializableProperty(
                 compilation,
                 "value",
-                typeArguments[1],
+                valueSymbolType,
                 1,
                 attributes,
                 serializableTypes,
@@ -72,17 +74,19 @@ namespace SerializableMigration
             var index = 0;
 
             // Key
-            ruleArguments = new string[5 + keyArgumentsLength + valueArgumentsLength];
-            ruleArguments[index++] = typeArguments[0].ToDisplayString();
+            ruleArguments = new string[6 + keyArgumentsLength + valueArgumentsLength];
+            ruleArguments[index++] = ""; // Extra options
+            ruleArguments[index++] = keySymbolType.ToDisplayString();
             ruleArguments[index++] = keySerializedProperty.Rule;
             ruleArguments[index++] = keyArgumentsLength.ToString();
             if (keyArgumentsLength > 0)
             {
                 Array.Copy(keySerializedProperty.RuleArguments!, 0, ruleArguments, index, keyArgumentsLength);
+                index += keyArgumentsLength;
             }
 
             // Value
-            ruleArguments[index++] = typeArguments[1].ToDisplayString();
+            ruleArguments[index++] = valueSymbolType.ToDisplayString();
             ruleArguments[index++] = valueSerializedProperty.Rule;
 
             if (valueArgumentsLength > 0)
@@ -103,10 +107,16 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var keyType = ruleArguments![0];
-            var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
-            var keyRuleArguments = new string[int.Parse(ruleArguments[2])];
-            Array.Copy(ruleArguments, 3, keyRuleArguments, 0, keyRuleArguments.Length);
+            var index = 1; // skip extra options
+            var keyType = ruleArguments![index++];
+            var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[index++]];
+            var keyRuleArguments = new string[int.Parse(ruleArguments[index++])];
+
+            if (keyRuleArguments.Length > 0)
+            {
+                Array.Copy(ruleArguments, index, keyRuleArguments, 0, keyRuleArguments.Length);
+                index += keyRuleArguments.Length;
+            }
 
             var serializableKeyProperty = new SerializableProperty
             {
@@ -123,11 +133,14 @@ namespace SerializableMigration
                 parentReference
             );
 
-            var valueIndex = 3 + keyRuleArguments.Length;
-            var valueType = ruleArguments[valueIndex++];
-            var valueRule = SerializableMigrationRulesEngine.Rules[ruleArguments[valueIndex++]];
-            var valueRuleArguments = new string[ruleArguments.Length - valueIndex];
-            Array.Copy(ruleArguments, valueIndex, valueRuleArguments, 0, valueRuleArguments.Length);
+            var valueType = ruleArguments[index++];
+            var valueRule = SerializableMigrationRulesEngine.Rules[ruleArguments[index++]];
+            var valueRuleArguments = new string[int.Parse(ruleArguments[index++])];
+
+            if (valueRuleArguments.Length > 0)
+            {
+                Array.Copy(ruleArguments, index, valueRuleArguments, 0, valueRuleArguments.Length);
+            }
 
             var serializableValueProperty = new SerializableProperty
             {
@@ -137,7 +150,7 @@ namespace SerializableMigration
                 RuleArguments = valueRuleArguments
             };
 
-            keyRule.GenerateDeserializationMethod(
+            valueRule.GenerateDeserializationMethod(
                 source,
                 indent,
                 serializableValueProperty,
@@ -159,10 +172,16 @@ namespace SerializableMigration
             }
 
             var ruleArguments = property.RuleArguments;
-            var keyType = ruleArguments![0];
-            var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[1]];
-            var keyRuleArguments = new string[int.Parse(ruleArguments[2])];
-            Array.Copy(ruleArguments, 3, keyRuleArguments, 0, keyRuleArguments.Length);
+            var index = 1; // skip extra options
+            var keyType = ruleArguments![index++];
+            var keyRule = SerializableMigrationRulesEngine.Rules[ruleArguments[index++]];
+            var keyRuleArguments = new string[int.Parse(ruleArguments[index++])];
+
+            if (keyRuleArguments.Length > 0)
+            {
+                Array.Copy(ruleArguments, index, keyRuleArguments, 0, keyRuleArguments.Length);
+                index += keyRuleArguments.Length;
+            }
 
             var serializableKeyProperty = new SerializableProperty
             {
@@ -178,11 +197,14 @@ namespace SerializableMigration
                 serializableKeyProperty
             );
 
-            var valueIndex = 3 + keyRuleArguments.Length;
-            var valueType = ruleArguments[valueIndex++];
-            var valueRule = SerializableMigrationRulesEngine.Rules[ruleArguments[valueIndex++]];
-            var valueRuleArguments = new string[ruleArguments.Length - valueIndex];
-            Array.Copy(ruleArguments, valueIndex, valueRuleArguments, 0, valueRuleArguments.Length);
+            var valueType = ruleArguments[index++];
+            var valueRule = SerializableMigrationRulesEngine.Rules[ruleArguments[index++]];
+            var valueRuleArguments = new string[int.Parse(ruleArguments[index++])];
+
+            if (valueRuleArguments.Length > 0)
+            {
+                Array.Copy(ruleArguments, index, valueRuleArguments, 0, valueRuleArguments.Length);
+            }
 
             var serializableValueProperty = new SerializableProperty
             {
@@ -192,7 +214,7 @@ namespace SerializableMigration
                 RuleArguments = valueRuleArguments
             };
 
-            keyRule.GenerateSerializationMethod(
+            valueRule.GenerateSerializationMethod(
                 source,
                 indent,
                 serializableValueProperty
