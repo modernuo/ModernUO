@@ -63,5 +63,24 @@ namespace Server
             Utility.RandomBytes(bytes);
             return EnsureDirectory(Path.Combine(basePath, bytes.ToHexString()));
         }
+
+        public static void CopyDirectory(string sourcePath, string destinationPath, bool recursive = true)
+        {
+            var searchOptions = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            foreach (var file in Directory.EnumerateFiles(sourcePath, "*", searchOptions))
+            {
+                var fi = new FileInfo(file);
+                var relativePath = Path.GetRelativePath(sourcePath, fi.DirectoryName!);
+                var destFolder = Path.Combine(destinationPath, relativePath);
+                EnsureDirectory(destFolder);
+                fi.CopyTo(Path.Combine(destFolder, fi.Name));
+            }
+        }
+
+        public static void MoveDirectory(string sourcePath, string destinationPath)
+        {
+            CopyDirectory(sourcePath, destinationPath);
+            Directory.Delete(sourcePath, true);
+        }
     }
 }
