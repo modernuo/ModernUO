@@ -18,11 +18,16 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: 5.0.401
+      version: 5.0.403
+  - task: UseDotNet@2
+    displayName: 'Install .NET 6'
+    inputs:
+      packageType: sdk
+      version: 6.0.100
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release win
     displayName: 'Build'
-  - script: dotnet test --no-restore
+  - script: dotnet test --no-restore --framework net6.0
     displayName: 'Test'
 
 - job: BuildLinux
@@ -62,9 +67,14 @@ jobs:
     displayName: 'Install .NET 5'
     inputs:
       packageType: sdk
-      version: 5.0.401
+      version: 5.0.403
+  - task: UseDotNet@2
+    displayName: 'Install .NET 6'
+    inputs:
+      packageType: sdk
+      version: 6.0.100
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release $(os)
     displayName: 'Build'
-  - script: dotnet test --no-restore
+  - script: dotnet test --no-restore --framework net6.0
     displayName: 'Test'

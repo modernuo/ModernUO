@@ -43,7 +43,7 @@ namespace Server
                 }
             };
 
-            var file = Core.FindDataFile("prof.txt");
+            var file = Core.FindDataFile("prof.txt", false);
             if (!File.Exists(file))
             {
                 var parent = Path.Combine(Core.BaseDirectory, "Data/Professions");

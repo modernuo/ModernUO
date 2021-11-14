@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using Server.Accounting;
 using Server.Accounting.Security;
 using Xunit;
@@ -9,12 +10,29 @@ namespace Server.Tests.Accounting.Security
     {
         private const string plainPassword = "hello-good-sir";
 
-        [Theory, InlineData(typeof(Argon2PasswordProtection)), InlineData(typeof(PBKDF2PasswordProtection)),
-         InlineData(typeof(SHA2PasswordProtection)), InlineData(typeof(SHA1PasswordProtection)),
-         InlineData(typeof(MD5PasswordProtection))]
-        public void TestValidates(Type protectionType)
+        [Theory]
+        [InlineData(typeof(Argon2PasswordProtection), null)]
+        [InlineData(typeof(PBKDF2PasswordProtection), null)]
+        [InlineData(typeof(HashAlgorithmPasswordProtection), "MD5")]
+        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA1")]
+        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA2")]
+        public void TestValidates(Type protectionType, string algorithmType)
         {
-            var passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
+            IPasswordProtection passwordProtection;
+            if (protectionType == typeof(HashAlgorithmPasswordProtection))
+            {
+                passwordProtection = algorithmType switch
+                {
+                    "SHA1" => HashAlgorithmPasswordProtection.SHA1Instance,
+                    "SHA2" => HashAlgorithmPasswordProtection.SHA2Instance,
+                    _      => HashAlgorithmPasswordProtection.MD5Instance,
+                };
+            }
+            else
+            {
+                passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
+            }
+
             if (passwordProtection == null)
             {
                 Assert.False(true, $"{protectionType.Name} is not an IPasswordProtection.");
@@ -25,12 +43,29 @@ namespace Server.Tests.Accounting.Security
             Assert.True(passwordProtection.ValidatePassword(encryptedPassword, plainPassword));
         }
 
-        [Theory, InlineData(typeof(Argon2PasswordProtection)), InlineData(typeof(PBKDF2PasswordProtection)),
-         InlineData(typeof(SHA2PasswordProtection)), InlineData(typeof(SHA1PasswordProtection)),
-         InlineData(typeof(MD5PasswordProtection))]
-        public void TestPasswordDoesNotValidate(Type protectionType)
+        [Theory]
+        [InlineData(typeof(Argon2PasswordProtection), null)]
+        [InlineData(typeof(PBKDF2PasswordProtection), null)]
+        [InlineData(typeof(HashAlgorithmPasswordProtection), "MD5")]
+        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA1")]
+        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA2")]
+        public void TestPasswordDoesNotValidate(Type protectionType, string algorithmType)
         {
-            var passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
+            IPasswordProtection passwordProtection;
+            if (protectionType == typeof(HashAlgorithmPasswordProtection))
+            {
+                passwordProtection = algorithmType switch
+                {
+                    "SHA1" => HashAlgorithmPasswordProtection.SHA1Instance,
+                    "SHA2" => HashAlgorithmPasswordProtection.SHA2Instance,
+                    _      => HashAlgorithmPasswordProtection.MD5Instance,
+                };
+            }
+            else
+            {
+                passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
+            }
+
             if (passwordProtection == null)
             {
                 Assert.False(true, $"{protectionType.Name} is not an IPasswordProtection.");
