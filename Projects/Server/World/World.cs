@@ -421,7 +421,7 @@ namespace Server
                 try
                 {
                     EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
-                    Directory.Move(tempPath, SavePath);
+                    PathUtility.MoveDirectory(tempPath, SavePath);
                 }
                 catch (Exception ex)
                 {

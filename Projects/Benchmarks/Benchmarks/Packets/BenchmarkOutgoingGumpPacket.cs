@@ -12,7 +12,7 @@ using Server.Tests.Network;
 namespace Benchmarks
 {
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class OutgoingGumpPacketBenchmarks
     {
         private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
