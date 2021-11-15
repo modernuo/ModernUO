@@ -96,7 +96,6 @@ namespace Server.Misc
                     kickMessage = $"This server requires your client version be {Required}.";
                 }*/ //----OPTIONAL TO RESTRICT NEWER CLIENTS----
             }
-
             else if (!AllowGod || !AllowRegular || !AllowUOTD)
             {
                 if (!AllowGod && version.Type == ClientType.God)
