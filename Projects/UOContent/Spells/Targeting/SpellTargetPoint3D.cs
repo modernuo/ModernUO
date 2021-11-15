@@ -9,15 +9,15 @@ namespace Server.Spells
 
     public class SpellTargetPoint3D : Target, ISpellTarget
     {
-        private readonly bool _checkLOS;
+        private readonly bool _retryOnLos;
         private ISpellTargetingPoint3D _spell;
 
         public SpellTargetPoint3D(
-            ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool checkLOS = false
+            ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool retryOnLOS = false
         ) : base(range, true, flags)
         {
             _spell = spell;
-            _checkLOS = checkLOS;
+            _retryOnLos = retryOnLOS;
         }
 
         public ISpell Spell => _spell;
@@ -32,7 +32,7 @@ namespace Server.Spells
 
         protected override void OnTargetOutOfLOS(Mobile from, object o)
         {
-            if (!_checkLOS)
+            if (!_retryOnLos)
             {
                 return;
             }
