@@ -13,7 +13,7 @@ namespace Server.Spells.Bushido
             9002
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         public Evasion(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
@@ -138,7 +138,7 @@ namespace Server.Spells.Bushido
             FinishSequence();
         }
 
-        public static bool IsEvading(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsEvading(Mobile m) => _table.ContainsKey(m);
 
         public static TimeSpan GetEvadeDuration(Mobile m)
         {
@@ -216,12 +216,12 @@ namespace Server.Spells.Bushido
                 out var timerToken
             );
 
-            m_Table[m] = timerToken;
+            _table[m] = timerToken;
         }
 
         private static bool StopEvasionTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timer))
+            if (_table.Remove(m, out var timer))
             {
                 timer.Cancel();
                 return true;

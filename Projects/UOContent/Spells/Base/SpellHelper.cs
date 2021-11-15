@@ -1226,7 +1226,7 @@ namespace Server.Spells
 
     public static class TransformationSpellHelper
     {
-        private static readonly Dictionary<Mobile, TransformContext> m_Table = new();
+        private static readonly Dictionary<Mobile, TransformContext> _table = new();
 
         public static bool CheckCast(Mobile caster, Spell spell)
         {
@@ -1360,7 +1360,7 @@ namespace Server.Spells
 
         public static void AddContext(Mobile m, TransformContext context)
         {
-            m_Table[m] = context;
+            _table[m] = context;
         }
 
         public static void RemoveContext(Mobile m, bool resetGraphics)
@@ -1375,7 +1375,7 @@ namespace Server.Spells
 
         public static void RemoveContext(Mobile m, TransformContext context, bool resetGraphics)
         {
-            if (!m_Table.Remove(m))
+            if (!_table.Remove(m))
             {
                 return;
             }
@@ -1399,7 +1399,7 @@ namespace Server.Spells
 
         public static TransformContext GetContext(Mobile m)
         {
-            m_Table.TryGetValue(m, out var context);
+            _table.TryGetValue(m, out var context);
 
             return context;
         }

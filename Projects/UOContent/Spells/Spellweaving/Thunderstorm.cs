@@ -11,7 +11,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         public ThunderstormSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, _info)
@@ -66,7 +66,7 @@ namespace Server.Spells.Spellweaving
                     StopTimer(m);
 
                     Timer.StartTimer(duration, () => DoExpire(m), out var timerToken);
-                    m_Table[m] = timerToken;
+                    _table[m] = timerToken;
 
                     BuffInfo.AddBuff(
                         m,
@@ -80,11 +80,11 @@ namespace Server.Spells.Spellweaving
             FinishSequence();
         }
 
-        public static int GetCastRecoveryMalus(Mobile m) => m_Table.ContainsKey(m) ? 6 : 0;
+        public static int GetCastRecoveryMalus(Mobile m) => _table.ContainsKey(m) ? 6 : 0;
 
         private static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
             }

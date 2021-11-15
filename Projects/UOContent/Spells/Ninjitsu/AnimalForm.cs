@@ -26,7 +26,7 @@ namespace Server.Spells.Ninjitsu
         );
 
         private static readonly Dictionary<Mobile, int> m_LastAnimalForms = new();
-        private static readonly Dictionary<Mobile, AnimalFormContext> m_Table = new();
+        private static readonly Dictionary<Mobile, AnimalFormContext> _table = new();
 
         private bool m_WasMoving;
 
@@ -272,7 +272,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddContext(Mobile m, AnimalFormContext context)
         {
-            m_Table[m] = context;
+            _table[m] = context;
 
             if (context.Type == typeof(BakeKitsune) || context.Type == typeof(GreyWolf))
             {
@@ -292,7 +292,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void RemoveContext(Mobile m, AnimalFormContext context, bool resetGraphics)
         {
-            m_Table.Remove(m);
+            _table.Remove(m);
 
             if (context.SpeedBoost)
             {
@@ -324,9 +324,9 @@ namespace Server.Spells.Ninjitsu
             context.Timer.Stop();
         }
 
-        public static AnimalFormContext GetContext(Mobile m) => m_Table.TryGetValue(m, out var context) ? context : null;
+        public static AnimalFormContext GetContext(Mobile m) => _table.TryGetValue(m, out var context) ? context : null;
 
-        public static bool UnderTransformation(Mobile m) => m_Table.ContainsKey(m);
+        public static bool UnderTransformation(Mobile m) => _table.ContainsKey(m);
 
         public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
