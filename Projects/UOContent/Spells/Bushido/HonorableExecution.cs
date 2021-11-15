@@ -98,8 +98,8 @@ namespace Server.Spells.Bushido
             }
 
             public HonorableExecutionTimer(
-                TimeSpan duration, Mobile from, int swingBonus, List<object> mods = null, bool penalty = false)
-                : base(duration)
+                TimeSpan duration, Mobile from, int swingBonus, List<object> mods = null, bool penalty = false
+            ) : base(duration)
             {
                 m_Mobile = from;
                 m_SwingBonus = swingBonus;

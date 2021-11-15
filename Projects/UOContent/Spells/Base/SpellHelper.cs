@@ -33,8 +33,7 @@ namespace Server
         {
             private readonly Mobile m_Mobile;
 
-            public InternalTimer(Mobile m)
-                : base(TimeSpan.FromMinutes(1.0))
+            public InternalTimer(Mobile m) : base(TimeSpan.FromMinutes(1.0))
             {
                 m_Mobile = m;
             }
@@ -1085,8 +1084,7 @@ namespace Server.Spells
             private readonly Mobile m_Target;
             private int m_Damage;
 
-            public SpellDamageTimer(Spell s, Mobile target, Mobile from, int damage, TimeSpan delay)
-                : base(delay)
+            public SpellDamageTimer(Spell s, Mobile target, Mobile from, int damage, TimeSpan delay) : base(delay)
             {
                 m_Target = target;
                 m_From = from;
@@ -1126,8 +1124,7 @@ namespace Server.Spells
             public SpellDamageTimerAOS(
                 Spell s, TimeSpan delay, Mobile target, Mobile from, int damage, int phys, int fire, int cold,
                 int pois, int nrgy, int chaos, DFAlgorithm dfa
-            )
-                : base(delay)
+            ) : base(delay)
             {
                 m_Target = target;
                 m_From = from;

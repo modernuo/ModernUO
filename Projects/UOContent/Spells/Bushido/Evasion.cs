@@ -15,8 +15,7 @@ namespace Server.Spells.Bushido
 
         private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
-        public Evasion(Mobile caster, Item scroll)
-            : base(caster, scroll, _info)
+        public Evasion(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 
