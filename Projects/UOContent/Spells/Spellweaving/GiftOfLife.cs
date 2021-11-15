@@ -14,7 +14,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
         public GiftOfLifeSpell(Mobile caster, Item scroll = null)
             : base(caster, scroll, _info)
@@ -38,7 +38,7 @@ namespace Server.Spells.Spellweaving
             {
                 Caster.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
             }
-            else if (m_Table.ContainsKey(m))
+            else if (_table.ContainsKey(m))
             {
                 Caster.SendLocalizedMessage(501775); // This spell is already in effect.
             }
@@ -65,7 +65,7 @@ namespace Server.Spells.Spellweaving
                 var t = new ExpireTimer(m, duration, this);
                 t.Start();
 
-                m_Table[m] = t;
+                _table[m] = t;
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.GiftOfLife, 1031615, 1075807, duration, m, null, true));
             }
@@ -85,7 +85,7 @@ namespace Server.Spells.Spellweaving
 
         public static void HandleDeath(Mobile m)
         {
-            if (m_Table.ContainsKey(m))
+            if (_table.ContainsKey(m))
             {
                 Timer.StartTimer(TimeSpan.FromSeconds(Utility.RandomMinMax(2, 4)), () => HandleDeath_OnCallback(m));
             }
@@ -93,7 +93,7 @@ namespace Server.Spells.Spellweaving
 
         private static void HandleDeath_OnCallback(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var timer))
+            if (!_table.TryGetValue(m, out var timer))
             {
                 return;
             }
@@ -138,7 +138,7 @@ namespace Server.Spells.Spellweaving
 
         public static void OnLogin(Mobile m)
         {
-            if (m?.Alive != false || m_Table[m] == null)
+            if (m?.Alive != false || _table[m] == null)
             {
                 return;
             }
@@ -169,7 +169,7 @@ namespace Server.Spells.Spellweaving
                 Stop();
 
                 m_Mobile.SendLocalizedMessage(1074776); // You are no longer protected with Gift of Life.
-                m_Table.Remove(m_Mobile);
+                _table.Remove(m_Mobile);
 
                 BuffInfo.RemoveBuff(m_Mobile, BuffIcon.GiftOfLife);
             }

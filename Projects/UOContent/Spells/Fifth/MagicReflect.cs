@@ -14,7 +14,7 @@ namespace Server.Spells.Fifth
             Reagent.SpidersSilk
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
+        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
         public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -59,7 +59,7 @@ namespace Server.Spells.Fifth
                 {
                     var targ = Caster;
 
-                    if (m_Table.Remove(targ, out var mods))
+                    if (_table.Remove(targ, out var mods))
                     {
                         targ.PlaySound(0x1ED);
                         targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
@@ -88,7 +88,7 @@ namespace Server.Spells.Fifth
                             new ResistanceMod(ResistanceType.Energy, otherMod)
                         };
 
-                        m_Table[targ] = mods;
+                        _table[targ] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
@@ -137,7 +137,7 @@ namespace Server.Spells.Fifth
 
         public static void EndReflect(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mods))
+            if (!_table.Remove(m, out var mods))
             {
                 return;
             }

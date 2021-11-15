@@ -108,7 +108,7 @@ namespace Server.Spells.Necromancy
             )
         };
 
-        private static readonly Dictionary<Mobile, List<Mobile>> m_Table = new();
+        private static readonly Dictionary<Mobile, List<Mobile>> _table = new();
 
         public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -235,7 +235,7 @@ namespace Server.Spells.Necromancy
 
         public static void Unregister(Mobile master, Mobile summoned)
         {
-            if (master == null || !m_Table.TryGetValue(master, out var list))
+            if (master == null || !_table.TryGetValue(master, out var list))
             {
                 return;
             }
@@ -244,7 +244,7 @@ namespace Server.Spells.Necromancy
 
             if (list.Count == 0)
             {
-                m_Table.Remove(master);
+                _table.Remove(master);
             }
         }
 
@@ -255,9 +255,9 @@ namespace Server.Spells.Necromancy
                 return;
             }
 
-            if (!m_Table.TryGetValue(master, out var list))
+            if (!_table.TryGetValue(master, out var list))
             {
-                m_Table[master] = list = new List<Mobile>();
+                _table[master] = list = new List<Mobile>();
             }
 
             for (var i = list.Count - 1; i >= 0; --i)

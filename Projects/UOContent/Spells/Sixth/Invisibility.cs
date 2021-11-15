@@ -18,7 +18,7 @@ namespace Server.Spells.Sixth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -65,7 +65,7 @@ namespace Server.Spells.Sixth
                     out var timerToken
                 );
 
-                m_Table[m] = timerToken;
+                _table[m] = timerToken;
             }
 
             FinishSequence();
@@ -87,11 +87,11 @@ namespace Server.Spells.Sixth
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
         }
 
-        public static bool HasTimer(Mobile m) => m_Table.ContainsKey(m);
+        public static bool HasTimer(Mobile m) => _table.ContainsKey(m);
 
         public static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
             }

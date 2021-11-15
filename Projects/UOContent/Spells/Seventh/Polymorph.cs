@@ -19,7 +19,7 @@ namespace Server.Spells.Seventh
             Reagent.MandrakeRoot
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         private readonly int m_NewBody;
 
@@ -170,7 +170,7 @@ namespace Server.Spells.Seventh
                             var duration = Math.Max((int)caster.Skills.Magery.Value, 120);
 
                             Timer.StartTimer(TimeSpan.FromSeconds(duration), () => EndPolymorph(caster), out var timerToken);
-                            m_Table[caster] = timerToken;
+                            _table[caster] = timerToken;
                         }
                     }
                 }
@@ -185,7 +185,7 @@ namespace Server.Spells.Seventh
 
         public static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timer))
+            if (_table.Remove(m, out var timer))
             {
                 timer.Cancel();
             }

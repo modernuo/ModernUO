@@ -13,7 +13,7 @@ namespace Server.Spells.Chivalry
             9002
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
         public EnemyOfOneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -42,7 +42,7 @@ namespace Server.Spells.Chivalry
 
                 Timer.StartTimer(TimeSpan.FromMinutes(delay), () => Expire_Callback(Caster), out var timerToken);
 
-                m_Table[Caster] = timerToken;
+                _table[Caster] = timerToken;
 
                 if (Caster is PlayerMobile mobile)
                 {
@@ -61,7 +61,7 @@ namespace Server.Spells.Chivalry
 
         private static void RemoveTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
             }
