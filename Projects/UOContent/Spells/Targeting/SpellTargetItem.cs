@@ -9,24 +9,24 @@ namespace Server.Spells
 
     public class SpellTargetItem : Target, ISpellTarget
     {
-        private readonly ISpellTargetingItem m_Spell;
+        private readonly ISpellTargetingItem _spell;
 
-        public SpellTargetItem(ISpellTargetingItem spell, TargetFlags flags, int range = 12) : base(range, false, flags) =>
-            m_Spell = spell;
+        public SpellTargetItem(ISpellTargetingItem spell, TargetFlags flags = TargetFlags.None, int range = 12)
+            : base(range, false, flags) => _spell = spell;
 
-        public ISpell Spell => m_Spell;
+        public ISpell Spell => _spell;
 
         protected override void OnTarget(Mobile from, object o)
         {
             if (o is Item item)
             {
-                m_Spell.Target(item);
+                _spell.Target(item);
             }
         }
 
         protected override void OnTargetFinish(Mobile from)
         {
-            m_Spell?.FinishSequence();
+            _spell?.FinishSequence();
         }
     }
 }
