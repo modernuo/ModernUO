@@ -25,17 +25,7 @@ namespace Server.Spells.Fifth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (Core.AOS && (m.Frozen || m.Paralyzed ||
-                                  m.Spell?.IsCasting == true && !(m.Spell is PaladinSpell)))
+            if (Core.AOS && (m.Frozen || m.Paralyzed || m.Spell?.IsCasting == true && m.Spell is not PaladinSpell))
             {
                 Caster.SendLocalizedMessage(1061923); // The target is already frozen.
             }

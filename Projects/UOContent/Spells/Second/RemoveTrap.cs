@@ -22,13 +22,9 @@ namespace Server.Spells.Second
 
         public void Target(Item item)
         {
-            if (!(item is TrappableContainer cont))
+            if (item is not TrappableContainer cont)
             {
-                Caster.SendMessage("You can't disarm that"); // TODO: Localization?
-            }
-            else if (!Caster.CanSee(item))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
+                Caster.SendLocalizedMessage(502373); // That doesn't appear to be trapped
             }
             else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
             {

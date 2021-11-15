@@ -30,11 +30,7 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 

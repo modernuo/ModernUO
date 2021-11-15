@@ -26,16 +26,7 @@ namespace Server.Spells.Spellweaving
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m_Table.ContainsKey(m))
+            if (m_Table.ContainsKey(m))
             {
                 Caster.SendLocalizedMessage(501775); // This spell is already in effect.
             }

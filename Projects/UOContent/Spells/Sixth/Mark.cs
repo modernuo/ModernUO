@@ -24,7 +24,7 @@ namespace Server.Spells.Sixth
 
         public void Target(Item item)
         {
-            if (!(item is RecallRune rune))
+            if (item is not RecallRune rune)
             {
                 Caster.NetState.SendMessageLocalized(
                     Caster.Serial,
@@ -32,13 +32,9 @@ namespace Server.Spells.Sixth
                     MessageType.Regular,
                     0x3B2,
                     3,
-                    501797,
+                    501797, // I cannot mark that object.
                     Caster.Name
-                ); // I cannot mark that object.
-            }
-            else if (!Caster.CanSee(rune))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
+                );
             }
             else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.Mark))
             {
@@ -49,11 +45,8 @@ namespace Server.Spells.Sixth
             }
             else if (!rune.IsChildOf(Caster.Backpack))
             {
-                Caster.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    1062422
-                ); // You must have this rune in your backpack in order to mark it.
+                // You must have this rune in your backpack in order to mark it.
+                Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1062422);
             }
             else if (CheckSequence())
             {

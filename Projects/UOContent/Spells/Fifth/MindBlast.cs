@@ -30,16 +30,7 @@ namespace Server.Spells.Fifth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (Core.AOS)
+            if (Core.AOS)
             {
                 if (Caster.CanBeHarmful(m) && CheckSequence())
                 {
