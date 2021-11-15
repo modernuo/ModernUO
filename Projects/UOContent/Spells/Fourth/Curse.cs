@@ -37,8 +37,8 @@ namespace Server.Spells.Fourth
                 SpellHelper.AddStatCurse(Caster, m, StatType.Int);
                 SpellHelper.DisableSkillCheck = false;
 
-                if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m)
-                ) // On OSI you CAN curse yourself and get this effect.
+                // On OSI you CAN curse yourself and get this effect.
+                if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m))
                 {
                     var duration = SpellHelper.GetDuration(Caster, m);
                     _underEffect.Add(m);

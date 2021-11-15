@@ -24,7 +24,7 @@ namespace Server.Spells.Sixth
 
         public void Target(Mobile m)
         {
-            if (!(m is BaseCreature bc && bc.IsDispellable))
+            if (m is not BaseCreature { IsDispellable: true } bc)
             {
                 Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
             }

@@ -24,11 +24,6 @@ namespace Server.Spells.Eighth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
             if (m == Caster)
             {
                 Caster.SendLocalizedMessage(501039); // Thou can not resurrect thyself.
