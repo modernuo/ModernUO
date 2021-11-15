@@ -89,7 +89,7 @@ namespace Server.Misc
             {
                 if (version < Required)
                 {
-                    kickMessage = $"This server requires your client version be {Required}.";
+                    kickMessage = $"This server requires your client version to be {Required}.";
                 }
                /*else if (version > Required)
                 {
@@ -144,58 +144,61 @@ namespace Server.Misc
 
                 Timer.StartTimer(KickDelay, () => OnKick(state));
             }
-            else if (Required != null && version < Required)
+            else if (Required != null)
             {
-                switch (m_InvalidClientResponse)
+                if (version < Required)
                 {
-                    case InvalidClientResponse.Warn:
-                        {
-                            state.Mobile.SendMessage(
-                                0x22,
-                                "Your client is out of date. Please update your client.",
-                                Required
-                            );
-                            state.Mobile.SendMessage(
-                                0x22,
-                                "This server recommends that your client version be at least {0}.",
-                                Required
-                            );
-                            break;
-                        }
-                    case InvalidClientResponse.LenientKick:
-                    case InvalidClientResponse.Annoy:
-                        {
-                            SendAnnoyGump(state.Mobile);
-                            break;
-                        }
+                    switch (m_InvalidClientResponse)
+                    {
+                        case InvalidClientResponse.Warn:
+                            {
+                                state.Mobile.SendMessage(
+                                    0x22,
+                                    "Your client is out of date. Please update your client.",
+                                    Required
+                                );
+                                state.Mobile.SendMessage(
+                                    0x22,
+                                    "This server recommends that your client version be at least {0}.",
+                                    Required
+                                );
+                                break;
+                            }
+                        case InvalidClientResponse.LenientKick:
+                        case InvalidClientResponse.Annoy:
+                            {
+                                SendAnnoyGump(state.Mobile);
+                                break;
+                            }
+                    }
                 }
+                /* else if (version > Required) // -----OPTIONAL TO RESTRICT NEWER CLIENTS-----
+                {
+                    switch (m_InvalidClientResponse)
+                    {
+                        case InvalidClientResponse.Warn:
+                            {
+                                state.Mobile.SendMessage(
+                                    0x22,
+                                    "Your client is too new. Please revert your client.",
+                                    Required
+                                );
+                                state.Mobile.SendMessage(
+                                    0x22,
+                                    "This server requires that your client version be {0}.",
+                                    Required
+                                );
+                                break;
+                            }
+                        case InvalidClientResponse.LenientKick:
+                        case InvalidClientResponse.Annoy:
+                            {
+                                SendAnnoyGump(state.Mobile);
+                                break;
+                            }
+                    }
+                }*/
             }
-            /*else if (Required != null && version > Required)
-            {
-                switch (m_InvalidClientResponse)
-                {
-                    case InvalidClientResponse.Warn:
-                        {
-                            state.Mobile.SendMessage(
-                                0x22,
-                                "Your client is too new. Please revert your client.",
-                                Required
-                            );
-                            state.Mobile.SendMessage(
-                                0x22,
-                                "This server recommends that your client version be {0}.",
-                                Required
-                            );
-                            break;
-                        }
-                    case InvalidClientResponse.LenientKick:
-                    case InvalidClientResponse.Annoy:
-                        {
-                            SendAnnoyGump(state.Mobile);
-                            break;
-                        }
-                }
-            }*/ //----OPTIONAL TO RESTRICT NEWER CLIENTS----
         }
 
         private static void OnKick(NetState ns)
