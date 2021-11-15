@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
 {
     public class IncognitoSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Incognito",
             "Kal In Ex",
             206,
@@ -21,7 +21,7 @@ namespace Server.Spells.Fifth
 
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
-        public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

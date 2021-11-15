@@ -5,7 +5,7 @@ namespace Server.Spells.Bushido
 {
     public class Confidence : SamuraiSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Confidence",
             null,
             -1,
@@ -15,7 +15,7 @@ namespace Server.Spells.Bushido
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_RegenTable = new();
 
-        public Confidence(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public Confidence(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 

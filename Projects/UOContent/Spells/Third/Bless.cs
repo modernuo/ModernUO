@@ -5,7 +5,7 @@ namespace Server.Spells.Third
 {
     public class BlessSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Bless",
             "Rel Sanct",
             203,
@@ -14,7 +14,7 @@ namespace Server.Spells.Third
             Reagent.MandrakeRoot
         );
 
-        public BlessSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public BlessSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

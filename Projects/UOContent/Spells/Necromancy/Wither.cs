@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class WitherSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Wither",
             "Kal Vas An Flam",
             203,
@@ -18,7 +18,7 @@ namespace Server.Spells.Necromancy
         );
 
         public WitherSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

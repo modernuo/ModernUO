@@ -7,7 +7,7 @@ namespace Server.Spells.Fifth
 {
     public class ParalyzeSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Paralyze",
             "An Ex Por",
             218,
@@ -17,7 +17,7 @@ namespace Server.Spells.Fifth
             Reagent.SpidersSilk
         );
 
-        public ParalyzeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ParalyzeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

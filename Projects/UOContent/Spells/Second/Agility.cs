@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class AgilitySpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Agility",
             "Ex Uus",
             212,
@@ -14,7 +14,7 @@ namespace Server.Spells.Second
             Reagent.MandrakeRoot
         );
 
-        public AgilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public AgilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

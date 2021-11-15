@@ -5,7 +5,7 @@ namespace Server.Spells.Third
 {
     public class TelekinesisSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Telekinesis",
             "Ort Por Ylem",
             203,
@@ -14,7 +14,7 @@ namespace Server.Spells.Third
             Reagent.MandrakeRoot
         );
 
-        public TelekinesisSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public TelekinesisSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

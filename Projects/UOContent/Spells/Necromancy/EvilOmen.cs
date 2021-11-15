@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Evil Omen",
             "Pas Tym An Sanct",
             203,
@@ -19,7 +19,7 @@ namespace Server.Spells.Necromancy
         private static readonly Dictionary<Mobile, DefaultSkillMod> m_Table = new();
 
         public EvilOmenSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

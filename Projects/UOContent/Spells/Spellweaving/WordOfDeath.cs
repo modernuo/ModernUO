@@ -5,9 +5,9 @@ namespace Server.Spells.Spellweaving
 {
     public class WordOfDeathSpell : ArcanistSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new("Word of Death", "Nyraxle", -1);
+        private static readonly SpellInfo _info = new("Word of Death", "Nyraxle", -1);
 
-        public WordOfDeathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public WordOfDeathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

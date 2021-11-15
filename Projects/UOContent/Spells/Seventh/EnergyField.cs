@@ -8,7 +8,7 @@ namespace Server.Spells.Seventh
 {
     public class EnergyFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Energy Field",
             "In Sanct Grav",
             221,
@@ -20,7 +20,7 @@ namespace Server.Spells.Seventh
             Reagent.SulfurousAsh
         );
 
-        public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

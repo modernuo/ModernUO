@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class CureSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Cure",
             "An Nox",
             212,
@@ -14,7 +14,7 @@ namespace Server.Spells.Second
             Reagent.Ginseng
         );
 
-        public CureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

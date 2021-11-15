@@ -18,7 +18,7 @@ namespace Server.Spells.Ninjitsu
             NoSkill
         }
 
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Animal Form",
             null,
             -1,
@@ -31,7 +31,7 @@ namespace Server.Spells.Ninjitsu
         private bool m_WasMoving;
 
         public AnimalForm(Mobile caster, Item scroll)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

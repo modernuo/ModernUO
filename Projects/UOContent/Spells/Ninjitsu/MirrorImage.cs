@@ -12,14 +12,14 @@ namespace Server.Spells.Ninjitsu
     {
         private static readonly Dictionary<Mobile, int> m_CloneCount = new();
 
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mirror Image",
             null,
             -1,
             9002
         );
 
-        public MirrorImage(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public MirrorImage(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 

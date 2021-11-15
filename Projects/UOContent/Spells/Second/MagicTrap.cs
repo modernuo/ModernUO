@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class MagicTrapSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Trap",
             "In Jux",
             212,
@@ -15,7 +15,7 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        public MagicTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

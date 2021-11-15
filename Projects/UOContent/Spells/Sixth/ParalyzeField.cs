@@ -8,7 +8,7 @@ namespace Server.Spells.Sixth
 {
     public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Paralyze Field",
             "In Ex Grav",
             230,
@@ -19,7 +19,7 @@ namespace Server.Spells.Sixth
             Reagent.SpidersSilk
         );
 
-        public ParalyzeFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ParalyzeFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

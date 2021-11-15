@@ -11,7 +11,7 @@ namespace Server.Spells.Necromancy
 {
     public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Animate Dead",
             "Uus Corp",
             203,
@@ -110,7 +110,7 @@ namespace Server.Spells.Necromancy
 
         private static readonly Dictionary<Mobile, List<Mobile>> m_Table = new();
 
-        public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

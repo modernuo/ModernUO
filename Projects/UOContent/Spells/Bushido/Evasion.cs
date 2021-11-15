@@ -6,7 +6,7 @@ namespace Server.Spells.Bushido
 {
     public class Evasion : SamuraiSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Evasion",
             null,
             -1,
@@ -15,8 +15,7 @@ namespace Server.Spells.Bushido
 
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
-        public Evasion(Mobile caster, Item scroll)
-            : base(caster, scroll, m_Info)
+        public Evasion(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 

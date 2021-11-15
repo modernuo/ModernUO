@@ -5,7 +5,7 @@ namespace Server.Spells.Chivalry
 {
     public class DivineFurySpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Divine Fury",
             "Divinum Furis",
             -1,
@@ -14,7 +14,7 @@ namespace Server.Spells.Chivalry
 
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
-        public DivineFurySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public DivineFurySpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
