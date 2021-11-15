@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class MindRotSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mind Rot",
             "Wis An Ben",
             203,
@@ -18,7 +18,7 @@ namespace Server.Spells.Necromancy
 
         private static readonly Dictionary<Mobile, MRBucket> m_Table = new();
 
-        public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

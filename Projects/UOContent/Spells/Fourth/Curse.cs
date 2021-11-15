@@ -5,7 +5,7 @@ namespace Server.Spells.Fourth
 {
     public class CurseSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Curse",
             "Des Sanct",
             227,
@@ -17,7 +17,7 @@ namespace Server.Spells.Fourth
 
         private static readonly HashSet<Mobile> m_UnderEffect = new();
 
-        public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

@@ -6,7 +6,7 @@ namespace Server.Spells.Fifth
 {
     public class DispelFieldSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Dispel Field",
             "An Grav",
             206,
@@ -17,7 +17,7 @@ namespace Server.Spells.Fifth
             Reagent.Garlic
         );
 
-        public DispelFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public DispelFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

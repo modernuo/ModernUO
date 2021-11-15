@@ -4,7 +4,7 @@ namespace Server.Spells.Fifth
 {
     public class MagicReflectSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Reflection",
             "In Jux Sanct",
             242,
@@ -16,7 +16,7 @@ namespace Server.Spells.Fifth
 
         private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
 
-        public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

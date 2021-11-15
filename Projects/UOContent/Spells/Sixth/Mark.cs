@@ -6,7 +6,7 @@ namespace Server.Spells.Sixth
 {
     public class MarkSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mark",
             "Kal Por Ylem",
             218,
@@ -16,7 +16,7 @@ namespace Server.Spells.Sixth
             Reagent.MandrakeRoot
         );
 
-        public MarkSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MarkSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

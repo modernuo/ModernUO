@@ -6,7 +6,7 @@ namespace Server.Spells.Chivalry
 {
     public class EnemyOfOneSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Enemy of One",
             "Forul Solum",
             -1,
@@ -15,7 +15,7 @@ namespace Server.Spells.Chivalry
 
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
-        public EnemyOfOneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public EnemyOfOneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

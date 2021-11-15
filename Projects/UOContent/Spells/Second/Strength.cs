@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class StrengthSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Strength",
             "Uus Mani",
             212,
@@ -14,7 +14,7 @@ namespace Server.Spells.Second
             Reagent.Nightshade
         );
 
-        public StrengthSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public StrengthSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

@@ -5,7 +5,7 @@ namespace Server.Spells.First
 {
     public class ReactiveArmorSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Reactive Armor",
             "Flam Sanct",
             236,
@@ -17,7 +17,7 @@ namespace Server.Spells.First
 
         private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
 
-        public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

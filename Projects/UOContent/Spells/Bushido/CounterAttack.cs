@@ -6,7 +6,7 @@ namespace Server.Spells.Bushido
 {
     public class CounterAttack : SamuraiSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "CounterAttack",
             null,
             -1,
@@ -15,7 +15,7 @@ namespace Server.Spells.Bushido
 
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
-        public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 

@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
 {
     public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Poison Field",
             "In Nox Grav",
             230,
@@ -20,7 +20,7 @@ namespace Server.Spells.Fifth
             Reagent.SpidersSilk
         );
 
-        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

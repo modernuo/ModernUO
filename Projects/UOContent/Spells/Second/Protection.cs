@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class ProtectionSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Protection",
             "Uus Sanct",
             236,
@@ -18,7 +18,7 @@ namespace Server.Spells.Second
         private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> m_Table =
             new();
 
-        public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

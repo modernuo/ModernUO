@@ -10,7 +10,7 @@ namespace Server.Spells.Necromancy
 {
     public class ExorcismSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Exorcism",
             "Ort Corp Grav",
             203,
@@ -57,7 +57,7 @@ namespace Server.Spells.Necromancy
             new(295, 712, 55)
         };
 
-        public ExorcismSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ExorcismSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

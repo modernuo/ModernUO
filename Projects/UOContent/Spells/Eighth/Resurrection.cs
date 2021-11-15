@@ -6,7 +6,7 @@ namespace Server.Spells.Eighth
 {
     public class ResurrectionSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Resurrection",
             "An Corp",
             245,
@@ -16,7 +16,7 @@ namespace Server.Spells.Eighth
             Reagent.Ginseng
         );
 
-        public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

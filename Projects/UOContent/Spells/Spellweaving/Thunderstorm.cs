@@ -5,7 +5,7 @@ namespace Server.Spells.Spellweaving
 {
     public class ThunderstormSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Thunderstorm",
             "Erelonia",
             -1
@@ -14,7 +14,7 @@ namespace Server.Spells.Spellweaving
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
         public ThunderstormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

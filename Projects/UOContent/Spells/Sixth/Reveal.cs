@@ -5,7 +5,7 @@ namespace Server.Spells.Sixth
 {
     public class RevealSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Reveal",
             "Wis Quas",
             206,
@@ -14,7 +14,7 @@ namespace Server.Spells.Sixth
             Reagent.SulfurousAsh
         );
 
-        public RevealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public RevealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

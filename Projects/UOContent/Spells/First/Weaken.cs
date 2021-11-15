@@ -4,7 +4,7 @@ namespace Server.Spells.First
 {
     public class WeakenSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Weaken",
             "Des Mani",
             212,
@@ -13,7 +13,7 @@ namespace Server.Spells.First
             Reagent.Nightshade
         );
 
-        public WeakenSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public WeakenSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

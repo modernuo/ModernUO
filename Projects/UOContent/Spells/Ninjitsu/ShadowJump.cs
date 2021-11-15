@@ -11,14 +11,14 @@ namespace Server.Spells.Ninjitsu
 {
     public class Shadowjump : NinjaSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Shadowjump",
             null,
             -1,
             9002
         );
 
-        public Shadowjump(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public Shadowjump(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 

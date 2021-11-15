@@ -5,7 +5,7 @@ namespace Server.Spells.Third
 {
     public class PoisonSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Poison",
             "In Nox",
             203,
@@ -13,7 +13,7 @@ namespace Server.Spells.Third
             Reagent.Nightshade
         );
 
-        public PoisonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public PoisonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

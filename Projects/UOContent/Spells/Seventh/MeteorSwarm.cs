@@ -6,7 +6,7 @@ namespace Server.Spells.Seventh
 {
     public class MeteorSwarmSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Meteor Swarm",
             "Flam Kal Des Ylem",
             233,
@@ -18,7 +18,7 @@ namespace Server.Spells.Seventh
             Reagent.SpidersSilk
         );
 
-        public MeteorSwarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MeteorSwarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
