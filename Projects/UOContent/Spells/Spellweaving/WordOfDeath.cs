@@ -18,16 +18,7 @@ namespace Server.Spells.Spellweaving
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 var loc = m.Location;
                 loc.Z += 50;

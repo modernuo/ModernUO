@@ -28,16 +28,7 @@ namespace Server.Spells.Sixth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m is BaseVendor || m is PlayerVendor || m.AccessLevel > Caster.AccessLevel)
+            if (m is BaseVendor or PlayerVendor || m.AccessLevel > Caster.AccessLevel)
             {
                 Caster.SendLocalizedMessage(501857); // This spell won't work on that!
             }

@@ -30,15 +30,7 @@ namespace Server.Spells.Spellweaving
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                Caster.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
-            }
-            else if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m.IsDeadBondedPet || !m.Alive)
+            if (m.IsDeadBondedPet || !m.Alive)
             {
                 // As per Osi: Nothing happens.
             }

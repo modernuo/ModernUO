@@ -26,16 +26,7 @@ namespace Server.Spells.Sixth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (Caster.CanBeHarmful(m) && CheckSequence())
+            if (Caster.CanBeHarmful(m) && CheckSequence())
             {
                 Mobile attacker = Caster, defender = m;
 

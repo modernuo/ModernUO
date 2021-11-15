@@ -41,11 +41,7 @@ namespace Server.Spells.Mysticism
 
         public void Target(Mobile targeted)
         {
-            if (!Caster.CanSee(targeted))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(targeted))
+            if (CheckHSequence(targeted))
             {
                 SpellHelper.Turn(Caster, targeted);
 
