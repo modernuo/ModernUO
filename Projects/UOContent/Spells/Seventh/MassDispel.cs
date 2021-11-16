@@ -6,7 +6,7 @@ namespace Server.Spells.Seventh
 {
     public class MassDispelSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mass Dispel",
             "Vas An Ort",
             263,
@@ -17,7 +17,7 @@ namespace Server.Spells.Seventh
             Reagent.SulfurousAsh
         );
 
-        public MassDispelSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MassDispelSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -25,11 +25,7 @@ namespace Server.Spells.Seventh
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
@@ -81,7 +77,7 @@ namespace Server.Spells.Seventh
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
     }
 }

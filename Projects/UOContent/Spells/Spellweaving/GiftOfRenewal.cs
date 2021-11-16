@@ -6,16 +6,16 @@ namespace Server.Spells.Spellweaving
 {
     public class GiftOfRenewalSpell : ArcanistSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Gift of Renewal",
             "Olorisstra",
             -1
         );
 
-        private static readonly Dictionary<Mobile, GiftOfRenewalTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, GiftOfRenewalTimer> _table = new();
 
         public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -26,16 +26,7 @@ namespace Server.Spells.Spellweaving
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m_Table.ContainsKey(m))
+            if (_table.ContainsKey(m))
             {
                 Caster.SendLocalizedMessage(501775); // This spell is already in effect.
             }
@@ -63,7 +54,7 @@ namespace Server.Spells.Spellweaving
 
                     var t = new GiftOfRenewalTimer(Caster, m, hitsPerRound, duration);
 
-                    m_Table[m] = t;
+                    _table[m] = t;
 
                     t.Start();
 
@@ -88,7 +79,7 @@ namespace Server.Spells.Spellweaving
         {
             BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
 
-            if (m_Table.Remove(m, out var timer))
+            if (_table.Remove(m, out var timer))
             {
                 timer.Stop();
                 Timer.StartTimer(TimeSpan.FromSeconds(60), timer.m_Caster.EndAction<GiftOfRenewalSpell>);
@@ -124,7 +115,7 @@ namespace Server.Spells.Spellweaving
 
                 var m = m_Mobile;
 
-                if (!m_Table.ContainsKey(m))
+                if (!_table.ContainsKey(m))
                 {
                     Stop();
                     return;

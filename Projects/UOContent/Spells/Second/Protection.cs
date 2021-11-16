@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class ProtectionSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Protection",
             "Uus Sanct",
             236,
@@ -15,10 +15,10 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> m_Table =
+        private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table =
             new();
 
-        public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -60,7 +60,7 @@ namespace Server.Spells.Second
              * even after dying�until you �turn them off� by casting them again.
              */
 
-            if (m_Table.Remove(target, out var mods))
+            if (_table.Remove(target, out var mods))
             {
                 target.PlaySound(0x1ED);
                 target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
@@ -89,7 +89,7 @@ namespace Server.Spells.Second
                     )
                 );
 
-                m_Table[target] = mods;
+                _table[target] = mods;
                 Registry[target] = 1000; // 100.0% protection from disruption
 
                 target.AddResistanceMod(mods.Item1);
@@ -104,7 +104,7 @@ namespace Server.Spells.Second
 
         public static void EndProtection(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mods))
+            if (!_table.Remove(m, out var mods))
             {
                 return;
             }

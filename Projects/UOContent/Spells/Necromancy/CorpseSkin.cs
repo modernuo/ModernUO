@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Corpse Skin",
             "In Agle Corp Ylem",
             203,
@@ -15,9 +15,9 @@ namespace Server.Spells.Necromancy
             Reagent.GraveDust
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
-        public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -49,7 +49,7 @@ namespace Server.Spells.Necromancy
                  * NOTE: Resistance is not checked if targeting yourself
                  */
 
-                if (m_Table.TryGetValue(m, out var timer))
+                if (_table.TryGetValue(m, out var timer))
                 {
                     timer.DoExpire();
                 }
@@ -82,7 +82,7 @@ namespace Server.Spells.Necromancy
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration, m));
 
-                m_Table[m] = timer;
+                _table[m] = timer;
 
                 for (var i = 0; i < mods.Length; ++i)
                 {
@@ -102,7 +102,7 @@ namespace Server.Spells.Necromancy
 
         public static bool RemoveCurse(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var t))
+            if (!_table.TryGetValue(m, out var t))
             {
                 return false;
             }
@@ -132,7 +132,7 @@ namespace Server.Spells.Necromancy
 
                 Stop();
                 BuffInfo.RemoveBuff(m_Mobile, BuffIcon.CorpseSkin);
-                m_Table.Remove(m_Mobile);
+                _table.Remove(m_Mobile);
             }
 
             protected override void OnTick()

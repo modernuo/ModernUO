@@ -6,7 +6,7 @@ namespace Server.Spells.Fourth
 {
     public class ManaDrainSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mana Drain",
             "Ort Rel",
             215,
@@ -16,9 +16,9 @@ namespace Server.Spells.Fourth
             Reagent.SpidersSilk
         );
 
-        private static readonly HashSet<Mobile> m_Table = new();
+        private static readonly HashSet<Mobile> _table = new();
 
-        public ManaDrainSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ManaDrainSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -26,16 +26,7 @@ namespace Server.Spells.Fourth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
 
@@ -49,7 +40,7 @@ namespace Server.Spells.Fourth
                 {
                     var toDrain = Math.Clamp(40 + (int)(GetDamageSkill(Caster) - GetResistSkill(m)), 0, m.Mana);
 
-                    if (m_Table.Contains(m))
+                    if (_table.Contains(m))
                     {
                         toDrain = 0;
                     }
@@ -61,7 +52,7 @@ namespace Server.Spells.Fourth
                     {
                         m.Mana -= toDrain;
 
-                        m_Table.Add(m);
+                        _table.Add(m);
                         Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => AosDelay_Callback(m, toDrain));
                     }
                 }
@@ -105,7 +96,7 @@ namespace Server.Spells.Fourth
                 m.PlaySound(0x28E);
             }
 
-            m_Table.Remove(m);
+            _table.Remove(m);
         }
 
         public override double GetResistPercent(Mobile target) => 99.0;

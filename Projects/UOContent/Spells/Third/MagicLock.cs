@@ -7,7 +7,7 @@ namespace Server.Spells.Third
 {
     public class MagicLockSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Lock",
             "An Por",
             215,
@@ -17,7 +17,7 @@ namespace Server.Spells.Third
             Reagent.SulfurousAsh
         );
 
-        public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -69,7 +69,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
         }
     }
 }

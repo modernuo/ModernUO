@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class MagicTrapSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Trap",
             "In Jux",
             212,
@@ -15,7 +15,7 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        public MagicTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -26,10 +26,6 @@ namespace Server.Spells.Second
             if (item is not TrappableContainer cont)
             {
                 Caster.SendLocalizedMessage(502942); // You can't trap this!
-            }
-            else if (!Caster.CanSee(item))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
             }
             else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
             {
@@ -89,7 +85,7 @@ namespace Server.Spells.Second
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
         }
     }
 }

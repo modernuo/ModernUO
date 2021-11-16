@@ -7,7 +7,7 @@ namespace Server.Spells.Third
 {
     public class WallOfStoneSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Wall of Stone",
             "In Sanct Ylem",
             227,
@@ -17,7 +17,7 @@ namespace Server.Spells.Third
             Reagent.Garlic
         );
 
-        public WallOfStoneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public WallOfStoneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -25,11 +25,7 @@ namespace Server.Spells.Third
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
@@ -64,7 +60,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]

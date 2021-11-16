@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
 {
     public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Poison Field",
             "In Nox Grav",
             230,
@@ -20,7 +20,7 @@ namespace Server.Spells.Fifth
             Reagent.SpidersSilk
         );
 
-        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,11 +28,7 @@ namespace Server.Spells.Fifth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
@@ -59,7 +55,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12, false);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]

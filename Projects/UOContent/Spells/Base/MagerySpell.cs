@@ -9,8 +9,7 @@ namespace Server.Spells
 
         private static readonly int[] m_ManaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
-        public MagerySpell(Mobile caster, Item scroll, SpellInfo info)
-            : base(caster, scroll, info)
+        public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
         }
 

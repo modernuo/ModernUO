@@ -9,7 +9,7 @@ namespace Server.Spells.Fourth
 {
     public class ArchProtectionSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Arch Protection",
             "Vas Uus Sanct",
             Core.AOS ? 239 : 215,
@@ -22,7 +22,7 @@ namespace Server.Spells.Fourth
 
         private static readonly Dictionary<Mobile, int> _Table = new();
 
-        public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -30,11 +30,7 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
@@ -107,7 +103,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         private static void AddEntry(Mobile m, int v)

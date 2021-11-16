@@ -6,7 +6,7 @@ namespace Server.Spells.Fifth
 {
     public class SummonCreatureSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Summon Creature",
             "Kal Xen",
             16,
@@ -40,7 +40,7 @@ namespace Server.Spells.Fifth
             typeof(Rabbit)
         };
 
-        public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
