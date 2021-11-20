@@ -77,27 +77,18 @@ namespace Server.Spells.Second
                 target.PlaySound(0x1E9);
                 target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
-                mods = new Tuple<ResistanceMod, DefaultSkillMod>(
-                    new ResistanceMod(
-                        ResistanceType.Physical,
-                        -15 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 15)
-                    ),
-                    new DefaultSkillMod(
-                        SkillName.MagicResist,
-                        true,
-                        -35 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 35)
-                    )
-                );
+                var physLoss = Math.Max(0, -15 + (int)(caster.Skills.Inscribe.Value / 20));
+                var resistLoss = Math.Max(0, -35 + (int)(caster.Skills.Inscribe.Value / 20));
+                var physMod = new ResistanceMod(ResistanceType.Physical, physLoss);
+                var resistMod = new DefaultSkillMod(SkillName.MagicResist, true, resistLoss);
 
-                _table[target] = mods;
+                _table[target] = Tuple.Create(physMod, resistMod);
                 Registry[target] = 1000; // 100.0% protection from disruption
 
-                target.AddResistanceMod(mods.Item1);
-                target.AddSkillMod(mods.Item2);
+                target.AddResistanceMod(physmod);
+                target.AddSkillMod(resistmod);
 
-                var physloss = -15 + (int)(caster.Skills.Inscribe.Value / 20);
-                var resistloss = -35 + (int)(caster.Skills.Inscribe.Value / 20);
-                var args = $"{physloss}\t{resistloss}";
+                var args = $"{physLoss}\t{resistLoss}";
                 BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
             }
         }
