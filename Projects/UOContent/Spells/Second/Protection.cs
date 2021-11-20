@@ -85,8 +85,8 @@ namespace Server.Spells.Second
                 _table[target] = Tuple.Create(physMod, resistMod);
                 Registry[target] = 1000; // 100.0% protection from disruption
 
-                target.AddResistanceMod(physmod);
-                target.AddSkillMod(resistmod);
+                target.AddResistanceMod(physMod);
+                target.AddSkillMod(resistMod);
 
                 var args = $"{physLoss}\t{resistLoss}";
                 BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
