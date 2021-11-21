@@ -2397,27 +2397,20 @@ namespace Server.Items
         {
             var bonus = VirtualDamageBonus;
 
-            switch (m_Quality)
+            bonus += m_Quality switch
             {
-                case WeaponQuality.Low:
-                    {
-                        bonus -= 20;
-                        break;
-                    }
-                case WeaponQuality.Exceptional:
-                    {
-                        bonus += 20;
-                        break;
-                    }
-            }
+                WeaponQuality.Low         => -20,
+                WeaponQuality.Exceptional => 20,
+                _                         => 0
+            };
 
-            return m_DamageLevel switch
+            return bonus + m_DamageLevel switch
             {
-                WeaponDamageLevel.Ruin  => bonus + 15,
-                WeaponDamageLevel.Might => bonus + 20,
-                WeaponDamageLevel.Force => bonus + 25,
-                WeaponDamageLevel.Power => bonus + 30,
-                WeaponDamageLevel.Vanq  => bonus + 35,
+                WeaponDamageLevel.Ruin  => 15,
+                WeaponDamageLevel.Might => 20,
+                WeaponDamageLevel.Force => 25,
+                WeaponDamageLevel.Power => 30,
+                WeaponDamageLevel.Vanq  => 35,
                 _                       => bonus
             };
         }
