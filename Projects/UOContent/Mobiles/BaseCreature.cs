@@ -512,11 +512,11 @@ namespace Server.Mobiles
         public virtual bool DeathAdderCharmable => false;
 
         // TODO: Find the pub 31 tweaks to the DispelDifficulty and apply them of course.
-        public virtual double DispelDifficulty // at this skill level we dispel 50% chance
-            => 0.0;
+        // at this skill level we dispel 50% chance
+        public virtual double DispelDifficulty => 0.0;
 
-        public virtual double DispelFocus // at difficulty - focus we have 0%, at difficulty + focus we have 100%
-            => 20.0;
+        // at difficulty - focus we have 0%, at difficulty + focus we have 100%
+        public virtual double DispelFocus => 20.0;
 
         public virtual bool DisplayWeight => Backpack is StrongBackpack;
 
@@ -1169,9 +1169,8 @@ namespace Server.Mobiles
 
                     if (m_MLQuests == null)
                     {
-                        return
-                            MLQuestSystem
-                                .EmptyList; // return EmptyList, but don't cache it (run construction again next time)
+                        // return EmptyList, but don't cache it (run construction again next time)
+                        return MLQuestSystem.EmptyList;
                     }
                 }
 
