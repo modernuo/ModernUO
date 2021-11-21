@@ -29,29 +29,12 @@ namespace Server.Items
         EastWallShort2
     }
 
-    public class ThinStoneWall : BaseWall
+    [Serializable(0, false)]
+    public partial class ThinStoneWall : BaseWall
     {
         [Constructible]
         public ThinStoneWall(ThinStoneWallTypes type) : base(0x001A + (int)type)
         {
-        }
-
-        public ThinStoneWall(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
