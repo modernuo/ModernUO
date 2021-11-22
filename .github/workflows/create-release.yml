@@ -3,6 +3,7 @@ name: Create Release
 on:
   repository_dispatch:
     types: [release]
+  workflow_dispatch:
 
 jobs:
   release:
