@@ -114,7 +114,7 @@ namespace Server.Items
     [Serializable(0, false)]
     public partial class AnkhWest : Item
     {
-        [SerializableField(0)]
+        [SerializableField(0, getter: "private", setter: "private")]
         private InternalItem _item;
 
         [Constructible]
@@ -184,7 +184,7 @@ namespace Server.Items
         }
 
         [Serializable(0, false)]
-        private class InternalItem : Item
+        private partial class InternalItem : Item
         {
             [SerializableField(0)]
             private AnkhWest _item;
@@ -260,7 +260,7 @@ namespace Server.Items
     [Serializable(0, false)]
     public partial class AnkhNorth : Item
     {
-        [SerializableField(0)]
+        [SerializableField(0, getter: "private", setter: "private")]
         private InternalItem _item;
 
         [Constructible]
@@ -332,7 +332,7 @@ namespace Server.Items
 
         [TypeAlias("Server.Items.AnkhEast+InternalItem")]
         [Serializable(0, false)]
-        private class InternalItem : Item
+        private partial class InternalItem : Item
         {
             [SerializableField(0)]
             private AnkhNorth _item;
