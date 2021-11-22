@@ -7,7 +7,7 @@ using Server.Network;
 
 namespace Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class BenchmarkPacketBroadcast
     {
         public static int SendUnicodeMessage(

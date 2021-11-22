@@ -11,7 +11,7 @@ namespace Server.Spells.Third
 {
     public class TeleportSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Teleport",
             "Rel Por",
             215,
@@ -20,7 +20,7 @@ namespace Server.Spells.Third
             Reagent.MandrakeRoot
         );
 
-        public TeleportSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public TeleportSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -131,7 +131,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
     }
 }

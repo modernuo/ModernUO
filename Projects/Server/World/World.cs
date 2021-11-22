@@ -421,7 +421,7 @@ namespace Server
                 try
                 {
                     EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
-                    Directory.Move(tempPath, SavePath);
+                    PathUtility.MoveDirectory(tempPath, SavePath);
                 }
                 catch (Exception ex)
                 {
@@ -666,7 +666,7 @@ namespace Server
             T entity;
 
             // Add to this list when creating new serializable types
-            if (typeof(BaseGuild).IsAssignableTo(typeT))
+            if (typeof(BaseGuild).IsAssignableFrom(typeT))
             {
                 entity = FindGuild(serial) as T;
             }

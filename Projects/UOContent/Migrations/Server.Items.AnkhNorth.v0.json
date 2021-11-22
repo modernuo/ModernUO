@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.AnkhNorth",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Items.AnkhNorth.InternalItem",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

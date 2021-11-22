@@ -9,43 +9,43 @@ namespace Server.Spells
 
     public class SpellTargetPoint3D : Target, ISpellTarget
     {
-        private readonly bool m_CheckLOS;
-        private ISpellTargetingPoint3D m_Spell;
+        private readonly bool _retryOnLos;
+        private ISpellTargetingPoint3D _spell;
 
         public SpellTargetPoint3D(
-            ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool checkLOS = true
+            ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool retryOnLOS = false
         ) : base(range, true, flags)
         {
-            m_Spell = spell;
-            m_CheckLOS = checkLOS;
+            _spell = spell;
+            _retryOnLos = retryOnLOS;
         }
 
-        public ISpell Spell => m_Spell;
+        public ISpell Spell => _spell;
 
         protected override void OnTarget(Mobile from, object o)
         {
             if (o is IPoint3D p)
             {
-                m_Spell.Target(p);
+                _spell.Target(p);
             }
         }
 
         protected override void OnTargetOutOfLOS(Mobile from, object o)
         {
-            if (!m_CheckLOS)
+            if (!_retryOnLos)
             {
                 return;
             }
 
             from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
-            from.Target = new SpellTargetPoint3D(m_Spell);
+            from.Target = new SpellTargetPoint3D(_spell);
             from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
-            m_Spell = null; // Needed?
+            _spell = null; // Needed?
         }
 
         protected override void OnTargetFinish(Mobile from)
         {
-            m_Spell?.FinishSequence();
+            _spell?.FinishSequence();
         }
     }
 }
