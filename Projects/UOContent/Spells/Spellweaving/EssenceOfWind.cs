@@ -5,11 +5,11 @@ namespace Server.Spells.Spellweaving
 {
     public class EssenceOfWindSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new("Essence of Wind", "Anathrae", -1);
+        private static readonly SpellInfo _info = new("Essence of Wind", "Anathrae", -1);
 
-        private static readonly Dictionary<Mobile, EssenceOfWindTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, EssenceOfWindTimer> _table = new();
 
-        public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -56,7 +56,7 @@ namespace Server.Spells.Spellweaving
                     var t = new EssenceOfWindTimer(m, fcMalus, ssiMalus, duration);
                     t.Start();
 
-                    m_Table[m] = t;
+                    _table[m] = t;
 
                     BuffInfo.AddBuff(
                         m,
@@ -76,15 +76,15 @@ namespace Server.Spells.Spellweaving
             FinishSequence();
         }
 
-        public static int GetFCMalus(Mobile m) => m_Table.TryGetValue(m, out var timer) ? timer._fcMalus : 0;
+        public static int GetFCMalus(Mobile m) => _table.TryGetValue(m, out var timer) ? timer._fcMalus : 0;
 
-        public static int GetSSIMalus(Mobile m) => m_Table.TryGetValue(m, out var timer) ? timer._ssiMalus : 0;
+        public static int GetSSIMalus(Mobile m) => _table.TryGetValue(m, out var timer) ? timer._ssiMalus : 0;
 
-        public static bool IsDebuffed(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsDebuffed(Mobile m) => _table.ContainsKey(m);
 
         public static void StopDebuffing(Mobile m, bool message)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (_table.TryGetValue(m, out var timer))
             {
                 timer.DoExpire(message);
             }
@@ -111,7 +111,7 @@ namespace Server.Spells.Spellweaving
             internal void DoExpire(bool message = true)
             {
                 Stop();
-                m_Table.Remove(_defender);
+                _table.Remove(_defender);
 
                 BuffInfo.RemoveBuff(_defender, BuffIcon.EssenceOfWind);
             }

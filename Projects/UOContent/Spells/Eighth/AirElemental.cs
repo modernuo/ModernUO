@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
     public class AirElementalSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Air Elemental",
             "Kal Vas Xen Hur",
             269,
@@ -16,7 +16,7 @@ namespace Server.Spells.Eighth
             Reagent.SpidersSilk
         );
 
-        public AirElementalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public AirElementalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

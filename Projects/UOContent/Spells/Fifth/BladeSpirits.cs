@@ -5,7 +5,7 @@ namespace Server.Spells.Fifth
 {
     public class BladeSpiritsSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Blade Spirits",
             "In Jux Hur Ylem",
             266,
@@ -16,7 +16,7 @@ namespace Server.Spells.Fifth
             Reagent.Nightshade
         );
 
-        public BladeSpiritsSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public BladeSpiritsSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -79,7 +79,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this);
+            Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
         }
     }
 }
