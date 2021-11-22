@@ -9,21 +9,21 @@ namespace Server.Spells
 
     public class SpellTargetMobile : Target, ISpellTarget
     {
-        private readonly ISpellTargetingMobile m_Spell;
+        private readonly ISpellTargetingMobile _spell;
 
         public SpellTargetMobile(ISpellTargetingMobile spell, TargetFlags flags, int range = 12) :
-            base(range, false, flags) => m_Spell = spell;
+            base(range, false, flags) => _spell = spell;
 
-        public ISpell Spell => m_Spell;
+        public ISpell Spell => _spell;
 
         protected override void OnTarget(Mobile from, object o)
         {
-            m_Spell.Target(o as Mobile);
+            _spell.Target(o as Mobile);
         }
 
         protected override void OnTargetFinish(Mobile from)
         {
-            m_Spell?.FinishSequence();
+            _spell?.FinishSequence();
         }
     }
 }

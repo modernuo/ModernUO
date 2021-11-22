@@ -7,14 +7,14 @@ namespace Server.Spells.Spellweaving
 {
     public class ArcaneCircleSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Arcane Circle",
             "Myrshalee",
             -1
         );
 
         public ArcaneCircleSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

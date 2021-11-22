@@ -6,7 +6,7 @@ namespace Server.Spells.Sixth
 {
     public class DispelSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Dispel",
             "An Ort",
             218,
@@ -16,7 +16,7 @@ namespace Server.Spells.Sixth
             Reagent.SulfurousAsh
         );
 
-        public DispelSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public DispelSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -24,16 +24,7 @@ namespace Server.Spells.Sixth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (!(m is BaseCreature bc && bc.IsDispellable))
+            if (m is not BaseCreature { IsDispellable: true } bc)
             {
                 Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
             }

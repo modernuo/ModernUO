@@ -5,7 +5,7 @@ namespace Server.Spells.Mysticism
 {
     public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Animated Weapon",
             "In Jux Por Ylem",
             -1,
@@ -17,7 +17,7 @@ namespace Server.Spells.Mysticism
         );
 
         public AnimatedWeaponSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

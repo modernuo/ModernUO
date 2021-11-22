@@ -6,16 +6,16 @@ namespace Server.Spells.Spellweaving
 {
     public class ImmolatingWeaponSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Immolating Weapon",
             "Thalshara",
             -1
         );
 
-        private static readonly Dictionary<BaseWeapon, ImmolatingWeaponTimer> m_Table = new();
+        private static readonly Dictionary<BaseWeapon, ImmolatingWeaponTimer> _table = new();
 
         public ImmolatingWeaponSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -54,7 +54,7 @@ namespace Server.Spells.Spellweaving
                     var damage = 5 + (int)(skill / 24) + FocusLevel;
 
                     var t = new ImmolatingWeaponTimer(TimeSpan.FromSeconds(duration), damage, Caster, weapon);
-                    m_Table[weapon] = t;
+                    _table[weapon] = t;
                     t.Start();
 
                     weapon.InvalidateProperties();
@@ -64,14 +64,14 @@ namespace Server.Spells.Spellweaving
             FinishSequence();
         }
 
-        public static bool IsImmolating(BaseWeapon weapon) => m_Table.ContainsKey(weapon);
+        public static bool IsImmolating(BaseWeapon weapon) => _table.ContainsKey(weapon);
 
         public static int GetImmolatingDamage(BaseWeapon weapon) =>
-            m_Table.TryGetValue(weapon, out var entry) ? entry._damage : 0;
+            _table.TryGetValue(weapon, out var entry) ? entry._damage : 0;
 
         public static void DoEffect(BaseWeapon weapon, Mobile target)
         {
-            if (m_Table.Remove(weapon, out var timer))
+            if (_table.Remove(weapon, out var timer))
             {
                 timer.Stop();
 
@@ -86,7 +86,7 @@ namespace Server.Spells.Spellweaving
 
         public static void StopImmolating(BaseWeapon weapon)
         {
-            if (m_Table.Remove(weapon, out var timer))
+            if (_table.Remove(weapon, out var timer))
             {
                 timer._caster?.PlaySound(0x27);
                 timer.Stop();

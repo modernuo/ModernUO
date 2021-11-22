@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2021 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SHA2PasswordProtection.cs                                       *
+ * File: HashAlgorithmPasswordProtection.cs                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,15 +19,19 @@ using Server.Text;
 
 namespace Server.Accounting.Security
 {
-    public class SHA2PasswordProtection : IPasswordProtection
+    public class HashAlgorithmPasswordProtection : IPasswordProtection
     {
-        public static IPasswordProtection Instance = new SHA2PasswordProtection();
-        private readonly SHA512CryptoServiceProvider m_SHA2HashProvider = new();
+        public static IPasswordProtection MD5Instance = new HashAlgorithmPasswordProtection(MD5.Create());
+        public static IPasswordProtection SHA1Instance = new HashAlgorithmPasswordProtection(SHA1.Create());
+        public static IPasswordProtection SHA2Instance = new HashAlgorithmPasswordProtection(SHA512.Create());
+        private readonly HashAlgorithm _hashAlgorithm;
+
+        public HashAlgorithmPasswordProtection(HashAlgorithm hashAlgorithm) => _hashAlgorithm = hashAlgorithm;
 
         public string EncryptPassword(string plainPassword)
         {
             byte[] bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
-            return m_SHA2HashProvider.ComputeHash(bytes).ToHexString();
+            return _hashAlgorithm.ComputeHash(bytes).ToHexString();
         }
 
         public bool ValidatePassword(string encryptedPassword, string plainPassword) =>

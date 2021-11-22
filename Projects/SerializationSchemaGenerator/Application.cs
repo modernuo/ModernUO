@@ -17,6 +17,7 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using SerializationGenerator;
 
@@ -61,7 +62,7 @@ namespace SerializationSchemaGenerator
                     {
                         WriteIndented = true,
                         AllowTrailingCommas = true,
-                        IgnoreNullValues = true,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                         ReadCommentHandling = JsonCommentHandling.Skip
                     };
 

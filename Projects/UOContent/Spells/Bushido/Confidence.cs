@@ -5,17 +5,17 @@ namespace Server.Spells.Bushido
 {
     public class Confidence : SamuraiSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Confidence",
             null,
             -1,
             9002
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_RegenTable = new();
 
-        public Confidence(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public Confidence(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 
@@ -49,7 +49,7 @@ namespace Server.Spells.Bushido
             FinishSequence();
         }
 
-        public static bool IsConfident(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsConfident(Mobile m) => _table.ContainsKey(m);
 
         public static void BeginConfidence(Mobile m)
         {
@@ -64,12 +64,12 @@ namespace Server.Spells.Bushido
                 out var timerToken
             );
 
-            m_Table[m] = timerToken;
+            _table[m] = timerToken;
         }
 
         private static bool StopConfidenceTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
                 return true;

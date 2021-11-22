@@ -6,7 +6,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class KiAttack : NinjaMove
     {
-        private static readonly Dictionary<Mobile, KiAttackTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, KiAttackTimer> _table = new();
 
         public override int BaseMana => 25;
         public override double RequiredSkill => 80.0;
@@ -22,7 +22,7 @@ namespace Server.Spells.Ninjitsu
             }
 
             var t = new KiAttackTimer(from);
-            m_Table[from] = t;
+            _table[from] = t;
             t.Start();
         }
 
@@ -86,7 +86,7 @@ namespace Server.Spells.Ninjitsu
 
         public override void OnClearMove(Mobile from)
         {
-            if (m_Table.Remove(from, out var t))
+            if (_table.Remove(from, out var t))
             {
                 t.Stop();
             }
@@ -94,7 +94,7 @@ namespace Server.Spells.Ninjitsu
 
         public static double GetBonus(Mobile from)
         {
-            if (!m_Table.TryGetValue(from, out var t))
+            if (!_table.TryGetValue(from, out var t))
             {
                 return 0;
             }
@@ -121,7 +121,7 @@ namespace Server.Spells.Ninjitsu
                 ClearCurrentMove(m_Mobile);
                 m_Mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
 
-                m_Table.Remove(m_Mobile);
+                _table.Remove(m_Mobile);
             }
         }
     }

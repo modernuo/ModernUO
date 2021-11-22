@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
+using System.Net.Http;
 using Server.Buffers;
 
 namespace Server.Compression
@@ -53,13 +52,18 @@ namespace Server.Compression
             var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
 
             var libarchiveFile = Path.Combine(tempDir, "libarchive.zip");
-            using WebClient wc = new WebClient();
-            wc.DownloadFile (new Uri(_libArchiveWindowsUrl), libarchiveFile);
+            // This isn't called often so we don't need to optimize
+            using (HttpClient hc = new HttpClient())
+            {
+                var result = hc.Send(new HttpRequestMessage(HttpMethod.Get, new Uri(_libArchiveWindowsUrl)));
+                using var stream = result.Content.ReadAsStream();
+                using FileStream fs = new FileStream(libarchiveFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                stream.CopyTo(fs);
+            }
 
             ZipFile.ExtractToDirectory(libarchiveFile, tempDir);
             var libArchivePath = Path.Combine(tempDir, "libarchive");
-            Directory.Move(Path.Combine(libArchivePath, "bin"), "bsdtar");
-            Directory.Delete(libArchivePath, true);
+            PathUtility.MoveDirectory(Path.Combine(libArchivePath, "bin"), Path.Combine(Core.BaseDirectory, "bsdtar"));
             File.Delete(libarchiveFile);
 
             return Path.Combine(Core.BaseDirectory, "bsdtar/bsdtar.exe");

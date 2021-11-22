@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Strangle",
             "In Bal Nox",
             209,
@@ -15,9 +15,9 @@ namespace Server.Spells.Necromancy
             Reagent.NoxCrystal
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, InternalTimer> _table = new();
 
-        public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -60,9 +60,9 @@ namespace Server.Spells.Necromancy
                 m.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
                 m.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-                if (!m_Table.TryGetValue(m, out var timer))
+                if (!_table.TryGetValue(m, out var timer))
                 {
-                    m_Table[m] = timer = new InternalTimer(m, Caster);
+                    _table[m] = timer = new InternalTimer(m, Caster);
                     timer.Start();
                 }
 
@@ -118,7 +118,7 @@ namespace Server.Spells.Necromancy
 
         public static bool RemoveCurse(Mobile m)
         {
-            if (!m_Table.Remove(m, out var timer))
+            if (!_table.Remove(m, out var timer))
             {
                 return false;
             }
@@ -168,7 +168,7 @@ namespace Server.Spells.Necromancy
             {
                 if (!m_Target.Alive)
                 {
-                    m_Table.Remove(m_Target);
+                    _table.Remove(m_Target);
                     Stop();
                 }
 
@@ -203,7 +203,7 @@ namespace Server.Spells.Necromancy
                 if (m_Count == 0)
                 {
                     m_Target.SendLocalizedMessage(1061687); // You can breath normally again.
-                    m_Table.Remove(m_Target);
+                    _table.Remove(m_Target);
                     Stop();
                 }
                 else
