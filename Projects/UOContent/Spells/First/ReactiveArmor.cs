@@ -5,7 +5,7 @@ namespace Server.Spells.First
 {
     public class ReactiveArmorSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Reactive Armor",
             "Flam Sanct",
             236,
@@ -15,9 +15,9 @@ namespace Server.Spells.First
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
+        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
-        public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -61,7 +61,7 @@ namespace Server.Spells.First
                 {
                     var targ = Caster;
 
-                    if (m_Table.Remove(targ, out var mods))
+                    if (_table.Remove(targ, out var mods))
                     {
                         targ.PlaySound(0x1ED);
                         targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
@@ -90,7 +90,7 @@ namespace Server.Spells.First
                             new ResistanceMod(ResistanceType.Energy, -5)
                         };
 
-                        m_Table[targ] = mods;
+                        _table[targ] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
@@ -144,7 +144,7 @@ namespace Server.Spells.First
 
         public static void EndArmor(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mods))
+            if (!_table.Remove(m, out var mods))
             {
                 return;
             }

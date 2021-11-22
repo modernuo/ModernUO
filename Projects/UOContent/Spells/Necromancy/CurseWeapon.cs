@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class CurseWeaponSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Curse Weapon",
             "An Sanct Gra Char",
             203,
@@ -14,9 +14,9 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new();
+        private static readonly Dictionary<BaseWeapon, ExpireTimer> _table = new();
 
-        public CurseWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CurseWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -50,11 +50,11 @@ namespace Server.Spells.Necromancy
 
                 var duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 3.4 + 1.0);
 
-                m_Table.TryGetValue(weapon, out var timer);
+                _table.TryGetValue(weapon, out var timer);
                 timer?.Stop();
 
                 weapon.Cursed = true;
-                m_Table[weapon] = timer = new ExpireTimer(weapon, duration);
+                _table[weapon] = timer = new ExpireTimer(weapon, duration);
 
                 timer.Start();
             }
@@ -75,7 +75,7 @@ namespace Server.Spells.Necromancy
             {
                 m_Weapon.Cursed = false;
                 Effects.PlaySound(m_Weapon.GetWorldLocation(), m_Weapon.Map, 0xFA);
-                m_Table.Remove(m_Weapon);
+                _table.Remove(m_Weapon);
             }
         }
 

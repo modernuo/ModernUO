@@ -7,7 +7,7 @@ namespace Server.Spells.Spellweaving
 {
     public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Nature's Fury",
             "Rauvvrae",
             -1,
@@ -15,7 +15,7 @@ namespace Server.Spells.Spellweaving
         );
 
         public NatureFurySpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

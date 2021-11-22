@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Evil Omen",
             "Pas Tym An Sanct",
             203,
@@ -16,10 +16,10 @@ namespace Server.Spells.Necromancy
             Reagent.NoxCrystal
         );
 
-        private static readonly Dictionary<Mobile, DefaultSkillMod> m_Table = new();
+        private static readonly Dictionary<Mobile, DefaultSkillMod> _table = new();
 
         public EvilOmenSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -52,7 +52,7 @@ namespace Server.Spells.Necromancy
                 m.FixedParticles(0x3728, 1, 13, 9912, 1150, 7, EffectLayer.Head);
                 m.FixedParticles(0x3779, 1, 15, 9502, 67, 7, EffectLayer.Head);
 
-                if (!m_Table.ContainsKey(m))
+                if (!_table.ContainsKey(m))
                 {
                     var mod = new DefaultSkillMod(SkillName.MagicResist, false, 50.0);
 
@@ -61,7 +61,7 @@ namespace Server.Spells.Necromancy
                         m.AddSkillMod(mod);
                     }
 
-                    m_Table[m] = mod;
+                    _table[m] = mod;
                 }
 
                 var duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 12 + 1.0);
@@ -83,7 +83,7 @@ namespace Server.Spells.Necromancy
 
         public static bool TryEndEffect(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mod))
+            if (!_table.Remove(m, out var mod))
             {
                 return false;
             }

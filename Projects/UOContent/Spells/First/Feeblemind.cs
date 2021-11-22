@@ -4,7 +4,7 @@ namespace Server.Spells.First
 {
     public class FeeblemindSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Feeblemind",
             "Rel Wis",
             212,
@@ -13,7 +13,7 @@ namespace Server.Spells.First
             Reagent.Nightshade
         );
 
-        public FeeblemindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public FeeblemindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -21,16 +21,7 @@ namespace Server.Spells.First
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
 
