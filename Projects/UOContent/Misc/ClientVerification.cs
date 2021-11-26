@@ -72,24 +72,20 @@ namespace Server.Misc
                         0x4E, 0x00, 0x46, 0x00, 0x4F, 0x00
                     };
 
-                    int offset = -1;
                     for (var i = 0; i < buffer.Length; i++)
                     {
                         if (vsVersionInfo.SequenceEqual(buffer.AsSpan(i, 30)))
                         {
-                            offset = i + 42; // 30 + 12
+                            var offset = i + 42; // 30 + 12
+
+                            var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
+                            var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
+                            var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
+                            var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
+
+                            MinRequired = new ClientVersion(majorPart, minorPart, buildPart, privatePart);
                             break;
                         }
-                    }
-
-                    if (offset > 0)
-                    {
-                        var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
-                        var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
-                        var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
-                        var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
-
-                        MinRequired = new ClientVersion(majorPart, minorPart, buildPart, privatePart);
                     }
                 }
             }
