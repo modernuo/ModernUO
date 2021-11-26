@@ -197,7 +197,9 @@ namespace Server.Network
 
         public Pipe<byte> SendPipe { get; }
 
-        public Socket Connection { get; }
+        public bool Running => _running;
+
+        public Socket Connection { get; private set; }
 
         public bool CompressionEnabled { get; set; }
 
@@ -1117,7 +1119,10 @@ namespace Server.Network
                 TraceException(ex);
             }
 
+            Connection.Shutdown(SocketShutdown.Both);
             Connection.Close();
+            Connection.Dispose();
+            Connection = null;
             _handle.Free();
 
             var m = Mobile;

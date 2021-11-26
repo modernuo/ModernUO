@@ -134,15 +134,17 @@ namespace Server.Misc
                                     state.Mobile is PlayerMobile mobile &&
                                     mobile.GameTime > _gameTimeLeniency;
 
-            bool shouldKick = strictRequirement;
+            bool shouldKick = false;
 
-            if (MinRequired != null && version < MinRequired && strictRequirement)
+            if (MinRequired != null && version < MinRequired)
             {
                 message.Append($"This server doesn't support clients older than {MinRequired}.");
+                shouldKick = strictRequirement;
             }
-            else if (MaxRequired != null && version > MaxRequired && strictRequirement)
+            else if (MaxRequired != null && version > MaxRequired)
             {
                 message.Append($"This server doesn't support clients newer than {MaxRequired}.");
+                shouldKick = strictRequirement;
             }
             else if (!AllowRegular || !AllowUOTD)
             {
@@ -210,7 +212,7 @@ namespace Server.Misc
 
         private static void OnKick(NetState ns)
         {
-            if (ns.Connection != null)
+            if (ns.Running)
             {
                 ns.LogInfo("Disconnecting, bad version");
                 ns.Disconnect($"Invalid client version {ns.Version}.");
