@@ -1,11 +1,12 @@
 using System;
-using System.Diagnostics;
+using System.Buffers.Binary;
 using System.IO;
 using Server.Buffers;
 using Server.Gumps;
 using Server.Logging;
 using Server.Mobiles;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Misc
 {
@@ -59,17 +60,36 @@ namespace Server.Misc
 
                 if (File.Exists(path))
                 {
-                    var info = FileVersionInfo.GetVersionInfo(path);
-
-                    if (info.FileMajorPart != 0 || info.FileMinorPart != 0 || info.FileBuildPart != 0 ||
-                        info.FilePrivatePart != 0)
+                    using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length, true);
+                    fs.Read(buffer);
+                    // VS_VERSION_INFO (unicode)
+                    Span<byte> vsVersionInfo = stackalloc byte[]
                     {
-                        MaxRequired = new ClientVersion(
-                            info.FileMajorPart,
-                            info.FileMinorPart,
-                            info.FileBuildPart,
-                            info.FilePrivatePart
-                        );
+                        0x56, 0x00, 0x53, 0x00, 0x5F, 0x00, 0x56, 0x00,
+                        0x45, 0x00, 0x52, 0x00, 0x53, 0x00, 0x49, 0x00,
+                        0x4F, 0x00, 0x4E, 0x00, 0x5F, 0x00, 0x49, 0x00,
+                        0x4E, 0x00, 0x46, 0x00, 0x4F, 0x00
+                    };
+
+                    int offset = -1;
+                    for (var i = 0; i < buffer.Length; i++)
+                    {
+                        if (vsVersionInfo.SequenceEqual(buffer.AsSpan(i, 30)))
+                        {
+                            offset = i + 42; // 30 + 12
+                            break;
+                        }
+                    }
+
+                    if (offset > 0)
+                    {
+                        var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
+                        var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
+                        var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
+                        var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
+
+                        MinRequired = new ClientVersion(majorPart, minorPart, buildPart, privatePart);
                     }
                 }
             }
