@@ -214,8 +214,9 @@ namespace Server.Misc
         {
             if (ns.Running)
             {
-                ns.LogInfo("Disconnecting, bad version");
-                ns.Disconnect($"Invalid client version {ns.Version}.");
+                var version = ns.Version;
+                ns.LogInfo($"Disconnecting, bad version ({version})");
+                ns.Disconnect($"Invalid client version {version}.");
             }
         }
 

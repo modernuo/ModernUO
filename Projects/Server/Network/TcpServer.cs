@@ -155,6 +155,7 @@ namespace Server.Network
                 try
                 {
                     var socket = await listener.AcceptSocketAsync();
+
                     var rejected = false;
                     if (Instances.Count >= MaxConnections)
                     {

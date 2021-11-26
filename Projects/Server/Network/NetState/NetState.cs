@@ -1121,7 +1121,6 @@ namespace Server.Network
 
             Connection.Shutdown(SocketShutdown.Both);
             Connection.Close();
-            Connection.Dispose();
             Connection = null;
             _handle.Free();
 
