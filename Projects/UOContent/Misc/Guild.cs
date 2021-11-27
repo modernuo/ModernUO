@@ -1616,10 +1616,11 @@ namespace Server.Guilds
 
             if (m_Leader != winner && winner != null)
             {
+                Leader = winner;
                 GuildMessage(1018015, true, winner.Name); // Guild Message: Guildmaster changed to:
             }
 
-            Leader = winner;
+           
             LastFealty = Core.Now;
         }
 
