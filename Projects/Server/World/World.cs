@@ -243,8 +243,8 @@ namespace Server
             Guilds = EntityPersistence.LoadIndex(basePath, guildIndexInfo, out List<EntityIndex<BaseGuild>> guilds);
 
             EntityPersistence.LoadData(basePath, mobileIndexInfo, mobiles);
-            EntityPersistence.LoadData(basePath, itemIndexInfo, items);
             EntityPersistence.LoadData(basePath, guildIndexInfo, guilds);
+            EntityPersistence.LoadData(basePath, itemIndexInfo, items);
         }
 
         public static void Load()
