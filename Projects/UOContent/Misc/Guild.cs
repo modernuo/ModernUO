@@ -1323,6 +1323,10 @@ namespace Server.Guilds
                         WarInvitations = reader.ReadEntityList<Guild>();
 
                         Members = reader.ReadEntityList<Mobile>();
+
+                        for (int i = 0; i < Members?.Count; i++)
+                            Members[i].Guild = this;
+
                         Candidates = reader.ReadEntityList<Mobile>();
                         Accepted = reader.ReadEntityList<Mobile>();
 
