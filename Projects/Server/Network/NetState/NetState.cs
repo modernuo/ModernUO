@@ -1119,9 +1119,7 @@ namespace Server.Network
                 TraceException(ex);
             }
 
-            Connection.Shutdown(SocketShutdown.Both);
             Connection.Close();
-            Connection = null;
             _handle.Free();
 
             var m = Mobile;
