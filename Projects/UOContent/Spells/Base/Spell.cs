@@ -794,6 +794,11 @@ namespace Server.Spells
 
         public bool CheckBSequence(Mobile target, bool allowDead)
         {
+            if (target is null)
+            {
+                return false;
+            }
+
             if (!target.Alive && !allowDead)
             {
                 Caster.SendLocalizedMessage(501857); // This spell won't work on that!
@@ -811,6 +816,11 @@ namespace Server.Spells
 
         public bool CheckHSequence(Mobile target)
         {
+            if (target is null)
+            {
+                return false;
+            }
+
             if (!target.Alive)
             {
                 Caster.SendLocalizedMessage(501857); // This spell won't work on that!
