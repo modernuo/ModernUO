@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
+using System.Net.Http;
 using Server.Buffers;
 
 namespace Server.Compression
@@ -50,17 +49,21 @@ namespace Server.Compression
 
         private static string DownloadTarForWindows()
         {
-            var tempDir = Path.Combine(Core.BaseDirectory, "temp");
-            AssemblyHandler.EnsureDirectory("temp");
+            var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
 
             var libarchiveFile = Path.Combine(tempDir, "libarchive.zip");
-            using WebClient wc = new WebClient();
-            wc.DownloadFile (new Uri(_libArchiveWindowsUrl), libarchiveFile);
+            // This isn't called often so we don't need to optimize
+            using (HttpClient hc = new HttpClient())
+            {
+                var result = hc.Send(new HttpRequestMessage(HttpMethod.Get, new Uri(_libArchiveWindowsUrl)));
+                using var stream = result.Content.ReadAsStream();
+                using FileStream fs = new FileStream(libarchiveFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                stream.CopyTo(fs);
+            }
 
             ZipFile.ExtractToDirectory(libarchiveFile, tempDir);
             var libArchivePath = Path.Combine(tempDir, "libarchive");
-            Directory.Move(Path.Combine(libArchivePath, "bin"), "bsdtar");
-            Directory.Delete(libArchivePath, true);
+            PathUtility.MoveDirectory(Path.Combine(libArchivePath, "bin"), Path.Combine(Core.BaseDirectory, "bsdtar"));
             File.Delete(libarchiveFile);
 
             return Path.Combine(Core.BaseDirectory, "bsdtar/bsdtar.exe");
@@ -82,29 +85,28 @@ namespace Server.Compression
         }
 
         public static bool CreateFromPaths(
-            List<string> paths,
+            IEnumerable<string> paths,
             string destinationArchiveFileName,
+            string relativeTo,
             string compressCommand = null,
             string compressionProgramPath = null
         )
         {
             _pathToTar ??= GetPathToTar();
 
-            AssemblyHandler.EnsureDirectory(new FileInfo(destinationArchiveFileName));
-            var di = new DirectoryInfo(paths[0]);
-            var directory = di.Parent!.FullName;
+            new FileInfo(destinationArchiveFileName).EnsureDirectory();
 
             using var builder = new ValueStringBuilder();
-            for (var i = 0; i < paths.Count; i++)
+            var i = 0;
+            foreach (var path in paths)
             {
-                var path = paths[i];
-                builder.Append($"{(i > 0 ? " " : "")}\"{Path.GetRelativePath(directory, path)}\"");
+                builder.Append($"{(i++ > 0 ? " " : "")}\"{Path.GetRelativePath(relativeTo, path)}\"");
             }
             var pathsToCompress = builder.ToString();
 
             var tarFlags = compressCommand == null ? "-acf" : "-cf";
             var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";
-            var arguments = $"{useExternalCompression}{tarFlags} \"{destinationArchiveFileName}\" -C \"{directory}\" {pathsToCompress}";
+            var arguments = $"{useExternalCompression}{tarFlags} \"{destinationArchiveFileName}\" -C \"{relativeTo}\" {pathsToCompress}";
 
             return RunTar(arguments, compressionProgramPath) == 0;
         }

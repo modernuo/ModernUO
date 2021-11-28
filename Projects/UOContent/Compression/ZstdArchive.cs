@@ -14,7 +14,8 @@ namespace Server.Compression
             // bsdtar has a bug and hangs, so we are doing it in two steps.
             if (Core.IsWindows)
             {
-                var tempTarArchive = Path.Combine(Core.BaseDirectory, "temp/temp-file.tar");
+                var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
+                var tempTarArchive = Path.Combine(tempDir, "temp-file.tar");
 
                 try
                 {
@@ -22,8 +23,8 @@ namespace Server.Compression
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = _pathToZstd,
-                            Arguments = $"-q -d \"{fileNamePath}\" -o \"${tempTarArchive}\""
+                            FileName = Path.Combine(_pathToZstd, "zstd.exe"),
+                            Arguments = $"-q -d \"{fileNamePath}\" -o \"{tempTarArchive}\""
                         }
                     };
 
@@ -42,25 +43,24 @@ namespace Server.Compression
                 }
             }
 
-            return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, "zstd -d", _pathToZstd);
+            return TarArchive.ExtractToDirectory(fileNamePath, outputDirectory, "zstd -q -d", _pathToZstd);
         }
 
         public static bool CreateFromPaths(
-            List<string> paths,
+            IEnumerable<string> paths,
             string destinationArchiveFileName,
-            int compressionLevel = 10
+            string relativeTo
         )
         {
-            Debug.Assert(compressionLevel is >= 1 and <= 22, $"{nameof(compressionLevel)} must be between 1 and 22");
-
             // bsdtar has a bug and hangs, so we are doing it in two steps.
             if (Core.IsWindows)
             {
-                var tempTarArchive = Path.Combine(Core.BaseDirectory, "temp/temp-file.tar");
+                var tempDir = PathUtility.EnsureRandomPath(Path.GetTempPath());
+                var tempTarArchive = Path.Combine(tempDir, "temp-file.tar");
 
                 try
                 {
-                    if (!TarArchive.CreateFromPaths(paths, tempTarArchive))
+                    if (!TarArchive.CreateFromPaths(paths, tempTarArchive, relativeTo))
                     {
                         return false;
                     }
@@ -70,7 +70,7 @@ namespace Server.Compression
                         StartInfo = new ProcessStartInfo
                         {
                             FileName = Path.Combine(_pathToZstd, "zstd.exe"),
-                            Arguments = $"-q -10 \"{tempTarArchive}\" -o \"{destinationArchiveFileName}\""
+                            Arguments = $"-q \"{tempTarArchive}\" -o \"{destinationArchiveFileName}\""
                         }
                     };
 
@@ -85,11 +85,11 @@ namespace Server.Compression
                 }
                 finally
                 {
-                    File.Delete(tempTarArchive);
+                    Directory.Delete(tempDir, true);
                 }
             }
 
-            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, "zstd -10", _pathToZstd);
+            return TarArchive.CreateFromPaths(paths, destinationArchiveFileName, relativeTo, "zstd -q", _pathToZstd);
         }
     }
 }

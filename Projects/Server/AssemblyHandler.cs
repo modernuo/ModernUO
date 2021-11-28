@@ -173,28 +173,6 @@ namespace Server
 
             return null;
         }
-
-        public static string EnsureDirectory(string dir)
-        {
-            var path = Path.Combine(Core.BaseDirectory, dir);
-            Directory.CreateDirectory(path);
-
-            return path;
-        }
-
-        public static void EnsureDirectory(FileInfo fi)
-        {
-            var dir = fi.DirectoryName;
-            if (dir != null)
-            {
-                Directory.CreateDirectory(dir);
-            }
-        }
-
-        public static void EnsureDirectory(DirectoryInfo di)
-        {
-            Directory.CreateDirectory(di.FullName);
-        }
     }
 
     public class TypeCache

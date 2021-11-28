@@ -25,13 +25,13 @@ namespace Server
     {
         private RandomNumberGenerator m_Random;
 
-        public RandomNumberGenerator Generator => m_Random ??= new RNGCryptoServiceProvider();
+        public RandomNumberGenerator Generator => m_Random ??= RandomNumberGenerator.Create();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override ulong NextULong()
         {
             Span<byte> buffer = stackalloc byte[sizeof(ulong)];
-            Generator.GetBytes(buffer);
+            NextBytes(buffer);
             return BinaryPrimitives.ReadUInt64BigEndian(buffer);
         }
 

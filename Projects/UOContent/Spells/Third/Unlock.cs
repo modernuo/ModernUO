@@ -7,7 +7,7 @@ namespace Server.Spells.Third
 {
     public class UnlockSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Unlock Spell",
             "Ex Por",
             215,
@@ -16,7 +16,7 @@ namespace Server.Spells.Third
             Reagent.SulfurousAsh
         );
 
-        public UnlockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public UnlockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -96,7 +96,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
     }
 }

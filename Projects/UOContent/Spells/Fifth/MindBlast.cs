@@ -5,7 +5,7 @@ namespace Server.Spells.Fifth
 {
     public class MindBlastSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mind Blast",
             "Por Corp Wis",
             218,
@@ -16,11 +16,11 @@ namespace Server.Spells.Fifth
             Reagent.SulfurousAsh
         );
 
-        public MindBlastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MindBlastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
             if (Core.AOS)
             {
-                m_Info.LeftHandEffect = m_Info.RightHandEffect = 9002;
+                _info.LeftHandEffect = _info.RightHandEffect = 9002;
             }
         }
 
@@ -30,16 +30,7 @@ namespace Server.Spells.Fifth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (Core.AOS)
+            if (Core.AOS)
             {
                 if (Caster.CanBeHarmful(m) && CheckSequence())
                 {

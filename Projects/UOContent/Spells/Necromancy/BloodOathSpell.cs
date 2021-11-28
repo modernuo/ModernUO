@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Blood Oath",
             "In Jux Mani Xen",
             203,
@@ -16,9 +16,9 @@ namespace Server.Spells.Necromancy
         );
 
         private static readonly Dictionary<Mobile, Mobile> m_OathTable = new();
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
-        public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -65,7 +65,7 @@ namespace Server.Spells.Necromancy
                  * ((ss-rm)/8)+8
                  */
 
-                m_Table.TryGetValue(m, out var timer);
+                _table.TryGetValue(m, out var timer);
                 timer?.DoExpire();
 
                 m_OathTable[Caster] = Caster;
@@ -90,7 +90,7 @@ namespace Server.Spells.Necromancy
                 BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, Caster, m.Name));
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.BloodOathCurse, 1075661, duration, m, Caster.Name));
 
-                m_Table[m] = timer;
+                _table[m] = timer;
                 HarmfulSpell(m);
             }
 
@@ -104,7 +104,7 @@ namespace Server.Spells.Necromancy
 
         public static void RemoveCurse(Mobile m)
         {
-            m_Table.TryGetValue(m, out var t);
+            _table.TryGetValue(m, out var t);
             t?.DoExpire();
         }
 
@@ -153,7 +153,7 @@ namespace Server.Spells.Necromancy
                 BuffInfo.RemoveBuff(m_Caster, BuffIcon.BloodOathCaster);
                 BuffInfo.RemoveBuff(m_Target, BuffIcon.BloodOathCurse);
 
-                m_Table.Remove(m_Caster);
+                _table.Remove(m_Caster);
             }
         }
     }

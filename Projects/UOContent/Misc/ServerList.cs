@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Server.Logging;
@@ -68,7 +70,11 @@ namespace Server.Misc
             {
                 var ns = e.State;
 
-                var ipep = (IPEndPoint)ns.Connection.LocalEndPoint;
+                var ipep = (IPEndPoint)ns.Connection?.LocalEndPoint;
+                if (ipep == null)
+                {
+                    return;
+                }
 
                 var localAddress = ipep.Address;
                 var localPort = ipep.Port;
@@ -76,7 +82,7 @@ namespace Server.Misc
                 if (IsPrivateNetwork(localAddress))
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
-                    if (!IsPrivateNetwork(ipep.Address) && _publicAddress != null)
+                    if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
                     }
@@ -161,12 +167,16 @@ namespace Server.Misc
              Utility.IPMatch("169.254.*", ip) ||
              Utility.IPMatch("100.64-127.*", ip));
 
+        private const string _ipifyUrl = "https://api.ipify.org";
+
         private static IPAddress FindPublicAddress()
         {
             try
             {
-                using WebClient wc = new WebClient();
-                return IPAddress.Parse(wc.DownloadString("https://api.ipify.org"));
+                // This isn't called often so we don't need to optimize
+                using HttpClient hc = new HttpClient();
+                var ipAddress = hc.GetStringAsync(_ipifyUrl).Result;
+                return IPAddress.Parse(ipAddress);
             }
             catch
             {

@@ -5,7 +5,7 @@ namespace Server.Spells.Second
 {
     public class RemoveTrapSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Remove Trap",
             "An Jux",
             212,
@@ -14,7 +14,7 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        public RemoveTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public RemoveTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -22,13 +22,9 @@ namespace Server.Spells.Second
 
         public void Target(Item item)
         {
-            if (!(item is TrappableContainer cont))
+            if (item is not TrappableContainer cont)
             {
-                Caster.SendMessage("You can't disarm that"); // TODO: Localization?
-            }
-            else if (!Caster.CanSee(item))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
+                Caster.SendLocalizedMessage(502373); // That doesn't appear to be trapped
             }
             else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
             {
@@ -59,7 +55,7 @@ namespace Server.Spells.Second
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
             Caster.SendMessage("What do you wish to untrap?"); // TODO: Localization?
         }
     }

@@ -6,7 +6,7 @@ namespace Server.Spells.Eighth
 {
     public class ResurrectionSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Resurrection",
             "An Corp",
             245,
@@ -16,7 +16,7 @@ namespace Server.Spells.Eighth
             Reagent.Ginseng
         );
 
-        public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -24,16 +24,7 @@ namespace Server.Spells.Eighth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m == Caster)
+            if (m == Caster)
             {
                 Caster.SendLocalizedMessage(501039); // Thou can not resurrect thyself.
             }

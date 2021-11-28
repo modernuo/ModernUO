@@ -6,16 +6,16 @@ namespace Server.Spells.Chivalry
 {
     public class ConsecrateWeaponSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Consecrate Weapon",
             "Consecrus Arma",
             -1,
             9002
         );
 
-        private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new();
+        private static readonly Dictionary<BaseWeapon, ExpireTimer> _table = new();
 
-        public ConsecrateWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ConsecrateWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -86,12 +86,12 @@ namespace Server.Spells.Chivalry
 
                 var duration = TimeSpan.FromSeconds(seconds);
 
-                m_Table.TryGetValue(weapon, out var timer);
+                _table.TryGetValue(weapon, out var timer);
                 timer?.Stop();
 
                 weapon.Consecrated = true;
 
-                m_Table[weapon] = timer = new ExpireTimer(weapon, duration);
+                _table[weapon] = timer = new ExpireTimer(weapon, duration);
 
                 timer.Start();
             }
@@ -112,7 +112,7 @@ namespace Server.Spells.Chivalry
             {
                 m_Weapon.Consecrated = false;
                 Effects.PlaySound(m_Weapon.GetWorldLocation(), m_Weapon.Map, 0x1F8);
-                m_Table.Remove(m_Weapon);
+                _table.Remove(m_Weapon);
             }
         }
     }

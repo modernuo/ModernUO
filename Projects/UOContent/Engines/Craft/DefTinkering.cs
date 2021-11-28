@@ -35,7 +35,7 @@ namespace Server.Engines.Craft
 
         public override double GetChanceAtMin(CraftItem item)
         {
-            if (item.NameNumber == 1044258 || item.NameNumber == 1046445) // potion keg and faction trap removal kit
+            if (item.NameNumber is 1044258 or 1046445) // potion keg and faction trap removal kit
             {
                 return 0.5; // 50%
             }

@@ -33,7 +33,7 @@ namespace Server.SkillHandlers
                 m.SendLocalizedMessage(502789); // Tame which animal?
             }
 
-            return TimeSpan.FromHours(6.0);
+            return TimeSpan.FromSeconds(30);
         }
 
         public static bool CheckMastery(Mobile tamer, BaseCreature creature) =>

@@ -13,33 +13,30 @@
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution files..." />
-        <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Serilog.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Serilog.Sinks.Async.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Serilog.Sinks.Console.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\PollGroup.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ref\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.Sinks.Async.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Serilog.Sinks.Console.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\wepoll.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
     </Target>
-    <ItemGroup Condition="'$(IsWindows)'=='true' OR '$(IsWindows)'==''">
-        <Content Include="wepoll.dll">
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.0.2" />
-        <PackageReference Include="Zlib.Bindings" Version="1.5.0" />
+        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
+        <PackageReference Include="PollGroup" Version="1.1.0" />
+        <PackageReference Include="Zlib.Bindings" Version="1.6.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">

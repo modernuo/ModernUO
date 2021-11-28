@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Network;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Accounting;
@@ -48,7 +49,7 @@ namespace Server.Network
         private const int MenuCap = 512;
         private const int PacketPerSecondThreshold = 3000;
 
-        private static NetState[] _polledStates = new NetState[2048];
+        private static GCHandle[] _polledStates = new GCHandle[2048];
         private static readonly IPollGroup _pollGroup = PollGroup.Create();
         private static readonly Queue<NetState> FlushPending = new(2048);
         private static readonly Queue<NetState> FlushedPartials = new(2048);
@@ -72,6 +73,7 @@ namespace Server.Network
         internal ParserState _parserState = ParserState.AwaitingNextPacket;
         internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
         internal GCHandle _handle;
+        private bool _packetLogging;
 
         internal enum ParserState
         {
@@ -96,12 +98,19 @@ namespace Server.Network
             Error
         }
 
+        private static string _packetLoggingPath;
+
+        public static void Configure()
+        {
+            _packetLoggingPath = ServerConfiguration.GetSetting("netstate.packetLoggingPath", Path.Combine(Core.BaseDirectory, "Packets"));
+        }
+
         public static void Initialize()
         {
             Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
         }
 
-        public NetState(ISocket connection)
+        public NetState(Socket connection)
         {
             Connection = connection;
             Seeded = false;
@@ -130,7 +139,7 @@ namespace Server.Network
 
             try
             {
-                _pollGroup.Add(this);
+                _pollGroup.Add(connection, _handle);
             }
             catch (Exception ex)
             {
@@ -139,6 +148,21 @@ namespace Server.Network
             }
 
             CreatedCallback?.Invoke(this);
+        }
+
+        // Only use this for debugging. This will make your server very slow!
+        public bool PacketLogging
+        {
+            get => _packetLogging;
+            set
+            {
+                _packetLogging = value;
+
+                if (_packetLogging)
+                {
+                    StartPacketLog();
+                }
+            }
         }
 
         public DateTime ConnectedOn { get; }
@@ -159,6 +183,8 @@ namespace Server.Network
             set => _packetEncoder = value;
         }
 
+        public int CurrentPacket { get; internal set; }
+
         public bool SentFirstPacket { get; set; }
 
         public bool BlockAllPackets { get; set; }
@@ -171,7 +197,9 @@ namespace Server.Network
 
         public Pipe<byte> SendPipe { get; }
 
-        public ISocket Connection { get; }
+        public bool Running => _running;
+
+        public Socket Connection { get; private set; }
 
         public bool CompressionEnabled { get; set; }
 
@@ -483,6 +511,11 @@ namespace Server.Network
                     buffer.CopyFrom(span);
                 }
 
+                if (PacketLogging)
+                {
+                    LogPacket(span, ReadOnlySpan<byte>.Empty, span.Length, false);
+                }
+
                 SendPipe.Writer.Advance((uint)length);
 
                 if (!_flushQueued)
@@ -500,6 +533,48 @@ namespace Server.Network
 #endif
                 TraceException(ex);
                 Disconnect("Exception while sending.");
+            }
+        }
+
+        private void StartPacketLog()
+        {
+            try
+            {
+                var logDir = Path.Combine(_packetLoggingPath, _toString);
+                PathUtility.EnsureDirectory(logDir);
+                var logPath = Path.Combine(logDir, "packets.log");
+                using var op = new StreamWriter(logPath, true);
+
+                op.WriteLine(">>>>>>>>>> Logging started {0:yyyy/MM/dd HH:mm::ss} <<<<<<<<<<", Core.Now);
+                op.WriteLine();
+                op.WriteLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        private void LogPacket(ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, int totalLength, bool incoming)
+        {
+            try
+            {
+                var logDir = Path.Combine(_packetLoggingPath, _toString);
+                PathUtility.EnsureDirectory(logDir);
+                var logPath = Path.Combine(logDir, "packets.log");
+
+                const string incomingStr = "Client -> Server";
+                const string outgoingStr = "Server -> Client";
+
+                using var sw = new StreamWriter(logPath, true);
+                sw.WriteLine($"{Core.Now:HH:mm:ss.ffff}: {(incoming ? incomingStr : outgoingStr)} 0x{first[0]:X2} (Length: {totalLength})");
+                sw.FormatBuffer(first, second, totalLength);
+                sw.WriteLine();
+                sw.WriteLine();
+            }
+            catch
+            {
+                // ignored
             }
         }
 
@@ -757,6 +832,11 @@ namespace Server.Network
 
             UpdatePacketCount(packetId);
 
+            if (PacketLogging)
+            {
+                LogPacket(packetReader.First, packetReader.Second, packetLength, true);
+            }
+
             handler.OnReceive(this, packetReader, ref packetLength);
 
             prof?.Finish(packetLength);
@@ -885,8 +965,8 @@ namespace Server.Network
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _polledStates[i].HandleReceive();
-                    _polledStates[i] = null;
+                    (_polledStates[i].Target as NetState)?.HandleReceive();
+                    _polledStates[i] = default;
                 }
             }
 
@@ -1032,7 +1112,7 @@ namespace Server.Network
             TcpServer.Instances.Remove(this);
             try
             {
-                _pollGroup.Remove(this);
+                _pollGroup.Remove(Connection);
             }
             catch (Exception ex)
             {

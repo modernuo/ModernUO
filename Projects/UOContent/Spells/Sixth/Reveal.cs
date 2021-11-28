@@ -5,7 +5,7 @@ namespace Server.Spells.Sixth
 {
     public class RevealSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Reveal",
             "Wis Quas",
             206,
@@ -14,7 +14,7 @@ namespace Server.Spells.Sixth
             Reagent.SulfurousAsh
         );
 
-        public RevealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public RevealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -22,11 +22,7 @@ namespace Server.Spells.Sixth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
                 SpellHelper.GetSurfaceTop(ref p);
@@ -64,7 +60,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         // Reveal uses magery and detect hidden vs. hide and stealth

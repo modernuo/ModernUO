@@ -242,7 +242,7 @@ namespace Server
             }
 
 #if DEBUG_TIMERS
-            tw.WriteLine("\nStack Traces:");
+            tw.WriteLine($"{Environment.NewLine}Stack Traces:");
             foreach (var kvp in DelayCallTimer._stackTraces)
             {
                 tw.WriteLine(kvp.Value);
