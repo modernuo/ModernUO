@@ -38,11 +38,11 @@ namespace Server
 
         public static List<IPEndPoint> Listeners => m_Settings.Listeners;
 
-        public static string GetSetting(string key, string defaultValue)
-        {
-            m_Settings.Settings.TryGetValue(key, out var value);
-            return value ?? defaultValue;
-        }
+        public static ClientVersion GetSetting(string key, ClientVersion defaultValue) =>
+            m_Settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
+
+        public static string GetSetting(string key, string defaultValue) =>
+            m_Settings.Settings.TryGetValue(key, out var value) ? value : defaultValue;
 
         public static int GetSetting(string key, int defaultValue)
         {
