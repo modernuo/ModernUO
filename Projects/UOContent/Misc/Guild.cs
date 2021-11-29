@@ -661,15 +661,7 @@ namespace Server.Guilds
 
         public AllianceInfo Alliance
         {
-            get
-            {
-                if (m_AllianceInfo != null)
-                {
-                    return m_AllianceInfo;
-                }
-
-                return m_AllianceLeader?.m_AllianceInfo;
-            }
+            get => m_AllianceInfo ?? m_AllianceLeader?.m_AllianceInfo;
             set
             {
                 var current = Alliance;
