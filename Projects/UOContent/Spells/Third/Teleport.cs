@@ -5,7 +5,6 @@ using Server.Regions;
 using Server.Spells.Fifth;
 using Server.Spells.Fourth;
 using Server.Spells.Sixth;
-using Server.Targeting;
 
 namespace Server.Spells.Third
 {

@@ -2,7 +2,6 @@ using System;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
