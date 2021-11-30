@@ -661,15 +661,7 @@ namespace Server.Guilds
 
         public AllianceInfo Alliance
         {
-            get
-            {
-                if (m_AllianceInfo != null)
-                {
-                    return m_AllianceInfo;
-                }
-
-                return m_AllianceLeader?.m_AllianceInfo;
-            }
+            get => m_AllianceInfo ?? m_AllianceLeader?.m_AllianceInfo;
             set
             {
                 var current = Alliance;
@@ -1616,10 +1608,10 @@ namespace Server.Guilds
 
             if (m_Leader != winner && winner != null)
             {
-                GuildMessage(1018015, true, winner.Name); // Guild Message: Guildmaster changed to:
+                Leader = winner;
+                GuildMessage(1018015, true, winner.RawName); // Guild Message: Guildmaster changed to:
             }
 
-            Leader = winner;
             LastFealty = Core.Now;
         }
 
