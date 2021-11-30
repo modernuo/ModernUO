@@ -83,6 +83,7 @@ namespace Server.Targeting
         {
             if (!AllowGround)
             {
+                OnTargetCancel(from, TargetCancelType.Canceled);
                 return false;
             }
 
