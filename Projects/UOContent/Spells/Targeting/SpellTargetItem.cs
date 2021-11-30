@@ -16,6 +16,7 @@ namespace Server.Spells
 
         public ISpell Spell => _spell;
 
+        protected override bool CanTarget(Mobile from, StaticTarget staticTarget, ref Point3D loc, ref Map map) => false;
         protected override bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map) => false;
 
         protected override void OnTarget(Mobile from, object o)
