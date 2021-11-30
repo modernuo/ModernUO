@@ -83,6 +83,7 @@ namespace Server.Targeting
         {
             if (!AllowGround)
             {
+                // We should actually never get here. If we do, it's probably a misbehaving client/macro.
                 OnTargetCancel(from, TargetCancelType.Canceled);
                 return false;
             }
