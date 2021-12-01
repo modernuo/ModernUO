@@ -1,6 +1,5 @@
 using Server.Items;
 using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
@@ -61,7 +60,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
         }
 
         public override bool CheckCast() => base.CheckCast() && SpellHelper.CheckTravel(Caster, TravelCheckType.Mark);

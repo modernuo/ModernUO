@@ -1,6 +1,5 @@
 using Server.Items;
 using Server.Misc;
-using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
@@ -54,7 +53,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
         }
     }
 }

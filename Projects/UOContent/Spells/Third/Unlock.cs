@@ -1,7 +1,6 @@
 using Server.Items;
 using Server.Multis;
 using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Third
 {
@@ -96,7 +95,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
     }
 }

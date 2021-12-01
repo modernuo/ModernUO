@@ -7,14 +7,14 @@ namespace Server.Spells
 {
     public class RecallSpellTarget : Target
     {
-        private readonly IRecallSpell m_Spell;
+        private readonly IRecallSpell _spell;
         private readonly bool m_ToBoat;
 
         public RecallSpellTarget(IRecallSpell spell, bool toBoat = true) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
         {
-            m_Spell = spell;
+            _spell = spell;
             m_ToBoat = toBoat;
-            m_Spell.Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501029); // Select Marked item.
+            _spell.Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501029); // Select Marked item.
         }
 
         protected override void OnTarget(Mobile from, object o)
@@ -23,7 +23,7 @@ namespace Server.Spells
             {
                 if (rune.Marked)
                 {
-                    m_Spell.Effect(rune.Target, rune.TargetMap, true);
+                    _spell.Effect(rune.Target, rune.TargetMap, true);
                 }
                 else
                 {
@@ -36,7 +36,7 @@ namespace Server.Spells
 
                 if (e != null)
                 {
-                    m_Spell.Effect(e.Location, e.Map, true);
+                    _spell.Effect(e.Location, e.Map, true);
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace Server.Spells
             {
                 if (!boat.Deleted && boat.CheckKey(key.KeyValue))
                 {
-                    m_Spell.Effect(boat.GetMarkedLocation(), boat.Map, false);
+                    _spell.Effect(boat.GetMarkedLocation(), boat.Map, false);
                 }
                 else
                 {
@@ -64,7 +64,7 @@ namespace Server.Spells
             }
             else if (o is HouseRaffleDeed deed && deed.ValidLocation())
             {
-                m_Spell.Effect(deed.PlotLocation, deed.PlotFacet, true);
+                _spell.Effect(deed.PlotLocation, deed.PlotFacet, true);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace Server.Spells
 
         protected override void OnTargetFinish(Mobile from)
         {
-            m_Spell?.FinishSequence();
+            _spell?.FinishSequence();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Server.Items
 
         public override SkillName AccuracySkill => SkillName.Archery;
 
-        public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
+        public override TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus = 1.0)
         {
             // WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 

@@ -1050,6 +1050,21 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long RandomMinMax(long min, long max)
+        {
+            if (min > max)
+            {
+                (min, max) = (max, min);
+            }
+            else if (min == max)
+            {
+                return min;
+            }
+
+            return min + RandomSources.Source.Next(max - min + 1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Random(int from, int count) => RandomSources.Source.Next(from, count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -197,7 +197,9 @@ namespace Server.Network
 
         public Pipe<byte> SendPipe { get; }
 
-        public Socket Connection { get; }
+        public bool Running => _running;
+
+        public Socket Connection { get; private set; }
 
         public bool CompressionEnabled { get; set; }
 

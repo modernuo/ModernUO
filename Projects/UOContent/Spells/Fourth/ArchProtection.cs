@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Server.Collections;
 using Server.Engines.PartySystem;
 using Server.Spells.Second;
-using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
@@ -103,7 +102,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         private static void AddEntry(Mobile m, int v)

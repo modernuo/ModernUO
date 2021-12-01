@@ -397,16 +397,16 @@ namespace Server.Spells
                 return;
             }
 
+            if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
+            {
+                return;
+            }
+
+            State = SpellState.None;
+            Caster.Spell = null;
+
             if (State == SpellState.Casting)
             {
-                if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
-                {
-                    return;
-                }
-
-                State = SpellState.None;
-                Caster.Spell = null;
-
                 OnDisturb(type, true);
 
                 m_CastTimer?.Stop();
@@ -421,14 +421,6 @@ namespace Server.Spells
             }
             else if (State == SpellState.Sequencing)
             {
-                if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
-                {
-                    return;
-                }
-
-                State = SpellState.None;
-                Caster.Spell = null;
-
                 OnDisturb(type, false);
 
                 Target.Cancel(Caster);
@@ -810,9 +802,7 @@ namespace Server.Spells
             return false;
         }
 
-        public bool CheckBSequence(Mobile target) => CheckBSequence(target, false);
-
-        public bool CheckBSequence(Mobile target, bool allowDead)
+        public bool CheckBSequence(Mobile target, bool allowDead = false)
         {
             if (!target.Alive && !allowDead)
             {

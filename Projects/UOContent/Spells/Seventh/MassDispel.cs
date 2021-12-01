@@ -1,6 +1,6 @@
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
@@ -37,6 +37,8 @@ namespace Server.Spells.Seventh
                 {
                     var eable = map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8);
 
+                    using var queue = PooledRefQueue<Mobile>.Create();
+
                     foreach (var bc in eable)
                     {
                         if (!(bc.IsDispellable && Caster.CanBeHarmful(bc, false)))
@@ -58,17 +60,21 @@ namespace Server.Spells.Seventh
                             );
                             Effects.PlaySound(bc, 0x201);
 
-                            bc.Delete();
+                            queue.Enqueue(bc);
                         }
                         else
                         {
                             Caster.DoHarmful(bc);
-
                             bc.FixedEffect(0x3779, 10, 20);
                         }
                     }
 
                     eable.Free();
+
+                    while (queue.Count > 0)
+                    {
+                        queue.Dequeue().Delete();
+                    }
                 }
             }
 
@@ -77,7 +83,7 @@ namespace Server.Spells.Seventh
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
     }
 }

@@ -1,5 +1,3 @@
-using Server.Targeting;
-
 namespace Server.Spells.Sixth
 {
     public class MassCurseSpell : MagerySpell, ISpellTargetingPoint3D
@@ -67,7 +65,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
     }
 }

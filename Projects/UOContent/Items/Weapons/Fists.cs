@@ -157,7 +157,7 @@ namespace Server.Items
             }
         }
 
-        public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
+        public override TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus = 1.0)
         {
             if (!Core.AOS)
             {
