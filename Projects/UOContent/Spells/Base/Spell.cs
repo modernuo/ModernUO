@@ -790,9 +790,7 @@ namespace Server.Spells
             return false;
         }
 
-        public bool CheckBSequence(Mobile target) => CheckBSequence(target, false);
-
-        public bool CheckBSequence(Mobile target, bool allowDead)
+        public bool CheckBSequence(Mobile target, bool allowDead = false)
         {
             if (!target.Alive && !allowDead)
             {

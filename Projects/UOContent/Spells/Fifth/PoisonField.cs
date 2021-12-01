@@ -3,7 +3,6 @@ using Server.Collections;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {

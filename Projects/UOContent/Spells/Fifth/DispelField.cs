@@ -1,6 +1,5 @@
 using Server.Items;
 using Server.Misc;
-using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {

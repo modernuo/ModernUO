@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Server.Collections;
 using Server.Engines.PartySystem;
 using Server.Spells.Second;
-using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
