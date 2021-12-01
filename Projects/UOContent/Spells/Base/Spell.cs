@@ -24,8 +24,7 @@ namespace Server.Spells
         // the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
         // of course, two MA's won't.
 
-        private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable =
-            new();
+        private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable = new();
 
         private AnimTimer m_AnimTimer;
 
@@ -60,13 +59,17 @@ namespace Server.Spells
 
         public virtual bool DelayedDamage => false;
 
-        public virtual bool DelayedDamageStacking => true;
+        public static readonly Type[] AOSNoDelayedDamageStackingSelf = Core.AOS ? Array.Empty<Type>() : null;
+
+        // Null means stacking is allowed while empty indicates no stacking with self
+        // More than zero means no stacking with self and other spells
+        public virtual Type[] DelayedDamageSpellFamilyStacking => null;
 
         public virtual bool BlockedByHorrificBeast => true;
         public virtual bool BlockedByAnimalForm => true;
         public virtual bool BlocksMovement => true;
 
-        public virtual bool CheckNextSpellTime => !(Scroll is BaseWand);
+        public virtual bool CheckNextSpellTime => Scroll is not BaseWand;
 
         public virtual int CastRecoveryBase => 6;
         public virtual int CastRecoveryFastScalar => 1;
@@ -149,21 +152,38 @@ namespace Server.Spells
 
         public void StartDelayedDamageContext(Mobile m, Timer t)
         {
-            if (DelayedDamageStacking)
+            var damageStacking = DelayedDamageSpellFamilyStacking;
+            if (damageStacking == null)
             {
                 return; // Sanity
             }
 
-            if (!m_ContextTable.TryGetValue(GetType(), out var contexts))
+            var type = GetType();
+
+            if (!m_ContextTable.TryGetValue(type, out var context))
             {
-                m_ContextTable[GetType()] = contexts = new DelayedDamageContextWrapper();
+                m_ContextTable[type] = context = new DelayedDamageContextWrapper();
+
+                for (int i = 0; i < damageStacking.Length; i++)
+                {
+                    m_ContextTable.Add(damageStacking[i], context);
+                }
             }
 
-            contexts.Add(m, t);
+            context.Add(m, t);
         }
+
+        public bool HasDelayedDamageContext(Mobile m) =>
+            DelayedDamageSpellFamilyStacking != null &&
+            m_ContextTable.TryGetValue(GetType(), out var context) && context.Contains(m);
 
         public void RemoveDelayedDamageContext(Mobile m)
         {
+            if (m == null || DelayedDamageSpellFamilyStacking == null)
+            {
+                return; // Sanity
+            }
+
             if (m_ContextTable.TryGetValue(GetType(), out var contexts))
             {
                 contexts.Remove(m);
@@ -469,7 +489,7 @@ namespace Server.Spells
             {
                 Caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
             }
-            else if (!(Scroll is BaseWand) && (Caster.Paralyzed || Caster.Frozen))
+            else if (Scroll is not BaseWand && (Caster.Paralyzed || Caster.Frozen))
             {
                 Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
             }
@@ -492,7 +512,7 @@ namespace Server.Spells
                     State = SpellState.Casting;
                     Caster.Spell = this;
 
-                    if (!(Scroll is BaseWand) && RevealOnCast)
+                    if (Scroll is not BaseWand && RevealOnCast)
                     {
                         Caster.RevealingAction();
                     }
@@ -647,11 +667,6 @@ namespace Server.Spells
             return TimeSpan.FromSeconds((double)delay / CastRecoveryPerSecond);
         }
 
-        // public virtual int CastDelayBase{ get{ return 3; } }
-        // public virtual int CastDelayFastScalar{ get{ return 1; } }
-        // public virtual int CastDelayPerSecond{ get{ return 4; } }
-        // public virtual int CastDelayMinimum{ get{ return 1; } }
-
         public virtual TimeSpan GetCastDelay()
         {
             if (Scroll is BaseWand)
@@ -665,7 +680,7 @@ namespace Server.Spells
             // Paladins with magery of 70.0 or above are subject to a faster casting cap of 2
             var fcMax = 4;
 
-            if (CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy ||
+            if (CastSkill is SkillName.Magery or SkillName.Necromancy ||
                 CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0)
             {
                 fcMax = 2;
@@ -749,12 +764,9 @@ namespace Server.Spells
 
                     Scroll.Movable = m;
                 }
-                else
+                else if (ClearHandsOnCast)
                 {
-                    if (ClearHandsOnCast)
-                    {
-                        Caster.ClearHands();
-                    }
+                    Caster.ClearHands();
                 }
 
                 var karma = ComputeKarmaAward();
@@ -838,10 +850,14 @@ namespace Server.Spells
                 m_Contexts.Add(m, t);
             }
 
+            public bool Contains(Mobile m) => m_Contexts.ContainsKey(m);
+
             public void Remove(Mobile m)
             {
-                m_Contexts.Remove(m);
-                // TODO: Should we stop the timer?
+                if (m_Contexts.Remove(m, out var t))
+                {
+                    t.Stop();
+                }
             }
         }
 

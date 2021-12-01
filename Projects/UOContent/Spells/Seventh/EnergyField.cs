@@ -45,10 +45,8 @@ namespace Server.Spells.Seventh
                 }
                 else
                 {
-                    duration = TimeSpan.FromSeconds(
-                        Caster.Skills.Magery.Value * 0.28 +
-                        2.0
-                    ); // (28% of magery) + 2.0 seconds
+                    // (28% of magery) + 2.0 seconds
+                    duration = TimeSpan.FromSeconds(Caster.Skills.Magery.Value * 0.28 + 2.0);
                 }
 
                 var itemID = eastToWest ? 0x3946 : 0x3956;

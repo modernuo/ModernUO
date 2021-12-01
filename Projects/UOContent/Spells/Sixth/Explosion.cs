@@ -20,22 +20,26 @@ namespace Server.Spells.Sixth
 
         public override SpellCircle Circle => SpellCircle.Sixth;
 
-        public override bool DelayedDamageStacking => !Core.AOS;
+        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
         public override bool DelayedDamage => false;
 
         public void Target(Mobile m)
         {
+            if (Core.SA && HasDelayedDamageContext(m))
+            {
+                DoHurtFizzle();
+                return;
+            }
+
             if (Caster.CanBeHarmful(m) && CheckSequence())
             {
-                Mobile attacker = Caster, defender = m;
+                Mobile defender = m;
 
                 SpellHelper.Turn(Caster, m);
-
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
-                var t = new InternalTimer(this, attacker, defender, m);
-                t.Start();
+                var t = new InternalTimer(this, Caster, defender, m).Start();
             }
 
             FinishSequence();
@@ -61,7 +65,7 @@ namespace Server.Spells.Sixth
                 m_Defender = defender;
                 m_Target = target;
 
-                m_Spell?.StartDelayedDamageContext(attacker, this);
+                m_Spell?.StartDelayedDamageContext(m_Attacker, this);
             }
 
             protected override void OnTick()
