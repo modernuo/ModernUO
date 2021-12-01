@@ -79,6 +79,72 @@ namespace Server.Targeting
             OnTargetFinish(from);
         }
 
+        protected virtual bool CanTarget(Mobile from, LandTarget landTarget, ref Point3D loc, ref Map map)
+        {
+            if (!AllowGround)
+            {
+                // We should actually never get here. If we do, it's probably a misbehaving client/macro.
+                OnTargetCancel(from, TargetCancelType.Canceled);
+                return false;
+            }
+
+            loc = landTarget.Location;
+            map = from.Map;
+            return true;
+        }
+
+        protected virtual bool CanTarget(Mobile from, StaticTarget staticTarget, ref Point3D loc, ref Map map)
+        {
+            loc = staticTarget.Location;
+            map = from.Map;
+            return true;
+        }
+
+        protected virtual bool CanTarget(Mobile from, Item item, ref Point3D loc, ref Map map)
+        {
+            if (item.Deleted)
+            {
+                OnTargetDeleted(from, item);
+                return false;
+            }
+
+            if (!item.CanTarget)
+            {
+                OnTargetUntargetable(from, item);
+                return false;
+            }
+
+            if (!AllowNonlocal && item.RootParent is Mobile && item.RootParent != from &&
+                from.AccessLevel == AccessLevel.Player)
+            {
+                OnNonlocalTarget(from, item);
+                return false;
+            }
+
+            loc = item.GetWorldLocation();
+            map = item.Map;
+            return true;
+        }
+
+        protected virtual bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map)
+        {
+            if (mobile.Deleted)
+            {
+                OnTargetDeleted(from, mobile);
+                return false;
+            }
+
+            if (!mobile.CanTarget)
+            {
+                OnTargetUntargetable(from, mobile);
+                return false;
+            }
+
+            loc = mobile.Location;
+            map = mobile.Map;
+            return true;
+        }
+
         public void Invoke(Mobile from, object targeted)
         {
             CancelTimeout();
@@ -91,76 +157,32 @@ namespace Server.Targeting
                 return;
             }
 
-            Point3D loc;
-            Map map;
+            Point3D loc = default;
+            Map map = null;
+            Item item = null;
+            Mobile mobile = null;
+            bool isValidTargetType = true;
 
-            var item = targeted as Item;
-            var mobile = targeted as Mobile;
+            bool valid = targeted switch
+            {
+                LandTarget landTarget     => CanTarget(from, landTarget, ref loc, ref map),
+                StaticTarget staticTarget => CanTarget(from, staticTarget, ref loc, ref map),
+                Item i                    => CanTarget(from, item = i, ref loc, ref map),
+                Mobile m                  => CanTarget(from, mobile = m, ref loc, ref map),
+                _                         => isValidTargetType = false
+            };
 
-            if (targeted is LandTarget target)
+            if (!valid)
             {
-                loc = target.Location;
-                map = from.Map;
-            }
-            else if (targeted is StaticTarget staticTarget)
-            {
-                loc = staticTarget.Location;
-                map = from.Map;
-            }
-            else if (mobile != null)
-            {
-                if (mobile.Deleted)
+                if (!isValidTargetType)
                 {
-                    OnTargetDeleted(from, mobile);
-                    OnTargetFinish(from);
-                    return;
+                    OnTargetCancel(from, TargetCancelType.Canceled);
                 }
 
-                if (!mobile.CanTarget)
-                {
-                    OnTargetUntargetable(from, mobile);
-                    OnTargetFinish(from);
-                    return;
-                }
-
-                loc = mobile.Location;
-                map = mobile.Map;
-            }
-            else if (item != null)
-            {
-                if (item.Deleted)
-                {
-                    OnTargetDeleted(from, item);
-                    OnTargetFinish(from);
-                    return;
-                }
-
-                if (!item.CanTarget)
-                {
-                    OnTargetUntargetable(from, item);
-                    OnTargetFinish(from);
-                    return;
-                }
-
-                if (!AllowNonlocal && item.RootParent is Mobile && item.RootParent != from &&
-                    from.AccessLevel == AccessLevel.Player)
-                {
-                    OnNonlocalTarget(from, item);
-                    OnTargetFinish(from);
-                    return;
-                }
-
-                loc = item.GetWorldLocation();
-                map = item.Map;
-            }
-            else
-            {
-                OnTargetCancel(from, TargetCancelType.Canceled);
                 OnTargetFinish(from);
-                return;
             }
 
-            if (map == null || map != from.Map || Range != -1 && !from.InRange(loc, Range))
+            if (map == null || map != from.Map || Range < 0 && !from.InRange(loc, Range))
             {
                 OnTargetOutOfRange(from, targeted);
             }
