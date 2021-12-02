@@ -182,7 +182,7 @@ namespace Server.Targeting
                 OnTargetFinish(from);
             }
 
-            if (map == null || map != from.Map || Range < 0 && !from.InRange(loc, Range))
+            if (map == null || map != from.Map || Range >= 0 && !from.InRange(loc, Range))
             {
                 OnTargetOutOfRange(from, targeted);
             }
