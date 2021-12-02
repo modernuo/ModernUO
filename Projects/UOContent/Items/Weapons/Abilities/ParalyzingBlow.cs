@@ -38,7 +38,7 @@ namespace Server.Items
                 return true;
             }
 
-            from.SendLocalizedMessage( 1061811 ); // You lack the required anatomy skill to perform that attack!
+            from.SendLocalizedMessage(1061811); // You lack the required anatomy skill to perform that attack!
 
             return false;
         }
