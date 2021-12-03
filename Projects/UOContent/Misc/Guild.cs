@@ -661,15 +661,7 @@ namespace Server.Guilds
 
         public AllianceInfo Alliance
         {
-            get
-            {
-                if (m_AllianceInfo != null)
-                {
-                    return m_AllianceInfo;
-                }
-
-                return m_AllianceLeader?.m_AllianceInfo;
-            }
+            get => m_AllianceInfo ?? m_AllianceLeader?.m_AllianceInfo;
             set
             {
                 var current = Alliance;
@@ -1359,10 +1351,10 @@ namespace Server.Guilds
 
             alliance = Alliance; // CheckLeader could possibly change the value of this.Alliance
 
-            if (alliance?.IsMember(this) == false && !alliance.IsPendingMember(this)
-            ) // This block is there to fix a bug in the code in an older version.
+            // This block is there to fix a bug in the code in an older version.
+            if (alliance?.IsMember(this) == false && !alliance.IsPendingMember(this))
             {
-                Alliance = null; // Will call Alliance.RemoveGuild which will set it null & perform all the pertient checks as far as alliacne disbanding
+                Alliance = null; // Will call Alliance.RemoveGuild which will set it null & perform all the pertinent checks as far as alliance disbanding
             }
         }
 
@@ -1616,10 +1608,10 @@ namespace Server.Guilds
 
             if (m_Leader != winner && winner != null)
             {
-                GuildMessage(1018015, true, winner.Name); // Guild Message: Guildmaster changed to:
+                Leader = winner;
+                GuildMessage(1018015, true, winner.RawName); // Guild Message: Guildmaster changed to:
             }
 
-            Leader = winner;
             LastFealty = Core.Now;
         }
 

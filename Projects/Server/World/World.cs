@@ -525,7 +525,7 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IEntity FindEntity(Serial serial, bool returnDeleted = false) => FindEntity<IEntity>(serial);
+        public static IEntity FindEntity(Serial serial, bool returnDeleted = false) => FindEntity<IEntity>(serial, returnDeleted);
 
         public static T FindEntity<T>(Serial serial, bool returnDeleted = false) where T : class, IEntity
         {
@@ -669,15 +669,17 @@ namespace Server
             if (typeof(BaseGuild).IsAssignableFrom(typeT))
             {
                 entity = FindGuild(serial) as T;
+                // If we check for `entity.Deleted` here during deserialization then all guilds are deleted because
+                // Deleted -> Disbanded -> No leader, which is the case before deserialization.
+                // TODO: Use a deleted flag instead, and actively check for dibanded guilds properly.
             }
             else
             {
                 entity = FindEntity<IEntity>(serial) as T;
-            }
-
-            if (entity?.Deleted == false)
-            {
-                return entity;
+                if (entity?.Deleted == false)
+                {
+                    return entity;
+                }
             }
 
             return entity?.Created <= reader.LastSerialized ? entity : null;
