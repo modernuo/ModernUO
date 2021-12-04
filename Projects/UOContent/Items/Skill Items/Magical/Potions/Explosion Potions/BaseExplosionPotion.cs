@@ -30,7 +30,7 @@ namespace Server.Items
 
         public override bool RequireFreeHand => false;
 
-        public HashSet<Mobile> _users;
+        private HashSet<Mobile> _users;
 
         public override void Serialize(IGenericWriter writer)
         {
