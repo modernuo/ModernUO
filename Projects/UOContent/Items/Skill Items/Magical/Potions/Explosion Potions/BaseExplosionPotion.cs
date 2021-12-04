@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -30,7 +30,7 @@ namespace Server.Items
 
         public override bool RequireFreeHand => false;
 
-        public List<Mobile> Users { get; private set; }
+        private HashSet<Mobile> _users;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -84,12 +84,8 @@ namespace Server.Items
 
             from.RevealingAction();
 
-            Users ??= new List<Mobile>();
-
-            if (!Users.Contains(from))
-            {
-                Users.Add(from);
-            }
+            _users ??= new HashSet<Mobile>();
+            _users.Add(from);
 
             from.Target = new ThrowTarget(this);
 
@@ -195,15 +191,15 @@ namespace Server.Items
 
             Consume();
 
-            for (var i = 0; i < Users?.Count; ++i)
+            foreach (var user in _users)
             {
-                var m = Users[i];
-
-                if (m.Target is ThrowTarget targ && targ.Potion == this)
+                if (user.Target is ThrowTarget targ && targ.Potion == this)
                 {
-                    Target.Cancel(m);
+                    Target.Cancel(user);
                 }
             }
+
+            _users.Clear();
 
             if (map == null)
             {
@@ -211,49 +207,53 @@ namespace Server.Items
             }
 
             Effects.PlaySound(loc, map, 0x307);
-
             Effects.SendLocationEffect(loc, map, 0x36B0, 9);
-            var alchemyBonus = 0;
 
+            var alchemyBonus = 0;
             if (direct)
             {
                 alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
             }
 
             var eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
+            using var queue = PooledRefQueue<IEntity>.Create();
+
             var toDamage = 0;
+            foreach (var entity in eable)
+            {
+                if (entity == this)
+                {
+                    continue;
+                }
 
-            var toExplode = eable.Where(
-                    o =>
+                if (entity is Mobile mobile)
+                {
+                    if (from == null || SpellHelper.ValidIndirectTarget(from, mobile) && from.CanBeHarmful(mobile, false))
                     {
-                        if (!(o is Mobile mobile) || from != null &&
-                            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
-                        {
-                            return o is BaseExplosionPotion && o != this;
-                        }
-
                         ++toDamage;
-                        return true;
+                        queue.Enqueue(entity);
                     }
-                )
-                .ToList();
+                }
+                else if (entity is BaseExplosionPotion)
+                {
+                    queue.Enqueue(entity);
+                }
+            }
 
             eable.Free();
 
             var min = Scale(from, MinDamage);
             var max = Scale(from, MaxDamage);
 
-            for (var i = 0; i < toExplode.Count; ++i)
+            while (queue.Count > 0)
             {
-                var o = toExplode[i];
+                var entity = queue.Dequeue();
 
-                if (o is Mobile m)
+                if (entity is Mobile m)
                 {
                     from?.DoHarmful(m);
 
-                    var damage = Utility.RandomMinMax(min, max);
-
-                    damage += alchemyBonus;
+                    var damage = Utility.RandomMinMax(min, max) + alchemyBonus;
 
                     if (!Core.AOS && damage > 40)
                     {
@@ -266,7 +266,7 @@ namespace Server.Items
 
                     AOS.Damage(m, from, damage, 0, 100, 0, 0, 0);
                 }
-                else if (o is BaseExplosionPotion pot)
+                else if (entity is BaseExplosionPotion pot)
                 {
                     pot.Explode(from, false, pot.GetWorldLocation(), pot.Map);
                 }
