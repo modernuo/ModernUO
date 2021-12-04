@@ -15,11 +15,6 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Install .NET 5'
-    inputs:
-      packageType: sdk
-      version: 5.0.403
-  - task: UseDotNet@2
     displayName: 'Install .NET 6'
     inputs:
       packageType: sdk
@@ -27,7 +22,7 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release win
     displayName: 'Build'
-  - script: dotnet test --no-restore --framework net6.0
+  - script: dotnet test --no-restore
     displayName: 'Test'
 
 - job: BuildLinux
@@ -46,7 +41,7 @@ jobs:
       #   containerImage: amd64/buildpack-deps:bullseye
       #   os: debian.11-x64
       'Ubuntu 20':
-        containerImage: mcr.microsoft.com/dotnet/sdk:5.0-focal
+        containerImage: mcr.microsoft.com/dotnet/sdk:6.0-focal
         os: ubuntu.20.04
       'Fedora 32':
         containerImage: fedora:32
@@ -64,11 +59,6 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Install .NET 5'
-    inputs:
-      packageType: sdk
-      version: 5.0.403
-  - task: UseDotNet@2
     displayName: 'Install .NET 6'
     inputs:
       packageType: sdk
@@ -76,5 +66,5 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release $(os)
     displayName: 'Build'
-  - script: dotnet test --no-restore --framework net6.0
+  - script: dotnet test --no-restore
     displayName: 'Test'
