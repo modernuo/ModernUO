@@ -462,7 +462,7 @@ namespace Server.Poker
 				/*if ( !silent )
 				{
 					//Check if kickers needed
-					PokerMessage( entry.Player.Mobile, String.Format( "I have {0}.", HandRanker.RankString( entry ) ) );
+					PokerMessage( entry.Player.Mobile, string.Format( "I have {0}.", HandRanker.RankString( entry ) ) );
 				}*/
 			}
 
@@ -512,7 +512,7 @@ namespace Server.Poker
 					/*else
 					{
 						if ( !HandRanker.UsesKicker( entry.Rank ) )
-							PokerMessage( entry.Player, String.Format( "I have {0}.", HandRanker.RankString( entry ) ) );
+							PokerMessage( entry.Player, string.Format( "I have {0}.", HandRanker.RankString( entry ) ) );
 						else //Hand rank uses a kicker
 						{
 							switch ( entry.Rank )

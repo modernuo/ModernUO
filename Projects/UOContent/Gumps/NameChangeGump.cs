@@ -82,7 +82,7 @@ namespace Server.Gumps
                 return false;
 
             foreach (Mobile otherPlayer in World.Mobiles.Values)
-                if (otherPlayer is PlayerMobile && otherPlayer != m && otherPlayer.RawName != null && m.RawName != null && otherPlayer.RawName.ToLower() == m.RawName.ToLower() && m.CreationTime > otherPlayer.CreationTime)
+                if (otherPlayer is PlayerMobile && otherPlayer != m && otherPlayer.RawName != null && m.RawName != null && otherPlayer.RawName.ToLower() == m.RawName.ToLower() && m.Created > otherPlayer.Created)
                     return false;
 
             return true;

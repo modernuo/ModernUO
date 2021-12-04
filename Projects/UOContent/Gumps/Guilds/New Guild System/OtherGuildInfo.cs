@@ -86,7 +86,7 @@ namespace Server.Guilds
             else if (PendingWar)
             {
                 kills = Color($"{war.Kills}/{war.MaxKills}", 0x990000);
-                // time = Color( String.Format( "{0}:{1}", war.WarLength.Hours, ((TimeSpan)(war.WarLength - TimeSpan.FromHours( war.WarLength.Hours ))).Minutes ), 0xFF0000 );
+                // time = Color( string.Format( "{0}:{1}", war.WarLength.Hours, ((TimeSpan)(war.WarLength - TimeSpan.FromHours( war.WarLength.Hours ))).Minutes ), 0xFF0000 );
                 time = Color($"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}", 0x990000);
 
                 otherWar = m_Other.FindPendingWar(guild);

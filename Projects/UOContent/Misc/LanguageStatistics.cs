@@ -8,7 +8,7 @@ namespace Server.Misc
    * This file requires to be saved in a Unicode
    * compatible format.
    *
-   * Warning: if you change String.Format methods,
+   * Warning: if you change string.Format methods,
    * please note that the following character
    * is suggested before any left-to-right text
    * in order to prevent undesired formatting
