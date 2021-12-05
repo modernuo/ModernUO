@@ -251,7 +251,7 @@ namespace Server.Engines.Quests.Samurai
                    * Now she will be able to feed herself and gain enough energy to walk
                    * to her camp. <BR><BR>
                    *
-                   * The cats are her family members� cursed by an evil mage. <BR><BR>
+                   * The cats are her family members' cursed by an evil mage. <BR><BR>
                    *
                    * Once she has enough strength to walk back to the camp, she will be
                    * able to undo the spell. <BR><BR>

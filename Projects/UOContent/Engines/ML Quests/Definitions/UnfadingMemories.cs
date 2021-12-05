@@ -13,12 +13,12 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             Title = 1075355; // Unfading Memories
             Description =
-                1075356; // Aargh! It�s just not right! It doesn�t capture the unique color of her hair at all! If only I had some Prismatic Amber. That would be perfect. They used to mine it in Malas, but alas, those veins ran dry some time ago. I hear it may have been found in the Prism of Light. Oh, if only there were a bold adventurer within earshot who would go to the Prism of Light and retrieve some for me!
+                1075356; // Aargh! It's just not right! It doesn't capture the unique color of her hair at all! If only I had some Prismatic Amber. That would be perfect. They used to mine it in Malas, but alas, those veins ran dry some time ago. I hear it may have been found in the Prism of Light. Oh, if only there were a bold adventurer within earshot who would go to the Prism of Light and retrieve some for me!
             RefusalMessage = 1075358; // Is there no one who can help a humble artist pursue his Muse?
             InProgressMessage =
                 1075359; // You can find Prismatic Amber in the Prism of Light, located just north of the city of Nujel'm.
             CompletionMessage =
-                1075360; // I knew it! See, it�s just the color I needed! Look how it brings out the highlights of her wheaten tresses!
+                1075360; // I knew it! See, it's just the color I needed! Look how it brings out the highlights of her wheaten tresses!
             CompletionNotice = CompletionNoticeShort;
 
             Objectives.Add(new CollectObjective(1, typeof(PrismaticAmber), "Prismatic Amber"));
@@ -46,12 +46,12 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage =
                 1075371; // The wedding is taking place in the palace in Nujel'm. You will likely find her there.
             CompletionMessage =
-                1075372; // I�m sorry, I�m getting ready to be married. I don�t have time to . . . what�s that you say?
+                1075372; // I'm sorry, I'm getting ready to be married. I don't have time to . . . what's that you say?
             CompletionNotice = CompletionNoticeShort;
 
             Objectives.Add(new DeliverObjective(typeof(PortraitOfTheBride), 1, "Portrait of the Bride", typeof(Thalia)));
 
-            Rewards.Add(new DummyReward(1075369)); // The Artist�s gratitude.
+            Rewards.Add(new DummyReward(1075369)); // The Artist's gratitude.
         }
 
         public override Type NextQuest => typeof(UnfadingMemoriesPartThree);
@@ -66,12 +66,12 @@ namespace Server.Engines.MLQuests.Definitions
             OneTimeOnly = true;
             Title = 1075373; // Unfading Memories
             Description =
-                1075374; // Emilio painted this? It is absolutely wonderful! I used to love looking at his paintings, but I don�t remember him creating anything like this before. Would you be so kind as to carry a letter to him? Fate may have it that I am to marry another, yet I am compelled to reveal to him that his love was not entirely unrequited.
+                1075374; // Emilio painted this? It is absolutely wonderful! I used to love looking at his paintings, but I don't remember him creating anything like this before. Would you be so kind as to carry a letter to him? Fate may have it that I am to marry another, yet I am compelled to reveal to him that his love was not entirely unrequited.
             RefusalMessage = 1075376; // Very well, then. If you will excuse me, I need to get ready.
             InProgressMessage =
-                1075377; // Take the letter back to the Artist�s Guild in Britain, if you would do me this kindness.
+                1075377; // Take the letter back to the Artist's Guild in Britain, if you would do me this kindness.
             CompletionMessage =
-                1075378; // She said what? She thinks what of me? I . . . I can�t believe it! All this time, I never knew how she truly felt. Thank you, my friend. I believe now I will be able to paint once again. Here, take this bleach. I was going to use it to destroy all of my works. Perhaps you can find a better use for it now.
+                1075378; // She said what? She thinks what of me? I . . . I can't believe it! All this time, I never knew how she truly felt. Thank you, my friend. I believe now I will be able to paint once again. Here, take this bleach. I was going to use it to destroy all of my works. Perhaps you can find a better use for it now.
             CompletionNotice = CompletionNoticeShort;
 
             Objectives.Add(new DeliverObjective(typeof(BridesLetter), 1, "Bride's Letter", typeof(Emilio)));

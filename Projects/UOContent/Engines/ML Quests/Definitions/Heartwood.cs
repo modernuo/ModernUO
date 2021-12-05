@@ -1319,7 +1319,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1074723; // I understand.  I don't like snakes much either.  They're so creepy.
             InProgressMessage =
                 1074722; // Those really big snakes like swamps, I've heard.  You might try the blighted grove.
-            CompletionMessage = 1074721; // Do you have it?  *gasp* What a tooth!  Here � I must get right to work.
+            CompletionMessage = 1074721; // Do you have it?  *gasp* What a tooth!  Here ' I must get right to work.
 
             Objectives.Add(new CollectObjective(1, typeof(CoilsFang), "coil's fang"));
 
@@ -2118,7 +2118,7 @@ namespace Server.Engines.MLQuests.Definitions
                     1074187, // Want a job?
                     1074210
                 )
-            ); // Hi.� Looking for something to do?
+            ); // Hi.' Looking for something to do?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2180,7 +2180,7 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074213, // Hey buddy.� Looking for work?
+                    1074213, // Hey buddy.' Looking for work?
                     1074187
                 )
             ); // Want a job?
@@ -2249,7 +2249,7 @@ namespace Server.Engines.MLQuests.Definitions
                     1074211, // I could use some help.
                     1074218
                 )
-            ); // Hey!� I want to talk to you, now.
+            ); // Hey!' I want to talk to you, now.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2314,7 +2314,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074223); // Have you done it yet?� Oh, I haven�t told you, have I?
+            MLQuestSystem.Tell(this, pm, 1074223); // Have you done it yet?' Oh, I haven't told you, have I?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2377,7 +2377,7 @@ namespace Server.Engines.MLQuests.Definitions
                     1074219, // Hello there, can I have a moment of your time?
                     1074223
                 )
-            ); // Have you done it yet?� Oh, I haven�t told you, have I?
+            ); // Have you done it yet?' Oh, I haven't told you, have I?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2508,7 +2508,7 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074220, // May I call you friend?� I have a favor to beg of you.
+                    1074220, // May I call you friend?' I have a favor to beg of you.
                     1074222
                 )
             ); // Could I trouble you for some assistance?
@@ -2585,7 +2585,7 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074188, // Weakling! You are not up to the task I have.
-                    1074191, // Just keep walking away!� I thought so. Coward!� I�ll bite your legs off!
+                    1074191, // Just keep walking away!' I thought so. Coward!' I'll bite your legs off!
                     1074195
                 )
             ); // You there, in the stupid hat!   Come here.
@@ -2647,7 +2647,7 @@ namespace Server.Engines.MLQuests.Definitions
                     1074212, // *yawn* You busy?
                     1074210
                 )
-            ); // Hi.� Looking for something to do?
+            ); // Hi.' Looking for something to do?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2707,10 +2707,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074204, // Greetings seeker.� I have an urgent matter for you, if you are willing.
+                    1074204, // Greetings seeker.' I have an urgent matter for you, if you are willing.
                     1074201
                 )
-            ); // Waste not a minute! There�s work to be done.
+            ); // Waste not a minute! There's work to be done.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2927,7 +2927,7 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074207, // Good day to you friend! Allow me to offer you a fabulous opportunity!� Thrills and adventure await!
+                    1074207, // Good day to you friend! Allow me to offer you a fabulous opportunity!' Thrills and adventure await!
                     1074209
                 )
             ); // Hey, could you help me out with something?
@@ -2994,10 +2994,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074210, // Hi.� Looking for something to do?
+                    1074210, // Hi.' Looking for something to do?
                     1074220
                 )
-            ); // May I call you friend?� I have a favor to beg of you.
+            ); // May I call you friend?' I have a favor to beg of you.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3194,10 +3194,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074221, // Greetings!� I have a small task for you good traveler.
+                    1074221, // Greetings!' I have a small task for you good traveler.
                     1074201
                 )
-            ); // Waste not a minute! There�s work to be done.
+            ); // Waste not a minute! There's work to be done.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3257,7 +3257,7 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074200, // Thank goodness you are here, there�s no time to lose.
+                    1074200, // Thank goodness you are here, there's no time to lose.
                     1074206
                 )
             ); // Excuse me please traveler, might I have a little of your time?
@@ -3440,10 +3440,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074210, // Hi.� Looking for something to do?
+                    1074210, // Hi.' Looking for something to do?
                     1074213
                 )
-            ); // Hey buddy.� Looking for work?
+            ); // Hey buddy.' Looking for work?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3502,10 +3502,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074223, // Have you done it yet?� Oh, I haven�t told you, have I?
+                    1074223, // Have you done it yet?' Oh, I haven't told you, have I?
                     1074213
                 )
-            ); // Hey buddy.� Looking for work?
+            ); // Hey buddy.' Looking for work?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3698,7 +3698,7 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074221, // Greetings!� I have a small task for you good traveler.
+                    1074221, // Greetings!' I have a small task for you good traveler.
                     1074212
                 )
             ); // *yawn* You busy?
@@ -4612,10 +4612,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074204, // Greetings seeker.� I have an urgent matter for you, if you are willing.
+                    1074204, // Greetings seeker.' I have an urgent matter for you, if you are willing.
                     1074200
                 )
-            ); // Thank goodness you are here, there�s no time to lose.
+            ); // Thank goodness you are here, there's no time to lose.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -4725,7 +4725,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074197); // Pardon me, but if you could spare some time I�d greatly appreciate it.
+            MLQuestSystem.Tell(this, pm, 1074197); // Pardon me, but if you could spare some time I'd greatly appreciate it.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -4780,7 +4780,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074204); // Greetings seeker.� I have an urgent matter for you, if you are willing.
+            MLQuestSystem.Tell(this, pm, 1074204); // Greetings seeker.' I have an urgent matter for you, if you are willing.
         }
 
         public override void Serialize(IGenericWriter writer)
