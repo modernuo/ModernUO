@@ -804,9 +804,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074187, // Want a job?
-                    1074184
+                    1074184  // Come here, I have work for you.
                 )
-            ); // Come here, I have work for you.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -923,9 +923,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074188, // Weakling! You are not up to the task I have.
-                    1074211
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -1119,9 +1119,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074196, // Excuse me! I'm sorry to interrupt but I urgently need some assistance.
-                    1074197
+                    1074197  // Pardon me, but if you could spare some time I'd greatly appreciate it.
                 )
-            ); // Pardon me, but if you could spare some time I'd greatly appreciate it.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -1182,9 +1182,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074185, // Hey you! Want to help me out?
-                    1074195
+                    1074195  // You there, in the stupid hat!  Come here.
                 )
-            ); // You there, in the stupid hat!   Come here.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)

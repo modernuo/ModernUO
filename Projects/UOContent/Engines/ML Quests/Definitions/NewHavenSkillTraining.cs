@@ -1995,9 +1995,9 @@ namespace Server.Engines.MLQuests.Definitions
                 Utility.RandomList(
                     1078213, // I don't sleep. I wait.
                     1078212, // There is no theory of evolution. Just a list of creatures I allow to live.
-                    1078214
+                    1078214  // I can lead a horse to water and make it drink.
                 )
-            ); // I can lead a horse to water and make it drink.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
