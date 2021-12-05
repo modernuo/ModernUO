@@ -6,9 +6,9 @@ namespace Server.Spells
     public abstract class MagerySpell : Spell
     {
         private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
-        private static readonly double[] _requiredSkill =
-            Core.ML ? new[] { 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
-                new[] { 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+        private static readonly double[] _requiredSkill = Core.ML ?
+            new[] { 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
+            new[] { 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
 
         public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
@@ -30,6 +30,15 @@ namespace Server.Spells
                 circle -= 2;
             }
 
+            // Original RunUO algorithm for required skill
+            // const double chanceOffset = 20.0
+            // const double chanceLength = 100.0 / 7.0
+            // var avg = chanceLength * circle;
+            // min = avg - chanceOffset;
+            // max = avg + chanceOffset;
+
+            // Correct algorithm according to OSI.
+            // TODO: Verify this algorithm on OSI for latest expansion.
             min = _requiredSkill[circle];
             max = min + 40;
         }
