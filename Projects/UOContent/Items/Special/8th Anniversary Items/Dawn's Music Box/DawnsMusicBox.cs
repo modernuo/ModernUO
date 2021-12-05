@@ -123,7 +123,7 @@ namespace Server.Items
         {
         }
 
-        public override int LabelNumber => 1075198; // Dawn�s Music Box
+        public override int LabelNumber => 1075198; // Dawn's Music Box
 
         public List<MusicName> Tracks { get; private set; }
 

@@ -242,24 +242,23 @@ namespace Server.Engines.Quests.Samurai
             {
                 if (m_KilledCat)
                 {
+                    /*
+                     * Respect comes from allowing another to make their own decisions.
+                     * By denying the gypsy her animals, you negate the respect she is due.
+                     * Perhaps you will have learned something to use next time a similar situation arises.
+                     * <BR><BR>And now you must prove yourself again. Please retrieve my katana from the treasure room and return it to me.
+                     */
                     return 1063071;
                 }
 
-                /* You showed respect by helping another out while allowing the gypsy
-                   * what little dignity she has left. <BR><BR>
-                   *
-                   * Now she will be able to feed herself and gain enough energy to walk
-                   * to her camp. <BR><BR>
-                   *
-                   * The cats are her family members� cursed by an evil mage. <BR><BR>
-                   *
-                   * Once she has enough strength to walk back to the camp, she will be
-                   * able to undo the spell. <BR><BR>
-                   *
-                   * You have been rewarded for completing your trial. And now you must
-                   * prove yourself again. <BR><BR>Please retrieve my katana from the
-                   * treasure room and return it to me.
-                   */
+                /*
+                 * You showed respect by helping another out while allowing the gypsy what little dignity she has left.
+                 * <BR><BR>Now she will be able to feed herself and gain enough energy to walk to her camp.
+                 * <BR><BR>The cats are her family members– cursed by an evil mage.
+                 * <BR><BR>Once she has enough strength to walk back to the camp, she will be able to undo the spell.
+                 * <BR><BR>You have been rewarded for completing your trial. And now you must prove yourself again.
+                 * <BR><BR>Please retrieve my katana from the treasure room and return it to me.
+                 */
                 return 1063070;
             }
         }
@@ -317,17 +316,23 @@ namespace Server.Engines.Quests.Samurai
             {
                 if (m_StolenTreasure)
                 {
+                    /*
+                     * I thank you for returning this sword.
+                     * However, you should admonished for also taking treasure that was not asked for nor given back.
+                     * <BR><BR>Think about your actions youngling.
+                     * <BR><BR>Your training is nearly complete.
+                     * Before you have your final trial, you should pay homage to Samurai who came before you.
+                     * <BR><BR>Go into the Altar Room and light a candle for them. Afterwards, return to me.
+                     */
                     return 1063077;
                 }
 
-                /* Thank you for returning this sword to me and leaving the remaining
-                   * treasure alone. <BR><BR>
-                   *
-                   * Your training is nearly complete. Before you have your final trial,
-                   * you should pay homage to Samurai who came before you.  <BR><BR>
-                   *
-                   * Go into the Altar Room and light a candle for them. Afterwards, return to me.
-                   */
+                /*
+                 * Thank you for returning this sword to me and leaving the remaining treasure alone.
+                 * <BR><BR>Your training is nearly complete.
+                 * Before you have your final trial, you should pay homage to Samurai who came before you.
+                 * <BR><BR>Go into the Altar Room and light a candle for them. Afterwards, return to me.
+                 */
                 return 1063076;
             }
         }

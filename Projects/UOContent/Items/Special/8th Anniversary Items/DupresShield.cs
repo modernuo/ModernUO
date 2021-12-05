@@ -18,7 +18,7 @@ namespace Server.Items
         {
         }
 
-        public override int LabelNumber => 1075196; // Dupre�s Shield
+        public override int LabelNumber => 1075196; // Dupre's Shield
 
         public override int BasePhysicalResistance => 1;
         public override int BaseFireResistance => 0;

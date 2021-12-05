@@ -78,16 +78,7 @@ namespace Server.Items
                         absorbed = 2;
                     }
 
-                    int wear;
-
-                    if (weapon.Type == WeaponType.Bashing)
-                    {
-                        wear = absorbed / 2;
-                    }
-                    else
-                    {
-                        wear = Utility.Random(2);
-                    }
+                    var wear = weapon.Type == WeaponType.Bashing ? absorbed / 2 : Utility.Random(2);
 
                     if (wear > 0 && MaxHitPoints > 0)
                     {
@@ -110,11 +101,8 @@ namespace Server.Items
 
                                 if (Parent is Mobile mobile)
                                 {
-                                    mobile.LocalOverheadMessage(
-                                        MessageType.Regular,
-                                        0x3B2,
-                                        1061121
-                                    ); // Your equipment is severely damaged.
+                                    // Your equipment is severely damaged.
+                                    mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
                                 }
                             }
                             else
@@ -128,7 +116,7 @@ namespace Server.Items
                 return 0;
             }
 
-            if (!(Parent is Mobile owner))
+            if (Parent is not Mobile owner)
             {
                 return damage;
             }
@@ -141,13 +129,6 @@ namespace Server.Items
                 chance = 0.01;
             }
 
-            /*
-            FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) � 200) + 1
-
-            FORMULA: % Chance of Blocking = parry skill - (shieldAR * 2)
-
-            FORMULA: Melee Damage Absorbed = (AR of Shield) / 2 | Archery Damage Absorbed = AR of Shield
-            */
             if (owner.CheckSkill(SkillName.Parry, chance))
             {
                 damage -= Math.Min(damage, weapon.Skill == SkillName.Archery ? (int)ar : (int)(ar / 2.0));
@@ -177,11 +158,8 @@ namespace Server.Items
                             {
                                 MaxHitPoints -= wear;
 
-                                ((Mobile)Parent).LocalOverheadMessage(
-                                    MessageType.Regular,
-                                    0x3B2,
-                                    1061121
-                                ); // Your equipment is severely damaged.
+                                // Your equipment is severely damaged.
+                                ((Mobile)Parent).LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
                             }
                             else
                             {
