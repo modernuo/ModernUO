@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.Mobiles;
 
 namespace Server.Spells.Fourth
@@ -34,37 +33,39 @@ namespace Server.Spells.Fourth
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var targets = new List<Mobile>();
-
                 var map = Caster.Map;
-                var directTarget = p as Mobile;
-                var loc = new Point3D(p);
-
                 if (map != null)
                 {
+                    using var pool = PooledRefQueue<Mobile>.Create();
+                    var directTarget = p as Mobile;
+                    var loc = new Point3D(p);
+
                     var feluccaRules = map.Rules == MapRules.FeluccaRules;
 
                     // You can target any living mobile directly, beneficial checks apply
                     if (directTarget != null && Caster.CanBeBeneficial(directTarget, false))
                     {
-                        targets.Add(directTarget);
+                        pool.Enqueue(directTarget);
                     }
 
                     var eable = map.GetMobilesInRange(loc, 2);
-                    targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
+                    foreach (var m in eable)
+                    {
+                        if (m != directTarget && AreaCanTarget(m, feluccaRules))
+                        {
+                            pool.Enqueue(m);
+                        }
+                    }
 
                     eable.Free();
-                }
 
-                Effects.PlaySound(loc, Caster.Map, 0x299);
+                    Effects.PlaySound(loc, Caster.Map, 0x299);
 
-                if (targets.Count > 0)
-                {
                     var cured = 0;
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    while (pool.Count > 0)
                     {
-                        var m = targets[i];
+                        var m = pool.Dequeue();
 
                         Caster.DoBeneficial(m);
 

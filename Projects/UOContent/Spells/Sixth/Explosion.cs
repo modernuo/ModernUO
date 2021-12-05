@@ -20,22 +20,26 @@ namespace Server.Spells.Sixth
 
         public override SpellCircle Circle => SpellCircle.Sixth;
 
-        public override bool DelayedDamageStacking => !Core.AOS;
+        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
         public override bool DelayedDamage => false;
 
         public void Target(Mobile m)
         {
+            if (Core.SA && HasDelayedDamageContext(m))
+            {
+                DoHurtFizzle();
+                return;
+            }
+
             if (Caster.CanBeHarmful(m) && CheckSequence())
             {
-                Mobile attacker = Caster, defender = m;
+                Mobile defender = m;
 
                 SpellHelper.Turn(Caster, m);
-
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
-                var t = new InternalTimer(this, attacker, defender, m);
-                t.Start();
+                var t = new InternalTimer(this, Caster, defender, m).Start();
             }
 
             FinishSequence();
@@ -48,52 +52,52 @@ namespace Server.Spells.Sixth
 
         private class InternalTimer : Timer
         {
-            private readonly Mobile m_Attacker;
-            private readonly Mobile m_Defender;
-            private readonly MagerySpell m_Spell;
-            private readonly Mobile m_Target;
+            private readonly Mobile _attacker;
+            private readonly Mobile _defender;
+            private readonly MagerySpell _spell;
+            private readonly Mobile _target;
 
             public InternalTimer(MagerySpell spell, Mobile attacker, Mobile defender, Mobile target)
                 : base(TimeSpan.FromSeconds(Core.AOS ? 3.0 : 2.5))
             {
-                m_Spell = spell;
-                m_Attacker = attacker;
-                m_Defender = defender;
-                m_Target = target;
+                _spell = spell;
+                _attacker = attacker;
+                _defender = defender;
+                _target = target;
 
-                m_Spell?.StartDelayedDamageContext(attacker, this);
+                _spell?.StartDelayedDamageContext(_attacker, this);
             }
 
             protected override void OnTick()
             {
-                if (m_Attacker.HarmfulCheck(m_Defender))
+                if (_attacker.HarmfulCheck(_defender))
                 {
                     double damage;
 
                     if (Core.AOS)
                     {
-                        damage = m_Spell.GetNewAosDamage(40, 1, 5, m_Defender);
+                        damage = _spell.GetNewAosDamage(40, 1, 5, _defender);
                     }
                     else
                     {
                         damage = Utility.Random(23, 22);
 
-                        if (m_Spell.CheckResisted(m_Target))
+                        if (_spell.CheckResisted(_target))
                         {
                             damage *= 0.75;
 
-                            m_Target.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+                            _target.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
                         }
 
-                        damage *= m_Spell.GetDamageScalar(m_Target);
+                        damage *= _spell.GetDamageScalar(_target);
                     }
 
-                    m_Target.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
-                    m_Target.PlaySound(0x307);
+                    _target.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
+                    _target.PlaySound(0x307);
 
-                    SpellHelper.Damage(m_Spell, m_Target, damage, 0, 100, 0, 0, 0);
+                    SpellHelper.Damage(_spell, _target, damage, 0, 100, 0, 0, 0);
 
-                    m_Spell?.RemoveDelayedDamageContext(m_Attacker);
+                    _spell?.RemoveDelayedDamageContext(_attacker);
                 }
             }
         }

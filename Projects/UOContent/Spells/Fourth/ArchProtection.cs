@@ -19,7 +19,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, int> _Table = new();
+        private static readonly Dictionary<Mobile, int> _table = new();
 
         public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -107,12 +107,12 @@ namespace Server.Spells.Fourth
 
         private static void AddEntry(Mobile m, int v)
         {
-            _Table[m] = v;
+            _table[m] = v;
         }
 
         public static void RemoveEntry(Mobile m)
         {
-            if (_Table.Remove(m, out var v))
+            if (_table.Remove(m, out var v))
             {
                 m.EndAction<ArchProtectionSpell>();
                 m.VirtualArmorMod -= Math.Min(v, m.VirtualArmorMod);
