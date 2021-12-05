@@ -230,7 +230,7 @@ namespace Server.Engines.MLQuests.Definitions
             // Restless spirits are known to inhabit these parts, taking the lives of unwary travelers.
             // It is about time a hero put the dead back in their graves. I'm sure such a hero would be justly rewarded.
             Description = 1073566;
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073586; // The restless spirts still walk -- you must kill 15 of them.
 
             Objectives.Add(
@@ -313,7 +313,7 @@ namespace Server.Engines.MLQuests.Definitions
             // Please, put them out of their misery.
             // I will offer you what payment I can if you will end the torment of these undead wretches.
             Description = 1073565;
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073585; // Your task is not done. Continue putting the Skeleton and Bone Knights to rest.
 
             Objectives.Add(
@@ -447,7 +447,7 @@ namespace Server.Engines.MLQuests.Definitions
             // That's why I must ask you to kill not just one kind of elemental, but three kinds. Snuff out some Fire, douse
             // a few Water, and crush some Earth elementals and I'll pay you for your trouble.
             Description = 1073579;
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073599; // Four of each, that's all I ask. Water, earth and fire.
 
             Objectives.Add(new KillObjective(4, new[] { typeof(FireElemental) }, "fire elementals"));
@@ -485,7 +485,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073074; // Dust to Dust
             Description =
                 1073564; // You want to hear about trouble? I got trouble. How's angry piles of granite walking around for trouble? Maybe they don't like the mining, maybe it's the farming. I don't know. All I know is someone's got to turn them back to potting soil. And it'd be worth a pretty penny to the soul that does it.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073584; // You got rocks in your head? I said to kill 12 earth elementals, okay?
 
             Objectives.Add(new KillObjective(12, new[] { typeof(EarthElemental) }, "earth elementals"));
@@ -656,7 +656,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073073; // The Afterlife
             Description =
                 1073563; // Nobody told me about the Mummy's Curse. How was I supposed to know you shouldn't disturb the tombs? Oh, sure, now all I hear about is the curse of the vengeful dead. I'll tell you what - make a few of these mummies go away and we'll keep this between you and me.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073583; // Uh, I don't think you're quite done killing Mummies yet.
 
             Objectives.Add(new KillObjective(15, new[] { typeof(Mummy) }, "mummies"));
@@ -696,7 +696,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073077; // Impish Delights
             Description =
                 1073567; // Imps! Do you hear me? Imps! They're everywhere! They're in everything! Oh, don't be fooled by their size - they vicious little devils! Half-sized evil incarnate, they are! Somebody needs to send them back to where they came from, if you know what I mean.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage =
                 1073587; // Don't let the little devils scare you! You  kill 12 imps - then we'll talk reward.
 
@@ -731,7 +731,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073084; // Evil Eye
             Description =
                 1073574; // Kind traveler, hear my plea. You know of the evil orbs? The wrathful eyes? Some call them gazers? They must be a nest nearby, for they are tormenting us poor folk. We need to drive back their numbers. But we are not strong enough to face such horrors ourselves, we need a true hero.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073594; // Have you annihilated a dozen Gazers yet, kind traveler?
 
             Objectives.Add(new KillObjective(12, new[] { typeof(Gazer) }, "gazers"));
@@ -765,7 +765,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073080; // Undead Mages
             Description =
                 1073570; // Why must the dead plague the living? With their foul necromancy and dark sorceries, the undead menace the countryside. I fear what will happen if no one is strong enough to face these nightmare sorcerers and thin their numbers.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073590; // Surely, a brave soul like yourself can kill 10 Bone Magi and Skeletal Mages?
 
             Objectives.Add(
@@ -823,7 +823,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073087; // Stirring the Nest
             Description =
                 1073577; // Were you the sort of child that enjoyed knocking over anthills? Well, perhaps you'd like to try something a little bigger? There's a Solen nest nearby and I bet if you killed a queen or two, it would be quite the sight to behold.  I'd even pay to see that - what do you say?
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073597; // Dead Solen Queens isn't too much to ask, is it?
 
             ObjectiveType = ObjectiveType.Any;
@@ -843,7 +843,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073078; // Warrior Caste
             Description =
                 1073568; // The Terathan are an aggressive species. Left unchecked, they will swarm across our lands. And where will that leave us? Compost in the hive, that's what! Stop them, stop them cold my friend. Kill their warriors and you'll check their movement, that is certain.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage =
                 1073588; // Unless you kill at least 10 Terathan Warriors, you won't have any impact on their hive.
 
@@ -861,7 +861,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073088; // Big Worms
             Description =
                 1073578; // It makes no sense! Cold blooded serpents cannot live in the ice! It's a biological impossibility! They are an abomination against reason! Please, I beg you - kill them! Make them disappear for me! Do this and I will reward you.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073598; // You wouldn't try and just pretend you murdered 10 Giant Ice Worms, would you?
 
             Objectives.Add(new KillObjective(10, new[] { typeof(IceSerpent) }, "giant ice serpents"));
@@ -878,7 +878,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073081; // Orcish Elite
             Description =
                 1073571; // Foul brutes! No one loves an orc, but some of them are worse than the rest. Their Captains and their Bombers, for instance, they're the worst of the lot. Kill a few of those, and the rest are just a rabble. Exterminate a few of them and you'll make the world a sunnier place, don't you know.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage =
                 1073591; // The only good orc is a dead orc - and 4 dead Captains and 6 dead Bombers is even better!
 
@@ -1020,7 +1020,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073083; // Shaking Things Up
             Description =
                 1073573; // A Solen hive is a fascinating piece of ecology. It's put together like a finely crafted clock. Who knows what happens if you remove something? So let's find out. Exterminate a few of the warriors and I'll make it worth your while.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage =
                 1073593; // I don't think you've gotten their attention yet -- you need to kill at least 10 Solen Warriors.
 
@@ -1041,7 +1041,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073079; // Arachnophobia
             Description =
                 1073569; // I've seen them hiding in their webs among the woods. Glassy eyes, spindly legs, poisonous fangs. Monsters, I say! Deadly horrors, these black widows. Someone must exterminate the abominations! If only I could find a worthy hero for such a task, then I could give them this considerable reward.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage =
                 1073589; // You've got a good start, but to stop the black-eyed fiends, you need to kill a dozen.
 
@@ -1059,7 +1059,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073072; // Mini Swamp Thing
             Description =
                 1073562; // Some say killing a boggling brings good luck. I don't place much stock in old wives' tales, but I can say a few dead bogglings would certainly be lucky for me! Help me out and I can reward you for your efforts.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073582; // Go back and kill all 20 bogglings!
 
             Objectives.Add(new KillObjective(12, new[] { typeof(Bogling) }, "boglings"));
@@ -1473,7 +1473,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1074711; // Scale Armor
             // Here's what I need ... there are some creatures called hydra, fearsome beasts, whose scales are especially suitable for a new sort of armor that I'm developing.  I need a few such pieces and then some supple alligator skin for the backing.  I'm going to need a really large piece that's shaped just right ... the tail I think would do nicely.  I appreciate your help.
             Description = 1074712;
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             // Hydras have been spotted in the Blighted Grove.  You won't get those scales without getting your feet wet, I'm afraid.
             InProgressMessage = 1074724;
             CompletionMessage = 1074725; // I can't wait to get to work now that you've returned with my scales.

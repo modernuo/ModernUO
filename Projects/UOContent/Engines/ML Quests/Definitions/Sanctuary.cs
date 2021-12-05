@@ -390,7 +390,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073085; // Arch Enemies
             Description =
                 1073575; // Vermin! They get into everything! I told the boy to leave out some poisoned cheese -- and they shot him. What else can I do? Unless these ratmen are skilled with a bow, but I'd lay a wager you're better, eh? Could you skin a few of the wretches for me?
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage =
                 1073595; // I don't see 10 tails from Ratman Archers on your belt -- and until I do, no reward for you.
 
@@ -748,7 +748,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073082; // Common Brigands
             Description =
                 1073572; // Thank goodness, a hero like you has arrived! Brigands have descended upon this area like locusts, stealing and looting where ever they go. We need someone to put these vile curs where they belong -- in their graves. Are you up to the task?
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073592; // The Brigands still plague us. Have you killed 20 of their number?<br>
 
             Objectives.Add(new KillObjective(20, new[] { typeof(Brigand) }, 1074894)); // Common brigands

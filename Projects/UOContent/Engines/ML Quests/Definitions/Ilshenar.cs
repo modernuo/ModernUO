@@ -37,7 +37,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073071; // Something to Wail About
             Description =
                 1073561; // Can you hear them? The never-ending howling? The incessant wailing? These banshees, they never cease! Never! They haunt my nights. Please, I beg you -- will you silence them? I would be ever so grateful.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073581; // Until you kill 12 Wailing Banshees, there will be no peace.
 
             Objectives.Add(new KillObjective(12, new[] { typeof(WailingBanshee) }, "wailing banshees"));
