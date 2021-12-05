@@ -15,9 +15,9 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 8.1/10/2016/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2019)
-![MacOS 10/11/12](https://img.shields.io/badge/-monterey-222222?logo=apple&logoColor=white)
-[![Debian 9/10/11](https://img.shields.io/badge/-bullseye-A81D33?logo=debian)](https://www.debian.org/distrib/)
+[![Windows 10/11/2016/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+![MacOS 10.15/11/12](https://img.shields.io/badge/-monterey-222222?logo=apple&logoColor=white)
+[![Debian 10/11](https://img.shields.io/badge/-bullseye-A81D33?logo=debian)](https://www.debian.org/distrib/)
 [![Ubuntu 16/18/20 LTS](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/download/server)
 [![CentOS 7/8](https://img.shields.io/badge/-8.5-262577?logo=centos&logoColor=white)](https://www.centos.org/download/)
 [![Fedora 32/33/34](https://img.shields.io/badge/-34-0B57A4?logo=fedora&logoColor=white)](https://getfedora.org/en/server/download/)
@@ -47,11 +47,11 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 
 ## Building/Publishing
 - Run `./publish.cmd [release|debug (default: release)] [os]`
-  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/master/release-notes/5.0/5.0-supported-os.md)
-    - `win` - Windows 8.1/10/2016/2019
+  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md)
+    - `win` - Windows 10/11/2016/2019/2022
     - `osx` - MacOS 10.15/11.0+/12.0+ (Catalina, Big Sur, Monterey)
     - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` - Ubuntu LTS
-    - `debian.9`, `debian.10`, `debian.11` - Debian
+    - `debian.10`, `debian.11` - Debian
     - `centos.7`, `centos.8` - CentOS
     - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
