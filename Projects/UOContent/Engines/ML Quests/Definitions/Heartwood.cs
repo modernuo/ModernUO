@@ -2443,9 +2443,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074206, // Excuse me please traveler, might I have a little of your time?
-                    1074186
+                    1074186  // Come here, I have a task.
                 )
-            ); // Come here, I have a task.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2767,9 +2767,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074211, // I could use some help.
-                    1074186
+                    1074186  // Come here, I have a task.
                 )
-            ); // Come here, I have a task.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2842,9 +2842,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074185, // Hey you! Want to help me out?
-                    1074186
+                    1074186 // Come here, I have a task.
                 )
-            ); // Come here, I have a task.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3192,9 +3192,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074221, // Greetings!  I have a small task for you good traveler.
-                    1074201
+                    1074201  // Waste not a minute! There's work to be done.
                 )
-            ); // Waste not a minute! There's work to be done.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3255,9 +3255,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074200, // Thank goodness you are here, there's no time to lose.
-                    1074206
+                    1074206  // Excuse me please traveler, might I have a little of your time?
                 )
-            ); // Excuse me please traveler, might I have a little of your time?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)

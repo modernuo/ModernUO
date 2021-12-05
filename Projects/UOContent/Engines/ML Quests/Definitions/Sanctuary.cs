@@ -1244,9 +1244,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074193, // You there! Yes you. Stop looking about like a toadie and come here.
-                    1074186
+                    1074186  // Come here, I have a task.
                 )
-            ); // Come here, I have a task.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
