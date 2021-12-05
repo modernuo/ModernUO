@@ -4,7 +4,7 @@ namespace Server.Items
 {
     /// <summary>
     ///     This special move represents a significant change to the use of poisons in Age of Shadows.
-    ///     Now, only certain weapon types � those that have Infectious Strike as an available special move � will be able to be
+    ///     Now, only certain weapon types, those that have Infectious Strike as an available special move will be able to be
     ///     poisoned.
     ///     Targets will no longer be poisoned at random when hit by poisoned weapons.
     ///     Instead, the wielder must use this ability to deliver the venom.
