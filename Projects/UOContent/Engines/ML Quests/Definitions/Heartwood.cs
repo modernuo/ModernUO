@@ -447,7 +447,7 @@ namespace Server.Engines.MLQuests.Definitions
             // That's why I must ask you to kill not just one kind of elemental, but three kinds. Snuff out some Fire, douse
             // a few Water, and crush some Earth elementals and I'll pay you for your trouble.
             Description = 1073579;
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073599; // Four of each, that's all I ask. Water, earth and fire.
 
             Objectives.Add(new KillObjective(4, new[] { typeof(FireElemental) }, "fire elementals"));
@@ -485,7 +485,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073074; // Dust to Dust
             Description =
                 1073564; // You want to hear about trouble? I got trouble. How's angry piles of granite walking around for trouble? Maybe they don't like the mining, maybe it's the farming. I don't know. All I know is someone's got to turn them back to potting soil. And it'd be worth a pretty penny to the soul that does it.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073584; // You got rocks in your head? I said to kill 12 earth elementals, okay?
 
             Objectives.Add(new KillObjective(12, new[] { typeof(EarthElemental) }, "earth elementals"));
@@ -656,7 +656,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073073; // The Afterlife
             Description =
                 1073563; // Nobody told me about the Mummy's Curse. How was I supposed to know you shouldn't disturb the tombs? Oh, sure, now all I hear about is the curse of the vengeful dead. I'll tell you what - make a few of these mummies go away and we'll keep this between you and me.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073583; // Uh, I don't think you're quite done killing Mummies yet.
 
             Objectives.Add(new KillObjective(15, new[] { typeof(Mummy) }, "mummies"));
@@ -696,7 +696,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073077; // Impish Delights
             Description =
                 1073567; // Imps! Do you hear me? Imps! They're everywhere! They're in everything! Oh, don't be fooled by their size - they vicious little devils! Half-sized evil incarnate, they are! Somebody needs to send them back to where they came from, if you know what I mean.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage =
                 1073587; // Don't let the little devils scare you! You  kill 12 imps - then we'll talk reward.
 
@@ -731,7 +731,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073084; // Evil Eye
             Description =
                 1073574; // Kind traveler, hear my plea. You know of the evil orbs? The wrathful eyes? Some call them gazers? They must be a nest nearby, for they are tormenting us poor folk. We need to drive back their numbers. But we are not strong enough to face such horrors ourselves, we need a true hero.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073594; // Have you annihilated a dozen Gazers yet, kind traveler?
 
             Objectives.Add(new KillObjective(12, new[] { typeof(Gazer) }, "gazers"));
@@ -765,7 +765,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073080; // Undead Mages
             Description =
                 1073570; // Why must the dead plague the living? With their foul necromancy and dark sorceries, the undead menace the countryside. I fear what will happen if no one is strong enough to face these nightmare sorcerers and thin their numbers.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073590; // Surely, a brave soul like yourself can kill 10 Bone Magi and Skeletal Mages?
 
             Objectives.Add(
@@ -823,7 +823,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073087; // Stirring the Nest
             Description =
                 1073577; // Were you the sort of child that enjoyed knocking over anthills? Well, perhaps you'd like to try something a little bigger? There's a Solen nest nearby and I bet if you killed a queen or two, it would be quite the sight to behold.  I'd even pay to see that - what do you say?
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073597; // Dead Solen Queens isn't too much to ask, is it?
 
             ObjectiveType = ObjectiveType.Any;
@@ -843,7 +843,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073078; // Warrior Caste
             Description =
                 1073568; // The Terathan are an aggressive species. Left unchecked, they will swarm across our lands. And where will that leave us? Compost in the hive, that's what! Stop them, stop them cold my friend. Kill their warriors and you'll check their movement, that is certain.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage =
                 1073588; // Unless you kill at least 10 Terathan Warriors, you won't have any impact on their hive.
 
@@ -861,7 +861,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073088; // Big Worms
             Description =
                 1073578; // It makes no sense! Cold blooded serpents cannot live in the ice! It's a biological impossibility! They are an abomination against reason! Please, I beg you - kill them! Make them disappear for me! Do this and I will reward you.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073598; // You wouldn't try and just pretend you murdered 10 Giant Ice Worms, would you?
 
             Objectives.Add(new KillObjective(10, new[] { typeof(IceSerpent) }, "giant ice serpents"));
@@ -878,7 +878,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073081; // Orcish Elite
             Description =
                 1073571; // Foul brutes! No one loves an orc, but some of them are worse than the rest. Their Captains and their Bombers, for instance, they're the worst of the lot. Kill a few of those, and the rest are just a rabble. Exterminate a few of them and you'll make the world a sunnier place, don't you know.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage =
                 1073591; // The only good orc is a dead orc - and 4 dead Captains and 6 dead Bombers is even better!
 
@@ -1020,7 +1020,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073083; // Shaking Things Up
             Description =
                 1073573; // A Solen hive is a fascinating piece of ecology. It's put together like a finely crafted clock. Who knows what happens if you remove something? So let's find out. Exterminate a few of the warriors and I'll make it worth your while.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage =
                 1073593; // I don't think you've gotten their attention yet -- you need to kill at least 10 Solen Warriors.
 
@@ -1041,7 +1041,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073079; // Arachnophobia
             Description =
                 1073569; // I've seen them hiding in their webs among the woods. Glassy eyes, spindly legs, poisonous fangs. Monsters, I say! Deadly horrors, these black widows. Someone must exterminate the abominations! If only I could find a worthy hero for such a task, then I could give them this considerable reward.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage =
                 1073589; // You've got a good start, but to stop the black-eyed fiends, you need to kill a dozen.
 
@@ -1059,7 +1059,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = 1073072; // Mini Swamp Thing
             Description =
                 1073562; // Some say killing a boggling brings good luck. I don't place much stock in old wives' tales, but I can say a few dead bogglings would certainly be lucky for me! Help me out and I can reward you for your efforts.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
             InProgressMessage = 1073582; // Go back and kill all 20 bogglings!
 
             Objectives.Add(new KillObjective(12, new[] { typeof(Bogling) }, "boglings"));
@@ -1314,12 +1314,12 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1074280; // Reptilian Dentist
-            Description =
-                1074710; // I'm working on a striking necklace -- something really unique -- and I know just what I need to finish it up.  A huge fang!  Won't that catch the eye?  I would like to employ you to find me such an item, perhaps a snake would make the ideal donor.  I'll make it worth your while, of course.
+            // I'm working on a striking necklace -- something really unique -- and I know just what I need to finish it up.  A huge fang!  Won't that catch the eye?  I would like to employ you to find me such an item, perhaps a snake would make the ideal donor.  I'll make it worth your while, of course.
+            Description = 1074710;
             RefusalMessage = 1074723; // I understand.  I don't like snakes much either.  They're so creepy.
-            InProgressMessage =
-                1074722; // Those really big snakes like swamps, I've heard.  You might try the blighted grove.
-            CompletionMessage = 1074721; // Do you have it?  *gasp* What a tooth!  Here ' I must get right to work.
+            // Those really big snakes like swamps, I've heard.  You might try the blighted grove.
+            InProgressMessage = 1074722;
+            CompletionMessage = 1074721; // Do you have it?  *gasp* What a tooth!  Here … I must get right to work.
 
             Objectives.Add(new CollectObjective(1, typeof(CoilsFang), "coil's fang"));
 
@@ -1334,8 +1334,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073881; // Stop Harping on Me
-            Description =
-                1074071; // Humans artistry can be a remarkable thing. For instance, I have heard of a wonderful instrument which creates the most melodious of music. A lap harp. I would be ever so grateful if I could examine one in person.
+            // Humans artistry can be a remarkable thing. For instance, I have heard of a wonderful instrument which creates the most melodious of music. A lap harp. I would be ever so grateful if I could examine one in person.
+            Description = 1074071;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073927; // I will be in your debt if you bring me lap harp.
             CompletionMessage = 1073969; // My thanks for your service. Now, I will show you something of elven carpentry.
@@ -1353,8 +1353,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073908; // The Far Eye
-            Description =
-                1074098; // The wonders of human invention! Turning sand and metal into a far-seeing eye! This is something I must experience for myself. Bring me some of these spyglasses friend human.
+            // The wonders of human invention! Turning sand and metal into a far-seeing eye! This is something I must experience for myself. Bring me some of these spyglasses friend human.
+            Description = 1074098;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073954; // I will be in your debt if you bring me spyglasses.
             CompletionMessage = 1073978; // Enjoy my thanks for your service.
@@ -1372,8 +1372,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073876; // Lethal Darts
-            Description =
-                1074066; // We elves are no strangers to archery but I would be interested in learning whether there is anything to learn from the human approach. I would gladly trade you something I have if you could teach me of the deadly crossbow bolt.
+            // We elves are no strangers to archery but I would be interested in learning whether there is anything to learn from the human approach. I would gladly trade you something I have if you could teach me of the deadly crossbow bolt.
+            Description = 1074066;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073922; // I will be in your debt if you bring me crossbow bolts.
             CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
@@ -1392,8 +1392,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073877; // A Simple Bow
-            Description =
-                1074067; // I wish to try a bow crafted in the human style. Is it possible for you to bring me such a weapon? I would be happy to return this favor.
+            // I wish to try a bow crafted in the human style. Is it possible for you to bring me such a weapon? I would be happy to return this favor.
+            Description = 1074067;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073923; // I will be in your debt if you bring me bows.
             CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
@@ -1412,8 +1412,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073878; // Ingenious Archery, Part I
-            Description =
-                1074068; // I have heard of a curious type of bow, you call it a "crossbow". It sounds fascinating and I would very much like to examine one closely. Would you be able to obtain such an instrument for me?
+            // I have heard of a curious type of bow, you call it a "crossbow". It sounds fascinating and I would very much like to examine one closely. Would you be able to obtain such an instrument for me?
+            Description = 1074068;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073924; // I will be in your debt if you bring me crossbows.
             CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
@@ -1432,8 +1432,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073879; // Ingenious Archery, Part II
-            Description =
-                1074069; // These human "crossbows" are complex and clever. The "heavy crossbow" is a remarkable instrument of war. I am interested in seeing one up close, if you could arrange for one to make its way to my hands.
+            // These human "crossbows" are complex and clever. The "heavy crossbow" is a remarkable instrument of war. I am interested in seeing one up close, if you could arrange for one to make its way to my hands.
+            Description = 1074069;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073925; // I will be in your debt if you bring me heavy crossbows.
             CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
@@ -1452,8 +1452,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073880; // Ingenious Archery, Part III
-            Description =
-                1074070; // My friend, I am in search of a device, a instrument of remarkable human ingenuity. It is a repeating crossbow. If you were to obtain such a device, I would gladly reveal to you some of the secrets of elven craftsmanship.
+            // My friend, I am in search of a device, a instrument of remarkable human ingenuity. It is a repeating crossbow. If you were to obtain such a device, I would gladly reveal to you some of the secrets of elven craftsmanship.
+            Description = 1074070;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073926; // I will be in your debt if you bring me repeating crossbows.
             CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
@@ -1471,11 +1471,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1074711; // Scale Armor
-            Description =
-                1074712; // Here's what I need ... there are some creatures called hydra, fearsome beasts, whose scales are especially suitable for a new sort of armor that I'm developing.  I need a few such pieces and then some supple alligator skin for the backing.  I'm going to need a really large piece that's shaped just right ... the tail I think would do nicely.  I appreciate your help.
-            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
-            InProgressMessage =
-                1074724; // Hydras have been spotted in the Blighted Grove.  You won't get those scales without getting your feet wet, I'm afraid.
+            // Here's what I need ... there are some creatures called hydra, fearsome beasts, whose scales are especially suitable for a new sort of armor that I'm developing.  I need a few such pieces and then some supple alligator skin for the backing.  I'm going to need a really large piece that's shaped just right ... the tail I think would do nicely.  I appreciate your help.
+            Description = 1074712;
+            RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farewell.
+            // Hydras have been spotted in the Blighted Grove.  You won't get those scales without getting your feet wet, I'm afraid.
+            InProgressMessage = 1074724;
             CompletionMessage = 1074725; // I can't wait to get to work now that you've returned with my scales.
 
             Objectives.Add(new CollectObjective(1, typeof(ThrashersTail), "Thrasher's Tail"));
@@ -1492,8 +1492,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073913; // Cuts Both Ways
-            Description =
-                1074103; // What would you say is a typical human instrument of war? Is a broadsword a typical example? I wish to see more of such human weapons, so I would gladly trade elven knowledge for human steel.
+            // What would you say is a typical human instrument of war? Is a broadsword a typical example? I wish to see more of such human weapons, so I would gladly trade elven knowledge for human steel.
+            Description = 1074103;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073959; // I will be in your debt if you bring me broadswords.
             CompletionMessage = 1073978; // Enjoy my thanks for your service.
@@ -1511,8 +1511,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073915; // Dragon Protection
-            Description =
-                1074105; // Mankind, I am told, knows how to take the scales of a terrible dragon and forge them into powerful armor. Such a feat of craftsmanship! I would give anything to view such a creation - I would even teach some of the prize secrets of the elven people.
+            // Mankind, I am told, knows how to take the scales of a terrible dragon and forge them into powerful armor. Such a feat of craftsmanship! I would give anything to view such a creation - I would even teach some of the prize secrets of the elven people.
+            Description = 1074105;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073961; // I will be in your debt if you bring me dragon armor.
             CompletionMessage = 1073978; // Enjoy my thanks for your service.
@@ -1530,8 +1530,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073911; // Nothing Fancy
-            Description =
-                1074101; // I am curious to see the results of human blacksmithing. To examine the care and quality of a simple item. Perhaps, a simple bascinet helmet? Yes, indeed -- if you could bring to me some bascinet helmets, I would demonstrate my gratitude.
+            // I am curious to see the results of human blacksmithing. To examine the care and quality of a simple item. Perhaps, a simple bascinet helmet? Yes, indeed -- if you could bring to me some bascinet helmets, I would demonstrate my gratitude.
+            Description = 1074101;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073957; // I will be in your debt if you bring me bascinets.
             CompletionMessage = 1073978; // Enjoy my thanks for your service.
@@ -1549,8 +1549,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073912; // The Bulwark
-            Description =
-                1074102; // The clank of human iron and steel is strange to elven ears. For instance, the metallic heater shield which human warriors carry into battle. It is odd to an elf, but nevertheless intriguing. Tell me friend, could you bring me such an example of human smithing skill?
+            // The clank of human iron and steel is strange to elven ears. For instance, the metallic heater shield which human warriors carry into battle. It is odd to an elf, but nevertheless intriguing. Tell me friend, could you bring me such an example of human smithing skill?
+            Description = 1074102;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073958; // I will be in your debt if you bring me heater shields.
             CompletionMessage = 1073978; // Enjoy my thanks for your service.
@@ -1568,8 +1568,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             HasRestartDelay = true;
             Title = 1073882; // Arch Support
-            Description =
-                1074072; // How clever humans are - to understand the need of feet to rest from time to time!  Imagine creating a special stool just for weary toes.  I would like to examine and learn the secret of their making.  Would you bring me some foot stools to examine?
+            // How clever humans are - to understand the need of feet to rest from time to time!  Imagine creating a special stool just for weary toes.  I would like to examine and learn the secret of their making.  Would you bring me some foot stools to examine?
+            Description = 1074072;
             RefusalMessage = 1073921; // I will patiently await your reconsideration.
             InProgressMessage = 1073928; // I will be in your debt if you bring me foot stools.
             CompletionMessage = 1073969; // My thanks for your service. Now, I will show you something of elven carpentry.
@@ -1597,10 +1597,7 @@ namespace Server.Engines.MLQuests.Definitions
                     3,
                     new[] { typeof(Succubus) },
                     "succubi",
-                    new QuestArea(
-                        1074806, // The Palace of Paroxysmus
-                        "The Palace of Paroxysmus"
-                    )
+                    new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
             );
 
@@ -1627,7 +1624,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "molochs",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1652,7 +1649,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "daemons",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1677,7 +1674,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "arcane daemons",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1703,7 +1700,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "poison elementals",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
             Objectives.Add(
                 new KillObjective(
                     6,
@@ -1781,7 +1778,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "crystal lattice seekers",
                     new QuestArea(1074805, "The Prism of Light")
                 )
-            ); // The Prism of Light
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1809,7 +1806,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "crystal daemons",
                     new QuestArea(1074805, "The Prism of Light")
                 )
-            ); // The Prism of Light
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1837,7 +1834,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "crystal vortices",
                     new QuestArea(1074805, "The Prism of Light")
                 )
-            ); // The Prism of Light
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1945,11 +1942,11 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             Title = 1072913; // Death to the Ninja!
-            Description =
-                1072966; // I wish to make a statement of censure against the elite ninjas of the Black Order.  Deliver, in the strongest manner, my disdain.  But do not make war on women, even those that take arms against you.  It is not ... fitting.
+            // I wish to make a statement of censure against the elite ninjas of the Black Order.  Deliver, in the strongest manner, my disdain.  But do not make war on women, even those that take arms against you.  It is not ... fitting.
+            Description = 1072966;
             RefusalMessage = 1072979; // As you wish.
-            InProgressMessage =
-                1072980; // The Black Order's fortress home is well hidden.  Legend has it that a humble fishing village disguises the magical portal.
+            // The Black Order's fortress home is well hidden.  Legend has it that a humble fishing village disguises the magical portal.
+            InProgressMessage = 1072980;
 
             // TODO: Verify that this has to be males only (as per the description)
             Objectives.Add(
@@ -1959,7 +1956,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "elite ninjas",
                     new QuestArea(1074804, "The Citadel")
                 )
-            ); // The Citadel
+            );
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -2049,9 +2046,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074186, // Come here, I have a task.
-                    1074183
+                    1074183  // You there! I have a job for you.
                 )
-            ); // You there! I have a job for you.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2116,9 +2113,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074187, // Want a job?
-                    1074210
+                    1074210  // Hi.  Looking for something to do?
                 )
-            ); // Hi.' Looking for something to do?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2180,10 +2177,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074213, // Hey buddy.' Looking for work?
-                    1074187
+                    1074213, // Hey buddy.  Looking for work?
+                    1074187  // Want a job?
                 )
-            ); // Want a job?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2247,9 +2244,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074211, // I could use some help.
-                    1074218
+                    1074218  // Hey!  I want to talk to you, now.
                 )
-            ); // Hey!' I want to talk to you, now.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2314,7 +2311,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074223); // Have you done it yet?' Oh, I haven't told you, have I?
+            MLQuestSystem.Tell(this, pm, 1074223); // Have you done it yet?  Oh, I haven't told you, have I?
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2375,9 +2372,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074219, // Hello there, can I have a moment of your time?
-                    1074223
+                    1074223  // Have you done it yet?  Oh, I haven't told you, have I?
                 )
-            ); // Have you done it yet?' Oh, I haven't told you, have I?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2508,10 +2505,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074220, // May I call you friend?' I have a favor to beg of you.
-                    1074222
+                    1074220, // May I call you friend?  I have a favor to beg of you.
+                    1074222  // Could I trouble you for some assistance?
                 )
-            ); // Could I trouble you for some assistance?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2585,10 +2582,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074188, // Weakling! You are not up to the task I have.
-                    1074191, // Just keep walking away!' I thought so. Coward!' I'll bite your legs off!
-                    1074195
+                    1074191, // Just keep walking away!  I thought so. Coward!  I'll bite your legs off!
+                    1074195  // You there, in the stupid hat!  Come here.
                 )
-            ); // You there, in the stupid hat!   Come here.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2645,9 +2642,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074212, // *yawn* You busy?
-                    1074210
+                    1074210  // Hi.  Looking for something to do?
                 )
-            ); // Hi.' Looking for something to do?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2707,10 +2704,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074204, // Greetings seeker.' I have an urgent matter for you, if you are willing.
-                    1074201
+                    1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
+                    1074201  // Waste not a minute! There's work to be done.
                 )
-            ); // Waste not a minute! There's work to be done.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2927,10 +2924,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074207, // Good day to you friend! Allow me to offer you a fabulous opportunity!' Thrills and adventure await!
-                    1074209
+                    1074207, // Good day to you friend! Allow me to offer you a fabulous opportunity!  Thrills and adventure await!
+                    1074209 // Hey, could you help me out with something?
                 )
-            ); // Hey, could you help me out with something?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -2994,10 +2991,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074210, // Hi.' Looking for something to do?
-                    1074220
+                    1074210, // Hi.  Looking for something to do?
+                    1074220  // May I call you friend?  I have a favor to beg of you.
                 )
-            ); // May I call you friend?' I have a favor to beg of you.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3126,9 +3123,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074187, // Want a job?
-                    1074222
+                    1074222  // Could I trouble you for some assistance?
                 )
-            ); // Could I trouble you for some assistance?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3194,7 +3191,7 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074221, // Greetings!' I have a small task for you good traveler.
+                    1074221, // Greetings!  I have a small task for you good traveler.
                     1074201
                 )
             ); // Waste not a minute! There's work to be done.
@@ -3440,10 +3437,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074210, // Hi.' Looking for something to do?
-                    1074213
+                    1074210, // Hi.  Looking for something to do?
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3503,9 +3500,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074223, // Have you done it yet?' Oh, I haven't told you, have I?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3698,10 +3695,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074221, // Greetings!' I have a small task for you good traveler.
-                    1074212
+                    1074221, // Greetings!  I have a small task for you good traveler.
+                    1074212  // *yawn* You busy?
                 )
-            ); // *yawn* You busy?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3762,9 +3759,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074206, // Excuse me please traveler, might I have a little of your time?
-                    1074203
+                    1074203 // Hello friend. I realize you are busy but if you would be willing to render me a service I can assure you that you will be judiciously renumerated.
                 )
-            ); // Hello friend. I realize you are busy but if you would be willing to render me a service I can assure you that you will be judiciously renumerated.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -4612,10 +4609,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074204, // Greetings seeker.' I have an urgent matter for you, if you are willing.
-                    1074200
+                    1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
+                    1074200  // Thank goodness you are here, there's no time to lose.
                 )
-            ); // Thank goodness you are here, there's no time to lose.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -4780,7 +4777,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074204); // Greetings seeker.' I have an urgent matter for you, if you are willing.
+            MLQuestSystem.Tell(this, pm, 1074204); // Greetings seeker.  I have an urgent matter for you, if you are willing.
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -317,9 +317,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -438,9 +438,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -495,9 +495,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -562,10 +562,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213, // Hey buddy.' Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -674,9 +674,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -730,9 +730,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.' Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -832,10 +832,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213, // Hey buddy.' Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -892,10 +892,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213, // Hey buddy.' Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -957,10 +957,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074213, // Hey buddy.' Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
