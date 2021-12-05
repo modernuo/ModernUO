@@ -16,14 +16,14 @@ namespace Server.Engines.MLQuests.Definitions
                 1075393; // Beg pardon, sir. I mean, madam. Uh, can I ask a favor of you? I found this jeweled ring.  Most people would sell it and keep the money, but not me. I ain't never stole nothing, and I ain't about to start. I tried to take it over to Brit castle, figgerin' it must belong to some highborn lady, but the guards threw me out. You look like they might let you pass. Will you take the ring over there and see if you can find the owner?
             RefusalMessage = 1075395; // I see. Too good to help an honest beggar like me, eh?
             InProgressMessage =
-                1075396; // A jewel like this must be worth a lot, so it must belong to some noble or another. I would show it around the castle. Someone�s bound to recognize it.
+                1075396; // A jewel like this must be worth a lot, so it must belong to some noble or another. I would show it around the castle. Someone's bound to recognize it.
             CompletionMessage =
                 1075397; // Didst thou find my ring? I thank thee very much! It is an old ring, and a gift from my husband. I was most distraught when I realized it was missing.
             CompletionNotice = CompletionNoticeShort;
 
             Objectives.Add(new DeliverObjective(typeof(ReginasRing), 1, "Regina's Ring", typeof(Regina)));
 
-            Rewards.Add(new DummyReward(1075394)); // Find the ring�s owner.
+            Rewards.Add(new DummyReward(1075394)); // Find the ring's owner.
         }
 
         public override Type NextQuest => typeof(ReginasThanks);
@@ -35,9 +35,9 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             OneTimeOnly = true;
-            Title = 1075398; // Regina�s Thanks
+            Title = 1075398; // Regina's Thanks
             Description =
-                1075399; // What�s that you say? It was a humble beggar that found my ring? Such honesty must be rewarded. Here, take this packet and return it to him, and I will be in your debt.
+                1075399; // What's that you say? It was a humble beggar that found my ring? Such honesty must be rewarded. Here, take this packet and return it to him, and I will be in your debt.
             RefusalMessage = 1075401; // Hmph. Very well. What did you say his name was?
             InProgressMessage = 1075402; // Take the packet and return it to the beggar who found my ring.
             CompletionMessage =
