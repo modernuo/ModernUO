@@ -36,7 +36,7 @@ jobs:
         os: centos.7
       'Debian 11':
         containerImage: mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim
-        os: debian.11-x64
+        os: debian.11
       'Ubuntu 20':
         containerImage: mcr.microsoft.com/dotnet/sdk:6.0-focal
         os: ubuntu.20.04
