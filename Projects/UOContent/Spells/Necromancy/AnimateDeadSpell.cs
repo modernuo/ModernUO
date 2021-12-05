@@ -4,7 +4,6 @@ using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
 using Server.Items;
 using Server.Mobiles;
-using Server.Targeting;
 using Server.Utilities;
 
 namespace Server.Spells.Necromancy

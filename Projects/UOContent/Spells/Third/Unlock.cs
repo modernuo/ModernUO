@@ -1,7 +1,6 @@
 using Server.Items;
 using Server.Multis;
 using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Third
 {

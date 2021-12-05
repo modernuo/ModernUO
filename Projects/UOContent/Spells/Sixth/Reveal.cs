@@ -1,5 +1,4 @@
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {

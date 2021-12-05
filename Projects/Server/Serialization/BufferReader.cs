@@ -37,7 +37,7 @@ namespace Server
             _encoding = encoding ?? TextEncoding.UTF8;
         }
 
-        public BufferReader(byte[] buffer, DateTime LastSerialized) : this(buffer) => LastSerialized = LastSerialized;
+        public BufferReader(byte[] buffer, DateTime lastSerialized) : this(buffer) => LastSerialized = lastSerialized;
 
         public void Reset(byte[] newBuffer, out byte[] oldBuffer)
         {
@@ -47,7 +47,7 @@ namespace Server
         }
 
         // Compatible with BinaryReader.ReadString()
-        public DateTime LastSerialized { get; init; } = DateTime.MinValue;
+        public DateTime LastSerialized { get; init; }
 
         public string ReadString(bool intern = false)
         {

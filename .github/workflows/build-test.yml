@@ -30,4 +30,4 @@ jobs:
     - name: Build
       run: ./publish.cmd
     - name: Test
-      run: dotnet test --no-restore --framework net6.0
+      run: dotnet test --no-restore
