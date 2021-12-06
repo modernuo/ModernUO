@@ -14,87 +14,108 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
     public partial class Timer
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T>(Action<T> callback, T state) =>
             DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, state);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T>(TimeSpan delay, Action<T> callback, T state) =>
             DelayCall(delay, TimeSpan.Zero, 1, callback, state);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, Action<T> callback, T state) =>
             DelayCall(delay, interval, 0, callback, state);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, int count, Action<T> callback, T state) =>
             new DelayStateCallTimer<T>(delay, interval, count, callback, state).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2>(Action<T1, T2> callback, T1 t1, T2 t2) =>
             DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2>(TimeSpan delay, Action<T1, T2> callback, T1 t1, T2 t2) =>
             DelayCall(delay, TimeSpan.Zero, 1, callback, t1, t2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2>(TimeSpan delay, TimeSpan interval, Action<T1, T2> callback, T1 t1, T2 t2) =>
             DelayCall(delay, interval, 0, callback, t1, t2);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2>(
             TimeSpan delay, TimeSpan interval, int count, Action<T1, T2> callback,
             T1 t1, T2 t2
         ) => new DelayStateCallTimer<T1, T2>(delay, interval, count, callback, t1, t2).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3>(Action<T1, T2, T3> callback, T1 t1, T2 t2, T3 t3) =>
             DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2, t3);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3>(
             TimeSpan delay, Action<T1, T2, T3> callback, T1 t1, T2 t2, T3 t3
         ) => DelayCall(delay, TimeSpan.Zero, 1, callback, t1, t2, t3);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3>(
             TimeSpan delay, TimeSpan interval, Action<T1, T2, T3> callback,
             T1 t1, T2 t2, T3 t3
         ) => DelayCall(delay, interval, 0, callback, t1, t2, t3);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3>(
             TimeSpan delay, TimeSpan interval, int count,
             Action<T1, T2, T3> callback, T1 t1, T2 t2, T3 t3
         ) => new DelayStateCallTimer<T1, T2, T3>(delay, interval, count, callback, t1, t2, t3).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4>(
             Action<T1, T2, T3, T4> callback, T1 t1, T2 t2, T3 t3, T4 t4
         ) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2, t3, t4);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4>(
             TimeSpan delay, Action<T1, T2, T3, T4> callback,
             T1 t1, T2 t2, T3 t3, T4 t4
         ) => DelayCall(delay, TimeSpan.Zero, 1, callback, t1, t2, t3, t4);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4>(
             TimeSpan delay, TimeSpan interval,
             Action<T1, T2, T3, T4> callback, T1 t1, T2 t2, T3 t3, T4 t4
         ) => DelayCall(delay, interval, 0, callback, t1, t2, t3, t4);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4>(
             TimeSpan delay, TimeSpan interval, int count,
             Action<T1, T2, T3, T4> callback, T1 t1, T2 t2, T3 t3, T4 t4
         ) => new DelayStateCallTimer<T1, T2, T3, T4>(delay, interval, count, callback, t1, t2, t3, t4).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4, T5>(
             Action<T1, T2, T3, T4, T5> callback, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5
         ) => new DelayStateCallTimer<T1, T2, T3, T4, T5>(TimeSpan.Zero, TimeSpan.Zero, 1, callback, t1, t2, t3, t4, t5).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4, T5>(
             TimeSpan delay,
             Action<T1, T2, T3, T4, T5> callback, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5
         ) => new DelayStateCallTimer<T1, T2, T3, T4, T5>(delay, TimeSpan.Zero, 1, callback, t1, t2, t3, t4, t5).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4, T5>(
             TimeSpan delay, TimeSpan interval,
             Action<T1, T2, T3, T4, T5> callback, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5
         ) => new DelayStateCallTimer<T1, T2, T3, T4, T5>(delay, interval, 0, callback, t1, t2, t3, t4, t5).Start();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Timer DelayCall<T1, T2, T3, T4, T5>(
             TimeSpan delay, TimeSpan interval, int count,
             Action<T1, T2, T3, T4, T5> callback, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5
