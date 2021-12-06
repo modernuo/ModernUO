@@ -1,3 +1,4 @@
+using System;
 using Server.Targeting;
 
 namespace Server.Spells.First
@@ -18,7 +19,7 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
-        public override bool DelayedDamageStacking => !Core.AOS;
+        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
         public override bool DelayedDamage => true;
 
@@ -29,6 +30,12 @@ namespace Server.Spells.First
                 var source = Caster;
 
                 SpellHelper.Turn(source, m);
+
+                if (Core.SA && HasDelayedDamageContext(m))
+                {
+                    DoHurtFizzle();
+                    return;
+                }
 
                 SpellHelper.CheckReflect((int)Circle, ref source, ref m);
 

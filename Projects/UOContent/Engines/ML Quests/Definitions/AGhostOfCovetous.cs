@@ -42,8 +42,8 @@ namespace Server.Engines.MLQuests.Definitions
             Activated = true;
             Title = 1075337; // Save His Dad
             Description =
-                1075338; // My father, Andros, is a smith in Minoc. Last week his forge overturned and he was splashed by molten steel. He was horribly burned, and we feared he would die. An alchemist in Vesper promised to make a bandage that could heal him, but he needed the silk of a dread spider. I came here to get some, but I was careless, and succumbed to their poison. Please, won�t you help my father?
-            RefusalMessage = 1075340; // Oh . . . that�s your decision . . . OooOoooOOoo . . .
+                1075338; // My father, Andros, is a smith in Minoc. Last week his forge overturned and he was splashed by molten steel. He was horribly burned, and we feared he would die. An alchemist in Vesper promised to make a bandage that could heal him, but he needed the silk of a dread spider. I came here to get some, but I was careless, and succumbed to their poison. Please, won't you help my father?
+            RefusalMessage = 1075340; // Oh . . . that's your decision . . . OooOoooOOoo . . .
             InProgressMessage =
                 1075341; // Thank you! Deliver it to Leon the Alchemist in Vesper. The silk crumbles easily, and much time has already passed since I died. Please! Hurry!
             CompletionMessage =
@@ -74,20 +74,20 @@ namespace Server.Engines.MLQuests.Definitions
         {
             Activated = true;
             OneTimeOnly = true;
-            Title = 1075343; // A Father�s Gratitude
+            Title = 1075343; // A Father's Gratitude
             Description =
-                1075344; // That is simply terrible. First Andros, and now his son. Well, let�s make sure Frederic�s sacrifice wasn�t in vain. Will you take the bandages to his father? You can probably deliver them faster than I can, can�t you?
+                1075344; // That is simply terrible. First Andros, and now his son. Well, let's make sure Frederic's sacrifice wasn't in vain. Will you take the bandages to his father? You can probably deliver them faster than I can, can't you?
             RefusalMessage =
-                1075346; // Well I�m sorry to hear you say that. Without your help, I don�t know if I can get these to Andros quickly enough to help him.
+                1075346; // Well I'm sorry to hear you say that. Without your help, I don't know if I can get these to Andros quickly enough to help him.
             InProgressMessage =
-                1075347; // I don�t know how much longer Andros will survive. You�d better get this to him as quick as you can. Every second counts!
+                1075347; // I don't know how much longer Andros will survive. You'd better get this to him as quick as you can. Every second counts!
             CompletionMessage =
-                1075348; // Sorry, I�m not accepting commissions at the moment. What? You have the bandage I need from Leon? Thank you so much! But why didn�t my son bring this to me himself? . . . Oh, no! You can't be serious! *sag* My Freddie, my son! Thank you for carrying out his last wish. Here -- I made this for my son, to give to him when he became a journeyman. I want you to have it.
+                1075348; // Sorry, I'm not accepting commissions at the moment. What? You have the bandage I need from Leon? Thank you so much! But why didn't my son bring this to me himself? . . . Oh, no! You can't be serious! *sag* My Freddie, my son! Thank you for carrying out his last wish. Here -- I made this for my son, to give to him when he became a journeyman. I want you to have it.
             CompletionNotice = CompletionNoticeShort;
 
             Objectives.Add(new DeliverObjective(typeof(AlchemistsBandage), 1, "Alchemist's Bandage", typeof(Andros)));
 
-            Rewards.Add(new ItemReward(1075345, typeof(AndrosGratitude))); // Andros� Gratitude
+            Rewards.Add(new ItemReward(1075345, typeof(AndrosGratitude))); // Andros' Gratitude
         }
 
         public override bool IsChainTriggered => true;

@@ -67,7 +67,11 @@ namespace SerializableMigration
             ruleArguments[0] = extraOptions;
             ruleArguments[1] = setTypeSymbol.ToDisplayString();
             ruleArguments[2] = serializableSetType.Rule;
-            Array.Copy(serializableSetType.RuleArguments, 0, ruleArguments, 3, length);
+
+            if (length > 0)
+            {
+                Array.Copy(serializableSetType.RuleArguments, 0, ruleArguments, 3, length);
+            }
 
             return true;
         }
@@ -98,7 +102,7 @@ namespace SerializableMigration
             source.AppendLine($"{indent}{ruleArguments[argumentsOffset]} {propertyEntry};");
             source.AppendLine($"{indent}var {propertyCount} = reader.ReadEncodedInt();");
             source.AppendLine($"{indent}{property.Name} = new System.Collections.Generic.HashSet<{ruleArguments[argumentsOffset]}>({propertyCount});");
-            source.AppendLine($"{indent}for (var {propertyIndex} = 0; i < {propertyCount}; {propertyIndex}++)");
+            source.AppendLine($"{indent}for (var {propertyIndex} = 0; {propertyIndex} < {propertyCount}; {propertyIndex}++)");
             source.AppendLine($"{indent}{{");
 
             var serializableSetElement = new SerializableProperty

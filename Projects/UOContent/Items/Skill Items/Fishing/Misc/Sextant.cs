@@ -33,7 +33,7 @@ namespace Server.Items
 
             if (Format(from.Location, from.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
             {
-                var location = $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                var location = $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}' {xMins}'{(xEast ? "E" : "W")}";
                 from.LocalOverheadMessage(MessageType.Regular, from.SpeechHue, false, location);
             }
         }

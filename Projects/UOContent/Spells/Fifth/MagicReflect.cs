@@ -52,7 +52,8 @@ namespace Server.Spells.Fifth
                  * Physical decrease = 25 - (Inscription/20).
                  * Elemental resistance = +10 (-20 physical, +10 elemental at GM Inscription)
                  * The magic reflection spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-                 * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out, even after dying�until you �turn them off� by casting them again.
+                 * Reactive Armor, Protection, and Magic Reflection will stay on even after logging out,
+                 * even after dying, until you turn them off by casting them again.
                  */
 
                 if (CheckSequence())

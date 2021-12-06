@@ -55,7 +55,7 @@ namespace Server.Spells.Second
         public override void OnCast()
         {
             Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
-            Caster.SendMessage("What do you wish to untrap?"); // TODO: Localization?
+            Caster.SendLocalizedMessage(502368);
         }
     }
 }
