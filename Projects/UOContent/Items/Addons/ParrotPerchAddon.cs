@@ -1,26 +1,25 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0)]
+public partial class ParrotPerchAddon : BaseAddon
 {
-    [Serializable(0)]
-    public partial class ParrotPerchAddon : BaseAddon
+    [Constructible]
+    public ParrotPerchAddon()
     {
-        [Constructible]
-        public ParrotPerchAddon()
-        {
-            AddComponent(new AddonComponent(0x2FF4), 0, 0, 0);
-        }
-
-        public override BaseAddonDeed Deed => new ParrotPerchDeed();
+        AddComponent(new AddonComponent(0x2FF4), 0, 0, 0);
     }
 
-    [Serializable(0)]
-    public partial class ParrotPerchDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public ParrotPerchDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new ParrotPerchDeed();
+}
 
-        public override BaseAddon Addon => new ParrotPerchAddon();
-        public override int LabelNumber => 1072617; // parrot perch
+[Serializable(0)]
+public partial class ParrotPerchDeed : BaseAddonDeed
+{
+    [Constructible]
+    public ParrotPerchDeed()
+    {
     }
+
+    public override BaseAddon Addon => new ParrotPerchAddon();
+    public override int LabelNumber => 1072617; // parrot perch
 }

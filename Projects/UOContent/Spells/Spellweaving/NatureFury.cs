@@ -3,99 +3,98 @@ using Server.Mobiles;
 using Server.Regions;
 using Server.Targeting;
 
-namespace Server.Spells.Spellweaving
+namespace Server.Spells.Spellweaving;
+
+public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
 {
-    public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
+    private static readonly SpellInfo _info = new(
+        "Nature's Fury",
+        "Rauvvrae",
+        -1,
+        false
+    );
+
+    public NatureFurySpell(Mobile caster, Item scroll = null)
+        : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Nature's Fury",
-            "Rauvvrae",
-            -1,
-            false
-        );
+    }
 
-        public NatureFurySpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
+
+    public override double RequiredSkill => 0.0;
+    public override int RequiredMana => 24;
+
+    public void Target(IPoint3D point)
+    {
+        var p = new Point3D(point);
+        var map = Caster.Map;
+
+        if (map == null)
         {
+            return;
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
-
-        public override double RequiredSkill => 0.0;
-        public override int RequiredMana => 24;
-
-        public void Target(IPoint3D point)
+        if (Region.Find(p, map).GetRegion<HouseRegion>()?.House?.IsFriend(Caster) == false)
         {
-            var p = new Point3D(point);
-            var map = Caster.Map;
-
-            if (map == null)
-            {
-                return;
-            }
-
-            if (Region.Find(p, map).GetRegion<HouseRegion>()?.House?.IsFriend(Caster) == false)
-            {
-                return;
-            }
-
-            if (!map.CanSpawnMobile(p.X, p.Y, p.Z))
-            {
-                Caster.SendLocalizedMessage(501942); // That location is blocked.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
-            {
-                var duration = TimeSpan.FromSeconds(Caster.Skills.Spellweaving.Value / 24 + 25 + FocusLevel * 2);
-
-                var nf = new NatureFury();
-                BaseCreature.Summon(nf, false, Caster, p, 0x5CB, duration);
-
-                new InternalTimer(nf).Start();
-            }
-
-            FinishSequence();
+            return;
         }
 
-        public override bool CheckCast()
+        if (!map.CanSpawnMobile(p.X, p.Y, p.Z))
         {
-            if (!base.CheckCast())
-            {
-                return false;
-            }
+            Caster.SendLocalizedMessage(501942); // That location is blocked.
+        }
+        else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+        {
+            var duration = TimeSpan.FromSeconds(Caster.Skills.Spellweaving.Value / 24 + 25 + FocusLevel * 2);
 
-            if (Caster.Followers + 1 > Caster.FollowersMax)
-            {
-                Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
-                return false;
-            }
+            var nf = new NatureFury();
+            BaseCreature.Summon(nf, false, Caster, p, 0x5CB, duration);
 
-            return true;
+            new InternalTimer(nf).Start();
         }
 
-        public override void OnCast()
+        FinishSequence();
+    }
+
+    public override bool CheckCast()
+    {
+        if (!base.CheckCast())
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, 10);
+            return false;
         }
 
-        private class InternalTimer : Timer
+        if (Caster.Followers + 1 > Caster.FollowersMax)
         {
-            private readonly NatureFury m_NatureFury;
+            Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
+            return false;
+        }
 
-            public InternalTimer(NatureFury nf)
-                : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>
-                m_NatureFury = nf;
+        return true;
+    }
 
-            protected override void OnTick()
+    public override void OnCast()
+    {
+        Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, 10);
+    }
+
+    private class InternalTimer : Timer
+    {
+        private readonly NatureFury m_NatureFury;
+
+        public InternalTimer(NatureFury nf)
+            : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>
+            m_NatureFury = nf;
+
+        protected override void OnTick()
+        {
+            if (m_NatureFury.Deleted || !m_NatureFury.Alive || m_NatureFury.DamageMin > 20)
             {
-                if (m_NatureFury.Deleted || !m_NatureFury.Alive || m_NatureFury.DamageMin > 20)
-                {
-                    Stop();
-                }
-                else
-                {
-                    ++m_NatureFury.DamageMin;
-                    ++m_NatureFury.DamageMax;
-                }
+                Stop();
+            }
+            else
+            {
+                ++m_NatureFury.DamageMin;
+                ++m_NatureFury.DamageMax;
             }
         }
     }

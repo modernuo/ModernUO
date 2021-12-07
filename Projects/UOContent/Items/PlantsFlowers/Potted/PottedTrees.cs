@@ -1,50 +1,49 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class PottedTree : Item
 {
-    public class PottedTree : Item
+    [Constructible]
+    public PottedTree() : base(0x11C8) => Weight = 100;
+
+    public PottedTree(Serial serial) : base(serial)
     {
-        [Constructible]
-        public PottedTree() : base(0x11C8) => Weight = 100;
-
-        public PottedTree(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PottedTree1 : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public PottedTree1() : base(0x11C9) => Weight = 100;
+        base.Serialize(writer);
 
-        public PottedTree1(Serial serial) : base(serial)
-        {
-        }
+        writer.Write(0);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0);
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class PottedTree1 : Item
+{
+    [Constructible]
+    public PottedTree1() : base(0x11C9) => Weight = 100;
 
-            var version = reader.ReadInt();
-        }
+    public PottedTree1(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

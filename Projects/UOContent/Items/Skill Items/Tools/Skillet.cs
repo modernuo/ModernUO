@@ -1,35 +1,34 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class Skillet : BaseTool
 {
-    public class Skillet : BaseTool
+    [Constructible]
+    public Skillet() : base(0x97F) => Weight = 1.0;
+
+    [Constructible]
+    public Skillet(int uses) : base(uses, 0x97F) => Weight = 1.0;
+
+    public Skillet(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Skillet() : base(0x97F) => Weight = 1.0;
+    }
 
-        [Constructible]
-        public Skillet(int uses) : base(uses, 0x97F) => Weight = 1.0;
+    public override int LabelNumber => 1044567; // skillet
 
-        public Skillet(Serial serial) : base(serial)
-        {
-        }
+    public override CraftSystem CraftSystem => DefCooking.CraftSystem;
 
-        public override int LabelNumber => 1044567; // skillet
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefCooking.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

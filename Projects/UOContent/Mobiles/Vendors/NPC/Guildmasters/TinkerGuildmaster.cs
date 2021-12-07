@@ -2,92 +2,91 @@ using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class TinkerGuildmaster : BaseGuildmaster
 {
-    public class TinkerGuildmaster : BaseGuildmaster
+    [Constructible]
+    public TinkerGuildmaster() : base("tinker")
     {
-        [Constructible]
-        public TinkerGuildmaster() : base("tinker")
+        SetSkill(SkillName.Lockpicking, 65.0, 88.0);
+        SetSkill(SkillName.Tinkering, 90.0, 100.0);
+        SetSkill(SkillName.RemoveTrap, 85.0, 100.0);
+    }
+
+    public TinkerGuildmaster(Serial serial) : base(serial)
+    {
+    }
+
+    public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+
+    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+        if (Core.ML && from.Alive)
         {
-            SetSkill(SkillName.Lockpicking, 65.0, 88.0);
-            SetSkill(SkillName.Tinkering, 90.0, 100.0);
-            SetSkill(SkillName.RemoveTrap, 85.0, 100.0);
-        }
+            var entry = new RechargeEntry(from, this);
 
-        public TinkerGuildmaster(Serial serial) : base(serial)
-        {
-        }
-
-        public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
-        {
-            if (Core.ML && from.Alive)
+            if (WeaponEngravingTool.Find(from) == null)
             {
-                var entry = new RechargeEntry(from, this);
-
-                if (WeaponEngravingTool.Find(from) == null)
-                {
-                    entry.Enabled = false;
-                }
-
-                list.Add(entry);
+                entry.Enabled = false;
             }
 
-            base.AddCustomContextEntries(from, list);
+            list.Add(entry);
         }
 
-        private class RechargeEntry : ContextMenuEntry
-        {
-            private readonly Mobile m_From;
-            private readonly Mobile m_Vendor;
+        base.AddCustomContextEntries(from, list);
+    }
 
-            public RechargeEntry(Mobile from, Mobile vendor) : base(6271, 6)
+    private class RechargeEntry : ContextMenuEntry
+    {
+        private readonly Mobile m_From;
+        private readonly Mobile m_Vendor;
+
+        public RechargeEntry(Mobile from, Mobile vendor) : base(6271, 6)
+        {
+            m_From = from;
+            m_Vendor = vendor;
+        }
+
+        public override void OnClick()
+        {
+            if (!Core.ML || m_Vendor?.Deleted != false)
             {
-                m_From = from;
-                m_Vendor = vendor;
+                return;
             }
 
-            public override void OnClick()
+            var tool = WeaponEngravingTool.Find(m_From);
+
+            if (tool?.UsesRemaining <= 0)
             {
-                if (!Core.ML || m_Vendor?.Deleted != false)
+                if (Banker.GetBalance(m_From) >= 100000)
                 {
-                    return;
-                }
-
-                var tool = WeaponEngravingTool.Find(m_From);
-
-                if (tool?.UsesRemaining <= 0)
-                {
-                    if (Banker.GetBalance(m_From) >= 100000)
-                    {
-                        m_From.SendGump(new WeaponEngravingTool.ConfirmGump(tool, m_Vendor));
-                    }
-                    else
-                    {
-                        m_Vendor.Say(1076167); // You need a 100,000 gold and a blue diamond to recharge the weapon engraver.
-                    }
+                    m_From.SendGump(new WeaponEngravingTool.ConfirmGump(tool, m_Vendor));
                 }
                 else
                 {
-                    m_Vendor.Say(
-                        1076164
-                    ); // I can only help with this if you are carrying an engraving tool that needs repair.
+                    m_Vendor.Say(1076167); // You need a 100,000 gold and a blue diamond to recharge the weapon engraver.
                 }
+            }
+            else
+            {
+                m_Vendor.Say(
+                    1076164
+                ); // I can only help with this if you are carrying an engraving tool that needs repair.
             }
         }
     }

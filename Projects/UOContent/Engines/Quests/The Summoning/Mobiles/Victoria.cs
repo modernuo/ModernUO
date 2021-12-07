@@ -1,156 +1,155 @@
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Doom
+namespace Server.Engines.Quests.Doom;
+
+public class Victoria : BaseQuester
 {
-    public class Victoria : BaseQuester
+    private const int AltarRange = 24;
+
+    private SummoningAltar m_Altar;
+
+    [Constructible]
+    public Victoria() : base("the Sorceress")
     {
-        private const int AltarRange = 24;
+    }
 
-        private SummoningAltar m_Altar;
+    public Victoria(Serial serial) : base(serial)
+    {
+    }
 
-        [Constructible]
-        public Victoria() : base("the Sorceress")
+    public override int TalkNumber => 6159; // Ask about Chyloth
+    public override string DefaultName => "Victoria";
+    public override bool ClickTitle => true;
+    public override bool IsActiveVendor => true;
+    public override bool DisallowAllMoves => false;
+
+    public SummoningAltar Altar
+    {
+        get
         {
-        }
-
-        public Victoria(Serial serial) : base(serial)
-        {
-        }
-
-        public override int TalkNumber => 6159; // Ask about Chyloth
-        public override string DefaultName => "Victoria";
-        public override bool ClickTitle => true;
-        public override bool IsActiveVendor => true;
-        public override bool DisallowAllMoves => false;
-
-        public SummoningAltar Altar
-        {
-            get
+            if (m_Altar?.Deleted != false || m_Altar.Map != Map ||
+                !Utility.InRange(m_Altar.Location, Location, AltarRange))
             {
-                if (m_Altar?.Deleted != false || m_Altar.Map != Map ||
-                    !Utility.InRange(m_Altar.Location, Location, AltarRange))
+                foreach (var item in GetItemsInRange(AltarRange))
                 {
-                    foreach (var item in GetItemsInRange(AltarRange))
+                    if (item is SummoningAltar altar)
                     {
-                        if (item is SummoningAltar altar)
-                        {
-                            m_Altar = altar;
-                            break;
-                        }
-                    }
-                }
-
-                return m_Altar;
-            }
-        }
-
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBMage());
-        }
-
-        public override void InitBody()
-        {
-            InitStats(100, 100, 25);
-
-            Female = true;
-            Hue = 0x8835;
-            Body = 0x191;
-        }
-
-        public override void InitOutfit()
-        {
-            EquipItem(new GrandGrimoire());
-
-            EquipItem(SetHue(new Sandals(), 0x455));
-            EquipItem(SetHue(new SkullCap(), 0x455));
-            EquipItem(SetHue(new PlainDress(), 0x455));
-
-            HairItemID = 0x203C;
-            HairHue = 0x482;
-        }
-
-        public override bool OnDragDrop(Mobile from, Item dropped)
-        {
-            if (from is PlayerMobile player)
-            {
-                var qs = player.Quest;
-
-                if (qs is TheSummoningQuest)
-                {
-                    if (dropped is DaemonBone bones)
-                    {
-                        QuestObjective obj = qs.FindObjective<CollectBonesObjective>();
-
-                        if (obj?.Completed == false)
-                        {
-                            var need = obj.MaxProgress - obj.CurProgress;
-
-                            if (bones.Amount < need)
-                            {
-                                obj.CurProgress += bones.Amount;
-                                bones.Delete();
-
-                                qs.ShowQuestLogUpdated();
-                            }
-                            else
-                            {
-                                obj.Complete();
-                                bones.Consume(need);
-
-                                if (!bones.Deleted)
-                                {
-                                    SayTo(
-                                        from,
-                                        1050038
-                                    ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // TODO: Accurate?
-                            SayTo(
-                                from,
-                                1050038
-                            ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
-                        }
-
-                        return false;
+                        m_Altar = altar;
+                        break;
                     }
                 }
             }
 
-            return base.OnDragDrop(from, dropped);
+            return m_Altar;
         }
+    }
 
-        public override bool CanTalkTo(PlayerMobile to) =>
-            to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(TheSummoningQuest));
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBMage());
+    }
 
-        public override void OnTalk(PlayerMobile player, bool contextMenu)
+    public override void InitBody()
+    {
+        InitStats(100, 100, 25);
+
+        Female = true;
+        Hue = 0x8835;
+        Body = 0x191;
+    }
+
+    public override void InitOutfit()
+    {
+        EquipItem(new GrandGrimoire());
+
+        EquipItem(SetHue(new Sandals(), 0x455));
+        EquipItem(SetHue(new SkullCap(), 0x455));
+        EquipItem(SetHue(new PlainDress(), 0x455));
+
+        HairItemID = 0x203C;
+        HairHue = 0x482;
+    }
+
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+        if (from is PlayerMobile player)
         {
             var qs = player.Quest;
 
-            if (qs == null && QuestSystem.CanOfferQuest(player, typeof(TheSummoningQuest)))
+            if (qs is TheSummoningQuest)
             {
-                Direction = GetDirectionTo(player);
-                new TheSummoningQuest(this, player).SendOffer();
+                if (dropped is DaemonBone bones)
+                {
+                    QuestObjective obj = qs.FindObjective<CollectBonesObjective>();
+
+                    if (obj?.Completed == false)
+                    {
+                        var need = obj.MaxProgress - obj.CurProgress;
+
+                        if (bones.Amount < need)
+                        {
+                            obj.CurProgress += bones.Amount;
+                            bones.Delete();
+
+                            qs.ShowQuestLogUpdated();
+                        }
+                        else
+                        {
+                            obj.Complete();
+                            bones.Consume(need);
+
+                            if (!bones.Deleted)
+                            {
+                                SayTo(
+                                    from,
+                                    1050038
+                                ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // TODO: Accurate?
+                        SayTo(
+                            from,
+                            1050038
+                        ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
+                    }
+
+                    return false;
+                }
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        return base.OnDragDrop(from, dropped);
+    }
+
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(TheSummoningQuest));
+
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+        var qs = player.Quest;
+
+        if (qs == null && QuestSystem.CanOfferQuest(player, typeof(TheSummoningQuest)))
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
+            Direction = GetDirectionTo(player);
+            new TheSummoningQuest(this, player).SendOffer();
         }
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

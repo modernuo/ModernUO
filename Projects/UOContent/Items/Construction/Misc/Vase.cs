@@ -1,74 +1,73 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class Vase : Item
 {
-    public class Vase : Item
+    [Constructible]
+    public Vase() : base(0xB46) => Weight = 10;
+
+    public Vase(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Vase() : base(0xB46) => Weight = 10;
-
-        public Vase(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class LargeVase : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public LargeVase() : base(0xB45) => Weight = 15;
+        base.Serialize(writer);
 
-        public LargeVase(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class SmallUrn : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SmallUrn() : base(0x241C) => Weight = 20.0;
+        base.Deserialize(reader);
 
-        public SmallUrn(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class LargeVase : Item
+{
+    [Constructible]
+    public LargeVase() : base(0xB45) => Weight = 15;
 
-            writer.Write(0);
-        }
+    public LargeVase(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class SmallUrn : Item
+{
+    [Constructible]
+    public SmallUrn() : base(0x241C) => Weight = 20.0;
+
+    public SmallUrn(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

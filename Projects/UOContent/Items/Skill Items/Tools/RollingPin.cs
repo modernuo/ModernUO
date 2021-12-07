@@ -1,33 +1,32 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class RollingPin : BaseTool
 {
-    public class RollingPin : BaseTool
+    [Constructible]
+    public RollingPin() : base(0x1043) => Weight = 1.0;
+
+    [Constructible]
+    public RollingPin(int uses) : base(uses, 0x1043) => Weight = 1.0;
+
+    public RollingPin(Serial serial) : base(serial)
     {
-        [Constructible]
-        public RollingPin() : base(0x1043) => Weight = 1.0;
+    }
 
-        [Constructible]
-        public RollingPin(int uses) : base(uses, 0x1043) => Weight = 1.0;
+    public override CraftSystem CraftSystem => DefCooking.CraftSystem;
 
-        public RollingPin(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefCooking.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

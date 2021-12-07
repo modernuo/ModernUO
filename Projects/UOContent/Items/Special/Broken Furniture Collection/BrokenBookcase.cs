@@ -1,86 +1,85 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0xC14, 0xC15)]
+public class BrokenBookcaseComponent : AddonComponent
 {
-    [Flippable(0xC14, 0xC15)]
-    public class BrokenBookcaseComponent : AddonComponent
+    public BrokenBookcaseComponent() : base(0xC14)
     {
-        public BrokenBookcaseComponent() : base(0xC14)
-        {
-        }
-
-        public BrokenBookcaseComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1076258; // Broken Bookcase
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BrokenBookcaseAddon : BaseAddon
+    public BrokenBookcaseComponent(Serial serial) : base(serial)
     {
-        [Constructible]
-        public BrokenBookcaseAddon()
-        {
-            AddComponent(new BrokenBookcaseComponent(), 0, 0, 0);
-        }
-
-        public BrokenBookcaseAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new BrokenBookcaseDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BrokenBookcaseDeed : BaseAddonDeed
+    public override int LabelNumber => 1076258; // Broken Bookcase
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public BrokenBookcaseDeed() => LootType = LootType.Blessed;
+        base.Serialize(writer);
 
-        public BrokenBookcaseDeed(Serial serial) : base(serial)
-        {
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override BaseAddon Addon => new BrokenBookcaseAddon();
-        public override int LabelNumber => 1076258; // Broken Bookcase
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-            writer.WriteEncodedInt(0); // version
-        }
+public class BrokenBookcaseAddon : BaseAddon
+{
+    [Constructible]
+    public BrokenBookcaseAddon()
+    {
+        AddComponent(new BrokenBookcaseComponent(), 0, 0, 0);
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public BrokenBookcaseAddon(Serial serial) : base(serial)
+    {
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override BaseAddonDeed Deed => new BrokenBookcaseDeed();
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class BrokenBookcaseDeed : BaseAddonDeed
+{
+    [Constructible]
+    public BrokenBookcaseDeed() => LootType = LootType.Blessed;
+
+    public BrokenBookcaseDeed(Serial serial) : base(serial)
+    {
+    }
+
+    public override BaseAddon Addon => new BrokenBookcaseAddon();
+    public override int LabelNumber => 1076258; // Broken Bookcase
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

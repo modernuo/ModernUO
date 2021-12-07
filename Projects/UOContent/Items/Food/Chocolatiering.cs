@@ -1,263 +1,262 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class CocoaLiquor : Item
 {
-    public class CocoaLiquor : Item
+    [Constructible]
+    public CocoaLiquor()
+        : base(0x103F) =>
+        Hue = 0x46A;
+
+    public CocoaLiquor(Serial serial)
+        : base(serial)
     {
-        [Constructible]
-        public CocoaLiquor()
-            : base(0x103F) =>
-            Hue = 0x46A;
-
-        public CocoaLiquor(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1080007; // Cocoa liquor
-        public override double DefaultWeight => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class SackOfSugar : Item
+    public override int LabelNumber => 1080007; // Cocoa liquor
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SackOfSugar(int amount = 1)
-            : base(0x1039)
-        {
-            Hue = 0x461;
-            Stackable = true;
-            Amount = amount;
-        }
+        base.Serialize(writer);
 
-        public SackOfSugar(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1080003; // Sack of sugar
-        public override double DefaultWeight => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class CocoaButter : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public CocoaButter()
-            : base(0x1044) =>
-            Hue = 0x457;
+        base.Deserialize(reader);
 
-        public CocoaButter(Serial serial)
-            : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override int LabelNumber => 1080005; // Cocoa butter
-        public override double DefaultWeight => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class SackOfSugar : Item
+{
+    [Constructible]
+    public SackOfSugar(int amount = 1)
+        : base(0x1039)
+    {
+        Hue = 0x461;
+        Stackable = true;
+        Amount = amount;
     }
 
-    public class Vanilla : Item
+    public SackOfSugar(Serial serial)
+        : base(serial)
     {
-        [Constructible]
-        public Vanilla(int amount = 1)
-            : base(0xE2A)
-        {
-            Hue = 0x462;
-            Stackable = true;
-            Amount = amount;
-        }
-
-        public Vanilla(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1080009; // Vanilla
-        public override double DefaultWeight => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class CocoaPulp : Item
+    public override int LabelNumber => 1080003; // Sack of sugar
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public CocoaPulp(int amount = 1)
-            : base(0xF7C)
-        {
-            Hue = 0x219;
-            Stackable = true;
-            Amount = amount;
-        }
+        base.Serialize(writer);
 
-        public CocoaPulp(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1080530; // cocoa pulp
-        public override double DefaultWeight => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class DarkChocolate : CandyCane
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public DarkChocolate()
-            : base(0xF10)
-        {
-            Hue = 0x465;
-            LootType = LootType.Regular;
-        }
+        base.Deserialize(reader);
 
-        public DarkChocolate(Serial serial)
-            : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override int LabelNumber => 1079994; // Dark chocolate
-        public override double DefaultWeight => 1.0;
+public class CocoaButter : Item
+{
+    [Constructible]
+    public CocoaButter()
+        : base(0x1044) =>
+        Hue = 0x457;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public CocoaButter(Serial serial)
+        : base(serial)
+    {
     }
 
-    public class MilkChocolate : CandyCane
+    public override int LabelNumber => 1080005; // Cocoa butter
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public MilkChocolate()
-            : base(0xF18)
-        {
-            Hue = 0x461;
-            LootType = LootType.Regular;
-        }
+        base.Serialize(writer);
 
-        public MilkChocolate(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1079995; // Milk chocolate
-        public override double DefaultWeight => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class WhiteChocolate : CandyCane
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public WhiteChocolate()
-            : base(0xF11)
-        {
-            Hue = 0x47E;
-            LootType = LootType.Regular;
-        }
+        base.Deserialize(reader);
 
-        public WhiteChocolate(Serial serial)
-            : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override int LabelNumber => 1079996; // White chocolate
-        public override double DefaultWeight => 1.0;
+public class Vanilla : Item
+{
+    [Constructible]
+    public Vanilla(int amount = 1)
+        : base(0xE2A)
+    {
+        Hue = 0x462;
+        Stackable = true;
+        Amount = amount;
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public Vanilla(Serial serial)
+        : base(serial)
+    {
+    }
 
-            writer.Write(0);
-        }
+    public override int LabelNumber => 1080009; // Vanilla
+    public override double DefaultWeight => 1.0;
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class CocoaPulp : Item
+{
+    [Constructible]
+    public CocoaPulp(int amount = 1)
+        : base(0xF7C)
+    {
+        Hue = 0x219;
+        Stackable = true;
+        Amount = amount;
+    }
+
+    public CocoaPulp(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1080530; // cocoa pulp
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class DarkChocolate : CandyCane
+{
+    [Constructible]
+    public DarkChocolate()
+        : base(0xF10)
+    {
+        Hue = 0x465;
+        LootType = LootType.Regular;
+    }
+
+    public DarkChocolate(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1079994; // Dark chocolate
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class MilkChocolate : CandyCane
+{
+    [Constructible]
+    public MilkChocolate()
+        : base(0xF18)
+    {
+        Hue = 0x461;
+        LootType = LootType.Regular;
+    }
+
+    public MilkChocolate(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1079995; // Milk chocolate
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class WhiteChocolate : CandyCane
+{
+    [Constructible]
+    public WhiteChocolate()
+        : base(0xF11)
+    {
+        Hue = 0x47E;
+        LootType = LootType.Regular;
+    }
+
+    public WhiteChocolate(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1079996; // White chocolate
+    public override double DefaultWeight => 1.0;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

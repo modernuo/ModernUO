@@ -1,54 +1,53 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0xFAF, 0xFB0), Anvil]
+public class Anvil : Item
 {
-    [Flippable(0xFAF, 0xFB0), Anvil]
-    public class Anvil : Item
+    [Constructible]
+    public Anvil() : base(0xFAF) => Movable = false;
+
+    public Anvil(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Anvil() : base(0xFAF) => Movable = false;
-
-        public Anvil(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    [Forge]
-    public class Forge : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public Forge() : base(0xFB1) => Movable = false;
+        base.Serialize(writer);
 
-        public Forge(Serial serial) : base(serial)
-        {
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+[Forge]
+public class Forge : Item
+{
+    [Constructible]
+    public Forge() : base(0xFB1) => Movable = false;
 
-            var version = reader.ReadInt();
-        }
+    public Forge(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

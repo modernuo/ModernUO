@@ -1,11 +1,10 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class RightArm : Item
 {
-    [Serializable(0, false)]
-    public partial class RightArm : Item
+    [Constructible]
+    public RightArm() : base(0x1DA2)
     {
-        [Constructible]
-        public RightArm() : base(0x1DA2)
-        {
-        }
     }
 }

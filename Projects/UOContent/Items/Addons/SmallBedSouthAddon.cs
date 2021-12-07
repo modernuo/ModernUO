@@ -1,27 +1,26 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class SmallBedSouthAddon : BaseAddon
 {
-    [Serializable(0, false)]
-    public partial class SmallBedSouthAddon : BaseAddon
+    [Constructible]
+    public SmallBedSouthAddon()
     {
-        [Constructible]
-        public SmallBedSouthAddon()
-        {
-            AddComponent(new AddonComponent(0xA63), 0, 0, 0);
-            AddComponent(new AddonComponent(0xA5C), 0, 1, 0);
-        }
-
-        public override BaseAddonDeed Deed => new SmallBedSouthDeed();
+        AddComponent(new AddonComponent(0xA63), 0, 0, 0);
+        AddComponent(new AddonComponent(0xA5C), 0, 1, 0);
     }
 
-    [Serializable(0, false)]
-    public partial class SmallBedSouthDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public SmallBedSouthDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new SmallBedSouthDeed();
+}
 
-        public override BaseAddon Addon => new SmallBedSouthAddon();
-        public override int LabelNumber => 1044321; // small bed (south)
+[Serializable(0, false)]
+public partial class SmallBedSouthDeed : BaseAddonDeed
+{
+    [Constructible]
+    public SmallBedSouthDeed()
+    {
     }
+
+    public override BaseAddon Addon => new SmallBedSouthAddon();
+    public override int LabelNumber => 1044321; // small bed (south)
 }

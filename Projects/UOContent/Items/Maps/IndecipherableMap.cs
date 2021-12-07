@@ -1,43 +1,42 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class IndecipherableMap : MapItem
 {
-    public class IndecipherableMap : MapItem
+    [Constructible]
+    public IndecipherableMap()
     {
-        [Constructible]
-        public IndecipherableMap()
+        if (Utility.RandomDouble() < 0.2)
         {
-            if (Utility.RandomDouble() < 0.2)
-            {
-                Hue = 0x965;
-            }
-            else
-            {
-                Hue = 0x961;
-            }
+            Hue = 0x965;
         }
-
-        public IndecipherableMap(Serial serial) : base(serial)
+        else
         {
+            Hue = 0x961;
         }
+    }
 
-        public override int LabelNumber => 1070799; // indecipherable map
+    public IndecipherableMap(Serial serial) : base(serial)
+    {
+    }
 
-        public override void OnDoubleClick(Mobile from)
-        {
-            from.SendLocalizedMessage(1070801); // You cannot decipher this ruined map.
-        }
+    public override int LabelNumber => 1070799; // indecipherable map
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void OnDoubleClick(Mobile from)
+    {
+        from.SendLocalizedMessage(1070801); // You cannot decipher this ruined map.
+    }
 
-            writer.WriteEncodedInt(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.WriteEncodedInt(0); // version
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

@@ -13,14 +13,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server
+namespace Server;
+
+public readonly struct EntityTypeIndex : IIndexInfo<Serial>
 {
-    public readonly struct EntityTypeIndex : IIndexInfo<Serial>
-    {
-        public string TypeName { get; }
+    public string TypeName { get; }
 
-        public EntityTypeIndex(string typeName) => TypeName = typeName;
+    public EntityTypeIndex(string typeName) => TypeName = typeName;
 
-        public Serial CreateIndex(uint num) => (Serial)num;
-    }
+    public Serial CreateIndex(uint num) => (Serial)num;
 }

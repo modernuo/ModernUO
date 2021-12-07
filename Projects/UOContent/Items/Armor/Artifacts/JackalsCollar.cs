@@ -1,23 +1,22 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class JackalsCollar : PlateGorget
 {
-    [Serializable(0, false)]
-    public partial class JackalsCollar : PlateGorget
+    [Constructible]
+    public JackalsCollar()
     {
-        [Constructible]
-        public JackalsCollar()
-        {
-            Hue = 0x6D1;
-            Attributes.BonusDex = 15;
-            Attributes.RegenHits = 2;
-        }
-
-        public override int LabelNumber => 1061594; // Jackal's Collar
-        public override int ArtifactRarity => 11;
-
-        public override int BaseFireResistance => 23;
-        public override int BaseColdResistance => 17;
-
-        public override int InitMinHits => 255;
-        public override int InitMaxHits => 255;
+        Hue = 0x6D1;
+        Attributes.BonusDex = 15;
+        Attributes.RegenHits = 2;
     }
+
+    public override int LabelNumber => 1061594; // Jackal's Collar
+    public override int ArtifactRarity => 11;
+
+    public override int BaseFireResistance => 23;
+    public override int BaseColdResistance => 17;
+
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 }

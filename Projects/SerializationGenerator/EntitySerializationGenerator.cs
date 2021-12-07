@@ -19,72 +19,71 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using SerializableMigration;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+[Generator]
+public class EntitySerializationGenerator : ISourceGenerator
 {
-    [Generator]
-    public class EntitySerializationGenerator : ISourceGenerator
+    public void Initialize(GeneratorInitializationContext context)
     {
-        public void Initialize(GeneratorInitializationContext context)
+        context.RegisterForSyntaxNotifications(() => new SerializerSyntaxReceiver());
+    }
+
+    public void Execute(GeneratorExecutionContext context)
+    {
+        if (context.SyntaxContextReceiver is not SerializerSyntaxReceiver receiver)
         {
-            context.RegisterForSyntaxNotifications(() => new SerializerSyntaxReceiver());
+            return;
         }
 
-        public void Execute(GeneratorExecutionContext context)
+        var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions();
+        // List of types that _will_ become ISerializable
+        var serializableList = receiver.SerializableList;
+        var embeddedSerializableList = receiver.EmbeddedSerializableList;
+
+        foreach (var (classSymbol, (serializableAttr, fieldsList)) in receiver.ClassAndFields)
         {
-            if (context.SyntaxContextReceiver is not SerializerSyntaxReceiver receiver)
+            if (serializableAttr == null)
             {
-                return;
+                continue;
             }
 
-            var jsonOptions = SerializableMigrationSchema.GetJsonSerializerOptions();
-            // List of types that _will_ become ISerializable
-            var serializableList = receiver.SerializableList;
-            var embeddedSerializableList = receiver.EmbeddedSerializableList;
+            string classSource = context.GenerateSerializationPartialClass(
+                classSymbol,
+                serializableAttr,
+                false,
+                fieldsList.ToImmutableArray(),
+                jsonOptions,
+                serializableList,
+                embeddedSerializableList
+            );
 
-            foreach (var (classSymbol, (serializableAttr, fieldsList)) in receiver.ClassAndFields)
+            if (classSource != null)
             {
-                if (serializableAttr == null)
-                {
-                    continue;
-                }
+                context.AddSource($"{classSymbol.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
+            }
+        }
 
-                string classSource = context.GenerateSerializationPartialClass(
-                    classSymbol,
-                    serializableAttr,
-                    false,
-                    fieldsList.ToImmutableArray(),
-                    jsonOptions,
-                    serializableList,
-                    embeddedSerializableList
-                );
-
-                if (classSource != null)
-                {
-                    context.AddSource($"{classSymbol.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
-                }
+        foreach (var (classSymbol, (embeddedSerializableAttr, fieldsList)) in receiver.EmbeddedClassAndFields)
+        {
+            if (embeddedSerializableAttr == null)
+            {
+                continue;
             }
 
-            foreach (var (classSymbol, (embeddedSerializableAttr, fieldsList)) in receiver.EmbeddedClassAndFields)
+            string classSource = context.GenerateSerializationPartialClass(
+                classSymbol,
+                embeddedSerializableAttr,
+                true,
+                fieldsList.ToImmutableArray(),
+                jsonOptions,
+                serializableList,
+                embeddedSerializableList
+            );
+
+            if (classSource != null)
             {
-                if (embeddedSerializableAttr == null)
-                {
-                    continue;
-                }
-
-                string classSource = context.GenerateSerializationPartialClass(
-                    classSymbol,
-                    embeddedSerializableAttr,
-                    true,
-                    fieldsList.ToImmutableArray(),
-                    jsonOptions,
-                    serializableList,
-                    embeddedSerializableList
-                );
-
-                if (classSource != null)
-                {
-                    context.AddSource($"{classSymbol.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
-                }
+                context.AddSource($"{classSymbol.ToDisplayString()}.Serialization.cs", SourceText.From(classSource, Encoding.UTF8));
             }
         }
     }

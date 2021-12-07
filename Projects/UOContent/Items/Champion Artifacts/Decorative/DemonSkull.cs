@@ -1,11 +1,10 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class DemonSkull : Item
 {
-    [Serializable(0, false)]
-    public partial class DemonSkull : Item
+    [Constructible]
+    public DemonSkull() : base(0x224e + Utility.Random(4))
     {
-        [Constructible]
-        public DemonSkull() : base(0x224e + Utility.Random(4))
-        {
-        }
     }
 }

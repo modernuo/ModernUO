@@ -1,7 +1,6 @@
-namespace Server.Spells
+namespace Server.Spells;
+
+public interface ISpellTarget
 {
-    public interface ISpellTarget
-    {
-        ISpell Spell { get; }
-    }
+    ISpell Spell { get; }
 }

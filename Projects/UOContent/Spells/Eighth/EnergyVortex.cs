@@ -1,76 +1,75 @@
 using System;
 using Server.Mobiles;
 
-namespace Server.Spells.Eighth
+namespace Server.Spells.Eighth;
+
+public class EnergyVortexSpell : MagerySpell, ISpellTargetingPoint3D
 {
-    public class EnergyVortexSpell : MagerySpell, ISpellTargetingPoint3D
+    private static readonly SpellInfo _info = new(
+        "Energy Vortex",
+        "Vas Corp Por",
+        260,
+        9032,
+        false,
+        Reagent.Bloodmoss,
+        Reagent.BlackPearl,
+        Reagent.MandrakeRoot,
+        Reagent.Nightshade
+    );
+
+    public EnergyVortexSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Energy Vortex",
-            "Vas Corp Por",
-            260,
-            9032,
-            false,
-            Reagent.Bloodmoss,
-            Reagent.BlackPearl,
-            Reagent.MandrakeRoot,
-            Reagent.Nightshade
-        );
+    }
 
-        public EnergyVortexSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
+    public override SpellCircle Circle => SpellCircle.Eighth;
+
+    public void Target(IPoint3D p)
+    {
+        var map = Caster.Map;
+
+        SpellHelper.GetSurfaceTop(ref p);
+
+        if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
         {
+            Caster.SendLocalizedMessage(501942); // That location is blocked.
         }
-
-        public override SpellCircle Circle => SpellCircle.Eighth;
-
-        public void Target(IPoint3D p)
+        else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
         {
-            var map = Caster.Map;
+            TimeSpan duration;
 
-            SpellHelper.GetSurfaceTop(ref p);
-
-            if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
+            if (Core.AOS)
             {
-                Caster.SendLocalizedMessage(501942); // That location is blocked.
+                duration = TimeSpan.FromSeconds(90.0);
             }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            else
             {
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds(90.0);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
-                }
-
-                BaseCreature.Summon(new EnergyVortex(), false, Caster, new Point3D(p), 0x212, duration);
+                duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
             }
 
-            FinishSequence();
+            BaseCreature.Summon(new EnergyVortex(), false, Caster, new Point3D(p), 0x212, duration);
         }
 
-        public override bool CheckCast()
+        FinishSequence();
+    }
+
+    public override bool CheckCast()
+    {
+        if (!base.CheckCast())
         {
-            if (!base.CheckCast())
-            {
-                return false;
-            }
-
-            if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
-            {
-                Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
-                return false;
-            }
-
-            return true;
+            return false;
         }
 
-        public override void OnCast()
+        if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
         {
-            Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
+            Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
+            return false;
         }
+
+        return true;
+    }
+
+    public override void OnCast()
+    {
+        Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
     }
 }

@@ -1,34 +1,33 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x102C, 0x102D)]
+public class MouldingPlane : BaseTool
 {
-    [Flippable(0x102C, 0x102D)]
-    public class MouldingPlane : BaseTool
+    [Constructible]
+    public MouldingPlane() : base(0x102C) => Weight = 2.0;
+
+    [Constructible]
+    public MouldingPlane(int uses) : base(uses, 0x102C) => Weight = 2.0;
+
+    public MouldingPlane(Serial serial) : base(serial)
     {
-        [Constructible]
-        public MouldingPlane() : base(0x102C) => Weight = 2.0;
+    }
 
-        [Constructible]
-        public MouldingPlane(int uses) : base(uses, 0x102C) => Weight = 2.0;
+    public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
-        public MouldingPlane(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

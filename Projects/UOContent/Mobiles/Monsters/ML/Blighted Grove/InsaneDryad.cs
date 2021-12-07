@@ -1,46 +1,45 @@
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class InsaneDryad : MLDryad
 {
-    public class InsaneDryad : MLDryad
+    [Constructible]
+    public InsaneDryad()
     {
-        [Constructible]
-        public InsaneDryad()
-        {
-            // TODO: Perhaps these should have negative karma?
-        }
+        // TODO: Perhaps these should have negative karma?
+    }
 
-        /*
-        // TODO: uncomment once added
-        public override void OnDeath( Container c )
-        {
-          base.OnDeath( c );
-    
-          if (Utility.RandomDouble() < 0.1)
-            c.DropItem( new ParrotItem() );
-        }
-        */
+    /*
+    // TODO: uncomment once added
+    public override void OnDeath( Container c )
+    {
+      base.OnDeath( c );
 
-        public InsaneDryad(Serial serial)
-            : base(serial)
-        {
-        }
+      if (Utility.RandomDouble() < 0.1)
+        c.DropItem( new ParrotItem() );
+    }
+    */
 
-        public override string CorpseName => "an insane dryad corpse";
-        public override bool InitialInnocent => false;
+    public InsaneDryad(Serial serial)
+        : base(serial)
+    {
+    }
 
-        public override string DefaultName => "an insane dryad";
+    public override string CorpseName => "an insane dryad corpse";
+    public override bool InitialInnocent => false;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override string DefaultName => "an insane dryad";
 
-            writer.Write(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.Write(0); // version
+    }
 
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

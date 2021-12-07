@@ -1,9 +1,8 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class Torso : Item
 {
-    [Serializable(0, false)]
-    public partial class Torso : Item
-    {
-        [Constructible]
-        public Torso() : base(0x1D9F) => Weight = 2.0;
-    }
+    [Constructible]
+    public Torso() : base(0x1D9F) => Weight = 2.0;
 }

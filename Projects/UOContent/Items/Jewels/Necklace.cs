@@ -1,149 +1,148 @@
-namespace Server.Items
+namespace Server.Items;
+
+public abstract class BaseNecklace : BaseJewel
 {
-    public abstract class BaseNecklace : BaseJewel
+    public BaseNecklace(int itemID) : base(itemID, Layer.Neck)
     {
-        public BaseNecklace(int itemID) : base(itemID, Layer.Neck)
-        {
-        }
-
-        public BaseNecklace(Serial serial) : base(serial)
-        {
-        }
-
-        public override int BaseGemTypeNumber => 1044241; // star sapphire necklace
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class Necklace : BaseNecklace
+    public BaseNecklace(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Necklace() : base(0x1085) => Weight = 0.1;
-
-        public Necklace(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class GoldNecklace : BaseNecklace
+    public override int BaseGemTypeNumber => 1044241; // star sapphire necklace
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public GoldNecklace() : base(0x1088) => Weight = 0.1;
+        base.Serialize(writer);
 
-        public GoldNecklace(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class GoldBeadNecklace : BaseNecklace
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public GoldBeadNecklace() : base(0x1089) => Weight = 0.1;
+        base.Deserialize(reader);
 
-        public GoldBeadNecklace(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class Necklace : BaseNecklace
+{
+    [Constructible]
+    public Necklace() : base(0x1085) => Weight = 0.1;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public Necklace(Serial serial) : base(serial)
+    {
     }
 
-    public class SilverNecklace : BaseNecklace
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SilverNecklace() : base(0x1F08) => Weight = 0.1;
+        base.Serialize(writer);
 
-        public SilverNecklace(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class SilverBeadNecklace : BaseNecklace
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SilverBeadNecklace() : base(0x1F05) => Weight = 0.1;
+        base.Deserialize(reader);
 
-        public SilverBeadNecklace(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class GoldNecklace : BaseNecklace
+{
+    [Constructible]
+    public GoldNecklace() : base(0x1088) => Weight = 0.1;
 
-            writer.Write(0); // version
-        }
+    public GoldNecklace(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class GoldBeadNecklace : BaseNecklace
+{
+    [Constructible]
+    public GoldBeadNecklace() : base(0x1089) => Weight = 0.1;
+
+    public GoldBeadNecklace(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class SilverNecklace : BaseNecklace
+{
+    [Constructible]
+    public SilverNecklace() : base(0x1F08) => Weight = 0.1;
+
+    public SilverNecklace(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class SilverBeadNecklace : BaseNecklace
+{
+    [Constructible]
+    public SilverBeadNecklace() : base(0x1F05) => Weight = 0.1;
+
+    public SilverBeadNecklace(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

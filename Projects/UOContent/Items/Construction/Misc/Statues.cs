@@ -1,312 +1,311 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class StatueSouth : Item
 {
-    public class StatueSouth : Item
+    [Constructible]
+    public StatueSouth() : base(0x139A) => Weight = 10;
+
+    public StatueSouth(Serial serial) : base(serial)
     {
-        [Constructible]
-        public StatueSouth() : base(0x139A) => Weight = 10;
-
-        public StatueSouth(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class StatueSouth2 : Item
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public StatueSouth2() : base(0x1227) => Weight = 10;
+        base.Serialize(writer);
 
-        public StatueSouth2(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class StatueNorth : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public StatueNorth() : base(0x139B) => Weight = 10;
+        base.Deserialize(reader);
 
-        public StatueNorth(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+public class StatueSouth2 : Item
+{
+    [Constructible]
+    public StatueSouth2() : base(0x1227) => Weight = 10;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public StatueSouth2(Serial serial) : base(serial)
+    {
     }
 
-    public class StatueWest : Item
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public StatueWest() : base(0x1226) => Weight = 10;
+        base.Serialize(writer);
 
-        public StatueWest(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class StatueEast : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public StatueEast() : base(0x139C) => Weight = 10;
+        base.Deserialize(reader);
 
-        public StatueEast(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+public class StatueNorth : Item
+{
+    [Constructible]
+    public StatueNorth() : base(0x139B) => Weight = 10;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public StatueNorth(Serial serial) : base(serial)
+    {
     }
 
-    public class StatueEast2 : Item
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public StatueEast2() : base(0x1224) => Weight = 10;
+        base.Serialize(writer);
 
-        public StatueEast2(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class StatueSouthEast : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public StatueSouthEast() : base(0x1225) => Weight = 10;
+        base.Deserialize(reader);
 
-        public StatueSouthEast(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+public class StatueWest : Item
+{
+    [Constructible]
+    public StatueWest() : base(0x1226) => Weight = 10;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public StatueWest(Serial serial) : base(serial)
+    {
     }
 
-    public class BustSouth : Item
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public BustSouth() : base(0x12CB) => Weight = 10;
+        base.Serialize(writer);
 
-        public BustSouth(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class BustEast : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public BustEast() : base(0x12CA) => Weight = 10;
+        base.Deserialize(reader);
 
-        public BustEast(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+public class StatueEast : Item
+{
+    [Constructible]
+    public StatueEast() : base(0x139C) => Weight = 10;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public StatueEast(Serial serial) : base(serial)
+    {
     }
 
-    public class StatuePegasus : Item
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public StatuePegasus() : base(0x139D) => Weight = 10;
+        base.Serialize(writer);
 
-        public StatuePegasus(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class StatuePegasus2 : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public StatuePegasus2() : base(0x1228) => Weight = 10;
+        base.Deserialize(reader);
 
-        public StatuePegasus2(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+public class StatueEast2 : Item
+{
+    [Constructible]
+    public StatueEast2() : base(0x1224) => Weight = 10;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public StatueEast2(Serial serial) : base(serial)
+    {
     }
 
-    public class SmallTowerSculpture : Item
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SmallTowerSculpture() : base(0x241A) => Weight = 20.0;
+        base.Serialize(writer);
 
-        public SmallTowerSculpture(Serial serial) : base(serial)
-        {
-        }
+        writer.Write(0);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0);
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class StatueSouthEast : Item
+{
+    [Constructible]
+    public StatueSouthEast() : base(0x1225) => Weight = 10;
 
-            var version = reader.ReadInt();
-        }
+    public StatueSouthEast(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class BustSouth : Item
+{
+    [Constructible]
+    public BustSouth() : base(0x12CB) => Weight = 10;
+
+    public BustSouth(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class BustEast : Item
+{
+    [Constructible]
+    public BustEast() : base(0x12CA) => Weight = 10;
+
+    public BustEast(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class StatuePegasus : Item
+{
+    [Constructible]
+    public StatuePegasus() : base(0x139D) => Weight = 10;
+
+    public StatuePegasus(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class StatuePegasus2 : Item
+{
+    [Constructible]
+    public StatuePegasus2() : base(0x1228) => Weight = 10;
+
+    public StatuePegasus2(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class SmallTowerSculpture : Item
+{
+    [Constructible]
+    public SmallTowerSculpture() : base(0x241A) => Weight = 20.0;
+
+    public SmallTowerSculpture(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

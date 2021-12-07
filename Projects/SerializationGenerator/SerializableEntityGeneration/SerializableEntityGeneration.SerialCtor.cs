@@ -17,36 +17,35 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SerializableEntityGeneration
 {
-    public static partial class SerializableEntityGeneration
+    private static readonly ImmutableArray<string> _baseParameters = new[] { "serial" }.ToImmutableArray();
+    public static void GenerateSerialCtor(
+        this StringBuilder source,
+        Compilation compilation,
+        string className,
+        string indent,
+        bool isOverride
+    )
     {
-        private static readonly ImmutableArray<string> _baseParameters = new[] { "serial" }.ToImmutableArray();
-        public static void GenerateSerialCtor(
-            this StringBuilder source,
-            Compilation compilation,
-            string className,
-            string indent,
-            bool isOverride
-        )
+        var serialType = (ITypeSymbol)compilation.GetTypeByMetadataName("Server.Serial");
+
+        source.GenerateConstructorStart(
+            indent,
+            className,
+            Accessibility.Public,
+            new []{ (serialType, "serial") }.ToImmutableArray(),
+            isOverride ? _baseParameters : ImmutableArray<string>.Empty
+        );
+
+        if (!isOverride)
         {
-            var serialType = (ITypeSymbol)compilation.GetTypeByMetadataName("Server.Serial");
-
-            source.GenerateConstructorStart(
-                indent,
-                className,
-                Accessibility.Public,
-                new []{ (serialType, "serial") }.ToImmutableArray(),
-                isOverride ? _baseParameters : ImmutableArray<string>.Empty
-            );
-
-            if (!isOverride)
-            {
-                source.AppendLine($"{indent}    Serial = serial;");
-                source.AppendLine($"{indent}    SetTypeRef(typeof({className}));");
-            }
-
-            source.GenerateMethodEnd(indent);
+            source.AppendLine($"{indent}    Serial = serial;");
+            source.AppendLine($"{indent}    SetTypeRef(typeof({className}));");
         }
+
+        source.GenerateMethodEnd(indent);
     }
 }

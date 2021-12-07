@@ -1,141 +1,140 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Server.Spells.Mysticism
+namespace Server.Spells.Mysticism;
+
+public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
 {
-    public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
+    private static readonly SpellInfo _info = new(
+        "Hail Storm",
+        "Kal Des Ylem",
+        -1,
+        9002,
+        Reagent.DragonsBlood,
+        Reagent.Bloodmoss,
+        Reagent.BlackPearl,
+        Reagent.MandrakeRoot
+    );
+
+    public HailStormSpell(Mobile caster, Item scroll = null)
+        : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Hail Storm",
-            "Kal Des Ylem",
-            -1,
-            9002,
-            Reagent.DragonsBlood,
-            Reagent.Bloodmoss,
-            Reagent.BlackPearl,
-            Reagent.MandrakeRoot
-        );
+    }
 
-        public HailStormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
+
+    public override double RequiredSkill => 70.0;
+    public override int RequiredMana => 40;
+
+    public void Target(IPoint3D p)
+    {
+        if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
         {
-        }
+            /* Summons a storm of hailstones that strikes all Targets
+             * within a radius around the Target's Location, dealing
+             * cold damage.
+             */
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
+            SpellHelper.Turn(Caster, p);
 
-        public override double RequiredSkill => 70.0;
-        public override int RequiredMana => 40;
-
-        public void Target(IPoint3D p)
-        {
-            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (p is Item item)
             {
-                /* Summons a storm of hailstones that strikes all Targets
-                 * within a radius around the Target's Location, dealing
-                 * cold damage.
-                 */
+                p = item.GetWorldLocation();
+            }
 
-                SpellHelper.Turn(Caster, p);
+            var targets = new List<Mobile>();
 
-                if (p is Item item)
+            var map = Caster.Map;
+
+            var pvp = false;
+
+            if (map != null)
+            {
+                var loc = new Point3D(p);
+
+                PlayEffect(loc, Caster.Map);
+
+                foreach (var m in map.GetMobilesInRange(loc, 2))
                 {
-                    p = item.GetWorldLocation();
-                }
-
-                var targets = new List<Mobile>();
-
-                var map = Caster.Map;
-
-                var pvp = false;
-
-                if (map != null)
-                {
-                    var loc = new Point3D(p);
-
-                    PlayEffect(loc, Caster.Map);
-
-                    foreach (var m in map.GetMobilesInRange(loc, 2))
+                    if (m == Caster)
                     {
-                        if (m == Caster)
+                        continue;
+                    }
+
+                    if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && Caster.CanSee(m))
+                    {
+                        if (!Caster.InLOS(m))
                         {
                             continue;
                         }
 
-                        if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && Caster.CanSee(m))
+                        targets.Add(m);
+
+                        if (m.Player)
                         {
-                            if (!Caster.InLOS(m))
-                            {
-                                continue;
-                            }
-
-                            targets.Add(m);
-
-                            if (m.Player)
-                            {
-                                pvp = true;
-                            }
+                            pvp = true;
                         }
                     }
                 }
-
-                double damage = GetNewAosDamage(51, 1, 5, pvp);
-
-                foreach (var m in targets)
-                {
-                    Caster.DoHarmful(m);
-                    SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
-                }
             }
 
-            FinishSequence();
+            double damage = GetNewAosDamage(51, 1, 5, pvp);
+
+            foreach (var m in targets)
+            {
+                Caster.DoHarmful(m);
+                SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
+            }
         }
 
-        public override void OnCast()
-        {
-            Caster.Target = new SpellTargetPoint3D(this);
-        }
+        FinishSequence();
+    }
 
-        private static void PlayEffect(Point3D p, Map map)
-        {
-            Effects.PlaySound(p, map, 0x64F);
+    public override void OnCast()
+    {
+        Caster.Target = new SpellTargetPoint3D(this);
+    }
 
-            PlaySingleEffect(p, map, -1, 1, -1, 1);
-            PlaySingleEffect(p, map, -2, 0, -3, -1);
-            PlaySingleEffect(p, map, -3, -1, -1, 1);
-            PlaySingleEffect(p, map, 1, 3, -1, 1);
-            PlaySingleEffect(p, map, -1, 1, 1, 3);
-        }
+    private static void PlayEffect(Point3D p, Map map)
+    {
+        Effects.PlaySound(p, map, 0x64F);
 
-        private static void PlaySingleEffect(Point3D p, Map map, int a, int b, int c, int d)
-        {
-            int x = p.X, y = p.Y, z = p.Z + 18;
+        PlaySingleEffect(p, map, -1, 1, -1, 1);
+        PlaySingleEffect(p, map, -2, 0, -3, -1);
+        PlaySingleEffect(p, map, -3, -1, -1, 1);
+        PlaySingleEffect(p, map, 1, 3, -1, 1);
+        PlaySingleEffect(p, map, -1, 1, 1, 3);
+    }
 
-            SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + c, z));
-            SendEffectPacket(p, map, new Point3D(x + b, y + c, z), new Point3D(x + b, y + c, z));
-            SendEffectPacket(p, map, new Point3D(x + b, y + d, z), new Point3D(x + b, y + d, z));
-            SendEffectPacket(p, map, new Point3D(x + a, y + d, z), new Point3D(x + a, y + d, z));
+    private static void PlaySingleEffect(Point3D p, Map map, int a, int b, int c, int d)
+    {
+        int x = p.X, y = p.Y, z = p.Z + 18;
 
-            SendEffectPacket(p, map, new Point3D(x + b, y + c, z), new Point3D(x + a, y + c, z));
-            SendEffectPacket(p, map, new Point3D(x + b, y + d, z), new Point3D(x + b, y + c, z));
-            SendEffectPacket(p, map, new Point3D(x + a, y + d, z), new Point3D(x + b, y + d, z));
-            SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + d, z));
-        }
+        SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + c, z));
+        SendEffectPacket(p, map, new Point3D(x + b, y + c, z), new Point3D(x + b, y + c, z));
+        SendEffectPacket(p, map, new Point3D(x + b, y + d, z), new Point3D(x + b, y + d, z));
+        SendEffectPacket(p, map, new Point3D(x + a, y + d, z), new Point3D(x + a, y + d, z));
 
-        private static void SendEffectPacket(Point3D p, Map map, Point3D orig, Point3D dest)
-        {
-            Effects.SendMovingEffect(
-                p,
-                map,
-                0x36D4,
-                orig,
-                dest,
-                0,
-                0,
-                false,
-                false,
-                0x63,
-                0x4
-            );
-        }
+        SendEffectPacket(p, map, new Point3D(x + b, y + c, z), new Point3D(x + a, y + c, z));
+        SendEffectPacket(p, map, new Point3D(x + b, y + d, z), new Point3D(x + b, y + c, z));
+        SendEffectPacket(p, map, new Point3D(x + a, y + d, z), new Point3D(x + b, y + d, z));
+        SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + d, z));
+    }
+
+    private static void SendEffectPacket(Point3D p, Map map, Point3D orig, Point3D dest)
+    {
+        Effects.SendMovingEffect(
+            p,
+            map,
+            0x36D4,
+            orig,
+            dest,
+            0,
+            0,
+            false,
+            false,
+            0x63,
+            0x4
+        );
     }
 }

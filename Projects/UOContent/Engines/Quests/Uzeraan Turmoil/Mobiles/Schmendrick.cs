@@ -2,148 +2,147 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Haven
+namespace Server.Engines.Quests.Haven;
+
+public class Schmendrick : BaseQuester
 {
-    public class Schmendrick : BaseQuester
+    [Constructible]
+    public Schmendrick() : base("the High Mage")
     {
-        [Constructible]
-        public Schmendrick() : base("the High Mage")
+    }
+
+    public Schmendrick(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "Schmendrick";
+
+    public override void InitBody()
+    {
+        InitStats(100, 100, 25);
+
+        Hue = 0x83F3;
+
+        Female = false;
+        Body = 0x190;
+    }
+
+    public override void InitOutfit()
+    {
+        AddItem(new Robe(0x4DD));
+        AddItem(new WizardsHat(0x482));
+        AddItem(new Shoes(0x482));
+
+        HairItemID = 0x203C;
+        HairHue = 0x455;
+
+        FacialHairItemID = 0x203E;
+        FacialHairHue = 0x455;
+
+        var staff = new GlacialStaff();
+        staff.Movable = false;
+        AddItem(staff);
+
+        var pack = new Backpack();
+        pack.Movable = false;
+        AddItem(pack);
+    }
+
+    public override int GetAutoTalkRange(PlayerMobile pm) => 7;
+
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindSchmendrickObjective>() != null;
+
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+        var qs = player.Quest;
+
+        if (qs is UzeraanTurmoilQuest)
         {
-        }
-
-        public Schmendrick(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "Schmendrick";
-
-        public override void InitBody()
-        {
-            InitStats(100, 100, 25);
-
-            Hue = 0x83F3;
-
-            Female = false;
-            Body = 0x190;
-        }
-
-        public override void InitOutfit()
-        {
-            AddItem(new Robe(0x4DD));
-            AddItem(new WizardsHat(0x482));
-            AddItem(new Shoes(0x482));
-
-            HairItemID = 0x203C;
-            HairHue = 0x455;
-
-            FacialHairItemID = 0x203E;
-            FacialHairHue = 0x455;
-
-            var staff = new GlacialStaff();
-            staff.Movable = false;
-            AddItem(staff);
-
-            var pack = new Backpack();
-            pack.Movable = false;
-            AddItem(pack);
-        }
-
-        public override int GetAutoTalkRange(PlayerMobile pm) => 7;
-
-        public override bool CanTalkTo(PlayerMobile to) =>
-            to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindSchmendrickObjective>() != null;
-
-        public override void OnTalk(PlayerMobile player, bool contextMenu)
-        {
-            var qs = player.Quest;
-
-            if (qs is UzeraanTurmoilQuest)
+            if (UzeraanTurmoilQuest.HasLostScrollOfPower(player))
             {
-                if (UzeraanTurmoilQuest.HasLostScrollOfPower(player))
+                FocusTo(player);
+                qs.AddConversation(new LostScrollOfPowerConversation(false));
+            }
+            else
+            {
+                QuestObjective obj = qs.FindObjective<FindSchmendrickObjective>();
+
+                if (obj?.Completed == false)
                 {
                     FocusTo(player);
-                    qs.AddConversation(new LostScrollOfPowerConversation(false));
+                    obj.Complete();
                 }
-                else
+                else if (contextMenu)
                 {
-                    QuestObjective obj = qs.FindObjective<FindSchmendrickObjective>();
-
-                    if (obj?.Completed == false)
-                    {
-                        FocusTo(player);
-                        obj.Complete();
-                    }
-                    else if (contextMenu)
-                    {
-                        FocusTo(player);
-                        SayTo(player, 1049357); // I have nothing more for you at this time.
-                    }
+                    FocusTo(player);
+                    SayTo(player, 1049357); // I have nothing more for you at this time.
                 }
             }
         }
+    }
 
-        public override bool OnDragDrop(Mobile from, Item dropped)
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+        if (dropped is BlankScroll && UzeraanTurmoilQuest.HasLostScrollOfPower(from))
         {
-            if (dropped is BlankScroll && UzeraanTurmoilQuest.HasLostScrollOfPower(from))
+            FocusTo(from);
+
+            Item scroll = new SchmendrickScrollOfPower();
+
+            if (!from.PlaceInBackpack(scroll))
             {
-                FocusTo(from);
-
-                Item scroll = new SchmendrickScrollOfPower();
-
-                if (!from.PlaceInBackpack(scroll))
-                {
-                    scroll.Delete();
-                    from.SendLocalizedMessage(
-                        1046260
-                    ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-                    return false;
-                }
-
-                dropped.Consume();
+                scroll.Delete();
                 from.SendLocalizedMessage(
-                    1049346
-                ); // Schmendrick scribbles on the scroll for a few moments and hands you the finished product.
-                return dropped.Deleted;
+                    1046260
+                ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+                return false;
             }
 
-            return base.OnDragDrop(from, dropped);
+            dropped.Consume();
+            from.SendLocalizedMessage(
+                1049346
+            ); // Schmendrick scribbles on the scroll for a few moments and hands you the finished product.
+            return dropped.Deleted;
         }
 
-        public override void OnMovement(Mobile m, Point3D oldLocation)
-        {
-            base.OnMovement(m, oldLocation);
+        return base.OnDragDrop(from, dropped);
+    }
 
-            if (m is PlayerMobile && !m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+        base.OnMovement(m, oldLocation);
+
+        if (m is PlayerMobile && !m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+        {
+            if (m.Map?.CanFit(m.Location, 16, false, false) != true)
             {
-                if (m.Map?.CanFit(m.Location, 16, false, false) != true)
-                {
-                    m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
-                }
-                else
-                {
-                    Direction = GetDirectionTo(m);
+                m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+            }
+            else
+            {
+                Direction = GetDirectionTo(m);
 
-                    m.PlaySound(0x214);
-                    m.FixedEffect(0x376A, 10, 16);
+                m.PlaySound(0x214);
+                m.FixedEffect(0x376A, 10, 16);
 
-                    m.CloseGump<ResurrectGump>();
-                    m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
-                }
+                m.CloseGump<ResurrectGump>();
+                m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
             }
         }
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

@@ -16,22 +16,21 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server;
+
+public class ServerCrashedEventArgs
 {
-    public class ServerCrashedEventArgs
-    {
-        public ServerCrashedEventArgs(Exception e) => Exception = e;
+    public ServerCrashedEventArgs(Exception e) => Exception = e;
 
-        public Exception Exception { get; }
+    public Exception Exception { get; }
 
-        public bool Close { get; set; }
-    }
+    public bool Close { get; set; }
+}
 
-    public static partial class EventSink
-    {
-        public static event Action<ServerCrashedEventArgs> ServerCrashed;
+public static partial class EventSink
+{
+    public static event Action<ServerCrashedEventArgs> ServerCrashed;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvokeServerCrashed(ServerCrashedEventArgs e) => ServerCrashed?.Invoke(e);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void InvokeServerCrashed(ServerCrashedEventArgs e) => ServerCrashed?.Invoke(e);
 }

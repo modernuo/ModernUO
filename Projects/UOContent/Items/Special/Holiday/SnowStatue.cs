@@ -1,250 +1,249 @@
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x456E, 0x456F)]
+public class SnowStatuePegasus : Item
 {
-    [Flippable(0x456E, 0x456F)]
-    public class SnowStatuePegasus : Item
+    [Constructible]
+    public SnowStatuePegasus()
+        : base(0x456E)
     {
-        [Constructible]
-        public SnowStatuePegasus()
-            : base(0x456E)
+    }
+
+    public SnowStatuePegasus(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+[Flippable(0x4578, 0x4579)]
+public class SnowStatueSeahorse : Item
+{
+    [Constructible]
+    public SnowStatueSeahorse()
+        : base(0x4578)
+    {
+    }
+
+    public SnowStatueSeahorse(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+[Flippable(0x457A, 0x457B)]
+public class SnowStatueMermaid : Item
+{
+    [Constructible]
+    public SnowStatueMermaid()
+        : base(0x457A)
+    {
+    }
+
+    public SnowStatueMermaid(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+[Flippable(0x457C, 0x457D)]
+public class SnowStatueGriffon : Item
+{
+    [Constructible]
+    public SnowStatueGriffon()
+        : base(0x457C)
+    {
+    }
+
+    public SnowStatueGriffon(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SnowStatueDeed : Item
+{
+    [Constructible]
+    public SnowStatueDeed()
+        : base(0x14F0) =>
+        LootType = LootType.Blessed;
+
+    public SnowStatueDeed(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1114296; // snow statue deed
+    public override double DefaultWeight => 1.0;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (IsChildOf(from.Backpack))
         {
+            from.CloseGump<InternalGump>();
+            from.SendGump(new InternalGump(this));
         }
-
-        public SnowStatuePegasus(Serial serial)
-            : base(serial)
+        else
         {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
         }
     }
 
-    [Flippable(0x4578, 0x4579)]
-    public class SnowStatueSeahorse : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SnowStatueSeahorse()
-            : base(0x4578)
-        {
-        }
+        base.Serialize(writer);
 
-        public SnowStatueSeahorse(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    [Flippable(0x457A, 0x457B)]
-    public class SnowStatueMermaid : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SnowStatueMermaid()
-            : base(0x457A)
-        {
-        }
+        base.Deserialize(reader);
 
-        public SnowStatueMermaid(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 
-    [Flippable(0x457C, 0x457D)]
-    public class SnowStatueGriffon : Item
+    private class InternalGump : Gump
     {
-        [Constructible]
-        public SnowStatueGriffon()
-            : base(0x457C)
+        private readonly SnowStatueDeed m_Deed;
+
+        public InternalGump(SnowStatueDeed deed) : base(100, 200)
         {
+            m_Deed = deed;
+
+            Closable = true;
+            Disposable = true;
+            Draggable = true;
+            Resizable = false;
+
+            AddPage(0);
+            AddBackground(0, 0, 360, 225, 0xA28);
+
+            AddPage(1);
+            AddLabel(45, 15, 0, "Select One:");
+
+            AddItem(35, 75, 0x456E);
+            AddButton(65, 50, 0x845, 0x846, 1);
+
+            AddItem(120, 75, 0x4578);
+            AddButton(135, 50, 0x845, 0x846, 2);
+
+            AddItem(190, 75, 0x457A);
+            AddButton(205, 50, 0x845, 0x846, 3);
+
+            AddItem(250, 75, 0x457C);
+            AddButton(275, 50, 0x845, 0x846, 4);
         }
 
-        public SnowStatueGriffon(Serial serial)
-            : base(serial)
+        public override void OnResponse(NetState sender, RelayInfo info)
         {
-        }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
-
-    public class SnowStatueDeed : Item
-    {
-        [Constructible]
-        public SnowStatueDeed()
-            : base(0x14F0) =>
-            LootType = LootType.Blessed;
-
-        public SnowStatueDeed(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1114296; // snow statue deed
-        public override double DefaultWeight => 1.0;
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (IsChildOf(from.Backpack))
+            if (m_Deed?.Deleted != false)
             {
-                from.CloseGump<InternalGump>();
-                from.SendGump(new InternalGump(this));
+                return;
+            }
+
+            var from = sender.Mobile;
+
+            if (!m_Deed.IsChildOf(from.Backpack))
+            {
+                from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it
+                return;
+            }
+
+            Item statue;
+
+            switch (info.ButtonID)
+            {
+                default:
+                    return;
+                case 1:
+                    statue = new SnowStatuePegasus();
+                    break;
+                case 2:
+                    statue = new SnowStatueSeahorse();
+                    break;
+                case 3:
+                    statue = new SnowStatueMermaid();
+                    break;
+                case 4:
+                    statue = new SnowStatueGriffon();
+                    break;
+            }
+
+            if (!from.PlaceInBackpack(statue))
+            {
+                statue.Delete();
+                from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
             }
             else
             {
-                from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-
-        private class InternalGump : Gump
-        {
-            private readonly SnowStatueDeed m_Deed;
-
-            public InternalGump(SnowStatueDeed deed) : base(100, 200)
-            {
-                m_Deed = deed;
-
-                Closable = true;
-                Disposable = true;
-                Draggable = true;
-                Resizable = false;
-
-                AddPage(0);
-                AddBackground(0, 0, 360, 225, 0xA28);
-
-                AddPage(1);
-                AddLabel(45, 15, 0, "Select One:");
-
-                AddItem(35, 75, 0x456E);
-                AddButton(65, 50, 0x845, 0x846, 1);
-
-                AddItem(120, 75, 0x4578);
-                AddButton(135, 50, 0x845, 0x846, 2);
-
-                AddItem(190, 75, 0x457A);
-                AddButton(205, 50, 0x845, 0x846, 3);
-
-                AddItem(250, 75, 0x457C);
-                AddButton(275, 50, 0x845, 0x846, 4);
-            }
-
-            public override void OnResponse(NetState sender, RelayInfo info)
-            {
-                if (m_Deed?.Deleted != false)
-                {
-                    return;
-                }
-
-                var from = sender.Mobile;
-
-                if (!m_Deed.IsChildOf(from.Backpack))
-                {
-                    from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it
-                    return;
-                }
-
-                Item statue;
-
-                switch (info.ButtonID)
-                {
-                    default:
-                        return;
-                    case 1:
-                        statue = new SnowStatuePegasus();
-                        break;
-                    case 2:
-                        statue = new SnowStatueSeahorse();
-                        break;
-                    case 3:
-                        statue = new SnowStatueMermaid();
-                        break;
-                    case 4:
-                        statue = new SnowStatueGriffon();
-                        break;
-                }
-
-                if (!from.PlaceInBackpack(statue))
-                {
-                    statue.Delete();
-                    from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-                }
-                else
-                {
-                    m_Deed.Delete();
-                }
+                m_Deed.Delete();
             }
         }
     }

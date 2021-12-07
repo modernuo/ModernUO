@@ -1,11 +1,10 @@
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
-{
-    public record SerializableFieldSaveFlagMethods
-    {
-        public IMethodSymbol? DetermineFieldShouldSerialize { get; init; }
+namespace SerializationGenerator;
 
-        public IMethodSymbol? GetFieldDefaultValue { get; init; }
-    }
+public record SerializableFieldSaveFlagMethods
+{
+    public IMethodSymbol? DetermineFieldShouldSerialize { get; init; }
+
+    public IMethodSymbol? GetFieldDefaultValue { get; init; }
 }

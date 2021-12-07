@@ -1,70 +1,69 @@
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Bull : BaseCreature
 {
-    public class Bull : BaseCreature
+    [Constructible]
+    public Bull() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
-        [Constructible]
-        public Bull() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        Body = Utility.RandomList(0xE8, 0xE9);
+        BaseSoundID = 0x64;
+
+        if (Utility.RandomDouble() <= 0.5)
         {
-            Body = Utility.RandomList(0xE8, 0xE9);
-            BaseSoundID = 0x64;
-
-            if (Utility.RandomDouble() <= 0.5)
-            {
-                Hue = 0x901;
-            }
-
-            SetStr(77, 111);
-            SetDex(56, 75);
-            SetInt(47, 75);
-
-            SetHits(50, 64);
-            SetMana(0);
-
-            SetDamage(4, 9);
-
-            SetDamageType(ResistanceType.Physical, 100);
-
-            SetResistance(ResistanceType.Physical, 25, 30);
-            SetResistance(ResistanceType.Cold, 10, 15);
-
-            SetSkill(SkillName.MagicResist, 17.6, 25.0);
-            SetSkill(SkillName.Tactics, 67.6, 85.0);
-            SetSkill(SkillName.Wrestling, 40.1, 57.5);
-
-            Fame = 600;
-            Karma = 0;
-
-            VirtualArmor = 28;
-
-            Tamable = true;
-            ControlSlots = 1;
-            MinTameSkill = 71.1;
+            Hue = 0x901;
         }
 
-        public Bull(Serial serial) : base(serial)
-        {
-        }
+        SetStr(77, 111);
+        SetDex(56, 75);
+        SetInt(47, 75);
 
-        public override string CorpseName => "a bull corpse";
-        public override string DefaultName => "a bull";
+        SetHits(50, 64);
+        SetMana(0);
 
-        public override int Meat => 10;
-        public override int Hides => 15;
-        public override FoodType FavoriteFood => FoodType.GrainsAndHay;
-        public override PackInstinct PackInstinct => PackInstinct.Bull;
+        SetDamage(4, 9);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        SetDamageType(ResistanceType.Physical, 100);
 
-            writer.Write(0);
-        }
+        SetResistance(ResistanceType.Physical, 25, 30);
+        SetResistance(ResistanceType.Cold, 10, 15);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        SetSkill(SkillName.MagicResist, 17.6, 25.0);
+        SetSkill(SkillName.Tactics, 67.6, 85.0);
+        SetSkill(SkillName.Wrestling, 40.1, 57.5);
 
-            var version = reader.ReadInt();
-        }
+        Fame = 600;
+        Karma = 0;
+
+        VirtualArmor = 28;
+
+        Tamable = true;
+        ControlSlots = 1;
+        MinTameSkill = 71.1;
+    }
+
+    public Bull(Serial serial) : base(serial)
+    {
+    }
+
+    public override string CorpseName => "a bull corpse";
+    public override string DefaultName => "a bull";
+
+    public override int Meat => 10;
+    public override int Hides => 15;
+    public override FoodType FavoriteFood => FoodType.GrainsAndHay;
+    public override PackInstinct PackInstinct => PackInstinct.Bull;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

@@ -1,140 +1,139 @@
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Bird : BaseCreature
 {
-    public class Bird : BaseCreature
+    [Constructible]
+    public Bird() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
-        [Constructible]
-        public Bird() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        if (Utility.RandomBool())
         {
-            if (Utility.RandomBool())
+            Hue = 0x901;
+
+            Name = Utility.Random(3) switch
             {
-                Hue = 0x901;
-
-                Name = Utility.Random(3) switch
-                {
-                    0 => "a crow",
-                    2 => "a raven",
-                    1 => "a magpie",
-                    _ => Name
-                };
-            }
-            else
-            {
-                Hue = Utility.RandomBirdHue();
-                Name = NameList.RandomName("bird");
-            }
-
-            Body = 6;
-            BaseSoundID = 0x1B;
-
-            VirtualArmor = Utility.RandomMinMax(0, 6);
-
-            SetStr(10);
-            SetDex(25, 35);
-            SetInt(10);
-
-            SetDamage(0);
-
-            SetDamageType(ResistanceType.Physical, 100);
-
-            SetSkill(SkillName.Wrestling, 4.2, 6.4);
-            SetSkill(SkillName.Tactics, 4.0, 6.0);
-            SetSkill(SkillName.MagicResist, 4.0, 5.0);
-
-            Fame = 150;
-            Karma = 0;
-
-            Tamable = true;
-            ControlSlots = 1;
-            MinTameSkill = -6.9;
+                0 => "a crow",
+                2 => "a raven",
+                1 => "a magpie",
+                _ => Name
+            };
         }
-
-        public Bird(Serial serial) : base(serial)
-        {
-        }
-
-        public override string CorpseName => "a bird corpse";
-
-        public override MeatType MeatType => MeatType.Bird;
-        public override int Meat => 1;
-        public override int Feathers => 25;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Hue == 0)
-            {
-                Hue = Utility.RandomBirdHue();
-            }
-        }
-    }
-
-    public class TropicalBird : BaseCreature
-    {
-        [Constructible]
-        public TropicalBird() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        else
         {
             Hue = Utility.RandomBirdHue();
-
-            Body = 6;
-            BaseSoundID = 0xBF;
-
-            VirtualArmor = Utility.RandomMinMax(0, 6);
-
-            SetStr(10);
-            SetDex(25, 35);
-            SetInt(10);
-
-            SetDamage(0);
-
-            SetDamageType(ResistanceType.Physical, 100);
-
-            SetSkill(SkillName.Wrestling, 4.2, 6.4);
-            SetSkill(SkillName.Tactics, 4.0, 6.0);
-            SetSkill(SkillName.MagicResist, 4.0, 5.0);
-
-            Fame = 150;
-            Karma = 0;
-
-            Tamable = true;
-            ControlSlots = 1;
-            MinTameSkill = -6.9;
+            Name = NameList.RandomName("bird");
         }
 
-        public TropicalBird(Serial serial) : base(serial)
+        Body = 6;
+        BaseSoundID = 0x1B;
+
+        VirtualArmor = Utility.RandomMinMax(0, 6);
+
+        SetStr(10);
+        SetDex(25, 35);
+        SetInt(10);
+
+        SetDamage(0);
+
+        SetDamageType(ResistanceType.Physical, 100);
+
+        SetSkill(SkillName.Wrestling, 4.2, 6.4);
+        SetSkill(SkillName.Tactics, 4.0, 6.0);
+        SetSkill(SkillName.MagicResist, 4.0, 5.0);
+
+        Fame = 150;
+        Karma = 0;
+
+        Tamable = true;
+        ControlSlots = 1;
+        MinTameSkill = -6.9;
+    }
+
+    public Bird(Serial serial) : base(serial)
+    {
+    }
+
+    public override string CorpseName => "a bird corpse";
+
+    public override MeatType MeatType => MeatType.Bird;
+    public override int Meat => 1;
+    public override int Feathers => 25;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        if (Hue == 0)
         {
+            Hue = Utility.RandomBirdHue();
         }
+    }
+}
 
-        public override string CorpseName => "a bird corpse";
-        public override string DefaultName => "a tropical bird";
+public class TropicalBird : BaseCreature
+{
+    [Constructible]
+    public TropicalBird() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+        Hue = Utility.RandomBirdHue();
 
-        public override MeatType MeatType => MeatType.Bird;
-        public override int Meat => 1;
-        public override int Feathers => 25;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        Body = 6;
+        BaseSoundID = 0xBF;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        VirtualArmor = Utility.RandomMinMax(0, 6);
 
-            writer.Write(0);
-        }
+        SetStr(10);
+        SetDex(25, 35);
+        SetInt(10);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        SetDamage(0);
 
-            var version = reader.ReadInt();
-        }
+        SetDamageType(ResistanceType.Physical, 100);
+
+        SetSkill(SkillName.Wrestling, 4.2, 6.4);
+        SetSkill(SkillName.Tactics, 4.0, 6.0);
+        SetSkill(SkillName.MagicResist, 4.0, 5.0);
+
+        Fame = 150;
+        Karma = 0;
+
+        Tamable = true;
+        ControlSlots = 1;
+        MinTameSkill = -6.9;
+    }
+
+    public TropicalBird(Serial serial) : base(serial)
+    {
+    }
+
+    public override string CorpseName => "a bird corpse";
+    public override string DefaultName => "a tropical bird";
+
+    public override MeatType MeatType => MeatType.Bird;
+    public override int Meat => 1;
+    public override int Feathers => 25;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

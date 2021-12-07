@@ -16,41 +16,40 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpTooltip : GumpEntry
 {
-    public class GumpTooltip : GumpEntry
+    public static readonly byte[] LayoutName = Gump.StringToBuffer("tooltip");
+
+    public GumpTooltip(int number, string args)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("tooltip");
+        Number = number;
+        Args = args;
+    }
 
-        public GumpTooltip(int number, string args)
+    public int Number { get; set; }
+
+    public string Args { get; set; }
+
+    public override string Compile(OrderedHashSet<string> strings) =>
+        string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}";
+
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    {
+        writer.Write((ushort)0x7B20); // "{ "
+        writer.Write(LayoutName);
+        writer.WriteAscii(' ');
+        writer.WriteAscii(Number.ToString());
+
+        if (!string.IsNullOrEmpty(Args))
         {
-            Number = number;
-            Args = args;
-        }
-
-        public int Number { get; set; }
-
-        public string Args { get; set; }
-
-        public override string Compile(OrderedHashSet<string> strings) =>
-            string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-        {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(LayoutName);
             writer.WriteAscii(' ');
-            writer.WriteAscii(Number.ToString());
-
-            if (!string.IsNullOrEmpty(Args))
-            {
-                writer.WriteAscii(' ');
-                writer.WriteAscii('@');
-                writer.WriteAscii(Args);
-                writer.WriteAscii('@');
-            }
-
-            writer.Write((ushort)0x207D); // " }"
+            writer.WriteAscii('@');
+            writer.WriteAscii(Args);
+            writer.WriteAscii('@');
         }
+
+        writer.Write((ushort)0x207D); // " }"
     }
 }

@@ -1,91 +1,90 @@
-namespace Server.Factions
+namespace Server.Factions;
+
+public class FactionPersistance : Item
 {
-    public class FactionPersistance : Item
+    public FactionPersistance() : base(1)
     {
-        public FactionPersistance() : base(1)
-        {
-            Movable = false;
+        Movable = false;
 
-            if (Instance?.Deleted == true)
-            {
-                Instance = this;
-            }
-            else
-            {
-                base.Delete();
-            }
+        if (Instance?.Deleted == true)
+        {
+            Instance = this;
+        }
+        else
+        {
+            base.Delete();
+        }
+    }
+
+    public FactionPersistance(Serial serial) : base(serial) => Instance = this;
+
+    public static FactionPersistance Instance { get; private set; }
+
+    public override string DefaultName => "Faction Persistance - Internal";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        var factions = Faction.Factions;
+
+        for (var i = 0; i < factions.Count; ++i)
+        {
+            writer.WriteEncodedInt((int)PersistedType.Faction);
+            factions[i].State.Serialize(writer);
         }
 
-        public FactionPersistance(Serial serial) : base(serial) => Instance = this;
+        var towns = Town.Towns;
 
-        public static FactionPersistance Instance { get; private set; }
-
-        public override string DefaultName => "Faction Persistance - Internal";
-
-        public override void Serialize(IGenericWriter writer)
+        for (var i = 0; i < towns.Count; ++i)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            var factions = Faction.Factions;
-
-            for (var i = 0; i < factions.Count; ++i)
-            {
-                writer.WriteEncodedInt((int)PersistedType.Faction);
-                factions[i].State.Serialize(writer);
-            }
-
-            var towns = Town.Towns;
-
-            for (var i = 0; i < towns.Count; ++i)
-            {
-                writer.WriteEncodedInt((int)PersistedType.Town);
-                towns[i].State.Serialize(writer);
-            }
-
-            writer.WriteEncodedInt((int)PersistedType.Terminator);
+            writer.WriteEncodedInt((int)PersistedType.Town);
+            towns[i].State.Serialize(writer);
         }
 
-        public override void Deserialize(IGenericReader reader)
+        writer.WriteEncodedInt((int)PersistedType.Terminator);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        switch (version)
         {
-            base.Deserialize(reader);
+            case 0:
+                {
+                    PersistedType type;
 
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
+                    while ((type = (PersistedType)reader.ReadEncodedInt()) != PersistedType.Terminator)
                     {
-                        PersistedType type;
-
-                        while ((type = (PersistedType)reader.ReadEncodedInt()) != PersistedType.Terminator)
+                        switch (type)
                         {
-                            switch (type)
-                            {
-                                case PersistedType.Faction:
-                                    new FactionState(reader);
-                                    break;
-                                case PersistedType.Town:
-                                    new TownState(reader);
-                                    break;
-                            }
+                            case PersistedType.Faction:
+                                new FactionState(reader);
+                                break;
+                            case PersistedType.Town:
+                                new TownState(reader);
+                                break;
                         }
-
-                        break;
                     }
-            }
-        }
 
-        public override void Delete()
-        {
+                    break;
+                }
         }
+    }
 
-        private enum PersistedType
-        {
-            Terminator,
-            Faction,
-            Town
-        }
+    public override void Delete()
+    {
+    }
+
+    private enum PersistedType
+    {
+        Terminator,
+        Faction,
+        Town
     }
 }

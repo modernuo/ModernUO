@@ -1,49 +1,48 @@
 using System;
 
-namespace Server.Items
+namespace Server.Items;
+
+/// <summary>
+///     This attack allows you to disrobe your foe.
+/// </summary>
+public class Disrobe : WeaponAbility
 {
-    /// <summary>
-    ///     This attack allows you to disrobe your foe.
-    /// </summary>
-    public class Disrobe : WeaponAbility
+    public static readonly TimeSpan BlockEquipDuration = TimeSpan.FromSeconds(5.0);
+
+    public override int BaseMana => 20; // Not Sure what amount of mana a creature uses.
+
+    public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-        public static readonly TimeSpan BlockEquipDuration = TimeSpan.FromSeconds(5.0);
-
-        public override int BaseMana => 20; // Not Sure what amount of mana a creature uses.
-
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        if (!Validate(attacker) || !CheckMana(attacker, true))
         {
-            if (!Validate(attacker) || !CheckMana(attacker, true))
-            {
-                return;
-            }
+            return;
+        }
 
-            ClearCurrentAbility(attacker);
-            var toDisrobe = defender.FindItemOnLayer(Layer.InnerTorso);
+        ClearCurrentAbility(attacker);
+        var toDisrobe = defender.FindItemOnLayer(Layer.InnerTorso);
 
-            if (toDisrobe?.Movable == false)
-            {
-                toDisrobe = defender.FindItemOnLayer(Layer.OuterTorso);
-            }
+        if (toDisrobe?.Movable == false)
+        {
+            toDisrobe = defender.FindItemOnLayer(Layer.OuterTorso);
+        }
 
-            var pack = defender.Backpack;
+        var pack = defender.Backpack;
 
-            if (pack == null || toDisrobe?.Movable == false)
-            {
-                attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
-            }
-            else
-            {
-                // attacker.SendLocalizedMessage( 1060092 ); // You disarm their weapon!
-                defender.SendLocalizedMessage(1062002); // You can no longer wear your ~1_ARMOR~
+        if (pack == null || toDisrobe?.Movable == false)
+        {
+            attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
+        }
+        else
+        {
+            // attacker.SendLocalizedMessage( 1060092 ); // You disarm their weapon!
+            defender.SendLocalizedMessage(1062002); // You can no longer wear your ~1_ARMOR~
 
-                defender.PlaySound(0x3B9);
-                // defender.FixedParticles( 0x37BE, 232, 25, 9948, EffectLayer.InnerTorso );
+            defender.PlaySound(0x3B9);
+            // defender.FixedParticles( 0x37BE, 232, 25, 9948, EffectLayer.InnerTorso );
 
-                pack.DropItem(toDisrobe);
+            pack.DropItem(toDisrobe);
 
-                BaseWeapon.BlockEquip(defender, BlockEquipDuration);
-            }
+            BaseWeapon.BlockEquip(defender, BlockEquipDuration);
         }
     }
 }

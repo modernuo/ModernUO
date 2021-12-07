@@ -21,29 +21,28 @@ using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace SerializationSchemaGenerator
+namespace SerializationSchemaGenerator;
+
+public static class SourceCodeAnalysis
 {
-    public static class SourceCodeAnalysis
+    public static List<(Project, Compilation)> GetCompilation(string solutionPath)
     {
-        public static List<(Project, Compilation)> GetCompilation(string solutionPath)
+        if (!File.Exists(solutionPath) || !solutionPath.EndsWith(".sln", StringComparison.Ordinal))
         {
-            if (!File.Exists(solutionPath) || !solutionPath.EndsWith(".sln", StringComparison.Ordinal))
-            {
-                throw new FileNotFoundException($"Could not open a valid solution at location {solutionPath}");
-            }
-
-            MSBuildLocator.RegisterDefaults();
-
-            var workspace = MSBuildWorkspace.Create();
-
-            var solutionToAnalyze = workspace.OpenSolutionAsync(solutionPath).Result;
-
-            var results = solutionToAnalyze.Projects.AsParallel()
-                .Select((project) => (project, project?.GetCompilationAsync().Result))
-                .Where((value) => value.Result != null)
-                .ToList();
-
-            return results;
+            throw new FileNotFoundException($"Could not open a valid solution at location {solutionPath}");
         }
+
+        MSBuildLocator.RegisterDefaults();
+
+        var workspace = MSBuildWorkspace.Create();
+
+        var solutionToAnalyze = workspace.OpenSolutionAsync(solutionPath).Result;
+
+        var results = solutionToAnalyze.Projects.AsParallel()
+            .Select((project) => (project, project?.GetCompilationAsync().Result))
+            .Where((value) => value.Result != null)
+            .ToList();
+
+        return results;
     }
 }

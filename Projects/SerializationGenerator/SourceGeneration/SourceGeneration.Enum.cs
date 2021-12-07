@@ -16,35 +16,34 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SourceGeneration
 {
-    public static partial class SourceGeneration
+    public static void GenerateEnumStart(
+        this StringBuilder source,
+        string enumName,
+        string indent,
+        bool useFlags,
+        Accessibility accessor = Accessibility.Public
+    )
     {
-        public static void GenerateEnumStart(
-            this StringBuilder source,
-            string enumName,
-            string indent,
-            bool useFlags,
-            Accessibility accessor = Accessibility.Public
-        )
+        if (useFlags)
         {
-            if (useFlags)
-            {
-                source.AppendLine($"{indent}[System.Flags]");
-            }
-            source.AppendLine($"{indent}{accessor.ToFriendlyString()} enum {enumName}\n{indent}{{");
+            source.AppendLine($"{indent}[System.Flags]");
         }
+        source.AppendLine($"{indent}{accessor.ToFriendlyString()} enum {enumName}\n{indent}{{");
+    }
 
-        public static void GenerateEnumValue(this StringBuilder source, string indent, bool isFlag, string name, int value)
-        {
-            var number = value < 0 ? 0 : 1 << value;
-            var valueStr = isFlag ? $"0x{number:X8}" : value.ToString();
-            source.AppendLine($"{indent}{name} = {valueStr},");
-        }
+    public static void GenerateEnumValue(this StringBuilder source, string indent, bool isFlag, string name, int value)
+    {
+        var number = value < 0 ? 0 : 1 << value;
+        var valueStr = isFlag ? $"0x{number:X8}" : value.ToString();
+        source.AppendLine($"{indent}{name} = {valueStr},");
+    }
 
-        public static void GenerateEnumEnd(this StringBuilder source, string indent)
-        {
-            source.AppendLine($"{indent}}}");
-        }
+    public static void GenerateEnumEnd(this StringBuilder source, string indent)
+    {
+        source.AppendLine($"{indent}}}");
     }
 }

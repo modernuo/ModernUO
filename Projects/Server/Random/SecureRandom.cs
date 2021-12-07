@@ -19,23 +19,22 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Server.Random;
 
-namespace Server
+namespace Server;
+
+public class SecureRandom : BaseRandomSource
 {
-    public class SecureRandom : BaseRandomSource
+    private RandomNumberGenerator m_Random;
+
+    public RandomNumberGenerator Generator => m_Random ??= RandomNumberGenerator.Create();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override ulong NextULong()
     {
-        private RandomNumberGenerator m_Random;
-
-        public RandomNumberGenerator Generator => m_Random ??= RandomNumberGenerator.Create();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override ulong NextULong()
-        {
-            Span<byte> buffer = stackalloc byte[sizeof(ulong)];
-            NextBytes(buffer);
-            return BinaryPrimitives.ReadUInt64BigEndian(buffer);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
+        Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+        NextBytes(buffer);
+        return BinaryPrimitives.ReadUInt64BigEndian(buffer);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
 }

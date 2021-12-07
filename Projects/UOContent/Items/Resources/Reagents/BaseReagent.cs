@@ -1,14 +1,13 @@
-namespace Server.Items
-{
-    [Serializable(0, false)]
-    public abstract partial class BaseReagent : Item
-    {
-        public BaseReagent(int itemID, int amount = 1) : base(itemID)
-        {
-            Stackable = true;
-            Amount = amount;
-        }
+namespace Server.Items;
 
-        public override double DefaultWeight => 0.1;
+[Serializable(0, false)]
+public abstract partial class BaseReagent : Item
+{
+    public BaseReagent(int itemID, int amount = 1) : base(itemID)
+    {
+        Stackable = true;
+        Amount = amount;
     }
+
+    public override double DefaultWeight => 0.1;
 }

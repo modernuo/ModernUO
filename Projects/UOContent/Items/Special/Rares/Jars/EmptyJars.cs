@@ -1,152 +1,151 @@
-﻿namespace Server.Items
+﻿namespace Server.Items;
+
+public class EmptyJar : Item
 {
-    public class EmptyJar : Item
+    [Constructible]
+    public EmptyJar()
+        : base(0x1005)
     {
-        [Constructible]
-        public EmptyJar()
-            : base(0x1005)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public EmptyJar(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 
-    public class EmptyJars : Item
+    public EmptyJar(Serial serial)
+        : base(serial)
     {
-        [Constructible]
-        public EmptyJars()
-            : base(0xe44)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public EmptyJars(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class EmptyJars2 : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public EmptyJars2()
-            : base(0xe45)
-        {
-            Movable = true;
-            Stackable = false;
-        }
+        base.Serialize(writer);
 
-        public EmptyJars2(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class EmptyJars3 : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public EmptyJars3()
-            : base(0xe46)
-        {
-            Movable = true;
-            Stackable = false;
-        }
+        base.Deserialize(reader);
 
-        public EmptyJars3(Serial serial)
-            : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class EmptyJars : Item
+{
+    [Constructible]
+    public EmptyJars()
+        : base(0xe44)
+    {
+        Movable = true;
+        Stackable = false;
     }
 
-    public class EmptyJars4 : Item
+    public EmptyJars(Serial serial)
+        : base(serial)
     {
-        [Constructible]
-        public EmptyJars4()
-            : base(0xe47)
-        {
-            Movable = true;
-            Stackable = false;
-        }
+    }
 
-        public EmptyJars4(Serial serial)
-            : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0);
+    }
 
-            writer.Write(0);
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
 
-            var version = reader.ReadInt();
-        }
+public class EmptyJars2 : Item
+{
+    [Constructible]
+    public EmptyJars2()
+        : base(0xe45)
+    {
+        Movable = true;
+        Stackable = false;
+    }
+
+    public EmptyJars2(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class EmptyJars3 : Item
+{
+    [Constructible]
+    public EmptyJars3()
+        : base(0xe46)
+    {
+        Movable = true;
+        Stackable = false;
+    }
+
+    public EmptyJars3(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class EmptyJars4 : Item
+{
+    [Constructible]
+    public EmptyJars4()
+        : base(0xe47)
+    {
+        Movable = true;
+        Stackable = false;
+    }
+
+    public EmptyJars4(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

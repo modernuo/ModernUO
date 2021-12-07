@@ -16,48 +16,47 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server;
+
+public struct TimerExecutionToken
 {
-    public struct TimerExecutionToken
+    private Timer.DelayCallTimer _timer;
+
+    internal TimerExecutionToken(Timer.DelayCallTimer timer) => _timer = timer;
+
+    public bool Running
     {
-        private Timer.DelayCallTimer _timer;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _timer?.Running == true;
+    }
 
-        internal TimerExecutionToken(Timer.DelayCallTimer timer) => _timer = timer;
+    public int Index
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _timer?.Index ?? 0;
+    }
 
-        public bool Running
+    public int RemainingCount
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _timer?.RemainingCount ?? 0;
+    }
+
+    public DateTime Next
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _timer?.Next ?? DateTime.MinValue;
+    }
+
+    public void Cancel()
+    {
+        if (_timer != null)
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _timer?.Running == true;
+            _timer._returnOnDetach = true;
+            _timer?.Stop();
+            _timer = null;
         }
 
-        public int Index
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _timer?.Index ?? 0;
-        }
-
-        public int RemainingCount
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _timer?.RemainingCount ?? 0;
-        }
-
-        public DateTime Next
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _timer?.Next ?? DateTime.MinValue;
-        }
-
-        public void Cancel()
-        {
-            if (_timer != null)
-            {
-                _timer._returnOnDetach = true;
-                _timer?.Stop();
-                _timer = null;
-            }
-
-            this = default;
-        }
+        this = default;
     }
 }

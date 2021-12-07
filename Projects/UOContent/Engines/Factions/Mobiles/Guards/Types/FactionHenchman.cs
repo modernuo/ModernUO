@@ -1,65 +1,64 @@
 using Server.Items;
 
-namespace Server.Factions
+namespace Server.Factions;
+
+public class FactionHenchman : BaseFactionGuard
 {
-    public class FactionHenchman : BaseFactionGuard
+    [Constructible]
+    public FactionHenchman() : base("the henchman")
     {
-        [Constructible]
-        public FactionHenchman() : base("the henchman")
-        {
-            GenerateBody(false, true);
+        GenerateBody(false, true);
 
-            SetStr(91, 115);
-            SetDex(61, 85);
-            SetInt(81, 95);
+        SetStr(91, 115);
+        SetDex(61, 85);
+        SetInt(81, 95);
 
-            SetDamage(10, 14);
+        SetDamage(10, 14);
 
-            SetResistance(ResistanceType.Physical, 10, 30);
-            SetResistance(ResistanceType.Fire, 10, 30);
-            SetResistance(ResistanceType.Cold, 10, 30);
-            SetResistance(ResistanceType.Energy, 10, 30);
-            SetResistance(ResistanceType.Poison, 10, 30);
+        SetResistance(ResistanceType.Physical, 10, 30);
+        SetResistance(ResistanceType.Fire, 10, 30);
+        SetResistance(ResistanceType.Cold, 10, 30);
+        SetResistance(ResistanceType.Energy, 10, 30);
+        SetResistance(ResistanceType.Poison, 10, 30);
 
-            VirtualArmor = 8;
+        VirtualArmor = 8;
 
-            SetSkill(SkillName.Fencing, 80.0, 90.0);
-            SetSkill(SkillName.Wrestling, 80.0, 90.0);
-            SetSkill(SkillName.Tactics, 80.0, 90.0);
-            SetSkill(SkillName.MagicResist, 80.0, 90.0);
-            SetSkill(SkillName.Healing, 80.0, 90.0);
-            SetSkill(SkillName.Anatomy, 80.0, 90.0);
+        SetSkill(SkillName.Fencing, 80.0, 90.0);
+        SetSkill(SkillName.Wrestling, 80.0, 90.0);
+        SetSkill(SkillName.Tactics, 80.0, 90.0);
+        SetSkill(SkillName.MagicResist, 80.0, 90.0);
+        SetSkill(SkillName.Healing, 80.0, 90.0);
+        SetSkill(SkillName.Anatomy, 80.0, 90.0);
 
-            AddItem(new StuddedChest());
-            AddItem(new StuddedLegs());
-            AddItem(new StuddedArms());
-            AddItem(new StuddedGloves());
-            AddItem(new StuddedGorget());
-            AddItem(new Boots());
-            AddItem(Newbied(new Spear()));
+        AddItem(new StuddedChest());
+        AddItem(new StuddedLegs());
+        AddItem(new StuddedArms());
+        AddItem(new StuddedGloves());
+        AddItem(new StuddedGorget());
+        AddItem(new Boots());
+        AddItem(Newbied(new Spear()));
 
-            PackItem(new Bandage(Utility.RandomMinMax(10, 20)));
-            PackWeakPotions(1, 4);
-        }
+        PackItem(new Bandage(Utility.RandomMinMax(10, 20)));
+        PackWeakPotions(1, 4);
+    }
 
-        public FactionHenchman(Serial serial) : base(serial)
-        {
-        }
+    public FactionHenchman(Serial serial) : base(serial)
+    {
+    }
 
-        public override GuardAI GuardAI => GuardAI.Melee;
+    public override GuardAI GuardAI => GuardAI.Melee;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

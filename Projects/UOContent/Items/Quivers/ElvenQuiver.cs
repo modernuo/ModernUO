@@ -1,29 +1,28 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x2FB7, 0x3171)]
+public class ElvenQuiver : BaseQuiver
 {
-    [Flippable(0x2FB7, 0x3171)]
-    public class ElvenQuiver : BaseQuiver
+    [Constructible]
+    public ElvenQuiver() => WeightReduction = 30;
+
+    public ElvenQuiver(Serial serial) : base(serial)
     {
-        [Constructible]
-        public ElvenQuiver() => WeightReduction = 30;
+    }
 
-        public ElvenQuiver(Serial serial) : base(serial)
-        {
-        }
+    public override int LabelNumber => 1032657; // elven quiver
 
-        public override int LabelNumber => 1032657; // elven quiver
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.WriteEncodedInt(0); // version
+    }
 
-            writer.WriteEncodedInt(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 }

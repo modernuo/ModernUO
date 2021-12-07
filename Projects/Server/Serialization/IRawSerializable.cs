@@ -13,11 +13,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server
+namespace Server;
+
+public interface IRawSerializable
 {
-    public interface IRawSerializable
-    {
-        void Deserialize(IGenericReader reader);
-        void Serialize(IGenericWriter writer);
-    }
+    void Deserialize(IGenericReader reader);
+    void Serialize(IGenericWriter writer);
 }

@@ -1,57 +1,56 @@
-namespace Server.Items
+namespace Server.Items;
+
+public enum HeadType
 {
-    public enum HeadType
+    Regular,
+    Duel,
+    Tournament
+}
+
+[Serializable(1, false)]
+public partial class Head : Item
+{
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private string _playerName;
+
+    [SerializableField(1)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private HeadType _headType;
+
+    [Constructible]
+    public Head(string playerName) : this(HeadType.Regular, playerName)
     {
-        Regular,
-        Duel,
-        Tournament
     }
 
-    [Serializable(1, false)]
-    public partial class Head : Item
+    [Constructible]
+    public Head(HeadType headType = HeadType.Regular, string playerName = null) : base(0x1DA0)
     {
-        [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private string _playerName;
+        _headType = headType;
+        _playerName = playerName;
+    }
 
-        [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private HeadType _headType;
-
-        [Constructible]
-        public Head(string playerName) : this(HeadType.Regular, playerName)
+    public override string DefaultName
+    {
+        get
         {
-        }
-
-        [Constructible]
-        public Head(HeadType headType = HeadType.Regular, string playerName = null) : base(0x1DA0)
-        {
-            _headType = headType;
-            _playerName = playerName;
-        }
-
-        public override string DefaultName
-        {
-            get
+            if (_playerName == null)
             {
-                if (_playerName == null)
-                {
-                    return base.DefaultName;
-                }
-
-                return _headType switch
-                {
-                    HeadType.Duel       => $"the head of {_playerName}, taken in a duel",
-                    HeadType.Tournament => $"the head of {_playerName}, taken in a tournament",
-                    _                   => $"the head of {_playerName}"
-                };
+                return base.DefaultName;
             }
-        }
 
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            _playerName = reader.ReadString();
-            _headType = (HeadType)reader.ReadEncodedInt();
+            return _headType switch
+            {
+                HeadType.Duel       => $"the head of {_playerName}, taken in a duel",
+                HeadType.Tournament => $"the head of {_playerName}, taken in a tournament",
+                _                   => $"the head of {_playerName}"
+            };
         }
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _playerName = reader.ReadString();
+        _headType = (HeadType)reader.ReadEncodedInt();
     }
 }

@@ -1,30 +1,29 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class DecoTarot4 : Item
 {
-    public class DecoTarot4 : Item
+    [Constructible]
+    public DecoTarot4() : base(0x12A8)
     {
-        [Constructible]
-        public DecoTarot4() : base(0x12A8)
-        {
-            Movable = true;
-            Stackable = false;
-        }
+        Movable = true;
+        Stackable = false;
+    }
 
-        public DecoTarot4(Serial serial) : base(serial)
-        {
-        }
+    public DecoTarot4(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0);
-        }
+        writer.Write(0);
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

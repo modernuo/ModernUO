@@ -1,85 +1,84 @@
 using System;
 using Server.Mobiles;
 
-namespace Server.Spells.Fifth
+namespace Server.Spells.Fifth;
+
+public class BladeSpiritsSpell : MagerySpell, ISpellTargetingPoint3D
 {
-    public class BladeSpiritsSpell : MagerySpell, ISpellTargetingPoint3D
+    private static readonly SpellInfo _info = new(
+        "Blade Spirits",
+        "In Jux Hur Ylem",
+        266,
+        9040,
+        false,
+        Reagent.BlackPearl,
+        Reagent.MandrakeRoot,
+        Reagent.Nightshade
+    );
+
+    public BladeSpiritsSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Blade Spirits",
-            "In Jux Hur Ylem",
-            266,
-            9040,
-            false,
-            Reagent.BlackPearl,
-            Reagent.MandrakeRoot,
-            Reagent.Nightshade
-        );
+    }
 
-        public BladeSpiritsSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
+    public override SpellCircle Circle => SpellCircle.Fifth;
+
+    public void Target(IPoint3D p)
+    {
+        var map = Caster.Map;
+
+        SpellHelper.GetSurfaceTop(ref p);
+
+        if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
         {
+            Caster.SendLocalizedMessage(501942); // That location is blocked.
         }
-
-        public override SpellCircle Circle => SpellCircle.Fifth;
-
-        public void Target(IPoint3D p)
+        else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
         {
-            var map = Caster.Map;
+            TimeSpan duration;
 
-            SpellHelper.GetSurfaceTop(ref p);
-
-            if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
-            {
-                Caster.SendLocalizedMessage(501942); // That location is blocked.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
-            {
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds(120);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
-                }
-
-                BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
-            }
-
-            FinishSequence();
-        }
-
-        public override TimeSpan GetCastDelay()
-        {
             if (Core.AOS)
             {
-                return TimeSpan.FromTicks(base.GetCastDelay().Ticks * (Core.SE ? 3 : 5));
+                duration = TimeSpan.FromSeconds(120);
             }
-
-            return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
-        }
-
-        public override bool CheckCast()
-        {
-            if (!base.CheckCast())
+            else
             {
-                return false;
+                duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
             }
 
-            if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
-            {
-                Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
-                return false;
-            }
-
-            return true;
+            BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
         }
 
-        public override void OnCast()
+        FinishSequence();
+    }
+
+    public override TimeSpan GetCastDelay()
+    {
+        if (Core.AOS)
         {
-            Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
+            return TimeSpan.FromTicks(base.GetCastDelay().Ticks * (Core.SE ? 3 : 5));
         }
+
+        return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
+    }
+
+    public override bool CheckCast()
+    {
+        if (!base.CheckCast())
+        {
+            return false;
+        }
+
+        if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
+        {
+            Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
+            return false;
+        }
+
+        return true;
+    }
+
+    public override void OnCast()
+    {
+        Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
     }
 }

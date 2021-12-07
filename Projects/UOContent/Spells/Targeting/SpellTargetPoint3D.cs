@@ -1,48 +1,47 @@
 using Server.Targeting;
 
-namespace Server.Spells
+namespace Server.Spells;
+
+public interface ISpellTargetingPoint3D : ISpell
 {
-    public interface ISpellTargetingPoint3D : ISpell
+    void Target(IPoint3D p);
+}
+
+public class SpellTargetPoint3D : Target, ISpellTarget
+{
+    private readonly bool _retryOnLos;
+    private ISpellTargetingPoint3D _spell;
+
+    public SpellTargetPoint3D(
+        ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool retryOnLOS = false
+    ) : base(range, true, flags)
     {
-        void Target(IPoint3D p);
+        _spell = spell;
+        _retryOnLos = retryOnLOS;
     }
 
-    public class SpellTargetPoint3D : Target, ISpellTarget
+    public ISpell Spell => _spell;
+
+    protected override void OnTarget(Mobile from, object o)
     {
-        private readonly bool _retryOnLos;
-        private ISpellTargetingPoint3D _spell;
+        _spell.Target(o as IPoint3D);
+    }
 
-        public SpellTargetPoint3D(
-            ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool retryOnLOS = false
-        ) : base(range, true, flags)
+    protected override void OnTargetOutOfLOS(Mobile from, object o)
+    {
+        if (!_retryOnLos)
         {
-            _spell = spell;
-            _retryOnLos = retryOnLOS;
+            return;
         }
 
-        public ISpell Spell => _spell;
+        from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
+        from.Target = new SpellTargetPoint3D(_spell);
+        from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
+        _spell = null; // Needed?
+    }
 
-        protected override void OnTarget(Mobile from, object o)
-        {
-            _spell.Target(o as IPoint3D);
-        }
-
-        protected override void OnTargetOutOfLOS(Mobile from, object o)
-        {
-            if (!_retryOnLos)
-            {
-                return;
-            }
-
-            from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
-            from.Target = new SpellTargetPoint3D(_spell);
-            from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
-            _spell = null; // Needed?
-        }
-
-        protected override void OnTargetFinish(Mobile from)
-        {
-            _spell?.FinishSequence();
-        }
+    protected override void OnTargetFinish(Mobile from)
+    {
+        _spell?.FinishSequence();
     }
 }

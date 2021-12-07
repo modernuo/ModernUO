@@ -1,33 +1,32 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class BagOfNecromancerReagents : Bag
 {
-    public class BagOfNecromancerReagents : Bag
+    [Constructible]
+    public BagOfNecromancerReagents(int amount = 50)
     {
-        [Constructible]
-        public BagOfNecromancerReagents(int amount = 50)
-        {
-            DropItem(new BatWing(amount));
-            DropItem(new GraveDust(amount));
-            DropItem(new DaemonBlood(amount));
-            DropItem(new NoxCrystal(amount));
-            DropItem(new PigIron(amount));
-        }
+        DropItem(new BatWing(amount));
+        DropItem(new GraveDust(amount));
+        DropItem(new DaemonBlood(amount));
+        DropItem(new NoxCrystal(amount));
+        DropItem(new PigIron(amount));
+    }
 
-        public BagOfNecromancerReagents(Serial serial) : base(serial)
-        {
-        }
+    public BagOfNecromancerReagents(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 }

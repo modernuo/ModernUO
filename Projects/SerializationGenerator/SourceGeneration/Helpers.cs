@@ -19,47 +19,46 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static class Helpers
 {
-    public static class Helpers
+    public static bool ContainsInterface(this ITypeSymbol symbol, ISymbol interfaceSymbol) =>
+        symbol.Interfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default)) ||
+        symbol.AllInterfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default));
+
+    public static ImmutableArray<IMethodSymbol> GetAllMethods(this ITypeSymbol symbol, string name)
     {
-        public static bool ContainsInterface(this ITypeSymbol symbol, ISymbol interfaceSymbol) =>
-            symbol.Interfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default)) ||
-            symbol.AllInterfaces.Any(i => i.ConstructedFrom.Equals(interfaceSymbol, SymbolEqualityComparer.Default));
-
-        public static ImmutableArray<IMethodSymbol> GetAllMethods(this ITypeSymbol symbol, string name)
+        var methods = symbol.GetMembers(name).OfType<IMethodSymbol>().ToImmutableArray();
+        if (symbol.ContainingSymbol is not ITypeSymbol typeSymbol)
         {
-            var methods = symbol.GetMembers(name).OfType<IMethodSymbol>().ToImmutableArray();
-            if (symbol.ContainingSymbol is not ITypeSymbol typeSymbol)
-            {
-                return methods;
-            }
-
-            var list = new List<IMethodSymbol>();
-            list.AddRange(methods.ToList());
-            list.AddRange(GetAllMethods(typeSymbol, name).ToList());
-
-            return list.ToImmutableArray();
+            return methods;
         }
 
-        public static string ToFriendlyString(this Accessibility accessibility) => SyntaxFacts.GetText(accessibility);
+        var list = new List<IMethodSymbol>();
+        list.AddRange(methods.ToList());
+        list.AddRange(GetAllMethods(typeSymbol, name).ToList());
 
-        public static Accessibility GetAccessibility(string? value) =>
-            value switch
-            {
-                "private"            => Accessibility.Private,
-                "protected"          => Accessibility.Protected,
-                "internal"           => Accessibility.Internal,
-                "public"             => Accessibility.Public,
-                "protected internal" => Accessibility.ProtectedOrInternal,
-                "private protected"  => Accessibility.ProtectedAndInternal,
-                _                    => Accessibility.NotApplicable
-            };
-
-        public static bool CanBeConstructedFrom(this ITypeSymbol? symbol, ISymbol classSymbol) =>
-            symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.ConstructedFrom.Equals(
-                classSymbol,
-                SymbolEqualityComparer.Default
-            ) || symbol != null && CanBeConstructedFrom(symbol.BaseType, classSymbol);
+        return list.ToImmutableArray();
     }
+
+    public static string ToFriendlyString(this Accessibility accessibility) => SyntaxFacts.GetText(accessibility);
+
+    public static Accessibility GetAccessibility(string? value) =>
+        value switch
+        {
+            "private"            => Accessibility.Private,
+            "protected"          => Accessibility.Protected,
+            "internal"           => Accessibility.Internal,
+            "public"             => Accessibility.Public,
+            "protected internal" => Accessibility.ProtectedOrInternal,
+            "private protected"  => Accessibility.ProtectedAndInternal,
+            _                    => Accessibility.NotApplicable
+        };
+
+    public static bool CanBeConstructedFrom(this ITypeSymbol? symbol, ISymbol classSymbol) =>
+        symbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.ConstructedFrom.Equals(
+            classSymbol,
+            SymbolEqualityComparer.Default
+        ) || symbol != null && CanBeConstructedFrom(symbol.BaseType, classSymbol);
 }

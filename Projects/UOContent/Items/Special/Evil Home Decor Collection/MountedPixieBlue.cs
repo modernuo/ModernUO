@@ -1,99 +1,98 @@
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x2A75, 0x2A76)]
+public class MountedPixieBlueComponent : AddonComponent
 {
-    [Flippable(0x2A75, 0x2A76)]
-    public class MountedPixieBlueComponent : AddonComponent
+    public MountedPixieBlueComponent() : base(0x2A75)
     {
-        public MountedPixieBlueComponent() : base(0x2A75)
+    }
+
+    public MountedPixieBlueComponent(Serial serial) : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1074482; // Mounted pixie
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (Utility.InRange(Location, from.Location, 2))
         {
+            Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x55C, 0x55E));
         }
-
-        public MountedPixieBlueComponent(Serial serial) : base(serial)
+        else
         {
-        }
-
-        public override int LabelNumber => 1074482; // Mounted pixie
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (Utility.InRange(Location, from.Location, 2))
-            {
-                Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x55C, 0x55E));
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
 
-    public class MountedPixieBlueAddon : BaseAddon
+    public override void Serialize(IGenericWriter writer)
     {
-        public MountedPixieBlueAddon()
-        {
-            AddComponent(new MountedPixieBlueComponent(), 0, 0, 0);
-        }
+        base.Serialize(writer);
 
-        public MountedPixieBlueAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new MountedPixieBlueDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    public class MountedPixieBlueDeed : BaseAddonDeed
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public MountedPixieBlueDeed() => LootType = LootType.Blessed;
+        base.Deserialize(reader);
 
-        public MountedPixieBlueDeed(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-        public override BaseAddon Addon => new MountedPixieBlueAddon();
-        public override int LabelNumber => 1074482; // Mounted pixie
+public class MountedPixieBlueAddon : BaseAddon
+{
+    public MountedPixieBlueAddon()
+    {
+        AddComponent(new MountedPixieBlueComponent(), 0, 0, 0);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public MountedPixieBlueAddon(Serial serial) : base(serial)
+    {
+    }
 
-            writer.WriteEncodedInt(0); // version
-        }
+    public override BaseAddonDeed Deed => new MountedPixieBlueDeed();
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class MountedPixieBlueDeed : BaseAddonDeed
+{
+    [Constructible]
+    public MountedPixieBlueDeed() => LootType = LootType.Blessed;
+
+    public MountedPixieBlueDeed(Serial serial) : base(serial)
+    {
+    }
+
+    public override BaseAddon Addon => new MountedPixieBlueAddon();
+    public override int LabelNumber => 1074482; // Mounted pixie
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

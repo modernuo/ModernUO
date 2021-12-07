@@ -17,70 +17,69 @@ using System;
 using System.IO;
 using Server.Text;
 
-namespace Server
+namespace Server;
+
+public static class PathUtility
 {
-    public static class PathUtility
+    public static string EnsureDirectory(string dir)
     {
-        public static string EnsureDirectory(string dir)
+        var path = GetFullPath(dir, Core.BaseDirectory);
+        Directory.CreateDirectory(path);
+
+        return path;
+    }
+
+    public static void EnsureDirectory(this FileInfo fi)
+    {
+        var dir = GetFullPath(fi.DirectoryName, Core.BaseDirectory);
+        if (dir != null)
         {
-            var path = GetFullPath(dir, Core.BaseDirectory);
-            Directory.CreateDirectory(path);
-
-            return path;
+            Directory.CreateDirectory(dir);
         }
+    }
 
-        public static void EnsureDirectory(this FileInfo fi)
+    public static void EnsureDirectory(this DirectoryInfo di)
+    {
+        var file = GetFullPath(di.FullName, Core.BaseDirectory);
+        Directory.CreateDirectory(file);
+    }
+
+    public static string GetFullPath(string relativeOrAbsolutePath) =>
+        GetFullPath(relativeOrAbsolutePath, Core.BaseDirectory);
+
+    public static string GetFullPath(string relativeOrAbsolutePath, string basePath) =>
+        relativeOrAbsolutePath switch
         {
-            var dir = GetFullPath(fi.DirectoryName, Core.BaseDirectory);
-            if (dir != null)
-            {
-                Directory.CreateDirectory(dir);
-            }
-        }
+            null => null,
+            ""   => basePath,
+            _ => Path.IsPathRooted(relativeOrAbsolutePath)
+                ? relativeOrAbsolutePath
+                : Path.GetFullPath(relativeOrAbsolutePath, basePath)
+        };
 
-        public static void EnsureDirectory(this DirectoryInfo di)
+    public static string EnsureRandomPath(string basePath)
+    {
+        Span<byte> bytes = stackalloc byte[8];
+        Utility.RandomBytes(bytes);
+        return EnsureDirectory(Path.Combine(basePath, bytes.ToHexString()));
+    }
+
+    public static void CopyDirectory(string sourcePath, string destinationPath, bool recursive = true)
+    {
+        var searchOptions = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        foreach (var file in Directory.EnumerateFiles(sourcePath, "*", searchOptions))
         {
-            var file = GetFullPath(di.FullName, Core.BaseDirectory);
-            Directory.CreateDirectory(file);
+            var fi = new FileInfo(file);
+            var relativePath = Path.GetRelativePath(sourcePath, fi.DirectoryName!);
+            var destFolder = Path.Combine(destinationPath, relativePath);
+            EnsureDirectory(destFolder);
+            fi.CopyTo(Path.Combine(destFolder, fi.Name));
         }
+    }
 
-        public static string GetFullPath(string relativeOrAbsolutePath) =>
-            GetFullPath(relativeOrAbsolutePath, Core.BaseDirectory);
-
-        public static string GetFullPath(string relativeOrAbsolutePath, string basePath) =>
-            relativeOrAbsolutePath switch
-            {
-                null => null,
-                ""   => basePath,
-                _ => Path.IsPathRooted(relativeOrAbsolutePath)
-                    ? relativeOrAbsolutePath
-                    : Path.GetFullPath(relativeOrAbsolutePath, basePath)
-            };
-
-        public static string EnsureRandomPath(string basePath)
-        {
-            Span<byte> bytes = stackalloc byte[8];
-            Utility.RandomBytes(bytes);
-            return EnsureDirectory(Path.Combine(basePath, bytes.ToHexString()));
-        }
-
-        public static void CopyDirectory(string sourcePath, string destinationPath, bool recursive = true)
-        {
-            var searchOptions = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            foreach (var file in Directory.EnumerateFiles(sourcePath, "*", searchOptions))
-            {
-                var fi = new FileInfo(file);
-                var relativePath = Path.GetRelativePath(sourcePath, fi.DirectoryName!);
-                var destFolder = Path.Combine(destinationPath, relativePath);
-                EnsureDirectory(destFolder);
-                fi.CopyTo(Path.Combine(destFolder, fi.Name));
-            }
-        }
-
-        public static void MoveDirectory(string sourcePath, string destinationPath)
-        {
-            CopyDirectory(sourcePath, destinationPath);
-            Directory.Delete(sourcePath, true);
-        }
+    public static void MoveDirectory(string sourcePath, string destinationPath)
+    {
+        CopyDirectory(sourcePath, destinationPath);
+        Directory.Delete(sourcePath, true);
     }
 }

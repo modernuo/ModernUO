@@ -1,179 +1,178 @@
 using Server.Items;
 
-namespace Server.Mobiles
-{
-    public class ThiefAI : BaseAI
-    {
-        private Item m_toDisarm;
+namespace Server.Mobiles;
 
-        public ThiefAI(BaseCreature m) : base(m)
+public class ThiefAI : BaseAI
+{
+    private Item m_toDisarm;
+
+    public ThiefAI(BaseCreature m) : base(m)
+    {
+    }
+
+    public override bool DoActionWander()
+    {
+        m_Mobile.DebugSay("I have no combatant");
+
+        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
         {
+            m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
+
+            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Action = ActionType.Combat;
+        }
+        else
+        {
+            base.DoActionWander();
         }
 
-        public override bool DoActionWander()
+        return true;
+    }
+
+    public override bool DoActionCombat()
+    {
+        var combatant = m_Mobile.Combatant;
+
+        if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map)
         {
-            m_Mobile.DebugSay("I have no combatant");
+            m_Mobile.DebugSay("My combatant is gone, so my guard is up");
 
-            if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
-            {
-                m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
-
-                m_Mobile.Combatant = m_Mobile.FocusMob;
-                Action = ActionType.Combat;
-            }
-            else
-            {
-                base.DoActionWander();
-            }
+            Action = ActionType.Guard;
 
             return true;
         }
 
-        public override bool DoActionCombat()
+        if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
         {
-            var combatant = m_Mobile.Combatant;
-
-            if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map)
+            m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
+        }
+        else
+        {
+            if (m_toDisarm?.IsChildOf(m_Mobile.Backpack) != false)
             {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
-
-                Action = ActionType.Guard;
-
-                return true;
+                m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
             }
 
-            if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+            if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
+                m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
             {
-                m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
+                EventSink.InvokeDisarmRequest(m_Mobile);
             }
-            else
+
+            if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
+                Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
+                m_toDisarm.LootType != LootType.Newbied)
             {
-                if (m_toDisarm?.IsChildOf(m_Mobile.Backpack) != false)
-                {
-                    m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
-                }
+                m_Mobile.DebugSay("Trying to steal from combatant.");
+                m_Mobile.UseSkill(SkillName.Stealing);
+                m_Mobile.Target?.Invoke(m_Mobile, m_toDisarm);
+            }
+            else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
+            {
+                var cpack = combatant.Backpack;
 
-                if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
-                    m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
+                if (cpack != null)
                 {
-                    EventSink.InvokeDisarmRequest(m_Mobile);
-                }
-
-                if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
-                    Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
-                    m_toDisarm.LootType != LootType.Newbied)
-                {
-                    m_Mobile.DebugSay("Trying to steal from combatant.");
-                    m_Mobile.UseSkill(SkillName.Stealing);
-                    m_Mobile.Target?.Invoke(m_Mobile, m_toDisarm);
-                }
-                else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
-                {
-                    var cpack = combatant.Backpack;
-
-                    if (cpack != null)
+                    Item steala = cpack.FindItemByType<Bandage>();
+                    if (steala != null)
                     {
-                        Item steala = cpack.FindItemByType<Bandage>();
-                        if (steala != null)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                            m_Mobile.UseSkill(SkillName.Stealing);
-                            m_Mobile.Target?.Invoke(m_Mobile, steala);
-                        }
+                        m_Mobile.DebugSay("Trying to steal from combatant.");
+                        m_Mobile.UseSkill(SkillName.Stealing);
+                        m_Mobile.Target?.Invoke(m_Mobile, steala);
+                    }
 
-                        Item stealb = cpack.FindItemByType<Nightshade>();
-                        if (stealb != null)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                            m_Mobile.UseSkill(SkillName.Stealing);
-                            m_Mobile.Target?.Invoke(m_Mobile, stealb);
-                        }
+                    Item stealb = cpack.FindItemByType<Nightshade>();
+                    if (stealb != null)
+                    {
+                        m_Mobile.DebugSay("Trying to steal from combatant.");
+                        m_Mobile.UseSkill(SkillName.Stealing);
+                        m_Mobile.Target?.Invoke(m_Mobile, stealb);
+                    }
 
-                        Item stealc = cpack.FindItemByType<BlackPearl>();
-                        if (stealc != null)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                            m_Mobile.UseSkill(SkillName.Stealing);
-                            m_Mobile.Target?.Invoke(m_Mobile, stealc);
-                        }
+                    Item stealc = cpack.FindItemByType<BlackPearl>();
+                    if (stealc != null)
+                    {
+                        m_Mobile.DebugSay("Trying to steal from combatant.");
+                        m_Mobile.UseSkill(SkillName.Stealing);
+                        m_Mobile.Target?.Invoke(m_Mobile, stealc);
+                    }
 
-                        Item steald = cpack.FindItemByType<MandrakeRoot>();
-                        if (steald != null)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                            m_Mobile.UseSkill(SkillName.Stealing);
-                            m_Mobile.Target?.Invoke(m_Mobile, steald);
-                        }
-                        else if (steala == null && stealb == null && stealc == null)
-                        {
-                            m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
+                    Item steald = cpack.FindItemByType<MandrakeRoot>();
+                    if (steald != null)
+                    {
+                        m_Mobile.DebugSay("Trying to steal from combatant.");
+                        m_Mobile.UseSkill(SkillName.Stealing);
+                        m_Mobile.Target?.Invoke(m_Mobile, steald);
+                    }
+                    else if (steala == null && stealb == null && stealc == null)
+                    {
+                        m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
 
-                            Action = ActionType.Flee;
-                        }
+                        Action = ActionType.Flee;
                     }
                 }
             }
-
-            if (m_Mobile.Hits >= m_Mobile.HitsMax * 20 / 100 || !m_Mobile.CanFlee)
-            {
-                return true;
-            }
-
-            // We are low on health, should we flee?
-            bool flee;
-
-            if (m_Mobile.Hits < combatant.Hits)
-            {
-                // We are more hurt than them
-                var diff = combatant.Hits - m_Mobile.Hits;
-
-                flee = Utility.Random(0, 100) > 10 + diff; // (10 + diff)% chance to flee
-            }
-            else
-            {
-                flee = Utility.Random(0, 100) > 10; // 10% chance to flee
-            }
-
-            if (flee)
-            {
-                m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
-                Action = ActionType.Flee;
-            }
-
-            return true;
         }
 
-        public override bool DoActionGuard()
+        if (m_Mobile.Hits >= m_Mobile.HitsMax * 20 / 100 || !m_Mobile.CanFlee)
         {
-            if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
-            {
-                m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
-
-                m_Mobile.Combatant = m_Mobile.FocusMob;
-                Action = ActionType.Combat;
-            }
-            else
-            {
-                base.DoActionGuard();
-            }
-
             return true;
         }
 
-        public override bool DoActionFlee()
+        // We are low on health, should we flee?
+        bool flee;
+
+        if (m_Mobile.Hits < combatant.Hits)
         {
-            if (m_Mobile.Hits > m_Mobile.HitsMax / 2)
-            {
-                m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
-                Action = ActionType.Combat;
-            }
-            else
-            {
-                m_Mobile.FocusMob = m_Mobile.Combatant;
-                base.DoActionFlee();
-            }
+            // We are more hurt than them
+            var diff = combatant.Hits - m_Mobile.Hits;
 
-            return true;
+            flee = Utility.Random(0, 100) > 10 + diff; // (10 + diff)% chance to flee
         }
+        else
+        {
+            flee = Utility.Random(0, 100) > 10; // 10% chance to flee
+        }
+
+        if (flee)
+        {
+            m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
+            Action = ActionType.Flee;
+        }
+
+        return true;
+    }
+
+    public override bool DoActionGuard()
+    {
+        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        {
+            m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
+
+            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Action = ActionType.Combat;
+        }
+        else
+        {
+            base.DoActionGuard();
+        }
+
+        return true;
+    }
+
+    public override bool DoActionFlee()
+    {
+        if (m_Mobile.Hits > m_Mobile.HitsMax / 2)
+        {
+            m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
+            Action = ActionType.Combat;
+        }
+        else
+        {
+            m_Mobile.FocusMob = m_Mobile.Combatant;
+            base.DoActionFlee();
+        }
+
+        return true;
     }
 }

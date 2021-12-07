@@ -1,245 +1,244 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x9F4, 0x9F5, 0x9A3, 0x9A4)]
+public class Fork : Item
 {
-    [Flippable(0x9F4, 0x9F5, 0x9A3, 0x9A4)]
-    public class Fork : Item
+    [Constructible]
+    public Fork() : base(0x9F4) => Weight = 1.0;
+
+    public Fork(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Fork() : base(0x9F4) => Weight = 1.0;
-
-        public Fork(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class ForkLeft : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public ForkLeft() : base(0x9F4) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public ForkLeft(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class ForkRight : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public ForkRight() : base(0x9F5) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public ForkRight(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class ForkLeft : Item
+{
+    [Constructible]
+    public ForkLeft() : base(0x9F4) => Weight = 1.0;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public ForkLeft(Serial serial) : base(serial)
+    {
     }
 
-    [Flippable(0x9F8, 0x9F9, 0x9C2, 0x9C3)]
-    public class Spoon : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public Spoon() : base(0x9F8) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public Spoon(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class SpoonLeft : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SpoonLeft() : base(0x9F8) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public SpoonLeft(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class ForkRight : Item
+{
+    [Constructible]
+    public ForkRight() : base(0x9F5) => Weight = 1.0;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public ForkRight(Serial serial) : base(serial)
+    {
     }
 
-    public class SpoonRight : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SpoonRight() : base(0x9F9) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public SpoonRight(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [Flippable(0x9F6, 0x9F7, 0x9A5, 0x9A6)]
-    public class Knife : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public Knife() : base(0x9F6) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public Knife(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+[Flippable(0x9F8, 0x9F9, 0x9C2, 0x9C3)]
+public class Spoon : Item
+{
+    [Constructible]
+    public Spoon() : base(0x9F8) => Weight = 1.0;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public Spoon(Serial serial) : base(serial)
+    {
     }
 
-    public class KnifeLeft : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public KnifeLeft() : base(0x9F6) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public KnifeLeft(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class KnifeRight : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public KnifeRight() : base(0x9F7) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public KnifeRight(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class SpoonLeft : Item
+{
+    [Constructible]
+    public SpoonLeft() : base(0x9F8) => Weight = 1.0;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public SpoonLeft(Serial serial) : base(serial)
+    {
     }
 
-    public class Plate : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public Plate() : base(0x9D7) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public Plate(Serial serial) : base(serial)
-        {
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class SpoonRight : Item
+{
+    [Constructible]
+    public SpoonRight() : base(0x9F9) => Weight = 1.0;
 
-            var version = reader.ReadInt();
-        }
+    public SpoonRight(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+[Flippable(0x9F6, 0x9F7, 0x9A5, 0x9A6)]
+public class Knife : Item
+{
+    [Constructible]
+    public Knife() : base(0x9F6) => Weight = 1.0;
+
+    public Knife(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class KnifeLeft : Item
+{
+    [Constructible]
+    public KnifeLeft() : base(0x9F6) => Weight = 1.0;
+
+    public KnifeLeft(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class KnifeRight : Item
+{
+    [Constructible]
+    public KnifeRight() : base(0x9F7) => Weight = 1.0;
+
+    public KnifeRight(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class Plate : Item
+{
+    [Constructible]
+    public Plate() : base(0x9D7) => Weight = 1.0;
+
+    public Plate(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

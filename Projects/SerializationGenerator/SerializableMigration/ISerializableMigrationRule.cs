@@ -17,33 +17,32 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public interface ISerializableMigrationRule
 {
-    public interface ISerializableMigrationRule
-    {
-        string RuleName { get; }
+    string RuleName { get; }
 
-        bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        );
+    bool GenerateRuleState(
+        Compilation compilation,
+        ISymbol symbol,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        out string[] ruleArguments
+    );
 
-        void GenerateDeserializationMethod(
-            StringBuilder source,
-            string indent,
-            SerializableProperty property,
-            string? parentReference
-        );
+    void GenerateDeserializationMethod(
+        StringBuilder source,
+        string indent,
+        SerializableProperty property,
+        string? parentReference
+    );
 
-        void GenerateSerializationMethod(
-            StringBuilder source,
-            string indent,
-            SerializableProperty property
-        );
-    }
+    void GenerateSerializationMethod(
+        StringBuilder source,
+        string indent,
+        SerializableProperty property
+    );
 }

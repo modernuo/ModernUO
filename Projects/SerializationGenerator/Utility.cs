@@ -15,14 +15,13 @@
 
 using System.Collections.Generic;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static class Utility
 {
-    public static class Utility
+    public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
     {
-        public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
-        {
-            key = tuple.Key;
-            value = tuple.Value;
-        }
+        key = tuple.Key;
+        value = tuple.Value;
     }
 }

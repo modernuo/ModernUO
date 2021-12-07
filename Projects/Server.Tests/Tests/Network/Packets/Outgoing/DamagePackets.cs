@@ -1,28 +1,27 @@
 using System;
 
-namespace Server.Network
+namespace Server.Network;
+
+public sealed class DamagePacketOld : Packet
 {
-    public sealed class DamagePacketOld : Packet
+    public DamagePacketOld(Serial mobile, int amount) : base(0xBF)
     {
-        public DamagePacketOld(Serial mobile, int amount) : base(0xBF)
-        {
-            EnsureCapacity(11);
+        EnsureCapacity(11);
 
-            Stream.Write((short)0x22);
-            Stream.Write((byte)1);
-            Stream.Write(mobile);
+        Stream.Write((short)0x22);
+        Stream.Write((byte)1);
+        Stream.Write(mobile);
 
-            Stream.Write((byte)Math.Clamp(amount, 0, 255));
-        }
+        Stream.Write((byte)Math.Clamp(amount, 0, 255));
     }
+}
 
-    public sealed class DamagePacket : Packet
+public sealed class DamagePacket : Packet
+{
+    public DamagePacket(Serial mobile, int amount) : base(0x0B, 7)
     {
-        public DamagePacket(Serial mobile, int amount) : base(0x0B, 7)
-        {
-            Stream.Write(mobile);
+        Stream.Write(mobile);
 
-            Stream.Write((ushort)Math.Clamp(amount, 0, 0xFFFF));
-        }
+        Stream.Write((ushort)Math.Clamp(amount, 0, 0xFFFF));
     }
 }

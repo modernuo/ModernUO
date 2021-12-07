@@ -18,228 +18,228 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Server
+namespace Server;
+
+public partial class Timer
 {
-    public partial class Timer
+    private const int _ringSizePowerOf2 = 12;
+    private const int _ringSize = 1 << _ringSizePowerOf2; // 4096
+    private const int _ringLayers = 3;
+    private const int _tickRatePowerOf2 = 3;
+    private const int _tickRate = 1 << _tickRatePowerOf2; // 8ms
+
+    private static readonly Timer[][] _rings = new Timer[_ringLayers][];
+    private static readonly int[] _ringIndexes = new int[_ringLayers];
+
+    private static long _lastTickTurned = -1;
+    private static bool _timerWheelExecuting;
+
+    public static void Init(long tickCount)
     {
-        private const int _ringSizePowerOf2 = 12;
-        private const int _ringSize = 1 << _ringSizePowerOf2; // 4096
-        private const int _ringLayers = 3;
-        private const int _tickRatePowerOf2 = 3;
-        private const int _tickRate = 1 << _tickRatePowerOf2; // 8ms
+        _lastTickTurned = tickCount;
 
-        private static readonly Timer[][] _rings = new Timer[_ringLayers][];
-        private static readonly int[] _ringIndexes = new int[_ringLayers];
-
-        private static long _lastTickTurned = -1;
-        private static bool _timerWheelExecuting;
-
-        public static void Init(long tickCount)
+        for (int i = 0; i < _rings.Length; i++)
         {
-            _lastTickTurned = tickCount;
-
-            for (int i = 0; i < _rings.Length; i++)
-            {
-                _rings[i] = new Timer[_ringSize];
-                _ringIndexes[i] = 0;
-            }
+            _rings[i] = new Timer[_ringSize];
+            _ringIndexes[i] = 0;
         }
+    }
 
-        public static void Slice(long tickCount)
+    public static void Slice(long tickCount)
+    {
+        var deltaSinceTurn = tickCount - _lastTickTurned;
+        while (deltaSinceTurn >= _tickRate)
         {
-            var deltaSinceTurn = tickCount - _lastTickTurned;
-            while (deltaSinceTurn >= _tickRate)
-            {
-                deltaSinceTurn -= _tickRate;
-                _lastTickTurned += _tickRate;
-                Turn();
-            }
+            deltaSinceTurn -= _tickRate;
+            _lastTickTurned += _tickRate;
+            Turn();
         }
+    }
 
-        private static void Turn()
+    private static void Turn()
+    {
+        _timerWheelExecuting = true;
+        var turnNextWheel = false;
+
+        var _executingRings = new Timer[_ringLayers];
+
+        // Detach the chain from the timer wheel. This allows adding timers to the same slot during execution.
+        for (var i = 0; i < _ringLayers; i++)
         {
-            _timerWheelExecuting = true;
-            var turnNextWheel = false;
-
-            var _executingRings = new Timer[_ringLayers];
-
-            // Detach the chain from the timer wheel. This allows adding timers to the same slot during execution.
-            for (var i = 0; i < _ringLayers; i++)
+            if (i == 0 || turnNextWheel)
             {
-                if (i == 0 || turnNextWheel)
+                var ringIndex = ++_ringIndexes[i];
+                turnNextWheel = ringIndex >= _ringSize;
+
+                if (turnNextWheel)
                 {
-                    var ringIndex = ++_ringIndexes[i];
-                    turnNextWheel = ringIndex >= _ringSize;
+                    ringIndex = _ringIndexes[i] = 0;
+                }
 
-                    if (turnNextWheel)
+                _executingRings[i] = _rings[i][ringIndex];
+                _rings[i][ringIndex] = null;
+            }
+            else
+            {
+                _executingRings[i] = null;
+            }
+        }
+
+        for (var i = 0; i < _ringLayers; i++)
+        {
+            var timer = _executingRings[i];
+            if (timer == null)
+            {
+                continue;
+            }
+
+            do
+            {
+                var next = timer._nextTimer;
+
+                timer.Detach();
+
+                // Check to see if it's running just in case it was stopped by another timer
+                if (timer.Running)
+                {
+                    if (i > 0 && timer._remaining > 0)
                     {
-                        ringIndex = _ringIndexes[i] = 0;
+                        // Promote
+                        AddTimer(timer, timer._remaining);
                     }
+                    else
+                    {
+                        Execute(timer);
+                    }
+                }
 
-                    _executingRings[i] = _rings[i][ringIndex];
-                    _rings[i][ringIndex] = null;
-                }
-                else
+                if (!timer.Running)
                 {
-                    _executingRings[i] = null;
+                    timer.OnDetach();
                 }
+
+                timer = next;
+            } while (timer != null);
+        }
+
+        _timerWheelExecuting = false;
+    }
+
+    private static void Execute(Timer timer)
+    {
+        var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
+
+        var version = timer.Version;
+
+        var prof = timer.GetProfile();
+        prof?.Start();
+        timer.OnTick();
+        prof?.Finish();
+
+        // If the timer has not been stopped, and it has not been altered (restarted, returned etc)
+        if (timer.Running && timer.Version == version)
+        {
+            if (finished)
+            {
+                timer.Stop();
+            }
+            else
+            {
+                timer.Delay = timer.Interval;
+                timer.Next = Core.Now + timer.Interval;
+                AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+            }
+        }
+    }
+
+    private static void AddTimer(Timer timer, long delay)
+    {
+#if DEBUG_TIMERS
+            var originalDelay = delay;
+#endif
+        delay = Math.Max(0, delay);
+
+        var resolutionPowerOf2 = _tickRatePowerOf2;
+        for (var i = 0; i < _ringLayers; i++)
+        {
+            var resolution = 1L << resolutionPowerOf2;
+            var nextResolutionPowerOf2 = resolutionPowerOf2 + _ringSizePowerOf2;
+            var max = 1L << nextResolutionPowerOf2;
+            if (delay < max)
+            {
+                var remaining = delay & (resolution - 1);
+                var slot = (delay >> resolutionPowerOf2) + _ringIndexes[i] + (remaining > 0 ? 1 : 0);
+
+                // Round up if we have a delay of 0
+                if (delay == 0)
+                {
+                    slot++;
+                    remaining = 0;
+                }
+
+                if (slot >= _ringSize)
+                {
+                    slot -= _ringSize;
+                }
+
+                timer.Attach(_rings[i][slot]);
+                timer._remaining = remaining;
+                timer._ring = i;
+                timer._slot = (int)slot;
+
+                _rings[i][slot] = timer;
+
+                return;
             }
 
-            for (var i = 0; i < _ringLayers; i++)
+            // The remaining amount until we turn this ring
+            delay -= resolution * (_ringSize - _ringIndexes[i]);
+            resolutionPowerOf2 = nextResolutionPowerOf2;
+        }
+
+        // TODO: Handle timers > 17yrs
+#if DEBUG_TIMERS
+            logger.Error($"Timer is more than max duration. ({originalDelay})");
+#endif
+    }
+
+    public static void DumpInfo(TextWriter tw)
+    {
+        tw.WriteLine("Date: {0}\n", Core.Now.ToLocalTime());
+        tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolCapacity);
+
+        var total = 0.0;
+        var hash = new Dictionary<string, int>();
+
+        for (var i = 0; i < _ringLayers; i++)
+        {
+            for (var j = 0; j < _ringSize; j++)
             {
-                var timer = _executingRings[i];
-                if (timer == null)
+                var t = _rings[i][j];
+                if (t == null)
                 {
                     continue;
                 }
 
-                do
-                {
-                    var next = timer._nextTimer;
+                var name = t.ToString();
 
-                    timer.Detach();
+                hash.TryGetValue(name, out var count);
+                hash[name] = count + 1;
 
-                    // Check to see if it's running just in case it was stopped by another timer
-                    if (timer.Running)
-                    {
-                        if (i > 0 && timer._remaining > 0)
-                        {
-                            // Promote
-                            AddTimer(timer, timer._remaining);
-                        }
-                        else
-                        {
-                            Execute(timer);
-                        }
-                    }
-
-                    if (!timer.Running)
-                    {
-                        timer.OnDetach();
-                    }
-
-                    timer = next;
-                } while (timer != null);
-            }
-
-            _timerWheelExecuting = false;
-        }
-
-        private static void Execute(Timer timer)
-        {
-            var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
-
-            var version = timer.Version;
-
-            var prof = timer.GetProfile();
-            prof?.Start();
-            timer.OnTick();
-            prof?.Finish();
-
-            // If the timer has not been stopped, and it has not been altered (restarted, returned etc)
-            if (timer.Running && timer.Version == version)
-            {
-                if (finished)
-                {
-                    timer.Stop();
-                }
-                else
-                {
-                    timer.Delay = timer.Interval;
-                    timer.Next = Core.Now + timer.Interval;
-                    AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
-                }
+                total++;
             }
         }
 
-        private static void AddTimer(Timer timer, long delay)
+        tw.WriteLine("Timers:");
+
+        foreach (var (name, count) in hash.OrderByDescending(o => o.Value))
         {
-#if DEBUG_TIMERS
-            var originalDelay = delay;
-#endif
-            delay = Math.Max(0, delay);
-
-            var resolutionPowerOf2 = _tickRatePowerOf2;
-            for (var i = 0; i < _ringLayers; i++)
-            {
-                var resolution = 1L << resolutionPowerOf2;
-                var nextResolutionPowerOf2 = resolutionPowerOf2 + _ringSizePowerOf2;
-                var max = 1L << nextResolutionPowerOf2;
-                if (delay < max)
-                {
-                    var remaining = delay & (resolution - 1);
-                    var slot = (delay >> resolutionPowerOf2) + _ringIndexes[i] + (remaining > 0 ? 1 : 0);
-
-                    // Round up if we have a delay of 0
-                    if (delay == 0)
-                    {
-                        slot++;
-                        remaining = 0;
-                    }
-
-                    if (slot >= _ringSize)
-                    {
-                        slot -= _ringSize;
-                    }
-
-                    timer.Attach(_rings[i][slot]);
-                    timer._remaining = remaining;
-                    timer._ring = i;
-                    timer._slot = (int)slot;
-
-                    _rings[i][slot] = timer;
-
-                    return;
-                }
-
-                // The remaining amount until we turn this ring
-                delay -= resolution * (_ringSize - _ringIndexes[i]);
-                resolutionPowerOf2 = nextResolutionPowerOf2;
-            }
-
-            // TODO: Handle timers > 17yrs
-#if DEBUG_TIMERS
-            logger.Error($"Timer is more than max duration. ({originalDelay})");
-#endif
+            var percent = count / total;
+            var line = $"{count:#,0} ({percent:P1})";
+            // 6 - 15 / 8 = 1
+            var tabs = new string('\t', line.Length < 12 ? 2 : 1);
+            tw.WriteLine($"{line}{tabs}{name}");
         }
-
-        public static void DumpInfo(TextWriter tw)
-        {
-            tw.WriteLine("Date: {0}\n", Core.Now.ToLocalTime());
-            tw.WriteLine("Pool - Count: {0}; Size {1}\n", _poolCount - _timerPoolDepletionAmount, _poolCapacity);
-
-            var total = 0.0;
-            var hash = new Dictionary<string, int>();
-
-            for (var i = 0; i < _ringLayers; i++)
-            {
-                for (var j = 0; j < _ringSize; j++)
-                {
-                    var t = _rings[i][j];
-                    if (t == null)
-                    {
-                        continue;
-                    }
-
-                    var name = t.ToString();
-
-                    hash.TryGetValue(name, out var count);
-                    hash[name] = count + 1;
-
-                    total++;
-                }
-            }
-
-            tw.WriteLine("Timers:");
-
-            foreach (var (name, count) in hash.OrderByDescending(o => o.Value))
-            {
-                var percent = count / total;
-                var line = $"{count:#,0} ({percent:P1})";
-                // 6 - 15 / 8 = 1
-                var tabs = new string('\t', line.Length < 12 ? 2 : 1);
-                tw.WriteLine($"{line}{tabs}{name}");
-            }
 
 #if DEBUG_TIMERS
             tw.WriteLine($"{Environment.NewLine}Stack Traces:");
@@ -250,27 +250,26 @@ namespace Server
             }
 #endif
 
-            tw.WriteLine();
-            tw.WriteLine();
-        }
+        tw.WriteLine();
+        tw.WriteLine();
+    }
 
-        public static void ClearAllTimers(long tickCount)
+    public static void ClearAllTimers(long tickCount)
+    {
+        _lastTickTurned = tickCount;
+
+        foreach (var t in _rings)
         {
-            _lastTickTurned = tickCount;
-
-            foreach (var t in _rings)
+            for (var i = 0; i < _ringSize; i++)
             {
-                for (var i = 0; i < _ringSize; i++)
-                {
-                    var node = t[i];
-                    Timer next;
+                var node = t[i];
+                Timer next;
 
-                    do
-                    {
-                        next = node?._nextTimer;
-                        node?.Stop();
-                    } while (next != null);
-                }
+                do
+                {
+                    next = node?._nextTimer;
+                    node?.Stop();
+                } while (next != null);
             }
         }
     }

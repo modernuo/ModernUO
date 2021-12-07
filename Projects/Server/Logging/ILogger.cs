@@ -15,23 +15,22 @@
 
 using System;
 
-namespace Server.Logging
+namespace Server.Logging;
+
+public interface ILogger
 {
-    public interface ILogger
-    {
-        void Debug(string message, params object[] args);
-        void Debug(Exception exception, string message, params object[] args);
+    void Debug(string message, params object[] args);
+    void Debug(Exception exception, string message, params object[] args);
 
-        void Information(string message, params object[] args);
-        void Information(Exception exception, string message, params object[] args);
+    void Information(string message, params object[] args);
+    void Information(Exception exception, string message, params object[] args);
 
-        void Warning(string message, params object[] args);
-        void Warning(Exception exception, string message, params object[] args);
+    void Warning(string message, params object[] args);
+    void Warning(Exception exception, string message, params object[] args);
 
-        void Error(string message, params object[] args);
-        void Error(Exception exception, string message, params object[] args);
+    void Error(string message, params object[] args);
+    void Error(Exception exception, string message, params object[] args);
 
-        void Fatal(string message, params object[] args);
-        void Fatal(Exception exception, string message, params object[] args);
-    }
+    void Fatal(string message, params object[] args);
+    void Fatal(Exception exception, string message, params object[] args);
 }

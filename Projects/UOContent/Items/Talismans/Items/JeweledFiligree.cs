@@ -1,28 +1,27 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class JeweledFiligree : Item
 {
-    public class JeweledFiligree : Item
+    [Constructible]
+    public JeweledFiligree() : base(0x2F5E) => Weight = 1.0;
+
+    public JeweledFiligree(Serial serial) : base(serial)
     {
-        [Constructible]
-        public JeweledFiligree() : base(0x2F5E) => Weight = 1.0;
+    }
 
-        public JeweledFiligree(Serial serial) : base(serial)
-        {
-        }
+    public override int LabelNumber => 1072894; // jeweled filigree
 
-        public override int LabelNumber => 1072894; // jeweled filigree
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

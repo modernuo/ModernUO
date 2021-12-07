@@ -19,104 +19,103 @@ using Server.Accounting;
 using Server.Logging;
 using Server.Text;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class ConnectUO
 {
-    public static class ConnectUO
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConnectUO));
+
+    public enum ConnectUOServerType
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConnectUO));
+        RunUO,
+        ServUO,
+        UOX3,
+        POL,
+        Sphere,
+        ModernUO
+    }
 
-        public enum ConnectUOServerType
+    public const byte ConnectUOProtocolVersion = 0;
+    private const int _connectUOTokenLength = 32;
+    private const ConnectUOServerType _serverType = ConnectUOServerType.ModernUO;
+    private static byte[] _token;
+
+    public static void Configure()
+    {
+        var enabled = ServerConfiguration.GetOrUpdateSetting("connectuo.enabled", true);
+        var token = ServerConfiguration.GetOrUpdateSetting("connectuo.token", "");
+
+        if (enabled)
         {
-            RunUO,
-            ServUO,
-            UOX3,
-            POL,
-            Sphere,
-            ModernUO
-        }
-
-        public const byte ConnectUOProtocolVersion = 0;
-        private const int _connectUOTokenLength = 32;
-        private const ConnectUOServerType _serverType = ConnectUOServerType.ModernUO;
-        private static byte[] _token;
-
-        public static void Configure()
-        {
-            var enabled = ServerConfiguration.GetOrUpdateSetting("connectuo.enabled", true);
-            var token = ServerConfiguration.GetOrUpdateSetting("connectuo.token", "");
-
-            if (enabled)
+            try
             {
-                try
+                if (!string.IsNullOrWhiteSpace(token))
                 {
-                    if (!string.IsNullOrWhiteSpace(token))
+                    if (token.Length != _connectUOTokenLength * 2)
                     {
-                        if (token.Length != _connectUOTokenLength * 2)
-                        {
-                            throw new Exception("Invalid length for ConnectUO token");
-                        }
-
-                        _token = GC.AllocateUninitializedArray<byte>(_connectUOTokenLength);
-                        token.ToUpperInvariant().GetBytes(_token);
+                        throw new Exception("Invalid length for ConnectUO token");
                     }
+
+                    _token = GC.AllocateUninitializedArray<byte>(_connectUOTokenLength);
+                    token.ToUpperInvariant().GetBytes(_token);
                 }
-                catch
+            }
+            catch
+            {
+                logger.Warning("ConnectUO token could not be parsed. Make sure modernuo.json is properly configured");
+                _token = null;
+            }
+
+            FreeshardProtocol.Register(0xC0, false, PollInfo);
+        }
+    }
+
+    public static void PollInfo(NetState ns, CircularBufferReader reader, ref int packetLength)
+    {
+        var version = reader.ReadByte();
+
+        if (_token != null)
+        {
+            unsafe {
+                byte* tok = stackalloc byte[_token.Length];
+                var span = new Span<byte>(tok, _token.Length);
+                reader.Read(span);
+
+                if (!span.SequenceEqual(_token))
                 {
-                    logger.Warning("ConnectUO token could not be parsed. Make sure modernuo.json is properly configured");
-                    _token = null;
-                }
-
-                FreeshardProtocol.Register(0xC0, false, PollInfo);
-            }
-        }
-
-        public static void PollInfo(NetState ns, CircularBufferReader reader, ref int packetLength)
-        {
-            var version = reader.ReadByte();
-
-            if (_token != null)
-            {
-                unsafe {
-                    byte* tok = stackalloc byte[_token.Length];
-                    var span = new Span<byte>(tok, _token.Length);
-                    reader.Read(span);
-
-                    if (!span.SequenceEqual(_token))
-                    {
-                        ns.Disconnect("Invalid token sent for ConnectUO");
-                        return;
-                    }
+                    ns.Disconnect("Invalid token sent for ConnectUO");
+                    return;
                 }
             }
-
-            ns.LogInfo($"ConnectUO (v{version}) is requesting stats.");
-            if (version > ConnectUOProtocolVersion)
-            {
-                Utility.PushColor(ConsoleColor.Yellow);
-                ns.LogInfo("Warning! ConnectUO (v{version}) is newer than what is supported.");
-                Utility.PopColor();
-            }
-
-            ns.SendServerPollInfo();
         }
 
-        public static void SendServerPollInfo(this NetState ns)
+        ns.LogInfo($"ConnectUO (v{version}) is requesting stats.");
+        if (version > ConnectUOProtocolVersion)
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[15]);
-            writer.Write((byte)0xC0); // Packet ID
-            writer.Write((ushort)17); // Length
-            writer.Write(ConnectUOProtocolVersion); // Version
-            writer.Write((byte)_serverType);
-            writer.Write((int)(Core.TickCount / 1000));
-            writer.Write(Accounts.Count); // Shame if you modify this!
-            writer.Write(TcpServer.Instances.Count - 1); // Shame if you modify this!
-
-            ns.Send(writer.Span);
+            Utility.PushColor(ConsoleColor.Yellow);
+            ns.LogInfo("Warning! ConnectUO (v{version}) is newer than what is supported.");
+            Utility.PopColor();
         }
+
+        ns.SendServerPollInfo();
+    }
+
+    public static void SendServerPollInfo(this NetState ns)
+    {
+        if (ns == null)
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(stackalloc byte[15]);
+        writer.Write((byte)0xC0);               // Packet ID
+        writer.Write((ushort)17);               // Length
+        writer.Write(ConnectUOProtocolVersion); // Version
+        writer.Write((byte)_serverType);
+        writer.Write((int)(Core.TickCount / 1000));
+        writer.Write(Accounts.Count);                // Shame if you modify this!
+        writer.Write(TcpServer.Instances.Count - 1); // Shame if you modify this!
+
+        ns.Send(writer.Span);
     }
 }

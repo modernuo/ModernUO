@@ -15,13 +15,12 @@
 
 using System;
 
-namespace Server
+namespace Server;
+
+/// <summary>
+/// Hints to the source generator that a serializable list should be tidied up
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class TidyAttribute : Attribute
 {
-    /// <summary>
-    /// Hints to the source generator that a serializable list should be tidied up
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class TidyAttribute : Attribute
-    {
-    }
 }

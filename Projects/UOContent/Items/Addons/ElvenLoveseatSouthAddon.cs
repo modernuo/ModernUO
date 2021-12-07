@@ -1,27 +1,26 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0)]
+public partial class ElvenLoveseatSouthAddon : BaseAddon
 {
-    [Serializable(0)]
-    public partial class ElvenLoveseatSouthAddon : BaseAddon
+    [Constructible]
+    public ElvenLoveseatSouthAddon()
     {
-        [Constructible]
-        public ElvenLoveseatSouthAddon()
-        {
-            AddComponent(new AddonComponent(0x3088), 0, 0, 0);
-            AddComponent(new AddonComponent(0x3089), -1, 0, 0);
-        }
-
-        public override BaseAddonDeed Deed => new ElvenLoveseatSouthDeed();
+        AddComponent(new AddonComponent(0x3088), 0, 0, 0);
+        AddComponent(new AddonComponent(0x3089), -1, 0, 0);
     }
 
-    [Serializable(0)]
-    public partial class ElvenLoveseatSouthDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public ElvenLoveseatSouthDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new ElvenLoveseatSouthDeed();
+}
 
-        public override BaseAddon Addon => new ElvenLoveseatSouthAddon();
-        public override int LabelNumber => 1072867; // elven loveseat (south)
+[Serializable(0)]
+public partial class ElvenLoveseatSouthDeed : BaseAddonDeed
+{
+    [Constructible]
+    public ElvenLoveseatSouthDeed()
+    {
     }
+
+    public override BaseAddon Addon => new ElvenLoveseatSouthAddon();
+    public override int LabelNumber => 1072867; // elven loveseat (south)
 }

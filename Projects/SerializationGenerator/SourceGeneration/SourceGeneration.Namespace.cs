@@ -15,19 +15,18 @@
 
 using System.Text;
 
-namespace SerializationGenerator
-{
-    public static partial class SourceGeneration
-    {
-        public static void GenerateNamespaceStart(this StringBuilder source, string namespaceName)
-        {
-            source.AppendLine($@"namespace {namespaceName}
-{{");
-        }
+namespace SerializationGenerator;
 
-        public static void GenerateNamespaceEnd(this StringBuilder source)
-        {
-            source.AppendLine("}");
-        }
+public static partial class SourceGeneration
+{
+    public static void GenerateNamespaceStart(this StringBuilder source, string namespaceName)
+    {
+        source.AppendLine($@"namespace {namespaceName}
+{{");
+    }
+
+    public static void GenerateNamespaceEnd(this StringBuilder source)
+    {
+        source.AppendLine("}");
     }
 }

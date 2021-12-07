@@ -1,34 +1,33 @@
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class CrystalWisp : Wisp
 {
-    public class CrystalWisp : Wisp
+    [Constructible]
+    public CrystalWisp()
     {
-        [Constructible]
-        public CrystalWisp()
-        {
-            Hue = 0x482;
+        Hue = 0x482;
 
-            PackArcaneScroll(0, 1);
-        }
+        PackArcaneScroll(0, 1);
+    }
 
-        public CrystalWisp(Serial serial)
-            : base(serial)
-        {
-        }
+    public CrystalWisp(Serial serial)
+        : base(serial)
+    {
+    }
 
-        public override string DefaultName => "a crystal wisp";
+    public override string DefaultName => "a crystal wisp";
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

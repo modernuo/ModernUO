@@ -1,619 +1,618 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class Rope : Item
 {
-    public class Rope : Item
+    [Constructible]
+    public Rope(int amount = 1) : base(0x14F8)
     {
-        [Constructible]
-        public Rope(int amount = 1) : base(0x14F8)
-        {
-            Stackable = true;
-            Weight = 1.0;
-            Amount = amount;
-        }
-
-        public Rope(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = true;
+        Weight = 1.0;
+        Amount = amount;
     }
 
-    public class IronWire : Item
+    public Rope(Serial serial) : base(serial)
     {
-        [Constructible]
-        public IronWire(int amount = 1) : base(0x1876)
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class IronWire : Item
+{
+    [Constructible]
+    public IronWire(int amount = 1) : base(0x1876)
+    {
+        Stackable = true;
+        Weight = 5.0;
+        Amount = amount;
+    }
+
+    public IronWire(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        if (version < 1 && Weight == 2.0)
         {
-            Stackable = true;
             Weight = 5.0;
-            Amount = amount;
-        }
-
-        public IronWire(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && Weight == 2.0)
-            {
-                Weight = 5.0;
-            }
         }
     }
+}
 
-    public class SilverWire : Item
+public class SilverWire : Item
+{
+    [Constructible]
+    public SilverWire(int amount = 1) : base(0x1877)
     {
-        [Constructible]
-        public SilverWire(int amount = 1) : base(0x1877)
+        Stackable = true;
+        Weight = 5.0;
+        Amount = amount;
+    }
+
+    public SilverWire(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(1);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        if (version < 1 && Weight == 2.0)
         {
-            Stackable = true;
             Weight = 5.0;
-            Amount = amount;
-        }
-
-        public SilverWire(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && Weight == 2.0)
-            {
-                Weight = 5.0;
-            }
         }
     }
+}
 
-    public class GoldWire : Item
+public class GoldWire : Item
+{
+    [Constructible]
+    public GoldWire(int amount = 1) : base(0x1878)
     {
-        [Constructible]
-        public GoldWire(int amount = 1) : base(0x1878)
+        Stackable = true;
+        Weight = 5.0;
+        Amount = amount;
+    }
+
+    public GoldWire(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(1);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        if (version < 1 && Weight == 2.0)
         {
-            Stackable = true;
             Weight = 5.0;
-            Amount = amount;
-        }
-
-        public GoldWire(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && Weight == 2.0)
-            {
-                Weight = 5.0;
-            }
         }
     }
+}
 
-    public class CopperWire : Item
+public class CopperWire : Item
+{
+    [Constructible]
+    public CopperWire(int amount = 1) : base(0x1879)
     {
-        [Constructible]
-        public CopperWire(int amount = 1) : base(0x1879)
+        Stackable = true;
+        Weight = 5.0;
+        Amount = amount;
+    }
+
+    public CopperWire(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(1);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        if (version < 1 && Weight == 2.0)
         {
-            Stackable = true;
             Weight = 5.0;
-            Amount = amount;
-        }
-
-        public CopperWire(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && Weight == 2.0)
-            {
-                Weight = 5.0;
-            }
         }
     }
+}
 
-    public class WhiteDriedFlowers : Item
+public class WhiteDriedFlowers : Item
+{
+    [Constructible]
+    public WhiteDriedFlowers(int amount = 1) : base(0xC3C)
     {
-        [Constructible]
-        public WhiteDriedFlowers(int amount = 1) : base(0xC3C)
-        {
-            Stackable = true;
-            Weight = 1.0;
-            Amount = amount;
-        }
-
-        public WhiteDriedFlowers(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = true;
+        Weight = 1.0;
+        Amount = amount;
     }
 
-    public class GreenDriedFlowers : Item
+    public WhiteDriedFlowers(Serial serial) : base(serial)
     {
-        [Constructible]
-        public GreenDriedFlowers(int amount = 1) : base(0xC3E)
-        {
-            Stackable = true;
-            Weight = 1.0;
-            Amount = amount;
-        }
-
-        public GreenDriedFlowers(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class DriedOnions : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public DriedOnions(int amount = 1) : base(0xC40)
-        {
-            Stackable = true;
-            Weight = 1.0;
-            Amount = amount;
-        }
+        base.Serialize(writer);
 
-        public DriedOnions(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class DriedHerbs : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public DriedHerbs(int amount = 1) : base(0xC42)
-        {
-            Stackable = true;
-            Weight = 1.0;
-            Amount = amount;
-        }
+        base.Deserialize(reader);
 
-        public DriedHerbs(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class GreenDriedFlowers : Item
+{
+    [Constructible]
+    public GreenDriedFlowers(int amount = 1) : base(0xC3E)
+    {
+        Stackable = true;
+        Weight = 1.0;
+        Amount = amount;
     }
 
-    public class HorseShoes : Item
+    public GreenDriedFlowers(Serial serial) : base(serial)
     {
-        [Constructible]
-        public HorseShoes() : base(0xFB6) => Weight = 3.0;
-
-        public HorseShoes(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class ForgedMetal : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public ForgedMetal() : base(0xFB8) => Weight = 5.0;
+        base.Serialize(writer);
 
-        public ForgedMetal(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class Whip : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public Whip() : base(0x166E) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public Whip(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class DriedOnions : Item
+{
+    [Constructible]
+    public DriedOnions(int amount = 1) : base(0xC40)
+    {
+        Stackable = true;
+        Weight = 1.0;
+        Amount = amount;
     }
 
-    public class PaintsAndBrush : Item
+    public DriedOnions(Serial serial) : base(serial)
     {
-        [Constructible]
-        public PaintsAndBrush() : base(0xFC1) => Weight = 1.0;
-
-        public PaintsAndBrush(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PenAndInk : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public PenAndInk() : base(0xFBF) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public PenAndInk(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class ChiselsNorth : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public ChiselsNorth() : base(0x1026) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public ChiselsNorth(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+public class DriedHerbs : Item
+{
+    [Constructible]
+    public DriedHerbs(int amount = 1) : base(0xC42)
+    {
+        Stackable = true;
+        Weight = 1.0;
+        Amount = amount;
     }
 
-    public class ChiselsWest : Item
+    public DriedHerbs(Serial serial) : base(serial)
     {
-        [Constructible]
-        public ChiselsWest() : base(0x1027) => Weight = 1.0;
-
-        public ChiselsWest(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class DirtyPan : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public DirtyPan() : base(0x9E8) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public DirtyPan(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.Write(0);
     }
 
-    public class DirtySmallRoundPot : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public DirtySmallRoundPot() : base(0x9E7) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public DirtySmallRoundPot(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class HorseShoes : Item
+{
+    [Constructible]
+    public HorseShoes() : base(0xFB6) => Weight = 3.0;
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+    public HorseShoes(Serial serial) : base(serial)
+    {
     }
 
-    public class DirtyPot : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public DirtyPot() : base(0x9E6) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public DirtyPot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.Write(0);
     }
 
-    public class DirtyRoundPot : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public DirtyRoundPot() : base(0x9DF) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public DirtyRoundPot(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class ForgedMetal : Item
+{
+    [Constructible]
+    public ForgedMetal() : base(0xFB8) => Weight = 5.0;
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+    public ForgedMetal(Serial serial) : base(serial)
+    {
     }
 
-    public class DirtyFrypan : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public DirtyFrypan() : base(0x9DE) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public DirtyFrypan(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.Write(0);
     }
 
-    public class DirtySmallPot : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public DirtySmallPot() : base(0x9DD) => Weight = 1.0;
+        base.Deserialize(reader);
 
-        public DirtySmallPot(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class Whip : Item
+{
+    [Constructible]
+    public Whip() : base(0x166E) => Weight = 1.0;
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+    public Whip(Serial serial) : base(serial)
+    {
     }
 
-    public class DirtyKettle : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public DirtyKettle() : base(0x9DC) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public DirtyKettle(Serial serial) : base(serial)
-        {
-        }
+        writer.Write(0);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.WriteEncodedInt(0); // version
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class PaintsAndBrush : Item
+{
+    [Constructible]
+    public PaintsAndBrush() : base(0xFC1) => Weight = 1.0;
 
-            var version = reader.ReadEncodedInt();
-        }
+    public PaintsAndBrush(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PenAndInk : Item
+{
+    [Constructible]
+    public PenAndInk() : base(0xFBF) => Weight = 1.0;
+
+    public PenAndInk(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class ChiselsNorth : Item
+{
+    [Constructible]
+    public ChiselsNorth() : base(0x1026) => Weight = 1.0;
+
+    public ChiselsNorth(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class ChiselsWest : Item
+{
+    [Constructible]
+    public ChiselsWest() : base(0x1027) => Weight = 1.0;
+
+    public ChiselsWest(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtyPan : Item
+{
+    [Constructible]
+    public DirtyPan() : base(0x9E8) => Weight = 1.0;
+
+    public DirtyPan(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtySmallRoundPot : Item
+{
+    [Constructible]
+    public DirtySmallRoundPot() : base(0x9E7) => Weight = 1.0;
+
+    public DirtySmallRoundPot(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtyPot : Item
+{
+    [Constructible]
+    public DirtyPot() : base(0x9E6) => Weight = 1.0;
+
+    public DirtyPot(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtyRoundPot : Item
+{
+    [Constructible]
+    public DirtyRoundPot() : base(0x9DF) => Weight = 1.0;
+
+    public DirtyRoundPot(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtyFrypan : Item
+{
+    [Constructible]
+    public DirtyFrypan() : base(0x9DE) => Weight = 1.0;
+
+    public DirtyFrypan(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtySmallPot : Item
+{
+    [Constructible]
+    public DirtySmallPot() : base(0x9DD) => Weight = 1.0;
+
+    public DirtySmallPot(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class DirtyKettle : Item
+{
+    [Constructible]
+    public DirtyKettle() : base(0x9DC) => Weight = 1.0;
+
+    public DirtyKettle(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

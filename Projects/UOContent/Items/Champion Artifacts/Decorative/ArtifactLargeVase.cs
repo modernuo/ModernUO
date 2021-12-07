@@ -1,11 +1,10 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class ArtifactLargeVase : Item
 {
-    [Serializable(0, false)]
-    public partial class ArtifactLargeVase : Item
+    [Constructible]
+    public ArtifactLargeVase() : base(0x0B47)
     {
-        [Constructible]
-        public ArtifactLargeVase() : base(0x0B47)
-        {
-        }
     }
 }

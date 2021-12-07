@@ -18,116 +18,115 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public class SerializerSyntaxReceiver : ISyntaxContextReceiver
 {
-    public class SerializerSyntaxReceiver : ISyntaxContextReceiver
-    {
 #pragma warning disable RS1024
-        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
-        public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> EmbeddedClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+    public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> ClassAndFields { get; } = new(SymbolEqualityComparer.Default);
+    public Dictionary<INamedTypeSymbol, (AttributeData?, List<ISymbol>)> EmbeddedClassAndFields { get; } = new(SymbolEqualityComparer.Default);
 #pragma warning restore RS1024
 
-        public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
+    public ImmutableArray<INamedTypeSymbol> SerializableList => ClassAndFields.Keys.ToImmutableArray();
 
-        public ImmutableArray<INamedTypeSymbol> EmbeddedSerializableList => EmbeddedClassAndFields.Keys.ToImmutableArray();
+    public ImmutableArray<INamedTypeSymbol> EmbeddedSerializableList => EmbeddedClassAndFields.Keys.ToImmutableArray();
 
-        public void OnVisitSyntaxNode(SyntaxNode node, SemanticModel semanticModel)
+    public void OnVisitSyntaxNode(SyntaxNode node, SemanticModel semanticModel)
+    {
+        var compilation = semanticModel.Compilation;
+
+        if (node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
         {
-            var compilation = semanticModel.Compilation;
-
-            if (node is ClassDeclarationSyntax { AttributeLists: { Count: > 0 } } classDeclarationSyntax)
+            if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
             {
-                if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
-                {
-                    return;
-                }
-
-                if (classSymbol.IsEmbeddedSerializable(compilation, out var attrData))
-                {
-                    if (EmbeddedClassAndFields.TryGetValue(classSymbol, out var value))
-                    {
-                        var (_, fieldsList) = value;
-                        EmbeddedClassAndFields[classSymbol] = (attrData, fieldsList);
-                    }
-                    else
-                    {
-                        EmbeddedClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
-                    }
-                }
-                else if (classSymbol.WillBeSerializable(compilation, out attrData))
-                {
-                    if (ClassAndFields.TryGetValue(classSymbol, out var value))
-                    {
-                        var (_, fieldsList) = value;
-                        ClassAndFields[classSymbol] = (attrData, fieldsList);
-                    }
-                    else
-                    {
-                        ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
-                    }
-                }
-
                 return;
             }
 
-            if (node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
+            if (classSymbol.IsEmbeddedSerializable(compilation, out var attrData))
             {
-                foreach (var variable in fieldDeclarationSyntax.Declaration.Variables)
+                if (EmbeddedClassAndFields.TryGetValue(classSymbol, out var value))
                 {
-                    if (semanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
-                    {
-                        AddFieldOrProperty(fieldSymbol, compilation);
-                    }
+                    var (_, fieldsList) = value;
+                    EmbeddedClassAndFields[classSymbol] = (attrData, fieldsList);
                 }
-
-                return;
-            }
-
-            if (node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
-            {
-                if (semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
+                else
                 {
-                    AddFieldOrProperty(propertySymbol, compilation);
+                    EmbeddedClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
                 }
             }
+            else if (classSymbol.WillBeSerializable(compilation, out attrData))
+            {
+                if (ClassAndFields.TryGetValue(classSymbol, out var value))
+                {
+                    var (_, fieldsList) = value;
+                    ClassAndFields[classSymbol] = (attrData, fieldsList);
+                }
+                else
+                {
+                    ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol>()));
+                }
+            }
+
+            return;
         }
 
-        public void OnVisitSyntaxNode(GeneratorSyntaxContext context) =>
-            OnVisitSyntaxNode(context.Node, context.SemanticModel);
-
-        private void AddFieldOrProperty(ISymbol symbol, Compilation compilation)
+        if (node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclarationSyntax)
         {
-            var serializableFieldAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
-            var parentAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
-
-            if (symbol.GetAttribute(serializableFieldAttr) == null && symbol.GetAttribute(parentAttr) == null)
+            foreach (var variable in fieldDeclarationSyntax.Declaration.Variables)
             {
-                return;
+                if (semanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol)
+                {
+                    AddFieldOrProperty(fieldSymbol, compilation);
+                }
             }
 
-            var classSymbol = symbol.ContainingType;
-            if (ClassAndFields.TryGetValue(classSymbol, out var value))
-            {
-                var (_, fieldsList) = value;
-                fieldsList.Add(symbol);
-                return;
-            }
+            return;
+        }
 
-            if (EmbeddedClassAndFields.TryGetValue(classSymbol, out value))
+        if (node is PropertyDeclarationSyntax { AttributeLists: { Count: > 0 } } propertyDeclarationSyntax)
+        {
+            if (semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax) is IPropertySymbol propertySymbol)
             {
-                var (_, fieldsList) = value;
-                fieldsList.Add(symbol);
-                return;
+                AddFieldOrProperty(propertySymbol, compilation);
             }
+        }
+    }
 
-            if (classSymbol.WillBeSerializable(compilation, out var attrData))
-            {
-                ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
-            }
-            else if (classSymbol.IsEmbeddedSerializable(compilation, out attrData))
-            {
-                EmbeddedClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
-            }
+    public void OnVisitSyntaxNode(GeneratorSyntaxContext context) =>
+        OnVisitSyntaxNode(context.Node, context.SemanticModel);
+
+    private void AddFieldOrProperty(ISymbol symbol, Compilation compilation)
+    {
+        var serializableFieldAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_FIELD_ATTRIBUTE);
+        var parentAttr = compilation.GetTypeByMetadataName(SymbolMetadata.SERIALIZABLE_PARENT_ATTRIBUTE);
+
+        if (symbol.GetAttribute(serializableFieldAttr) == null && symbol.GetAttribute(parentAttr) == null)
+        {
+            return;
+        }
+
+        var classSymbol = symbol.ContainingType;
+        if (ClassAndFields.TryGetValue(classSymbol, out var value))
+        {
+            var (_, fieldsList) = value;
+            fieldsList.Add(symbol);
+            return;
+        }
+
+        if (EmbeddedClassAndFields.TryGetValue(classSymbol, out value))
+        {
+            var (_, fieldsList) = value;
+            fieldsList.Add(symbol);
+            return;
+        }
+
+        if (classSymbol.WillBeSerializable(compilation, out var attrData))
+        {
+            ClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
+        }
+        else if (classSymbol.IsEmbeddedSerializable(compilation, out attrData))
+        {
+            EmbeddedClassAndFields.Add(classSymbol, (attrData, new List<ISymbol> { symbol }));
         }
     }
 }

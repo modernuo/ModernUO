@@ -1,58 +1,57 @@
 using System;
 
-namespace Server.Engines.BulkOrders
+namespace Server.Engines.BulkOrders;
+
+public class BOBLargeSubEntry
 {
-    public class BOBLargeSubEntry
+    public BOBLargeSubEntry(LargeBulkEntry lbe)
     {
-        public BOBLargeSubEntry(LargeBulkEntry lbe)
-        {
-            ItemType = lbe.Details.Type;
-            AmountCur = lbe.Amount;
-            Number = lbe.Details.Number;
-            Graphic = lbe.Details.Graphic;
-        }
+        ItemType = lbe.Details.Type;
+        AmountCur = lbe.Amount;
+        Number = lbe.Details.Number;
+        Graphic = lbe.Details.Graphic;
+    }
 
-        public BOBLargeSubEntry(IGenericReader reader)
-        {
-            var version = reader.ReadEncodedInt();
+    public BOBLargeSubEntry(IGenericReader reader)
+    {
+        var version = reader.ReadEncodedInt();
 
-            switch (version)
-            {
-                case 0:
+        switch (version)
+        {
+            case 0:
+                {
+                    var type = reader.ReadString();
+
+                    if (type != null)
                     {
-                        var type = reader.ReadString();
-
-                        if (type != null)
-                        {
-                            ItemType = AssemblyHandler.FindTypeByFullName(type);
-                        }
-
-                        AmountCur = reader.ReadEncodedInt();
-                        Number = reader.ReadEncodedInt();
-                        Graphic = reader.ReadEncodedInt();
-
-                        break;
+                        ItemType = AssemblyHandler.FindTypeByFullName(type);
                     }
-            }
+
+                    AmountCur = reader.ReadEncodedInt();
+                    Number = reader.ReadEncodedInt();
+                    Graphic = reader.ReadEncodedInt();
+
+                    break;
+                }
         }
+    }
 
-        public Type ItemType { get; }
+    public Type ItemType { get; }
 
-        public int AmountCur { get; }
+    public int AmountCur { get; }
 
-        public int Number { get; }
+    public int Number { get; }
 
-        public int Graphic { get; }
+    public int Graphic { get; }
 
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.WriteEncodedInt(0); // version
+    public void Serialize(IGenericWriter writer)
+    {
+        writer.WriteEncodedInt(0); // version
 
-            writer.Write(ItemType?.FullName);
+        writer.Write(ItemType?.FullName);
 
-            writer.WriteEncodedInt(AmountCur);
-            writer.WriteEncodedInt(Number);
-            writer.WriteEncodedInt(Graphic);
-        }
+        writer.WriteEncodedInt(AmountCur);
+        writer.WriteEncodedInt(Number);
+        writer.WriteEncodedInt(Graphic);
     }
 }

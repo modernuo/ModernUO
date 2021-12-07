@@ -1,46 +1,45 @@
 using System.Collections.Generic;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Architect : BaseVendor
 {
-    public class Architect : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public Architect() : base("the architect")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+    }
 
-        [Constructible]
-        public Architect() : base("the architect")
+    public Architect(Serial serial) : base(serial)
+    {
+    }
+
+    protected override List<SBInfo> SBInfos => m_SBInfos;
+
+    public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
+
+    public override void InitSBInfo()
+    {
+        if (!Core.AOS)
         {
+            m_SBInfos.Add(new SBHouseDeed());
         }
 
-        public Architect(Serial serial) : base(serial)
-        {
-        }
+        m_SBInfos.Add(new SBArchitect());
+    }
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
+        writer.Write(0); // version
+    }
 
-        public override void InitSBInfo()
-        {
-            if (!Core.AOS)
-            {
-                m_SBInfos.Add(new SBHouseDeed());
-            }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            m_SBInfos.Add(new SBArchitect());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

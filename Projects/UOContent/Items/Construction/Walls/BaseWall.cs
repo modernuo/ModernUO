@@ -1,8 +1,7 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public abstract partial class BaseWall : Item
 {
-    [Serializable(0, false)]
-    public abstract partial class BaseWall : Item
-    {
-        public BaseWall(int itemID) : base(itemID) => Movable = false;
-    }
+    public BaseWall(int itemID) : base(itemID) => Movable = false;
 }

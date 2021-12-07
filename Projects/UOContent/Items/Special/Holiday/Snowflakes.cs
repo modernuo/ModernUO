@@ -1,58 +1,57 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class BlueSnowflake : Item
 {
-    public class BlueSnowflake : Item
+    [Constructible]
+    public BlueSnowflake() : base(0x232E)
     {
-        [Constructible]
-        public BlueSnowflake() : base(0x232E)
-        {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
-        }
-
-        public BlueSnowflake(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        LootType = LootType.Blessed;
     }
 
-    public class WhiteSnowflake : Item
+    public BlueSnowflake(Serial serial) : base(serial)
     {
-        [Constructible]
-        public WhiteSnowflake() : base(0x232F)
-        {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
-        }
+    }
 
-        public WhiteSnowflake(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
 
-            var version = reader.ReadInt();
-        }
+public class WhiteSnowflake : Item
+{
+    [Constructible]
+    public WhiteSnowflake() : base(0x232F)
+    {
+        Weight = 1.0;
+        LootType = LootType.Blessed;
+    }
+
+    public WhiteSnowflake(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

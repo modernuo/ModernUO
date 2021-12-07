@@ -1,37 +1,36 @@
 using Server.Targets;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public abstract partial class BaseSword : BaseMeleeWeapon
 {
-    [Serializable(0, false)]
-    public abstract partial class BaseSword : BaseMeleeWeapon
+    public BaseSword(int itemID) : base(itemID)
     {
-        public BaseSword(int itemID) : base(itemID)
+    }
+
+    public override SkillName DefSkill => SkillName.Swords;
+    public override WeaponType DefType => WeaponType.Slashing;
+    public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        from.SendLocalizedMessage(1010018); // What do you want to use this item on?
+
+        from.Target = new BladedItemTarget(this);
+    }
+
+    public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+    {
+        base.OnHit(attacker, defender, damageBonus);
+
+        if (!Core.AOS && Poison != null && PoisonCharges > 0)
         {
-        }
+            --PoisonCharges;
 
-        public override SkillName DefSkill => SkillName.Swords;
-        public override WeaponType DefType => WeaponType.Slashing;
-        public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            from.SendLocalizedMessage(1010018); // What do you want to use this item on?
-
-            from.Target = new BladedItemTarget(this);
-        }
-
-        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
-        {
-            base.OnHit(attacker, defender, damageBonus);
-
-            if (!Core.AOS && Poison != null && PoisonCharges > 0)
+            if (Utility.RandomDouble() >= 0.5) // 50% chance to poison
             {
-                --PoisonCharges;
-
-                if (Utility.RandomDouble() >= 0.5) // 50% chance to poison
-                {
-                    defender.ApplyPoison(attacker, Poison);
-                }
+                defender.ApplyPoison(attacker, Poison);
             }
         }
     }

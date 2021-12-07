@@ -13,27 +13,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace SerializationGenerator
-{
-    public enum InstanceModifier
-    {
-        None,
-        Const,
-        ReadOnly,
-        Static,
-        StaticReadOnly
-    }
+namespace SerializationGenerator;
 
-    public static partial class SourceGeneration
-    {
-        public static string ToFriendlyString(this InstanceModifier modifier) =>
-            modifier switch
-            {
-                InstanceModifier.Const          => "const",
-                InstanceModifier.ReadOnly       => "readonly",
-                InstanceModifier.Static         => "static",
-                InstanceModifier.StaticReadOnly => "static readonly",
-                _                              => ""
-            };
-    }
+public enum InstanceModifier
+{
+    None,
+    Const,
+    ReadOnly,
+    Static,
+    StaticReadOnly
+}
+
+public static partial class SourceGeneration
+{
+    public static string ToFriendlyString(this InstanceModifier modifier) =>
+        modifier switch
+        {
+            InstanceModifier.Const          => "const",
+            InstanceModifier.ReadOnly       => "readonly",
+            InstanceModifier.Static         => "static",
+            InstanceModifier.StaticReadOnly => "static readonly",
+            _                               => ""
+        };
 }

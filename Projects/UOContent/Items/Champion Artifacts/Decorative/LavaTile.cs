@@ -1,11 +1,10 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class LavaTile : Item
 {
-    [Serializable(0, false)]
-    public partial class LavaTile : Item
+    [Constructible]
+    public LavaTile() : base(0x12EE)
     {
-        [Constructible]
-        public LavaTile() : base(0x12EE)
-        {
-        }
     }
 }

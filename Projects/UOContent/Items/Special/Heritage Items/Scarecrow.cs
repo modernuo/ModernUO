@@ -1,86 +1,85 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x1E34, 0x1E35)]
+public class ScarecrowComponent : AddonComponent
 {
-    [Flippable(0x1E34, 0x1E35)]
-    public class ScarecrowComponent : AddonComponent
+    public ScarecrowComponent() : base(0x1E34)
     {
-        public ScarecrowComponent() : base(0x1E34)
-        {
-        }
-
-        public ScarecrowComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1076608; // Scarecrow
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class ScarecrowAddon : BaseAddon
+    public ScarecrowComponent(Serial serial) : base(serial)
     {
-        [Constructible]
-        public ScarecrowAddon()
-        {
-            AddComponent(new ScarecrowComponent(), 0, 0, 0);
-        }
-
-        public ScarecrowAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new ScarecrowDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class ScarecrowDeed : BaseAddonDeed
+    public override int LabelNumber => 1076608; // Scarecrow
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public ScarecrowDeed() => LootType = LootType.Blessed;
+        base.Serialize(writer);
 
-        public ScarecrowDeed(Serial serial) : base(serial)
-        {
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override BaseAddon Addon => new ScarecrowAddon();
-        public override int LabelNumber => 1076608; // Scarecrow
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-            writer.WriteEncodedInt(0); // version
-        }
+public class ScarecrowAddon : BaseAddon
+{
+    [Constructible]
+    public ScarecrowAddon()
+    {
+        AddComponent(new ScarecrowComponent(), 0, 0, 0);
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public ScarecrowAddon(Serial serial) : base(serial)
+    {
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override BaseAddonDeed Deed => new ScarecrowDeed();
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class ScarecrowDeed : BaseAddonDeed
+{
+    [Constructible]
+    public ScarecrowDeed() => LootType = LootType.Blessed;
+
+    public ScarecrowDeed(Serial serial) : base(serial)
+    {
+    }
+
+    public override BaseAddon Addon => new ScarecrowAddon();
+    public override int LabelNumber => 1076608; // Scarecrow
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

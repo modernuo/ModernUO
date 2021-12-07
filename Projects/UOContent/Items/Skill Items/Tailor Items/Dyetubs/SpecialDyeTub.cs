@@ -1,46 +1,45 @@
 using Server.Engines.VeteranRewards;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(1, false)]
+public partial class SpecialDyeTub : DyeTub, IRewardItem
 {
-    [Serializable(1, false)]
-    public partial class SpecialDyeTub : DyeTub, IRewardItem
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private bool _isRewardItem;
+
+    [Constructible]
+    public SpecialDyeTub() => LootType = LootType.Blessed;
+
+    public override CustomHuePicker CustomHuePicker => CustomHuePicker.SpecialDyeTub;
+    public override int LabelNumber => 1041285; // Special Dye Tub
+
+    public override void OnDoubleClick(Mobile from)
     {
-        [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private bool _isRewardItem;
-
-        [Constructible]
-        public SpecialDyeTub() => LootType = LootType.Blessed;
-
-        public override CustomHuePicker CustomHuePicker => CustomHuePicker.SpecialDyeTub;
-        public override int LabelNumber => 1041285; // Special Dye Tub
-
-        public override void OnDoubleClick(Mobile from)
+        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         {
-            if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
-            {
-                return;
-            }
-
-            base.OnDoubleClick(from);
+            return;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
-        {
-            base.GetProperties(list);
+        base.OnDoubleClick(from);
+    }
 
-            if (Core.ML && _isRewardItem)
-            {
-                list.Add(1076217); // 1st Year Veteran Reward
-            }
+    public override void GetProperties(ObjectPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (Core.ML && _isRewardItem)
+        {
+            list.Add(1076217); // 1st Year Veteran Reward
         }
+    }
 
-        private void Deserialize(IGenericReader reader, int version)
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        if (LootType == LootType.Regular)
         {
-            if (LootType == LootType.Regular)
-            {
-                LootType = LootType.Blessed;
-            }
+            LootType = LootType.Blessed;
         }
     }
 }

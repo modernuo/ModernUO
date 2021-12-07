@@ -1,35 +1,34 @@
 using System;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class BookPageInfo
 {
-    public class BookPageInfo
+    public BookPageInfo() => Lines = Array.Empty<string>();
+
+    public BookPageInfo(params string[] lines) => Lines = lines;
+
+    public BookPageInfo(IGenericReader reader)
     {
-        public BookPageInfo() => Lines = Array.Empty<string>();
+        var length = reader.ReadInt();
 
-        public BookPageInfo(params string[] lines) => Lines = lines;
+        Lines = new string[length];
 
-        public BookPageInfo(IGenericReader reader)
+        for (var i = 0; i < Lines.Length; ++i)
         {
-            var length = reader.ReadInt();
-
-            Lines = new string[length];
-
-            for (var i = 0; i < Lines.Length; ++i)
-            {
-                Lines[i] = Utility.Intern(reader.ReadString());
-            }
+            Lines[i] = Utility.Intern(reader.ReadString());
         }
+    }
 
-        public string[] Lines { get; set; }
+    public string[] Lines { get; set; }
 
-        public void Serialize(IGenericWriter writer)
+    public void Serialize(IGenericWriter writer)
+    {
+        writer.Write(Lines.Length);
+
+        for (var i = 0; i < Lines.Length; ++i)
         {
-            writer.Write(Lines.Length);
-
-            for (var i = 0; i < Lines.Length; ++i)
-            {
-                writer.Write(Lines[i]);
-            }
+            writer.Write(Lines[i]);
         }
     }
 }

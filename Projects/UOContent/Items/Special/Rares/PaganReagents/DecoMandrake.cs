@@ -1,30 +1,29 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class DecoMandrake : Item
 {
-    public class DecoMandrake : Item
+    [Constructible]
+    public DecoMandrake() : base(0x18DF)
     {
-        [Constructible]
-        public DecoMandrake() : base(0x18DF)
-        {
-            Movable = true;
-            Stackable = false;
-        }
+        Movable = true;
+        Stackable = false;
+    }
 
-        public DecoMandrake(Serial serial) : base(serial)
-        {
-        }
+    public DecoMandrake(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0);
-        }
+        writer.Write(0);
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

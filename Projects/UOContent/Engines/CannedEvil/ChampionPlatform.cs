@@ -15,93 +15,92 @@
 
 using Server.Items;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+public class ChampionPlatform : BaseAddon
 {
-    public class ChampionPlatform : BaseAddon
+    public ChampionSpawn Spawn { get; private set; }
+
+    public ChampionPlatform(ChampionSpawn spawn)
     {
-        public ChampionSpawn Spawn { get; private set; }
+        Spawn = spawn;
 
-        public ChampionPlatform(ChampionSpawn spawn)
+        for (var x = -2; x <= 2; ++x)
         {
-            Spawn = spawn;
-
-            for (var x = -2; x <= 2; ++x)
+            for (var y = -2; y <= 2; ++y)
             {
-                for (var y = -2; y <= 2; ++y)
+                AddComponent(0x750, x, y, -5);
+            }
+        }
+
+        for (var x = -1; x <= 1; ++x)
+        {
+            for (var y = -1; y <= 1; ++y)
+            {
+                AddComponent(0x750, x, y, 0);
+            }
+        }
+
+        for (var i = -1; i <= 1; ++i)
+        {
+            AddComponent(0x751, i, 2, 0);
+            AddComponent(0x752, 2, i, 0);
+
+            AddComponent(0x753, i, -2, 0);
+            AddComponent(0x754, -2, i, 0);
+        }
+
+        AddComponent(0x759, -2, -2, 0);
+        AddComponent(0x75A, 2, 2, 0);
+        AddComponent(0x75B, -2, 2, 0);
+        AddComponent(0x75C, 2, -2, 0);
+    }
+
+    public void AddComponent(int id, int x, int y, int z)
+    {
+        AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
+        AddComponent(ac, x, y, z);
+    }
+
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+
+        Spawn?.Delete();
+    }
+
+    public ChampionPlatform(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        writer.Write(Spawn);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        switch (version)
+        {
+            case 0:
                 {
-                    AddComponent(0x750, x, y, -5);
-                }
-            }
+                    Spawn = reader.ReadEntity<ChampionSpawn>();
 
-            for (var x = -1; x <= 1; ++x)
-            {
-                for (var y = -1; y <= 1; ++y)
-                {
-                    AddComponent(0x750, x, y, 0);
-                }
-            }
-
-            for (var i = -1; i <= 1; ++i)
-            {
-                AddComponent(0x751, i, 2, 0);
-                AddComponent(0x752, 2, i, 0);
-
-                AddComponent(0x753, i, -2, 0);
-                AddComponent(0x754, -2, i, 0);
-            }
-
-            AddComponent(0x759, -2, -2, 0);
-            AddComponent(0x75A, 2, 2, 0);
-            AddComponent(0x75B, -2, 2, 0);
-            AddComponent(0x75C, 2, -2, 0);
-        }
-
-        public void AddComponent(int id, int x, int y, int z)
-        {
-            AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
-            AddComponent(ac, x, y, z);
-        }
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-
-            Spawn?.Delete();
-        }
-
-        public ChampionPlatform(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Spawn);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
+                    if (Spawn == null)
                     {
-                        Spawn = reader.ReadEntity<ChampionSpawn>();
-
-                        if (Spawn == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
+                        Delete();
                     }
-            }
+
+                    break;
+                }
         }
     }
 }

@@ -1,11 +1,10 @@
-﻿namespace Server.Items
-{
-    [Serializable(0, false)]
-    public partial class WrappedCandy : CandyCane
-    {
-        [Constructible]
-        public WrappedCandy(int amount = 1) : base(0x469e) => Stackable = true;
+﻿namespace Server.Items;
 
-        public override int LabelNumber => 1096950; /* wrapped candy */
-    }
+[Serializable(0, false)]
+public partial class WrappedCandy : CandyCane
+{
+    [Constructible]
+    public WrappedCandy(int amount = 1) : base(0x469e) => Stackable = true;
+
+    public override int LabelNumber => 1096950; /* wrapped candy */
 }

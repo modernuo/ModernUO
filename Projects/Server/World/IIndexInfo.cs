@@ -13,12 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server
-{
-    public interface IIndexInfo<I>
-    {
-        I CreateIndex(uint num);
+namespace Server;
 
-        string TypeName { get; }
-    }
+public interface IIndexInfo<I>
+{
+    I CreateIndex(uint num);
+
+    string TypeName { get; }
 }

@@ -1,36 +1,35 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class HagCauldron : BaseAddon
 {
-    public class HagCauldron : BaseAddon
+    [Constructible]
+    public HagCauldron()
     {
-        [Constructible]
-        public HagCauldron()
-        {
-            AddonComponent pot;
-            pot = new AddonComponent(2420);
-            AddComponent(pot, 0, 0, 0); // pot w/ support
+        AddonComponent pot;
+        pot = new AddonComponent(2420);
+        AddComponent(pot, 0, 0, 0); // pot w/ support
 
-            AddonComponent fire;
-            fire = new AddonComponent(4012); // fire pit
-            fire.Light = LightType.Circle150;
-            AddComponent(fire, 0, 0, 0);
-        }
+        AddonComponent fire;
+        fire = new AddonComponent(4012); // fire pit
+        fire.Light = LightType.Circle150;
+        AddComponent(fire, 0, 0, 0);
+    }
 
-        public HagCauldron(Serial serial) : base(serial)
-        {
-        }
+    public HagCauldron(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

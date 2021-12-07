@@ -22,65 +22,64 @@ using Server.Json;
 using Server.Logging;
 using Server.Utilities;
 
-namespace Server
+namespace Server;
+
+internal static class RegionLoader
 {
-    internal static class RegionLoader
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(RegionLoader));
+
+    internal static void LoadRegions()
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(RegionLoader));
+        var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
 
-        internal static void LoadRegions()
+        var failures = new List<string>();
+        var count = 0;
+
+        logger.Information("Loading regions");
+
+        var stopwatch = Stopwatch.StartNew();
+        var regions = JsonConfig.Deserialize<List<DynamicJson>>(path);
+        if (regions == null)
         {
-            var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
+            throw new JsonException($"Failed to deserialize {path}.");
+        }
 
-            var failures = new List<string>();
-            var count = 0;
+        foreach (var json in regions)
+        {
+            var type = AssemblyHandler.FindTypeByName(json.Type);
 
-            logger.Information("Loading regions");
-
-            var stopwatch = Stopwatch.StartNew();
-            var regions = JsonConfig.Deserialize<List<DynamicJson>>(path);
-            if (regions == null)
+            if (type == null || !typeof(Region).IsAssignableFrom(type))
             {
-                throw new JsonException($"Failed to deserialize {path}.");
+                failures.Add($"\tInvalid region type {json.Type}");
+                continue;
             }
 
-            foreach (var json in regions)
-            {
-                var type = AssemblyHandler.FindTypeByName(json.Type);
+            var region = type.CreateInstance<Region>(json, JsonConfig.DefaultOptions);
+            region?.Register();
+            count++;
+        }
 
-                if (type == null || !typeof(Region).IsAssignableFrom(type))
-                {
-                    failures.Add($"\tInvalid region type {json.Type}");
-                    continue;
-                }
+        stopwatch.Stop();
 
-                var region = type.CreateInstance<Region>(json, JsonConfig.DefaultOptions);
-                region?.Register();
-                count++;
-            }
+        if (failures.Count == 0)
+        {
+            logger.Information(
+                "Regions loaded ({0} regions, {1} failures) ({2:F2} seconds)",
+                count,
+                failures.Count,
+                stopwatch.Elapsed.TotalSeconds
+            );
+        }
+        else
+        {
+            logger.Warning(
+                "Failed loading regions ({0} regions, {1} failures) ({2:F2} seconds)",
+                count,
+                failures.Count,
+                stopwatch.Elapsed.TotalSeconds
+            );
 
-            stopwatch.Stop();
-
-            if (failures.Count == 0)
-            {
-                logger.Information(
-                    "Regions loaded ({0} regions, {1} failures) ({2:F2} seconds)",
-                    count,
-                    failures.Count,
-                    stopwatch.Elapsed.TotalSeconds
-                );
-            }
-            else
-            {
-                logger.Warning(
-                    "Failed loading regions ({0} regions, {1} failures) ({2:F2} seconds)",
-                    count,
-                    failures.Count,
-                    stopwatch.Elapsed.TotalSeconds
-                );
-
-                logger.Warning(string.Join(Environment.NewLine, failures));
-            }
+            logger.Warning(string.Join(Environment.NewLine, failures));
         }
     }
 }

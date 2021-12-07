@@ -1,187 +1,186 @@
 using Server.Engines.VeteranRewards;
 using Server.Mobiles;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class CharacterStatueMaker : Item, IRewardItem
 {
-    public class CharacterStatueMaker : Item, IRewardItem
+    private bool m_IsRewardItem;
+    private StatueType m_Type;
+
+    public CharacterStatueMaker(StatueType type) : base(0x32F0)
     {
-        private bool m_IsRewardItem;
-        private StatueType m_Type;
+        m_Type = type;
 
-        public CharacterStatueMaker(StatueType type) : base(0x32F0)
+        InvalidateHue();
+
+        LootType = LootType.Blessed;
+        Weight = 5.0;
+    }
+
+    public CharacterStatueMaker(Serial serial) : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1076173; // Character Statue Maker
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public StatueType StatueType
+    {
+        get => m_Type;
+        set
         {
-            m_Type = type;
-
+            m_Type = value;
             InvalidateHue();
+        }
+    }
 
-            LootType = LootType.Blessed;
-            Weight = 5.0;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsRewardItem
+    {
+        get => m_IsRewardItem;
+        set
+        {
+            m_IsRewardItem = value;
+            InvalidateProperties();
+        }
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, new object[] { m_Type }))
+        {
+            return;
         }
 
-        public CharacterStatueMaker(Serial serial) : base(serial)
+        if (IsChildOf(from.Backpack))
         {
-        }
-
-        public override int LabelNumber => 1076173; // Character Statue Maker
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public StatueType StatueType
-        {
-            get => m_Type;
-            set
+            if (!from.IsBodyMod)
             {
-                m_Type = value;
-                InvalidateHue();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsRewardItem
-        {
-            get => m_IsRewardItem;
-            set
-            {
-                m_IsRewardItem = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, new object[] { m_Type }))
-            {
-                return;
-            }
-
-            if (IsChildOf(from.Backpack))
-            {
-                if (!from.IsBodyMod)
-                {
-                    from.SendLocalizedMessage(1076194); // Select a place where you would like to put your statue.
-                    from.Target = new CharacterStatueTarget(this, m_Type);
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
-                }
+                from.SendLocalizedMessage(1076194); // Select a place where you would like to put your statue.
+                from.Target = new CharacterStatueTarget(this, m_Type);
             }
             else
             {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
             }
         }
-
-        public override void GetProperties(ObjectPropertyList list)
+        else
         {
-            base.GetProperties(list);
-
-            if (m_IsRewardItem)
-            {
-                list.Add(1076222); // 6th Year Veteran Reward
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_IsRewardItem);
-            writer.Write((int)m_Type);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_IsRewardItem = reader.ReadBool();
-            m_Type = (StatueType)reader.ReadInt();
-        }
-
-        public void InvalidateHue()
-        {
-            Hue = 0xB8F + (int)m_Type * 4;
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
         }
     }
 
-    public class MarbleStatueMaker : CharacterStatueMaker
+    public override void GetProperties(ObjectPropertyList list)
     {
-        [Constructible]
-        public MarbleStatueMaker() : base(StatueType.Marble)
+        base.GetProperties(list);
+
+        if (m_IsRewardItem)
         {
-        }
-
-        public MarbleStatueMaker(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            list.Add(1076222); // 6th Year Veteran Reward
         }
     }
 
-    public class JadeStatueMaker : CharacterStatueMaker
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public JadeStatueMaker() : base(StatueType.Jade)
-        {
-        }
+        base.Serialize(writer);
 
-        public JadeStatueMaker(Serial serial) : base(serial)
-        {
-        }
+        writer.WriteEncodedInt(0); // version
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.Write(m_IsRewardItem);
+        writer.Write((int)m_Type);
     }
 
-    public class BronzeStatueMaker : CharacterStatueMaker
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public BronzeStatueMaker() : base(StatueType.Bronze)
-        {
-        }
+        base.Deserialize(reader);
 
-        public BronzeStatueMaker(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadEncodedInt();
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        m_IsRewardItem = reader.ReadBool();
+        m_Type = (StatueType)reader.ReadInt();
+    }
 
-            writer.WriteEncodedInt(0); // version
-        }
+    public void InvalidateHue()
+    {
+        Hue = 0xB8F + (int)m_Type * 4;
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class MarbleStatueMaker : CharacterStatueMaker
+{
+    [Constructible]
+    public MarbleStatueMaker() : base(StatueType.Marble)
+    {
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public MarbleStatueMaker(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class JadeStatueMaker : CharacterStatueMaker
+{
+    [Constructible]
+    public JadeStatueMaker() : base(StatueType.Jade)
+    {
+    }
+
+    public JadeStatueMaker(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class BronzeStatueMaker : CharacterStatueMaker
+{
+    [Constructible]
+    public BronzeStatueMaker() : base(StatueType.Bronze)
+    {
+    }
+
+    public BronzeStatueMaker(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

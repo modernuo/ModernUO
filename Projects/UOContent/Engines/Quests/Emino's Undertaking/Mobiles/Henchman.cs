@@ -1,58 +1,57 @@
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Ninja
+namespace Server.Engines.Quests.Ninja;
+
+public class Henchman : BaseCreature
 {
-    public class Henchman : BaseCreature
+    [Constructible]
+    public Henchman() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
-        [Constructible]
-        public Henchman() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        InitStats(45, 30, 5);
+
+        Hue = Race.Human.RandomSkinHue();
+        Body = 0x190;
+
+        Utility.AssignRandomHair(this);
+        Utility.AssignRandomFacialHair(this);
+
+        AddItem(new LeatherNinjaJacket());
+        AddItem(new LeatherNinjaPants());
+        AddItem(new NinjaTabi());
+
+        if (Utility.RandomBool())
         {
-            InitStats(45, 30, 5);
-
-            Hue = Race.Human.RandomSkinHue();
-            Body = 0x190;
-
-            Utility.AssignRandomHair(this);
-            Utility.AssignRandomFacialHair(this);
-
-            AddItem(new LeatherNinjaJacket());
-            AddItem(new LeatherNinjaPants());
-            AddItem(new NinjaTabi());
-
-            if (Utility.RandomBool())
-            {
-                AddItem(new Kama());
-            }
-            else
-            {
-                AddItem(new Tessen());
-            }
-
-            SetSkill(SkillName.Swords, 50.0);
-            SetSkill(SkillName.Tactics, 50.0);
+            AddItem(new Kama());
+        }
+        else
+        {
+            AddItem(new Tessen());
         }
 
-        public Henchman(Serial serial) : base(serial)
-        {
-        }
+        SetSkill(SkillName.Swords, 50.0);
+        SetSkill(SkillName.Tactics, 50.0);
+    }
 
-        public override string DefaultName => "a henchman";
+    public Henchman(Serial serial) : base(serial)
+    {
+    }
 
-        public override bool AlwaysMurderer => true;
+    public override string DefaultName => "a henchman";
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override bool AlwaysMurderer => true;
 
-            writer.WriteEncodedInt(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.WriteEncodedInt(0); // version
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

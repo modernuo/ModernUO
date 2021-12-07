@@ -1,70 +1,69 @@
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class EnslavedGargoyle : BaseCreature
 {
-    public class EnslavedGargoyle : BaseCreature
+    [Constructible]
+    public EnslavedGargoyle() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
-        [Constructible]
-        public EnslavedGargoyle() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        Body = 0x2F1;
+        BaseSoundID = 0x174;
+
+        SetStr(302, 360);
+        SetDex(76, 95);
+        SetInt(81, 105);
+
+        SetHits(186, 212);
+
+        SetDamage(7, 14);
+
+        SetResistance(ResistanceType.Physical, 30, 40);
+        SetResistance(ResistanceType.Fire, 50, 70);
+        SetResistance(ResistanceType.Cold, 15, 25);
+        SetResistance(ResistanceType.Poison, 25, 30);
+        SetResistance(ResistanceType.Energy, 25, 30);
+
+        SetSkill(SkillName.MagicResist, 70.1, 85.0);
+        SetSkill(SkillName.Tactics, 50.1, 70.0);
+        SetSkill(SkillName.Wrestling, 40.1, 80.0);
+
+        Fame = 3500;
+        Karma = 0;
+
+        VirtualArmor = 35;
+
+        if (Utility.RandomDouble() < 0.2)
         {
-            Body = 0x2F1;
-            BaseSoundID = 0x174;
-
-            SetStr(302, 360);
-            SetDex(76, 95);
-            SetInt(81, 105);
-
-            SetHits(186, 212);
-
-            SetDamage(7, 14);
-
-            SetResistance(ResistanceType.Physical, 30, 40);
-            SetResistance(ResistanceType.Fire, 50, 70);
-            SetResistance(ResistanceType.Cold, 15, 25);
-            SetResistance(ResistanceType.Poison, 25, 30);
-            SetResistance(ResistanceType.Energy, 25, 30);
-
-            SetSkill(SkillName.MagicResist, 70.1, 85.0);
-            SetSkill(SkillName.Tactics, 50.1, 70.0);
-            SetSkill(SkillName.Wrestling, 40.1, 80.0);
-
-            Fame = 3500;
-            Karma = 0;
-
-            VirtualArmor = 35;
-
-            if (Utility.RandomDouble() < 0.2)
-            {
-                PackItem(new GargoylesPickaxe());
-            }
+            PackItem(new GargoylesPickaxe());
         }
+    }
 
-        public EnslavedGargoyle(Serial serial) : base(serial)
-        {
-        }
+    public EnslavedGargoyle(Serial serial) : base(serial)
+    {
+    }
 
-        public override string CorpseName => "an enslaved gargoyle corpse";
-        public override string DefaultName => "an enslaved gargoyle";
+    public override string CorpseName => "an enslaved gargoyle corpse";
+    public override string DefaultName => "an enslaved gargoyle";
 
-        public override int Meat => 1;
-        public override int TreasureMapLevel => 1;
+    public override int Meat => 1;
+    public override int TreasureMapLevel => 1;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Average, 2);
-            AddLoot(LootPack.Gems);
-        }
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.Average, 2);
+        AddLoot(LootPack.Gems);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(0);
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
     }
 }

@@ -19,26 +19,25 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace Server.Network
+namespace Server.Network;
+
+public interface ISocket
 {
-    public interface ISocket
-    {
-        public IntPtr Handle { get; }
+    public IntPtr Handle { get; }
 
-        public EndPoint LocalEndPoint { get; }
+    public EndPoint LocalEndPoint { get; }
 
-        public EndPoint RemoteEndPoint { get; }
+    public EndPoint RemoteEndPoint { get; }
 
-        public Task<int> SendAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
+    public Task<int> SendAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
-        public int Send(IList<ArraySegment<byte>> buffer, SocketFlags flags);
+    public int Send(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
-        public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
+    public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
 
-        public int Receive(IList<ArraySegment<byte>> buffers, SocketFlags flags);
+    public int Receive(IList<ArraySegment<byte>> buffers, SocketFlags flags);
 
-        public void Shutdown(SocketShutdown how);
+    public void Shutdown(SocketShutdown how);
 
-        public void Close();
-    }
+    public void Close();
 }

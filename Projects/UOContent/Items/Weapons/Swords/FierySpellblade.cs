@@ -1,11 +1,10 @@
-namespace Server.Items
-{
-    [Serializable(0)]
-    public partial class FierySpellblade : ElvenSpellblade
-    {
-        [Constructible]
-        public FierySpellblade() => WeaponAttributes.ResistFireBonus = 5;
+namespace Server.Items;
 
-        public override int LabelNumber => 1073515; // fiery spellblade
-    }
+[Serializable(0)]
+public partial class FierySpellblade : ElvenSpellblade
+{
+    [Constructible]
+    public FierySpellblade() => WeaponAttributes.ResistFireBonus = 5;
+
+    public override int LabelNumber => 1073515; // fiery spellblade
 }

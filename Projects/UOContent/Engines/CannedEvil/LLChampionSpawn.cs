@@ -13,43 +13,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+public class LLChampionSpawn : ChampionSpawn
 {
-    public class LLChampionSpawn : ChampionSpawn
+    public override bool HasStarRoomGate => false;
+
+    [Constructible]
+    public LLChampionSpawn()
     {
-        public override bool HasStarRoomGate => false;
+        CannedEvilTimer.AddSpawn(this);
+    }
 
-        [Constructible]
-        public LLChampionSpawn()
-        {
-            CannedEvilTimer.AddSpawn(this);
-        }
+    public LLChampionSpawn(Serial serial) : base(serial)
+    {
+    }
 
-        public LLChampionSpawn(Serial serial) : base(serial)
-        {
-        }
+    public override bool AlwaysActive => false;
 
-        public override bool AlwaysActive => false;
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.WriteEncodedInt(0); //version
+    }
 
-            writer.WriteEncodedInt(0); //version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        int version = reader.ReadEncodedInt();
+        CannedEvilTimer.AddSpawn(this);
+    }
 
-            int version = reader.ReadEncodedInt();
-            CannedEvilTimer.AddSpawn(this);
-        }
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-            CannedEvilTimer.RemoveSpawn(this);
-        }
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+        CannedEvilTimer.RemoveSpawn(this);
     }
 }

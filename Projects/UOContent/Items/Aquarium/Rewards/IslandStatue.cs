@@ -1,21 +1,20 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class IslandStatue : Item
 {
-    [Serializable(0, false)]
-    public partial class IslandStatue : Item
+    [Constructible]
+    public IslandStatue() : base(0x3B0F)
     {
-        [Constructible]
-        public IslandStatue() : base(0x3B0F)
-        {
-        }
+    }
 
-        public override int LabelNumber => 1074600; // An island statue
-        public override double DefaultWeight => 1.0;
+    public override int LabelNumber => 1074600; // An island statue
+    public override double DefaultWeight => 1.0;
 
-        public override void AddNameProperties(ObjectPropertyList list)
-        {
-            base.AddNameProperties(list);
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+        base.AddNameProperties(list);
 
-            list.Add(1073634); // An aquarium decoration
-        }
+        list.Add(1073634); // An aquarium decoration
     }
 }

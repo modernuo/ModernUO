@@ -1,44 +1,43 @@
 using System.Collections.Generic;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Furtrader : BaseVendor
 {
-    public class Furtrader : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public Furtrader() : base("the furtrader")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        SetSkill(SkillName.Camping, 55.0, 78.0);
+        // SetSkill( SkillName.Alchemy, 60.0, 83.0 );
+        SetSkill(SkillName.AnimalLore, 85.0, 100.0);
+        SetSkill(SkillName.Cooking, 45.0, 68.0);
+        SetSkill(SkillName.Tracking, 36.0, 68.0);
+    }
 
-        [Constructible]
-        public Furtrader() : base("the furtrader")
-        {
-            SetSkill(SkillName.Camping, 55.0, 78.0);
-            // SetSkill( SkillName.Alchemy, 60.0, 83.0 );
-            SetSkill(SkillName.AnimalLore, 85.0, 100.0);
-            SetSkill(SkillName.Cooking, 45.0, 68.0);
-            SetSkill(SkillName.Tracking, 36.0, 68.0);
-        }
+    public Furtrader(Serial serial) : base(serial)
+    {
+    }
 
-        public Furtrader(Serial serial) : base(serial)
-        {
-        }
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBFurtrader());
+    }
 
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBFurtrader());
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

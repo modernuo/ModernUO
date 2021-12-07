@@ -13,24 +13,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server
+namespace Server;
+
+public readonly struct EntityIndex<T> where T : ISerializable
 {
-    public readonly struct EntityIndex<T> where T : ISerializable
+    public T Entity { get; }
+
+    public int TypeID { get;  }
+
+    public long Position { get; }
+
+    public int Length { get; }
+
+    public EntityIndex(T entity, int typeID, long position, int length)
     {
-        public T Entity { get; }
-
-        public int TypeID { get;  }
-
-        public long Position { get; }
-
-        public int Length { get; }
-
-        public EntityIndex(T entity, int typeID, long position, int length)
-        {
-            Entity = entity;
-            TypeID = typeID;
-            Position = position;
-            Length = length;
-        }
+        Entity = entity;
+        TypeID = typeID;
+        Position = position;
+        Length = length;
     }
 }

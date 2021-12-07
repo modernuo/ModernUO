@@ -1,14 +1,13 @@
-﻿namespace Server.Items
-{
-    [Serializable(0, false)]
-    public partial class DragonsBlood : BaseReagent, ICommodity
-    {
-        [Constructible]
-        public DragonsBlood(int amount = 1) : base(0x4077, amount)
-        {
-        }
+﻿namespace Server.Items;
 
-        int ICommodity.DescriptionNumber => LabelNumber;
-        bool ICommodity.IsDeedable => Core.ML;
+[Serializable(0, false)]
+public partial class DragonsBlood : BaseReagent, ICommodity
+{
+    [Constructible]
+    public DragonsBlood(int amount = 1) : base(0x4077, amount)
+    {
     }
+
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => Core.ML;
 }

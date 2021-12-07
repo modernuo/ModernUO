@@ -2,106 +2,105 @@ using System;
 using Server.Mobiles;
 using Server.Utilities;
 
-namespace Server.Spells.Fifth
+namespace Server.Spells.Fifth;
+
+public class SummonCreatureSpell : MagerySpell
 {
-    public class SummonCreatureSpell : MagerySpell
+    private static readonly SpellInfo _info = new(
+        "Summon Creature",
+        "Kal Xen",
+        16,
+        false,
+        Reagent.Bloodmoss,
+        Reagent.MandrakeRoot,
+        Reagent.SpidersSilk
+    );
+
+    // NOTE: Creature list based on 1hr of summon/release on OSI.
+
+    private static readonly Type[] m_Types =
     {
-        private static readonly SpellInfo _info = new(
-            "Summon Creature",
-            "Kal Xen",
-            16,
-            false,
-            Reagent.Bloodmoss,
-            Reagent.MandrakeRoot,
-            Reagent.SpidersSilk
-        );
+        typeof(PolarBear),
+        typeof(GrizzlyBear),
+        typeof(BlackBear),
+        typeof(Horse),
+        typeof(Walrus),
+        typeof(Chicken),
+        typeof(Scorpion),
+        typeof(GiantSerpent),
+        typeof(Llama),
+        typeof(Alligator),
+        typeof(GreyWolf),
+        typeof(Slime),
+        typeof(Eagle),
+        typeof(Gorilla),
+        typeof(SnowLeopard),
+        typeof(Pig),
+        typeof(Hind),
+        typeof(Rabbit)
+    };
 
-        // NOTE: Creature list based on 1hr of summon/release on OSI.
+    public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
+    {
+    }
 
-        private static readonly Type[] m_Types =
+    public override SpellCircle Circle => SpellCircle.Fifth;
+
+    public override bool CheckCast()
+    {
+        if (!base.CheckCast())
         {
-            typeof(PolarBear),
-            typeof(GrizzlyBear),
-            typeof(BlackBear),
-            typeof(Horse),
-            typeof(Walrus),
-            typeof(Chicken),
-            typeof(Scorpion),
-            typeof(GiantSerpent),
-            typeof(Llama),
-            typeof(Alligator),
-            typeof(GreyWolf),
-            typeof(Slime),
-            typeof(Eagle),
-            typeof(Gorilla),
-            typeof(SnowLeopard),
-            typeof(Pig),
-            typeof(Hind),
-            typeof(Rabbit)
-        };
-
-        public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
-        {
+            return false;
         }
 
-        public override SpellCircle Circle => SpellCircle.Fifth;
-
-        public override bool CheckCast()
+        if (Caster.Followers + 2 > Caster.FollowersMax)
         {
-            if (!base.CheckCast())
-            {
-                return false;
-            }
-
-            if (Caster.Followers + 2 > Caster.FollowersMax)
-            {
-                Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
-                return false;
-            }
-
-            return true;
+            Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
+            return false;
         }
 
-        public override void OnCast()
+        return true;
+    }
+
+    public override void OnCast()
+    {
+        if (CheckSequence())
         {
-            if (CheckSequence())
+            try
             {
-                try
+                var creature = m_Types.RandomElement().CreateInstance<BaseCreature>();
+
+                // creature.ControlSlots = 2;
+
+                TimeSpan duration;
+
+                if (Core.AOS)
                 {
-                    var creature = m_Types.RandomElement().CreateInstance<BaseCreature>();
-
-                    // creature.ControlSlots = 2;
-
-                    TimeSpan duration;
-
-                    if (Core.AOS)
-                    {
-                        duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
-                    }
-                    else
-                    {
-                        duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
-                    }
-
-                    SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
+                    duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
                 }
-                catch
+                else
                 {
-                    // ignored
+                    duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
                 }
+
+                SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
             }
-
-            FinishSequence();
-        }
-
-        public override TimeSpan GetCastDelay()
-        {
-            if (Core.AOS)
+            catch
             {
-                return TimeSpan.FromTicks(base.GetCastDelay().Ticks * 5);
+                // ignored
             }
-
-            return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
         }
+
+        FinishSequence();
+    }
+
+    public override TimeSpan GetCastDelay()
+    {
+        if (Core.AOS)
+        {
+            return TimeSpan.FromTicks(base.GetCastDelay().Ticks * 5);
+        }
+
+        return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
     }
 }

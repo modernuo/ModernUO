@@ -1,34 +1,33 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x1032, 0x1033)]
+public class SmoothingPlane : BaseTool
 {
-    [Flippable(0x1032, 0x1033)]
-    public class SmoothingPlane : BaseTool
+    [Constructible]
+    public SmoothingPlane() : base(0x1032) => Weight = 1.0;
+
+    [Constructible]
+    public SmoothingPlane(int uses) : base(uses, 0x1032) => Weight = 1.0;
+
+    public SmoothingPlane(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SmoothingPlane() : base(0x1032) => Weight = 1.0;
+    }
 
-        [Constructible]
-        public SmoothingPlane(int uses) : base(uses, 0x1032) => Weight = 1.0;
+    public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
-        public SmoothingPlane(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

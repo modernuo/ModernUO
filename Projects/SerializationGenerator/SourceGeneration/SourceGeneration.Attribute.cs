@@ -17,86 +17,85 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SourceGeneration
 {
-    public static partial class SourceGeneration
+    public static void GenerateAttribute(
+        this StringBuilder source,
+        string indent,
+        string attrClassName,
+        ImmutableArray<TypedConstant> args
+    )
     {
-        public static void GenerateAttribute(
-            this StringBuilder source,
-            string indent,
-            string attrClassName,
-            ImmutableArray<TypedConstant> args
-        )
+        source.Append($"{indent}[{attrClassName}");
+        var hasArgs = args.Length > 0;
+
+        if (hasArgs)
         {
-            source.Append($"{indent}[{attrClassName}");
-            var hasArgs = args.Length > 0;
-
-            if (hasArgs)
-            {
-                source.Append("(");
-            }
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                var arg = args[i];
-                source.GenerateTypedConstant(arg);
-                if (i < args.Length - 1)
-                {
-                    source.Append(", ");
-                }
-            }
-
-            if (hasArgs)
-            {
-                source.Append(")");
-            }
-
-            source.AppendLine("]");
+            source.Append("(");
         }
 
-        public static void GenerateAttribute(this StringBuilder source, AttributeData attr)
+        for (var i = 0; i < args.Length; i++)
         {
-            source.Append($"        [{attr.AttributeClass?.Name}");
-            var ctorArgs = attr.ConstructorArguments;
-            var namedArgs = attr.NamedArguments;
-            var hasArgs = ctorArgs.Length + namedArgs.Length > 0;
-
-            if (hasArgs)
+            var arg = args[i];
+            source.GenerateTypedConstant(arg);
+            if (i < args.Length - 1)
             {
-                source.Append("(");
+                source.Append(", ");
             }
-
-            for (var i = 0; i < ctorArgs.Length; i++)
-            {
-                var arg = ctorArgs[i];
-                source.GenerateTypedConstant(arg);
-                if (i < ctorArgs.Length - 1)
-                {
-                    source.Append(", ");
-                }
-            }
-
-            for (var i = 0; i < namedArgs.Length; i++)
-            {
-                var arg = namedArgs[i];
-                source.GenerateNamedArgument(arg);
-                if (i < namedArgs.Length - 1)
-                {
-                    source.Append(", ");
-                }
-            }
-
-            if (hasArgs)
-            {
-                source.Append(")");
-            }
-
-            source.AppendLine("]");
         }
 
-        public static void AggressiveInline(this StringBuilder source, string indent) =>
-            source.AppendLine(
-                $"{indent}[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]"
-            );
+        if (hasArgs)
+        {
+            source.Append(")");
+        }
+
+        source.AppendLine("]");
     }
+
+    public static void GenerateAttribute(this StringBuilder source, AttributeData attr)
+    {
+        source.Append($"        [{attr.AttributeClass?.Name}");
+        var ctorArgs = attr.ConstructorArguments;
+        var namedArgs = attr.NamedArguments;
+        var hasArgs = ctorArgs.Length + namedArgs.Length > 0;
+
+        if (hasArgs)
+        {
+            source.Append("(");
+        }
+
+        for (var i = 0; i < ctorArgs.Length; i++)
+        {
+            var arg = ctorArgs[i];
+            source.GenerateTypedConstant(arg);
+            if (i < ctorArgs.Length - 1)
+            {
+                source.Append(", ");
+            }
+        }
+
+        for (var i = 0; i < namedArgs.Length; i++)
+        {
+            var arg = namedArgs[i];
+            source.GenerateNamedArgument(arg);
+            if (i < namedArgs.Length - 1)
+            {
+                source.Append(", ");
+            }
+        }
+
+        if (hasArgs)
+        {
+            source.Append(")");
+        }
+
+        source.AppendLine("]");
+    }
+
+    public static void AggressiveInline(this StringBuilder source, string indent) =>
+        source.AppendLine(
+            $"{indent}[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]"
+        );
 }

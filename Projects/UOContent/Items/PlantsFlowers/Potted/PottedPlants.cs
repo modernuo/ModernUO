@@ -1,74 +1,73 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class PottedPlant : Item
 {
-    public class PottedPlant : Item
+    [Constructible]
+    public PottedPlant() : base(0x11CA) => Weight = 100;
+
+    public PottedPlant(Serial serial) : base(serial)
     {
-        [Constructible]
-        public PottedPlant() : base(0x11CA) => Weight = 100;
-
-        public PottedPlant(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PottedPlant1 : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public PottedPlant1() : base(0x11CB) => Weight = 100;
+        base.Serialize(writer);
 
-        public PottedPlant1(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
     }
 
-    public class PottedPlant2 : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public PottedPlant2() : base(0x11CC) => Weight = 100;
+        base.Deserialize(reader);
 
-        public PottedPlant2(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class PottedPlant1 : Item
+{
+    [Constructible]
+    public PottedPlant1() : base(0x11CB) => Weight = 100;
 
-            writer.Write(0);
-        }
+    public PottedPlant1(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PottedPlant2 : Item
+{
+    [Constructible]
+    public PottedPlant2() : base(0x11CC) => Weight = 100;
+
+    public PottedPlant2(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

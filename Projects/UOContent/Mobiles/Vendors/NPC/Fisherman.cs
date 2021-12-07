@@ -1,50 +1,49 @@
 using System.Collections.Generic;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Fisherman : BaseVendor
 {
-    public class Fisherman : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public Fisherman() : base("the fisher")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        SetSkill(SkillName.Fishing, 75.0, 98.0);
+    }
 
-        [Constructible]
-        public Fisherman() : base("the fisher")
-        {
-            SetSkill(SkillName.Fishing, 75.0, 98.0);
-        }
+    public Fisherman(Serial serial) : base(serial)
+    {
+    }
 
-        public Fisherman(Serial serial) : base(serial)
-        {
-        }
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+    public override NpcGuild NpcGuild => NpcGuild.FishermensGuild;
 
-        public override NpcGuild NpcGuild => NpcGuild.FishermensGuild;
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBFisherman());
+    }
 
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBFisherman());
-        }
+    public override void InitOutfit()
+    {
+        base.InitOutfit();
 
-        public override void InitOutfit()
-        {
-            base.InitOutfit();
+        AddItem(new FishingPole());
+    }
 
-            AddItem(new FishingPole());
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

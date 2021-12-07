@@ -1,26 +1,25 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class SmallForgeAddon : BaseAddon
 {
-    [Serializable(0, false)]
-    public partial class SmallForgeAddon : BaseAddon
+    [Constructible]
+    public SmallForgeAddon()
     {
-        [Constructible]
-        public SmallForgeAddon()
-        {
-            AddComponent(new ForgeComponent(0xFB1), 0, 0, 0);
-        }
-
-        public override BaseAddonDeed Deed => new SmallForgeDeed();
+        AddComponent(new ForgeComponent(0xFB1), 0, 0, 0);
     }
 
-    [Serializable(0, false)]
-    public partial class SmallForgeDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public SmallForgeDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new SmallForgeDeed();
+}
 
-        public override BaseAddon Addon => new SmallForgeAddon();
-        public override int LabelNumber => 1044330; // small forge
+[Serializable(0, false)]
+public partial class SmallForgeDeed : BaseAddonDeed
+{
+    [Constructible]
+    public SmallForgeDeed()
+    {
     }
+
+    public override BaseAddon Addon => new SmallForgeAddon();
+    public override int LabelNumber => 1044330; // small forge
 }

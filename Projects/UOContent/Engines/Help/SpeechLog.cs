@@ -6,135 +6,134 @@ using Server.Gumps;
 using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server.Engines.Help
+namespace Server.Engines.Help;
+
+public class SpeechLog : IEnumerable<SpeechLogEntry>
 {
-    public class SpeechLog : IEnumerable<SpeechLogEntry>
+    // Are speech logs enabled?
+    public static readonly bool Enabled = true;
+
+    // How long should we maintain each speech entry?
+    public static readonly TimeSpan EntryDuration = TimeSpan.FromMinutes(20.0);
+
+    // What is the maximum number of entries a log can contain? (0 -> no limit)
+    public static readonly int MaxLength = 0;
+
+    private readonly Queue<SpeechLogEntry> m_Queue;
+
+    public SpeechLog() => m_Queue = new Queue<SpeechLogEntry>();
+
+    public int Count => m_Queue.Count;
+
+    IEnumerator<SpeechLogEntry> IEnumerable<SpeechLogEntry>.GetEnumerator() => m_Queue.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => m_Queue.GetEnumerator();
+
+    public static void Initialize()
     {
-        // Are speech logs enabled?
-        public static readonly bool Enabled = true;
+        CommandSystem.Register("SpeechLog", AccessLevel.Counselor, SpeechLog_OnCommand);
+    }
 
-        // How long should we maintain each speech entry?
-        public static readonly TimeSpan EntryDuration = TimeSpan.FromMinutes(20.0);
+    [Usage("SpeechLog"), Description("Opens the speech log of a given target.")]
+    private static void SpeechLog_OnCommand(CommandEventArgs e)
+    {
+        var from = e.Mobile;
 
-        // What is the maximum number of entries a log can contain? (0 -> no limit)
-        public static readonly int MaxLength = 0;
+        from.SendMessage("Target a player to view his speech log.");
+        e.Mobile.Target = new SpeechLogTarget();
+    }
 
-        private readonly Queue<SpeechLogEntry> m_Queue;
+    public void Add(Mobile from, string speech)
+    {
+        Add(new SpeechLogEntry(from, speech));
+    }
 
-        public SpeechLog() => m_Queue = new Queue<SpeechLogEntry>();
-
-        public int Count => m_Queue.Count;
-
-        IEnumerator<SpeechLogEntry> IEnumerable<SpeechLogEntry>.GetEnumerator() => m_Queue.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => m_Queue.GetEnumerator();
-
-        public static void Initialize()
+    public void Add(SpeechLogEntry entry)
+    {
+        if (MaxLength > 0 && m_Queue.Count >= MaxLength)
         {
-            CommandSystem.Register("SpeechLog", AccessLevel.Counselor, SpeechLog_OnCommand);
+            m_Queue.Dequeue();
         }
 
-        [Usage("SpeechLog"), Description("Opens the speech log of a given target.")]
-        private static void SpeechLog_OnCommand(CommandEventArgs e)
-        {
-            var from = e.Mobile;
+        Clean();
 
-            from.SendMessage("Target a player to view his speech log.");
-            e.Mobile.Target = new SpeechLogTarget();
-        }
+        m_Queue.Enqueue(entry);
+    }
 
-        public void Add(Mobile from, string speech)
+    public void Clean()
+    {
+        while (m_Queue.Count > 0)
         {
-            Add(new SpeechLogEntry(from, speech));
-        }
+            var entry = m_Queue.Peek();
 
-        public void Add(SpeechLogEntry entry)
-        {
-            if (MaxLength > 0 && m_Queue.Count >= MaxLength)
+            if (Core.Now - entry.Created > EntryDuration)
             {
                 m_Queue.Dequeue();
             }
-
-            Clean();
-
-            m_Queue.Enqueue(entry);
-        }
-
-        public void Clean()
-        {
-            while (m_Queue.Count > 0)
+            else
             {
-                var entry = m_Queue.Peek();
-
-                if (Core.Now - entry.Created > EntryDuration)
-                {
-                    m_Queue.Dequeue();
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        public void CopyTo(SpeechLogEntry[] array, int index)
-        {
-            m_Queue.CopyTo(array, index);
-        }
-
-        private class SpeechLogTarget : Target
-        {
-            public SpeechLogTarget() : base(-1, false, TargetFlags.None)
-            {
-            }
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                if (!(targeted is PlayerMobile pm))
-                {
-                    from.SendMessage("Speech logs aren't supported on that target.");
-                }
-                else if (from != targeted && from.AccessLevel <= pm.AccessLevel && from.AccessLevel != AccessLevel.Owner)
-                {
-                    from.SendMessage(
-                        "You don't have the required access level to view {0} speech log.",
-                        pm.Female ? "her" : "his"
-                    );
-                }
-                else if (pm.SpeechLog == null)
-                {
-                    from.SendMessage("{0} has no speech log.", pm.Female ? "She" : "He");
-                }
-                else
-                {
-                    CommandLogging.WriteLine(
-                        from,
-                        "{0} {1} viewing speech log of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(targeted)
-                    );
-
-                    Gump gump = new SpeechLogGump(pm, pm.SpeechLog);
-                    from.SendGump(gump);
-                }
+                break;
             }
         }
     }
 
-    public class SpeechLogEntry
+    public void CopyTo(SpeechLogEntry[] array, int index)
     {
-        public SpeechLogEntry(Mobile from, string speech)
+        m_Queue.CopyTo(array, index);
+    }
+
+    private class SpeechLogTarget : Target
+    {
+        public SpeechLogTarget() : base(-1, false, TargetFlags.None)
         {
-            From = from;
-            Speech = speech;
-            Created = Core.Now;
         }
 
-        public Mobile From { get; }
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (!(targeted is PlayerMobile pm))
+            {
+                from.SendMessage("Speech logs aren't supported on that target.");
+            }
+            else if (from != targeted && from.AccessLevel <= pm.AccessLevel && from.AccessLevel != AccessLevel.Owner)
+            {
+                from.SendMessage(
+                    "You don't have the required access level to view {0} speech log.",
+                    pm.Female ? "her" : "his"
+                );
+            }
+            else if (pm.SpeechLog == null)
+            {
+                from.SendMessage("{0} has no speech log.", pm.Female ? "She" : "He");
+            }
+            else
+            {
+                CommandLogging.WriteLine(
+                    from,
+                    "{0} {1} viewing speech log of {2}",
+                    from.AccessLevel,
+                    CommandLogging.Format(from),
+                    CommandLogging.Format(targeted)
+                );
 
-        public string Speech { get; }
-
-        public DateTime Created { get; }
+                Gump gump = new SpeechLogGump(pm, pm.SpeechLog);
+                from.SendGump(gump);
+            }
+        }
     }
+}
+
+public class SpeechLogEntry
+{
+    public SpeechLogEntry(Mobile from, string speech)
+    {
+        From = from;
+        Speech = speech;
+        Created = Core.Now;
+    }
+
+    public Mobile From { get; }
+
+    public string Speech { get; }
+
+    public DateTime Created { get; }
 }

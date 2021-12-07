@@ -1,66 +1,65 @@
 using System;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class CandleSkull : BaseLight
 {
-    public class CandleSkull : BaseLight
+    [Constructible]
+    public CandleSkull() : base(0x1853)
     {
-        [Constructible]
-        public CandleSkull() : base(0x1853)
+        if (Burnout)
         {
-            if (Burnout)
+            Duration = TimeSpan.FromMinutes(25);
+        }
+        else
+        {
+            Duration = TimeSpan.Zero;
+        }
+
+        Burning = false;
+        Light = LightType.Circle150;
+        Weight = 5.0;
+    }
+
+    public CandleSkull(Serial serial) : base(serial)
+    {
+    }
+
+    public override int LitItemID
+    {
+        get
+        {
+            if (ItemID == 0x1583 || ItemID == 0x1854)
             {
-                Duration = TimeSpan.FromMinutes(25);
+                return 0x1854;
             }
-            else
+
+            return 0x1858;
+        }
+    }
+
+    public override int UnlitItemID
+    {
+        get
+        {
+            if (ItemID == 0x1853 || ItemID == 0x1584)
             {
-                Duration = TimeSpan.Zero;
+                return 0x1853;
             }
 
-            Burning = false;
-            Light = LightType.Circle150;
-            Weight = 5.0;
+            return 0x1857;
         }
+    }
 
-        public CandleSkull(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(0);
+    }
 
-        public override int LitItemID
-        {
-            get
-            {
-                if (ItemID == 0x1583 || ItemID == 0x1854)
-                {
-                    return 0x1854;
-                }
-
-                return 0x1858;
-            }
-        }
-
-        public override int UnlitItemID
-        {
-            get
-            {
-                if (ItemID == 0x1853 || ItemID == 0x1584)
-                {
-                    return 0x1853;
-                }
-
-                return 0x1857;
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
     }
 }

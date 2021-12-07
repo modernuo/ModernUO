@@ -1,59 +1,58 @@
 using Server.Engines.ConPVP;
 using Server.Targeting;
 
-namespace Server.Spells.Second
+namespace Server.Spells.Second;
+
+public class CunningSpell : MagerySpell, ISpellTargetingMobile
 {
-    public class CunningSpell : MagerySpell, ISpellTargetingMobile
+    private static readonly SpellInfo _info = new(
+        "Cunning",
+        "Uus Wis",
+        212,
+        9061,
+        Reagent.MandrakeRoot,
+        Reagent.Nightshade
+    );
+
+    public CunningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Cunning",
-            "Uus Wis",
-            212,
-            9061,
-            Reagent.MandrakeRoot,
-            Reagent.Nightshade
-        );
+    }
 
-        public CunningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
+    public override SpellCircle Circle => SpellCircle.Second;
+
+    public void Target(Mobile m)
+    {
+        if (CheckBSequence(m))
         {
+            SpellHelper.Turn(Caster, m);
+
+            SpellHelper.AddStatBonus(Caster, m, StatType.Int);
+
+            m.FixedParticles(0x375A, 10, 15, 5011, EffectLayer.Head);
+            m.PlaySound(0x1EB);
+
+            var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
+            var length = SpellHelper.GetDuration(Caster, m);
+
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Cunning, 1075843, length, m, percentage.ToString()));
         }
 
-        public override SpellCircle Circle => SpellCircle.Second;
+        FinishSequence();
+    }
 
-        public void Target(Mobile m)
+    public override bool CheckCast()
+    {
+        if (DuelContext.CheckSuddenDeath(Caster))
         {
-            if (CheckBSequence(m))
-            {
-                SpellHelper.Turn(Caster, m);
-
-                SpellHelper.AddStatBonus(Caster, m, StatType.Int);
-
-                m.FixedParticles(0x375A, 10, 15, 5011, EffectLayer.Head);
-                m.PlaySound(0x1EB);
-
-                var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
-
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Cunning, 1075843, length, m, percentage.ToString()));
-            }
-
-            FinishSequence();
+            Caster.SendMessage(0x22, "You cannot cast this spell when in sudden death.");
+            return false;
         }
 
-        public override bool CheckCast()
-        {
-            if (DuelContext.CheckSuddenDeath(Caster))
-            {
-                Caster.SendMessage(0x22, "You cannot cast this spell when in sudden death.");
-                return false;
-            }
+        return base.CheckCast();
+    }
 
-            return base.CheckCast();
-        }
-
-        public override void OnCast()
-        {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
-        }
+    public override void OnCast()
+    {
+        Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
     }
 }

@@ -2,212 +2,211 @@ using System;
 using System.Linq;
 using Server.Gumps;
 
-namespace Server.Engines.MLQuests.Objectives
+namespace Server.Engines.MLQuests.Objectives;
+
+public class CollectObjective : BaseObjective
 {
-    public class CollectObjective : BaseObjective
+    public CollectObjective(int amount = 0, Type type = null, TextDefinition name = null)
     {
-        public CollectObjective(int amount = 0, Type type = null, TextDefinition name = null)
+        DesiredAmount = amount;
+        AcceptedType = type;
+        Name = name;
+
+        if (MLQuestSystem.Debug && ShowDetailed && name?.Number > 0)
         {
-            DesiredAmount = amount;
-            AcceptedType = type;
-            Name = name;
+            var itemid = LabelToItemID(name.Number);
 
-            if (MLQuestSystem.Debug && ShowDetailed && name?.Number > 0)
+            if (itemid <= 0 || itemid > 0x4000)
             {
-                var itemid = LabelToItemID(name.Number);
-
-                if (itemid <= 0 || itemid > 0x4000)
-                {
-                    Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
-                }
+                Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
             }
         }
-
-        public int DesiredAmount { get; set; }
-
-        public Type AcceptedType { get; set; }
-
-        public TextDefinition Name { get; set; }
-
-        public virtual bool ShowDetailed => true;
-
-        public bool CheckType(Type type) => AcceptedType?.IsAssignableFrom(type) == true;
-
-        public virtual bool CheckItem(Item item) => true;
-
-        public static int LabelToItemID(int label)
-        {
-            if (label < 1078872)
-            {
-                return label - 1020000;
-            }
-
-            return label - 1078872;
-        }
-
-        public override void WriteToGump(Gump g, ref int y)
-        {
-            if (ShowDetailed)
-            {
-                var amount = DesiredAmount.ToString();
-
-                g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x15F90); // Obtain
-                g.AddLabel(143, y, 0x481, amount);
-
-                if (Name.Number > 0)
-                {
-                    g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
-                    g.AddItem(350, y, LabelToItemID(Name.Number));
-                }
-                else if (Name.String != null)
-                {
-                    g.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
-                }
-            }
-            else
-            {
-                if (Name.Number > 0)
-                {
-                    g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90);
-                }
-                else if (Name.String != null)
-                {
-                    g.AddLabel(98, y, 0x481, Name.String);
-                }
-            }
-
-            y += 32;
-        }
-
-        public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) =>
-            new CollectObjectiveInstance(this, instance);
     }
 
-    public class TimedCollectObjective : CollectObjective
-    {
-        public TimedCollectObjective(TimeSpan duration, int amount, Type type, TextDefinition name)
-            : base(amount, type, name) =>
-            Duration = duration;
+    public int DesiredAmount { get; set; }
 
-        public override bool IsTimed => true;
-        public override TimeSpan Duration { get; }
+    public Type AcceptedType { get; set; }
+
+    public TextDefinition Name { get; set; }
+
+    public virtual bool ShowDetailed => true;
+
+    public bool CheckType(Type type) => AcceptedType?.IsAssignableFrom(type) == true;
+
+    public virtual bool CheckItem(Item item) => true;
+
+    public static int LabelToItemID(int label)
+    {
+        if (label < 1078872)
+        {
+            return label - 1020000;
+        }
+
+        return label - 1078872;
     }
 
-    public class CollectObjectiveInstance : BaseObjectiveInstance
+    public override void WriteToGump(Gump g, ref int y)
     {
-        public CollectObjectiveInstance(CollectObjective objective, MLQuestInstance instance)
-            : base(instance, objective) =>
-            Objective = objective;
-
-        public CollectObjective Objective { get; set; }
-
-        private int GetCurrentTotal()
+        if (ShowDetailed)
         {
-            var pack = Instance.Player.Backpack;
+            var amount = DesiredAmount.ToString();
 
-            if (pack == null)
+            g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x15F90); // Obtain
+            g.AddLabel(143, y, 0x481, amount);
+
+            if (Name.Number > 0)
             {
-                return 0;
+                g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
+                g.AddItem(350, y, LabelToItemID(Name.Number));
             }
-
-            var items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
-            return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
+            else if (Name.String != null)
+            {
+                g.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
+            }
+        }
+        else
+        {
+            if (Name.Number > 0)
+            {
+                g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90);
+            }
+            else if (Name.String != null)
+            {
+                g.AddLabel(98, y, 0x481, Name.String);
+            }
         }
 
-        public override bool AllowsQuestItem(Item item, Type type) => Objective.CheckType(type) && Objective.CheckItem(item);
+        y += 32;
+    }
 
-        public override bool IsCompleted() => GetCurrentTotal() >= Objective.DesiredAmount;
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) =>
+        new CollectObjectiveInstance(this, instance);
+}
 
-        public override void OnQuestCancelled()
+public class TimedCollectObjective : CollectObjective
+{
+    public TimedCollectObjective(TimeSpan duration, int amount, Type type, TextDefinition name)
+        : base(amount, type, name) =>
+        Duration = duration;
+
+    public override bool IsTimed => true;
+    public override TimeSpan Duration { get; }
+}
+
+public class CollectObjectiveInstance : BaseObjectiveInstance
+{
+    public CollectObjectiveInstance(CollectObjective objective, MLQuestInstance instance)
+        : base(instance, objective) =>
+        Objective = objective;
+
+    public CollectObjective Objective { get; set; }
+
+    private int GetCurrentTotal()
+    {
+        var pack = Instance.Player.Backpack;
+
+        if (pack == null)
         {
-            var pm = Instance.Player;
-            var pack = pm.Backpack;
+            return 0;
+        }
 
-            if (pack == null)
+        var items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
+        return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
+    }
+
+    public override bool AllowsQuestItem(Item item, Type type) => Objective.CheckType(type) && Objective.CheckItem(item);
+
+    public override bool IsCompleted() => GetCurrentTotal() >= Objective.DesiredAmount;
+
+    public override void OnQuestCancelled()
+    {
+        var pm = Instance.Player;
+        var pack = pm.Backpack;
+
+        if (pack == null)
+        {
+            return;
+        }
+
+        var checkType = Objective.AcceptedType;
+        var items = pack.FindItemsByType(checkType, false);
+
+        foreach (var item in items)
+        {
+            if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)
+               ) // does another quest still need this item? (OSI just unmarks everything)
             {
-                return;
+                item.QuestItem = false;
             }
+        }
+    }
 
-            var checkType = Objective.AcceptedType;
-            var items = pack.FindItemsByType(checkType, false);
+    // Should only be called after IsComplete() is checked to be true
+    public override void OnClaimReward()
+    {
+        var pack = Instance.Player.Backpack;
 
-            foreach (var item in items)
+        if (pack == null)
+        {
+            return;
+        }
+
+        // TODO: OSI also counts the item in the cursor?
+
+        var items = pack.FindItemsByType(Objective.AcceptedType, false);
+        var left = Objective.DesiredAmount;
+
+        foreach (var item in items)
+        {
+            if (item.QuestItem && Objective.CheckItem(item))
             {
-                if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)
-                ) // does another quest still need this item? (OSI just unmarks everything)
+                if (left == 0)
                 {
-                    item.QuestItem = false;
+                    return;
+                }
+
+                if (item.Amount > left)
+                {
+                    item.Consume(left);
+                    left = 0;
+                }
+                else
+                {
+                    item.Delete();
+                    left -= item.Amount;
                 }
             }
         }
+    }
 
-        // Should only be called after IsComplete() is checked to be true
-        public override void OnClaimReward()
+    public override void OnAfterClaimReward()
+    {
+        OnQuestCancelled(); // same thing, clear other quest items
+    }
+
+    public override void OnExpire()
+    {
+        OnQuestCancelled();
+
+        // No message
+    }
+
+    public override void WriteToGump(Gump g, ref int y)
+    {
+        Objective.WriteToGump(g, ref y);
+        y -= 16;
+
+        if (Objective.ShowDetailed)
         {
-            var pack = Instance.Player.Backpack;
+            base.WriteToGump(g, ref y);
 
-            if (pack == null)
-            {
-                return;
-            }
+            g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90); // Total
+            g.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
+            y += 16;
 
-            // TODO: OSI also counts the item in the cursor?
-
-            var items = pack.FindItemsByType(Objective.AcceptedType, false);
-            var left = Objective.DesiredAmount;
-
-            foreach (var item in items)
-            {
-                if (item.QuestItem && Objective.CheckItem(item))
-                {
-                    if (left == 0)
-                    {
-                        return;
-                    }
-
-                    if (item.Amount > left)
-                    {
-                        item.Consume(left);
-                        left = 0;
-                    }
-                    else
-                    {
-                        item.Delete();
-                        left -= item.Amount;
-                    }
-                }
-            }
-        }
-
-        public override void OnAfterClaimReward()
-        {
-            OnQuestCancelled(); // same thing, clear other quest items
-        }
-
-        public override void OnExpire()
-        {
-            OnQuestCancelled();
-
-            // No message
-        }
-
-        public override void WriteToGump(Gump g, ref int y)
-        {
-            Objective.WriteToGump(g, ref y);
-            y -= 16;
-
-            if (Objective.ShowDetailed)
-            {
-                base.WriteToGump(g, ref y);
-
-                g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90); // Total
-                g.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
-                y += 16;
-
-                g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90); // Return to
-                g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
-                y += 16;
-            }
+            g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90); // Return to
+            g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
+            y += 16;
         }
     }
 }

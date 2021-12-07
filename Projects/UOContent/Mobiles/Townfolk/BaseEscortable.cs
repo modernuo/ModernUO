@@ -10,808 +10,807 @@ using Server.Misc;
 using Server.Regions;
 using EDI = Server.Mobiles.EscortDestinationInfo;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class BaseEscortable : BaseCreature
 {
-    public class BaseEscortable : BaseCreature
+    public static readonly TimeSpan EscortDelay = TimeSpan.FromMinutes(5.0);
+
+    public static readonly TimeSpan AbandonDelay =
+        MLQuestSystem.Enabled ? TimeSpan.FromMinutes(1.0) : TimeSpan.FromMinutes(2.0);
+
+    public static readonly TimeSpan DeleteTime =
+        MLQuestSystem.Enabled ? TimeSpan.FromSeconds(100) : TimeSpan.FromSeconds(30);
+
+    // Classic list
+    // Used when: !MLQuestSystem.Enabled && !Core.ML
+    private static readonly string[] m_TownNames =
     {
-        public static readonly TimeSpan EscortDelay = TimeSpan.FromMinutes(5.0);
+        "Cove", "Britain", "Jhelom",
+        "Minoc", "Ocllo", "Trinsic",
+        "Vesper", "Yew", "Skara Brae",
+        "Nujel'm", "Moonglow", "Magincia"
+    };
 
-        public static readonly TimeSpan AbandonDelay =
-            MLQuestSystem.Enabled ? TimeSpan.FromMinutes(1.0) : TimeSpan.FromMinutes(2.0);
+    // ML list, pre-ML quest system
+    // Used when: !MLQuestSystem.Enabled && Core.ML
+    private static readonly string[] m_MLTownNames =
+    {
+        "Cove", "Serpent's Hold", "Jhelom",
+        "Nujel'm"
+    };
 
-        public static readonly TimeSpan DeleteTime =
-            MLQuestSystem.Enabled ? TimeSpan.FromSeconds(100) : TimeSpan.FromSeconds(30);
+    // ML quest system general list
+    // Used when: MLQuestSystem.Enabled && !Region.IsPartOf( "Haven Island" )
+    private static readonly Type[] m_MLQuestTypes =
+    {
+        typeof(EscortToYew),
+        typeof(EscortToVesper),
+        typeof(EscortToTrinsic),
+        typeof(EscortToSkaraBrae),
+        typeof(EscortToSerpentsHold),
+        typeof(EscortToNujelm),
+        typeof(EscortToMoonglow),
+        typeof(EscortToMinoc),
+        typeof(EscortToMagincia),
+        typeof(EscortToJhelom),
+        typeof(EscortToCove),
+        typeof(EscortToBritain)
+        // Ocllo was removed in pub 56
+        // typeof( EscortToOcllo )
+    };
 
-        // Classic list
-        // Used when: !MLQuestSystem.Enabled && !Core.ML
-        private static readonly string[] m_TownNames =
+    // ML quest system New Haven list
+    // Used when: MLQuestSystem.Enabled && Region.IsPartOf( "Haven Island" )
+    private static readonly Type[] m_MLQuestTypesNH =
+    {
+        typeof(EscortToNHAlchemist),
+        typeof(EscortToNHBard),
+        typeof(EscortToNHWarrior),
+        typeof(EscortToNHTailor),
+        typeof(EscortToNHCarpenter),
+        typeof(EscortToNHMapmaker),
+        typeof(EscortToNHMage),
+        typeof(EscortToNHInn),
+        // Farm destination was removed
+        // typeof( EscortToNHFarm ),
+        typeof(EscortToNHDocks),
+        typeof(EscortToNHBowyer),
+        typeof(EscortToNHBank)
+    };
+
+    private bool m_DeleteCorpse;
+
+    private DateTime m_DeleteTime;
+    private Timer m_DeleteTimer;
+
+    private EDI m_Destination;
+    private string m_DestinationString;
+
+    private DateTime m_LastSeenEscorter;
+
+    private MLQuest m_MLQuest;
+
+    [Constructible]
+    public BaseEscortable()
+        : base(AIType.AI_Melee, FightMode.Aggressor, 22, 1, 0.2, 1.0)
+    {
+        InitBody();
+        InitOutfit();
+
+        Fame = 200;
+        Karma = 4000;
+    }
+
+    public BaseEscortable(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override bool StaticMLQuester => false; // Suppress automatic quest registration on creation/deserialization
+
+    public override bool CanShout => !Controlled && !IsBeingDeleted;
+
+    public bool IsBeingDeleted => m_DeleteTimer != null;
+
+    public override bool Commandable => false; // Our master cannot boss us around!
+    public override bool DeleteCorpseOnDeath => m_DeleteCorpse;
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string Destination
+    {
+        get => m_Destination?.Name;
+        set
         {
-            "Cove", "Britain", "Jhelom",
-            "Minoc", "Ocllo", "Trinsic",
-            "Vesper", "Yew", "Skara Brae",
-            "Nujel'm", "Moonglow", "Magincia"
-        };
-
-        // ML list, pre-ML quest system
-        // Used when: !MLQuestSystem.Enabled && Core.ML
-        private static readonly string[] m_MLTownNames =
-        {
-            "Cove", "Serpent's Hold", "Jhelom",
-            "Nujel'm"
-        };
-
-        // ML quest system general list
-        // Used when: MLQuestSystem.Enabled && !Region.IsPartOf( "Haven Island" )
-        private static readonly Type[] m_MLQuestTypes =
-        {
-            typeof(EscortToYew),
-            typeof(EscortToVesper),
-            typeof(EscortToTrinsic),
-            typeof(EscortToSkaraBrae),
-            typeof(EscortToSerpentsHold),
-            typeof(EscortToNujelm),
-            typeof(EscortToMoonglow),
-            typeof(EscortToMinoc),
-            typeof(EscortToMagincia),
-            typeof(EscortToJhelom),
-            typeof(EscortToCove),
-            typeof(EscortToBritain)
-            // Ocllo was removed in pub 56
-            // typeof( EscortToOcllo )
-        };
-
-        // ML quest system New Haven list
-        // Used when: MLQuestSystem.Enabled && Region.IsPartOf( "Haven Island" )
-        private static readonly Type[] m_MLQuestTypesNH =
-        {
-            typeof(EscortToNHAlchemist),
-            typeof(EscortToNHBard),
-            typeof(EscortToNHWarrior),
-            typeof(EscortToNHTailor),
-            typeof(EscortToNHCarpenter),
-            typeof(EscortToNHMapmaker),
-            typeof(EscortToNHMage),
-            typeof(EscortToNHInn),
-            // Farm destination was removed
-            // typeof( EscortToNHFarm ),
-            typeof(EscortToNHDocks),
-            typeof(EscortToNHBowyer),
-            typeof(EscortToNHBank)
-        };
-
-        private bool m_DeleteCorpse;
-
-        private DateTime m_DeleteTime;
-        private Timer m_DeleteTimer;
-
-        private EDI m_Destination;
-        private string m_DestinationString;
-
-        private DateTime m_LastSeenEscorter;
-
-        private MLQuest m_MLQuest;
-
-        [Constructible]
-        public BaseEscortable()
-            : base(AIType.AI_Melee, FightMode.Aggressor, 22, 1, 0.2, 1.0)
-        {
-            InitBody();
-            InitOutfit();
-
-            Fame = 200;
-            Karma = 4000;
+            m_DestinationString = value;
+            m_Destination = EDI.Find(value);
         }
+    }
 
-        public BaseEscortable(Serial serial)
-            : base(serial)
+    public static Dictionary<Mobile, BaseEscortable> EscortTable { get; } = new();
+
+    protected override List<MLQuest> ConstructQuestList()
+    {
+        if (m_MLQuest == null)
         {
-        }
+            var reg = Region;
+            var list = reg.IsPartOf("Haven Island") ? m_MLQuestTypesNH : m_MLQuestTypes;
 
-        public override bool StaticMLQuester => false; // Suppress automatic quest registration on creation/deserialization
+            var randomIdx = Utility.Random(list.Length);
 
-        public override bool CanShout => !Controlled && !IsBeingDeleted;
-
-        public bool IsBeingDeleted => m_DeleteTimer != null;
-
-        public override bool Commandable => false; // Our master cannot boss us around!
-        public override bool DeleteCorpseOnDeath => m_DeleteCorpse;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Destination
-        {
-            get => m_Destination?.Name;
-            set
+            for (var i = 0; i < list.Length; ++i)
             {
-                m_DestinationString = value;
-                m_Destination = EDI.Find(value);
-            }
-        }
+                var questType = list[randomIdx];
 
-        public static Dictionary<Mobile, BaseEscortable> EscortTable { get; } = new();
+                var quest = MLQuestSystem.FindQuest(questType);
 
-        protected override List<MLQuest> ConstructQuestList()
-        {
-            if (m_MLQuest == null)
-            {
-                var reg = Region;
-                var list = reg.IsPartOf("Haven Island") ? m_MLQuestTypesNH : m_MLQuestTypes;
-
-                var randomIdx = Utility.Random(list.Length);
-
-                for (var i = 0; i < list.Length; ++i)
+                if (quest != null)
                 {
-                    var questType = list[randomIdx];
+                    var okay = true;
 
-                    var quest = MLQuestSystem.FindQuest(questType);
-
-                    if (quest != null)
+                    foreach (var obj in quest.Objectives)
                     {
-                        var okay = true;
-
-                        foreach (var obj in quest.Objectives)
+                        if (obj is EscortObjective objective && objective.Destination.Contains(reg))
                         {
-                            if (obj is EscortObjective objective && objective.Destination.Contains(reg))
-                            {
-                                okay = false; // We're already there!
-                                break;
-                            }
-                        }
-
-                        if (okay)
-                        {
-                            m_MLQuest = quest;
+                            okay = false; // We're already there!
                             break;
                         }
                     }
-                    else if (MLQuestSystem.Debug)
+
+                    if (okay)
                     {
-                        Console.WriteLine(
-                            "Warning: Escortable cannot be assigned quest type '{0}', it is not registered",
-                            questType.Name
-                        );
+                        m_MLQuest = quest;
+                        break;
                     }
-
-                    randomIdx = (randomIdx + 1) % list.Length;
                 }
-
-                if (m_MLQuest == null)
+                else if (MLQuestSystem.Debug)
                 {
-                    if (MLQuestSystem.Debug)
-                    {
-                        Console.WriteLine("Warning: No suitable quest found for escort {0}", Serial);
-                    }
-
-                    return null;
+                    Console.WriteLine(
+                        "Warning: Escortable cannot be assigned quest type '{0}', it is not registered",
+                        questType.Name
+                    );
                 }
+
+                randomIdx = (randomIdx + 1) % list.Length;
             }
 
-            var result = new List<MLQuest> { m_MLQuest };
-
-            return result;
-        }
-
-        public override void Shout(PlayerMobile pm)
-        {
-            /*
-             * 1072301 - You there!  Care to hear how to earn some easy gold?
-             * 1072302 - Adventurer!  I have an offer for you.
-             * 1072303 - Wait!  I have an opportunity for you to make some gold!
-             */
-            MLQuestSystem.Tell(this, pm, Utility.Random(1072301, 3));
-        }
-
-        public virtual void InitBody()
-        {
-            SetStr(90, 100);
-            SetDex(90, 100);
-            SetInt(15, 25);
-
-            Hue = Race.Human.RandomSkinHue();
-
-            if (Female = Utility.RandomBool())
+            if (m_MLQuest == null)
             {
-                Body = 401;
-                Name = NameList.RandomName("female");
-            }
-            else
-            {
-                Body = 400;
-                Name = NameList.RandomName("male");
+                if (MLQuestSystem.Debug)
+                {
+                    Console.WriteLine("Warning: No suitable quest found for escort {0}", Serial);
+                }
+
+                return null;
             }
         }
 
-        public virtual void InitOutfit()
+        var result = new List<MLQuest> { m_MLQuest };
+
+        return result;
+    }
+
+    public override void Shout(PlayerMobile pm)
+    {
+        /*
+         * 1072301 - You there!  Care to hear how to earn some easy gold?
+         * 1072302 - Adventurer!  I have an offer for you.
+         * 1072303 - Wait!  I have an opportunity for you to make some gold!
+         */
+        MLQuestSystem.Tell(this, pm, Utility.Random(1072301, 3));
+    }
+
+    public virtual void InitBody()
+    {
+        SetStr(90, 100);
+        SetDex(90, 100);
+        SetInt(15, 25);
+
+        Hue = Race.Human.RandomSkinHue();
+
+        if (Female = Utility.RandomBool())
         {
-            AddItem(new FancyShirt(Utility.RandomNeutralHue()));
-            AddItem(new ShortPants(Utility.RandomNeutralHue()));
-            AddItem(new Boots(Utility.RandomNeutralHue()));
-
-            Utility.AssignRandomHair(this);
-
-            PackGold(200, 250);
+            Body = 401;
+            Name = NameList.RandomName("female");
         }
-
-        public virtual bool SayDestinationTo(Mobile m)
+        else
         {
-            var dest = GetDestination();
+            Body = 400;
+            Name = NameList.RandomName("male");
+        }
+    }
 
-            if (dest == null || !m.Alive)
-            {
-                return false;
-            }
+    public virtual void InitOutfit()
+    {
+        AddItem(new FancyShirt(Utility.RandomNeutralHue()));
+        AddItem(new ShortPants(Utility.RandomNeutralHue()));
+        AddItem(new Boots(Utility.RandomNeutralHue()));
 
-            var escorter = GetEscorter();
+        Utility.AssignRandomHair(this);
 
-            if (escorter == null)
-            {
-                Say(
-                    "I am looking to go to {0}, will you take me?",
-                    dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name
-                );
-                return true;
-            }
+        PackGold(200, 250);
+    }
 
-            if (escorter == m)
-            {
-                Say(
-                    "Lead on! Payment will be made when we arrive in {0}.",
-                    dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name
-                );
-                return true;
-            }
+    public virtual bool SayDestinationTo(Mobile m)
+    {
+        var dest = GetDestination();
 
+        if (dest == null || !m.Alive)
+        {
             return false;
         }
 
-        public virtual bool AcceptEscorter(Mobile m)
+        var escorter = GetEscorter();
+
+        if (escorter == null)
         {
-            var dest = GetDestination();
-
-            if (dest == null)
-            {
-                return false;
-            }
-
-            if (GetEscorter() != null || !m.Alive)
-            {
-                return false;
-            }
-
-            if (EscortTable.TryGetValue(m, out var escortable) && escortable?.Deleted == false &&
-                escortable.GetEscorter() == m)
-            {
-                Say("I see you already have an escort.");
-                return false;
-            }
-
-            if (m is PlayerMobile mobile && mobile.LastEscortTime + EscortDelay >= Core.Now)
-            {
-                var minutes =
-                    (int)Math.Ceiling((mobile.LastEscortTime + EscortDelay - Core.Now).TotalMinutes);
-
-                Say("You must rest {0} minute{1} before we set out on this journey.", minutes, minutes == 1 ? "" : "s");
-                return false;
-            }
-
-            if (SetControlMaster(m))
-            {
-                m_LastSeenEscorter = Core.Now;
-
-                if (m is PlayerMobile playerMobile)
-                {
-                    playerMobile.LastEscortTime = Core.Now;
-                }
-
-                Say(
-                    "Lead on! Payment will be made when we arrive in {0}.",
-                    dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name
-                );
-                EscortTable[m] = this;
-                StartFollow();
-                return true;
-            }
-
-            return false;
-        }
-
-        public override bool HandlesOnSpeech(Mobile from) =>
-            !MLQuestSystem.Enabled && (from.InRange(Location, 3) || base.HandlesOnSpeech(from));
-
-        public override void OnSpeech(SpeechEventArgs e)
-        {
-            base.OnSpeech(e);
-
-            if (GetDestination() == null || e.Handled || !e.Mobile.InRange(Location, 3))
-            {
-                return;
-            }
-
-            if (e.HasKeyword(0x1D)) // *destination*
-            {
-                e.Handled = SayDestinationTo(e.Mobile);
-            }
-            else if (e.HasKeyword(0x1E)) // *i will take thee*
-            {
-                e.Handled = AcceptEscorter(e.Mobile);
-            }
-        }
-
-        public override void OnAfterDelete()
-        {
-            m_DeleteTimer?.Stop();
-
-            m_DeleteTimer = null;
-
-            base.OnAfterDelete();
-        }
-
-        public override void OnThink()
-        {
-            base.OnThink();
-            CheckAtDestination();
-        }
-
-        protected override bool OnMove(Direction d)
-        {
-            if (!base.OnMove(d))
-            {
-                return false;
-            }
-
-            CheckAtDestination();
-
+            Say(
+                "I am looking to go to {0}, will you take me?",
+                dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name
+            );
             return true;
         }
 
-        // TODO: Pre-ML methods below, might be mergeable with the ML methods in EscortObjective
-
-        public virtual void StartFollow()
+        if (escorter == m)
         {
-            StartFollow(GetEscorter());
+            Say(
+                "Lead on! Payment will be made when we arrive in {0}.",
+                dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name
+            );
+            return true;
         }
 
-        public virtual void StartFollow(Mobile escorter)
+        return false;
+    }
+
+    public virtual bool AcceptEscorter(Mobile m)
+    {
+        var dest = GetDestination();
+
+        if (dest == null)
         {
-            if (escorter == null)
-            {
-                return;
-            }
-
-            ActiveSpeed = 0.1;
-            PassiveSpeed = 0.2;
-
-            ControlOrder = OrderType.Follow;
-            ControlTarget = escorter;
-
-            if (IsPrisoner && CantWalk)
-            {
-                CantWalk = false;
-            }
-
-            CurrentSpeed = 0.1;
+            return false;
         }
 
-        public virtual void StopFollow()
+        if (GetEscorter() != null || !m.Alive)
         {
-            ActiveSpeed = 0.2;
-            PassiveSpeed = 1.0;
-
-            ControlOrder = OrderType.None;
-            ControlTarget = null;
-
-            CurrentSpeed = 1.0;
+            return false;
         }
 
-        public virtual Mobile GetEscorter()
+        if (EscortTable.TryGetValue(m, out var escortable) && escortable?.Deleted == false &&
+            escortable.GetEscorter() == m)
         {
-            if (!Controlled)
-            {
-                return null;
-            }
+            Say("I see you already have an escort.");
+            return false;
+        }
 
-            var master = ControlMaster;
+        if (m is PlayerMobile mobile && mobile.LastEscortTime + EscortDelay >= Core.Now)
+        {
+            var minutes =
+                (int)Math.Ceiling((mobile.LastEscortTime + EscortDelay - Core.Now).TotalMinutes);
 
-            if (MLQuestSystem.Enabled || master == null)
-            {
-                return master;
-            }
+            Say("You must rest {0} minute{1} before we set out on this journey.", minutes, minutes == 1 ? "" : "s");
+            return false;
+        }
 
-            if (master.Deleted || master.Map != Map || !master.InRange(Location, 30) || !master.Alive)
-            {
-                StopFollow();
-
-                var lastSeenDelay = Core.Now - m_LastSeenEscorter;
-
-                if (lastSeenDelay >= AbandonDelay)
-                {
-                    master.SendLocalizedMessage(1042473); // You have lost the person you were escorting.
-                    Say(1005653);                         // Hmmm. I seem to have lost my master.
-
-                    SetControlMaster(null);
-                    EscortTable.Remove(master);
-
-                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
-                    return null;
-                }
-
-                ControlOrder = OrderType.Stay;
-                return master;
-            }
-
-            if (ControlOrder != OrderType.Follow)
-            {
-                StartFollow(master);
-            }
-
+        if (SetControlMaster(m))
+        {
             m_LastSeenEscorter = Core.Now;
+
+            if (m is PlayerMobile playerMobile)
+            {
+                playerMobile.LastEscortTime = Core.Now;
+            }
+
+            Say(
+                "Lead on! Payment will be made when we arrive in {0}.",
+                dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name
+            );
+            EscortTable[m] = this;
+            StartFollow();
+            return true;
+        }
+
+        return false;
+    }
+
+    public override bool HandlesOnSpeech(Mobile from) =>
+        !MLQuestSystem.Enabled && (from.InRange(Location, 3) || base.HandlesOnSpeech(from));
+
+    public override void OnSpeech(SpeechEventArgs e)
+    {
+        base.OnSpeech(e);
+
+        if (GetDestination() == null || e.Handled || !e.Mobile.InRange(Location, 3))
+        {
+            return;
+        }
+
+        if (e.HasKeyword(0x1D)) // *destination*
+        {
+            e.Handled = SayDestinationTo(e.Mobile);
+        }
+        else if (e.HasKeyword(0x1E)) // *i will take thee*
+        {
+            e.Handled = AcceptEscorter(e.Mobile);
+        }
+    }
+
+    public override void OnAfterDelete()
+    {
+        m_DeleteTimer?.Stop();
+
+        m_DeleteTimer = null;
+
+        base.OnAfterDelete();
+    }
+
+    public override void OnThink()
+    {
+        base.OnThink();
+        CheckAtDestination();
+    }
+
+    protected override bool OnMove(Direction d)
+    {
+        if (!base.OnMove(d))
+        {
+            return false;
+        }
+
+        CheckAtDestination();
+
+        return true;
+    }
+
+    // TODO: Pre-ML methods below, might be mergeable with the ML methods in EscortObjective
+
+    public virtual void StartFollow()
+    {
+        StartFollow(GetEscorter());
+    }
+
+    public virtual void StartFollow(Mobile escorter)
+    {
+        if (escorter == null)
+        {
+            return;
+        }
+
+        ActiveSpeed = 0.1;
+        PassiveSpeed = 0.2;
+
+        ControlOrder = OrderType.Follow;
+        ControlTarget = escorter;
+
+        if (IsPrisoner && CantWalk)
+        {
+            CantWalk = false;
+        }
+
+        CurrentSpeed = 0.1;
+    }
+
+    public virtual void StopFollow()
+    {
+        ActiveSpeed = 0.2;
+        PassiveSpeed = 1.0;
+
+        ControlOrder = OrderType.None;
+        ControlTarget = null;
+
+        CurrentSpeed = 1.0;
+    }
+
+    public virtual Mobile GetEscorter()
+    {
+        if (!Controlled)
+        {
+            return null;
+        }
+
+        var master = ControlMaster;
+
+        if (MLQuestSystem.Enabled || master == null)
+        {
             return master;
         }
 
-        public virtual void BeginDelete()
+        if (master.Deleted || master.Map != Map || !master.InRange(Location, 30) || !master.Alive)
         {
-            m_DeleteTimer?.Stop();
+            StopFollow();
 
-            m_DeleteTime = Core.Now + DeleteTime;
+            var lastSeenDelay = Core.Now - m_LastSeenEscorter;
 
-            m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - Core.Now);
-            m_DeleteTimer.Start();
+            if (lastSeenDelay >= AbandonDelay)
+            {
+                master.SendLocalizedMessage(1042473); // You have lost the person you were escorting.
+                Say(1005653);                         // Hmmm. I seem to have lost my master.
+
+                SetControlMaster(null);
+                EscortTable.Remove(master);
+
+                Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
+                return null;
+            }
+
+            ControlOrder = OrderType.Stay;
+            return master;
         }
 
-        public virtual bool CheckAtDestination()
+        if (ControlOrder != OrderType.Follow)
         {
-            if (MLQuestSystem.Enabled)
+            StartFollow(master);
+        }
+
+        m_LastSeenEscorter = Core.Now;
+        return master;
+    }
+
+    public virtual void BeginDelete()
+    {
+        m_DeleteTimer?.Stop();
+
+        m_DeleteTime = Core.Now + DeleteTime;
+
+        m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - Core.Now);
+        m_DeleteTimer.Start();
+    }
+
+    public virtual bool CheckAtDestination()
+    {
+        if (MLQuestSystem.Enabled)
+        {
+            return false;
+        }
+
+        var dest = GetDestination();
+
+        if (dest == null)
+        {
+            return false;
+        }
+
+        var escorter = GetEscorter();
+
+        if (escorter == null)
+        {
+            return false;
+        }
+
+        if (dest.Contains(Location))
+        {
+            Say(
+                1042809,
+                escorter.Name
+            ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
+
+            // not going anywhere
+            m_Destination = null;
+            m_DestinationString = null;
+
+            var cont = escorter.Backpack ?? escorter.BankBox;
+
+            var gold = new Gold(500, 1000);
+
+            if (!cont.TryDropItem(escorter, gold, false))
             {
-                return false;
+                gold.MoveToWorld(escorter.Location, escorter.Map);
             }
 
-            var dest = GetDestination();
+            StopFollow();
+            SetControlMaster(null);
+            EscortTable.Remove(escorter);
+            BeginDelete();
 
-            if (dest == null)
+            Titles.AwardFame(escorter, 10, true);
+
+            var gainedPath = false;
+
+            if (escorter is PlayerMobile pm)
             {
-                return false;
-            }
-
-            var escorter = GetEscorter();
-
-            if (escorter == null)
-            {
-                return false;
-            }
-
-            if (dest.Contains(Location))
-            {
-                Say(
-                    1042809,
-                    escorter.Name
-                ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
-
-                // not going anywhere
-                m_Destination = null;
-                m_DestinationString = null;
-
-                var cont = escorter.Backpack ?? escorter.BankBox;
-
-                var gold = new Gold(500, 1000);
-
-                if (!cont.TryDropItem(escorter, gold, false))
+                if (pm.CompassionGains > 0 && Core.Now > pm.NextCompassionDay)
                 {
-                    gold.MoveToWorld(escorter.Location, escorter.Map);
+                    pm.NextCompassionDay = DateTime.MinValue;
+                    pm.CompassionGains = 0;
                 }
 
-                StopFollow();
-                SetControlMaster(null);
-                EscortTable.Remove(escorter);
-                BeginDelete();
-
-                Titles.AwardFame(escorter, 10, true);
-
-                var gainedPath = false;
-
-                if (escorter is PlayerMobile pm)
+                if (pm.CompassionGains >= 5) // have already gained 5 times in one day, can gain no more
                 {
-                    if (pm.CompassionGains > 0 && Core.Now > pm.NextCompassionDay)
+                    pm.SendLocalizedMessage(
+                        1053004
+                    ); // You must wait about a day before you can gain in compassion again.
+                }
+                else if (VirtueHelper.Award(pm, VirtueName.Compassion, IsPrisoner ? 400 : 200, ref gainedPath))
+                {
+                    if (gainedPath)
                     {
-                        pm.NextCompassionDay = DateTime.MinValue;
-                        pm.CompassionGains = 0;
+                        pm.SendLocalizedMessage(1053005); // You have achieved a path in compassion!
+                    }
+                    else
+                    {
+                        pm.SendLocalizedMessage(1053002); // You have gained in compassion.
                     }
 
-                    if (pm.CompassionGains >= 5) // have already gained 5 times in one day, can gain no more
+                    pm.NextCompassionDay =
+                        Core.Now + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
+                    ++pm.CompassionGains;
+
+                    if (pm.CompassionGains >= 5)
                     {
                         pm.SendLocalizedMessage(
                             1053004
                         ); // You must wait about a day before you can gain in compassion again.
                     }
-                    else if (VirtueHelper.Award(pm, VirtueName.Compassion, IsPrisoner ? 400 : 200, ref gainedPath))
-                    {
-                        if (gainedPath)
-                        {
-                            pm.SendLocalizedMessage(1053005); // You have achieved a path in compassion!
-                        }
-                        else
-                        {
-                            pm.SendLocalizedMessage(1053002); // You have gained in compassion.
-                        }
-
-                        pm.NextCompassionDay =
-                            Core.Now + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
-                        ++pm.CompassionGains;
-
-                        if (pm.CompassionGains >= 5)
-                        {
-                            pm.SendLocalizedMessage(
-                                1053004
-                            ); // You must wait about a day before you can gain in compassion again.
-                        }
-                    }
-                    else
-                    {
-                        pm.SendLocalizedMessage(
-                            1053003
-                        ); // You have achieved the highest path of compassion and can no longer gain any further.
-                    }
                 }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public override bool OnBeforeDeath()
-        {
-            m_DeleteCorpse = Controlled || IsBeingDeleted;
-
-            return base.OnBeforeDeath();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            var dest = GetDestination();
-
-            writer.Write(dest != null);
-
-            if (dest != null)
-            {
-                writer.Write(dest.Name);
-            }
-
-            writer.Write(m_DeleteTimer != null);
-
-            if (m_DeleteTimer != null)
-            {
-                writer.WriteDeltaTime(m_DeleteTime);
-            }
-
-            MLQuestSystem.WriteQuestRef(writer, StaticMLQuester ? null : m_MLQuest);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (reader.ReadBool())
-            {
-                m_DestinationString =
-                    reader.ReadString(); // NOTE: We cannot EDI.Find here, regions have not yet been loaded :-(
-            }
-
-            if (reader.ReadBool())
-            {
-                m_DeleteTime = reader.ReadDeltaTime();
-                m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - Core.Now);
-                m_DeleteTimer.Start();
-            }
-
-            if (version >= 1)
-            {
-                var quest = MLQuestSystem.ReadQuestRef(reader);
-
-                if (MLQuestSystem.Enabled && quest != null && !StaticMLQuester)
+                else
                 {
-                    m_MLQuest = quest;
-                }
-            }
-        }
-
-        public override bool CanBeRenamedBy(Mobile from) => from.AccessLevel >= AccessLevel.GameMaster;
-
-        public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
-        {
-            if (from.Alive)
-            {
-                var escorter = GetEscorter();
-
-                if (!MLQuestSystem.Enabled && GetDestination() != null)
-                {
-                    if (escorter == null || escorter == from)
-                    {
-                        list.Add(new AskDestinationEntry(this, from));
-                    }
-
-                    if (escorter == null)
-                    {
-                        list.Add(new AcceptEscortEntry(this, from));
-                    }
-                }
-
-                if (escorter == from)
-                {
-                    list.Add(new AbandonEscortEntry(this));
+                    pm.SendLocalizedMessage(
+                        1053003
+                    ); // You have achieved the highest path of compassion and can no longer gain any further.
                 }
             }
 
-            base.AddCustomContextEntries(from, list);
+            return true;
         }
 
-        public virtual string[] GetPossibleDestinations() => Core.ML ? m_MLTownNames : m_TownNames;
+        return false;
+    }
 
-        public virtual string PickRandomDestination()
+    public override bool OnBeforeDeath()
+    {
+        m_DeleteCorpse = Controlled || IsBeingDeleted;
+
+        return base.OnBeforeDeath();
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(1); // version
+
+        var dest = GetDestination();
+
+        writer.Write(dest != null);
+
+        if (dest != null)
         {
-            if (Map.Felucca.Regions.Count == 0 || Map == null || Map == Map.Internal || Location == Point3D.Zero)
-            {
-                return null; // Not yet fully initialized
-            }
-
-            var possible = GetPossibleDestinations();
-            string picked = null;
-
-            while (picked == null)
-            {
-                picked = possible.RandomElement();
-                var test = EDI.Find(picked);
-
-                if (test.Contains(Location))
-                {
-                    picked = null;
-                }
-            }
-
-            return picked;
+            writer.Write(dest.Name);
         }
 
-        public EDI GetDestination()
+        writer.Write(m_DeleteTimer != null);
+
+        if (m_DeleteTimer != null)
         {
-            if (MLQuestSystem.Enabled)
-            {
-                return null;
-            }
-
-            if (m_DestinationString == null && m_DeleteTimer == null)
-            {
-                m_DestinationString = PickRandomDestination();
-            }
-
-            if (m_Destination != null && m_Destination.Name == m_DestinationString)
-            {
-                return m_Destination;
-            }
-
-            if (Map.Felucca.Regions.Count > 0)
-            {
-                return m_Destination = EDI.Find(m_DestinationString);
-            }
-
-            return m_Destination = null;
+            writer.WriteDeltaTime(m_DeleteTime);
         }
 
-        private class DeleteTimer : Timer
+        MLQuestSystem.WriteQuestRef(writer, StaticMLQuester ? null : m_MLQuest);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        if (reader.ReadBool())
         {
-            private readonly Mobile m_Mobile;
+            m_DestinationString =
+                reader.ReadString(); // NOTE: We cannot EDI.Find here, regions have not yet been loaded :-(
+        }
 
-            public DeleteTimer(Mobile m, TimeSpan delay)
-                : base(delay)
-            {
-                m_Mobile = m;
-            }
+        if (reader.ReadBool())
+        {
+            m_DeleteTime = reader.ReadDeltaTime();
+            m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - Core.Now);
+            m_DeleteTimer.Start();
+        }
 
-            protected override void OnTick()
+        if (version >= 1)
+        {
+            var quest = MLQuestSystem.ReadQuestRef(reader);
+
+            if (MLQuestSystem.Enabled && quest != null && !StaticMLQuester)
             {
-                m_Mobile.Delete();
+                m_MLQuest = quest;
             }
         }
     }
 
-    public class EscortDestinationInfo
+    public override bool CanBeRenamedBy(Mobile from) => from.AccessLevel >= AccessLevel.GameMaster;
+
+    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
     {
-        private static Dictionary<string, EscortDestinationInfo> m_Table;
-
-        public EscortDestinationInfo(string name, Region region)
+        if (from.Alive)
         {
-            Name = name;
-            Region = region;
-        }
+            var escorter = GetEscorter();
 
-        public string Name { get; }
-
-        public Region Region { get; }
-
-        public bool Contains(Point3D p) => Region.Contains(p);
-
-        public static void Initialize()
-        {
-            ICollection list = Map.Felucca.Regions.Values;
-
-            if (list.Count == 0)
+            if (!MLQuestSystem.Enabled && GetDestination() != null)
             {
-                return;
-            }
-
-            m_Table = new Dictionary<string, EscortDestinationInfo>();
-
-            foreach (Region r in list)
-            {
-                if (r.Name != null && (r is DungeonRegion || r is TownRegion))
+                if (escorter == null || escorter == from)
                 {
-                    m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
+                    list.Add(new AskDestinationEntry(this, from));
+                }
+
+                if (escorter == null)
+                {
+                    list.Add(new AcceptEscortEntry(this, from));
                 }
             }
-        }
 
-        public static EDI Find(string name)
-        {
-            if (name == null || m_Table == null)
+            if (escorter == from)
             {
-                return null;
+                list.Add(new AbandonEscortEntry(this));
             }
-
-            m_Table.TryGetValue(name, out var info);
-            return info;
         }
+
+        base.AddCustomContextEntries(from, list);
     }
 
-    public class AskDestinationEntry : ContextMenuEntry
-    {
-        private readonly Mobile m_From;
-        private readonly BaseEscortable m_Mobile;
+    public virtual string[] GetPossibleDestinations() => Core.ML ? m_MLTownNames : m_TownNames;
 
-        public AskDestinationEntry(BaseEscortable m, Mobile from)
-            : base(6100, 3)
+    public virtual string PickRandomDestination()
+    {
+        if (Map.Felucca.Regions.Count == 0 || Map == null || Map == Map.Internal || Location == Point3D.Zero)
+        {
+            return null; // Not yet fully initialized
+        }
+
+        var possible = GetPossibleDestinations();
+        string picked = null;
+
+        while (picked == null)
+        {
+            picked = possible.RandomElement();
+            var test = EDI.Find(picked);
+
+            if (test.Contains(Location))
+            {
+                picked = null;
+            }
+        }
+
+        return picked;
+    }
+
+    public EDI GetDestination()
+    {
+        if (MLQuestSystem.Enabled)
+        {
+            return null;
+        }
+
+        if (m_DestinationString == null && m_DeleteTimer == null)
+        {
+            m_DestinationString = PickRandomDestination();
+        }
+
+        if (m_Destination != null && m_Destination.Name == m_DestinationString)
+        {
+            return m_Destination;
+        }
+
+        if (Map.Felucca.Regions.Count > 0)
+        {
+            return m_Destination = EDI.Find(m_DestinationString);
+        }
+
+        return m_Destination = null;
+    }
+
+    private class DeleteTimer : Timer
+    {
+        private readonly Mobile m_Mobile;
+
+        public DeleteTimer(Mobile m, TimeSpan delay)
+            : base(delay)
         {
             m_Mobile = m;
-            m_From = from;
         }
 
-        public override void OnClick()
+        protected override void OnTick()
         {
-            m_Mobile.SayDestinationTo(m_From);
+            m_Mobile.Delete();
+        }
+    }
+}
+
+public class EscortDestinationInfo
+{
+    private static Dictionary<string, EscortDestinationInfo> m_Table;
+
+    public EscortDestinationInfo(string name, Region region)
+    {
+        Name = name;
+        Region = region;
+    }
+
+    public string Name { get; }
+
+    public Region Region { get; }
+
+    public bool Contains(Point3D p) => Region.Contains(p);
+
+    public static void Initialize()
+    {
+        ICollection list = Map.Felucca.Regions.Values;
+
+        if (list.Count == 0)
+        {
+            return;
+        }
+
+        m_Table = new Dictionary<string, EscortDestinationInfo>();
+
+        foreach (Region r in list)
+        {
+            if (r.Name != null && (r is DungeonRegion || r is TownRegion))
+            {
+                m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
+            }
         }
     }
 
-    public class AcceptEscortEntry : ContextMenuEntry
+    public static EDI Find(string name)
     {
-        private readonly Mobile m_From;
-        private readonly BaseEscortable m_Mobile;
-
-        public AcceptEscortEntry(BaseEscortable m, Mobile from)
-            : base(6101, 3)
+        if (name == null || m_Table == null)
         {
-            m_Mobile = m;
-            m_From = from;
+            return null;
         }
 
-        public override void OnClick()
-        {
-            m_Mobile.AcceptEscorter(m_From);
-        }
+        m_Table.TryGetValue(name, out var info);
+        return info;
+    }
+}
+
+public class AskDestinationEntry : ContextMenuEntry
+{
+    private readonly Mobile m_From;
+    private readonly BaseEscortable m_Mobile;
+
+    public AskDestinationEntry(BaseEscortable m, Mobile from)
+        : base(6100, 3)
+    {
+        m_Mobile = m;
+        m_From = from;
     }
 
-    public class AbandonEscortEntry : ContextMenuEntry
+    public override void OnClick()
     {
-        private readonly BaseEscortable m_Mobile;
+        m_Mobile.SayDestinationTo(m_From);
+    }
+}
 
-        public AbandonEscortEntry(BaseEscortable m)
-            : base(6102, 3) =>
-            m_Mobile = m;
+public class AcceptEscortEntry : ContextMenuEntry
+{
+    private readonly Mobile m_From;
+    private readonly BaseEscortable m_Mobile;
 
-        public override void OnClick()
-        {
-            m_Mobile.Delete(); // OSI just seems to delete instantly
-        }
+    public AcceptEscortEntry(BaseEscortable m, Mobile from)
+        : base(6101, 3)
+    {
+        m_Mobile = m;
+        m_From = from;
+    }
+
+    public override void OnClick()
+    {
+        m_Mobile.AcceptEscorter(m_From);
+    }
+}
+
+public class AbandonEscortEntry : ContextMenuEntry
+{
+    private readonly BaseEscortable m_Mobile;
+
+    public AbandonEscortEntry(BaseEscortable m)
+        : base(6102, 3) =>
+        m_Mobile = m;
+
+    public override void OnClick()
+    {
+        m_Mobile.Delete(); // OSI just seems to delete instantly
     }
 }

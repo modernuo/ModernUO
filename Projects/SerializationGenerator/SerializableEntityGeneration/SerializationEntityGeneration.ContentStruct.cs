@@ -19,110 +19,109 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializableMigration;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SerializableEntityGeneration
 {
-    public static partial class SerializableEntityGeneration
+    public static void GenerateMigrationContentStruct(
+        this StringBuilder source,
+        Compilation compilation,
+        string indent,
+        SerializableMetadata migration,
+        INamedTypeSymbol classSymbol
+    )
     {
-        public static void GenerateMigrationContentStruct(
-            this StringBuilder source,
-            Compilation compilation,
-            string indent,
-            SerializableMetadata migration,
-            INamedTypeSymbol classSymbol
-        )
+        source.AppendLine($"{indent}ref struct V{migration.Version}Content");
+        source.AppendLine($"{indent}{{");
+        var properties = migration.Properties ?? ImmutableArray<SerializableProperty>.Empty;
+
+        foreach (var serializableProperty in properties)
         {
-            source.AppendLine($"{indent}ref struct V{migration.Version}Content");
-            source.AppendLine($"{indent}{{");
-            var properties = migration.Properties ?? ImmutableArray<SerializableProperty>.Empty;
+            var propertyType = serializableProperty.Type;
+            var type = compilation.GetTypeByMetadataName(propertyType)?.IsValueType == true
+                       || SymbolMetadata.IsPrimitiveFromTypeDisplayString(propertyType) && propertyType != "bool"
+                ? $"{propertyType}{(serializableProperty.UsesSaveFlag == true ? "?" : "")}" : propertyType;
 
-            foreach (var serializableProperty in properties)
+            source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
+        }
+
+        var innerIndent = $"{indent}        ";
+
+        var usesSaveFlags = properties.Any(p => p.UsesSaveFlag == true);
+
+        if (usesSaveFlags)
+        {
+            source.AppendLine();
+            source.GenerateEnumStart(
+                $"V{migration.Version}SaveFlag",
+                $"{indent}    ",
+                true,
+                Accessibility.Private
+            );
+
+            source.GenerateEnumValue(innerIndent, true, "None", -1);
+            int index = 0;
+            foreach (var property in properties)
             {
-                var propertyType = serializableProperty.Type;
-                var type = compilation.GetTypeByMetadataName(propertyType)?.IsValueType == true
-                           || SymbolMetadata.IsPrimitiveFromTypeDisplayString(propertyType) && propertyType != "bool"
-                    ? $"{propertyType}{(serializableProperty.UsesSaveFlag == true ? "?" : "")}" : propertyType;
-
-                source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
-            }
-
-            var innerIndent = $"{indent}        ";
-
-            var usesSaveFlags = properties.Any(p => p.UsesSaveFlag == true);
-
-            if (usesSaveFlags)
-            {
-                source.AppendLine();
-                source.GenerateEnumStart(
-                    $"V{migration.Version}SaveFlag",
-                    $"{indent}    ",
-                    true,
-                    Accessibility.Private
-                );
-
-                source.GenerateEnumValue(innerIndent, true, "None", -1);
-                int index = 0;
-                foreach (var property in properties)
+                if (property.UsesSaveFlag == true)
                 {
-                    if (property.UsesSaveFlag == true)
-                    {
-                        source.GenerateEnumValue(innerIndent, true, property.Name, index++);
-                    }
+                    source.GenerateEnumValue(innerIndent, true, property.Name, index++);
                 }
-
-                source.GenerateEnumEnd($"{indent}    ");
             }
 
-            source.AppendLine($"{indent}    internal V{migration.Version}Content(IGenericReader reader, {classSymbol.ToDisplayString()} entity)");
-            source.AppendLine($"{indent}    {{");
+            source.GenerateEnumEnd($"{indent}    ");
+        }
 
-            if (usesSaveFlags)
-            {
-                source.AppendLine($"{innerIndent}var saveFlags = reader.ReadEnum<V{migration.Version}SaveFlag>();");
-            }
+        source.AppendLine($"{indent}    internal V{migration.Version}Content(IGenericReader reader, {classSymbol.ToDisplayString()} entity)");
+        source.AppendLine($"{indent}    {{");
 
-            if (properties.Length > 0)
+        if (usesSaveFlags)
+        {
+            source.AppendLine($"{innerIndent}var saveFlags = reader.ReadEnum<V{migration.Version}SaveFlag>();");
+        }
+
+        if (properties.Length > 0)
+        {
+            foreach (var property in properties)
             {
-                foreach (var property in properties)
+                if (property.UsesSaveFlag == true)
                 {
-                    if (property.UsesSaveFlag == true)
+                    source.AppendLine();
+                    // Special case
+                    if (property.Type == "bool")
                     {
-                        source.AppendLine();
-                        // Special case
-                        if (property.Type == "bool")
-                        {
-                            source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0;");
-                        }
-                        else
-                        {
-                            source.AppendLine($"{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
-
-                            SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
-                                source,
-                                $"{innerIndent}    ",
-                                property,
-                                "entity"
-                            );
-
-                            source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
-                            source.AppendLine($"{innerIndent}    {property.Name} = default;");
-                            source.AppendLine($"{innerIndent}}}");
-                        }
+                        source.AppendLine($"{innerIndent}{property.Name} = (saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0;");
                     }
                     else
                     {
+                        source.AppendLine($"{innerIndent}if ((saveFlags & V{migration.Version}SaveFlag.{property.Name}) != 0)\n{innerIndent}{{");
+
                         SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
                             source,
-                            innerIndent,
+                            $"{innerIndent}    ",
                             property,
                             "entity"
                         );
+
+                        source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
+                        source.AppendLine($"{innerIndent}    {property.Name} = default;");
+                        source.AppendLine($"{innerIndent}}}");
                     }
                 }
+                else
+                {
+                    SerializableMigrationRulesEngine.Rules[property.Rule].GenerateDeserializationMethod(
+                        source,
+                        innerIndent,
+                        property,
+                        "entity"
+                    );
+                }
             }
-
-            source.AppendLine($"{indent}    }}");
-
-            source.AppendLine($"{indent}}}");
         }
+
+        source.AppendLine($"{indent}    }}");
+
+        source.AppendLine($"{indent}}}");
     }
 }

@@ -15,12 +15,11 @@
 
 using System;
 
-namespace Server.Exceptions
+namespace Server.Exceptions;
+
+public class MaxConnectionsException : Exception
 {
-    public class MaxConnectionsException : Exception
+    public MaxConnectionsException() : base("Maximum connections exceeded")
     {
-        public MaxConnectionsException() : base("Maximum connections exceeded")
-        {
-        }
     }
 }

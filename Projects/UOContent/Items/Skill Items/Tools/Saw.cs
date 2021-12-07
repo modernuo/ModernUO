@@ -1,34 +1,33 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x1034, 0x1035)]
+public class Saw : BaseTool
 {
-    [Flippable(0x1034, 0x1035)]
-    public class Saw : BaseTool
+    [Constructible]
+    public Saw() : base(0x1034) => Weight = 2.0;
+
+    [Constructible]
+    public Saw(int uses) : base(uses, 0x1034) => Weight = 2.0;
+
+    public Saw(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Saw() : base(0x1034) => Weight = 2.0;
+    }
 
-        [Constructible]
-        public Saw(int uses) : base(uses, 0x1034) => Weight = 2.0;
+    public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
-        public Saw(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

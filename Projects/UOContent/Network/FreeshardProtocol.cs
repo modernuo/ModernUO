@@ -13,19 +13,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class FreeshardProtocol
 {
-    public static class FreeshardProtocol
+    private static PacketHandler[] _handlers;
+
+    [CallPriority(10)]
+    public static void Configure()
     {
-        private static PacketHandler[] _handlers;
-
-        [CallPriority(10)]
-        public static void Configure()
-        {
-            _handlers = ProtocolExtensions.Register(0xF1);
-        }
-
-        public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
-            _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
+        _handlers = ProtocolExtensions.Register(0xF1);
     }
+
+    public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
+        _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 }

@@ -1,13 +1,12 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class BlackDyeTub : DyeTub
 {
-    [Serializable(0, false)]
-    public partial class BlackDyeTub : DyeTub
+    [Constructible]
+    public BlackDyeTub()
     {
-        [Constructible]
-        public BlackDyeTub()
-        {
-            Hue = DyedHue = 0x0001;
-            Redyable = false;
-        }
+        Hue = DyedHue = 0x0001;
+        Redyable = false;
     }
 }

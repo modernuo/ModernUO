@@ -13,14 +13,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Random
-{
-    public static class RandomSources
-    {
-        private static IRandomSource m_Source;
-        private static IRandomSource m_SecureSource;
+namespace Server.Random;
 
-        public static IRandomSource Source => m_Source ??= new Xoshiro256PlusPlus();
-        public static IRandomSource SecureSource => m_SecureSource ??= new SecureRandom();
-    }
+public static class RandomSources
+{
+    private static IRandomSource m_Source;
+    private static IRandomSource m_SecureSource;
+
+    public static IRandomSource Source => m_Source ??= new Xoshiro256PlusPlus();
+    public static IRandomSource SecureSource => m_SecureSource ??= new SecureRandom();
 }

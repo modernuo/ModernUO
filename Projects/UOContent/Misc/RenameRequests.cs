@@ -1,21 +1,21 @@
 using System;
 
-namespace Server.Misc
+namespace Server.Misc;
+
+public static class RenameRequests
 {
-    public static class RenameRequests
+    public static void Initialize()
     {
-        public static void Initialize()
-        {
-            EventSink.RenameRequest += EventSink_RenameRequest;
-        }
+        EventSink.RenameRequest += EventSink_RenameRequest;
+    }
 
-        private static void EventSink_RenameRequest(Mobile from, Mobile targ, string name)
+    private static void EventSink_RenameRequest(Mobile from, Mobile targ, string name)
+    {
+        if (from.CanSee(targ) && from.InRange(targ, 12) && targ.CanBeRenamedBy(from))
         {
-            if (from.CanSee(targ) && from.InRange(targ, 12) && targ.CanBeRenamedBy(from))
-            {
-                name = name.Trim();
+            name = name.Trim();
 
-                if (NameVerification.Validate(
+            if (NameVerification.Validate(
                     name,
                     1,
                     16,
@@ -27,32 +27,31 @@ namespace Server.Misc
                     NameVerification.StartDisallowed,
                     Core.ML ? NameVerification.Disallowed : Array.Empty<string>()
                 ))
+            {
+                if (Core.ML)
                 {
-                    if (Core.ML)
+                    var disallowed = ProfanityProtection.Disallowed;
+
+                    for (var i = 0; i < disallowed.Length; i++)
                     {
-                        var disallowed = ProfanityProtection.Disallowed;
-
-                        for (var i = 0; i < disallowed.Length; i++)
+                        if (name.IndexOfOrdinal(disallowed[i]) != -1)
                         {
-                            if (name.IndexOfOrdinal(disallowed[i]) != -1)
-                            {
-                                from.SendLocalizedMessage(1072622); // That name isn't very polite.
-                                return;
-                            }
+                            from.SendLocalizedMessage(1072622); // That name isn't very polite.
+                            return;
                         }
-
-                        from.SendLocalizedMessage(
-                            1072623,
-                            $"{targ.Name}\t{name}"
-                        ); // Pet ~1_OLDPETNAME~ renamed to ~2_NEWPETNAME~.
                     }
 
-                    targ.Name = name;
+                    from.SendLocalizedMessage(
+                        1072623,
+                        $"{targ.Name}\t{name}"
+                    ); // Pet ~1_OLDPETNAME~ renamed to ~2_NEWPETNAME~.
                 }
-                else
-                {
-                    from.SendMessage("That name is unacceptable.");
-                }
+
+                targ.Name = name;
+            }
+            else
+            {
+                from.SendMessage("That name is unacceptable.");
             }
         }
     }

@@ -1,32 +1,31 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class TaintedSeeds : Item
 {
-    public class TaintedSeeds : Item
+    [Constructible]
+    public TaintedSeeds() : base(0xDFA)
     {
-        [Constructible]
-        public TaintedSeeds() : base(0xDFA)
-        {
-            LootType = LootType.Blessed;
-            Hue = 0x48; // TODO check
-        }
+        LootType = LootType.Blessed;
+        Hue = 0x48; // TODO check
+    }
 
-        public TaintedSeeds(Serial serial) : base(serial)
-        {
-        }
+    public TaintedSeeds(Serial serial) : base(serial)
+    {
+    }
 
-        public override int LabelNumber => 1074233; // Tainted Seeds
+    public override int LabelNumber => 1074233; // Tainted Seeds
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

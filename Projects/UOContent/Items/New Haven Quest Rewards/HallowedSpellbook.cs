@@ -1,33 +1,32 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class HallowedSpellbook : Spellbook
 {
-    public class HallowedSpellbook : Spellbook
+    [Constructible]
+    public HallowedSpellbook() : base(0x3FFFFFFFF)
     {
-        [Constructible]
-        public HallowedSpellbook() : base(0x3FFFFFFFF)
-        {
-            LootType = LootType.Blessed;
+        LootType = LootType.Blessed;
 
-            Slayer = SlayerName.Silver;
-        }
+        Slayer = SlayerName.Silver;
+    }
 
-        public HallowedSpellbook(Serial serial) : base(serial)
-        {
-        }
+    public HallowedSpellbook(Serial serial) : base(serial)
+    {
+    }
 
-        public override int LabelNumber => 1077620; // Hallowed Spellbook
+    public override int LabelNumber => 1077620; // Hallowed Spellbook
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 }

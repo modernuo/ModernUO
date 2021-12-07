@@ -1,13 +1,12 @@
-namespace Server.Items
-{
-    [Serializable(0, false)]
-    public partial class FullMoonFish : BaseFish
-    {
-        [Constructible]
-        public FullMoonFish() : base(0x3B15)
-        {
-        }
+namespace Server.Items;
 
-        public override int LabelNumber => 1074597; // A Full Moon Fish
+[Serializable(0, false)]
+public partial class FullMoonFish : BaseFish
+{
+    [Constructible]
+    public FullMoonFish() : base(0x3B15)
+    {
     }
+
+    public override int LabelNumber => 1074597; // A Full Moon Fish
 }

@@ -13,16 +13,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+public enum ChampionSkullType
 {
-    public enum ChampionSkullType
-    {
-        Power,
-        Enlightenment,
-        Venom,
-        Pain,
-        Greed,
-        Death,
-        None
-    }
+    Power,
+    Enlightenment,
+    Venom,
+    Pain,
+    Greed,
+    Death,
+    None
 }

@@ -1,35 +1,34 @@
 using System;
 using System.Reflection;
 
-namespace Server.Tests
+namespace Server.Tests;
+
+internal class ServerFixture : IDisposable
 {
-    internal class ServerFixture : IDisposable
+    // Global setup
+    static ServerFixture()
     {
-        // Global setup
-        static ServerFixture()
-        {
-            Core.Assembly = Assembly.GetExecutingAssembly();
-            Core.LoopContext = new EventLoopContext();
-            Core.Expansion = Expansion.EJ;
+        Core.Assembly = Assembly.GetExecutingAssembly();
+        Core.LoopContext = new EventLoopContext();
+        Core.Expansion = Expansion.EJ;
 
-            // Load Configurations
-            ServerConfiguration.Load(true);
+        // Load Configurations
+        ServerConfiguration.Load(true);
 
-            // Configure / Initialize
-            TestMapDefinitions.ConfigureTestMapDefinitions();
+        // Configure / Initialize
+        TestMapDefinitions.ConfigureTestMapDefinitions();
 
-            // Configure the world
-            World.Configure();
+        // Configure the world
+        World.Configure();
 
-            Timer.Init(0);
+        Timer.Init(0);
 
-            // Load the world
-            World.Load();
-        }
+        // Load the world
+        World.Load();
+    }
 
-        public void Dispose()
-        {
-            Timer.Init(0);
-        }
+    public void Dispose()
+    {
+        Timer.Init(0);
     }
 }

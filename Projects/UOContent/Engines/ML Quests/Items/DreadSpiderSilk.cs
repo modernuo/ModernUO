@@ -1,40 +1,39 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class DreadSpiderSilk : Item
 {
-    public class DreadSpiderSilk : Item
+    [Constructible]
+    public DreadSpiderSilk() : base(0xDF8)
     {
-        [Constructible]
-        public DreadSpiderSilk() : base(0xDF8)
-        {
-            LootType = LootType.Blessed;
-            Hue = 0x481;
-        }
+        LootType = LootType.Blessed;
+        Hue = 0x481;
+    }
 
-        public DreadSpiderSilk(Serial serial) : base(serial)
-        {
-        }
+    public DreadSpiderSilk(Serial serial) : base(serial)
+    {
+    }
 
-        public override int LabelNumber => 1075319; // Dread Spider Silk
+    public override int LabelNumber => 1075319; // Dread Spider Silk
 
-        public override bool Nontransferable => true;
+    public override bool Nontransferable => true;
 
-        public override void AddNameProperties(ObjectPropertyList list)
-        {
-            base.AddNameProperties(list);
-            AddQuestItemProperty(list);
-        }
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+        base.AddNameProperties(list);
+        AddQuestItemProperty(list);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // Version
-        }
+        writer.Write(0); // Version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

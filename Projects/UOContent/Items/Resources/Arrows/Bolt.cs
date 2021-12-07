@@ -1,34 +1,33 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class Bolt : Item, ICommodity
 {
-    public class Bolt : Item, ICommodity
+    [Constructible]
+    public Bolt(int amount = 1) : base(0x1BFB)
     {
-        [Constructible]
-        public Bolt(int amount = 1) : base(0x1BFB)
-        {
-            Stackable = true;
-            Amount = amount;
-        }
+        Stackable = true;
+        Amount = amount;
+    }
 
-        public Bolt(Serial serial) : base(serial)
-        {
-        }
+    public Bolt(Serial serial) : base(serial)
+    {
+    }
 
-        public override double DefaultWeight => 0.1;
-        int ICommodity.DescriptionNumber => LabelNumber;
-        bool ICommodity.IsDeedable => true;
+    public override double DefaultWeight => 0.1;
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => true;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

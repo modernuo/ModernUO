@@ -1,208 +1,207 @@
-﻿namespace Server.Items
+﻿namespace Server.Items;
+
+public static class GiftBoxHues
 {
-    public static class GiftBoxHues
+    /* there's possibly a couple more, but this is what we could verify on OSI */
+
+    private static readonly int[] m_NormalHues =
     {
-        /* there's possibly a couple more, but this is what we could verify on OSI */
+        0x672,
+        0x454,
+        0x507,
+        0x4ac,
+        0x504,
+        0x84b,
+        0x495,
+        0x97c,
+        0x493,
+        0x4a8,
+        0x494,
+        0x4aa,
+        0xb8b,
+        0x84f,
+        0x491,
+        0x851,
+        0x503,
+        0xb8c,
+        0x4ab,
+        0x84B
+    };
 
-        private static readonly int[] m_NormalHues =
-        {
-            0x672,
-            0x454,
-            0x507,
-            0x4ac,
-            0x504,
-            0x84b,
-            0x495,
-            0x97c,
-            0x493,
-            0x4a8,
-            0x494,
-            0x4aa,
-            0xb8b,
-            0x84f,
-            0x491,
-            0x851,
-            0x503,
-            0xb8c,
-            0x4ab,
-            0x84B
-        };
+    private static readonly int[] m_NeonHues =
+    {
+        0x438,
+        0x424,
+        0x433,
+        0x445,
+        0x42b,
+        0x448
+    };
 
-        private static readonly int[] m_NeonHues =
-        {
-            0x438,
-            0x424,
-            0x433,
-            0x445,
-            0x42b,
-            0x448
-        };
+    public static int RandomGiftBoxHue => m_NormalHues.RandomElement();
+    public static int RandomNeonBoxHue => m_NeonHues.RandomElement();
+}
 
-        public static int RandomGiftBoxHue => m_NormalHues.RandomElement();
-        public static int RandomNeonBoxHue => m_NeonHues.RandomElement();
+[Flippable(0x46A5, 0x46A6)]
+public class GiftBoxRectangle : BaseContainer
+{
+    [Constructible]
+    public GiftBoxRectangle()
+        : base(Utility.RandomBool() ? 0x46A5 : 0x46A6) =>
+        Hue = GiftBoxHues.RandomGiftBoxHue;
+
+    public GiftBoxRectangle(Serial serial)
+        : base(serial)
+    {
     }
 
-    [Flippable(0x46A5, 0x46A6)]
-    public class GiftBoxRectangle : BaseContainer
+    public override int DefaultGumpID => 0x11E;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public GiftBoxRectangle()
-            : base(Utility.RandomBool() ? 0x46A5 : 0x46A6) =>
-            Hue = GiftBoxHues.RandomGiftBoxHue;
-
-        public GiftBoxRectangle(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int DefaultGumpID => 0x11E;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        base.Serialize(writer);
+        writer.Write(0); // version
     }
 
-    public class GiftBoxCube : BaseContainer
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public GiftBoxCube()
-            : base(0x46A2) =>
-            Hue = GiftBoxHues.RandomGiftBoxHue;
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
 
-        public GiftBoxCube(Serial serial)
-            : base(serial)
-        {
-        }
+public class GiftBoxCube : BaseContainer
+{
+    [Constructible]
+    public GiftBoxCube()
+        : base(0x46A2) =>
+        Hue = GiftBoxHues.RandomGiftBoxHue;
 
-        public override int DefaultGumpID => 0x11B;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+    public GiftBoxCube(Serial serial)
+        : base(serial)
+    {
     }
 
-    public class GiftBoxCylinder : BaseContainer
+    public override int DefaultGumpID => 0x11B;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public GiftBoxCylinder()
-            : base(0x46A3) =>
-            Hue = GiftBoxHues.RandomGiftBoxHue;
-
-        public GiftBoxCylinder(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int DefaultGumpID => 0x11C;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        base.Serialize(writer);
+        writer.Write(0); // version
     }
 
-    public class GiftBoxOctogon : BaseContainer
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public GiftBoxOctogon()
-            : base(0x46A4) =>
-            Hue = GiftBoxHues.RandomGiftBoxHue;
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
 
-        public GiftBoxOctogon(Serial serial)
-            : base(serial)
-        {
-        }
+public class GiftBoxCylinder : BaseContainer
+{
+    [Constructible]
+    public GiftBoxCylinder()
+        : base(0x46A3) =>
+        Hue = GiftBoxHues.RandomGiftBoxHue;
 
-        public override int DefaultGumpID => 0x11D;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+    public GiftBoxCylinder(Serial serial)
+        : base(serial)
+    {
     }
 
-    public class GiftBoxAngel : BaseContainer
+    public override int DefaultGumpID => 0x11C;
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public GiftBoxAngel()
-            : base(0x46A7) =>
-            Hue = GiftBoxHues.RandomGiftBoxHue;
-
-        public GiftBoxAngel(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int DefaultGumpID => 0x11F;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        base.Serialize(writer);
+        writer.Write(0); // version
     }
 
-    [Flippable(0x232A, 0x232B)]
-    public class GiftBoxNeon : BaseContainer
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public GiftBoxNeon()
-            : base(Utility.RandomBool() ? 0x232A : 0x232B) =>
-            Hue = GiftBoxHues.RandomNeonBoxHue;
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
 
-        public GiftBoxNeon(Serial serial)
-            : base(serial)
-        {
-        }
+public class GiftBoxOctogon : BaseContainer
+{
+    [Constructible]
+    public GiftBoxOctogon()
+        : base(0x46A4) =>
+        Hue = GiftBoxHues.RandomGiftBoxHue;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public GiftBoxOctogon(Serial serial)
+        : base(serial)
+    {
+    }
 
-            writer.Write(0); // version
-        }
+    public override int DefaultGumpID => 0x11D;
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
+
+public class GiftBoxAngel : BaseContainer
+{
+    [Constructible]
+    public GiftBoxAngel()
+        : base(0x46A7) =>
+        Hue = GiftBoxHues.RandomGiftBoxHue;
+
+    public GiftBoxAngel(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override int DefaultGumpID => 0x11F;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
+    }
+}
+
+[Flippable(0x232A, 0x232B)]
+public class GiftBoxNeon : BaseContainer
+{
+    [Constructible]
+    public GiftBoxNeon()
+        : base(Utility.RandomBool() ? 0x232A : 0x232B) =>
+        Hue = GiftBoxHues.RandomNeonBoxHue;
+
+    public GiftBoxNeon(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

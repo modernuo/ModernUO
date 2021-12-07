@@ -1,50 +1,49 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class SmallEmptyPot : Item
 {
-    public class SmallEmptyPot : Item
+    [Constructible]
+    public SmallEmptyPot() : base(0x11C6) => Weight = 100;
+
+    public SmallEmptyPot(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SmallEmptyPot() : base(0x11C6) => Weight = 100;
-
-        public SmallEmptyPot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class LargeEmptyPot : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public LargeEmptyPot() : base(0x11C7) => Weight = 6;
+        base.Serialize(writer);
 
-        public LargeEmptyPot(Serial serial) : base(serial)
-        {
-        }
+        writer.Write(0);
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0);
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class LargeEmptyPot : Item
+{
+    [Constructible]
+    public LargeEmptyPot() : base(0x11C7) => Weight = 6;
 
-            var version = reader.ReadInt();
-        }
+    public LargeEmptyPot(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

@@ -1,34 +1,33 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0xFB5, 0xFB4)]
+public class SledgeHammer : BaseTool
 {
-    [Flippable(0xFB5, 0xFB4)]
-    public class SledgeHammer : BaseTool
+    [Constructible]
+    public SledgeHammer() : base(0xFB5) => Layer = Layer.OneHanded;
+
+    [Constructible]
+    public SledgeHammer(int uses) : base(uses, 0xFB5) => Layer = Layer.OneHanded;
+
+    public SledgeHammer(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SledgeHammer() : base(0xFB5) => Layer = Layer.OneHanded;
+    }
 
-        [Constructible]
-        public SledgeHammer(int uses) : base(uses, 0xFB5) => Layer = Layer.OneHanded;
+    public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 
-        public SledgeHammer(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

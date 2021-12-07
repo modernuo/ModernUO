@@ -1,218 +1,217 @@
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Ambitious
+namespace Server.Engines.Quests.Ambitious;
+
+public abstract class BaseAmbitiousSolenQueen : BaseQuester
 {
-    public abstract class BaseAmbitiousSolenQueen : BaseQuester
+    public BaseAmbitiousSolenQueen()
     {
-        public BaseAmbitiousSolenQueen()
+    }
+
+    public BaseAmbitiousSolenQueen(Serial serial) : base(serial)
+    {
+    }
+
+    public abstract bool RedSolen { get; }
+    public override string DefaultName => "an ambitious solen queen";
+    public override bool DisallowAllMoves => false;
+
+    public override void InitBody()
+    {
+        Body = 0x30F;
+
+        if (!RedSolen)
         {
+            Hue = 0x453;
         }
 
-        public BaseAmbitiousSolenQueen(Serial serial) : base(serial)
+        SpeechHue = 0;
+    }
+
+    public override int GetIdleSound() => 0x10D;
+
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+        Direction = GetDirectionTo(player);
+
+        if (player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == RedSolen)
         {
-        }
-
-        public abstract bool RedSolen { get; }
-        public override string DefaultName => "an ambitious solen queen";
-        public override bool DisallowAllMoves => false;
-
-        public override void InitBody()
-        {
-            Body = 0x30F;
-
-            if (!RedSolen)
+            if (qs.IsObjectiveInProgress(typeof(KillQueensObjective)))
             {
-                Hue = 0x453;
-            }
-
-            SpeechHue = 0;
-        }
-
-        public override int GetIdleSound() => 0x10D;
-
-        public override void OnTalk(PlayerMobile player, bool contextMenu)
-        {
-            Direction = GetDirectionTo(player);
-
-            if (player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == RedSolen)
-            {
-                if (qs.IsObjectiveInProgress(typeof(KillQueensObjective)))
-                {
-                    qs.AddConversation(new DuringKillQueensConversation());
-                }
-                else
-                {
-                    QuestObjective obj = qs.FindObjective<ReturnAfterKillsObjective>();
-
-                    if (obj?.Completed == false)
-                    {
-                        obj.Complete();
-                    }
-                    else if (qs.IsObjectiveInProgress(typeof(GatherFungiObjective)))
-                    {
-                        qs.AddConversation(new DuringFungiGatheringConversation());
-                    }
-                    else
-                    {
-                        var lastObj = qs.FindObjective<GetRewardObjective>();
-
-                        if (lastObj?.Completed == false)
-                        {
-                            var bagOfSending = lastObj.BagOfSending;
-                            var powderOfTranslocation = lastObj.PowderOfTranslocation;
-                            var gold = lastObj.Gold;
-
-                            AmbitiousQueenQuest.GiveRewardTo(player, ref bagOfSending, ref powderOfTranslocation, ref gold);
-
-                            lastObj.BagOfSending = bagOfSending;
-                            lastObj.PowderOfTranslocation = powderOfTranslocation;
-                            lastObj.Gold = gold;
-
-                            if (!bagOfSending && !powderOfTranslocation && !gold)
-                            {
-                                lastObj.Complete();
-                            }
-                            else
-                            {
-                                qs.AddConversation(
-                                    new FullBackpackConversation(
-                                        false,
-                                        lastObj.BagOfSending,
-                                        lastObj.PowderOfTranslocation,
-                                        lastObj.Gold
-                                    )
-                                );
-                            }
-                        }
-                    }
-                }
+                qs.AddConversation(new DuringKillQueensConversation());
             }
             else
             {
-                QuestSystem newQuest = new AmbitiousQueenQuest(player, RedSolen);
+                QuestObjective obj = qs.FindObjective<ReturnAfterKillsObjective>();
 
-                if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(AmbitiousQueenQuest)))
+                if (obj?.Completed == false)
                 {
-                    newQuest.SendOffer();
+                    obj.Complete();
+                }
+                else if (qs.IsObjectiveInProgress(typeof(GatherFungiObjective)))
+                {
+                    qs.AddConversation(new DuringFungiGatheringConversation());
                 }
                 else
                 {
-                    newQuest.AddConversation(new DontOfferConversation());
-                }
-            }
-        }
+                    var lastObj = qs.FindObjective<GetRewardObjective>();
 
-        public override bool OnDragDrop(Mobile from, Item dropped)
-        {
-            Direction = GetDirectionTo(from);
-
-            if (from is PlayerMobile player)
-            {
-                if (player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == RedSolen)
-                {
-                    QuestObjective obj = qs.FindObjective<GatherFungiObjective>();
-
-                    if (obj?.Completed == false)
+                    if (lastObj?.Completed == false)
                     {
-                        if (dropped is ZoogiFungus fungi)
+                        var bagOfSending = lastObj.BagOfSending;
+                        var powderOfTranslocation = lastObj.PowderOfTranslocation;
+                        var gold = lastObj.Gold;
+
+                        AmbitiousQueenQuest.GiveRewardTo(player, ref bagOfSending, ref powderOfTranslocation, ref gold);
+
+                        lastObj.BagOfSending = bagOfSending;
+                        lastObj.PowderOfTranslocation = powderOfTranslocation;
+                        lastObj.Gold = gold;
+
+                        if (!bagOfSending && !powderOfTranslocation && !gold)
                         {
-                            if (fungi.Amount >= 50)
-                            {
-                                obj.Complete();
-
-                                fungi.Amount -= 50;
-
-                                if (fungi.Amount == 0)
-                                {
-                                    fungi.Delete();
-                                    return true;
-                                }
-
-                                return false;
-                            }
-
-                            SayTo(
-                                player,
-                                1054072
-                            ); // Our arrangement was for 50 of the zoogi fungus. Please return to me when you have that amount.
-                            return false;
+                            lastObj.Complete();
+                        }
+                        else
+                        {
+                            qs.AddConversation(
+                                new FullBackpackConversation(
+                                    false,
+                                    lastObj.BagOfSending,
+                                    lastObj.PowderOfTranslocation,
+                                    lastObj.Gold
+                                )
+                            );
                         }
                     }
                 }
             }
-
-            return base.OnDragDrop(from, dropped);
         }
-
-        public override void Serialize(IGenericWriter writer)
+        else
         {
-            base.Serialize(writer);
+            QuestSystem newQuest = new AmbitiousQueenQuest(player, RedSolen);
 
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(AmbitiousQueenQuest)))
+            {
+                newQuest.SendOffer();
+            }
+            else
+            {
+                newQuest.AddConversation(new DontOfferConversation());
+            }
         }
     }
 
-    public class RedAmbitiousSolenQueen : BaseAmbitiousSolenQueen
+    public override bool OnDragDrop(Mobile from, Item dropped)
     {
-        [Constructible]
-        public RedAmbitiousSolenQueen()
+        Direction = GetDirectionTo(from);
+
+        if (from is PlayerMobile player)
         {
+            if (player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == RedSolen)
+            {
+                QuestObjective obj = qs.FindObjective<GatherFungiObjective>();
+
+                if (obj?.Completed == false)
+                {
+                    if (dropped is ZoogiFungus fungi)
+                    {
+                        if (fungi.Amount >= 50)
+                        {
+                            obj.Complete();
+
+                            fungi.Amount -= 50;
+
+                            if (fungi.Amount == 0)
+                            {
+                                fungi.Delete();
+                                return true;
+                            }
+
+                            return false;
+                        }
+
+                        SayTo(
+                            player,
+                            1054072
+                        ); // Our arrangement was for 50 of the zoogi fungus. Please return to me when you have that amount.
+                        return false;
+                    }
+                }
+            }
         }
 
-        public RedAmbitiousSolenQueen(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool RedSolen => true;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        return base.OnDragDrop(from, dropped);
     }
 
-    public class BlackAmbitiousSolenQueen : BaseAmbitiousSolenQueen
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public BlackAmbitiousSolenQueen()
-        {
-        }
+        base.Serialize(writer);
 
-        public BlackAmbitiousSolenQueen(Serial serial) : base(serial)
-        {
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override bool RedSolen => false;
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-            writer.WriteEncodedInt(0); // version
-        }
+public class RedAmbitiousSolenQueen : BaseAmbitiousSolenQueen
+{
+    [Constructible]
+    public RedAmbitiousSolenQueen()
+    {
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public RedAmbitiousSolenQueen(Serial serial) : base(serial)
+    {
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override bool RedSolen => true;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class BlackAmbitiousSolenQueen : BaseAmbitiousSolenQueen
+{
+    [Constructible]
+    public BlackAmbitiousSolenQueen()
+    {
+    }
+
+    public BlackAmbitiousSolenQueen(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool RedSolen => false;
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

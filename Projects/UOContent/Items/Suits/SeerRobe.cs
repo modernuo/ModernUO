@@ -1,28 +1,27 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class SeerRobe : BaseSuit
 {
-    public class SeerRobe : BaseSuit
+    [Constructible]
+    public SeerRobe() : base(AccessLevel.Seer, 0x1D3, 0x204F)
     {
-        [Constructible]
-        public SeerRobe() : base(AccessLevel.Seer, 0x1D3, 0x204F)
-        {
-        }
+    }
 
-        public SeerRobe(Serial serial) : base(serial)
-        {
-        }
+    public SeerRobe(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(0); // version
-        }
+        writer.Write(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

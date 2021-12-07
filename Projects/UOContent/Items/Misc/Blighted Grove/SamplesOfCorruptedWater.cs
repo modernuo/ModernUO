@@ -1,28 +1,27 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class SamplesOfCorruptedWater : Item
 {
-    public class SamplesOfCorruptedWater : Item
+    [Constructible]
+    public SamplesOfCorruptedWater() : base(0xEFE) => LootType = LootType.Blessed;
+
+    public SamplesOfCorruptedWater(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SamplesOfCorruptedWater() : base(0xEFE) => LootType = LootType.Blessed;
+    }
 
-        public SamplesOfCorruptedWater(Serial serial) : base(serial)
-        {
-        }
+    public override int LabelNumber => 1074999; // samples of corrupted water
 
-        public override int LabelNumber => 1074999; // samples of corrupted water
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

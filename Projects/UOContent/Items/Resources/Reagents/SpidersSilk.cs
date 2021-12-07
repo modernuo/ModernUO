@@ -1,14 +1,13 @@
-namespace Server.Items
-{
-    [Serializable(0, false)]
-    public partial class SpidersSilk : BaseReagent, ICommodity
-    {
-        [Constructible]
-        public SpidersSilk(int amount = 1) : base(0xF8D, amount)
-        {
-        }
+namespace Server.Items;
 
-        int ICommodity.DescriptionNumber => LabelNumber;
-        bool ICommodity.IsDeedable => true;
+[Serializable(0, false)]
+public partial class SpidersSilk : BaseReagent, ICommodity
+{
+    [Constructible]
+    public SpidersSilk(int amount = 1) : base(0xF8D, amount)
+    {
     }
+
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => true;
 }

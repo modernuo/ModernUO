@@ -1,51 +1,50 @@
 using System.Collections.Generic;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Monk : BaseVendor
 {
-    public class Monk : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public Monk() : base("the Monk")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        SetSkill(SkillName.EvalInt, 100.0);
+        SetSkill(SkillName.Tactics, 70.0, 90.0);
+        SetSkill(SkillName.Wrestling, 70.0, 90.0);
+        SetSkill(SkillName.MagicResist, 70.0, 90.0);
+        SetSkill(SkillName.Macing, 70.0, 90.0);
+    }
 
-        [Constructible]
-        public Monk() : base("the Monk")
-        {
-            SetSkill(SkillName.EvalInt, 100.0);
-            SetSkill(SkillName.Tactics, 70.0, 90.0);
-            SetSkill(SkillName.Wrestling, 70.0, 90.0);
-            SetSkill(SkillName.MagicResist, 70.0, 90.0);
-            SetSkill(SkillName.Macing, 70.0, 90.0);
-        }
+    public Monk(Serial serial) : base(serial)
+    {
+    }
 
-        public Monk(Serial serial) : base(serial)
-        {
-        }
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBMonk());
+    }
 
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBMonk());
-        }
+    public override void InitOutfit()
+    {
+        AddItem(new Sandals());
+        AddItem(new MonkRobe());
+    }
 
-        public override void InitOutfit()
-        {
-            AddItem(new Sandals());
-            AddItem(new MonkRobe());
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

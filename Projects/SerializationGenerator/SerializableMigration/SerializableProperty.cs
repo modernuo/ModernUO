@@ -15,26 +15,25 @@
 
 using System.Text.Json.Serialization;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public record SerializableProperty
 {
-    public record SerializableProperty
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; init; }
+    [JsonPropertyName("name")]
+    public string Name { get; init; }
 
-        [JsonPropertyName("type")]
-        public string Type { get; init; }
+    [JsonPropertyName("type")]
+    public string Type { get; init; }
 
-        [JsonPropertyName("usesSaveFlag")]
-        public bool? UsesSaveFlag { get; init; }
+    [JsonPropertyName("usesSaveFlag")]
+    public bool? UsesSaveFlag { get; init; }
 
-        [JsonPropertyName("rule")]
-        public string Rule { get; init; }
+    [JsonPropertyName("rule")]
+    public string Rule { get; init; }
 
-        [JsonPropertyName("ruleArguments")]
-        public string[]? RuleArguments { get; init; }
+    [JsonPropertyName("ruleArguments")]
+    public string[]? RuleArguments { get; init; }
 
-        [JsonIgnore]
-        public int Order { get; init; }
-    }
+    [JsonIgnore]
+    public int Order { get; init; }
 }

@@ -15,42 +15,41 @@
 
 using System.Collections.Generic;
 
-namespace Server
+namespace Server;
+
+public class LocationComparer : IComparer<IPoint3D>
 {
-    public class LocationComparer : IComparer<IPoint3D>
+    private static LocationComparer m_Instance;
+
+    public LocationComparer(IPoint3D relativeTo) => RelativeTo = relativeTo;
+
+    public IPoint3D RelativeTo { get; set; }
+
+    public int Compare(IPoint3D x, IPoint3D y) => GetDistance(x) - GetDistance(y);
+
+    public static LocationComparer GetInstance(IPoint3D relativeTo)
     {
-        private static LocationComparer m_Instance;
-
-        public LocationComparer(IPoint3D relativeTo) => RelativeTo = relativeTo;
-
-        public IPoint3D RelativeTo { get; set; }
-
-        public int Compare(IPoint3D x, IPoint3D y) => GetDistance(x) - GetDistance(y);
-
-        public static LocationComparer GetInstance(IPoint3D relativeTo)
+        if (m_Instance == null)
         {
-            if (m_Instance == null)
-            {
-                m_Instance = new LocationComparer(relativeTo);
-            }
-            else
-            {
-                m_Instance.RelativeTo = relativeTo;
-            }
-
-            return m_Instance;
+            m_Instance = new LocationComparer(relativeTo);
+        }
+        else
+        {
+            m_Instance.RelativeTo = relativeTo;
         }
 
-        private int GetDistance(IPoint3D p)
-        {
-            var x = RelativeTo.X - p.X;
-            var y = RelativeTo.Y - p.Y;
-            var z = RelativeTo.Z - p.Z;
+        return m_Instance;
+    }
 
-            x *= 11;
-            y *= 11;
+    private int GetDistance(IPoint3D p)
+    {
+        var x = RelativeTo.X - p.X;
+        var y = RelativeTo.Y - p.Y;
+        var z = RelativeTo.Z - p.Z;
 
-            return x * x + y * y + z * z;
-        }
+        x *= 11;
+        y *= 11;
+
+        return x * x + y * y + z * z;
     }
 }

@@ -1,74 +1,73 @@
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Haven
+namespace Server.Engines.Quests.Haven;
+
+public class DaemonBloodChest : MetalChest
 {
-    public class DaemonBloodChest : MetalChest
+    [Constructible]
+    public DaemonBloodChest() => Movable = false;
+
+    public DaemonBloodChest(Serial serial) : base(serial)
     {
-        [Constructible]
-        public DaemonBloodChest() => Movable = false;
+    }
 
-        public DaemonBloodChest(Serial serial) : base(serial)
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (from is PlayerMobile player && player.InRange(GetWorldLocation(), 2))
         {
-        }
+            var qs = player.Quest;
 
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (from is PlayerMobile player && player.InRange(GetWorldLocation(), 2))
+            if (qs is UzeraanTurmoilQuest)
             {
-                var qs = player.Quest;
+                QuestObjective obj = qs.FindObjective<GetDaemonBloodObjective>();
 
-                if (qs is UzeraanTurmoilQuest)
+                if (obj?.Completed == false || UzeraanTurmoilQuest.HasLostDaemonBlood(player))
                 {
-                    QuestObjective obj = qs.FindObjective<GetDaemonBloodObjective>();
+                    Item vial = new QuestDaemonBlood();
 
-                    if (obj?.Completed == false || UzeraanTurmoilQuest.HasLostDaemonBlood(player))
+                    if (player.PlaceInBackpack(vial))
                     {
-                        Item vial = new QuestDaemonBlood();
+                        player.SendLocalizedMessage(
+                            1049331,
+                            "",
+                            0x22
+                        ); // You take a vial of blood from the chest and put it in your pack.
 
-                        if (player.PlaceInBackpack(vial))
+                        if (obj?.Completed == false)
                         {
-                            player.SendLocalizedMessage(
-                                1049331,
-                                "",
-                                0x22
-                            ); // You take a vial of blood from the chest and put it in your pack.
-
-                            if (obj?.Completed == false)
-                            {
-                                obj.Complete();
-                            }
+                            obj.Complete();
                         }
-                        else
-                        {
-                            player.SendLocalizedMessage(
-                                1049338,
-                                "",
-                                0x22
-                            ); // You find a vial of blood, but can't pick it up because your pack is too full.  Come back when you have more room in your pack.
-                            vial.Delete();
-                        }
-
-                        return;
                     }
+                    else
+                    {
+                        player.SendLocalizedMessage(
+                            1049338,
+                            "",
+                            0x22
+                        ); // You find a vial of blood, but can't pick it up because your pack is too full.  Come back when you have more room in your pack.
+                        vial.Delete();
+                    }
+
+                    return;
                 }
             }
-
-            base.OnDoubleClick(from);
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        base.OnDoubleClick(from);
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.Write(0); // version
+    }
 
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

@@ -1,70 +1,69 @@
 using Server.Targeting;
 
-namespace Server
-{
-    public delegate void BoundingBoxCallback(Map map, Point3D start, Point3D end);
+namespace Server;
 
-    public static class BoundingBoxPicker
+public delegate void BoundingBoxCallback(Map map, Point3D start, Point3D end);
+
+public static class BoundingBoxPicker
+{
+    public static void Begin(Mobile from, BoundingBoxCallback callback)
     {
-        public static void Begin(Mobile from, BoundingBoxCallback callback)
+        from.SendMessage("Target the first location of the bounding box.");
+        from.Target = new PickTarget(callback);
+    }
+
+    private class PickTarget : Target
+    {
+        private readonly BoundingBoxCallback m_Callback;
+        private readonly bool m_First;
+        private readonly Map m_Map;
+        private readonly Point3D m_Store;
+
+        public PickTarget(BoundingBoxCallback callback) : this(Point3D.Zero, true, null, callback)
         {
-            from.SendMessage("Target the first location of the bounding box.");
-            from.Target = new PickTarget(callback);
         }
 
-        private class PickTarget : Target
+        public PickTarget(Point3D store, bool first, Map map, BoundingBoxCallback callback) : base(
+            -1,
+            true,
+            TargetFlags.None
+        )
         {
-            private readonly BoundingBoxCallback m_Callback;
-            private readonly bool m_First;
-            private readonly Map m_Map;
-            private readonly Point3D m_Store;
+            m_Store = store;
+            m_First = first;
+            m_Map = map;
+            m_Callback = callback;
+        }
 
-            public PickTarget(BoundingBoxCallback callback) : this(Point3D.Zero, true, null, callback)
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (!(targeted is IPoint3D p))
             {
+                return;
             }
 
-            public PickTarget(Point3D store, bool first, Map map, BoundingBoxCallback callback) : base(
-                -1,
-                true,
-                TargetFlags.None
-            )
+            if (p is Item item)
             {
-                m_Store = store;
-                m_First = first;
-                m_Map = map;
-                m_Callback = callback;
+                p = item.GetWorldTop();
             }
 
-            protected override void OnTarget(Mobile from, object targeted)
+            if (m_First)
             {
-                if (!(targeted is IPoint3D p))
-                {
-                    return;
-                }
+                from.SendMessage("Target another location to complete the bounding box.");
+                from.Target = new PickTarget(new Point3D(p), false, from.Map, m_Callback);
+            }
+            else if (from.Map != m_Map)
+            {
+                from.SendMessage("Both locations must reside on the same map.");
+            }
+            else if (m_Map != null && m_Map != Map.Internal && m_Callback != null)
+            {
+                var start = m_Store;
+                var end = new Point3D(p);
 
-                if (p is Item item)
-                {
-                    p = item.GetWorldTop();
-                }
+                Utility.FixPoints(ref start, ref end);
 
-                if (m_First)
-                {
-                    from.SendMessage("Target another location to complete the bounding box.");
-                    from.Target = new PickTarget(new Point3D(p), false, from.Map, m_Callback);
-                }
-                else if (from.Map != m_Map)
-                {
-                    from.SendMessage("Both locations must reside on the same map.");
-                }
-                else if (m_Map != null && m_Map != Map.Internal && m_Callback != null)
-                {
-                    var start = m_Store;
-                    var end = new Point3D(p);
-
-                    Utility.FixPoints(ref start, ref end);
-
-                    m_Callback(m_Map, start, end);
-                }
+                m_Callback(m_Map, start, end);
             }
         }
     }

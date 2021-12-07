@@ -19,93 +19,93 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public static class SerializableMigrationRulesEngine
 {
-    public static class SerializableMigrationRulesEngine
+    public static readonly Dictionary<string, ISerializableMigrationRule> Rules = new();
+
+    static SerializableMigrationRulesEngine()
     {
-        public static readonly Dictionary<string, ISerializableMigrationRule> Rules = new();
-
-        static SerializableMigrationRulesEngine()
+        var rules = new ISerializableMigrationRule[]
         {
-            var rules = new ISerializableMigrationRule[]
-            {
-                new EnumMigrationRule(),
-                new ListMigrationRule(),
-                new ArrayMigrationRule(),
-                new HashSetMigrationRule(),
-                new DictionaryMigrationRule(),
-                new KeyValuePairMigrationRule(),
-                new PrimitiveTypeMigrationRule(),
-                new PrimitiveUOTypeMigrationRule(),
-                new SerializableInterfaceMigrationRule(),
-                new SerializationMethodSignatureMigrationRule(),
-                new RawSerializableMigrationRule(),
-                new TimerMigrationRule()
-            };
+            new EnumMigrationRule(),
+            new ListMigrationRule(),
+            new ArrayMigrationRule(),
+            new HashSetMigrationRule(),
+            new DictionaryMigrationRule(),
+            new KeyValuePairMigrationRule(),
+            new PrimitiveTypeMigrationRule(),
+            new PrimitiveUOTypeMigrationRule(),
+            new SerializableInterfaceMigrationRule(),
+            new SerializationMethodSignatureMigrationRule(),
+            new RawSerializableMigrationRule(),
+            new TimerMigrationRule()
+        };
 
-            foreach (var rule in rules)
-            {
-                Rules.Add(rule.RuleName, rule);
-            }
+        foreach (var rule in rules)
+        {
+            Rules.Add(rule.RuleName, rule);
+        }
+    }
+
+    public static SerializableProperty? GenerateSerializableProperty(
+        Compilation compilation,
+        ISymbol fieldOrPropertySymbol,
+        int order,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        SerializableFieldSaveFlagMethods? serializableFieldSaveFlagMethods
+    )
+    {
+        string propertyName;
+        ITypeSymbol propertyType;
+
+        if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
+        {
+            propertyName = fieldSymbol.Name;
+            propertyType = fieldSymbol.Type;
+        }
+        else if (fieldOrPropertySymbol is IPropertySymbol propertySymbol)
+        {
+            propertyName = fieldOrPropertySymbol.Name;
+            propertyType = propertySymbol.Type;
+        }
+        else
+        {
+            return null;
         }
 
-        public static SerializableProperty? GenerateSerializableProperty(
-            Compilation compilation,
-            ISymbol fieldOrPropertySymbol,
-            int order,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            SerializableFieldSaveFlagMethods? serializableFieldSaveFlagMethods
-        )
+        return GenerateSerializableProperty(
+            compilation,
+            propertyName,
+            propertyType,
+            order,
+            attributes,
+            serializableTypes,
+            embeddedSerializableTypes,
+            parentSymbol,
+            serializableFieldSaveFlagMethods
+        );
+    }
+
+    public static SerializableProperty GenerateSerializableProperty(
+        Compilation compilation,
+        string propertyName,
+        ISymbol propertyType,
+        int order,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        SerializableFieldSaveFlagMethods? serializableFieldSaveFlagMethods
+    )
+    {
+        foreach (var rule in Rules.Values)
         {
-            string propertyName;
-            ITypeSymbol propertyType;
-
-            if (fieldOrPropertySymbol is IFieldSymbol fieldSymbol)
-            {
-                propertyName = fieldSymbol.Name;
-                propertyType = fieldSymbol.Type;
-            }
-            else if (fieldOrPropertySymbol is IPropertySymbol propertySymbol)
-            {
-                propertyName = fieldOrPropertySymbol.Name;
-                propertyType = propertySymbol.Type;
-            }
-            else
-            {
-                return null;
-            }
-
-            return GenerateSerializableProperty(
-                compilation,
-                propertyName,
-                propertyType,
-                order,
-                attributes,
-                serializableTypes,
-                embeddedSerializableTypes,
-                parentSymbol,
-                serializableFieldSaveFlagMethods
-            );
-        }
-
-        public static SerializableProperty GenerateSerializableProperty(
-            Compilation compilation,
-            string propertyName,
-            ISymbol propertyType,
-            int order,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            SerializableFieldSaveFlagMethods? serializableFieldSaveFlagMethods
-        )
-        {
-            foreach (var rule in Rules.Values)
-            {
-                if (rule.GenerateRuleState(
+            if (rule.GenerateRuleState(
                     compilation,
                     propertyType,
                     attributes,
@@ -114,20 +114,19 @@ namespace SerializableMigration
                     parentSymbol,
                     out var ruleArguments
                 ))
+            {
+                return new SerializableProperty
                 {
-                    return new SerializableProperty
-                    {
-                        Name = propertyName,
-                        Type = propertyType.ToDisplayString(),
-                        Order = order,
-                        UsesSaveFlag = serializableFieldSaveFlagMethods?.DetermineFieldShouldSerialize != null ? true : null,
-                        Rule = rule.RuleName,
-                        RuleArguments = ruleArguments.Length > 0 ? ruleArguments : null
-                    };
-                }
+                    Name = propertyName,
+                    Type = propertyType.ToDisplayString(),
+                    Order = order,
+                    UsesSaveFlag = serializableFieldSaveFlagMethods?.DetermineFieldShouldSerialize != null ? true : null,
+                    Rule = rule.RuleName,
+                    RuleArguments = ruleArguments.Length > 0 ? ruleArguments : null
+                };
             }
-
-            throw new Exception($"No rule found for property {propertyName} of type {propertyType} ({Rules.Count})");
         }
+
+        throw new Exception($"No rule found for property {propertyName} of type {propertyType} ({Rules.Count})");
     }
 }

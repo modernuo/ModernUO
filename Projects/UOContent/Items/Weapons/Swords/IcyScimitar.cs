@@ -1,11 +1,10 @@
-namespace Server.Items
-{
-    [Serializable(0)]
-    public partial class IcyScimitar : RadiantScimitar
-    {
-        [Constructible]
-        public IcyScimitar() => WeaponAttributes.HitHarm = 15;
+namespace Server.Items;
 
-        public override int LabelNumber => 1073543; // icy scimitar
-    }
+[Serializable(0)]
+public partial class IcyScimitar : RadiantScimitar
+{
+    [Constructible]
+    public IcyScimitar() => WeaponAttributes.HitHarm = 15;
+
+    public override int LabelNumber => 1073543; // icy scimitar
 }

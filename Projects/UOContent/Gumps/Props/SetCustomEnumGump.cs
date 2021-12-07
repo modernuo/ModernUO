@@ -3,72 +3,71 @@ using System.Reflection;
 using Server.Commands;
 using Server.Network;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class SetCustomEnumGump : SetListOptionGump
 {
-    public class SetCustomEnumGump : SetListOptionGump
+    private readonly string[] m_Names;
+
+    public SetCustomEnumGump(
+        PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump, string[] names
+    ) : base(prop, mobile, o, propertiesGump, names, null) =>
+        m_Names = names;
+
+    public override void OnResponse(NetState sender, RelayInfo relayInfo)
     {
-        private readonly string[] m_Names;
+        var index = relayInfo.ButtonID - 1;
 
-        public SetCustomEnumGump(
-            PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump, string[] names
-        ) : base(prop, mobile, o, propertiesGump, names, null) =>
-            m_Names = names;
-
-        public override void OnResponse(NetState sender, RelayInfo relayInfo)
+        if (index >= 0 && index < m_Names.Length)
         {
-            var index = relayInfo.ButtonID - 1;
-
-            if (index >= 0 && index < m_Names.Length)
+            try
             {
-                try
+                var info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
+
+                string result;
+
+                if (info != null)
                 {
-                    var info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
-
-                    string result;
-
-                    if (info != null)
-                    {
-                        result = Properties.SetDirect(
-                            m_Mobile,
-                            m_Object,
-                            m_Object,
-                            m_Property,
-                            m_Property.Name,
-                            info.Invoke(null, new object[] { m_Names[index] }),
-                            true
-                        );
-                    }
-                    else if (m_Property.PropertyType == typeof(Enum) || m_Property.PropertyType.IsSubclassOf(typeof(Enum)))
-                    {
-                        result = Properties.SetDirect(
-                            m_Mobile,
-                            m_Object,
-                            m_Object,
-                            m_Property,
-                            m_Property.Name,
-                            Enum.Parse(m_Property.PropertyType, m_Names[index], false),
-                            true
-                        );
-                    }
-                    else
-                    {
-                        result = "";
-                    }
-
-                    m_Mobile.SendMessage(result);
-
-                    if (result == "Property has been set.")
-                    {
-                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
-                    }
+                    result = Properties.SetDirect(
+                        m_Mobile,
+                        m_Object,
+                        m_Object,
+                        m_Property,
+                        m_Property.Name,
+                        info.Invoke(null, new object[] { m_Names[index] }),
+                        true
+                    );
                 }
-                catch
+                else if (m_Property.PropertyType == typeof(Enum) || m_Property.PropertyType.IsSubclassOf(typeof(Enum)))
                 {
-                    m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+                    result = Properties.SetDirect(
+                        m_Mobile,
+                        m_Object,
+                        m_Object,
+                        m_Property,
+                        m_Property.Name,
+                        Enum.Parse(m_Property.PropertyType, m_Names[index], false),
+                        true
+                    );
+                }
+                else
+                {
+                    result = "";
+                }
+
+                m_Mobile.SendMessage(result);
+
+                if (result == "Property has been set.")
+                {
+                    m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                 }
             }
-
-            m_PropertiesGump.SendPropertiesGump();
+            catch
+            {
+                m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+            }
         }
+
+        m_PropertiesGump.SendPropertiesGump();
     }
 }

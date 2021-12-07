@@ -1,43 +1,42 @@
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class EnslavedSatyr : Satyr
 {
-    public class EnslavedSatyr : Satyr
+    [Constructible]
+    public EnslavedSatyr()
     {
-        [Constructible]
-        public EnslavedSatyr()
-        {
-        }
+    }
 
-        /*
-        // TODO: uncomment once added
-        public override void OnDeath( Container c )
-        {
-          base.OnDeath( c );
-    
-          if (Utility.RandomDouble() < 0.1)
-            c.DropItem( new ParrotItem() );
-        }
-        */
+    /*
+    // TODO: uncomment once added
+    public override void OnDeath( Container c )
+    {
+      base.OnDeath( c );
 
-        public EnslavedSatyr(Serial serial)
-            : base(serial)
-        {
-        }
+      if (Utility.RandomDouble() < 0.1)
+        c.DropItem( new ParrotItem() );
+    }
+    */
 
-        public override string CorpseName => "an enslaved satyr corpse";
-        public override string DefaultName => "an enslaved satyr";
+    public EnslavedSatyr(Serial serial)
+        : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override string CorpseName => "an enslaved satyr corpse";
+    public override string DefaultName => "an enslaved satyr";
 
-            writer.Write(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.Write(0); // version
+    }
 
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

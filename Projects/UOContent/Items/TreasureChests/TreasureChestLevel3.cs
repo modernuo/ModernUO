@@ -1,166 +1,165 @@
 using System;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class TreasureChestLevel3 : LockableContainer
 {
-    public class TreasureChestLevel3 : LockableContainer
+    private const int m_Level = 3;
+
+    [Constructible]
+    public TreasureChestLevel3()
+        : base(0xE41)
     {
-        private const int m_Level = 3;
+        SetChestAppearance();
+        Movable = false;
 
-        [Constructible]
-        public TreasureChestLevel3()
-            : base(0xE41)
+        TrapType = TrapType.PoisonTrap;
+        TrapPower = m_Level * Utility.Random(1, 25);
+        Locked = true;
+
+        RequiredSkill = 84;
+        LockLevel = RequiredSkill - Utility.Random(1, 10);
+        MaxLockLevel = RequiredSkill + Utility.Random(1, 10);
+
+        // According to OSI, loot in level 3 chest is:
+        //  Gold 250 - 350
+        //  Arrows 10
+        //  Reagents
+        //  Scrolls
+        //  Potions
+        //  Gems
+        //  Magic Wand
+        //  Magic weapon
+        //  Magic armour
+        //  Magic clothing  (not implemented)
+        //  Magic jewelry  (not implemented)
+
+        // Gold
+        DropItem(new Gold(Utility.Random(180, 240)));
+
+        // Drop bolts
+        // DropItem( new Arrow( 10 ) );
+
+        // Reagents
+        for (var i = Utility.Random(1, m_Level); i > 1; i--)
         {
-            SetChestAppearance();
-            Movable = false;
-
-            TrapType = TrapType.PoisonTrap;
-            TrapPower = m_Level * Utility.Random(1, 25);
-            Locked = true;
-
-            RequiredSkill = 84;
-            LockLevel = RequiredSkill - Utility.Random(1, 10);
-            MaxLockLevel = RequiredSkill + Utility.Random(1, 10);
-
-            // According to OSI, loot in level 3 chest is:
-            //  Gold 250 - 350
-            //  Arrows 10
-            //  Reagents
-            //  Scrolls
-            //  Potions
-            //  Gems
-            //  Magic Wand
-            //  Magic weapon
-            //  Magic armour
-            //  Magic clothing  (not implemented)
-            //  Magic jewelry  (not implemented)
-
-            // Gold
-            DropItem(new Gold(Utility.Random(180, 240)));
-
-            // Drop bolts
-            // DropItem( new Arrow( 10 ) );
-
-            // Reagents
-            for (var i = Utility.Random(1, m_Level); i > 1; i--)
-            {
-                var ReagentLoot = Loot.RandomReagent();
-                ReagentLoot.Amount = Utility.Random(1, 9);
-                DropItem(ReagentLoot);
-            }
-
-            // Scrolls
-            for (var i = Utility.Random(1, m_Level); i > 1; i--)
-            {
-                Item ScrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
-                ScrollLoot.Amount = Utility.Random(1, 12);
-                DropItem(ScrollLoot);
-            }
-
-            // Potions
-            for (var i = Utility.Random(1, m_Level); i > 1; i--)
-            {
-                var PotionLoot = Loot.RandomPotion();
-                DropItem(PotionLoot);
-            }
-
-            // Gems
-            for (var i = Utility.Random(1, m_Level); i > 1; i--)
-            {
-                var GemLoot = Loot.RandomGem();
-                GemLoot.Amount = Utility.Random(1, 9);
-                DropItem(GemLoot);
-            }
-
-            // Magic Wand
-            for (var i = Utility.Random(1, m_Level); i > 1; i--)
-            {
-                DropItem(Loot.RandomWand());
-            }
-
-            // Equipment
-            for (var i = Utility.Random(1, m_Level); i > 1; i--)
-            {
-                var item = Loot.RandomArmorOrShieldOrWeapon();
-
-                if (item is BaseWeapon weapon)
-                {
-                    weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(m_Level);
-                    weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(m_Level);
-                    weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(m_Level);
-                    weapon.Quality = WeaponQuality.Regular;
-                }
-                else if (item is BaseArmor armor)
-                {
-                    armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(m_Level);
-                    armor.Durability = (ArmorDurabilityLevel)Utility.Random(m_Level);
-                    armor.Quality = ArmorQuality.Regular;
-                }
-
-                DropItem(item);
-            }
-
-            // Clothing
-            for (var i = Utility.Random(1, 2); i > 1; i--)
-            {
-                DropItem(Loot.RandomClothing());
-            }
-
-            // Jewelry
-            for (var i = Utility.Random(1, 2); i > 1; i--)
-            {
-                DropItem(Loot.RandomJewelry());
-            }
+            var ReagentLoot = Loot.RandomReagent();
+            ReagentLoot.Amount = Utility.Random(1, 9);
+            DropItem(ReagentLoot);
         }
 
-        public TreasureChestLevel3(Serial serial)
-            : base(serial)
+        // Scrolls
+        for (var i = Utility.Random(1, m_Level); i > 1; i--)
         {
+            Item ScrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
+            ScrollLoot.Amount = Utility.Random(1, 12);
+            DropItem(ScrollLoot);
         }
 
-        public override bool Decays => true;
-
-        public override bool IsDecoContainer => false;
-
-        public override TimeSpan DecayTime => TimeSpan.FromMinutes(Utility.Random(15, 60));
-
-        public override int DefaultGumpID => 0x42;
-
-        public override int DefaultDropSound => 0x42;
-
-        public override Rectangle2D Bounds => new(18, 105, 144, 73);
-
-        private void SetChestAppearance()
+        // Potions
+        for (var i = Utility.Random(1, m_Level); i > 1; i--)
         {
-            var UseFirstItemId = Utility.RandomBool();
-            switch (Utility.RandomList(0, 1, 2))
+            var PotionLoot = Loot.RandomPotion();
+            DropItem(PotionLoot);
+        }
+
+        // Gems
+        for (var i = Utility.Random(1, m_Level); i > 1; i--)
+        {
+            var GemLoot = Loot.RandomGem();
+            GemLoot.Amount = Utility.Random(1, 9);
+            DropItem(GemLoot);
+        }
+
+        // Magic Wand
+        for (var i = Utility.Random(1, m_Level); i > 1; i--)
+        {
+            DropItem(Loot.RandomWand());
+        }
+
+        // Equipment
+        for (var i = Utility.Random(1, m_Level); i > 1; i--)
+        {
+            var item = Loot.RandomArmorOrShieldOrWeapon();
+
+            if (item is BaseWeapon weapon)
             {
-                case 0: // Wooden Chest
-                    ItemID = UseFirstItemId ? 0xe42 : 0xe43;
-                    GumpID = 0x49;
-                    break;
-
-                case 1: // Metal Chest
-                    ItemID = UseFirstItemId ? 0x9ab : 0xe7c;
-                    GumpID = 0x4A;
-                    break;
-
-                case 2: // Metal Golden Chest
-                    ItemID = UseFirstItemId ? 0xe40 : 0xe41;
-                    GumpID = 0x42;
-                    break;
+                weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(m_Level);
+                weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(m_Level);
+                weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(m_Level);
+                weapon.Quality = WeaponQuality.Regular;
             }
+            else if (item is BaseArmor armor)
+            {
+                armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(m_Level);
+                armor.Durability = (ArmorDurabilityLevel)Utility.Random(m_Level);
+                armor.Quality = ArmorQuality.Regular;
+            }
+
+            DropItem(item);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        // Clothing
+        for (var i = Utility.Random(1, 2); i > 1; i--)
         {
-            base.Serialize(writer);
-            writer.Write(1); // version
+            DropItem(Loot.RandomClothing());
         }
 
-        public override void Deserialize(IGenericReader reader)
+        // Jewelry
+        for (var i = Utility.Random(1, 2); i > 1; i--)
         {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
+            DropItem(Loot.RandomJewelry());
         }
+    }
+
+    public TreasureChestLevel3(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override bool Decays => true;
+
+    public override bool IsDecoContainer => false;
+
+    public override TimeSpan DecayTime => TimeSpan.FromMinutes(Utility.Random(15, 60));
+
+    public override int DefaultGumpID => 0x42;
+
+    public override int DefaultDropSound => 0x42;
+
+    public override Rectangle2D Bounds => new(18, 105, 144, 73);
+
+    private void SetChestAppearance()
+    {
+        var UseFirstItemId = Utility.RandomBool();
+        switch (Utility.RandomList(0, 1, 2))
+        {
+            case 0: // Wooden Chest
+                ItemID = UseFirstItemId ? 0xe42 : 0xe43;
+                GumpID = 0x49;
+                break;
+
+            case 1: // Metal Chest
+                ItemID = UseFirstItemId ? 0x9ab : 0xe7c;
+                GumpID = 0x4A;
+                break;
+
+            case 2: // Metal Golden Chest
+                ItemID = UseFirstItemId ? 0xe40 : 0xe41;
+                GumpID = 0x42;
+                break;
+        }
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(1); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
     }
 }

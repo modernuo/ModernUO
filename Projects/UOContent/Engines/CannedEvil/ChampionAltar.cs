@@ -15,54 +15,53 @@
 
 using Server.Items;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+public class ChampionAltar : PentagramAddon
 {
-    public class ChampionAltar : PentagramAddon
+    public ChampionSpawn Spawn { get; private set; }
+
+    public ChampionAltar(ChampionSpawn spawn) => Spawn = spawn;
+
+    public override void OnAfterDelete()
     {
-        public ChampionSpawn Spawn { get; private set; }
+        base.OnAfterDelete();
 
-        public ChampionAltar(ChampionSpawn spawn) => Spawn = spawn;
+        Spawn?.Delete();
+    }
 
-        public override void OnAfterDelete()
+    public ChampionAltar(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        writer.Write(Spawn);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        switch (version)
         {
-            base.OnAfterDelete();
+            case 0:
+                {
+                    Spawn = reader.ReadEntity<ChampionSpawn>();
 
-            Spawn?.Delete();
-        }
-
-        public ChampionAltar(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Spawn);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
+                    if (Spawn == null)
                     {
-                        Spawn = reader.ReadEntity<ChampionSpawn>();
-
-                        if (Spawn == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
+                        Delete();
                     }
-            }
+
+                    break;
+                }
         }
     }
 }

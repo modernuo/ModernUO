@@ -1,15 +1,14 @@
-namespace Server.Items
-{
-    [Serializable(0)]
-    public partial class MysticalShortbow : MagicalShortbow
-    {
-        [Constructible]
-        public MysticalShortbow()
-        {
-            Attributes.SpellChanneling = 1;
-            Attributes.CastSpeed = -1;
-        }
+namespace Server.Items;
 
-        public override int LabelNumber => 1073511; // mystical shortbow
+[Serializable(0)]
+public partial class MysticalShortbow : MagicalShortbow
+{
+    [Constructible]
+    public MysticalShortbow()
+    {
+        Attributes.SpellChanneling = 1;
+        Attributes.CastSpeed = -1;
     }
+
+    public override int LabelNumber => 1073511; // mystical shortbow
 }

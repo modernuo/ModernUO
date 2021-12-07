@@ -1,38 +1,37 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class MinotaurArtifact : Item
 {
-    public class MinotaurArtifact : Item
+    [Constructible]
+    public MinotaurArtifact() : base(Utility.RandomList(0xB46, 0xB48, 0x9ED))
     {
-        [Constructible]
-        public MinotaurArtifact() : base(Utility.RandomList(0xB46, 0xB48, 0x9ED))
+        if (ItemID == 0x9ED)
         {
-            if (ItemID == 0x9ED)
-            {
-                Weight = 30;
-            }
-
-            LootType = LootType.Blessed;
-            Hue = 0x100;
+            Weight = 30;
         }
 
-        public MinotaurArtifact(Serial serial) : base(serial)
-        {
-        }
+        LootType = LootType.Blessed;
+        Hue = 0x100;
+    }
 
-        public override int LabelNumber => 1074826; // Minotaur Artifact
-        public override double DefaultWeight => 5.0;
+    public MinotaurArtifact(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override int LabelNumber => 1074826; // Minotaur Artifact
+    public override double DefaultWeight => 5.0;
 
-            writer.Write(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.Write(0); // version
+    }
 
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

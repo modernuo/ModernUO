@@ -3,641 +3,640 @@ using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class BaseTalismanSummon : BaseCreature
 {
-    public class BaseTalismanSummon : BaseCreature
+    // public override bool IsInvulnerable => true; // TODO: Wailing banshees are NOT invulnerable, are any of the others?
+
+    public BaseTalismanSummon() : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
     {
-        // public override bool IsInvulnerable => true; // TODO: Wailing banshees are NOT invulnerable, are any of the others?
+        // TODO: Stats/skills
+    }
 
-        public BaseTalismanSummon() : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
+    public BaseTalismanSummon(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Commandable => false;
+    public override bool InitialInnocent => true;
+
+    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+        if (from.Alive && ControlMaster == from)
         {
-            // TODO: Stats/skills
-        }
-
-        public BaseTalismanSummon(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Commandable => false;
-        public override bool InitialInnocent => true;
-
-        public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
-        {
-            if (from.Alive && ControlMaster == from)
-            {
-                list.Add(new TalismanReleaseEntry(this));
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-
-        private class TalismanReleaseEntry : ContextMenuEntry
-        {
-            private readonly Mobile m_Mobile;
-
-            public TalismanReleaseEntry(Mobile m) : base(6118, 3) => m_Mobile = m;
-
-            public override void OnClick()
-            {
-                Effects.SendLocationParticles(
-                    EffectItem.Create(m_Mobile.Location, m_Mobile.Map, EffectItem.DefaultDuration),
-                    0x3728,
-                    8,
-                    20,
-                    5042
-                );
-
-                Effects.PlaySound(m_Mobile,0x201);
-
-                m_Mobile.Delete();
-            }
+            list.Add(new TalismanReleaseEntry(this));
         }
     }
 
-    public class SummonedAntLion : BaseTalismanSummon
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SummonedAntLion()
-        {
-            Body = 787;
-            BaseSoundID = 1006;
-        }
+        base.Serialize(writer);
 
-        public SummonedAntLion(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "an ant lion";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    public class SummonedArcticOgreLord : BaseTalismanSummon
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SummonedArcticOgreLord()
-        {
-            Body = 135;
-            BaseSoundID = 427;
-        }
+        base.Deserialize(reader);
 
-        public SummonedArcticOgreLord(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "an arctic ogre lord";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 
-    public class SummonedBakeKitsune : BaseTalismanSummon
+    private class TalismanReleaseEntry : ContextMenuEntry
     {
-        [Constructible]
-        public SummonedBakeKitsune()
+        private readonly Mobile m_Mobile;
+
+        public TalismanReleaseEntry(Mobile m) : base(6118, 3) => m_Mobile = m;
+
+        public override void OnClick()
         {
-            Body = 246;
-            BaseSoundID = 0x4DD;
-        }
+            Effects.SendLocationParticles(
+                EffectItem.Create(m_Mobile.Location, m_Mobile.Map, EffectItem.DefaultDuration),
+                0x3728,
+                8,
+                20,
+                5042
+            );
 
-        public SummonedBakeKitsune(Serial serial) : base(serial)
-        {
-        }
+            Effects.PlaySound(m_Mobile,0x201);
 
-        public override string DefaultName => "a bake kitsune";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            m_Mobile.Delete();
         }
     }
+}
 
-    public class SummonedBogling : BaseTalismanSummon
+public class SummonedAntLion : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedAntLion()
     {
-        [Constructible]
-        public SummonedBogling()
-        {
-            Body = 779;
-            BaseSoundID = 422;
-        }
-
-        public SummonedBogling(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a bogling";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        Body = 787;
+        BaseSoundID = 1006;
     }
 
-    public class SummonedBullFrog : BaseTalismanSummon
+    public SummonedAntLion(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SummonedBullFrog()
-        {
-            Body = 81;
-            Hue = Utility.RandomList(0x5AC, 0x5A3, 0x59A, 0x591, 0x588, 0x57F);
-            BaseSoundID = 0x266;
-        }
-
-        public SummonedBullFrog(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a bull frog";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class SummonedChicken : BaseTalismanSummon
+    public override string DefaultName => "an ant lion";
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SummonedChicken()
-        {
-            Body = 0xD0;
-            BaseSoundID = 0x6E;
-        }
+        base.Serialize(writer);
 
-        public SummonedChicken(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a chicken";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    public class SummonedCow : BaseTalismanSummon
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SummonedCow()
-        {
-            Body = Utility.RandomList(0xD8, 0xE7);
-            BaseSoundID = 0x78;
-        }
+        base.Deserialize(reader);
 
-        public SummonedCow(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-        public override string DefaultName => "a cow";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+public class SummonedArcticOgreLord : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedArcticOgreLord()
+    {
+        Body = 135;
+        BaseSoundID = 427;
     }
 
-    public class SummonedDoppleganger : BaseTalismanSummon
+    public SummonedArcticOgreLord(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SummonedDoppleganger()
-        {
-            Body = 0x309;
-            BaseSoundID = 0x451;
-        }
-
-        public SummonedDoppleganger(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a doppleganger";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class SummonedFrostSpider : BaseTalismanSummon
+    public override string DefaultName => "an arctic ogre lord";
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SummonedFrostSpider()
-        {
-            Body = 20;
-            BaseSoundID = 0x388;
-        }
+        base.Serialize(writer);
 
-        public SummonedFrostSpider(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a frost spider";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    public class SummonedGreatHart : BaseTalismanSummon
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SummonedGreatHart()
-        {
-            Body = 0xEA;
-            BaseSoundID = 0x82;
-        }
+        base.Deserialize(reader);
 
-        public SummonedGreatHart(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-        public override string DefaultName => "a great hart";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+public class SummonedBakeKitsune : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedBakeKitsune()
+    {
+        Body = 246;
+        BaseSoundID = 0x4DD;
     }
 
-    public class SummonedLavaSerpent : BaseTalismanSummon
+    public SummonedBakeKitsune(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SummonedLavaSerpent()
-        {
-            Body = 90;
-            BaseSoundID = 219;
-        }
+    }
 
-        public SummonedLavaSerpent(Serial serial) : base(serial)
-        {
-        }
+    public override string DefaultName => "a bake kitsune";
 
-        public override string DefaultName => "a lava serpent";
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void OnThink()
-        {
-            /*
-            if (m_NextWave < Core.Now)
-              AreaHeatDamage();
-            */
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.WriteEncodedInt(0); // version
-        }
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+public class SummonedBogling : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedBogling()
+    {
+        Body = 779;
+        BaseSoundID = 422;
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public SummonedBogling(Serial serial) : base(serial)
+    {
+    }
 
+    public override string DefaultName => "a bogling";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedBullFrog : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedBullFrog()
+    {
+        Body = 81;
+        Hue = Utility.RandomList(0x5AC, 0x5A3, 0x59A, 0x591, 0x588, 0x57F);
+        BaseSoundID = 0x266;
+    }
+
+    public SummonedBullFrog(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a bull frog";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedChicken : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedChicken()
+    {
+        Body = 0xD0;
+        BaseSoundID = 0x6E;
+    }
+
+    public SummonedChicken(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a chicken";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedCow : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedCow()
+    {
+        Body = Utility.RandomList(0xD8, 0xE7);
+        BaseSoundID = 0x78;
+    }
+
+    public SummonedCow(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a cow";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedDoppleganger : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedDoppleganger()
+    {
+        Body = 0x309;
+        BaseSoundID = 0x451;
+    }
+
+    public SummonedDoppleganger(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a doppleganger";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedFrostSpider : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedFrostSpider()
+    {
+        Body = 20;
+        BaseSoundID = 0x388;
+    }
+
+    public SummonedFrostSpider(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a frost spider";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedGreatHart : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedGreatHart()
+    {
+        Body = 0xEA;
+        BaseSoundID = 0x82;
+    }
+
+    public SummonedGreatHart(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a great hart";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedLavaSerpent : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedLavaSerpent()
+    {
+        Body = 90;
+        BaseSoundID = 219;
+    }
+
+    public SummonedLavaSerpent(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a lava serpent";
+
+    public override void OnThink()
+    {
         /*
-        // An area attack that only damages staff, wtf?
-
-        private DateTime m_NextWave;
-
-        public void AreaHeatDamage()
-        {
-          Mobile mob = ControlMaster;
-
-          if (mob != null)
-          {
-            if (mob.InRange( Location, 2 ))
-            {
-              if (mob.AccessLevel != AccessLevel.Player)
-              {
-                AOS.Damage( mob, Utility.Random( 2, 3 ), 0, 100, 0, 0, 0 );
-                mob.SendLocalizedMessage( 1008112 ); // The intense heat is damaging you!
-              }
-            }
-
-            GuardedRegion r = Region as GuardedRegion;
-
-            if (r != null && mob.Alive)
-            {
-              foreach ( Mobile m in GetMobilesInRange( 2 ) )
-              {
-                if (!mob.CanBeHarmful( m ))
-                  mob.CriminalAction( false );
-              }
-            }
-          }
-
-          m_NextWave = Core.Now + TimeSpan.FromSeconds( 3 );
-        }
+        if (m_NextWave < Core.Now)
+          AreaHeatDamage();
         */
     }
 
-    public class SummonedOrcBrute : BaseTalismanSummon
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SummonedOrcBrute()
-        {
-            Body = 189;
-            BaseSoundID = 0x45A;
-        }
+        base.Serialize(writer);
 
-        public SummonedOrcBrute(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "an orc brute";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    public class SummonedPanther : BaseTalismanSummon
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SummonedPanther()
-        {
-            Body = 0xD6;
-            Hue = 0x901;
-            BaseSoundID = 0x462;
-        }
+        base.Deserialize(reader);
 
-        public SummonedPanther(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a panther";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 
-    public class SummonedSheep : BaseTalismanSummon
+    /*
+    // An area attack that only damages staff, wtf?
+
+    private DateTime m_NextWave;
+
+    public void AreaHeatDamage()
     {
-        [Constructible]
-        public SummonedSheep()
+      Mobile mob = ControlMaster;
+
+      if (mob != null)
+      {
+        if (mob.InRange( Location, 2 ))
         {
-            Body = 0xCF;
-            BaseSoundID = 0xD6;
+          if (mob.AccessLevel != AccessLevel.Player)
+          {
+            AOS.Damage( mob, Utility.Random( 2, 3 ), 0, 100, 0, 0, 0 );
+            mob.SendLocalizedMessage( 1008112 ); // The intense heat is damaging you!
+          }
         }
 
-        public SummonedSheep(Serial serial) : base(serial)
+        GuardedRegion r = Region as GuardedRegion;
+
+        if (r != null && mob.Alive)
         {
+          foreach ( Mobile m in GetMobilesInRange( 2 ) )
+          {
+            if (!mob.CanBeHarmful( m ))
+              mob.CriminalAction( false );
+          }
         }
+      }
 
-        public override string DefaultName => "a sheep";
+      m_NextWave = Core.Now + TimeSpan.FromSeconds( 3 );
+    }
+    */
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+public class SummonedOrcBrute : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedOrcBrute()
+    {
+        Body = 189;
+        BaseSoundID = 0x45A;
     }
 
-    public class SummonedSkeletalKnight : BaseTalismanSummon
+    public SummonedOrcBrute(Serial serial) : base(serial)
     {
-        [Constructible]
-        public SummonedSkeletalKnight()
-        {
-            Body = 147;
-            BaseSoundID = 451;
-        }
-
-        public SummonedSkeletalKnight(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a skeletal knight";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class SummonedVorpalBunny : BaseTalismanSummon
+    public override string DefaultName => "an orc brute";
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public SummonedVorpalBunny()
-        {
-            Body = 205;
-            Hue = 0x480;
-            BaseSoundID = 0xC9;
+        base.Serialize(writer);
 
-            Timer.StartTimer(TimeSpan.FromMinutes(30.0), BeginTunnel);
-        }
-
-        public SummonedVorpalBunny(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a vorpal bunny";
-
-        public virtual void BeginTunnel()
-        {
-            if (Deleted)
-            {
-                return;
-            }
-
-            new VorpalBunny.BunnyHole().MoveToWorld(Location, Map);
-
-            Frozen = true;
-            Say("* The bunny begins to dig a tunnel back to its underground lair *");
-            PlaySound(0x247);
-
-            Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        writer.WriteEncodedInt(0); // version
     }
 
-    public class SummonedWailingBanshee : BaseTalismanSummon
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public SummonedWailingBanshee()
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedPanther : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedPanther()
+    {
+        Body = 0xD6;
+        Hue = 0x901;
+        BaseSoundID = 0x462;
+    }
+
+    public SummonedPanther(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a panther";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedSheep : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedSheep()
+    {
+        Body = 0xCF;
+        BaseSoundID = 0xD6;
+    }
+
+    public SummonedSheep(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a sheep";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedSkeletalKnight : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedSkeletalKnight()
+    {
+        Body = 147;
+        BaseSoundID = 451;
+    }
+
+    public SummonedSkeletalKnight(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a skeletal knight";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedVorpalBunny : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedVorpalBunny()
+    {
+        Body = 205;
+        Hue = 0x480;
+        BaseSoundID = 0xC9;
+
+        Timer.StartTimer(TimeSpan.FromMinutes(30.0), BeginTunnel);
+    }
+
+    public SummonedVorpalBunny(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a vorpal bunny";
+
+    public virtual void BeginTunnel()
+    {
+        if (Deleted)
         {
-            Body = 310;
-            BaseSoundID = 0x482;
+            return;
         }
 
-        public SummonedWailingBanshee(Serial serial) : base(serial)
-        {
-        }
+        new VorpalBunny.BunnyHole().MoveToWorld(Location, Map);
 
-        public override string DefaultName => "a wailing banshee";
+        Frozen = true;
+        Say("* The bunny begins to dig a tunnel back to its underground lair *");
+        PlaySound(0x247);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
+    }
 
-            writer.WriteEncodedInt(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.WriteEncodedInt(0); // version
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class SummonedWailingBanshee : BaseTalismanSummon
+{
+    [Constructible]
+    public SummonedWailingBanshee()
+    {
+        Body = 310;
+        BaseSoundID = 0x482;
+    }
+
+    public SummonedWailingBanshee(Serial serial) : base(serial)
+    {
+    }
+
+    public override string DefaultName => "a wailing banshee";
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

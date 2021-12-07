@@ -2,76 +2,75 @@ using System;
 using Server.Mobiles;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class PlagueBeastMutationCore : Item, IScissorable
 {
-    public class PlagueBeastMutationCore : Item, IScissorable
+    [Constructible]
+    public PlagueBeastMutationCore() : base(0x1CF0)
     {
-        [Constructible]
-        public PlagueBeastMutationCore() : base(0x1CF0)
+        Cut = true;
+        Weight = 1.0;
+        Hue = 0x480;
+    }
+
+    public PlagueBeastMutationCore(Serial serial) : base(serial)
+    {
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Cut { get; set; }
+
+    public override string DefaultName => "a plague beast mutation core";
+
+    public virtual bool Scissor(Mobile from, Scissors scissors)
+    {
+        if (!Cut)
         {
+            var owner = RootParent as PlagueBeastLord;
+
             Cut = true;
-            Weight = 1.0;
-            Hue = 0x480;
-        }
+            Movable = true;
 
-        public PlagueBeastMutationCore(Serial serial) : base(serial)
-        {
-        }
+            from.AddToBackpack(this);
+            from.LocalOverheadMessage(
+                MessageType.Regular,
+                0x34,
+                1071906
+            ); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Cut { get; set; }
-
-        public override string DefaultName => "a plague beast mutation core";
-
-        public virtual bool Scissor(Mobile from, Scissors scissors)
-        {
-            if (!Cut)
+            if (owner != null)
             {
-                var owner = RootParent as PlagueBeastLord;
-
-                Cut = true;
-                Movable = true;
-
-                from.AddToBackpack(this);
-                from.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x34,
-                    1071906
-                ); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *
-
-                if (owner != null)
-                {
-                    Timer.StartTimer(TimeSpan.FromSeconds(1),
-                        () =>
-                        {
-                            owner.Unfreeze();
-                            owner.Kill();
-                        }
-                    );
-                }
-
-                return true;
+                Timer.StartTimer(TimeSpan.FromSeconds(1),
+                    () =>
+                    {
+                        owner.Unfreeze();
+                        owner.Kill();
+                    }
+                );
             }
 
-            return false;
+            return true;
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        return false;
+    }
 
-            writer.WriteEncodedInt(0); // version
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.Write(Cut);
-        }
+        writer.WriteEncodedInt(0); // version
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.Write(Cut);
+    }
 
-            var version = reader.ReadEncodedInt();
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            Cut = reader.ReadBool();
-        }
+        var version = reader.ReadEncodedInt();
+
+        Cut = reader.ReadBool();
     }
 }

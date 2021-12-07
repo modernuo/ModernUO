@@ -1,68 +1,67 @@
 using Server.Mobiles;
 using Server.Network;
 
-namespace Server
+namespace Server;
+
+public class QuestArrow
 {
-    public class QuestArrow
+    public QuestArrow(PlayerMobile m, Mobile t)
     {
-        public QuestArrow(PlayerMobile m, Mobile t)
+        Running = true;
+        Mobile = m;
+        Target = t;
+    }
+
+    public QuestArrow(PlayerMobile m, Mobile t, int x, int y) : this(m, t)
+    {
+        Update(x, y);
+    }
+
+    public PlayerMobile Mobile { get; }
+
+    public Mobile Target { get; }
+
+    public bool Running { get; private set; }
+
+    public void Update()
+    {
+        Update(Target.X, Target.Y);
+    }
+
+    public void Update(int x, int y)
+    {
+        if (!Running)
         {
-            Running = true;
-            Mobile = m;
-            Target = t;
+            return;
         }
 
-        public QuestArrow(PlayerMobile m, Mobile t, int x, int y) : this(m, t)
+        Mobile.NetState.SendSetArrow(x, y, Target.Serial);
+    }
+
+    public void Stop()
+    {
+        Stop(Target.X, Target.Y);
+    }
+
+    public void Stop(int x, int y)
+    {
+        if (!Running)
         {
-            Update(x, y);
+            return;
         }
 
-        public PlayerMobile Mobile { get; }
+        Mobile.ClearQuestArrow();
+        Mobile.NetState.SendCancelArrow(x, y, Target.Serial);
 
-        public Mobile Target { get; }
+        Running = false;
+        OnStop();
+    }
 
-        public bool Running { get; private set; }
+    public virtual void OnStop()
+    {
+    }
 
-        public void Update()
-        {
-            Update(Target.X, Target.Y);
-        }
-
-        public void Update(int x, int y)
-        {
-            if (!Running)
-            {
-                return;
-            }
-
-            Mobile.NetState.SendSetArrow(x, y, Target.Serial);
-        }
-
-        public void Stop()
-        {
-            Stop(Target.X, Target.Y);
-        }
-
-        public void Stop(int x, int y)
-        {
-            if (!Running)
-            {
-                return;
-            }
-
-            Mobile.ClearQuestArrow();
-            Mobile.NetState.SendCancelArrow(x, y, Target.Serial);
-
-            Running = false;
-            OnStop();
-        }
-
-        public virtual void OnStop()
-        {
-        }
-
-        public virtual void OnClick(bool rightClick)
-        {
-        }
+    public virtual void OnClick(bool rightClick)
+    {
     }
 }

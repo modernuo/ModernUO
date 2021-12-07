@@ -1,274 +1,273 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0xC10, 0xC11)]
+public class RuinedFallenChairA : Item
 {
-    [Flippable(0xC10, 0xC11)]
-    public class RuinedFallenChairA : Item
+    [Constructible]
+    public RuinedFallenChairA() : base(0xC10) => Movable = false;
+
+    public RuinedFallenChairA(Serial serial) : base(serial)
     {
-        [Constructible]
-        public RuinedFallenChairA() : base(0xC10) => Movable = false;
-
-        public RuinedFallenChairA(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    [Flippable(0xC13, 0xC12)]
-    public class RuinedArmoire : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public RuinedArmoire() : base(0xC13) => Movable = false;
+        base.Serialize(writer);
 
-        public RuinedArmoire(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [Flippable(0xC14, 0xC15)]
-    public class RuinedBookcase : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public RuinedBookcase() : base(0xC14) => Movable = false;
+        base.Deserialize(reader);
 
-        public RuinedBookcase(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+[Flippable(0xC13, 0xC12)]
+public class RuinedArmoire : Item
+{
+    [Constructible]
+    public RuinedArmoire() : base(0xC13) => Movable = false;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public RuinedArmoire(Serial serial) : base(serial)
+    {
     }
 
-    public class RuinedBooks : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public RuinedBooks() : base(0xC16) => Movable = false;
+        base.Serialize(writer);
 
-        public RuinedBooks(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [Flippable(0xC17, 0xC18)]
-    public class CoveredChair : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public CoveredChair() : base(0xC17) => Movable = false;
+        base.Deserialize(reader);
 
-        public CoveredChair(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+[Flippable(0xC14, 0xC15)]
+public class RuinedBookcase : Item
+{
+    [Constructible]
+    public RuinedBookcase() : base(0xC14) => Movable = false;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public RuinedBookcase(Serial serial) : base(serial)
+    {
     }
 
-    [Flippable(0xC19, 0xC1A)]
-    public class RuinedFallenChairB : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public RuinedFallenChairB() : base(0xC19) => Movable = false;
+        base.Serialize(writer);
 
-        public RuinedFallenChairB(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [Flippable(0xC1B, 0xC1C, 0xC1E, 0xC1D)]
-    public class RuinedChair : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public RuinedChair() : base(0xC1B) => Movable = false;
+        base.Deserialize(reader);
 
-        public RuinedChair(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class RuinedBooks : Item
+{
+    [Constructible]
+    public RuinedBooks() : base(0xC16) => Movable = false;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public RuinedBooks(Serial serial) : base(serial)
+    {
     }
 
-    public class RuinedClock : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public RuinedClock() : base(0xC1F) => Movable = false;
+        base.Serialize(writer);
 
-        public RuinedClock(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [Flippable(0xC24, 0xC25)]
-    public class RuinedDrawers : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public RuinedDrawers() : base(0xC24) => Movable = false;
+        base.Deserialize(reader);
 
-        public RuinedDrawers(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+[Flippable(0xC17, 0xC18)]
+public class CoveredChair : Item
+{
+    [Constructible]
+    public CoveredChair() : base(0xC17) => Movable = false;
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public CoveredChair(Serial serial) : base(serial)
+    {
     }
 
-    public class RuinedPainting : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public RuinedPainting() : base(0xC2C) => Movable = false;
+        base.Serialize(writer);
 
-        public RuinedPainting(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [Flippable(0xC2D, 0xC2F, 0xC2E, 0xC30)]
-    public class WoodDebris : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public WoodDebris() : base(0xC2D) => Movable = false;
+        base.Deserialize(reader);
 
-        public WoodDebris(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+[Flippable(0xC19, 0xC1A)]
+public class RuinedFallenChairB : Item
+{
+    [Constructible]
+    public RuinedFallenChairB() : base(0xC19) => Movable = false;
 
-            writer.Write(0); // version
-        }
+    public RuinedFallenChairB(Serial serial) : base(serial)
+    {
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+[Flippable(0xC1B, 0xC1C, 0xC1E, 0xC1D)]
+public class RuinedChair : Item
+{
+    [Constructible]
+    public RuinedChair() : base(0xC1B) => Movable = false;
+
+    public RuinedChair(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class RuinedClock : Item
+{
+    [Constructible]
+    public RuinedClock() : base(0xC1F) => Movable = false;
+
+    public RuinedClock(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+[Flippable(0xC24, 0xC25)]
+public class RuinedDrawers : Item
+{
+    [Constructible]
+    public RuinedDrawers() : base(0xC24) => Movable = false;
+
+    public RuinedDrawers(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class RuinedPainting : Item
+{
+    [Constructible]
+    public RuinedPainting() : base(0xC2C) => Movable = false;
+
+    public RuinedPainting(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+[Flippable(0xC2D, 0xC2F, 0xC2E, 0xC30)]
+public class WoodDebris : Item
+{
+    [Constructible]
+    public WoodDebris() : base(0xC2D) => Movable = false;
+
+    public WoodDebris(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

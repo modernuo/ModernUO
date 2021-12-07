@@ -22,91 +22,90 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public static class SerializableMigrationSchema
 {
-    public static class SerializableMigrationSchema
-    {
-        public static JsonSerializerOptions GetJsonSerializerOptions() =>
-            new()
-            {
-                WriteIndented = true,
-                AllowTrailingCommas = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            };
-
-        private static Dictionary<string, SerializableMetadata> _cache = new();
-
-        private static readonly Regex _fileRegex = new(@"\S+\.v\d+\.json$");
-
-        public static List<SerializableMetadata> GetMigrations(
-            INamedTypeSymbol typeSymbol,
-            int version,
-            string migrationPath,
-            JsonSerializerOptions options
-        )
+    public static JsonSerializerOptions GetJsonSerializerOptions() =>
+        new()
         {
-            var typeName = typeSymbol.ToDisplayString();
-            var migrations = new SortedSet<SerializableMetadata>(new SerializableMetadataComparer());
+            WriteIndented = true,
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
 
-            var migrationFiles = Directory.GetFiles(migrationPath, $"{typeName}.v*.json");
+    private static Dictionary<string, SerializableMetadata> _cache = new();
 
-            foreach (var file in migrationFiles)
+    private static readonly Regex _fileRegex = new(@"\S+\.v\d+\.json$");
+
+    public static List<SerializableMetadata> GetMigrations(
+        INamedTypeSymbol typeSymbol,
+        int version,
+        string migrationPath,
+        JsonSerializerOptions options
+    )
+    {
+        var typeName = typeSymbol.ToDisplayString();
+        var migrations = new SortedSet<SerializableMetadata>(new SerializableMetadataComparer());
+
+        var migrationFiles = Directory.GetFiles(migrationPath, $"{typeName}.v*.json");
+
+        foreach (var file in migrationFiles)
+        {
+            var fi = new FileInfo(file);
+            if (!_cache.TryGetValue(fi.Name, out var migration))
             {
-                var fi = new FileInfo(file);
-                if (!_cache.TryGetValue(fi.Name, out var migration))
-                {
-                    var text = File.ReadAllText(file, Encoding.UTF8);
-                    migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
-                    _cache[fi.Name] = migration;
-                }
-
-                if (typeName == migration!.Type && version > migration.Version)
-                {
-                    migrations.Add(migration);
-                }
+                var text = File.ReadAllText(file, Encoding.UTF8);
+                migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                _cache[fi.Name] = migration;
             }
 
-            return migrations.ToList();
+            if (typeName == migration!.Type && version > migration.Version)
+            {
+                migrations.Add(migration);
+            }
         }
 
-        public static List<SerializableMetadata> GetMigrationsByAnalyzerConfig(
-            this GeneratorExecutionContext context,
-            INamedTypeSymbol typeSymbol,
-            int version,
-            JsonSerializerOptions options
-        )
-        {
-            var typeName = typeSymbol.ToDisplayString();
-            var migrations = new SortedSet<SerializableMetadata>(new SerializableMetadataComparer());
+        return migrations.ToList();
+    }
 
-            foreach (var additionalText in context.AdditionalFiles)
+    public static List<SerializableMetadata> GetMigrationsByAnalyzerConfig(
+        this GeneratorExecutionContext context,
+        INamedTypeSymbol typeSymbol,
+        int version,
+        JsonSerializerOptions options
+    )
+    {
+        var typeName = typeSymbol.ToDisplayString();
+        var migrations = new SortedSet<SerializableMetadata>(new SerializableMetadataComparer());
+
+        foreach (var additionalText in context.AdditionalFiles)
+        {
+            var fi = new FileInfo(additionalText.Path);
+            if (!_fileRegex.IsMatch(fi.Name))
             {
-                var fi = new FileInfo(additionalText.Path);
-                if (!_fileRegex.IsMatch(fi.Name))
+                continue;
+            }
+
+            if (!_cache.TryGetValue(fi.Name, out var migration))
+            {
+                var text = additionalText.GetText(context.CancellationToken)?.ToString();
+                if (text == null)
                 {
                     continue;
                 }
 
-                if (!_cache.TryGetValue(fi.Name, out var migration))
-                {
-                    var text = additionalText.GetText(context.CancellationToken)?.ToString();
-                    if (text == null)
-                    {
-                        continue;
-                    }
-
-                    migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
-                    _cache[fi.Name] = migration;
-                }
-
-                if (typeName == migration!.Type && version > migration.Version)
-                {
-                    migrations.Add(migration);
-                }
+                migration = JsonSerializer.Deserialize<SerializableMetadata>(text, options);
+                _cache[fi.Name] = migration;
             }
 
-            return migrations.ToList();
+            if (typeName == migration!.Type && version > migration.Version)
+            {
+                migrations.Add(migration);
+            }
         }
+
+        return migrations.ToList();
     }
 }

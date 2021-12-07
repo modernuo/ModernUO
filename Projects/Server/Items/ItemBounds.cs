@@ -1,44 +1,43 @@
 using System;
 using System.IO;
 
-namespace Server
+namespace Server;
+
+public static class ItemBounds
 {
-    public static class ItemBounds
+    static ItemBounds()
     {
-        static ItemBounds()
+        Table = new Rectangle2D[TileData.ItemTable.Length];
+
+        if (File.Exists("Data/Binary/Bounds.bin"))
         {
-            Table = new Rectangle2D[TileData.ItemTable.Length];
+            using var fs = new FileStream(
+                "Data/Binary/Bounds.bin",
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read
+            );
+            var bin = new BinaryReader(fs);
 
-            if (File.Exists("Data/Binary/Bounds.bin"))
+            var count = Math.Min(Table.Length, (int)(fs.Length / 8));
+
+            for (var i = 0; i < count; ++i)
             {
-                using var fs = new FileStream(
-                    "Data/Binary/Bounds.bin",
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read
-                );
-                var bin = new BinaryReader(fs);
+                int xMin = bin.ReadInt16();
+                int yMin = bin.ReadInt16();
+                int xMax = bin.ReadInt16();
+                int yMax = bin.ReadInt16();
 
-                var count = Math.Min(Table.Length, (int)(fs.Length / 8));
-
-                for (var i = 0; i < count; ++i)
-                {
-                    int xMin = bin.ReadInt16();
-                    int yMin = bin.ReadInt16();
-                    int xMax = bin.ReadInt16();
-                    int yMax = bin.ReadInt16();
-
-                    Table[i].Set(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
-                }
-
-                bin.Close();
+                Table[i].Set(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
             }
-            else
-            {
-                Console.WriteLine("Warning: Data/Binary/Bounds.bin does not exist");
-            }
+
+            bin.Close();
         }
-
-        public static Rectangle2D[] Table { get; }
+        else
+        {
+            Console.WriteLine("Warning: Data/Binary/Bounds.bin does not exist");
+        }
     }
+
+    public static Rectangle2D[] Table { get; }
 }

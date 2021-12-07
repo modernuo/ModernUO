@@ -1,39 +1,38 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class MelisandesCorrodedHatchet : Hatchet
 {
-    public class MelisandesCorrodedHatchet : Hatchet
+    [Constructible]
+    public MelisandesCorrodedHatchet()
     {
-        [Constructible]
-        public MelisandesCorrodedHatchet()
-        {
-            Hue = 0x494;
+        Hue = 0x494;
 
-            SkillBonuses.SetValues(0, SkillName.Lumberjacking, 5.0);
+        SkillBonuses.SetValues(0, SkillName.Lumberjacking, 5.0);
 
-            Attributes.SpellChanneling = 1;
-            Attributes.WeaponSpeed = 15;
-            Attributes.WeaponDamage = -50;
+        Attributes.SpellChanneling = 1;
+        Attributes.WeaponSpeed = 15;
+        Attributes.WeaponDamage = -50;
 
-            WeaponAttributes.SelfRepair = 4;
-        }
+        WeaponAttributes.SelfRepair = 4;
+    }
 
-        public MelisandesCorrodedHatchet(Serial serial) : base(serial)
-        {
-        }
+    public MelisandesCorrodedHatchet(Serial serial) : base(serial)
+    {
+    }
 
-        public override int LabelNumber => 1072115; // Melisande's Corroded Hatchet
+    public override int LabelNumber => 1072115; // Melisande's Corroded Hatchet
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            var version = reader.ReadEncodedInt();
-        }
+        var version = reader.ReadEncodedInt();
     }
 }

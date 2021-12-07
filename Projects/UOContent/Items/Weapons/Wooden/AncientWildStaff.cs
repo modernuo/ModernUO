@@ -1,12 +1,10 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0)]
+public partial class AncientWildStaff : WildStaff
 {
+    [Constructible]
+    public AncientWildStaff() => WeaponAttributes.ResistPoisonBonus = 5;
 
-    [Serializable(0)]
-    public partial class AncientWildStaff : WildStaff
-    {
-        [Constructible]
-        public AncientWildStaff() => WeaponAttributes.ResistPoisonBonus = 5;
-
-        public override int LabelNumber => 1073550; // ancient wild staff
-    }
+    public override int LabelNumber => 1073550; // ancient wild staff
 }

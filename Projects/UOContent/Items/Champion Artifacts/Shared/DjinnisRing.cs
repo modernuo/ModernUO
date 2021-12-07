@@ -1,19 +1,18 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0, false)]
+public partial class DjinnisRing : SilverRing
 {
-    [Serializable(0, false)]
-    public partial class DjinnisRing : SilverRing
+    [Constructible]
+    public DjinnisRing()
     {
-        [Constructible]
-        public DjinnisRing()
-        {
-            Attributes.BonusInt = 5;
-            Attributes.SpellDamage = 10;
-            Attributes.CastSpeed = 2;
-        }
-
-        public override int LabelNumber => 1094927; // Djinni's Ring [Replica]
-
-        public override int InitMinHits => 150;
-        public override int InitMaxHits => 150;
+        Attributes.BonusInt = 5;
+        Attributes.SpellDamage = 10;
+        Attributes.CastSpeed = 2;
     }
+
+    public override int LabelNumber => 1094927; // Djinni's Ring [Replica]
+
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 }

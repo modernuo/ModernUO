@@ -18,35 +18,34 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SerializationGenerator;
 
-namespace SerializationSchemaGenerator
+namespace SerializationSchemaGenerator;
+
+public class SyntaxVisitor : CSharpSyntaxWalker
 {
-    public class SyntaxVisitor : CSharpSyntaxWalker
+    private readonly SemanticModel _semanticModel;
+    private readonly SerializerSyntaxReceiver _syntaxReceiver;
+
+    public SyntaxVisitor(SemanticModel semanticModel, SerializerSyntaxReceiver syntaxReceiver)
     {
-        private readonly SemanticModel _semanticModel;
-        private readonly SerializerSyntaxReceiver _syntaxReceiver;
+        _semanticModel = semanticModel;
+        _syntaxReceiver = syntaxReceiver;
+    }
 
-        public SyntaxVisitor(SemanticModel semanticModel, SerializerSyntaxReceiver syntaxReceiver)
-        {
-            _semanticModel = semanticModel;
-            _syntaxReceiver = syntaxReceiver;
-        }
+    public override void VisitClassDeclaration(ClassDeclarationSyntax node)
+    {
+        base.VisitClassDeclaration(node);
+        _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
+    }
 
-        public override void VisitClassDeclaration(ClassDeclarationSyntax node)
-        {
-            base.VisitClassDeclaration(node);
-            _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
-        }
+    public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
+    {
+        base.VisitFieldDeclaration(node);
+        _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
+    }
 
-        public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
-        {
-            base.VisitFieldDeclaration(node);
-            _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
-        }
-
-        public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
-        {
-            base.VisitPropertyDeclaration(node);
-            _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
-        }
+    public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+    {
+        base.VisitPropertyDeclaration(node);
+        _syntaxReceiver.OnVisitSyntaxNode(node, _semanticModel);
     }
 }

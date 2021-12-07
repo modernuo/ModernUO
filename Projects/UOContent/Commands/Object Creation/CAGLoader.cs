@@ -22,135 +22,134 @@ using Server.Items;
 using Server.Json;
 using Server.Utilities;
 
-namespace Server.Commands
+namespace Server.Commands;
+
+public static class CAGLoader
 {
-    public static class CAGLoader
+    public static CAGCategory Load()
     {
-        public static CAGCategory Load()
+        var root = new CAGCategory("Add Menu");
+        var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
+
+        var list = JsonConfig.Deserialize<List<CAGJson>>(path);
+        if (list == null)
         {
-            var root = new CAGCategory("Add Menu");
-            var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
-
-            var list = JsonConfig.Deserialize<List<CAGJson>>(path);
-            if (list == null)
-            {
-                throw new JsonException($"Failed to deserialize {path}.");
-            }
-
-            // Not an optimized solution
-            foreach (var cag in list)
-            {
-                var parent = root;
-                // Navigate through the dot notation categories until we find the last one
-                var categories = cag.Category.Split(".");
-                for (var i = 0; i < categories.Length; i++)
-                {
-                    var category = categories[i];
-
-                    // No children, so let's make one
-                    if (parent.Nodes == null)
-                    {
-                        var cat = new CAGCategory(category, parent);
-                        parent.Nodes = new CAGNode[] { cat };
-                        parent = cat;
-                        continue;
-                    }
-
-                    var oldParent = parent;
-                    for (var j = 0; j < parent.Nodes.Length; j++)
-                    {
-                        var node = parent.Nodes[j];
-                        if (category == node.Title && node is CAGCategory cat)
-                        {
-                            parent = cat;
-                            break;
-                        }
-                    }
-
-                    // Didn't find the child, let's add it
-                    if (oldParent == parent)
-                    {
-                        var nodes = parent.Nodes;
-                        parent.Nodes = new CAGNode[nodes.Length + 1];
-                        Array.Copy(nodes, parent.Nodes, nodes.Length);
-                        var cat = new CAGCategory(category, parent);
-                        parent.Nodes[^1] = cat;
-                        parent = cat;
-                    }
-                }
-
-                // Set the objects associated with the child most node
-                parent.Nodes = new CAGNode[cag.Objects.Length];
-                for (var i = 0; i < cag.Objects.Length; i++)
-                {
-                    var cagObj = cag.Objects[i];
-                    cagObj.Parent = parent;
-                    parent.Nodes[i] = cagObj;
-
-                    // Set ItemID and Hue
-                    if (cagObj.Hue == null || cagObj.ItemID == null)
-                    {
-                        var type = cagObj.Type;
-
-                        if (type.IsAssignableTo(typeof(Item)))
-                        {
-                            var item = cagObj.Type.CreateInstance<Item>();
-
-                            if (cagObj.ItemID == null)
-                            {
-                                var itemID = item.ItemID;
-
-                                if (item is BaseAddon addon && addon.Components.Count == 1)
-                                {
-                                    itemID = addon.Components[0].ItemID;
-                                }
-
-                                if (itemID > TileData.MaxItemValue)
-                                {
-                                    itemID = 1;
-                                }
-
-                                cagObj.ItemID = itemID;
-                            }
-
-                            if (cagObj.Hue == null)
-                            {
-                                int hue = item.Hue & 0x7FFF;
-                                hue = (hue & 0x4000) != 0 ? 0 : hue;
-                                cagObj.Hue = hue == 0 ? null : hue;
-                            }
-
-                            item.Delete();
-                        }
-
-                        if (type.IsAssignableTo(typeof(Mobile)))
-                        {
-                            var m = cagObj.Type.CreateInstance<Mobile>();
-                            cagObj.ItemID ??= ShrinkTable.Lookup(m, 1);
-
-                            if (cagObj.Hue == null)
-                            {
-                                int hue = m.Hue & 0x7FFF;
-                                hue = (hue & 0x4000) != 0 ? 0 : hue;
-                                cagObj.Hue = hue == 0 ? null : hue;
-                            }
-
-                            m.Delete();
-                        }
-                    }
-                }
-            }
-
-            return root;
+            throw new JsonException($"Failed to deserialize {path}.");
         }
-    }
 
-    public record CAGJson
-    {
-        [JsonPropertyName("category")]
-        public string Category { get; init; }
+        // Not an optimized solution
+        foreach (var cag in list)
+        {
+            var parent = root;
+            // Navigate through the dot notation categories until we find the last one
+            var categories = cag.Category.Split(".");
+            for (var i = 0; i < categories.Length; i++)
+            {
+                var category = categories[i];
 
-        [JsonPropertyName("objects")]
-        public CAGObject[] Objects { get; init; }
+                // No children, so let's make one
+                if (parent.Nodes == null)
+                {
+                    var cat = new CAGCategory(category, parent);
+                    parent.Nodes = new CAGNode[] { cat };
+                    parent = cat;
+                    continue;
+                }
+
+                var oldParent = parent;
+                for (var j = 0; j < parent.Nodes.Length; j++)
+                {
+                    var node = parent.Nodes[j];
+                    if (category == node.Title && node is CAGCategory cat)
+                    {
+                        parent = cat;
+                        break;
+                    }
+                }
+
+                // Didn't find the child, let's add it
+                if (oldParent == parent)
+                {
+                    var nodes = parent.Nodes;
+                    parent.Nodes = new CAGNode[nodes.Length + 1];
+                    Array.Copy(nodes, parent.Nodes, nodes.Length);
+                    var cat = new CAGCategory(category, parent);
+                    parent.Nodes[^1] = cat;
+                    parent = cat;
+                }
+            }
+
+            // Set the objects associated with the child most node
+            parent.Nodes = new CAGNode[cag.Objects.Length];
+            for (var i = 0; i < cag.Objects.Length; i++)
+            {
+                var cagObj = cag.Objects[i];
+                cagObj.Parent = parent;
+                parent.Nodes[i] = cagObj;
+
+                // Set ItemID and Hue
+                if (cagObj.Hue == null || cagObj.ItemID == null)
+                {
+                    var type = cagObj.Type;
+
+                    if (type.IsAssignableTo(typeof(Item)))
+                    {
+                        var item = cagObj.Type.CreateInstance<Item>();
+
+                        if (cagObj.ItemID == null)
+                        {
+                            var itemID = item.ItemID;
+
+                            if (item is BaseAddon addon && addon.Components.Count == 1)
+                            {
+                                itemID = addon.Components[0].ItemID;
+                            }
+
+                            if (itemID > TileData.MaxItemValue)
+                            {
+                                itemID = 1;
+                            }
+
+                            cagObj.ItemID = itemID;
+                        }
+
+                        if (cagObj.Hue == null)
+                        {
+                            int hue = item.Hue & 0x7FFF;
+                            hue = (hue & 0x4000) != 0 ? 0 : hue;
+                            cagObj.Hue = hue == 0 ? null : hue;
+                        }
+
+                        item.Delete();
+                    }
+
+                    if (type.IsAssignableTo(typeof(Mobile)))
+                    {
+                        var m = cagObj.Type.CreateInstance<Mobile>();
+                        cagObj.ItemID ??= ShrinkTable.Lookup(m, 1);
+
+                        if (cagObj.Hue == null)
+                        {
+                            int hue = m.Hue & 0x7FFF;
+                            hue = (hue & 0x4000) != 0 ? 0 : hue;
+                            cagObj.Hue = hue == 0 ? null : hue;
+                        }
+
+                        m.Delete();
+                    }
+                }
+            }
+        }
+
+        return root;
     }
+}
+
+public record CAGJson
+{
+    [JsonPropertyName("category")]
+    public string Category { get; init; }
+
+    [JsonPropertyName("objects")]
+    public CAGObject[] Objects { get; init; }
 }

@@ -1,20 +1,19 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Serializable(0)]
+public partial class ButchersWarCleaver : WarCleaver
 {
-    [Serializable(0)]
-    public partial class ButchersWarCleaver : WarCleaver
+    [Constructible]
+    public ButchersWarCleaver()
     {
-        [Constructible]
-        public ButchersWarCleaver()
-        {
-        }
+    }
 
-        public override int LabelNumber => 1073526; // butcher's war cleaver
+    public override int LabelNumber => 1073526; // butcher's war cleaver
 
-        public override void AppendChildNameProperties(ObjectPropertyList list)
-        {
-            base.AppendChildNameProperties(list);
+    public override void AppendChildNameProperties(ObjectPropertyList list)
+    {
+        base.AppendChildNameProperties(list);
 
-            list.Add(1072512); // Bovine Slayer
-        }
+        list.Add(1072512); // Bovine Slayer
     }
 }

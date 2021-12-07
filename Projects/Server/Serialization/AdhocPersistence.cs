@@ -16,44 +16,43 @@
 using System;
 using System.IO;
 
-namespace Server
-{
-    public static class AdhocPersistence
-    {
-        public static void Serialize(string filePath, Action<IGenericWriter> serializer)
-        {
-            var fullPath = Path.Combine(Core.BaseDirectory, filePath);
-            var file = new FileInfo(fullPath);
-            file.Directory?.Create();
+namespace Server;
 
-            using var bin = new BinaryFileWriter(fullPath, true);
-            serializer(bin);
+public static class AdhocPersistence
+{
+    public static void Serialize(string filePath, Action<IGenericWriter> serializer)
+    {
+        var fullPath = Path.Combine(Core.BaseDirectory, filePath);
+        var file = new FileInfo(fullPath);
+        file.Directory?.Create();
+
+        using var bin = new BinaryFileWriter(fullPath, true);
+        serializer(bin);
+    }
+
+    public static void Deserialize(string filePath, Action<IGenericReader> deserializer)
+    {
+        var fullPath = Path.Combine(Core.BaseDirectory, filePath);
+        var file = new FileInfo(fullPath);
+        file.Directory?.Create();
+
+        if (!file.Exists)
+        {
+            return;
         }
 
-        public static void Deserialize(string filePath, Action<IGenericReader> deserializer)
+        try
         {
-            var fullPath = Path.Combine(Core.BaseDirectory, filePath);
-            var file = new FileInfo(fullPath);
-            file.Directory?.Create();
-
-            if (!file.Exists)
-            {
-                return;
-            }
-
-            try
-            {
-                using FileStream fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                using var br = new BinaryFileReader(fs);
-                deserializer(br);
-            }
-            catch (Exception e)
-            {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine($"***** Bad deserialize of {file.FullName} *****");
-                Console.WriteLine(e.ToString());
-                Utility.PopColor();
-            }
+            using FileStream fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var br = new BinaryFileReader(fs);
+            deserializer(br);
+        }
+        catch (Exception e)
+        {
+            Utility.PushColor(ConsoleColor.Red);
+            Console.WriteLine($"***** Bad deserialize of {file.FullName} *****");
+            Console.WriteLine(e.ToString());
+            Utility.PopColor();
         }
     }
 }

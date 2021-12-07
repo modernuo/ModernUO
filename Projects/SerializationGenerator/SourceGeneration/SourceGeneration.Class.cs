@@ -17,56 +17,55 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SourceGeneration
 {
-    public static partial class SourceGeneration
+    public static void GenerateClassStart(
+        this StringBuilder source,
+        INamedTypeSymbol classSymbol,
+        string indent,
+        ImmutableArray<ITypeSymbol> interfaces,
+        bool isPartial = true
+    )
     {
-        public static void GenerateClassStart(
-            this StringBuilder source,
-            INamedTypeSymbol classSymbol,
-            string indent,
-            ImmutableArray<ITypeSymbol> interfaces,
-            bool isPartial = true
-        )
+        var accessor = classSymbol.DeclaredAccessibility;
+        source.Append($"{indent}{accessor.ToFriendlyString()} {(isPartial ? "partial " : "")}class {classSymbol.Name}");
+        if (!interfaces.IsEmpty)
         {
-            var accessor = classSymbol.DeclaredAccessibility;
-            source.Append($"{indent}{accessor.ToFriendlyString()} {(isPartial ? "partial " : "")}class {classSymbol.Name}");
-            if (!interfaces.IsEmpty)
+            source.Append(" : ");
+            for (var i = 0; i < interfaces.Length; i++)
             {
-                source.Append(" : ");
-                for (var i = 0; i < interfaces.Length; i++)
+                source.Append(interfaces[i].ToDisplayString());
+                if (i < interfaces.Length - 1)
                 {
-                    source.Append(interfaces[i].ToDisplayString());
-                    if (i < interfaces.Length - 1)
-                    {
-                        source.Append(", ");
-                    }
+                    source.Append(", ");
                 }
             }
-
-            source.AppendLine($"\n{indent}{{");
         }
 
-        public static void GenerateClassEnd(this StringBuilder source, string indent)
-        {
-            source.AppendLine($"{indent}}}");
-        }
+        source.AppendLine($"\n{indent}{{");
+    }
 
-        // TODO: Generalize this to any field using dynamic indentation
-        public static void GenerateClassField(
-            this StringBuilder source,
-            string indent,
-            Accessibility accessors,
-            InstanceModifier instance,
-            string type,
-            string variableName,
-            string value
-        )
-        {
-            var instanceStr = instance == InstanceModifier.None ? "" : $"{instance.ToFriendlyString()} ";
-            var accessorStr = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
-            var valueStr = value == null ? "" : $" = {value}";
-            source.AppendLine($"{indent}{accessorStr}{instanceStr}{type} {variableName}{valueStr};");
-        }
+    public static void GenerateClassEnd(this StringBuilder source, string indent)
+    {
+        source.AppendLine($"{indent}}}");
+    }
+
+    // TODO: Generalize this to any field using dynamic indentation
+    public static void GenerateClassField(
+        this StringBuilder source,
+        string indent,
+        Accessibility accessors,
+        InstanceModifier instance,
+        string type,
+        string variableName,
+        string value
+    )
+    {
+        var instanceStr = instance == InstanceModifier.None ? "" : $"{instance.ToFriendlyString()} ";
+        var accessorStr = accessors == Accessibility.NotApplicable ? "" : $"{accessors.ToFriendlyString()} ";
+        var valueStr = value == null ? "" : $" = {value}";
+        source.AppendLine($"{indent}{accessorStr}{instanceStr}{type} {variableName}{valueStr};");
     }
 }

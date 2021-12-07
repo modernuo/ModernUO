@@ -1,79 +1,78 @@
 using System;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class DarkWolfFamiliar : BaseFamiliar
 {
-    public class DarkWolfFamiliar : BaseFamiliar
+    private DateTime m_NextRestore;
+
+    public DarkWolfFamiliar()
     {
-        private DateTime m_NextRestore;
+        Body = 99;
+        Hue = 0x901;
+        BaseSoundID = 0xE5;
 
-        public DarkWolfFamiliar()
+        SetStr(100);
+        SetDex(90);
+        SetInt(90);
+
+        SetHits(60);
+        SetStam(90);
+        SetMana(0);
+
+        SetDamage(5, 10);
+
+        SetDamageType(ResistanceType.Physical, 100);
+
+        SetResistance(ResistanceType.Physical, 40, 50);
+        SetResistance(ResistanceType.Fire, 25, 40);
+        SetResistance(ResistanceType.Cold, 25, 40);
+        SetResistance(ResistanceType.Poison, 25, 40);
+        SetResistance(ResistanceType.Energy, 25, 40);
+
+        SetSkill(SkillName.Wrestling, 85.1, 90.0);
+        SetSkill(SkillName.Tactics, 50.0);
+
+        ControlSlots = 1;
+    }
+
+    public DarkWolfFamiliar(Serial serial) : base(serial)
+    {
+    }
+
+    public override string CorpseName => "a dark wolf corpse";
+    public override string DefaultName => "a dark wolf";
+
+    public override void OnThink()
+    {
+        base.OnThink();
+
+        if (Core.Now < m_NextRestore)
         {
-            Body = 99;
-            Hue = 0x901;
-            BaseSoundID = 0xE5;
-
-            SetStr(100);
-            SetDex(90);
-            SetInt(90);
-
-            SetHits(60);
-            SetStam(90);
-            SetMana(0);
-
-            SetDamage(5, 10);
-
-            SetDamageType(ResistanceType.Physical, 100);
-
-            SetResistance(ResistanceType.Physical, 40, 50);
-            SetResistance(ResistanceType.Fire, 25, 40);
-            SetResistance(ResistanceType.Cold, 25, 40);
-            SetResistance(ResistanceType.Poison, 25, 40);
-            SetResistance(ResistanceType.Energy, 25, 40);
-
-            SetSkill(SkillName.Wrestling, 85.1, 90.0);
-            SetSkill(SkillName.Tactics, 50.0);
-
-            ControlSlots = 1;
+            return;
         }
 
-        public DarkWolfFamiliar(Serial serial) : base(serial)
+        m_NextRestore = Core.Now + TimeSpan.FromSeconds(2.0);
+
+        var caster = ControlMaster ?? SummonMaster;
+
+        if (caster != null)
         {
+            ++caster.Stam;
         }
+    }
 
-        public override string CorpseName => "a dark wolf corpse";
-        public override string DefaultName => "a dark wolf";
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void OnThink()
-        {
-            base.OnThink();
+        writer.Write(0);
+    }
 
-            if (Core.Now < m_NextRestore)
-            {
-                return;
-            }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            m_NextRestore = Core.Now + TimeSpan.FromSeconds(2.0);
-
-            var caster = ControlMaster ?? SummonMaster;
-
-            if (caster != null)
-            {
-                ++caster.Stam;
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

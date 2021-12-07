@@ -3,149 +3,148 @@ using System.Collections.Generic;
 using Server.Engines.BulkOrders;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Blacksmith : BaseVendor
 {
-    public class Blacksmith : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public Blacksmith() : base("the blacksmith")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        SetSkill(SkillName.ArmsLore, 36.0, 68.0);
+        SetSkill(SkillName.Blacksmith, 65.0, 88.0);
+        SetSkill(SkillName.Fencing, 60.0, 83.0);
+        SetSkill(SkillName.Macing, 61.0, 93.0);
+        SetSkill(SkillName.Swords, 60.0, 83.0);
+        SetSkill(SkillName.Tactics, 60.0, 83.0);
+        SetSkill(SkillName.Parry, 61.0, 93.0);
+    }
 
-        [Constructible]
-        public Blacksmith() : base("the blacksmith")
+    public Blacksmith(Serial serial) : base(serial)
+    {
+    }
+
+    protected override List<SBInfo> SBInfos => m_SBInfos;
+
+    public override NpcGuild NpcGuild => NpcGuild.BlacksmithsGuild;
+
+    public override VendorShoeType ShoeType => VendorShoeType.None;
+
+    public override void InitSBInfo()
+    {
+        /*m_SBInfos.Add( new SBSmithTools() );
+  
+        m_SBInfos.Add( new SBMetalShields() );
+        m_SBInfos.Add( new SBWoodenShields() );
+  
+        m_SBInfos.Add( new SBPlateArmor() );
+  
+        m_SBInfos.Add( new SBHelmetArmor() );
+        m_SBInfos.Add( new SBChainmailArmor() );
+        m_SBInfos.Add( new SBRingmailArmor() );
+        m_SBInfos.Add( new SBAxeWeapon() );
+        m_SBInfos.Add( new SBPoleArmWeapon() );
+        m_SBInfos.Add( new SBRangedWeapon() );
+  
+        m_SBInfos.Add( new SBKnifeWeapon() );
+        m_SBInfos.Add( new SBMaceWeapon() );
+        m_SBInfos.Add( new SBSpearForkWeapon() );
+        m_SBInfos.Add( new SBSwordWeapon() );*/
+
+        m_SBInfos.Add(new SBBlacksmith());
+        if (IsTokunoVendor)
         {
-            SetSkill(SkillName.ArmsLore, 36.0, 68.0);
-            SetSkill(SkillName.Blacksmith, 65.0, 88.0);
-            SetSkill(SkillName.Fencing, 60.0, 83.0);
-            SetSkill(SkillName.Macing, 61.0, 93.0);
-            SetSkill(SkillName.Swords, 60.0, 83.0);
-            SetSkill(SkillName.Tactics, 60.0, 83.0);
-            SetSkill(SkillName.Parry, 61.0, 93.0);
+            m_SBInfos.Add(new SBSEArmor());
+            m_SBInfos.Add(new SBSEWeapons());
+        }
+    }
+
+    public override void InitOutfit()
+    {
+        base.InitOutfit();
+
+        Item item = Utility.RandomBool() ? null : new RingmailChest();
+
+        if (item != null && !EquipItem(item))
+        {
+            item.Delete();
+            item = null;
         }
 
-        public Blacksmith(Serial serial) : base(serial)
+        if (item == null)
         {
+            AddItem(new FullApron());
         }
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+        AddItem(new Bascinet());
+        AddItem(new SmithHammer());
+    }
 
-        public override NpcGuild NpcGuild => NpcGuild.BlacksmithsGuild;
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override VendorShoeType ShoeType => VendorShoeType.None;
+        writer.Write(0); // version
+    }
 
-        public override void InitSBInfo()
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+
+    public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)
+    {
+        if (from is PlayerMobile pm && pm.NextSmithBulkOrder == TimeSpan.Zero &&
+            (fromContextMenu || Utility.RandomDouble() < 0.2))
         {
-            /*m_SBInfos.Add( new SBSmithTools() );
-      
-            m_SBInfos.Add( new SBMetalShields() );
-            m_SBInfos.Add( new SBWoodenShields() );
-      
-            m_SBInfos.Add( new SBPlateArmor() );
-      
-            m_SBInfos.Add( new SBHelmetArmor() );
-            m_SBInfos.Add( new SBChainmailArmor() );
-            m_SBInfos.Add( new SBRingmailArmor() );
-            m_SBInfos.Add( new SBAxeWeapon() );
-            m_SBInfos.Add( new SBPoleArmWeapon() );
-            m_SBInfos.Add( new SBRangedWeapon() );
-      
-            m_SBInfos.Add( new SBKnifeWeapon() );
-            m_SBInfos.Add( new SBMaceWeapon() );
-            m_SBInfos.Add( new SBSpearForkWeapon() );
-            m_SBInfos.Add( new SBSwordWeapon() );*/
+            var theirSkill = pm.Skills.Blacksmith.Base;
 
-            m_SBInfos.Add(new SBBlacksmith());
-            if (IsTokunoVendor)
+            if (theirSkill >= 70.1)
             {
-                m_SBInfos.Add(new SBSEArmor());
-                m_SBInfos.Add(new SBSEWeapons());
+                pm.NextSmithBulkOrder = TimeSpan.FromHours(6.0);
             }
-        }
-
-        public override void InitOutfit()
-        {
-            base.InitOutfit();
-
-            Item item = Utility.RandomBool() ? null : new RingmailChest();
-
-            if (item != null && !EquipItem(item))
+            else if (theirSkill >= 50.1)
             {
-                item.Delete();
-                item = null;
+                pm.NextSmithBulkOrder = TimeSpan.FromHours(2.0);
             }
-
-            if (item == null)
+            else
             {
-                AddItem(new FullApron());
-            }
-
-            AddItem(new Bascinet());
-            AddItem(new SmithHammer());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)
-        {
-            if (from is PlayerMobile pm && pm.NextSmithBulkOrder == TimeSpan.Zero &&
-                (fromContextMenu || Utility.RandomDouble() < 0.2))
-            {
-                var theirSkill = pm.Skills.Blacksmith.Base;
-
-                if (theirSkill >= 70.1)
-                {
-                    pm.NextSmithBulkOrder = TimeSpan.FromHours(6.0);
-                }
-                else if (theirSkill >= 50.1)
-                {
-                    pm.NextSmithBulkOrder = TimeSpan.FromHours(2.0);
-                }
-                else
-                {
-                    pm.NextSmithBulkOrder = TimeSpan.FromHours(1.0);
-                }
-
-                if (theirSkill >= 70.1 && (theirSkill - 40.0) / 300.0 > Utility.RandomDouble())
-                {
-                    return new LargeSmithBOD();
-                }
-
-                return SmallSmithBOD.CreateRandomFor(from);
+                pm.NextSmithBulkOrder = TimeSpan.FromHours(1.0);
             }
 
-            return null;
-        }
-
-        public override bool IsValidBulkOrder(Item item) => item is SmallSmithBOD || item is LargeSmithBOD;
-
-        public override bool SupportsBulkOrders(Mobile from) => from is PlayerMobile && from.Skills.Blacksmith.Base > 0;
-
-        public override TimeSpan GetNextBulkOrder(Mobile from)
-        {
-            if (from is PlayerMobile mobile)
+            if (theirSkill >= 70.1 && (theirSkill - 40.0) / 300.0 > Utility.RandomDouble())
             {
-                return mobile.NextSmithBulkOrder;
+                return new LargeSmithBOD();
             }
 
-            return TimeSpan.Zero;
+            return SmallSmithBOD.CreateRandomFor(from);
         }
 
-        public override void OnSuccessfulBulkOrderReceive(Mobile from)
+        return null;
+    }
+
+    public override bool IsValidBulkOrder(Item item) => item is SmallSmithBOD || item is LargeSmithBOD;
+
+    public override bool SupportsBulkOrders(Mobile from) => from is PlayerMobile && from.Skills.Blacksmith.Base > 0;
+
+    public override TimeSpan GetNextBulkOrder(Mobile from)
+    {
+        if (from is PlayerMobile mobile)
         {
-            if (Core.SE && from is PlayerMobile mobile)
-            {
-                mobile.NextSmithBulkOrder = TimeSpan.Zero;
-            }
+            return mobile.NextSmithBulkOrder;
+        }
+
+        return TimeSpan.Zero;
+    }
+
+    public override void OnSuccessfulBulkOrderReceive(Mobile from)
+    {
+        if (Core.SE && from is PlayerMobile mobile)
+        {
+            mobile.NextSmithBulkOrder = TimeSpan.Zero;
         }
     }
 }

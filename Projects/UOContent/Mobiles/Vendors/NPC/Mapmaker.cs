@@ -1,40 +1,39 @@
 using System.Collections.Generic;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class Mapmaker : BaseVendor
 {
-    public class Mapmaker : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public Mapmaker() : base("the mapmaker")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        SetSkill(SkillName.Cartography, 90.0, 100.0);
+    }
 
-        [Constructible]
-        public Mapmaker() : base("the mapmaker")
-        {
-            SetSkill(SkillName.Cartography, 90.0, 100.0);
-        }
+    public Mapmaker(Serial serial) : base(serial)
+    {
+    }
 
-        public Mapmaker(Serial serial) : base(serial)
-        {
-        }
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBMapmaker());
+    }
 
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBMapmaker());
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        writer.Write(0); // version
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }

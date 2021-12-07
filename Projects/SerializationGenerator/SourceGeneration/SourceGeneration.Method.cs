@@ -17,46 +17,45 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SourceGeneration
 {
-    public static partial class SourceGeneration
+    public static void GenerateMethodStart(
+        this StringBuilder source, string indent, string methodName, Accessibility accessors, bool isOverride,
+        string returnType, ImmutableArray<(ITypeSymbol, string)> parameters
+    )
     {
-        public static void GenerateMethodStart(
-            this StringBuilder source, string indent, string methodName, Accessibility accessors, bool isOverride,
-            string returnType, ImmutableArray<(ITypeSymbol, string)> parameters
-        )
-        {
-            source.Append($"{indent}{accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
-            source.GenerateSignatureArguments(parameters);
-            source.AppendLine($")\n{indent}{{");
-        }
+        source.Append($"{indent}{accessors.ToFriendlyString()}{(isOverride ? " override" : "")} {returnType} {methodName}(");
+        source.GenerateSignatureArguments(parameters);
+        source.AppendLine($")\n{indent}{{");
+    }
 
-        public static void GenerateMethodEnd(this StringBuilder source, string indent) => source.AppendLine($"{indent}}}");
+    public static void GenerateMethodEnd(this StringBuilder source, string indent) => source.AppendLine($"{indent}}}");
 
-        public static void GenerateConstructorStart(
-            this StringBuilder source, string indent, string className, Accessibility accessors, ImmutableArray<(ITypeSymbol, string)> parameters,
-            ImmutableArray<string> baseParameters, bool isOverload = false
-        )
+    public static void GenerateConstructorStart(
+        this StringBuilder source, string indent, string className, Accessibility accessors, ImmutableArray<(ITypeSymbol, string)> parameters,
+        ImmutableArray<string> baseParameters, bool isOverload = false
+    )
+    {
+        source.Append($"{indent}{accessors.ToFriendlyString()} {className}(");
+        source.GenerateSignatureArguments(parameters);
+        source.Append(')');
+        bool hasBaseParams = baseParameters.Length > 0;
+        if (hasBaseParams)
         {
-            source.Append($"{indent}{accessors.ToFriendlyString()} {className}(");
-            source.GenerateSignatureArguments(parameters);
-            source.Append(')');
-            bool hasBaseParams = baseParameters.Length > 0;
-            if (hasBaseParams)
+            source.AppendFormat(" : {0}(", isOverload ? "this" : "base");
+            for (int i = 0; i < baseParameters.Length; i++)
             {
-                source.AppendFormat(" : {0}(", isOverload ? "this" : "base");
-                for (int i = 0; i < baseParameters.Length; i++)
+                source.Append(baseParameters[i]);
+                if (i < baseParameters.Length - 1)
                 {
-                    source.Append(baseParameters[i]);
-                    if (i < baseParameters.Length - 1)
-                    {
-                        source.Append(',');
-                    }
+                    source.Append(',');
                 }
-                source.Append(')');
             }
-
-            source.AppendLine($"\n{indent}{{");
+            source.Append(')');
         }
+
+        source.AppendLine($"\n{indent}{{");
     }
 }

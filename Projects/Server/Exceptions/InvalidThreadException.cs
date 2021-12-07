@@ -15,12 +15,11 @@
 
 using System;
 
-namespace Server.Exceptions
+namespace Server.Exceptions;
+
+public class InvalidThreadException : Exception
 {
-    public class InvalidThreadException : Exception
+    public InvalidThreadException(string methodName) : base($"{methodName} executed on an invalid thread.")
     {
-        public InvalidThreadException(string methodName) : base($"{methodName} executed on an invalid thread.")
-        {
-        }
     }
 }

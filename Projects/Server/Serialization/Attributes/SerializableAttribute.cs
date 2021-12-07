@@ -15,18 +15,17 @@
 
 using System;
 
-namespace Server
-{
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class SerializableAttribute : Attribute
-    {
-        public int Version { get; }
-        public bool EncodedVersion { get; }
+namespace Server;
 
-        public SerializableAttribute(int version, bool encodedVersion = true)
-        {
-            Version = version;
-            EncodedVersion = encodedVersion;
-        }
+[AttributeUsage(AttributeTargets.Class)]
+public sealed class SerializableAttribute : Attribute
+{
+    public int Version { get; }
+    public bool EncodedVersion { get; }
+
+    public SerializableAttribute(int version, bool encodedVersion = true)
+    {
+        Version = version;
+        EncodedVersion = encodedVersion;
     }
 }

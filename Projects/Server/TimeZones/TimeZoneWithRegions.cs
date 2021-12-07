@@ -15,14 +15,13 @@
 
 using System.Text.Json.Serialization;
 
-namespace Server
-{
-    public record TimeZoneWithRegions
-    {
-        [JsonPropertyName("timezone")]
-        public string TimeZone { get; init; }
+namespace Server;
 
-        [JsonPropertyName("regions")]
-        public string[] Regions { get; init; }
-    }
+public record TimeZoneWithRegions
+{
+    [JsonPropertyName("timezone")]
+    public string TimeZone { get; init; }
+
+    [JsonPropertyName("regions")]
+    public string[] Regions { get; init; }
 }

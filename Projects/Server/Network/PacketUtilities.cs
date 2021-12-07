@@ -19,51 +19,50 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.Toolkit.HighPerformance;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class PacketUtilities
 {
-    public static class PacketUtilities
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WritePacketLength(this ref CircularBufferWriter writer)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WritePacketLength(this ref CircularBufferWriter writer)
-        {
-            var length = writer.Position;
-            writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)length);
-            writer.Seek(length, SeekOrigin.Begin);
-        }
+        var length = writer.Position;
+        writer.Seek(1, SeekOrigin.Begin);
+        writer.Write((ushort)length);
+        writer.Seek(length, SeekOrigin.Begin);
+    }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WritePacketLength(this ref SpanWriter writer)
-        {
-            writer.Seek(1, SeekOrigin.Begin);
-            writer.Write((ushort)writer.BytesWritten);
-            writer.Seek(0, SeekOrigin.End);
-        }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WritePacketLength(this ref SpanWriter writer)
+    {
+        writer.Seek(1, SeekOrigin.Begin);
+        writer.Write((ushort)writer.BytesWritten);
+        writer.Seek(0, SeekOrigin.End);
+    }
 
-        // If LOCAL INIT is off, then stack/heap allocations have garbage data
-        // Initializes the first byte (Packet ID) so it can be used as a flag.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<byte> InitializePacket(this Span<byte> buffer)
-        {
+    // If LOCAL INIT is off, then stack/heap allocations have garbage data
+    // Initializes the first byte (Packet ID) so it can be used as a flag.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<byte> InitializePacket(this Span<byte> buffer)
+    {
 #if NO_LOCAL_INIT
             if (buffer != null)
             {
                 buffer[0] = 0;
             }
 #endif
-            return buffer;
-        }
+        return buffer;
+    }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span2D<byte> InitializePackets(this Span2D<byte> buffer)
-        {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span2D<byte> InitializePackets(this Span2D<byte> buffer)
+    {
 #if NO_LOCAL_INIT
             for (var i = 0; i < buffer.Height; i++)
             {
                 buffer.GetRowSpan(i)[0] = 0;
             }
 #endif
-            return buffer;
-        }
+        return buffer;
     }
 }

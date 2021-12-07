@@ -1,13 +1,12 @@
-namespace Server.Items
-{
-    [Serializable(0, false)]
-    public partial class BrineShrimp : BaseFish
-    {
-        [Constructible]
-        public BrineShrimp() : base(0x3B11)
-        {
-        }
+namespace Server.Items;
 
-        public override int LabelNumber => 1074415; // Brine shrimp
+[Serializable(0, false)]
+public partial class BrineShrimp : BaseFish
+{
+    [Constructible]
+    public BrineShrimp() : base(0x3B11)
+    {
     }
+
+    public override int LabelNumber => 1074415; // Brine shrimp
 }

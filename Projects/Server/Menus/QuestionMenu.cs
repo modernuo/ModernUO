@@ -1,43 +1,42 @@
 using Server.Network;
 
-namespace Server.Menus.Questions
+namespace Server.Menus.Questions;
+
+public class QuestionMenu : IMenu
 {
-    public class QuestionMenu : IMenu
+    private static int m_NextSerial;
+
+    public QuestionMenu(string question, string[] answers)
     {
-        private static int m_NextSerial;
+        Question = question?.Trim() ?? "";
+        Answers = answers;
 
-        public QuestionMenu(string question, string[] answers)
+        do
         {
-            Question = question?.Trim() ?? "";
-            Answers = answers;
+            Serial = ++m_NextSerial;
+            Serial &= 0x7FFFFFFF;
+        } while (Serial == 0);
+    }
 
-            do
-            {
-                Serial = ++m_NextSerial;
-                Serial &= 0x7FFFFFFF;
-            } while (Serial == 0);
-        }
+    public string Question { get; }
 
-        public string Question { get; }
+    public string[] Answers { get; }
 
-        public string[] Answers { get; }
+    public int Serial { get; }
 
-        public int Serial { get; }
+    public int EntryLength => Answers.Length;
 
-        public int EntryLength => Answers.Length;
+    public virtual void OnCancel(NetState state)
+    {
+    }
 
-        public virtual void OnCancel(NetState state)
-        {
-        }
+    public virtual void OnResponse(NetState state, int index)
+    {
+    }
 
-        public virtual void OnResponse(NetState state, int index)
-        {
-        }
-
-        public void SendTo(NetState state)
-        {
-            state.AddMenu(this);
-            state.SendDisplayQuestionMenu(this);
-        }
+    public void SendTo(NetState state)
+    {
+        state.AddMenu(this);
+        state.SendDisplayQuestionMenu(this);
     }
 }

@@ -1,12 +1,11 @@
-namespace Server.Items
-{
-    [Serializable(0, false)]
-    [Flippable(0x4F7C, 0x4F7D)]
-    public partial class CupidStatue : Item
-    {
-        [Constructible]
-        public CupidStatue() : base(0x4F7D) => LootType = LootType.Blessed;
+namespace Server.Items;
 
-        public override int LabelNumber => 1099220; // cupid statue
-    }
+[Serializable(0, false)]
+[Flippable(0x4F7C, 0x4F7D)]
+public partial class CupidStatue : Item
+{
+    [Constructible]
+    public CupidStatue() : base(0x4F7D) => LootType = LootType.Blessed;
+
+    public override int LabelNumber => 1099220; // cupid statue
 }

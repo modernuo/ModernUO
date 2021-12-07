@@ -1,11 +1,10 @@
-namespace Server.Items
-{
-    [Serializable(0)]
-    public partial class MacheteOfDefense : ElvenMachete
-    {
-        [Constructible]
-        public MacheteOfDefense() => Attributes.DefendChance = 5;
+namespace Server.Items;
 
-        public override int LabelNumber => 1073535; // machete of defense
-    }
+[Serializable(0)]
+public partial class MacheteOfDefense : ElvenMachete
+{
+    [Constructible]
+    public MacheteOfDefense() => Attributes.DefendChance = 5;
+
+    public override int LabelNumber => 1073535; // machete of defense
 }

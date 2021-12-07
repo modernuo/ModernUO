@@ -1,11 +1,10 @@
-﻿namespace Server.Items
-{
-    [Serializable(0, false)]
-    public partial class JellyBeans : CandyCane
-    {
-        [Constructible]
-        public JellyBeans(int amount = 1) : base(0x468C) => Stackable = true;
+﻿namespace Server.Items;
 
-        public override int LabelNumber => 1096932; /* jellybeans */
-    }
+[Serializable(0, false)]
+public partial class JellyBeans : CandyCane
+{
+    [Constructible]
+    public JellyBeans(int amount = 1) : base(0x468C) => Stackable = true;
+
+    public override int LabelNumber => 1096932; /* jellybeans */
 }

@@ -18,108 +18,107 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializationGenerator
+namespace SerializationGenerator;
+
+public static partial class SourceGeneration
 {
-    public static partial class SourceGeneration
+    public static void GetTypesFromTypedConstant(TypedConstant arg, List<ITypeSymbol> list)
     {
-        public static void GetTypesFromTypedConstant(TypedConstant arg, List<ITypeSymbol> list)
+        if (arg.Kind == TypedConstantKind.Type)
         {
-            if (arg.Kind == TypedConstantKind.Type)
+            list.Add((ITypeSymbol)arg.Value);
+        }
+        else if (arg.Kind == TypedConstantKind.Array)
+        {
+            for (var i = 0; i < arg.Values.Length; i++)
             {
-                list.Add((ITypeSymbol)arg.Value);
+                GetTypesFromTypedConstant(arg.Values[i], list);
             }
-            else if (arg.Kind == TypedConstantKind.Array)
+        }
+    }
+
+    public static void GenerateSignatureArguments(this StringBuilder source, ImmutableArray<(ITypeSymbol, string)> parameters)
+    {
+        for (var i = 0; i < parameters.Length; i++)
+        {
+            var (t, v) = parameters[i];
+            source.AppendFormat("{0} {1}", t.ToDisplayString(), v);
+            if (i < parameters.Length - 1)
             {
-                for (var i = 0; i < arg.Values.Length; i++)
+                source.Append(", ");
+            }
+        }
+    }
+
+    public static void GenerateNamedArgument(this StringBuilder source, KeyValuePair<string, TypedConstant> namedArg)
+    {
+        source.AppendFormat("{0} = ", namedArg.Key);
+        source.GenerateTypedConstant(namedArg.Value);
+    }
+
+    public static void GenerateTypedConstants(this StringBuilder source, ImmutableArray<TypedConstant> args)
+    {
+        source.Append("new []{");
+        for (var i = 0; i < args.Length; i++)
+        {
+            source.GenerateTypedConstant(args[i]);
+            if (i < args.Length - 1)
+            {
+                source.Append(", ");
+            }
+        }
+        source.Append('}');
+    }
+
+    public static void GenerateTypedConstant(this StringBuilder source, TypedConstant arg)
+    {
+        if (arg.IsNull)
+        {
+            source.Append("null");
+            return;
+        }
+
+        switch (arg.Kind)
+        {
+            default:
                 {
-                    GetTypesFromTypedConstant(arg.Values[i], list);
+                    return;
                 }
-            }
-        }
-
-        public static void GenerateSignatureArguments(this StringBuilder source, ImmutableArray<(ITypeSymbol, string)> parameters)
-        {
-            for (var i = 0; i < parameters.Length; i++)
-            {
-                var (t, v) = parameters[i];
-                source.AppendFormat("{0} {1}", t.ToDisplayString(), v);
-                if (i < parameters.Length - 1)
+            case TypedConstantKind.Primitive:
                 {
-                    source.Append(", ");
+
+                    if (arg.Value is string str)
+                    {
+                        source.AppendFormat("\"{0}\"", str);
+                    }
+                    else
+                    {
+                        source.Append(arg.Value);
+                    }
+                    break;
                 }
-            }
-        }
-
-        public static void GenerateNamedArgument(this StringBuilder source, KeyValuePair<string, TypedConstant> namedArg)
-        {
-            source.AppendFormat("{0} = ", namedArg.Key);
-            source.GenerateTypedConstant(namedArg.Value);
-        }
-
-        public static void GenerateTypedConstants(this StringBuilder source, ImmutableArray<TypedConstant> args)
-        {
-            source.Append("new []{");
-            for (var i = 0; i < args.Length; i++)
-            {
-                source.GenerateTypedConstant(args[i]);
-                if (i < args.Length - 1)
+            case TypedConstantKind.Enum:
                 {
-                    source.Append(", ");
+                    if (arg.Type == null || arg.Value == null)
+                    {
+                        source.Append("null");
+                    }
+                    else
+                    {
+                        source.AppendFormat("({0}){1}", arg.Type.ToDisplayString(), arg.Value);
+                    }
+                    break;
                 }
-            }
-            source.Append('}');
-        }
-
-        public static void GenerateTypedConstant(this StringBuilder source, TypedConstant arg)
-        {
-            if (arg.IsNull)
-            {
-                source.Append("null");
-                return;
-            }
-
-            switch (arg.Kind)
-            {
-                default:
-                    {
-                        return;
-                    }
-                case TypedConstantKind.Primitive:
-                    {
-
-                        if (arg.Value is string str)
-                        {
-                            source.AppendFormat("\"{0}\"", str);
-                        }
-                        else
-                        {
-                            source.Append(arg.Value);
-                        }
-                        break;
-                    }
-                case TypedConstantKind.Enum:
-                    {
-                        if (arg.Type == null || arg.Value == null)
-                        {
-                            source.Append("null");
-                        }
-                        else
-                        {
-                            source.AppendFormat("({0}){1}", arg.Type.ToDisplayString(), arg.Value);
-                        }
-                        break;
-                    }
-                case TypedConstantKind.Type:
-                    {
-                        source.AppendFormat("typeof({0})", ((ITypeSymbol)arg.Value)?.Name);
-                        break;
-                    }
-                case TypedConstantKind.Array:
-                    {
-                        source.GenerateTypedConstants(arg.Values);
-                        break;
-                    }
-            }
+            case TypedConstantKind.Type:
+                {
+                    source.AppendFormat("typeof({0})", ((ITypeSymbol)arg.Value)?.Name);
+                    break;
+                }
+            case TypedConstantKind.Array:
+                {
+                    source.GenerateTypedConstants(arg.Values);
+                    break;
+                }
         }
     }
 }

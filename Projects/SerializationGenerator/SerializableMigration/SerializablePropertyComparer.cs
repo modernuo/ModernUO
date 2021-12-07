@@ -15,28 +15,27 @@
 
 using System.Collections.Generic;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public class SerializablePropertyComparer : IComparer<SerializableProperty>
 {
-    public class SerializablePropertyComparer : IComparer<SerializableProperty>
+    public int Compare(SerializableProperty x, SerializableProperty y)
     {
-        public int Compare(SerializableProperty x, SerializableProperty y)
+        if (Equals(x, y))
         {
-            if (Equals(x, y))
-            {
-                return 0;
-            }
-
-            if (Equals(null, y))
-            {
-                return 1;
-            }
-
-            if (Equals(null, x))
-            {
-                return -1;
-            }
-
-            return x.Order.CompareTo(y.Order);
+            return 0;
         }
+
+        if (Equals(null, y))
+        {
+            return 1;
+        }
+
+        if (Equals(null, x))
+        {
+            return -1;
+        }
+
+        return x.Order.CompareTo(y.Order);
     }
 }

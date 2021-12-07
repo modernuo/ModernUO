@@ -15,16 +15,15 @@
 
 using System;
 
-namespace Server
+namespace Server;
+
+/// <summary>
+/// Hints to the source generator that this field or property indicates the ISerializable parent of this class.
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public sealed class SerializableParentAttribute : Attribute
 {
-    /// <summary>
-    /// Hints to the source generator that this field or property indicates the ISerializable parent of this class.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class SerializableParentAttribute : Attribute
+    public SerializableParentAttribute()
     {
-        public SerializableParentAttribute()
-        {
-        }
     }
 }

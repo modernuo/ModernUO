@@ -1,83 +1,82 @@
 using System.Collections.Generic;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class GypsyMaiden : BaseVendor
 {
-    public class GypsyMaiden : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public GypsyMaiden() : base("the gypsy maiden")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+    }
 
-        [Constructible]
-        public GypsyMaiden() : base("the gypsy maiden")
-        {
-        }
+    public GypsyMaiden(Serial serial) : base(serial)
+    {
+    }
 
-        public GypsyMaiden(Serial serial) : base(serial)
-        {
-        }
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+    public override bool GetGender() => true;
 
-        public override bool GetGender() => true;
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBProvisioner());
+    }
 
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBProvisioner());
-        }
+    public override void InitOutfit()
+    {
+        base.InitOutfit();
 
-        public override void InitOutfit()
-        {
-            base.InitOutfit();
-
-            AddItem(
-                Utility.Random(4) switch
-                {
-                    0 => new JesterHat(Utility.RandomBrightHue()),
-                    1 => new Bandana(Utility.RandomBrightHue()),
-                    2 => new SkullCap(Utility.RandomBrightHue()),
-                    _ => null // 3
-                }
-            );
-
-            if (Utility.RandomBool())
+        AddItem(
+            Utility.Random(4) switch
             {
-                AddItem(new HalfApron(Utility.RandomBrightHue()));
+                0 => new JesterHat(Utility.RandomBrightHue()),
+                1 => new Bandana(Utility.RandomBrightHue()),
+                2 => new SkullCap(Utility.RandomBrightHue()),
+                _ => null // 3
             }
+        );
 
-            var item = FindItemOnLayer(Layer.Pants);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
-
-            item = FindItemOnLayer(Layer.OuterLegs);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
-
-            item = FindItemOnLayer(Layer.InnerLegs);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
+        if (Utility.RandomBool())
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
+            AddItem(new HalfApron(Utility.RandomBrightHue()));
         }
 
-        public override void Deserialize(IGenericReader reader)
+        var item = FindItemOnLayer(Layer.Pants);
+
+        if (item != null)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            item.Hue = Utility.RandomBrightHue();
         }
+
+        item = FindItemOnLayer(Layer.OuterLegs);
+
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
+
+        item = FindItemOnLayer(Layer.InnerLegs);
+
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

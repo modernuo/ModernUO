@@ -1,540 +1,539 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class EmptyWoodenBowl : Item
 {
-    public class EmptyWoodenBowl : Item
+    [Constructible]
+    public EmptyWoodenBowl() : base(0x15F8) => Weight = 1.0;
+
+    public EmptyWoodenBowl(Serial serial) : base(serial)
     {
-        [Constructible]
-        public EmptyWoodenBowl() : base(0x15F8) => Weight = 1.0;
-
-        public EmptyWoodenBowl(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class EmptyPewterBowl : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public EmptyPewterBowl() : base(0x15FD) => Weight = 1.0;
+        base.Serialize(writer);
 
-        public EmptyPewterBowl(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class WoodenBowlOfCarrots : Food
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public WoodenBowlOfCarrots() : base(0x15F9, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
+        base.Deserialize(reader);
 
-        public WoodenBowlOfCarrots(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
+public class EmptyPewterBowl : Item
+{
+    [Constructible]
+    public EmptyPewterBowl() : base(0x15FD) => Weight = 1.0;
 
-            from.AddToBackpack(new EmptyWoodenBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public EmptyPewterBowl(Serial serial) : base(serial)
+    {
     }
 
-    public class WoodenBowlOfCorn : Food
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public WoodenBowlOfCorn() : base(0x15FA, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
+        base.Serialize(writer);
 
-        public WoodenBowlOfCorn(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyWoodenBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class WoodenBowlOfLettuce : Food
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public WoodenBowlOfLettuce() : base(0x15FB, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
+        base.Deserialize(reader);
 
-        public WoodenBowlOfLettuce(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyWoodenBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class WoodenBowlOfCarrots : Food
+{
+    [Constructible]
+    public WoodenBowlOfCarrots() : base(0x15F9, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
     }
 
-    public class WoodenBowlOfPeas : Food
+    public WoodenBowlOfCarrots(Serial serial) : base(serial)
     {
-        [Constructible]
-        public WoodenBowlOfPeas() : base(0x15FC, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
-
-        public WoodenBowlOfPeas(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyWoodenBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PewterBowlOfCarrots : Food
+    public override bool Eat(Mobile from)
     {
-        [Constructible]
-        public PewterBowlOfCarrots() : base(0x15FE, 1)
+        if (!base.Eat(from))
         {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
+            return false;
         }
 
-        public PewterBowlOfCarrots(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyPewterBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        from.AddToBackpack(new EmptyWoodenBowl());
+        return true;
     }
 
-    public class PewterBowlOfCorn : Food
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public PewterBowlOfCorn() : base(0x15FF, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
+        base.Serialize(writer);
 
-        public PewterBowlOfCorn(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyPewterBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class PewterBowlOfLettuce : Food
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public PewterBowlOfLettuce() : base(0x1600, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
+        base.Deserialize(reader);
 
-        public PewterBowlOfLettuce(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyPewterBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class WoodenBowlOfCorn : Food
+{
+    [Constructible]
+    public WoodenBowlOfCorn() : base(0x15FA, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
     }
 
-    public class PewterBowlOfPeas : Food
+    public WoodenBowlOfCorn(Serial serial) : base(serial)
     {
-        [Constructible]
-        public PewterBowlOfPeas() : base(0x1601, 1)
-        {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
-        }
-
-        public PewterBowlOfPeas(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyPewterBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class PewterBowlOfPotatos : Food
+    public override bool Eat(Mobile from)
     {
-        [Constructible]
-        public PewterBowlOfPotatos() : base(0x1602, 1)
+        if (!base.Eat(from))
         {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
+            return false;
         }
 
-        public PewterBowlOfPotatos(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyPewterBowl());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        from.AddToBackpack(new EmptyWoodenBowl());
+        return true;
     }
 
-    [TypeAlias("Server.Items.EmptyLargeWoodenBowl")]
-    public class EmptyWoodenTub : Item
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public EmptyWoodenTub() : base(0x1605) => Weight = 2.0;
+        base.Serialize(writer);
 
-        public EmptyWoodenTub(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    [TypeAlias("Server.Items.EmptyLargePewterBowl")]
-    public class EmptyPewterTub : Item
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public EmptyPewterTub() : base(0x1603) => Weight = 2.0;
+        base.Deserialize(reader);
 
-        public EmptyPewterTub(Serial serial) : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+public class WoodenBowlOfLettuce : Food
+{
+    [Constructible]
+    public WoodenBowlOfLettuce() : base(0x15FB, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
     }
 
-    public class WoodenBowlOfStew : Food
+    public WoodenBowlOfLettuce(Serial serial) : base(serial)
     {
-        [Constructible]
-        public WoodenBowlOfStew() : base(0x1604, 1)
-        {
-            Stackable = false;
-            Weight = 2.0;
-            FillFactor = 2;
-        }
-
-        public WoodenBowlOfStew(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyWoodenTub());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class WoodenBowlOfTomatoSoup : Food
+    public override bool Eat(Mobile from)
     {
-        [Constructible]
-        public WoodenBowlOfTomatoSoup() : base(0x1606, 1)
+        if (!base.Eat(from))
         {
-            Stackable = false;
-            Weight = 2.0;
-            FillFactor = 2;
+            return false;
         }
 
-        public WoodenBowlOfTomatoSoup(Serial serial) : base(serial)
+        from.AddToBackpack(new EmptyWoodenBowl());
+        return true;
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class WoodenBowlOfPeas : Food
+{
+    [Constructible]
+    public WoodenBowlOfPeas() : base(0x15FC, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+
+    public WoodenBowlOfPeas(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
         {
+            return false;
         }
 
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
+        from.AddToBackpack(new EmptyWoodenBowl());
+        return true;
+    }
 
-            from.AddToBackpack(new EmptyWoodenTub());
-            return true;
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PewterBowlOfCarrots : Food
+{
+    [Constructible]
+    public PewterBowlOfCarrots() : base(0x15FE, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+
+    public PewterBowlOfCarrots(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        from.AddToBackpack(new EmptyPewterBowl());
+        return true;
+    }
 
-            writer.Write(0); // version
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PewterBowlOfCorn : Food
+{
+    [Constructible]
+    public PewterBowlOfCorn() : base(0x15FF, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+
+    public PewterBowlOfCorn(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
         }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        from.AddToBackpack(new EmptyPewterBowl());
+        return true;
+    }
 
-            var version = reader.ReadInt();
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PewterBowlOfLettuce : Food
+{
+    [Constructible]
+    public PewterBowlOfLettuce() : base(0x1600, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+
+    public PewterBowlOfLettuce(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
         }
+
+        from.AddToBackpack(new EmptyPewterBowl());
+        return true;
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PewterBowlOfPeas : Food
+{
+    [Constructible]
+    public PewterBowlOfPeas() : base(0x1601, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+
+    public PewterBowlOfPeas(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
+        }
+
+        from.AddToBackpack(new EmptyPewterBowl());
+        return true;
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class PewterBowlOfPotatos : Food
+{
+    [Constructible]
+    public PewterBowlOfPotatos() : base(0x1602, 1)
+    {
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+
+    public PewterBowlOfPotatos(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
+        }
+
+        from.AddToBackpack(new EmptyPewterBowl());
+        return true;
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+[TypeAlias("Server.Items.EmptyLargeWoodenBowl")]
+public class EmptyWoodenTub : Item
+{
+    [Constructible]
+    public EmptyWoodenTub() : base(0x1605) => Weight = 2.0;
+
+    public EmptyWoodenTub(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+[TypeAlias("Server.Items.EmptyLargePewterBowl")]
+public class EmptyPewterTub : Item
+{
+    [Constructible]
+    public EmptyPewterTub() : base(0x1603) => Weight = 2.0;
+
+    public EmptyPewterTub(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class WoodenBowlOfStew : Food
+{
+    [Constructible]
+    public WoodenBowlOfStew() : base(0x1604, 1)
+    {
+        Stackable = false;
+        Weight = 2.0;
+        FillFactor = 2;
+    }
+
+    public WoodenBowlOfStew(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
+        }
+
+        from.AddToBackpack(new EmptyWoodenTub());
+        return true;
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class WoodenBowlOfTomatoSoup : Food
+{
+    [Constructible]
+    public WoodenBowlOfTomatoSoup() : base(0x1606, 1)
+    {
+        Stackable = false;
+        Weight = 2.0;
+        FillFactor = 2;
+    }
+
+    public WoodenBowlOfTomatoSoup(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool Eat(Mobile from)
+    {
+        if (!base.Eat(from))
+        {
+            return false;
+        }
+
+        from.AddToBackpack(new EmptyWoodenTub());
+        return true;
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

@@ -16,17 +16,16 @@
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public record SerializableMetadata
 {
-    public record SerializableMetadata
-    {
-        [JsonPropertyName("version")]
-        public int Version { get; init; }
+    [JsonPropertyName("version")]
+    public int Version { get; init; }
 
-        [JsonPropertyName("type")]
-        public string Type { get; init; }
+    [JsonPropertyName("type")]
+    public string Type { get; init; }
 
-        [JsonPropertyName("properties")]
-        public ImmutableArray<SerializableProperty>? Properties { get; init; }
-    }
+    [JsonPropertyName("properties")]
+    public ImmutableArray<SerializableProperty>? Properties { get; init; }
 }

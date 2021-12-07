@@ -1,86 +1,85 @@
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x3D8E, 0x3D8F)]
+public class LargeFishingNetComponent : AddonComponent
 {
-    [Flippable(0x3D8E, 0x3D8F)]
-    public class LargeFishingNetComponent : AddonComponent
+    public LargeFishingNetComponent() : base(0x3D8E)
     {
-        public LargeFishingNetComponent() : base(0x3D8E)
-        {
-        }
-
-        public LargeFishingNetComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1076285; // Large Fish Net
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class LargeFishingNetAddon : BaseAddon
+    public LargeFishingNetComponent(Serial serial) : base(serial)
     {
-        [Constructible]
-        public LargeFishingNetAddon()
-        {
-            AddComponent(new LargeFishingNetComponent(), 0, 0, 0);
-        }
-
-        public LargeFishingNetAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new LargeFishingNetDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class LargeFishingNetDeed : BaseAddonDeed
+    public override int LabelNumber => 1076285; // Large Fish Net
+
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public LargeFishingNetDeed() => LootType = LootType.Blessed;
+        base.Serialize(writer);
 
-        public LargeFishingNetDeed(Serial serial) : base(serial)
-        {
-        }
+        writer.WriteEncodedInt(0); // version
+    }
 
-        public override BaseAddon Addon => new LargeFishingNetAddon();
-        public override int LabelNumber => 1076285; // Large Fish Net
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        var version = reader.ReadEncodedInt();
+    }
+}
 
-            writer.WriteEncodedInt(0); // version
-        }
+public class LargeFishingNetAddon : BaseAddon
+{
+    [Constructible]
+    public LargeFishingNetAddon()
+    {
+        AddComponent(new LargeFishingNetComponent(), 0, 0, 0);
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public LargeFishingNetAddon(Serial serial) : base(serial)
+    {
+    }
 
-            var version = reader.ReadEncodedInt();
-        }
+    public override BaseAddonDeed Deed => new LargeFishingNetDeed();
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
+    }
+}
+
+public class LargeFishingNetDeed : BaseAddonDeed
+{
+    [Constructible]
+    public LargeFishingNetDeed() => LootType = LootType.Blessed;
+
+    public LargeFishingNetDeed(Serial serial) : base(serial)
+    {
+    }
+
+    public override BaseAddon Addon => new LargeFishingNetAddon();
+    public override int LabelNumber => 1076285; // Large Fish Net
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.WriteEncodedInt(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadEncodedInt();
     }
 }

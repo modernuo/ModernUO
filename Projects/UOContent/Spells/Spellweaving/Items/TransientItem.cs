@@ -1,108 +1,107 @@
 using System;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class TransientItem : Item
 {
-    public class TransientItem : Item
+    private TimerExecutionToken _timerToken;
+
+    [Constructible]
+    public TransientItem(int itemID, TimeSpan lifeSpan)
+        : base(itemID)
     {
-        private TimerExecutionToken _timerToken;
+        CreationTime = Core.Now;
+        LifeSpan = lifeSpan;
 
-        [Constructible]
-        public TransientItem(int itemID, TimeSpan lifeSpan)
-            : base(itemID)
+        Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+    }
+
+    public TransientItem(Serial serial)
+        : base(serial)
+    {
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TimeSpan LifeSpan { get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public DateTime CreationTime { get; set; }
+
+    public override bool Nontransferable => true;
+
+    public virtual TextDefinition InvalidTransferMessage => null;
+
+    public override void HandleInvalidTransfer(Mobile from)
+    {
+        if (InvalidTransferMessage != null)
         {
-            CreationTime = Core.Now;
-            LifeSpan = lifeSpan;
-
-            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+            TextDefinition.SendMessageTo(from, InvalidTransferMessage);
         }
 
-        public TransientItem(Serial serial)
-            : base(serial)
+        Delete();
+    }
+
+    public virtual void Expire(Mobile parent)
+    {
+        parent?.SendLocalizedMessage(1072515, Name ?? $"#{LabelNumber}"); // The ~1_name~ expired...
+
+        Effects.PlaySound(GetWorldLocation(), Map, 0x201);
+
+        Delete();
+    }
+
+    public virtual void SendTimeRemainingMessage(Mobile to)
+    {
+        to.SendLocalizedMessage(
+            1072516,
+            $"{Name ?? $"#{LabelNumber}"}\t{(int)LifeSpan.TotalSeconds}"
+        ); // ~1_name~ will expire in ~2_val~ seconds!
+    }
+
+    public override void OnDelete()
+    {
+        _timerToken.Cancel();
+        base.OnDelete();
+    }
+
+    public virtual void CheckExpiry()
+    {
+        if (CreationTime + LifeSpan < Core.Now)
         {
+            Expire(RootParent as Mobile);
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan LifeSpan { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime CreationTime { get; set; }
-
-        public override bool Nontransferable => true;
-
-        public virtual TextDefinition InvalidTransferMessage => null;
-
-        public override void HandleInvalidTransfer(Mobile from)
+        else
         {
-            if (InvalidTransferMessage != null)
-            {
-                TextDefinition.SendMessageTo(from, InvalidTransferMessage);
-            }
-
-            Delete();
+            InvalidateProperties();
         }
+    }
 
-        public virtual void Expire(Mobile parent)
-        {
-            parent?.SendLocalizedMessage(1072515, Name ?? $"#{LabelNumber}"); // The ~1_name~ expired...
+    public override void GetProperties(ObjectPropertyList list)
+    {
+        base.GetProperties(list);
 
-            Effects.PlaySound(GetWorldLocation(), Map, 0x201);
+        var remaining = CreationTime + LifeSpan - Core.Now;
 
-            Delete();
-        }
+        list.Add(1072517, ((int)remaining.TotalSeconds).ToString()); // Lifespan: ~1_val~ seconds
+    }
 
-        public virtual void SendTimeRemainingMessage(Mobile to)
-        {
-            to.SendLocalizedMessage(
-                1072516,
-                $"{Name ?? $"#{LabelNumber}"}\t{(int)LifeSpan.TotalSeconds}"
-            ); // ~1_name~ will expire in ~2_val~ seconds!
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(0);
 
-        public override void OnDelete()
-        {
-            _timerToken.Cancel();
-            base.OnDelete();
-        }
+        writer.Write(LifeSpan);
+        writer.Write(CreationTime);
+    }
 
-        public virtual void CheckExpiry()
-        {
-            if (CreationTime + LifeSpan < Core.Now)
-            {
-                Expire(RootParent as Mobile);
-            }
-            else
-            {
-                InvalidateProperties();
-            }
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
 
-        public override void GetProperties(ObjectPropertyList list)
-        {
-            base.GetProperties(list);
+        LifeSpan = reader.ReadTimeSpan();
+        CreationTime = reader.ReadDateTime();
 
-            var remaining = CreationTime + LifeSpan - Core.Now;
-
-            list.Add(1072517, ((int)remaining.TotalSeconds).ToString()); // Lifespan: ~1_val~ seconds
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-
-            writer.Write(LifeSpan);
-            writer.Write(CreationTime);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            LifeSpan = reader.ReadTimeSpan();
-            CreationTime = reader.ReadDateTime();
-
-            Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
-        }
+        Timer.StartTimer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
     }
 }

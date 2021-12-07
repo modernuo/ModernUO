@@ -1,199 +1,198 @@
 ﻿using Server.Items;
 
-namespace Server.Engines.MLQuests.Items
+namespace Server.Engines.MLQuests.Items;
+
+public static class RewardBag
 {
-    public static class RewardBag
+    public static void Fill(Container c, int itemCount, double talismanChance)
     {
-        public static void Fill(Container c, int itemCount, double talismanChance)
+        c.Hue = Utility.RandomNondyedHue();
+
+        var done = 0;
+
+        if (Utility.RandomDouble() < talismanChance)
         {
-            c.Hue = Utility.RandomNondyedHue();
-
-            var done = 0;
-
-            if (Utility.RandomDouble() < talismanChance)
-            {
-                c.DropItem(new RandomTalisman());
-                ++done;
-            }
-
-            for (; done < itemCount; ++done)
-            {
-                var loot = Utility.Random(5) switch
-                {
-                    0 => (Item)Loot.RandomWeapon(false, true),
-                    1 => Loot.RandomArmor(false, true),
-                    2 => Loot.RandomRangedWeapon(false, true),
-                    3 => Loot.RandomJewelry(),
-                    _ => Loot.RandomHat(false) // 4
-                };
-
-                if (loot == null)
-                {
-                    continue;
-                }
-
-                Enhance(loot);
-                c.DropItem(loot);
-            }
+            c.DropItem(new RandomTalisman());
+            ++done;
         }
 
-        public static void Enhance(Item loot)
+        for (; done < itemCount; ++done)
         {
-            if (loot is BaseWeapon weapon)
+            var loot = Utility.Random(5) switch
             {
-                BaseRunicTool.ApplyAttributesTo(weapon, Utility.RandomMinMax(1, 5), 10, 80);
-                return;
+                0 => (Item)Loot.RandomWeapon(false, true),
+                1 => Loot.RandomArmor(false, true),
+                2 => Loot.RandomRangedWeapon(false, true),
+                3 => Loot.RandomJewelry(),
+                _ => Loot.RandomHat(false) // 4
+            };
+
+            if (loot == null)
+            {
+                continue;
             }
 
-            if (loot is BaseArmor armor)
-            {
-                BaseRunicTool.ApplyAttributesTo(armor, Utility.RandomMinMax(1, 5), 10, 80);
-            }
-
-            if (loot is BaseJewel jewel)
-            {
-                BaseRunicTool.ApplyAttributesTo(jewel, Utility.RandomMinMax(1, 5), 10, 80);
-            }
+            Enhance(loot);
+            c.DropItem(loot);
         }
     }
 
-    public class SmallBagOfTrinkets : Bag
+    public static void Enhance(Item loot)
     {
-        [Constructible]
-        public SmallBagOfTrinkets()
+        if (loot is BaseWeapon weapon)
         {
-            RewardBag.Fill(this, 1, 0.0);
+            BaseRunicTool.ApplyAttributesTo(weapon, Utility.RandomMinMax(1, 5), 10, 80);
+            return;
         }
 
-        public SmallBagOfTrinkets(Serial serial)
-            : base(serial)
+        if (loot is BaseArmor armor)
         {
+            BaseRunicTool.ApplyAttributesTo(armor, Utility.RandomMinMax(1, 5), 10, 80);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        if (loot is BaseJewel jewel)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            BaseRunicTool.ApplyAttributesTo(jewel, Utility.RandomMinMax(1, 5), 10, 80);
         }
     }
+}
 
-    public class BagOfTrinkets : Bag
+public class SmallBagOfTrinkets : Bag
+{
+    [Constructible]
+    public SmallBagOfTrinkets()
     {
-        [Constructible]
-        public BagOfTrinkets()
-        {
-            RewardBag.Fill(this, 2, 0.05);
-        }
-
-        public BagOfTrinkets(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        RewardBag.Fill(this, 1, 0.0);
     }
 
-    public class BagOfTreasure : Bag
+    public SmallBagOfTrinkets(Serial serial)
+        : base(serial)
     {
-        [Constructible]
-        public BagOfTreasure()
-        {
-            RewardBag.Fill(this, 3, 0.20);
-        }
-
-        public BagOfTreasure(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
-    public class LargeBagOfTreasure : Bag
+    public override void Serialize(IGenericWriter writer)
     {
-        [Constructible]
-        public LargeBagOfTreasure()
-        {
-            RewardBag.Fill(this, 4, 0.50);
-        }
+        base.Serialize(writer);
 
-        public LargeBagOfTreasure(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
     }
 
-    public class RewardStrongbox : WoodenBox
+    public override void Deserialize(IGenericReader reader)
     {
-        [Constructible]
-        public RewardStrongbox()
-        {
-            RewardBag.Fill(this, 5, 1.0);
-        }
+        base.Deserialize(reader);
 
-        public RewardStrongbox(Serial serial)
-            : base(serial)
-        {
-        }
+        var version = reader.ReadInt();
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+public class BagOfTrinkets : Bag
+{
+    [Constructible]
+    public BagOfTrinkets()
+    {
+        RewardBag.Fill(this, 2, 0.05);
+    }
 
-            writer.Write(0); // version
-        }
+    public BagOfTrinkets(Serial serial)
+        : base(serial)
+    {
+    }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-            var version = reader.ReadInt();
-        }
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class BagOfTreasure : Bag
+{
+    [Constructible]
+    public BagOfTreasure()
+    {
+        RewardBag.Fill(this, 3, 0.20);
+    }
+
+    public BagOfTreasure(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class LargeBagOfTreasure : Bag
+{
+    [Constructible]
+    public LargeBagOfTreasure()
+    {
+        RewardBag.Fill(this, 4, 0.50);
+    }
+
+    public LargeBagOfTreasure(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+}
+
+public class RewardStrongbox : WoodenBox
+{
+    [Constructible]
+    public RewardStrongbox()
+    {
+        RewardBag.Fill(this, 5, 1.0);
+    }
+
+    public RewardStrongbox(Serial serial)
+        : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }

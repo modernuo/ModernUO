@@ -1,128 +1,127 @@
 using Server.Multis;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class Hold : Container
 {
-    public class Hold : Container
+    private BaseBoat m_Boat;
+
+    public Hold(BaseBoat boat) : base(0x3EAE)
     {
-        private BaseBoat m_Boat;
+        m_Boat = boat;
+        Movable = false;
+    }
 
-        public Hold(BaseBoat boat) : base(0x3EAE)
+    public Hold(Serial serial) : base(serial)
+    {
+    }
+
+    public override bool IsDecoContainer => false;
+
+    public void SetFacing(Direction dir)
+    {
+        ItemID = dir switch
         {
-            m_Boat = boat;
-            Movable = false;
+            Direction.East  => 0x3E65,
+            Direction.West  => 0x3E93,
+            Direction.North => 0x3EAE,
+            Direction.South => 0x3EB9,
+            _               => ItemID
+        };
+    }
+
+    public override bool OnDragDrop(Mobile from, Item item)
+    {
+        if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
+        {
+            return false;
         }
 
-        public Hold(Serial serial) : base(serial)
+        return base.OnDragDrop(from, item);
+    }
+
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+        if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
         {
+            return false;
         }
 
-        public override bool IsDecoContainer => false;
+        return base.OnDragDropInto(from, item, p);
+    }
 
-        public void SetFacing(Direction dir)
+    public override bool CheckItemUse(Mobile from, Item item)
+    {
+        if (item != this && (m_Boat?.Contains(from) != true || m_Boat.IsMoving))
         {
-            ItemID = dir switch
-            {
-                Direction.East  => 0x3E65,
-                Direction.West  => 0x3E93,
-                Direction.North => 0x3EAE,
-                Direction.South => 0x3EB9,
-                _               => ItemID
-            };
+            return false;
         }
 
-        public override bool OnDragDrop(Mobile from, Item item)
-        {
-            if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
-            {
-                return false;
-            }
+        return base.CheckItemUse(from, item);
+    }
 
-            return base.OnDragDrop(from, item);
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
+    {
+        if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
+        {
+            return false;
         }
 
-        public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
-        {
-            if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
-            {
-                return false;
-            }
+        return base.CheckLift(from, item, ref reject);
+    }
 
-            return base.OnDragDropInto(from, item, p);
+    public override void OnAfterDelete()
+    {
+        m_Boat?.Delete();
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (m_Boat?.Contains(from) != true)
+        {
+            m_Boat?.TillerMan?.Say(502490); // You must be on the ship to open the hold.
         }
-
-        public override bool CheckItemUse(Mobile from, Item item)
+        else if (m_Boat.IsMoving)
         {
-            if (item != this && (m_Boat?.Contains(from) != true || m_Boat.IsMoving))
-            {
-                return false;
-            }
-
-            return base.CheckItemUse(from, item);
+            m_Boat.TillerMan?.Say(502491); // I can not open the hold while the ship is moving.
         }
-
-        public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
+        else
         {
-            if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
-            {
-                return false;
-            }
-
-            return base.CheckLift(from, item, ref reject);
+            base.OnDoubleClick(from);
         }
+    }
 
-        public override void OnAfterDelete()
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0);
+
+        writer.Write(m_Boat);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        switch (version)
         {
-            m_Boat?.Delete();
-        }
+            case 0:
+                {
+                    m_Boat = reader.ReadEntity<BaseBoat>();
 
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (m_Boat?.Contains(from) != true)
-            {
-                m_Boat?.TillerMan?.Say(502490); // You must be on the ship to open the hold.
-            }
-            else if (m_Boat.IsMoving)
-            {
-                m_Boat.TillerMan?.Say(502491); // I can not open the hold while the ship is moving.
-            }
-            else
-            {
-                base.OnDoubleClick(from);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(m_Boat);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
+                    if (m_Boat == null || Parent != null)
                     {
-                        m_Boat = reader.ReadEntity<BaseBoat>();
-
-                        if (m_Boat == null || Parent != null)
-                        {
-                            Delete();
-                        }
-
-                        Movable = false;
-
-                        break;
+                        Delete();
                     }
-            }
+
+                    Movable = false;
+
+                    break;
+                }
         }
     }
 }

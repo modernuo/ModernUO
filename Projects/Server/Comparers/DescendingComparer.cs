@@ -16,9 +16,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server
-{
-    public class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
-        public int Compare(T x, T y) => y?.CompareTo(x) ?? 1;
-    }
+namespace Server;
+
+public class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+    public int Compare(T x, T y) => y?.CompareTo(x) ?? 1;
 }

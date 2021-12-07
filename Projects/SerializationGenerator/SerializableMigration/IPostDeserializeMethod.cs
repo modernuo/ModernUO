@@ -16,16 +16,15 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public interface IPostDeserializeMethod
 {
-    public interface IPostDeserializeMethod
-    {
-        public void PostDeserializeMethod(
-            StringBuilder source,
-            string indent,
-            SerializableProperty property,
-            Compilation compilation,
-            INamedTypeSymbol classSymbol
-        );
-    }
+    public void PostDeserializeMethod(
+        StringBuilder source,
+        string indent,
+        SerializableProperty property,
+        Compilation compilation,
+        INamedTypeSymbol classSymbol
+    );
 }

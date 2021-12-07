@@ -2,188 +2,166 @@ using Server.Items;
 using Server.Network;
 using Server.Targeting;
 
-namespace Server.Engines.Plants
+namespace Server.Engines.Plants;
+
+public class PlantBowl : Item
 {
-    public class PlantBowl : Item
+    private static readonly int[] m_DirtPatchTiles =
     {
-        private static readonly int[] m_DirtPatchTiles =
-        {
-            0x9, 0x15,
-            0x71, 0x7C,
-            0x82, 0xA7,
-            0xDC, 0xE3,
-            0xE8, 0xEB,
-            0x141, 0x144,
-            0x14C, 0x15C,
-            0x169, 0x174,
-            0x1DC, 0x1EF,
-            0x272, 0x275,
-            0x27E, 0x281,
-            0x2D0, 0x2D7,
-            0x2E5, 0x2FF,
-            0x303, 0x31F,
-            0x32C, 0x32F,
-            0x33D, 0x340,
-            0x345, 0x34C,
-            0x355, 0x358,
-            0x367, 0x36E,
-            0x377, 0x37A,
-            0x38D, 0x390,
-            0x395, 0x39C,
-            0x3A5, 0x3A8,
-            0x3F6, 0x405,
-            0x547, 0x54E,
-            0x553, 0x556,
-            0x597, 0x59E,
-            0x623, 0x63A,
-            0x6F3, 0x6FA,
-            0x777, 0x791,
-            0x79A, 0x7A9,
-            0x7AE, 0x7B1,
-            0x98C, 0x99F,
-            0x9AC, 0x9BF,
-            0x5B27, 0x5B3E,
-            0x71F4, 0x71FB,
-            0x72C9, 0x72CA
-        };
+        0x9, 0x15,
+        0x71, 0x7C,
+        0x82, 0xA7,
+        0xDC, 0xE3,
+        0xE8, 0xEB,
+        0x141, 0x144,
+        0x14C, 0x15C,
+        0x169, 0x174,
+        0x1DC, 0x1EF,
+        0x272, 0x275,
+        0x27E, 0x281,
+        0x2D0, 0x2D7,
+        0x2E5, 0x2FF,
+        0x303, 0x31F,
+        0x32C, 0x32F,
+        0x33D, 0x340,
+        0x345, 0x34C,
+        0x355, 0x358,
+        0x367, 0x36E,
+        0x377, 0x37A,
+        0x38D, 0x390,
+        0x395, 0x39C,
+        0x3A5, 0x3A8,
+        0x3F6, 0x405,
+        0x547, 0x54E,
+        0x553, 0x556,
+        0x597, 0x59E,
+        0x623, 0x63A,
+        0x6F3, 0x6FA,
+        0x777, 0x791,
+        0x79A, 0x7A9,
+        0x7AE, 0x7B1,
+        0x98C, 0x99F,
+        0x9AC, 0x9BF,
+        0x5B27, 0x5B3E,
+        0x71F4, 0x71FB,
+        0x72C9, 0x72CA
+    };
 
-        [Constructible]
-        public PlantBowl() : base(0x15FD) => Weight = 1.0;
+    [Constructible]
+    public PlantBowl() : base(0x15FD) => Weight = 1.0;
 
-        public PlantBowl(Serial serial) : base(serial)
+    public PlantBowl(Serial serial) : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1060834; // a plant bowl
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!IsChildOf(from.Backpack))
         {
+            from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
+            return;
         }
 
-        public override int LabelNumber => 1060834; // a plant bowl
+        from.Target = new InternalTarget(this);
+        from.SendLocalizedMessage(1061897); // Choose a patch of dirt to scoop up.
+    }
 
-        public override void OnDoubleClick(Mobile from)
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+    }
+
+    public static bool IsDirtPatch(object obj)
+    {
+        int tileID;
+
+        if (obj is Static staticObj && !staticObj.Movable)
         {
-            if (!IsChildOf(from.Backpack))
+            tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+        }
+        else if (obj is StaticTarget staticTarget)
+        {
+            tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
+        }
+        else if (obj is LandTarget landTarget)
+        {
+            tileID = landTarget.TileID;
+        }
+        else
+        {
+            return false;
+        }
+
+        var contains = false;
+
+        for (var i = 0; !contains && i < m_DirtPatchTiles.Length; i += 2)
+        {
+            contains = tileID >= m_DirtPatchTiles[i] && tileID <= m_DirtPatchTiles[i + 1];
+        }
+
+        return contains;
+    }
+
+    private class InternalTarget : Target
+    {
+        private readonly PlantBowl m_PlantBowl;
+
+        public InternalTarget(PlantBowl plantBowl) : base(3, true, TargetFlags.None) => m_PlantBowl = plantBowl;
+
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (m_PlantBowl.Deleted)
+            {
+                return;
+            }
+
+            if (!m_PlantBowl.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
                 return;
             }
 
-            from.Target = new InternalTarget(this);
-            from.SendLocalizedMessage(1061897); // Choose a patch of dirt to scoop up.
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public static bool IsDirtPatch(object obj)
-        {
-            int tileID;
-
-            if (obj is Static staticObj && !staticObj.Movable)
+            if (targeted is FertileDirt dirt)
             {
-                tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
-            }
-            else if (obj is StaticTarget staticTarget)
-            {
-                tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
-            }
-            else if (obj is LandTarget landTarget)
-            {
-                tileID = landTarget.TileID;
-            }
-            else
-            {
-                return false;
-            }
+                var _dirtNeeded = Core.ML ? 20 : 40;
 
-            var contains = false;
-
-            for (var i = 0; !contains && i < m_DirtPatchTiles.Length; i += 2)
-            {
-                contains = tileID >= m_DirtPatchTiles[i] && tileID <= m_DirtPatchTiles[i + 1];
-            }
-
-            return contains;
-        }
-
-        private class InternalTarget : Target
-        {
-            private readonly PlantBowl m_PlantBowl;
-
-            public InternalTarget(PlantBowl plantBowl) : base(3, true, TargetFlags.None) => m_PlantBowl = plantBowl;
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                if (m_PlantBowl.Deleted)
-                {
-                    return;
-                }
-
-                if (!m_PlantBowl.IsChildOf(from.Backpack))
+                if (!dirt.IsChildOf(from.Backpack))
                 {
                     from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
-                    return;
                 }
-
-                if (targeted is FertileDirt dirt)
+                else if (dirt.Amount < _dirtNeeded)
                 {
-                    var _dirtNeeded = Core.ML ? 20 : 40;
-
-                    if (!dirt.IsChildOf(from.Backpack))
-                    {
-                        from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
-                    }
-                    else if (dirt.Amount < _dirtNeeded)
-                    {
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1061896
-                        ); // You need more dirt to fill a plant bowl!
-                    }
-                    else
-                    {
-                        var fullBowl = new PlantItem(true);
-
-                        if (from.PlaceInBackpack(fullBowl))
-                        {
-                            dirt.Consume(_dirtNeeded);
-                            m_PlantBowl.Delete();
-
-                            from.LocalOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                1061895
-                            ); // You fill the bowl with fresh dirt.
-                        }
-                        else
-                        {
-                            fullBowl.Delete();
-
-                            from.LocalOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                1061894
-                            ); // There is no room in your backpack for a bowl full of dirt!
-                        }
-                    }
+                    from.LocalOverheadMessage(
+                        MessageType.Regular,
+                        0x3B2,
+                        1061896
+                    ); // You need more dirt to fill a plant bowl!
                 }
-                else if (IsDirtPatch(targeted))
+                else
                 {
-                    var fullBowl = new PlantItem();
+                    var fullBowl = new PlantItem(true);
 
                     if (from.PlaceInBackpack(fullBowl))
                     {
+                        dirt.Consume(_dirtNeeded);
                         m_PlantBowl.Delete();
 
-                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061895); // You fill the bowl with fresh dirt.
+                        from.LocalOverheadMessage(
+                            MessageType.Regular,
+                            0x3B2,
+                            1061895
+                        ); // You fill the bowl with fresh dirt.
                     }
                     else
                     {
@@ -196,20 +174,41 @@ namespace Server.Engines.Plants
                         ); // There is no room in your backpack for a bowl full of dirt!
                     }
                 }
+            }
+            else if (IsDirtPatch(targeted))
+            {
+                var fullBowl = new PlantItem();
+
+                if (from.PlaceInBackpack(fullBowl))
+                {
+                    m_PlantBowl.Delete();
+
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061895); // You fill the bowl with fresh dirt.
+                }
                 else
                 {
+                    fullBowl.Delete();
+
                     from.LocalOverheadMessage(
                         MessageType.Regular,
                         0x3B2,
-                        1061893
-                    ); // You'll want to gather fresh dirt in order to raise a healthy plant!
+                        1061894
+                    ); // There is no room in your backpack for a bowl full of dirt!
                 }
             }
-
-            protected override void OnTargetOutOfRange(Mobile from, object targeted)
+            else
             {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502825); // That location is too far away
+                from.LocalOverheadMessage(
+                    MessageType.Regular,
+                    0x3B2,
+                    1061893
+                ); // You'll want to gather fresh dirt in order to raise a healthy plant!
             }
+        }
+
+        protected override void OnTargetOutOfRange(Mobile from, object targeted)
+        {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502825); // That location is too far away
         }
     }
 }

@@ -1,125 +1,124 @@
 using Server.Items;
 using Server.Misc;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class OrcCaptain : BaseCreature
 {
-    public class OrcCaptain : BaseCreature
+    [Constructible]
+    public OrcCaptain() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
-        [Constructible]
-        public OrcCaptain() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
-        {
-            Name = NameList.RandomName("orc");
-            Body = 7;
-            BaseSoundID = 0x45A;
+        Name = NameList.RandomName("orc");
+        Body = 7;
+        BaseSoundID = 0x45A;
 
-            SetStr(111, 145);
-            SetDex(101, 135);
-            SetInt(86, 110);
+        SetStr(111, 145);
+        SetDex(101, 135);
+        SetInt(86, 110);
 
-            SetHits(67, 87);
+        SetHits(67, 87);
 
-            SetDamage(5, 15);
+        SetDamage(5, 15);
 
-            SetDamageType(ResistanceType.Physical, 100);
+        SetDamageType(ResistanceType.Physical, 100);
 
-            SetResistance(ResistanceType.Physical, 30, 35);
-            SetResistance(ResistanceType.Fire, 10, 20);
-            SetResistance(ResistanceType.Cold, 15, 25);
-            SetResistance(ResistanceType.Poison, 5, 10);
-            SetResistance(ResistanceType.Energy, 5, 10);
+        SetResistance(ResistanceType.Physical, 30, 35);
+        SetResistance(ResistanceType.Fire, 10, 20);
+        SetResistance(ResistanceType.Cold, 15, 25);
+        SetResistance(ResistanceType.Poison, 5, 10);
+        SetResistance(ResistanceType.Energy, 5, 10);
 
-            SetSkill(SkillName.MagicResist, 70.1, 85.0);
-            SetSkill(SkillName.Swords, 70.1, 95.0);
-            SetSkill(SkillName.Tactics, 85.1, 100.0);
+        SetSkill(SkillName.MagicResist, 70.1, 85.0);
+        SetSkill(SkillName.Swords, 70.1, 95.0);
+        SetSkill(SkillName.Tactics, 85.1, 100.0);
 
-            Fame = 2500;
-            Karma = -2500;
+        Fame = 2500;
+        Karma = -2500;
 
-            VirtualArmor = 34;
+        VirtualArmor = 34;
 
-            // TODO: Skull?
-            PackItem(
-                Utility.Random(7) switch
-                {
-                    0 => new Arrow(),
-                    1 => new Lockpick(),
-                    2 => new Shaft(),
-                    3 => new Ribs(),
-                    4 => new Bandage(),
-                    5 => new BeverageBottle(BeverageType.Wine),
-                    _ => new Jug(BeverageType.Cider) // 6
-                }
-            );
-
-            if (Core.AOS)
+        // TODO: Skull?
+        PackItem(
+            Utility.Random(7) switch
             {
-                PackItem(Loot.RandomNecromancyReagent());
+                0 => new Arrow(),
+                1 => new Lockpick(),
+                2 => new Shaft(),
+                3 => new Ribs(),
+                4 => new Bandage(),
+                5 => new BeverageBottle(BeverageType.Wine),
+                _ => new Jug(BeverageType.Cider) // 6
             }
-        }
+        );
 
-        public OrcCaptain(Serial serial) : base(serial)
+        if (Core.AOS)
         {
+            PackItem(Loot.RandomNecromancyReagent());
         }
+    }
 
-        public override string CorpseName => "an orcish corpse";
-        public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
+    public OrcCaptain(Serial serial) : base(serial)
+    {
+    }
 
-        public override bool CanRummageCorpses => true;
-        public override int Meat => 1;
+    public override string CorpseName => "an orcish corpse";
+    public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
 
-        public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
+    public override bool CanRummageCorpses => true;
+    public override int Meat => 1;
 
-        public override void OnDeath(Container c)
+    public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
+
+    public override void OnDeath(Container c)
+    {
+        base.OnDeath(c);
+
+        // TODO: Check drop rate
+        if (Utility.RandomDouble() < 0.05)
         {
-            base.OnDeath(c);
-
-            // TODO: Check drop rate
-            if (Utility.RandomDouble() < 0.05)
-            {
-                c.DropItem(new StoutWhip());
-            }
+            c.DropItem(new StoutWhip());
         }
+    }
 
-        public override void GenerateLoot()
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.Meager, 2);
+    }
+
+    public override bool IsEnemy(Mobile m)
+    {
+        if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
         {
-            AddLoot(LootPack.Meager, 2);
+            return false;
         }
 
-        public override bool IsEnemy(Mobile m)
+        return base.IsEnemy(m);
+    }
+
+    public override void AggressiveAction(Mobile aggressor, bool criminal)
+    {
+        base.AggressiveAction(aggressor, criminal);
+
+        var item = aggressor.FindItemOnLayer(Layer.Helm);
+
+        if (item is OrcishKinMask)
         {
-            if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
-            {
-                return false;
-            }
-
-            return base.IsEnemy(m);
+            AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
+            item.Delete();
+            aggressor.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
+            aggressor.PlaySound(0x307);
         }
+    }
 
-        public override void AggressiveAction(Mobile aggressor, bool criminal)
-        {
-            base.AggressiveAction(aggressor, criminal);
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.Write(0);
+    }
 
-            var item = aggressor.FindItemOnLayer(Layer.Helm);
-
-            if (item is OrcishKinMask)
-            {
-                AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
-                item.Delete();
-                aggressor.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
-                aggressor.PlaySound(0x307);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadInt();
     }
 }

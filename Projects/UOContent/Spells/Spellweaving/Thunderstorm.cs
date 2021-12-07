@@ -1,99 +1,98 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server.Spells.Spellweaving
+namespace Server.Spells.Spellweaving;
+
+public class ThunderstormSpell : ArcanistSpell
 {
-    public class ThunderstormSpell : ArcanistSpell
+    private static readonly SpellInfo _info = new(
+        "Thunderstorm",
+        "Erelonia",
+        -1
+    );
+
+    private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
+
+    public ThunderstormSpell(Mobile caster, Item scroll = null)
+        : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Thunderstorm",
-            "Erelonia",
-            -1
-        );
+    }
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
 
-        public ThunderstormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+    public override double RequiredSkill => 10.0;
+    public override int RequiredMana => 32;
+
+    public override void OnCast()
+    {
+        if (CheckSequence())
         {
-        }
+            Caster.PlaySound(0x5CE);
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
+            var skill = Caster.Skills.Spellweaving.Value;
 
-        public override double RequiredSkill => 10.0;
-        public override int RequiredMana => 32;
+            var damage = Math.Max(11, 10 + (int)(skill / 24)) + FocusLevel;
 
-        public override void OnCast()
-        {
-            if (CheckSequence())
+            var sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
+
+            var pvmDamage = damage * (100 + sdiBonus) / 100;
+
+            var pvpDamage = damage * (100 + Math.Min(sdiBonus, 15)) / 100;
+
+            var range = 2 + FocusLevel;
+            var duration = TimeSpan.FromSeconds(5 + FocusLevel);
+
+            var eable = Caster.GetMobilesInRange(range);
+
+            foreach (var m in eable)
             {
-                Caster.PlaySound(0x5CE);
-
-                var skill = Caster.Skills.Spellweaving.Value;
-
-                var damage = Math.Max(11, 10 + (int)(skill / 24)) + FocusLevel;
-
-                var sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
-
-                var pvmDamage = damage * (100 + sdiBonus) / 100;
-
-                var pvpDamage = damage * (100 + Math.Min(sdiBonus, 15)) / 100;
-
-                var range = 2 + FocusLevel;
-                var duration = TimeSpan.FromSeconds(5 + FocusLevel);
-
-                var eable = Caster.GetMobilesInRange(range);
-
-                foreach (var m in eable)
+                if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
+                    !Caster.InLOS(m))
                 {
-                    if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
-                        !Caster.InLOS(m))
-                    {
-                        continue;
-                    }
-
-                    Caster.DoHarmful(m);
-
-                    var oldSpell = m.Spell as Spell;
-
-                    SpellHelper.Damage(this, m, m.Player && Caster.Player ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100);
-
-                    if (oldSpell == null || oldSpell == m.Spell || CheckResisted(m))
-                    {
-                        continue;
-                    }
-
-                    StopTimer(m);
-
-                    Timer.StartTimer(duration, () => DoExpire(m), out var timerToken);
-                    _table[m] = timerToken;
-
-                    BuffInfo.AddBuff(
-                        m,
-                        new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m))
-                    );
+                    continue;
                 }
 
-                eable.Free();
+                Caster.DoHarmful(m);
+
+                var oldSpell = m.Spell as Spell;
+
+                SpellHelper.Damage(this, m, m.Player && Caster.Player ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100);
+
+                if (oldSpell == null || oldSpell == m.Spell || CheckResisted(m))
+                {
+                    continue;
+                }
+
+                StopTimer(m);
+
+                Timer.StartTimer(duration, () => DoExpire(m), out var timerToken);
+                _table[m] = timerToken;
+
+                BuffInfo.AddBuff(
+                    m,
+                    new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m))
+                );
             }
 
-            FinishSequence();
+            eable.Free();
         }
 
-        public static int GetCastRecoveryMalus(Mobile m) => _table.ContainsKey(m) ? 6 : 0;
+        FinishSequence();
+    }
 
-        private static void StopTimer(Mobile m)
+    public static int GetCastRecoveryMalus(Mobile m) => _table.ContainsKey(m) ? 6 : 0;
+
+    private static void StopTimer(Mobile m)
+    {
+        if (_table.Remove(m, out var timerToken))
         {
-            if (_table.Remove(m, out var timerToken))
-            {
-                timerToken.Cancel();
-            }
+            timerToken.Cancel();
         }
+    }
 
-        public static void DoExpire(Mobile m)
-        {
-            StopTimer(m);
-            BuffInfo.RemoveBuff(m, BuffIcon.Thunderstorm);
-        }
+    public static void DoExpire(Mobile m)
+    {
+        StopTimer(m);
+        BuffInfo.RemoveBuff(m, BuffIcon.Thunderstorm);
     }
 }

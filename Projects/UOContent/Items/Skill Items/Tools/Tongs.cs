@@ -1,34 +1,33 @@
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0xfbb, 0xfbc)]
+public class Tongs : BaseTool
 {
-    [Flippable(0xfbb, 0xfbc)]
-    public class Tongs : BaseTool
+    [Constructible]
+    public Tongs() : base(0xFBB) => Weight = 2.0;
+
+    [Constructible]
+    public Tongs(int uses) : base(uses, 0xFBB) => Weight = 2.0;
+
+    public Tongs(Serial serial) : base(serial)
     {
-        [Constructible]
-        public Tongs() : base(0xFBB) => Weight = 2.0;
+    }
 
-        [Constructible]
-        public Tongs(int uses) : base(uses, 0xFBB) => Weight = 2.0;
+    public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 
-        public Tongs(Serial serial) : base(serial)
-        {
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
+        writer.Write(0); // version
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        var version = reader.ReadInt();
     }
 }
