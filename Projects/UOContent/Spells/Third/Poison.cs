@@ -43,7 +43,7 @@ namespace Server.Spells.Third
                     {
                         if (Caster.InRange(m, 2))
                         {
-                            level = (Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2 switch
+                            level = ((Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2) switch
                             {
                                 >= 1000 => 3,
                                 > 850   => 2,
