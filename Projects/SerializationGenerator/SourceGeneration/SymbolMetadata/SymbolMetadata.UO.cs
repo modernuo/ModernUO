@@ -47,6 +47,8 @@ namespace SerializationGenerator
         public const string SERIALIZABLE_FIELD_SAVE_FLAG_ATTRIBUTE = "Server.SerializableFieldSaveFlagAttribute";
         public const string SERIALIZABLE_FIELD_DEFAULT_ATTRIBUTE = "Server.SerializableFieldDefaultAttribute";
         public const string RAW_SERIALIZABLE_INTERFACE = "Server.IRawSerializable";
+        // ModernUO modified BitArray
+        public const string SERVER_BITARRAY_CLASS = "Server.Collections.BitArray";
 
         public static bool IsTimerDrift(this AttributeData attr, Compilation compilation) =>
             attr?.IsAttribute(compilation.GetTypeByMetadataName(TIMER_DRIFT_ATTRIBUTE)) == true;
@@ -181,6 +183,12 @@ namespace SerializationGenerator
         public static bool IsMap(this ISymbol symbol, Compilation compilation) =>
             symbol.Equals(
                 compilation.GetTypeByMetadataName(MAP_CLASS),
+                SymbolEqualityComparer.Default
+            );
+
+        public static bool IsBitArray(this ISymbol symbol, Compilation compilation) =>
+            symbol.Equals(
+                compilation.GetTypeByMetadataName(SERVER_BITARRAY_CLASS),
                 SymbolEqualityComparer.Default
             );
 
