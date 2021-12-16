@@ -2395,24 +2395,24 @@ namespace Server.Items
 
         public virtual int GetDamageBonus()
         {
-            var bonus = VirtualDamageBonus;
-
-            bonus += m_Quality switch
+            var quality = m_Quality switch
             {
                 WeaponQuality.Low         => -20,
                 WeaponQuality.Exceptional => 20,
                 _                         => 0
             };
 
-            return bonus + m_DamageLevel switch
+            var damageLevel = m_DamageLevel switch
             {
                 WeaponDamageLevel.Ruin  => 15,
                 WeaponDamageLevel.Might => 20,
                 WeaponDamageLevel.Force => 25,
                 WeaponDamageLevel.Power => 30,
                 WeaponDamageLevel.Vanq  => 35,
-                _                       => bonus
+                _                       => 0
             };
+
+            return VirtualDamageBonus + quality + damageLevel;
         }
 
         public virtual double ScaleDamageAOS(Mobile attacker, double damage, bool checkSkills)

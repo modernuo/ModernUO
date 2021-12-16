@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using Server.Targeting;
+using Server.Collections;
 
 namespace Server.Spells.Seventh
 {
@@ -37,8 +35,6 @@ namespace Server.Spells.Seventh
                     p = item.GetWorldLocation();
                 }
 
-                List<Mobile> targets;
-
                 var map = Caster.Map;
 
                 var playerVsPlayer = false;
@@ -47,69 +43,63 @@ namespace Server.Spells.Seventh
                 if (map != null)
                 {
                     var eable = map.GetMobilesInRange(loc, 2);
-
-                    targets = eable.Where(
-                            m =>
-                            {
-                                if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) ||
-                                    !Caster.CanBeHarmful(m, false) ||
-                                    Core.AOS && !Caster.InLOS(m))
-                                {
-                                    return false;
-                                }
-
-                                if (m.Player)
-                                {
-                                    playerVsPlayer = true;
-                                }
-
-                                return true;
-                            }
-                        )
-                        .ToList();
-
-                    eable.Free();
-                }
-                else
-                {
-                    targets = new List<Mobile>();
-                }
-
-                double damage = Core.AOS
-                    ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
-                    : Utility.Random(27, 22);
-
-                if (targets.Count > 0)
-                {
-                    Effects.PlaySound(loc, Caster.Map, 0x160);
-
-                    if (Core.AOS && targets.Count > 2)
+                    using var queue = PooledRefQueue<Mobile>.Create();
+                    foreach (var m in eable)
                     {
-                        damage = damage * 2 / targets.Count;
-                    }
-                    else if (!Core.AOS)
-                    {
-                        damage /= targets.Count;
-                    }
-
-                    for (var i = 0; i < targets.Count; ++i)
-                    {
-                        var m = targets[i];
-
-                        var toDeal = damage;
-
-                        if (!Core.AOS && CheckResisted(m))
+                        if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) ||
+                            !Caster.CanBeHarmful(m, false) || Core.AOS && !Caster.InLOS(m))
                         {
-                            damage *= 0.5;
-
-                            m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+                            continue;
                         }
 
-                        toDeal *= GetDamageScalar(m);
-                        Caster.DoHarmful(m);
-                        SpellHelper.Damage(this, m, toDeal, 0, 100, 0, 0, 0);
+                        if (m.Player)
+                        {
+                            playerVsPlayer = true;
+                        }
 
-                        Caster.MovingParticles(m, 0x36D4, 7, 0, false, true, 9501, 1, 0, 0x100);
+                        queue.Enqueue(m);
+                    }
+
+                    eable.Free();
+
+                    double damage = Core.AOS
+                        ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
+                        : Utility.Random(27, 22);
+
+                    int count = queue.Count;
+
+                    if (count > 0)
+                    {
+                        Effects.PlaySound(loc, Caster.Map, 0x160);
+
+                        if (Core.AOS && count > 2)
+                        {
+                            damage = damage * 2 / count;
+                        }
+                        else if (!Core.AOS)
+                        {
+                            damage /= count;
+                        }
+
+                        while (queue.Count > 0)
+                        {
+                            var m = queue.Dequeue();
+
+                            var toDeal = damage;
+
+                            if (!Core.AOS && CheckResisted(m))
+                            {
+                                damage *= 0.5;
+
+                                m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+                            }
+
+                            toDeal *= GetDamageScalar(m);
+                            Caster.DoHarmful(m);
+                            SpellHelper.Damage(this, m, toDeal, 0, 100, 0, 0, 0);
+
+                            Caster.MovingParticles(m, 0x36D4, 7, 0, false, true, 9501, 1, 0, 0x100);
+                        }
                     }
                 }
             }

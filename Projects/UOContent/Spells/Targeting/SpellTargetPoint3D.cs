@@ -24,10 +24,7 @@ namespace Server.Spells
 
         protected override void OnTarget(Mobile from, object o)
         {
-            if (o is IPoint3D p)
-            {
-                _spell.Target(p);
-            }
+            _spell.Target(o as IPoint3D);
         }
 
         protected override void OnTargetOutOfLOS(Mobile from, object o)

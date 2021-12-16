@@ -290,9 +290,8 @@ namespace Server.Items
                 }
                 else if (BaseHouse.FindHouseAt(from) != house)
                 {
-                    from.SendLocalizedMessage(
-                        1062339
-                    ); // You must be located inside of the house in which you are trying to place the contract.
+                    // You must be located inside of the house in which you are trying to place the contract.
+                    from.SendLocalizedMessage(1062339);
                 }
                 else if (!house.IsAosRules)
                 {
@@ -320,15 +319,13 @@ namespace Server.Items
 
                     if (vendor)
                     {
-                        from.SendLocalizedMessage(
-                            1062342
-                        ); // You may not place a rental contract at this location while other beings occupy it.
+                        // You may not place a rental contract at this location while other beings occupy it.
+                        from.SendLocalizedMessage(1062342);
                     }
                     else if (contract)
                     {
-                        from.SendLocalizedMessage(
-                            1062341
-                        ); // That location is cluttered.  Please clear out any objects there and try again.
+                        // That location is cluttered.  Please clear out any objects there and try again.
+                        from.SendLocalizedMessage(1062341);
                     }
                     else
                     {

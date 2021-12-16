@@ -1,5 +1,3 @@
-using Server.Targeting;
-
 namespace Server.Spells.Sixth
 {
     public class MassCurseSpell : MagerySpell, ISpellTargetingPoint3D

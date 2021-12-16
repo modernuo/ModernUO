@@ -39,7 +39,7 @@ namespace Server.Network
         private static readonly byte[] _socketRejected = { 0x82, 0xFF };
 
         public static IPEndPoint[] ListeningAddresses { get; private set; }
-        public static TcpListener[] Listeners { get; private set; }
+        public static Socket[] Listeners { get; private set; }
         public static HashSet<NetState> Instances { get; } = new(2048);
 
         private static readonly ConcurrentQueue<NetState> _connectedQueue = new();
@@ -52,7 +52,7 @@ namespace Server.Network
         public static void Start()
         {
             HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
-            List<TcpListener> listeners = new List<TcpListener>();
+            List<Socket> listeners = new List<Socket>();
 
             foreach (var ipep in ServerConfiguration.Listeners)
             {
@@ -88,7 +88,7 @@ namespace Server.Network
         {
             foreach (var listener in Listeners)
             {
-                listener.Server.Close();
+                listener.Close();
             }
         }
 
@@ -99,21 +99,19 @@ namespace Server.Network
                     .Select(uip => new IPEndPoint(uip.Address, ipep.Port))
             );
 
-        public static TcpListener CreateListener(IPEndPoint ipep)
+        public static Socket CreateListener(IPEndPoint ipep)
         {
-            var listener = new TcpListener(ipep)
+            var listener = new Socket(ipep.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
             {
-                Server =
-                {
-                    LingerState = new LingerOption(false, 0),
-                    ExclusiveAddressUse = true,
-                    NoDelay = true
-                }
+                LingerState = new LingerOption(false, 0),
+                ExclusiveAddressUse = true,
+                NoDelay = true
             };
 
             try
             {
-                listener.Start(32);
+                listener.Bind(ipep);
+                listener.Listen(32);
                 return listener;
             }
             catch (SocketException se)
@@ -148,13 +146,14 @@ namespace Server.Network
             }
         }
 
-        private static async void BeginAcceptingSockets(this TcpListener listener)
+        private static async void BeginAcceptingSockets(this Socket listener)
         {
             while (true)
             {
                 try
                 {
-                    var socket = await listener.AcceptSocketAsync();
+                    var socket = await listener.AcceptAsync();
+
                     var rejected = false;
                     if (Instances.Count >= MaxConnections)
                     {

@@ -43,24 +43,13 @@ namespace Server.Spells.Third
                     {
                         if (Caster.InRange(m, 2))
                         {
-                            var total = (Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2;
-
-                            if (total >= 1000)
+                            level = ((Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2) switch
                             {
-                                level = 3;
-                            }
-                            else if (total > 850)
-                            {
-                                level = 2;
-                            }
-                            else if (total > 650)
-                            {
-                                level = 1;
-                            }
-                            else
-                            {
-                                level = 0;
-                            }
+                                >= 1000 => 3,
+                                > 850   => 2,
+                                > 650   => 1,
+                                _       => 0
+                            };
                         }
                         else
                         {

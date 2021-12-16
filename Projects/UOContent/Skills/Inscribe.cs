@@ -112,9 +112,8 @@ namespace Server.SkillHandlers
             {
                 if (cancelType == TargetCancelType.Timeout)
                 {
-                    from.SendLocalizedMessage(
-                        501619
-                    ); // You have waited too long to make your inscribe selection, your inscription attempt has timed out.
+                    // You have waited too long to make your inscribe selection, your inscription attempt has timed out.
+                    from.SendLocalizedMessage(501619);
                 }
             }
         }
@@ -172,9 +171,8 @@ namespace Server.SkillHandlers
             {
                 if (cancelType == TargetCancelType.Timeout)
                 {
-                    from.SendLocalizedMessage(
-                        501619
-                    ); // You have waited too long to make your inscribe selection, your inscription attempt has timed out.
+                    // You have waited too long to make your inscribe selection, your inscription attempt has timed out.
+                    from.SendLocalizedMessage(501619);
                 }
             }
 
