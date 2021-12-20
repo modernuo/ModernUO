@@ -30,6 +30,8 @@ namespace Server.Spells
                 circle -= 2;
             }
 
+            circle = Math.Max(0, circle);
+
             // Original RunUO algorithm for required skill
             // const double chanceOffset = 20.0
             // const double chanceLength = 100.0 / 7.0
