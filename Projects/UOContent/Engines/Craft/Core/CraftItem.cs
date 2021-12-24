@@ -483,7 +483,7 @@ namespace Server.Engines.Craft
 
                 for (var j = 0; j < items[i].Length; ++j)
                 {
-                    if (!(items[i][j] is IHasQuantity hq))
+                    if (items[i][j] is not IHasQuantity hq)
                     {
                         totals[i] += items[i][j].Amount;
                     }
@@ -512,7 +512,7 @@ namespace Server.Engines.Craft
                 {
                     var item = items[i][j];
 
-                    if (!(item is IHasQuantity hq))
+                    if (item is not IHasQuantity hq)
                     {
                         var theirAmount = item.Amount;
 
@@ -561,7 +561,7 @@ namespace Server.Engines.Craft
 
             for (var i = 0; i < items.Length; ++i)
             {
-                if (!(items[i] is IHasQuantity hq))
+                if (items[i] is not IHasQuantity hq)
                 {
                     amount += items[i].Amount;
                 }

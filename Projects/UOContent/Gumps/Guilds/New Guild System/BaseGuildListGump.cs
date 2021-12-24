@@ -164,7 +164,7 @@ namespace Server.Guilds
         {
             base.OnResponse(sender, info);
 
-            if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild))
+            if (sender.Mobile is not PlayerMobile pm || !IsMember(pm, guild))
             {
                 return;
             }

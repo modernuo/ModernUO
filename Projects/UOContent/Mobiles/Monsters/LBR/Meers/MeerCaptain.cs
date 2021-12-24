@@ -124,7 +124,7 @@ namespace Server.Mobiles
 
                 foreach (var m in eable)
                 {
-                    if (!(m is MeerWarrior) || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
+                    if (m is not MeerWarrior || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
                         MortalStrike.IsWounded(m))
                     {
                         continue;

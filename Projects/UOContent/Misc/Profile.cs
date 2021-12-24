@@ -64,7 +64,7 @@ namespace Server.Misc
 
         private static string GetAccountDuration(Mobile m)
         {
-            if (!(m.Account is Account a))
+            if (m.Account is not Account a)
             {
                 return "";
             }

@@ -195,7 +195,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is BaseJewel jewel))
+            if (newItem is not BaseJewel jewel)
             {
                 return;
             }

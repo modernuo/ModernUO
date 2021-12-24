@@ -258,7 +258,7 @@ namespace Server.Items
 
         public override bool OnDragDrop(Mobile from, Item item)
         {
-            if (!(item is BasePotion pot))
+            if (item is not BasePotion pot)
             {
                 from.SendLocalizedMessage(502232); // The keg is not designed to hold that type of object.
                 return false;

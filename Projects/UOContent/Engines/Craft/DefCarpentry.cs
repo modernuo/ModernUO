@@ -87,7 +87,7 @@ namespace Server.Engines.Craft
             int index;
 
             // Other Items
-            if (Core.Expansion == Expansion.AOS || Core.Expansion == Expansion.SE)
+            if (Core.Expansion is Expansion.AOS or Expansion.SE)
             {
                 index = AddCraft(typeof(Board), 1044294, 1027127, 0.0, 0.0, typeof(Log), 1044466, 1, 1044465);
                 SetUseAllRes(index, true);

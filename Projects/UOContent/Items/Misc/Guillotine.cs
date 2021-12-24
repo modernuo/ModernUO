@@ -24,7 +24,7 @@ namespace Server.Items
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
             }
-            else if (Visible && (ItemID == 4656 || ItemID == 4702) && Core.Now >= m_NextUse)
+            else if (Visible && ItemID is 4656 or 4702 && Core.Now >= m_NextUse)
             {
                 var p = GetWorldLocation();
 
@@ -89,11 +89,11 @@ namespace Server.Items
 
         private void BackUp()
         {
-            if (ItemID == 4678 || ItemID == 4679)
+            if (ItemID is 4678 or 4679)
             {
                 ItemID = 4656;
             }
-            else if (ItemID == 4712 || ItemID == 4713)
+            else if (ItemID is 4712 or 4713)
             {
                 ItemID = 4702;
             }
@@ -112,11 +112,11 @@ namespace Server.Items
 
             int version = reader.ReadByte();
 
-            if (ItemID == 4678 || ItemID == 4679)
+            if (ItemID is 4678 or 4679)
             {
                 ItemID = 4656;
             }
-            else if (ItemID == 4712 || ItemID == 4713)
+            else if (ItemID is 4712 or 4713)
             {
                 ItemID = 4702;
             }

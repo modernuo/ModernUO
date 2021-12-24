@@ -1888,7 +1888,7 @@ namespace Server
 
                 item ??= FindItemOnLayer(Layer.Mount);
 
-                if (!(item is IMountItem mountItem))
+                if (item is not IMountItem mountItem)
                 {
                     return null;
                 }
@@ -8397,7 +8397,7 @@ namespace Server
 
             var n = Notoriety.Compute(this, target);
 
-            return n == Notoriety.Criminal || n == Notoriety.Murderer;
+            return n is Notoriety.Criminal or Notoriety.Murderer;
         }
 
         /// <summary>

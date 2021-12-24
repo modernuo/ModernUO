@@ -133,7 +133,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(obj is IPoint3D p3D))
+            if (obj is not IPoint3D p3D)
             {
                 return;
             }
@@ -216,7 +216,7 @@ namespace Server.Items
                 Effects.SendLocationEffect(p, Map, 0x352D, 16, 4);
                 Effects.PlaySound(p, Map, 0x364);
             }
-            else if (index <= 7 || index == 14)
+            else if (index is <= 7 or 14)
             {
                 if (RequireDeepWater)
                 {
@@ -397,7 +397,7 @@ namespace Server.Items
 
         private static bool ValidateUndeepWater(Map map, object obj, ref int z)
         {
-            if (!(obj is StaticTarget))
+            if (obj is not StaticTarget)
             {
                 return false;
             }

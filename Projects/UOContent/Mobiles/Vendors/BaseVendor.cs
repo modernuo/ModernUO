@@ -757,7 +757,7 @@ namespace Server.Mobiles
             for (var i = 0; i < Items.Count; ++i)
             {
                 var item = Items[i];
-                if (item is BaseClothing || item is BaseWeapon || item is BaseArmor || item is BaseTool)
+                if (item is BaseClothing or BaseWeapon or BaseArmor or BaseTool)
                 {
                     item.Hue = GetRandomNecromancerHue();
                 }

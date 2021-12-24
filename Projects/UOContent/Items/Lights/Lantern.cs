@@ -29,7 +29,7 @@ namespace Server.Items
         {
             get
             {
-                if (ItemID == 0xA15 || ItemID == 0xA17)
+                if (ItemID is 0xA15 or 0xA17)
                 {
                     return ItemID;
                 }

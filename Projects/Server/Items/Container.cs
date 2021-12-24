@@ -231,7 +231,7 @@ namespace Server.Items
                     return container.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
                 }
 
-                if (!(parent is Item parentItem))
+                if (parent is not Item parentItem)
                 {
                     break;
                 }
@@ -504,7 +504,7 @@ namespace Server.Items
             {
                 var item = list[i];
 
-                if (!(item is Container) && CheckHold(from, dropped, false, false) &&
+                if (item is not Container && CheckHold(from, dropped, false, false) &&
                     item.StackWith(from, dropped, playSound))
                 {
                     return true;
@@ -540,7 +540,7 @@ namespace Server.Items
                 {
                     var item = list[j];
 
-                    if (!(item is Container) && CheckHold(from, dropped, false, false, 0, extraWeight) &&
+                    if (item is not Container && CheckHold(from, dropped, false, false, 0, extraWeight) &&
                         item.CanStackWith(dropped))
                     {
                         stackItems.Add(new ItemStackEntry(item, dropped));

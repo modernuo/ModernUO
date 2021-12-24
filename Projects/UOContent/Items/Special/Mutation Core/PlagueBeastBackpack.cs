@@ -113,7 +113,7 @@ namespace Server.Items
 
         public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
         {
-            if (dropped is PlagueBeastInnard || dropped is PlagueBeastGland)
+            if (dropped is PlagueBeastInnard or PlagueBeastGland)
             {
                 return base.TryDropItem(from, dropped, sendFullMessage);
             }
@@ -123,7 +123,7 @@ namespace Server.Items
 
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
-            if (IsAccessibleTo(from) && (item is PlagueBeastInnard || item is PlagueBeastGland))
+            if (IsAccessibleTo(from) && item is PlagueBeastInnard or PlagueBeastGland)
             {
                 var ir = ItemBounds.Table[item.ItemID];
                 int x, y;

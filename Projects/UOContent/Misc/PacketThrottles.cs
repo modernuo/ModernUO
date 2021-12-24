@@ -66,7 +66,7 @@ namespace Server.Network
 
             int packetID = e.GetInt32(0);
 
-            if (packetID < 0 || packetID > 0x100)
+            if (packetID is < 0 or > 0x100)
             {
                 e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
                 return;
@@ -88,7 +88,7 @@ namespace Server.Network
             int packetID = e.GetInt32(0);
             int delay = e.GetInt32(1);
 
-            if (packetID < 0 || packetID > 0x100)
+            if (packetID is < 0 or > 0x100)
             {
                 e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
                 return;

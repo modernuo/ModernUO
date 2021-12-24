@@ -11,7 +11,7 @@ namespace Server.Items
 
         public override void Ignite()
         {
-            if (!(Parent is Mobile) && RootParent is Mobile holder)
+            if (Parent is not Mobile && RootParent is Mobile holder)
             {
                 if (holder.EquipItem(this))
                 {

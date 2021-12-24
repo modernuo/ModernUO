@@ -43,7 +43,7 @@ namespace Server.Items
 
         public void OnTargetGears(Mobile from, object targ)
         {
-            if (!(targ is Gears g) || !g.IsChildOf(from.Backpack))
+            if (targ is not Gears g || !g.IsChildOf(from.Backpack))
             {
                 from.SendMessage(
                     "Those are not gears."

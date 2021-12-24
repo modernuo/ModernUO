@@ -365,7 +365,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is Runebook book))
+            if (newItem is not Runebook book)
             {
                 return;
             }
