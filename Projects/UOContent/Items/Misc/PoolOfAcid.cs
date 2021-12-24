@@ -66,7 +66,7 @@ namespace Server.Items
 
                 foreach (var m in GetMobilesInRange(0))
                 {
-                    if (m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned))
+                    if (m.Alive && !m.IsDeadBondedPet && (m is not BaseCreature bc || bc.Controlled || bc.Summoned))
                     {
                         toDamage.Add(m);
                     }

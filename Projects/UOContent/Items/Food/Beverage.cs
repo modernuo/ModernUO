@@ -262,7 +262,7 @@ namespace Server.Items
 
         public override int ComputeItemID()
         {
-            if (ItemID == 0x99A || ItemID == 0x9B3 || ItemID == 0x9BF || ItemID == 0x9CB)
+            if (ItemID is 0x99A or 0x9B3 or 0x9BF or 0x9CB)
             {
                 return ItemID;
             }
@@ -420,7 +420,7 @@ namespace Server.Items
         {
             if (IsEmpty)
             {
-                if (ItemID == 0x9A7 || ItemID == 0xFF7)
+                if (ItemID is 0x9A7 or 0xFF7)
                 {
                     return ItemID;
                 }
@@ -477,7 +477,7 @@ namespace Server.Items
                     }
                 case BeverageType.Water:
                     {
-                        if (ItemID == 0xFF8 || ItemID == 0xFF9 || ItemID == 0x1F9E)
+                        if (ItemID is 0xFF8 or 0xFF9 or 0x1F9E)
                         {
                             return ItemID;
                         }
@@ -854,7 +854,7 @@ namespace Server.Items
                 {
                     var qs = player.Quest;
 
-                    if (!(qs is WitchApprenticeQuest))
+                    if (qs is not WitchApprenticeQuest)
                     {
                         return;
                     }
@@ -986,7 +986,7 @@ namespace Server.Items
                 item.Pour(from, this);
             }
             else if (targ is AddonComponent component &&
-                     (component.Addon is WaterVatEast || component.Addon is WaterVatSouth) &&
+                     component.Addon is WaterVatEast or WaterVatSouth &&
                      Content == BeverageType.Water)
             {
                 if (from is PlayerMobile player)
@@ -1070,7 +1070,7 @@ namespace Server.Items
 
                 for (var i = 0; i < items.Length; ++i)
                 {
-                    if (!(items[i] is BaseBeverage bev) || bev.Content != content || bev.IsEmpty)
+                    if (items[i] is not BaseBeverage bev || bev.Content != content || bev.IsEmpty)
                     {
                         continue;
                     }

@@ -60,7 +60,7 @@ namespace Server.Network
             reader.ReadInt16(); // font
             var text = reader.ReadAsciiSafe().Trim();
 
-            if (text.Length <= 0 || text.Length > 128)
+            if (text.Length is <= 0 or > 128)
             {
                 return;
             }
@@ -97,7 +97,7 @@ namespace Server.Network
                 var count = (value & 0xFFF0) >> 4;
                 var hold = value & 0xF;
 
-                if (count < 0 || count > 50)
+                if (count is < 0 or > 50)
                 {
                     return;
                 }
@@ -141,7 +141,7 @@ namespace Server.Network
 
             text = text.Trim();
 
-            if (text.Length <= 0 || text.Length > 128)
+            if (text.Length is <= 0 or > 128)
             {
                 return;
             }

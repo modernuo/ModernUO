@@ -345,7 +345,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is BaseTalisman talisman))
+            if (newItem is not BaseTalisman talisman)
             {
                 return;
             }
@@ -1190,7 +1190,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(o is Mobile target))
+                if (o is not Mobile target)
                 {
                     from.SendLocalizedMessage(1046439); // That is not a valid target.
                     return;

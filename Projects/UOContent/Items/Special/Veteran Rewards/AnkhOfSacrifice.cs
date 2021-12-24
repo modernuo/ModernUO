@@ -157,7 +157,7 @@ namespace Server.Items
             {
                 var from = state.Mobile;
 
-                if (info.ButtonID == 1 || info.ButtonID == 2)
+                if (info.ButtonID is 1 or 2)
                 {
                     if (from.Map?.CanFit(from.Location, 16, false, false) != true)
                     {

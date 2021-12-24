@@ -99,7 +99,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is LandTarget land))
+                if (targeted is not LandTarget land)
                 {
                     from.LocalOverheadMessage(
                         MessageType.Regular,

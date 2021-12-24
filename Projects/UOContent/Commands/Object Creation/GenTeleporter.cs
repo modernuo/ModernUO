@@ -124,7 +124,7 @@ namespace Server.Commands
                 var count = 0;
                 foreach (var item in eable)
                 {
-                    if (!(item is KeywordTeleporter || item is SkillTeleporter) && IsWithinZ(item.Z - worldLocation.Z))
+                    if (!(item is KeywordTeleporter or SkillTeleporter) && IsWithinZ(item.Z - worldLocation.Z))
                     {
                         count++;
                         item.Delete();

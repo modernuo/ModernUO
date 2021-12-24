@@ -646,11 +646,11 @@ namespace Server.Items
                     (int)KeyType.Rusty
                 );
             }
-            else if (item is Arrow || item is Bolt)
+            else if (item is Arrow or Bolt)
             {
                 item.Amount = Utility.RandomMinMax(2, 6);
             }
-            else if (item is Bandage || item is Lockpick)
+            else if (item is Bandage or Lockpick)
             {
                 item.Amount = Utility.RandomMinMax(1, 3);
             }

@@ -26,7 +26,7 @@ namespace Server.Misc
 
         private static void EventSink_Login(Mobile m)
         {
-            if (!(m.Account is Account acct))
+            if (m.Account is not Account acct)
             {
                 return;
             }

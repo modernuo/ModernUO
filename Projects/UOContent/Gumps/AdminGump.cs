@@ -476,7 +476,7 @@ namespace Server.Gumps
 
                         for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            if (!(m_List[index] is NetState ns))
+                            if (m_List[index] is not NetState ns)
                             {
                                 continue;
                             }
@@ -517,7 +517,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.ClientInfo:
                     {
-                        if (!(state is Mobile m))
+                        if (state is not Mobile m)
                         {
                             break;
                         }
@@ -738,7 +738,7 @@ namespace Server.Gumps
 
                         for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            if (!(m_List[index] is Account a))
+                            if (m_List[index] is not Account a)
                             {
                                 continue;
                             }
@@ -804,7 +804,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_ChangePassword:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -826,7 +826,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_ChangeAccess:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -863,7 +863,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Information:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -948,7 +948,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Access:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -974,7 +974,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Access_ClientIPs:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -1046,7 +1046,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Access_Restrictions:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -1120,7 +1120,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Characters:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -1170,7 +1170,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Comments:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -1209,7 +1209,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.AccountDetails_Tags:
                     {
-                        if (!(state is Account a))
+                        if (state is not Account a)
                         {
                             break;
                         }
@@ -1308,7 +1308,7 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        if (!(state is Firewall.IFirewallEntry firewallEntry))
+                        if (state is not Firewall.IFirewallEntry firewallEntry)
                         {
                             break;
                         }
@@ -2657,7 +2657,7 @@ namespace Server.Gumps
 
                                     if (m_List != null && index >= 0 && index < m_List.Count)
                                     {
-                                        if (!(m_List[index] is NetState ns))
+                                        if (m_List[index] is not NetState ns)
                                         {
                                             break;
                                         }
@@ -2926,7 +2926,7 @@ namespace Server.Gumps
                             case 10:
                             case 11:
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -2961,7 +2961,7 @@ namespace Server.Gumps
                                 }
                             case 12:
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3004,7 +3004,7 @@ namespace Server.Gumps
                                 }
                             case 16: // view shared
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3055,7 +3055,7 @@ namespace Server.Gumps
                                 }
                             case 17: // ban shared
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3119,7 +3119,7 @@ namespace Server.Gumps
                                 }
                             case 18: // firewall all
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3156,7 +3156,7 @@ namespace Server.Gumps
                                 }
                             case 19: // add
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3220,7 +3220,7 @@ namespace Server.Gumps
                             case 23:
                             case 24:
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3264,7 +3264,7 @@ namespace Server.Gumps
                                 }
                             case 25:
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3291,7 +3291,7 @@ namespace Server.Gumps
                                 {
                                     var list = m_List;
 
-                                    if (list == null || !(m_State is List<Account> rads))
+                                    if (list == null || m_State is not List<Account> rads)
                                     {
                                         break;
                                     }
@@ -3331,7 +3331,7 @@ namespace Server.Gumps
                                 {
                                     var list = m_List;
 
-                                    if (list == null || !(m_State is List<Account> rads))
+                                    if (list == null || m_State is not List<Account> rads)
                                     {
                                         break;
                                     }
@@ -3373,7 +3373,7 @@ namespace Server.Gumps
                                 }
                             case 29: // Mark all
                                 {
-                                    if (m_List == null || !(m_State is List<object>))
+                                    if (m_List == null || m_State is not List<object>)
                                     {
                                         break;
                                     }
@@ -3564,7 +3564,7 @@ namespace Server.Gumps
                                 }
                             case 36: // Clear login addresses
                                 {
-                                    if (!(m_State is Account a))
+                                    if (m_State is not Account a)
                                     {
                                         break;
                                     }
@@ -3844,7 +3844,7 @@ namespace Server.Gumps
                     }
                 case 7:
                     {
-                        if (!(m_State is Mobile m))
+                        if (m_State is not Mobile m)
                         {
                             break;
                         }
@@ -4039,7 +4039,7 @@ namespace Server.Gumps
                     {
                         if (index < m_List?.Count)
                         {
-                            if (!(m_State is Account a))
+                            if (m_State is not Account a)
                             {
                                 break;
                             }
@@ -4087,12 +4087,12 @@ namespace Server.Gumps
                             {
                                 var obj = m_List[index];
 
-                                if (!(obj is IPAddress ip))
+                                if (obj is not IPAddress ip)
                                 {
                                     break;
                                 }
 
-                                if (!(m_State is Account a))
+                                if (m_State is not Account a)
                                 {
                                     break;
                                 }
@@ -4143,7 +4143,7 @@ namespace Server.Gumps
                                     break;
                                 }
 
-                                if (!(m_State is Account a))
+                                if (m_State is not Account a)
                                 {
                                     break;
                                 }

@@ -141,14 +141,14 @@ namespace Server.Items
         {
             var check = m.FindItemOnLayer(Layer.OneHanded);
 
-            if (check is BaseTool && check != tool && !(check is AncientSmithyHammer))
+            if (check is BaseTool && check != tool && check is not AncientSmithyHammer)
             {
                 return false;
             }
 
             check = m.FindItemOnLayer(Layer.TwoHanded);
 
-            return !(check is BaseTool) || check == tool || check is AncientSmithyHammer;
+            return check is not BaseTool || check == tool || check is AncientSmithyHammer;
         }
 
         public override void OnSingleClick(Mobile from)

@@ -274,7 +274,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is IPoint3D location))
+                if (targeted is not IPoint3D location)
                 {
                     return;
                 }

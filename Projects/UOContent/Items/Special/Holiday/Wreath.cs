@@ -227,7 +227,7 @@ namespace Server.Items
 
         public void Placement_OnTarget(Mobile from, object targeted)
         {
-            if (!(targeted is IPoint3D p))
+            if (targeted is not IPoint3D p)
             {
                 return;
             }

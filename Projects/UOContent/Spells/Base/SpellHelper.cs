@@ -623,7 +623,7 @@ namespace Server.Spells
 
         public static void SendInvalidMessage(Mobile caster, TravelCheckType type)
         {
-            if (type == TravelCheckType.RecallTo || type == TravelCheckType.GateTo)
+            if (type is TravelCheckType.RecallTo or TravelCheckType.GateTo)
             {
                 caster.SendLocalizedMessage(1019004); // You are not allowed to travel there.
             }
@@ -754,7 +754,7 @@ namespace Server.Spells
 
         public static bool IsSafeZone(Map map, Point3D loc) =>
             Region.Find(loc, map).IsPartOf<SafeZone>() &&
-            (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
+            m_TravelType is TravelCheckType.TeleportTo or TravelCheckType.TeleportFrom
             && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false;
 
         public static bool IsFactionStronghold(Map map, Point3D loc) => Region.Find(loc, map).IsPartOf<StrongholdRegion>();

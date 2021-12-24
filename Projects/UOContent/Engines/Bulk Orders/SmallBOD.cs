@@ -132,7 +132,7 @@ namespace Server.Engines.BulkOrders
                 from.SendLocalizedMessage(1045166);
             }
             else if (Type == null || objectType != Type && !objectType.IsSubclassOf(Type) ||
-                     !(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing))
+                     item is not BaseWeapon && item is not BaseArmor && item is not BaseClothing)
             {
                 from.SendLocalizedMessage(1045169); // The item is not in the request.
             }

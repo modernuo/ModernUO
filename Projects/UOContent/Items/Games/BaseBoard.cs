@@ -116,7 +116,7 @@ namespace Server.Items
 
         public static bool ValidateDefault(Mobile from, BaseBoard board) =>
             !board.Deleted && (from.AccessLevel >= AccessLevel.GameMaster || from.Alive &&
-                (board.IsChildOf(from.Backpack) || !(board.RootParent is Mobile) &&
+                (board.IsChildOf(from.Backpack) || board.RootParent is not Mobile &&
                     board.Map == from.Map && from.InRange(board.GetWorldLocation(), 1) &&
                     BaseHouse.FindHouseAt(board)?.IsOwner(from) == true));
 

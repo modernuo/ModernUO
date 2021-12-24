@@ -63,7 +63,7 @@ namespace Server.Items
                 return true;
             }
 
-            if (!(m.Guild is Guild g) || g.Type != GuildType.Chaos)
+            if (m.Guild is not Guild g || g.Type != GuildType.Chaos)
             {
                 m.FixedEffect(0x3728, 10, 13);
                 Delete();

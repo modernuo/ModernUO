@@ -146,7 +146,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (info.ButtonID < 1 || info.ButtonID > 10)
+                if (info.ButtonID is < 1 or > 10)
                 {
                     return;
                 }

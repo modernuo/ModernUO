@@ -412,7 +412,7 @@ namespace Server.Items
 
                 if (m_Bracelet.Deleted || m_From.Deleted ||
                     !m_Bracelet.CheckUse(m_From, false) ||
-                    !(m_Bracelet.Bound.RootParent is Mobile boundRoot))
+                    m_Bracelet.Bound.RootParent is not Mobile boundRoot)
                 {
                     return;
                 }

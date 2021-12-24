@@ -64,7 +64,7 @@ namespace Server.Items
         {
             var parent = deed;
 
-            while (parent != null && !(parent is CommodityDeedBox))
+            while (parent != null && parent is not CommodityDeedBox)
             {
                 parent = parent.Parent as Item;
             }

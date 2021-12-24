@@ -598,7 +598,7 @@ namespace Server.Items
                     ); // Not sure since when, but right now 15 points are added, not 14.
                 }
 
-                if (Core.ML && !(this is BaseShield))
+                if (Core.ML && this is not BaseShield)
                 {
                     var bonus = (int)(from.Skills.ArmsLore.Value / 20);
 
@@ -820,7 +820,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is BaseArmor armor))
+            if (newItem is not BaseArmor armor)
             {
                 return;
             }

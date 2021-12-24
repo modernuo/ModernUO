@@ -54,7 +54,7 @@ namespace Server.SkillHandlers
             {
                 from.RevealingAction();
 
-                if (!(targeted is Mobile targ))
+                if (targeted is not Mobile targ)
                 {
                     from.SendLocalizedMessage(1049528); // You cannot calm that!
                 }

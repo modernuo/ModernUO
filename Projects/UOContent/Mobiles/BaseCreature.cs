@@ -2436,8 +2436,7 @@ namespace Server.Mobiles
             }
 
             if (aggressor.ChangingCombatant && (m_Controlled || _summoned) &&
-                (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct == OrderType.Stop || ct == OrderType.None ||
-                 ct == OrderType.Follow))
+                (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.Stop or OrderType.None or OrderType.Follow))
             {
                 ControlTarget = aggressor;
                 ControlOrder = OrderType.Attack;
@@ -3384,7 +3383,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (target is BaseCreature creature && creature.IsInvulnerable || target is PlayerVendor || target is TownCrier)
+            if (target is BaseCreature creature && creature.IsInvulnerable || target is PlayerVendor or TownCrier)
             {
                 if (message)
                 {

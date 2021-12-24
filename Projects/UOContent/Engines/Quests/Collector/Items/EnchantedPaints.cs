@@ -17,7 +17,7 @@ namespace Server.Engines.Quests.Collector
         {
         }
 
-        public override bool CanDrop(PlayerMobile player) => !(player.Quest is CollectorQuest);
+        public override bool CanDrop(PlayerMobile player) => player.Quest is not CollectorQuest;
 
         public override void OnDoubleClick(Mobile from)
         {
@@ -75,7 +75,7 @@ namespace Server.Engines.Quests.Collector
                 {
                     var qs = player.Quest;
 
-                    if (!(qs is CollectorQuest))
+                    if (qs is not CollectorQuest)
                     {
                         return;
                     }

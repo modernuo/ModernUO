@@ -32,7 +32,7 @@ namespace Server
                 TargetFlags.None,
                 (from, obj, stormsEye) =>
                 {
-                    if (!stormsEye.Movable || stormsEye.Deleted || !(obj is IPoint3D pt))
+                    if (!stormsEye.Movable || stormsEye.Deleted || obj is not IPoint3D pt)
                     {
                         return;
                     }

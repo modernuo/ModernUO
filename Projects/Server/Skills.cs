@@ -135,7 +135,7 @@ namespace Server
                     }
             }
 
-            if (Lock < SkillLock.Up || Lock > SkillLock.Locked)
+            if (Lock is < SkillLock.Up or > SkillLock.Locked)
             {
                 Console.WriteLine("Bad skill lock -> {0}.{1}", owner.Owner, Lock);
                 Lock = SkillLock.Up;
@@ -323,7 +323,7 @@ namespace Server
 
         public void SetLockNoRelay(SkillLock skillLock)
         {
-            if (skillLock < SkillLock.Up || skillLock > SkillLock.Locked)
+            if (skillLock is < SkillLock.Up or > SkillLock.Locked)
             {
                 return;
             }

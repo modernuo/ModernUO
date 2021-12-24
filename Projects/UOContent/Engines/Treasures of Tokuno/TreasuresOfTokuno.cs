@@ -135,7 +135,7 @@ namespace Server.Misc
 
         public static void HandleKill(Mobile victim, Mobile killer)
         {
-            if (DropEra == TreasuresOfTokunoEra.None || !(killer is PlayerMobile pm) || !(victim is BaseCreature bc) ||
+            if (DropEra == TreasuresOfTokunoEra.None || killer is not PlayerMobile pm || victim is not BaseCreature bc ||
                 !CheckLocation(bc) || !CheckLocation(pm) || !killer.InRange(victim, 18))
             {
                 return;
@@ -553,7 +553,7 @@ namespace Server.Gumps
 
         public override void HandleButtonResponse(NetState sender, int adjustedButton, ImageTileButtonInfo buttonInfo)
         {
-            if (!(sender.Mobile is PlayerMobile pm) || !pm.InRange(m_Collector.Location, 7) ||
+            if (sender.Mobile is not PlayerMobile pm || !pm.InRange(m_Collector.Location, 7) ||
                 !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward))
             {
                 return;
@@ -615,7 +615,7 @@ namespace Server.Gumps
 
         public override void HandleCancel(NetState sender)
         {
-            if (!(sender.Mobile is PlayerMobile pm) || !pm.InRange(m_Collector.Location, 7))
+            if (sender.Mobile is not PlayerMobile pm || !pm.InRange(m_Collector.Location, 7))
             {
                 return;
             }
