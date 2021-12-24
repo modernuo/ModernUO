@@ -110,7 +110,7 @@ namespace Server.Engines.Quests.Haven
 
         public static bool HasLostScrollOfPower(Mobile from)
         {
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }
@@ -130,7 +130,7 @@ namespace Server.Engines.Quests.Haven
 
         public static bool HasLostFertileDirt(Mobile from)
         {
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }
@@ -150,7 +150,7 @@ namespace Server.Engines.Quests.Haven
 
         public static bool HasLostDaemonBlood(Mobile from)
         {
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }
@@ -170,7 +170,7 @@ namespace Server.Engines.Quests.Haven
 
         public static bool HasLostDaemonBone(Mobile from)
         {
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }

@@ -595,7 +595,7 @@ namespace Server.Commands
                         {
                             map = Map.AllMaps[i];
 
-                            if (map.MapIndex is 0x7F or 0xFF || @from.Map == map)
+                            if (map.MapIndex is 0x7F or 0xFF || from.Map == map)
                             {
                                 continue;
                             }

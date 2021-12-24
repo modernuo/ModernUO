@@ -110,7 +110,7 @@ namespace Server.Misc
         {
             var from = e.Mobile;
 
-            if (@from.Account is not Account acct)
+            if (from.Account is not Account acct)
             {
                 return;
             }

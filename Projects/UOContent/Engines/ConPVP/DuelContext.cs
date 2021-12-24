@@ -257,7 +257,7 @@ namespace Server.Engines.ConPVP
 
         public static bool AllowSpecialAbility(Mobile from, string name, bool message)
         {
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return true;
             }
