@@ -99,7 +99,7 @@ namespace Server.Engines.ConPVP
 
         public static bool IsFreeConsume(Mobile mob)
         {
-            if (!(mob is PlayerMobile pm) || pm.DuelContext?.m_EventGame == null)
+            if (mob is not PlayerMobile pm || pm.DuelContext?.m_EventGame == null)
             {
                 return false;
             }
@@ -257,7 +257,7 @@ namespace Server.Engines.ConPVP
 
         public static bool AllowSpecialAbility(Mobile from, string name, bool message)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return true;
             }
@@ -345,7 +345,7 @@ namespace Server.Engines.ConPVP
                     return false;
                 }
 
-                if (!(weapon is BaseRanged) && !Ruleset.GetOption("Weapons", "Melee"))
+                if (weapon is not BaseRanged && !Ruleset.GetOption("Weapons", "Melee"))
                 {
                     return false;
                 }
@@ -411,7 +411,7 @@ namespace Server.Engines.ConPVP
                 return true;
             }
 
-            if (!(item is BaseRefreshPotion))
+            if (item is not BaseRefreshPotion)
             {
                 if (CantDoAnything(from))
                 {
@@ -513,7 +513,7 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            if (item is BasePotion && !(item is BaseExplosionPotion) && !(item is BaseRefreshPotion) && IsSuddenDeath)
+            if (item is BasePotion && item is not BaseExplosionPotion && item is not BaseRefreshPotion && IsSuddenDeath)
             {
                 from.SendMessage(0x22, "You may not drink potions in sudden death.");
                 return false;
@@ -655,7 +655,7 @@ namespace Server.Engines.ConPVP
 
         public void Requip(Mobile from, Container cont)
         {
-            if (!(cont is Corpse corpse))
+            if (cont is not Corpse corpse)
             {
                 return;
             }
@@ -670,7 +670,7 @@ namespace Server.Engines.ConPVP
             {
                 var item = items[i];
 
-                if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable)
+                if (item.Layer is Layer.Hair or Layer.FacialHair || !item.Movable)
                 {
                     continue;
                 }
@@ -1295,7 +1295,7 @@ namespace Server.Engines.ConPVP
 
         private static void EventSink_Login(Mobile m)
         {
-            if (!(m is PlayerMobile pm))
+            if (m is not PlayerMobile pm)
             {
                 return;
             }
@@ -1385,7 +1385,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            if (!(e.Mobile is PlayerMobile pm))
+            if (e.Mobile is not PlayerMobile pm)
             {
                 return;
             }
@@ -2048,7 +2048,7 @@ namespace Server.Engines.ConPVP
                     int number = item switch
                     {
                         BaseWeapon _ => 1062001, // You can no longer wield your ~1_WEAPON~
-                        _ when !(item is BaseShield) && (item is BaseArmor || item is BaseClothing) => 1062002, // You can no longer wear your ~1_ARMOR~
+                        not BaseShield when item is BaseArmor or BaseClothing => 1062002, // You can no longer wear your ~1_ARMOR~
                         _ => 1062003 // You can no longer equip your ~1_SHIELD~
                     };
 
@@ -2403,7 +2403,7 @@ namespace Server.Engines.ConPVP
                         m_GateFacet = Initiator.Map;
                     }
 
-                    if (!(arena.Teleporter is ExitTeleporter tp))
+                    if (arena.Teleporter is not ExitTeleporter tp)
                     {
                         arena.Teleporter = tp = new ExitTeleporter();
                         tp.MoveToWorld(arena.GateOut == Point3D.Zero ? arena.Outside : arena.GateOut, arena.Facet);

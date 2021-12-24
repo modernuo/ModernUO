@@ -487,7 +487,7 @@ namespace Server.Items
         [Constructible]
         public PigmentsOfTokuno(PigmentType type = PigmentType.None) : this(
             type,
-            type == PigmentType.None || type >= PigmentType.FadedCoal ? 10 : 50
+            type is PigmentType.None or >= PigmentType.FadedCoal ? 10 : 50
         )
         {
         }

@@ -178,7 +178,7 @@ namespace Server.Items
                             }
                         }
                     }
-                    else if ((item is Runebook || item is RecallRune) && m_Tub.AllowRunebooks)
+                    else if (item is Runebook or RecallRune && m_Tub.AllowRunebooks)
                     {
                         if (!from.InRange(m_Tub.GetWorldLocation(), 1) || !from.InRange(item.GetWorldLocation(), 1))
                         {
@@ -211,9 +211,7 @@ namespace Server.Items
                         }
                     }
                     else if ((item is BaseArmor armor &&
-                              (armor.MaterialType == ArmorMaterialType.Leather ||
-                               armor.MaterialType == ArmorMaterialType.Studded) || item is ElvenBoots ||
-                              item is WoodlandBelt) && m_Tub.AllowLeather)
+                                 armor.MaterialType is ArmorMaterialType.Leather or ArmorMaterialType.Studded || item is ElvenBoots or WoodlandBelt) && m_Tub.AllowLeather)
                     {
                         if (!from.InRange(m_Tub.GetWorldLocation(), 1) || !from.InRange(item.GetWorldLocation(), 1))
                         {

@@ -90,7 +90,7 @@ namespace Server.Engines.Help
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (!(targeted is PlayerMobile pm))
+                if (targeted is not PlayerMobile pm)
                 {
                     from.SendMessage("Speech logs aren't supported on that target.");
                 }

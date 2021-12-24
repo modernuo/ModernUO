@@ -72,7 +72,7 @@ namespace Server.Items
         {
             Hue = 0x481;
 
-            if (Value == 105.0 || skill == SkillName.Blacksmith || skill == SkillName.Tailoring)
+            if (Value == 105.0 || skill is SkillName.Blacksmith or SkillName.Tailoring)
             {
                 LootType = LootType.Regular;
             }
@@ -155,7 +155,7 @@ namespace Server.Items
             do
             {
                 skillName = Skills.RandomElement();
-            } while (skillName == SkillName.Blacksmith || skillName == SkillName.Tailoring);
+            } while (skillName is SkillName.Blacksmith or SkillName.Tailoring);
 
             return new PowerScroll(skillName, 100 + Utility.RandomMinMax(min, max) * 5);
         }
@@ -312,7 +312,7 @@ namespace Server.Items
 
             var version = InheritsItem ? 0 : reader.ReadInt(); // Required for SpecialScroll insertion
 
-            if (Value == 105.0 || Skill == SkillName.Blacksmith || Skill == SkillName.Tailoring)
+            if (Value == 105.0 || Skill is SkillName.Blacksmith or SkillName.Tailoring)
             {
                 LootType = LootType.Regular;
             }

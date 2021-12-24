@@ -46,7 +46,7 @@ namespace Server.Engines.BulkOrders
                 return;
             }
 
-            if (!(m_Book.RootParent is PlayerVendor pv))
+            if (m_Book.RootParent is not PlayerVendor pv)
             {
                 m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
                 return;

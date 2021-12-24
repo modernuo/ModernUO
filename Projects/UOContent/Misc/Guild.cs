@@ -937,7 +937,7 @@ namespace Server.Guilds
 
         public static void EventSink_GuildGumpRequest(Mobile m)
         {
-            if (!NewGuildSystem || !(m is PlayerMobile pm))
+            if (!NewGuildSystem || m is not PlayerMobile pm)
             {
                 return;
             }

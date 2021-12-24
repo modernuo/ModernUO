@@ -110,7 +110,7 @@ namespace Server.Misc
         {
             var from = e.Mobile;
 
-            if (!(from.Account is Account acct))
+            if (from.Account is not Account acct)
             {
                 return;
             }
@@ -217,7 +217,7 @@ namespace Server.Misc
 
         private static void EventSink_DeleteRequest(NetState state, int index)
         {
-            if (!(state.Account is Account acct))
+            if (state.Account is not Account acct)
             {
                 state.Disconnect("Attempted to delete a character but the account could not be found.");
                 return;
@@ -349,7 +349,7 @@ namespace Server.Misc
 
             e.Accepted = false;
 
-            if (!(Accounts.GetAccount(un) is Account acct))
+            if (Accounts.GetAccount(un) is not Account acct)
             {
                 // To prevent someone from making an account of just '' or a bunch of meaningless spaces
                 if (AutoAccountCreation && un.Trim().Length > 0)

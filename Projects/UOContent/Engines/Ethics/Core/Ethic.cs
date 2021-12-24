@@ -160,7 +160,7 @@ namespace Server.Ethics
 
                     foreach (var item in eable)
                     {
-                        if (item is AnkhNorth || item is AnkhWest)
+                        if (item is AnkhNorth or AnkhWest)
                         {
                             found = true;
                             break;

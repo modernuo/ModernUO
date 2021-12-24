@@ -40,7 +40,7 @@ namespace Server.Spells.Chivalry
                         continue;
                     }
 
-                    if (Caster != m && m.InLOS(Caster) && Caster.CanBeBeneficial(m, false, true) && !(m is Golem))
+                    if (Caster != m && m.InLOS(Caster) && Caster.CanBeBeneficial(m, false, true) && m is not Golem)
                     {
                         targets.Add(m);
                     }

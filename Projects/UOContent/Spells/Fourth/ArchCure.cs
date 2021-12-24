@@ -127,7 +127,7 @@ namespace Server.Spells.Fourth
                     return false;
                 }
 
-                if (feluccaRules && !(target is PlayerMobile))
+                if (feluccaRules && target is not PlayerMobile)
                 {
                     return false;
                 }

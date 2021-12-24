@@ -32,7 +32,7 @@ namespace Server.Items
             {
                 var dir = PlayerMobile.GetDirection4(from.Location, Location);
 
-                if (dir == Direction.North || dir == Direction.South)
+                if (dir is Direction.North or Direction.South)
                 {
                     ItemID = 0xA55;
                 }

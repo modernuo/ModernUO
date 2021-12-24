@@ -55,7 +55,7 @@ namespace Server.Engines.MLQuests.Items
                 return true;
             }
 
-            if (!(m is PlayerMobile pm))
+            if (m is not PlayerMobile pm)
             {
                 return false;
             }

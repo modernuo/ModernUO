@@ -62,7 +62,7 @@ namespace Server.Items
 
         public override bool OnDragLift(Mobile from)
         {
-            if (Name == null && (ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4698 || ItemID == 0x4695))
+            if (Name == null && ItemID is 0x4694 or 0x4691 or 0x4698 or 0x4695)
             {
                 if (Utility.RandomBool())
                 {

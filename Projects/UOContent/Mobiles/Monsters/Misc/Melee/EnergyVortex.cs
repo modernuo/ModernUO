@@ -80,7 +80,7 @@ namespace Server.Mobiles
             {
                 var eable = GetMobilesInRange(5);
                 var spiritsOrVortexes = eable
-                    .Where(m => (m is EnergyVortex || m is BladeSpirits) && ((BaseCreature)m).Summoned)
+                    .Where(m => m is EnergyVortex or BladeSpirits && ((BaseCreature)m).Summoned)
                     .ToList();
 
                 eable.Free();

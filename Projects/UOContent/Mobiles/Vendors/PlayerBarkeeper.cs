@@ -315,7 +315,7 @@ namespace Server.Mobiles
 
         public override bool CheckGold(Mobile from, Item dropped)
         {
-            if (!(dropped is Gold g))
+            if (dropped is not Gold g)
             {
                 return false;
             }
@@ -541,8 +541,7 @@ namespace Server.Mobiles
 
         public override void InitSBInfo()
         {
-            if (Title == "the waiter" || Title == "the barkeeper" || Title == "the baker" || Title == "the innkeeper" ||
-                Title == "the chef")
+            if (Title is "the waiter" or "the barkeeper" or "the baker" or "the innkeeper" or "the chef")
             {
                 if (m_SBInfos.Count == 0)
                 {

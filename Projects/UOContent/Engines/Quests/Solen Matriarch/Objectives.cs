@@ -43,10 +43,10 @@ namespace Server.Engines.Quests.Matriarch
 
             if (redSolen)
             {
-                return from is BlackSolenInfiltratorWarrior || from is BlackSolenInfiltratorQueen;
+                return from is BlackSolenInfiltratorWarrior or BlackSolenInfiltratorQueen;
             }
 
-            return from is RedSolenInfiltratorWarrior || from is RedSolenInfiltratorQueen;
+            return from is RedSolenInfiltratorWarrior or RedSolenInfiltratorQueen;
         }
 
         public override void OnKill(BaseCreature creature, Container corpse)
@@ -55,14 +55,14 @@ namespace Server.Engines.Quests.Matriarch
 
             if (redSolen)
             {
-                if (creature is BlackSolenInfiltratorWarrior || creature is BlackSolenInfiltratorQueen)
+                if (creature is BlackSolenInfiltratorWarrior or BlackSolenInfiltratorQueen)
                 {
                     CurProgress++;
                 }
             }
             else
             {
-                if (creature is RedSolenInfiltratorWarrior || creature is RedSolenInfiltratorQueen)
+                if (creature is RedSolenInfiltratorWarrior or RedSolenInfiltratorQueen)
                 {
                     CurProgress++;
                 }

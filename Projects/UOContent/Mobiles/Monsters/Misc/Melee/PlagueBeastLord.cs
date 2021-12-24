@@ -156,7 +156,7 @@ namespace Server.Mobiles
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
-            if (IsAccessibleTo(from) && (dropped is PlagueBeastInnard || dropped is PlagueBeastGland))
+            if (IsAccessibleTo(from) && dropped is PlagueBeastInnard or PlagueBeastGland)
             {
                 return base.OnDragDrop(from, dropped);
             }

@@ -202,7 +202,7 @@ namespace Server.Engines.MLQuests.Gumps
 
             CloseCurrent(state);
 
-            if (!(state.Mobile is PlayerMobile pm))
+            if (state.Mobile is not PlayerMobile pm)
             {
                 return;
             }
@@ -325,7 +325,7 @@ namespace Server.Engines.MLQuests.Gumps
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

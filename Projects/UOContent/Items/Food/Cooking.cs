@@ -44,7 +44,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is Item targetItem) || targetItem.Deleted)
+                if (targeted is not Item targetItem || targetItem.Deleted)
                 {
                     return;
                 }
@@ -390,7 +390,7 @@ namespace Server.Items
                 {
                     Delete();
                 }
-                else if (m_Quantity < 20 && (ItemID == 0x1039 || ItemID == 0x1045))
+                else if (m_Quantity < 20 && ItemID is 0x1039 or 0x1045)
                 {
                     ++ItemID;
                 }
@@ -440,7 +440,7 @@ namespace Server.Items
                 return;
             }
 
-            if (ItemID == 0x1039 || ItemID == 0x1045)
+            if (ItemID is 0x1039 or 0x1045)
             {
                 ++ItemID;
             }

@@ -299,7 +299,7 @@ namespace Server.Items
 
         private bool HasEntered(Mobile from)
         {
-            if (!(from.Account is Account acc))
+            if (from.Account is not Account acc)
             {
                 return false;
             }
@@ -509,7 +509,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(from.Account is Account))
+            if (from.Account is not Account)
             {
                 return;
             }

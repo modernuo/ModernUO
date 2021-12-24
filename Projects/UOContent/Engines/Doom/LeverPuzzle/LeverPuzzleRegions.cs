@@ -31,7 +31,7 @@ namespace Server.Engines.Doom
 
         public override void OnEnter(Mobile m)
         {
-            if (m == null || m is WandererOfTheVoid)
+            if (m is null or WandererOfTheVoid)
             {
                 return;
             }

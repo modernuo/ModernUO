@@ -168,7 +168,7 @@ namespace Server
                         continue;
                     }
 
-                    if (item is Static || item is BaseFloor || item is BaseWall)
+                    if (item is Static or BaseFloor or BaseWall)
                     {
                         var itemMap = item.Map;
 
@@ -212,7 +212,7 @@ namespace Server
 
                 foreach (var item in eable)
                 {
-                    if (item is Static || item is BaseFloor || item is BaseWall)
+                    if (item is Static or BaseFloor or BaseWall)
                     {
                         var itemMap = item.Map;
 
@@ -306,7 +306,7 @@ namespace Server
                         var xOffset = item.X - state.m_X * 8;
                         var yOffset = item.Y - state.m_Y * 8;
 
-                        if (xOffset < 0 || xOffset >= 8 || yOffset < 0 || yOffset >= 8)
+                        if (xOffset is < 0 or >= 8 || yOffset is < 0 or >= 8)
                         {
                             continue;
                         }

@@ -611,6 +611,7 @@ namespace Server
                     pool[length++] = item;
                 }
             }
+
             eable.Free();
 
             Array.Sort(pool, ZComparer.Default);
