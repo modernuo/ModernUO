@@ -1253,7 +1253,7 @@ namespace Server.Mobiles
             {
                 string notice;
 
-                if (@from.Account is not Account acct || !acct.HasAccess(from.NetState))
+                if (from.Account is not Account acct || !acct.HasAccess(from.NetState))
                 {
                     if (from.AccessLevel == AccessLevel.Player)
                     {

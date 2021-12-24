@@ -325,7 +325,7 @@ namespace Server.Engines.MLQuests.Gumps
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

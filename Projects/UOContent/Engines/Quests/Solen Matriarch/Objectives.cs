@@ -43,10 +43,10 @@ namespace Server.Engines.Quests.Matriarch
 
             if (redSolen)
             {
-                return @from is BlackSolenInfiltratorWarrior or BlackSolenInfiltratorQueen;
+                return from is BlackSolenInfiltratorWarrior or BlackSolenInfiltratorQueen;
             }
 
-            return @from is RedSolenInfiltratorWarrior or RedSolenInfiltratorQueen;
+            return from is RedSolenInfiltratorWarrior or RedSolenInfiltratorQueen;
         }
 
         public override void OnKill(BaseCreature creature, Container corpse)

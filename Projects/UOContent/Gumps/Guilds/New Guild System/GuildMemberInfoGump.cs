@@ -244,7 +244,7 @@ namespace Server.Guilds
 
         public void SetTitle_Callback(Mobile from, string text)
         {
-            if (@from is not PlayerMobile pm || m_Member == null)
+            if (from is not PlayerMobile pm || m_Member == null)
             {
                 return;
             }
