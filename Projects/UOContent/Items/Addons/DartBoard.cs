@@ -60,7 +60,7 @@ namespace Server.Items
 
         public void Throw(Mobile from)
         {
-            if (!(from.Weapon is BaseKnife knife))
+            if (@from.Weapon is not BaseKnife knife)
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500751); // Try holding a knife...
                 return;

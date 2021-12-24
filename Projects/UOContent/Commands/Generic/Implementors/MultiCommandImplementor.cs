@@ -56,7 +56,7 @@ namespace Server.Commands.Generic
                     }
                 case ObjectTypes.Items:
                     {
-                        if (!(targeted is Item))
+                        if (targeted is not Item)
                         {
                             from.SendMessage("This command only works on items.");
                             return;
@@ -66,7 +66,7 @@ namespace Server.Commands.Generic
                     }
                 case ObjectTypes.Mobiles:
                     {
-                        if (!(targeted is Mobile))
+                        if (targeted is not Mobile)
                         {
                             from.SendMessage("This command only works on mobiles.");
                             return;

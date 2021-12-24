@@ -44,7 +44,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is Item targetItem) || targetItem.Deleted)
+                if (targeted is not Item targetItem || targetItem.Deleted)
                 {
                     return;
                 }

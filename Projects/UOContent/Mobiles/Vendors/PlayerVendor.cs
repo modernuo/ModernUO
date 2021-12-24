@@ -142,7 +142,7 @@ namespace Server.Mobiles
         {
             base.GetChildContextMenuEntries(from, list, item);
 
-            if (!(RootParent is PlayerVendor pv) || pv.IsOwner(from))
+            if (RootParent is not PlayerVendor pv || pv.IsOwner(from))
             {
                 return;
             }
@@ -1043,7 +1043,7 @@ namespace Server.Mobiles
 
         public static void TryToBuy(Item item, Mobile from)
         {
-            if (!(item.RootParent is PlayerVendor vendor) || !vendor.CanInteractWith(from, false))
+            if (item.RootParent is not PlayerVendor vendor || !vendor.CanInteractWith(from, false))
             {
                 return;
             }

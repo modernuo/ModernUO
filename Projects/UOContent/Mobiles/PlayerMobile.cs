@@ -1252,7 +1252,7 @@ namespace Server.Mobiles
             {
                 string notice;
 
-                if (!(from.Account is Account acct) || !acct.HasAccess(from.NetState))
+                if (@from.Account is not Account acct || !acct.HasAccess(from.NetState))
                 {
                     if (from.AccessLevel == AccessLevel.Player)
                     {
@@ -2765,7 +2765,7 @@ namespace Server.Mobiles
         {
             if (Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance))
             {
-                if (!(Guild is Guild g))
+                if (Guild is not Guild g)
                 {
                     SendLocalizedMessage(1063142); // You are not in a guild!
                 }
@@ -3662,7 +3662,7 @@ namespace Server.Mobiles
             {
                 for (var i = m_AllFollowers.Count - 1; i >= 0; --i)
                 {
-                    if (!(AllFollowers[i] is BaseCreature pet) || pet.ControlMaster == null)
+                    if (AllFollowers[i] is not BaseCreature pet || pet.ControlMaster == null)
                     {
                         continue;
                     }
@@ -3728,7 +3728,7 @@ namespace Server.Mobiles
 
             for (var i = AutoStabled.Count - 1; i >= 0; --i)
             {
-                if (!(AutoStabled[i] is BaseCreature pet))
+                if (AutoStabled[i] is not BaseCreature pet)
                 {
                     continue;
                 }
@@ -3841,7 +3841,7 @@ namespace Server.Mobiles
 
         private bool CanInsure(Item item)
         {
-            if (item is Container && !(item is BaseQuiver) || item is BagOfSending || item is KeyRing || item is PotionKeg ||
+            if (item is Container && item is not BaseQuiver || item is BagOfSending || item is KeyRing || item is PotionKeg ||
                 item is Sigil)
             {
                 return false;
@@ -4068,7 +4068,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (!(obj is Item item))
+            if (obj is not Item item)
             {
                 return;
             }

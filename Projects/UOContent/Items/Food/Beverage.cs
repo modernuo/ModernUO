@@ -854,7 +854,7 @@ namespace Server.Items
                 {
                     var qs = player.Quest;
 
-                    if (!(qs is WitchApprenticeQuest))
+                    if (qs is not WitchApprenticeQuest)
                     {
                         return;
                     }
@@ -1070,7 +1070,7 @@ namespace Server.Items
 
                 for (var i = 0; i < items.Length; ++i)
                 {
-                    if (!(items[i] is BaseBeverage bev) || bev.Content != content || bev.IsEmpty)
+                    if (items[i] is not BaseBeverage bev || bev.Content != content || bev.IsEmpty)
                     {
                         continue;
                     }

@@ -502,7 +502,7 @@ namespace Server.Factions
 
         public static bool IsFactionBanned(Mobile mob)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return false;
             }
@@ -512,7 +512,7 @@ namespace Server.Factions
 
         public void OnJoinAccepted(Mobile mob)
         {
-            if (!(mob is PlayerMobile pm))
+            if (mob is not PlayerMobile pm)
             {
                 return; // sanity
             }
@@ -571,7 +571,7 @@ namespace Server.Factions
 
                     for (var i = 0; i < members.Count; ++i)
                     {
-                        if (!(members[i] is PlayerMobile member))
+                        if (members[i] is not PlayerMobile member)
                         {
                             continue;
                         }
@@ -767,7 +767,7 @@ namespace Server.Factions
 
             foreach (var item in World.Items.Values)
             {
-                if (item is IFactionItem && !(item is HoodedShroudOfShadows))
+                if (item is IFactionItem && item is not HoodedShroudOfShadows)
                 {
                     items.Add(item);
                 }

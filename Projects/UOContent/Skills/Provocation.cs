@@ -107,7 +107,7 @@ namespace Server.SkillHandlers
                     {
                         from.SendLocalizedMessage(1049446); // You have no chance of provoking those creatures.
                     }
-                    else if (creature.Unprovokable && !(creature is DemonKnight))
+                    else if (creature.Unprovokable && creature is not DemonKnight)
                     {
                         from.SendLocalizedMessage(1049446); // You have no chance of provoking those creatures.
                     }

@@ -145,7 +145,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(targeted is Item i))
+            if (targeted is not Item i)
             {
                 from.SendLocalizedMessage(1070931); // You can only dye artifacts and enhanced magic items with this tub.
             }

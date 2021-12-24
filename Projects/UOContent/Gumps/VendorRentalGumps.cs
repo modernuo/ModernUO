@@ -348,7 +348,7 @@ namespace Server.Gumps
                     return;
                 }
 
-                if (!(targeted is Mobile mob) || !mob.Player || !mob.Alive || mob == from)
+                if (targeted is not Mobile mob || !mob.Player || !mob.Alive || mob == from)
                 {
                     from.SendLocalizedMessage(1071984); // That is not a valid target for a rental contract!
                 }

@@ -116,7 +116,7 @@ namespace Server.Multis
                     return Core.AOS ? DecayType.Condemned : DecayType.ManualRefresh;
                 }
 
-                if (!(m_Owner.Account is Account acct))
+                if (m_Owner.Account is not Account acct)
                 {
                     return Core.AOS ? DecayType.Condemned : DecayType.ManualRefresh;
                 }
@@ -258,7 +258,7 @@ namespace Server.Multis
             {
                 foreach (var vendor in PlayerVendors)
                 {
-                    if (!(vendor is RentedVendor))
+                    if (vendor is not RentedVendor)
                     {
                         return true;
                     }
@@ -463,7 +463,7 @@ namespace Server.Multis
                             continue;
                         }
 
-                        if (!(info.Item is StrongBox))
+                        if (info.Item is not StrongBox)
                         {
                             count += 1;
                         }
@@ -1495,7 +1495,7 @@ namespace Server.Multis
 
         public SecureAccessResult CheckSecureAccess(Mobile m, Item item)
         {
-            if (Secures == null || !(item is Container))
+            if (Secures == null || item is not Container)
             {
                 return SecureAccessResult.Insecure;
             }
@@ -2102,7 +2102,7 @@ namespace Server.Multis
                 {
                     m.SendLocalizedMessage(501736); // You must lockdown the container first!
                 }
-                else if (!(item is VendorRentalContract) && (IsAosRules
+                else if (item is not VendorRentalContract && (IsAosRules
                     ? !CheckAosLockdowns(amt) || !CheckAosStorage(amt)
                     : LockDownCount + amt > MaxLockDowns))
                 {
@@ -2363,7 +2363,7 @@ namespace Server.Multis
             {
                 m.SendLocalizedMessage(1010550); // This is already locked down and cannot be secured.
             }
-            else if (!(item is Container))
+            else if (item is not Container)
             {
                 LockDown(m, item);
             }
@@ -2389,7 +2389,7 @@ namespace Server.Multis
                     m.SendLocalizedMessage(1010423); // You cannot secure this, place it on the ground first.
                 }
                 // Mondain's Legacy mod
-                else if (!(item is BaseAddonContainer) && !item.Movable)
+                else if (item is not BaseAddonContainer && !item.Movable)
                 {
                     m.SendLocalizedMessage(1010424); // You cannot secure this.
                 }
@@ -2437,7 +2437,7 @@ namespace Server.Multis
 
                 if (info.Defender.Player && info.Defender.Alive &&
                     Core.Now - info.LastCombatTime < HouseRegion.CombatHeatDelay &&
-                    (!(m.Guild is Guild attackerGuild) || !(info.Defender.Guild is Guild defenderGuild) ||
+                    (m.Guild is not Guild attackerGuild || info.Defender.Guild is not Guild defenderGuild ||
                      defenderGuild != attackerGuild && !defenderGuild.IsEnemy(attackerGuild)))
                 {
                     return true;
@@ -3290,7 +3290,7 @@ namespace Server.Multis
                     {
                         var item = LockDowns[i];
 
-                        if (!(item is Container))
+                        if (item is not Container)
                         {
                             count += item.TotalItems;
                         }
@@ -3486,7 +3486,7 @@ namespace Server.Multis
 
         public static bool HasAccountHouse(Mobile m)
         {
-            if (!(m.Account is Account a))
+            if (m.Account is not Account a)
             {
                 return false;
             }
@@ -3596,7 +3596,7 @@ namespace Server.Multis
                 return true;
             }
 
-            if (!(m is BaseCreature bc))
+            if (m is not BaseCreature bc)
             {
                 return false;
             }

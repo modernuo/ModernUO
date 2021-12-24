@@ -38,77 +38,76 @@ namespace Server.SkillHandlers
 
         public static void Container_Snoop(Container cont, Mobile from)
         {
-            if (from.AccessLevel > AccessLevel.Player || from.InRange(cont.GetWorldLocation(), 1))
+            if (from.AccessLevel <= AccessLevel.Player && !from.InRange(cont.GetWorldLocation(), 1))
             {
-                var root = cont.RootParent as Mobile;
+                from.SendLocalizedMessage(500446); // That is too far away.
+                return;
+            }
 
-                if (root?.Alive == false)
+            var root = cont.RootParent as Mobile;
+
+            if (root?.Alive == false)
+            {
+                return;
+            }
+
+            if (root?.AccessLevel > AccessLevel.Player && from.AccessLevel == AccessLevel.Player)
+            {
+                from.SendLocalizedMessage(500209); // You can not peek into the container.
+                return;
+            }
+
+            if (root?.AccessLevel == AccessLevel.Player && !CheckSnoopAllowed(from, root))
+            {
+                from.SendLocalizedMessage(1001018); // You cannot perform negative acts on your target.
+                return;
+            }
+
+            if (root?.AccessLevel == AccessLevel.Player &&
+                from.Skills.Snooping.Value < Utility.Random(100))
+            {
+                var map = from.Map;
+
+                if (map != null)
                 {
-                    return;
-                }
+                    var message = $"You notice {from.Name} attempting to peek into {root.Name}'s belongings.";
 
-                if (root?.AccessLevel > AccessLevel.Player && from.AccessLevel == AccessLevel.Player)
-                {
-                    from.SendLocalizedMessage(500209); // You can not peek into the container.
-                    return;
-                }
+                    var eable = map.GetClientsInRange(from.Location, 8);
 
-                if (root?.AccessLevel == AccessLevel.Player && !CheckSnoopAllowed(from, root))
-                {
-                    from.SendLocalizedMessage(1001018); // You cannot perform negative acts on your target.
-                    return;
-                }
-
-                if (root?.AccessLevel == AccessLevel.Player &&
-                    from.Skills.Snooping.Value < Utility.Random(100))
-                {
-                    var map = from.Map;
-
-                    if (map != null)
+                    foreach (var ns in eable)
                     {
-                        var message = $"You notice {from.Name} attempting to peek into {root.Name}'s belongings.";
-
-                        var eable = map.GetClientsInRange(from.Location, 8);
-
-                        foreach (var ns in eable)
+                        if (ns.Mobile != from)
                         {
-                            if (ns.Mobile != from)
-                            {
-                                ns.Mobile.SendMessage(message);
-                            }
+                            ns.Mobile.SendMessage(message);
                         }
-
-                        eable.Free();
-                    }
-                }
-
-                if (from.AccessLevel == AccessLevel.Player)
-                {
-                    Titles.AwardKarma(from, -4, true);
-                }
-
-                if (from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
-                {
-                    if (cont is TrappableContainer container && container.ExecuteTrap(from))
-                    {
-                        return;
                     }
 
-                    cont.DisplayTo(from);
+                    eable.Free();
                 }
-                else
-                {
-                    from.SendLocalizedMessage(500210); // You failed to peek into the container.
+            }
 
-                    if (from.Skills.Hiding.Value / 2 < Utility.Random(100))
-                    {
-                        from.RevealingAction();
-                    }
+            if (from.AccessLevel == AccessLevel.Player)
+            {
+                Titles.AwardKarma(from, -4, true);
+            }
+
+            if (from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
+            {
+                if (cont is TrappableContainer container && container.ExecuteTrap(from))
+                {
+                    return;
                 }
+
+                cont.DisplayTo(from);
             }
             else
             {
-                from.SendLocalizedMessage(500446); // That is too far away.
+                from.SendLocalizedMessage(500210); // You failed to peek into the container.
+
+                if (from.Skills.Hiding.Value / 2 < Utility.Random(100))
+                {
+                    from.RevealingAction();
+                }
             }
         }
     }

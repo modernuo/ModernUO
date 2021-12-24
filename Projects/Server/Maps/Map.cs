@@ -520,7 +520,7 @@ namespace Server
             var eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
 
             pool.AddRange(
-                eable.Where(item => item.ItemID <= TileData.MaxItemValue && !(item is BaseMulti))
+                eable.Where(item => item.ItemID <= TileData.MaxItemValue && item is not BaseMulti)
                     .OrderBy(item => item.Z)
                     .Take(pool.Capacity)
             );
@@ -715,7 +715,7 @@ namespace Server
             {
                 var item = sector.Items[i];
 
-                if (!(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(p.X, p.Y) &&
+                if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(p.X, p.Y) &&
                     !item.Movable)
                 {
                     var id = item.ItemData;
@@ -1145,7 +1145,7 @@ namespace Server
             {
                 var item = items[i];
 
-                if (!(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y))
+                if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y))
                 {
                     var id = item.ItemData;
                     surface = id.Surface;

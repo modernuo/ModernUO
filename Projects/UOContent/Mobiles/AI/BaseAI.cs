@@ -178,7 +178,7 @@ namespace Server.Mobiles
                     list.Add(new InternalEntry(from, 6112, 14, m_Mobile, this, OrderType.Stop)); // Command: Stop
                     list.Add(new InternalEntry(from, 6114, 14, m_Mobile, this, OrderType.Stay)); // Command: Stay
 
-                    if (!m_Mobile.Summoned && !(m_Mobile is GrizzledMare))
+                    if (!m_Mobile.Summoned && m_Mobile is not GrizzledMare)
                     {
                         list.Add(new InternalEntry(from, 6110, 14, m_Mobile, this, OrderType.Friend));   // Add Friend
                         list.Add(new InternalEntry(from, 6099, 14, m_Mobile, this, OrderType.Unfriend)); // Remove Friend

@@ -126,7 +126,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is BaseQuiver quiver))
+            if (newItem is not BaseQuiver quiver)
             {
                 return;
             }

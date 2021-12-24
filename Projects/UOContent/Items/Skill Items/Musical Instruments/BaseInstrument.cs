@@ -234,7 +234,7 @@ namespace Server.Items
 
         public static void OnPickedInstrument(Mobile from, object targeted, InstrumentPickedCallback callback)
         {
-            if (!(targeted is BaseInstrument instrument))
+            if (targeted is not BaseInstrument instrument)
             {
                 from.SendLocalizedMessage(500619); // That is not a musical instrument.
             }

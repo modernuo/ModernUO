@@ -83,7 +83,7 @@ namespace Server.Engines.VeteranRewards
 
         public static int GetRewardLevel(Mobile mob)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return 0;
             }
@@ -96,7 +96,7 @@ namespace Server.Engines.VeteranRewards
 
         public static bool HasHalfLevel(Mobile mob)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return false;
             }
@@ -115,7 +115,7 @@ namespace Server.Engines.VeteranRewards
                 return false;
             }
 
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return false;
             }
@@ -133,7 +133,7 @@ namespace Server.Engines.VeteranRewards
 
         public static void ComputeRewardInfo(Mobile mob, out int cur, out int max, out int level)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 cur = max = level = 0;
                 return;

@@ -358,8 +358,8 @@ namespace Server.Regions
         }
 
         public bool IsGuardCandidate(Mobile m) =>
-            !(m is BaseGuard) && m.Alive && m.AccessLevel <= AccessLevel.Player && !m.Blessed &&
-            (!(m is BaseCreature creature) || !creature.IsInvulnerable) && !IsDisabled() &&
+            m is not BaseGuard && m.Alive && m.AccessLevel <= AccessLevel.Player && !m.Blessed &&
+            (m is not BaseCreature creature || !creature.IsInvulnerable) && !IsDisabled() &&
             (!AllowReds && m.Kills >= 5 || m.Criminal);
 
         private class GuardTimer : Timer

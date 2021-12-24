@@ -167,7 +167,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (Account != null && (!(from.Account is Account) || from.Account.Username != Account))
+            if (Account != null && (@from.Account is not Accounting.Account || from.Account.Username != Account))
             {
                 from.SendLocalizedMessage(
                     1070714

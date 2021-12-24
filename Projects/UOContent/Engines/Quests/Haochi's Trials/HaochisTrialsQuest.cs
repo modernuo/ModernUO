@@ -102,7 +102,7 @@ namespace Server.Engines.Quests.Samurai
 
         public static bool HasLostHaochisKatana(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (@from is not PlayerMobile pm)
             {
                 return false;
             }

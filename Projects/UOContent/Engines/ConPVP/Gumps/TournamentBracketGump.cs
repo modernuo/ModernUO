@@ -306,7 +306,7 @@ namespace Server.Engines.ConPVP
                     }
                 case TourneyBracketGumpType.Participant_Info:
                     {
-                        if (!(obj is TourneyParticipant part))
+                        if (obj is not TourneyParticipant part)
                         {
                             break;
                         }
@@ -380,7 +380,7 @@ namespace Server.Engines.ConPVP
                         AddLeftArrow(25, 11, ToButtonID(0, 3));
                         AddHtml(25, 35, 250, 20, Center("Participants"));
 
-                        if (!(obj is Mobile mob))
+                        if (obj is not Mobile mob)
                         {
                             break;
                         }
@@ -428,7 +428,7 @@ namespace Server.Engines.ConPVP
                         AddLeftArrow(25, 11, ToButtonID(0, 2));
                         AddHtml(25, 35, 250, 20, Center("Rounds"));
 
-                        if (!(m_Object is PyramidLevel level))
+                        if (m_Object is not PyramidLevel level)
                         {
                             break;
                         }
@@ -572,7 +572,7 @@ namespace Server.Engines.ConPVP
                     }
                 case TourneyBracketGumpType.Match_Info:
                     {
-                        if (!(obj is TourneyMatch match))
+                        if (obj is not TourneyMatch match)
                         {
                             break;
                         }
@@ -840,7 +840,7 @@ namespace Server.Engines.ConPVP
                                 }
                             case 5:
                                 {
-                                    if (!(m_Object is TourneyMatch match))
+                                    if (m_Object is not TourneyMatch match)
                                     {
                                         break;
                                     }
@@ -990,7 +990,7 @@ namespace Server.Engines.ConPVP
                             break;
                         }
 
-                        if (!(m_Object is PyramidLevel level))
+                        if (m_Object is not PyramidLevel level)
                         {
                             break;
                         }

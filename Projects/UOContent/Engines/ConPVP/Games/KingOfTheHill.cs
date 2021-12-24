@@ -924,7 +924,7 @@ namespace Server.Engines.ConPVP
 
         public int GetTeamID(Mobile mob)
         {
-            if (!(mob is PlayerMobile pm))
+            if (mob is not PlayerMobile pm)
             {
                 return mob is BaseCreature creature ? creature.Team - 1 : -1;
             }

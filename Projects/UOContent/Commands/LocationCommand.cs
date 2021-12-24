@@ -23,7 +23,7 @@ namespace Server.Commands
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            if (!(obj is IPoint3D point))
+            if (obj is not IPoint3D point)
             {
                 LogFailure("That cannot be located.");
                 return;

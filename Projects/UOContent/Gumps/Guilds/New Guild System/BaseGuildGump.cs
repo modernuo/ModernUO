@@ -40,7 +40,7 @@ namespace Server.Guilds
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            if (!(sender.Mobile is PlayerMobile pm))
+            if (sender.Mobile is not PlayerMobile pm)
             {
                 return;
             }
@@ -71,11 +71,11 @@ namespace Server.Guilds
         }
 
         public static bool IsLeader(Mobile m, Guild g) =>
-            !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
+            !(m.Deleted || g.Disbanded || m is not PlayerMobile ||
               m.AccessLevel < AccessLevel.GameMaster && g.Leader != m);
 
         public static bool IsMember(Mobile m, Guild g) =>
-            !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
+            !(m.Deleted || g.Disbanded || m is not PlayerMobile ||
               m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
 
         public static bool CheckProfanity(string s, int maxLength = 50)

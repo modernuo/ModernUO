@@ -132,7 +132,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is DawnsMusicBox box))
+            if (newItem is not DawnsMusicBox box)
             {
                 return;
             }

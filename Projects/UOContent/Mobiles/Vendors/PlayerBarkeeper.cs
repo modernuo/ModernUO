@@ -315,7 +315,7 @@ namespace Server.Mobiles
 
         public override bool CheckGold(Mobile from, Item dropped)
         {
-            if (!(dropped is Gold g))
+            if (dropped is not Gold g)
             {
                 return false;
             }

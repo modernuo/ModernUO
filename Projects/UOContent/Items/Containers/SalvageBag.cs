@@ -157,7 +157,7 @@ namespace Server.Items
         {
             foreach (var i in Items)
             {
-                if (!(i is IScissorable) || i.Deleted)
+                if (i is not IScissorable || i.Deleted)
                 {
                     continue;
                 }
@@ -249,7 +249,7 @@ namespace Server.Items
             {
                 var item = scissorables[i];
 
-                if (!(item is IScissorable scissorable))
+                if (item is not IScissorable scissorable)
                 {
                     continue;
                 }

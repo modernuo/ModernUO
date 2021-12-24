@@ -1888,7 +1888,7 @@ namespace Server
 
                 item ??= FindItemOnLayer(Layer.Mount);
 
-                if (!(item is IMountItem mountItem))
+                if (item is not IMountItem mountItem)
                 {
                     return null;
                 }

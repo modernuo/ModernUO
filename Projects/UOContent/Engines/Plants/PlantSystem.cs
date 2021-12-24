@@ -393,7 +393,7 @@ namespace Server.Engines.Plants
             {
                 var plant = plants[i];
 
-                if (plant.IsGrowable && !(plant.RootParent is Mobile) && now >= plant.PlantSystem.NextGrowth)
+                if (plant.IsGrowable && plant.RootParent is not Mobile && now >= plant.PlantSystem.NextGrowth)
                 {
                     plant.PlantSystem.DoGrowthCheck();
                 }

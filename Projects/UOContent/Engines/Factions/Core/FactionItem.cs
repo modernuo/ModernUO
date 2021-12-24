@@ -129,7 +129,7 @@ namespace Server.Factions
 
         public static Item Imbue(Item item, Faction faction, bool expire, int hue)
         {
-            if (!(item is IFactionItem))
+            if (item is not IFactionItem)
             {
                 return item;
             }

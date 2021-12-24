@@ -35,7 +35,7 @@ namespace Server.Engines.Craft
                 return EnhanceResult.NotInBackpack;
             }
 
-            if (!(item is BaseArmor) && !(item is BaseWeapon))
+            if (item is not BaseArmor && item is not BaseWeapon)
             {
                 return EnhanceResult.BadItem;
             }

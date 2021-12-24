@@ -133,7 +133,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(obj is IPoint3D p3D))
+            if (obj is not IPoint3D p3D)
             {
                 return;
             }
@@ -397,7 +397,7 @@ namespace Server.Items
 
         private static bool ValidateUndeepWater(Map map, object obj, ref int z)
         {
-            if (!(obj is StaticTarget))
+            if (obj is not StaticTarget)
             {
                 return false;
             }

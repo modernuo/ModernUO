@@ -151,7 +151,7 @@ namespace Server.Engines.Plants
                     return true;
                 }
 
-                if (!(RootParent is Mobile owner))
+                if (RootParent is not Mobile owner)
                 {
                     return false;
                 }

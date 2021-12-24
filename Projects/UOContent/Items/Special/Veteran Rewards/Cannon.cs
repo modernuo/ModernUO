@@ -273,7 +273,7 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is IPoint3D p))
+                if (targeted is not IPoint3D p)
                 {
                     return;
                 }

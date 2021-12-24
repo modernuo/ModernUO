@@ -99,7 +99,7 @@ namespace Server.Engines.Quests.Ninja
 
         public static bool HasLostNoteForZoel(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (@from is not PlayerMobile pm)
             {
                 return false;
             }
@@ -119,7 +119,7 @@ namespace Server.Engines.Quests.Ninja
 
         public static bool HasLostEminosKatana(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (@from is not PlayerMobile pm)
             {
                 return false;
             }

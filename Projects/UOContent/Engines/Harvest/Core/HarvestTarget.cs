@@ -31,7 +31,7 @@ namespace Server.Engines.Harvest
                     if (from is PlayerMobile player)
                     {
                         var qs = player.Quest;
-                        if (!(qs is WitchApprenticeQuest))
+                        if (qs is not WitchApprenticeQuest)
                         {
                             return;
                         }

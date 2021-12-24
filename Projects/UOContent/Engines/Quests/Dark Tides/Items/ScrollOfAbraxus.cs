@@ -14,7 +14,7 @@ namespace Server.Engines.Quests.Necro
 
         public override int LabelNumber => 1028827; // Scroll of Abraxus
 
-        public override bool CanDrop(PlayerMobile player) => !(player.Quest is DarkTidesQuest);
+        public override bool CanDrop(PlayerMobile player) => player.Quest is not DarkTidesQuest;
 
         public override void OnAdded(IEntity parent)
         {

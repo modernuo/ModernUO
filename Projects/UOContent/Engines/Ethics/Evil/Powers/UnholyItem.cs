@@ -22,7 +22,7 @@ namespace Server.Ethics.Evil
 
         private void Power_OnTarget(Mobile fromMobile, object obj, Player from)
         {
-            if (!(obj is Item item))
+            if (obj is not Item item)
             {
                 from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You may not imbue that.");
                 return;

@@ -76,7 +76,7 @@ namespace Server.Commands
                     continue;
                 }
 
-                if (usage == null || !(attrs[0] is DescriptionAttribute desc))
+                if (usage == null || attrs[0] is not DescriptionAttribute desc)
                 {
                     continue;
                 }

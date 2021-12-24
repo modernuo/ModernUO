@@ -86,7 +86,7 @@ namespace Server.Engines.Quests.Necro
 
         public override bool CanTalkTo(PlayerMobile to)
         {
-            if (!(to.Quest is DarkTidesQuest qs))
+            if (to.Quest is not DarkTidesQuest qs)
             {
                 return to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(DarkTidesQuest));
             }

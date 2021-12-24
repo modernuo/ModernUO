@@ -789,7 +789,7 @@ namespace Server.Items
 
         public bool DevourCorpse()
         {
-            if (Devoured || Deleted || Killer?.Deleted != false || !Killer.Alive || !(Killer is IDevourer devourer) ||
+            if (Devoured || Deleted || Killer?.Deleted != false || !Killer.Alive || Killer is not IDevourer devourer ||
                 Owner?.Deleted != false)
             {
                 return false;
@@ -1055,7 +1055,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(from is PlayerMobile player))
+            if (@from is not PlayerMobile player)
             {
                 return;
             }
