@@ -286,7 +286,7 @@ namespace Server.Items
                 val += 100;
             }
 
-            if (targ is VampireBat || targ is VampireBatFamiliar)
+            if (targ is VampireBat or VampireBatFamiliar)
             {
                 val += 100;
             }

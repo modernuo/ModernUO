@@ -30,7 +30,7 @@ namespace Server.Commands
             }
 
             var label = $"(x:{point.X}, y:{point.Y}, z:{point.Z})";
-            if (obj is LandTarget || obj is StaticTarget)
+            if (obj is LandTarget or StaticTarget)
             {
                 List<int> graphics;
                 if (e.Arguments.Length == 0)

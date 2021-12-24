@@ -210,7 +210,7 @@ namespace Server.Engines.MLQuests
         {
             var m = e.Mobile;
 
-            if (e.Length == 0 || e.Length > 2)
+            if (e.Length is 0 or > 2)
             {
                 m.SendMessage("Syntax: SaveQuest <id> [saveEnabled=true]");
                 return;

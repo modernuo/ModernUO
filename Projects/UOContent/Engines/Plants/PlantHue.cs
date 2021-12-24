@@ -108,7 +108,7 @@ namespace Server.Engines.Plants
         public static PlantHue GetNotBright(PlantHue plantHue) => plantHue & ~PlantHue.Bright;
 
         public static bool IsPrimary(PlantHue plantHue) =>
-            plantHue == PlantHue.Red || plantHue == PlantHue.Blue || plantHue == PlantHue.Yellow;
+            plantHue is PlantHue.Red or PlantHue.Blue or PlantHue.Yellow;
 
         public static PlantHue Cross(PlantHue first, PlantHue second)
         {

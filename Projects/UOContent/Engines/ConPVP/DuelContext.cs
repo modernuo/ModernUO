@@ -670,7 +670,7 @@ namespace Server.Engines.ConPVP
             {
                 var item = items[i];
 
-                if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable)
+                if (item.Layer is Layer.Hair or Layer.FacialHair || !item.Movable)
                 {
                     continue;
                 }
@@ -2048,7 +2048,7 @@ namespace Server.Engines.ConPVP
                     int number = item switch
                     {
                         BaseWeapon _ => 1062001, // You can no longer wield your ~1_WEAPON~
-                        _ when item is not BaseShield && (item is BaseArmor || item is BaseClothing) => 1062002, // You can no longer wear your ~1_ARMOR~
+                        not BaseShield when item is BaseArmor or BaseClothing => 1062002, // You can no longer wear your ~1_ARMOR~
                         _ => 1062003 // You can no longer equip your ~1_SHIELD~
                     };
 

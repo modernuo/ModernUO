@@ -993,7 +993,7 @@ namespace Server.Items
 
             if (version <= 1)
             {
-                if (ItemID == 0x2A93 || ItemID == 0x2A94)
+                if (ItemID is 0x2A93 or 0x2A94)
                 {
                     ActiveItemID = Utility.Random(0x2AA1, 9);
                 }

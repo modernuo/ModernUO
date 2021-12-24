@@ -45,7 +45,7 @@ namespace Server.Ethics.Evil
                 return;
             }
 
-            var canImbue = (item is Spellbook || item is BaseClothing || item is BaseArmor || item is BaseWeapon) &&
+            var canImbue = item is Spellbook or BaseClothing or BaseArmor or BaseWeapon &&
                            item.Name == null;
 
             if (canImbue)

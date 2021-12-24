@@ -430,7 +430,7 @@ namespace Server.Multis
                     {
                         door = new GenericHouseDoor(DoorFacing.NorthCW, 0x2D46, 0xEA, 0xF1, false);
                     }
-                    else if (itemID == 0x2D48 || itemID == 0x2FE2)
+                    else if (itemID is 0x2D48 or 0x2FE2)
                     {
                         door = new GenericHouseDoor(DoorFacing.SouthCCW, itemID, 0xEA, 0xF1, false);
                     }
@@ -443,7 +443,7 @@ namespace Server.Multis
 
                         door = new GenericHouseDoor(facing, 0x2D63 + 4 * type + mod * 2, 0xEA, 0xF1, false);
                     }
-                    else if (itemID == 0x2FE4 || itemID == 0x31AE)
+                    else if (itemID is 0x2FE4 or 0x31AE)
                     {
                         door = new GenericHouseDoor(DoorFacing.WestCCW, itemID, 0xEA, 0xF1, false);
                     }
@@ -453,11 +453,11 @@ namespace Server.Multis
 
                         var mod = (itemID - 0x319C) / 2 % 2;
 
-                        var specialCase = itemID == 0x31AA || itemID == 0x31A8;
+                        var specialCase = itemID is 0x31AA or 0x31A8;
 
                         DoorFacing facing;
 
-                        if (itemID == 0x31AA || itemID == 0x31A8)
+                        if (itemID is 0x31AA or 0x31A8)
                         {
                             facing = mod == 0 ? DoorFacing.NorthCW : DoorFacing.EastCW;
                         }
@@ -1809,7 +1809,7 @@ namespace Server.Multis
 
             var mcl = design.Components;
 
-            if (z < -3 || z > 12 || z % 3 != 0)
+            if (z is < -3 or > 12 || z % 3 != 0)
             {
                 z = -3;
             }
@@ -2082,7 +2082,7 @@ namespace Server.Multis
             }
 
             // ML doors
-            if (itemID == 0x2D46 || itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4)
+            if (itemID is 0x2D46 or 0x2D48 or 0x2FE2 or 0x2FE4)
             {
                 return true;
             }

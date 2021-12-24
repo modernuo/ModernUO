@@ -78,7 +78,7 @@ namespace Server.Engines.Quests.Haven
         public override void Slice()
         {
             if (!m_HasLeftTheMansion &&
-                (From.Map != Map.Trammel || From.X < 3573 || From.X > 3611 || From.Y < 2568 || From.Y > 2606))
+                (From.Map != Map.Trammel || From.X is < 3573 or > 3611 || From.Y is < 2568 or > 2606))
             {
                 m_HasLeftTheMansion = true;
                 AddConversation(new RadarConversation());

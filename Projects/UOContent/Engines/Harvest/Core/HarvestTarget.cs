@@ -25,8 +25,7 @@ namespace Server.Engines.Harvest
                 var itemID = target.ItemID;
 
                 // grave
-                if (itemID == 0xED3 || itemID == 0xEDF || itemID == 0xEE0 || itemID == 0xEE1 || itemID == 0xEE2 ||
-                    itemID == 0xEE8)
+                if (itemID is 0xED3 or 0xEDF or 0xEE0 or 0xEE1 or 0xEE2 or 0xEE8)
                 {
                     if (from is PlayerMobile player)
                     {

@@ -162,8 +162,7 @@ namespace Server.Items
                     continue;
                 }
 
-                if (i is BaseClothing || i is Cloth || i is BoltOfCloth || i is Hides || i is BonePile ||
-                    i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
+                if (i is BaseClothing or Cloth or BoltOfCloth or Hides or BonePile || i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
                 {
                     return true;
                 }

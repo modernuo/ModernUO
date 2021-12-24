@@ -185,7 +185,7 @@ namespace Server.Multis
             {
                 var type = DecayType;
 
-                return type == DecayType.Condemned || type == DecayType.ManualRefresh;
+                return type is DecayType.Condemned or DecayType.ManualRefresh;
             }
         }
 
@@ -756,7 +756,7 @@ namespace Server.Multis
             {
                 if ((location.Z - entity.Z).Abs() <= 16)
                 {
-                    if (entity is PlayerVendor || entity is PlayerBarkeeper || entity is PlayerVendorPlaceholder)
+                    if (entity is PlayerVendor or PlayerBarkeeper or PlayerVendorPlaceholder)
                     {
                         vendor = true;
                         break;
@@ -1770,7 +1770,7 @@ namespace Server.Multis
             {
                 door = new GenericHouseDoor(DoorFacing.NorthCW, 0x2D46, 0xEA, 0xF1, false);
             }
-            else if (itemID == 0x2D48 || itemID == 0x2FE2)
+            else if (itemID is 0x2D48 or 0x2FE2)
             {
                 door = new GenericHouseDoor(DoorFacing.SouthCCW, itemID, 0xEA, 0xF1, false);
             }
@@ -1783,7 +1783,7 @@ namespace Server.Multis
 
                 door = new GenericHouseDoor(facing, 0x2D63 + 4 * type + mod * 2, 0xEA, 0xF1, false);
             }
-            else if (itemID == 0x2FE4 || itemID == 0x31AE)
+            else if (itemID is 0x2FE4 or 0x31AE)
             {
                 door = new GenericHouseDoor(DoorFacing.WestCCW, itemID, 0xEA, 0xF1, false);
             }
@@ -2057,7 +2057,7 @@ namespace Server.Multis
                 i.SetLastMoved();
             }
 
-            if (i is Container && (!locked || !(i is BaseBoard || i is Aquarium || i is FishBowl)))
+            if (i is Container && (!locked || !(i is BaseBoard or Aquarium or FishBowl)))
             {
                 foreach (var c in i.Items)
                 {
@@ -2119,7 +2119,7 @@ namespace Server.Multis
                 m.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1005526); // That is already locked down
                 return true;
             }
-            else if (item is HouseSign || item is Static)
+            else if (item is HouseSign or Static)
             {
                 m.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1005526); // This is already locked down.
             }
@@ -2946,7 +2946,7 @@ namespace Server.Multis
             {
                 var item = LockDowns[i];
 
-                if (item is Container cont && !(cont is BaseBoard || cont is Aquarium || cont is FishBowl))
+                if (item is Container cont && !(cont is BaseBoard or Aquarium or FishBowl))
                 {
                     var children = cont.Items;
 

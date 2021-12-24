@@ -1003,8 +1003,7 @@ namespace Server.Items
                     var item = items[i];
                     var loc = item.Location;
 
-                    if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable ||
-                        !GetRestoreInfo(item, ref loc))
+                    if (item.Layer is Layer.Hair or Layer.FacialHair || !item.Movable || !GetRestoreInfo(item, ref loc))
                     {
                         continue;
                     }

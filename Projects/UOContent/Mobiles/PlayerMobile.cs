@@ -1665,7 +1665,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (target is BaseCreature creature && creature.IsInvulnerable || target is PlayerVendor || target is TownCrier)
+            if (target is BaseCreature creature && creature.IsInvulnerable || target is PlayerVendor or TownCrier)
             {
                 if (message)
                 {
@@ -1701,7 +1701,7 @@ namespace Server.Mobiles
         {
             base.OnItemAdded(item);
 
-            if (item is BaseArmor || item is BaseWeapon)
+            if (item is BaseArmor or BaseWeapon)
             {
                 CheckStatTimers();
             }
@@ -1716,7 +1716,7 @@ namespace Server.Mobiles
         {
             base.OnItemRemoved(item);
 
-            if (item is BaseArmor || item is BaseWeapon)
+            if (item is BaseArmor or BaseWeapon)
             {
                 CheckStatTimers();
             }
@@ -2763,7 +2763,7 @@ namespace Server.Mobiles
 
         public override void DoSpeech(string text, int[] keywords, MessageType type, int hue)
         {
-            if (Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance))
+            if (Guilds.Guild.NewGuildSystem && type is MessageType.Guild or MessageType.Alliance)
             {
                 if (Guild is not Guild g)
                 {
@@ -3683,7 +3683,7 @@ namespace Server.Mobiles
                         continue;
                     }
 
-                    if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
+                    if (pet is PackLlama or PackHorse or Beetle && pet.Backpack?.Items.Count > 0)
                     {
                         continue;
                     }
@@ -3841,8 +3841,7 @@ namespace Server.Mobiles
 
         private bool CanInsure(Item item)
         {
-            if (item is Container && item is not BaseQuiver || item is BagOfSending || item is KeyRing || item is PotionKeg ||
-                item is Sigil)
+            if (item is Container && item is not BaseQuiver || item is BagOfSending or KeyRing or PotionKeg or Sigil)
             {
                 return false;
             }

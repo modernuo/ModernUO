@@ -46,7 +46,7 @@ namespace Server.Commands.Generic
             {
                 case ObjectTypes.Both:
                     {
-                        if (!(targeted is Item || targeted is Mobile))
+                        if (!(targeted is Item or Mobile))
                         {
                             from.SendMessage("This command does not work on that.");
                             return;

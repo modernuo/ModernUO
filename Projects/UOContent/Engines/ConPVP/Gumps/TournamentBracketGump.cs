@@ -490,9 +490,7 @@ namespace Server.Engines.ConPVP
                                 }
                             }
                             else if (m_Tournament.EventController != null ||
-                                     m_Tournament.TourneyType == TourneyType.RandomTeam ||
-                                     m_Tournament.TourneyType == TourneyType.RedVsBlue ||
-                                     m_Tournament.TourneyType == TourneyType.Faction)
+                                     m_Tournament.TourneyType is TourneyType.RandomTeam or TourneyType.RedVsBlue or TourneyType.Faction)
                             {
                                 for (var j = 0; j < match.Participants.Count; ++j)
                                 {
@@ -605,9 +603,7 @@ namespace Server.Engines.ConPVP
                             }
                         }
                         else if (m_Tournament.EventController != null ||
-                                 m_Tournament.TourneyType == TourneyType.RandomTeam ||
-                                 m_Tournament.TourneyType == TourneyType.RedVsBlue ||
-                                 m_Tournament.TourneyType == TourneyType.Faction)
+                                 m_Tournament.TourneyType is TourneyType.RandomTeam or TourneyType.RedVsBlue or TourneyType.Faction)
                         {
                             for (var i = 0; i < match.Participants.Count; ++i)
                             {

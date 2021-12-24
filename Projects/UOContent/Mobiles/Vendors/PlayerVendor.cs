@@ -124,7 +124,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (item is Container || item is BulkOrderBook)
+            if (item is Container or BulkOrderBook)
             {
                 return true;
             }
@@ -1493,7 +1493,7 @@ namespace Server.Mobiles
                             setPrice = true;
                         }
                     }
-                    else if (item is BaseBook || item is BulkOrderBook)
+                    else if (item is BaseBook or BulkOrderBook)
                     {
                         setPrice = true;
                     }

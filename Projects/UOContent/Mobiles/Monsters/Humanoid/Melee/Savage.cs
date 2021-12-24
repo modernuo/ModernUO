@@ -111,8 +111,7 @@ namespace Server.Mobiles
 
         public override void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
-            if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
-                to is LesserHiryu || to is Daemon)
+            if (to is Dragon or WhiteWyrm or SwampDragon or Drake or Nightmare or Hiryu or LesserHiryu or Daemon)
             {
                 damage *= 3;
             }

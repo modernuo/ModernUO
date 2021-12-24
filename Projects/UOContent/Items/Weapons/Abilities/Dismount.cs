@@ -39,7 +39,7 @@ namespace Server.Items
                 return;
             }
 
-            if (defender is ChaosDragoon || defender is ChaosDragoonElite)
+            if (defender is ChaosDragoon or ChaosDragoonElite)
             {
                 return;
             }

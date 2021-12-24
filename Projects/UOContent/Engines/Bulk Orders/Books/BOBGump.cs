@@ -709,7 +709,7 @@ namespace Server.Engines.BulkOrders
 
                 var price = Utility.ToInt32(text);
 
-                if (price < 0 || price > 250000000)
+                if (price is < 0 or > 250000000)
                 {
                     from.SendLocalizedMessage(1062390); // The price you requested is outrageous!
                 }

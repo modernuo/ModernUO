@@ -61,7 +61,7 @@ namespace Server.Items
                 {
                     Clock.GetTime(from.Map, from.X, from.Y, out var hours, out int _);
 
-                    if (hours < 5 || hours > 17)
+                    if (hours is < 5 or > 17)
                     {
                         player.SendLocalizedMessage(
                             1055040

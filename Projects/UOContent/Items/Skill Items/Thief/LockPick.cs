@@ -126,7 +126,7 @@ namespace Server.Items
                         return;
                     }
 
-                    if (m_Item.LockLevel == 0 || m_Item.LockLevel == -255)
+                    if (m_Item.LockLevel is 0 or -255)
                     {
                         // LockLevel of 0 means that the door can't be picklocked
                         // LockLevel of -255 means it's magic locked

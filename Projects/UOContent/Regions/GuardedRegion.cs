@@ -245,7 +245,7 @@ namespace Server.Regions
 
             var noto = Notoriety.Compute(helper, helped);
 
-            if (helper != helped && (noto == Notoriety.Criminal || noto == Notoriety.Murderer))
+            if (helper != helped && noto is Notoriety.Criminal or Notoriety.Murderer)
             {
                 CheckGuardCandidate(helper);
             }

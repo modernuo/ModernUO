@@ -96,7 +96,7 @@ namespace Server.Guilds
             {
                 var c = s[i];
 
-                if ((c < 'a' || c > 'z') && (c < '0' || c > '9'))
+                if (c is < 'a' or > 'z' && c is < '0' or > '9')
                 {
                     var except = false;
 

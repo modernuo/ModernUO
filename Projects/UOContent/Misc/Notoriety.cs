@@ -278,8 +278,7 @@ namespace Server.Misc
             {
                 c.DisplayGuildTitle = false;
 
-                if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder == OrderType.Attack ||
-                                              c.ControlOrder == OrderType.Guard))
+                if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder is OrderType.Attack or OrderType.Guard))
                 {
                     g = (Guild)(c.Guild = c.ControlMaster.Guild);
                 }
@@ -406,8 +405,7 @@ namespace Server.Misc
         {
             var bcTarg = target as BaseCreature;
 
-            if (Core.AOS && (target.Blessed || bcTarg?.IsInvulnerable == true || target is PlayerVendor ||
-                             target is TownCrier))
+            if (Core.AOS && (target.Blessed || bcTarg?.IsInvulnerable == true || target is PlayerVendor or TownCrier))
             {
                 return Notoriety.Invulnerable;
             }
