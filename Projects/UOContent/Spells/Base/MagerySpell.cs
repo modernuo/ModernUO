@@ -6,9 +6,11 @@ namespace Server.Spells
     public abstract class MagerySpell : Spell
     {
         private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
+
+        // Starts at Circle -2 to account for scrolls
         private static readonly double[] _requiredSkill = Core.ML ?
-            new[] { 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
-            new[] { 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+            new[] { -46.0, -32.0, 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
+            new[] { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
 
         public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
@@ -23,13 +25,6 @@ namespace Server.Spells
 
         public override void GetCastSkills(out double min, out double max)
         {
-            var circle = (int)Circle;
-
-            if (Scroll != null)
-            {
-                circle -= 2;
-            }
-
             // Original RunUO algorithm for required skill
             // const double chanceOffset = 20.0
             // const double chanceLength = 100.0 / 7.0
@@ -37,9 +32,9 @@ namespace Server.Spells
             // min = avg - chanceOffset;
             // max = avg + chanceOffset;
 
-            // Correct algorithm according to OSI.
+            // Correct algorithm according to OSI for UOR/UOML
             // TODO: Verify this algorithm on OSI for latest expansion.
-            min = _requiredSkill[circle];
+            min = _requiredSkill[(int)(Scroll == null ? Circle + 2 : Circle)];
             max = min + 40;
         }
 
@@ -47,8 +42,9 @@ namespace Server.Spells
 
         public override double GetResistSkill(Mobile m)
         {
-            var maxSkill = (1 + (int)Circle) * 10;
-            maxSkill += (1 + (int)Circle / 6) * 25;
+            var circle = (int)Circle;
+
+            var maxSkill = 1 + circle * 10 + (1 + circle / 6) * 25;
 
             if (m.Skills.MagicResist.Value < maxSkill)
             {
@@ -60,9 +56,7 @@ namespace Server.Spells
 
         public virtual bool CheckResisted(Mobile target)
         {
-            var n = GetResistPercent(target);
-
-            n /= 100.0;
+            var n = GetResistPercent(target) / 100.0;
 
             if (n <= 0.0)
             {
@@ -74,8 +68,10 @@ namespace Server.Spells
                 return true;
             }
 
-            var maxSkill = (1 + (int)Circle) * 10;
-            maxSkill += (1 + (int)Circle / 6) * 25;
+            // Even though this calculation matches AOS+, we don't combine with GetResistSkills because of an assumption
+            // about how it is used.
+            var circle = (int)Circle;
+            var maxSkill = (1 + circle) * 10 + (1 + circle / 6) * 25;
 
             if (target.Skills.MagicResist.Value < maxSkill)
             {

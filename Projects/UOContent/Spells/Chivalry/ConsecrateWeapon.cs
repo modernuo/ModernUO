@@ -29,7 +29,7 @@ namespace Server.Spells.Chivalry
 
         public override void OnCast()
         {
-            if (!(Caster.Weapon is BaseWeapon weapon) || weapon is Fists)
+            if (Caster.Weapon is not (BaseWeapon weapon and not Fists))
             {
                 Caster.SendLocalizedMessage(501078); // You must be holding a weapon.
             }
