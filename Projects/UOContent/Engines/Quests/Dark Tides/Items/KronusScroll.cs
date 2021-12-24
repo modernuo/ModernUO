@@ -31,7 +31,7 @@ namespace Server.Engines.Quests.Necro
                 return;
             }
 
-            if (@from is not PlayerMobile pm)
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

@@ -395,7 +395,7 @@ namespace Server.Engines.Quests.Haven
         public override bool IgnoreYoungProtection(Mobile from)
         {
             // This restriction continues until the end of the quest
-            if (@from is Zombie or Skeleton && from.Map == Map.Trammel && from.X >= 3391 && from.X <= 3424 &&
+            if (from is Zombie or Skeleton && from.Map == Map.Trammel && from.X >= 3391 && from.X <= 3424 &&
                 from.Y >= 2639 && from.Y <= 2664) // Haven graveyard
             {
                 return true;

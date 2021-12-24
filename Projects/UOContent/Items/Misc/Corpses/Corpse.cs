@@ -1054,7 +1054,7 @@ namespace Server.Items
                 return;
             }
 
-            if (@from is not PlayerMobile player)
+            if (from is not PlayerMobile player)
             {
                 return;
             }
