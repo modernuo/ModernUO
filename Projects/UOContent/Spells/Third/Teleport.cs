@@ -98,8 +98,8 @@ namespace Server.Spells.Third
 
                 foreach (var item in eable)
                 {
-                    if (item is ParalyzeFieldSpell.InternalItem || item is PoisonFieldSpell.InternalItem ||
-                        item is FireFieldSpell.FireFieldItem)
+                    if (item is ParalyzeFieldSpell.InternalItem or
+                        PoisonFieldSpell.InternalItem or FireFieldSpell.FireFieldItem)
                     {
                         item.OnMoveOver(m);
                     }

@@ -31,17 +31,12 @@ namespace Server.Spells.Bushido
                 return false;
             }
 
-            if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield)
-            {
-                return true;
-            }
-
             if (Caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon)
             {
                 return true;
             }
 
-            if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseWeapon)
+            if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield or BaseWeapon)
             {
                 return true;
             }

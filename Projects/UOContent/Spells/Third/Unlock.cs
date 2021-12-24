@@ -42,7 +42,7 @@ namespace Server.Spells.Third
                 {
                     Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503101); // That did not need to be unlocked.
                 }
-                else if (!(p is LockableContainer cont))
+                else if (p is not LockableContainer cont)
                 {
                     Caster.SendLocalizedMessage(501666); // You can't unlock that!
                 }
