@@ -34,14 +34,7 @@ namespace Server.Items
         [SerializableField(1)]
         private int _charges;
 
-        public BaseWand(WandEffect effect, int minCharges, int maxCharges) : base(
-            Utility.RandomList(
-                0xDF2,
-                0xDF3,
-                0xDF4,
-                0xDF5
-            )
-        )
+        public BaseWand(WandEffect effect, int minCharges, int maxCharges) : base(0xDF2 + Utility.Random(4))
         {
             Weight = 1.0;
             _wandEffect = effect;

@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Net;
+using Server.Collections;
 
 namespace Server
 {
@@ -159,6 +160,8 @@ namespace Server
             guid.TryWriteBytes(stack);
             Write(stack);
         }
+
+        void Write(BitArray bitArray);
 
         long Seek(long offset, SeekOrigin origin);
     }

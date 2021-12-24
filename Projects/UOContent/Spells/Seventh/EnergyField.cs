@@ -140,7 +140,7 @@ namespace Server.Spells.Seventh
 
             public override bool OnMoveOver(Mobile m)
             {
-                if (!(m is PlayerMobile))
+                if (m is not PlayerMobile)
                 {
                     return base.OnMoveOver(m);
                 }

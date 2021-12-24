@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Collections;
 using Server.Text;
 
 namespace Server
@@ -132,6 +133,16 @@ namespace Server
                 Index += count;
                 remaining -= count;
             }
+        }
+
+        public void Write(BitArray bitArray)
+        {
+            var byteLength = BitArray.GetByteArrayLengthFromBitLength(bitArray.Length);
+            FlushIfNeeded(byteLength + 4);
+
+            ((IGenericWriter)this).WriteEncodedInt(byteLength);
+            bitArray.CopyTo(_buffer.AsSpan((int)Index, byteLength));
+            Index += byteLength;
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)

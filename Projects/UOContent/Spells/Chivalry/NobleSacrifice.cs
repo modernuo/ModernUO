@@ -31,9 +31,10 @@ namespace Server.Spells.Chivalry
         {
             if (CheckSequence())
             {
+                var eable = Caster.GetMobilesInRange(3);
                 using var pool = PooledRefQueue<Mobile>.Create();
 
-                foreach (var m in Caster.GetMobilesInRange(3)) // TODO: Validate range
+                foreach (var m in eable) // TODO: Validate range
                 {
                     if (m is not BaseCreature { IsAnimatedDead: true } && Caster != m && m.InLOS(Caster) &&
                         Caster.CanBeBeneficial(m, false, true) && m is not Golem)
@@ -41,6 +42,8 @@ namespace Server.Spells.Chivalry
                         pool.Enqueue(m);
                     }
                 }
+                
+                eable.Free();
 
                 Caster.PlaySound(0x244);
                 Caster.FixedParticles(0x3709, 1, 30, 9965, 5, 7, EffectLayer.Waist);

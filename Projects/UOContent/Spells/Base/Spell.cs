@@ -17,18 +17,16 @@ namespace Server.Spells
     public abstract class Spell : ISpell
     {
         private static readonly TimeSpan NextSpellDelay = TimeSpan.FromSeconds(0.75);
-
         private static readonly TimeSpan AnimateDelay = TimeSpan.FromSeconds(1.5);
         // In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
         // Expo & Magic Arrow have enough delay and a short enough cast time to bring up
         // the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
         // of course, two MA's won't.
 
-        private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable = new();
+        private static readonly Dictionary<Type, DelayedDamageContextWrapper> _contextTable = new();
 
-        private AnimTimer m_AnimTimer;
-
-        private CastTimer m_CastTimer;
+        private AnimTimer _animTimer;
+        private CastTimer _castTimer;
 
         public Spell(Mobile caster, Item scroll, SpellInfo info)
         {
@@ -160,13 +158,13 @@ namespace Server.Spells
 
             var type = GetType();
 
-            if (!m_ContextTable.TryGetValue(type, out var context))
+            if (!_contextTable.TryGetValue(type, out var context))
             {
-                m_ContextTable[type] = context = new DelayedDamageContextWrapper();
+                _contextTable[type] = context = new DelayedDamageContextWrapper();
 
                 for (int i = 0; i < damageStacking.Length; i++)
                 {
-                    m_ContextTable.Add(damageStacking[i], context);
+                    _contextTable.Add(damageStacking[i], context);
                 }
             }
 
@@ -175,7 +173,7 @@ namespace Server.Spells
 
         public bool HasDelayedDamageContext(Mobile m) =>
             DelayedDamageSpellFamilyStacking != null &&
-            m_ContextTable.TryGetValue(GetType(), out var context) && context.Contains(m);
+            _contextTable.TryGetValue(GetType(), out var context) && context.Contains(m);
 
         public void RemoveDelayedDamageContext(Mobile m)
         {
@@ -184,7 +182,7 @@ namespace Server.Spells
                 return; // Sanity
             }
 
-            if (m_ContextTable.TryGetValue(GetType(), out var contexts))
+            if (_contextTable.TryGetValue(GetType(), out var contexts))
             {
                 contexts.Remove(m);
             }
@@ -226,7 +224,7 @@ namespace Server.Spells
             damageBonus += intBonus;
 
             var sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
-            // PvP spell damage increase cap of 15% from an item�s magic property
+            // PvP spell damage increase cap of 15% from an item's magic property
             if (playerVsPlayer && sdiBonus > 15)
             {
                 sdiBonus = 15;
@@ -409,8 +407,8 @@ namespace Server.Spells
             {
                 OnDisturb(type, true);
 
-                m_CastTimer?.Stop();
-                m_AnimTimer?.Stop();
+                _castTimer?.Stop();
+                _animTimer?.Stop();
 
                 if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
                 {
@@ -527,8 +525,8 @@ namespace Server.Spells
 
                         if (count != 0)
                         {
-                            m_AnimTimer = new AnimTimer(this, count);
-                            m_AnimTimer.Start();
+                            _animTimer = new AnimTimer(this, count);
+                            _animTimer.Start();
                         }
 
                         if (Info.LeftHandEffect > 0)
@@ -552,18 +550,18 @@ namespace Server.Spells
                         WeaponAbility.ClearCurrentAbility(Caster);
                     }
 
-                    m_CastTimer = new CastTimer(this, castDelay);
+                    _castTimer = new CastTimer(this, castDelay);
                     // m_CastTimer.Start();
 
                     OnBeginCast();
 
                     if (castDelay > TimeSpan.Zero)
                     {
-                        m_CastTimer.Start();
+                        _castTimer.Start();
                     }
                     else
                     {
-                        m_CastTimer.Tick();
+                        _castTimer.Tick();
                     }
 
                     return true;
@@ -892,7 +890,7 @@ namespace Server.Spells
 
                 if (!Running)
                 {
-                    m_Spell.m_AnimTimer = null;
+                    m_Spell._animTimer = null;
                 }
             }
         }
@@ -916,7 +914,7 @@ namespace Server.Spells
                 if (m_Spell.State == SpellState.Casting && m_Spell.Caster.Spell == m_Spell)
                 {
                     m_Spell.State = SpellState.Sequencing;
-                    m_Spell.m_CastTimer = null;
+                    m_Spell._castTimer = null;
                     m_Spell.Caster.OnSpellCast(m_Spell);
                     m_Spell.Caster.Region?.OnSpellCast(m_Spell.Caster, m_Spell);
                     m_Spell.Caster.NextSpellTime =
@@ -931,7 +929,7 @@ namespace Server.Spells
                         m_Spell.Caster.Target?.BeginTimeout(m_Spell.Caster, 30000); // 30 seconds
                     }
 
-                    m_Spell.m_CastTimer = null;
+                    m_Spell._castTimer = null;
                 }
             }
 
