@@ -210,7 +210,7 @@ namespace Server.Engines.MLQuests
         {
             var m = e.Mobile;
 
-            if (e.Length == 0 || e.Length > 2)
+            if (e.Length is 0 or > 2)
             {
                 m.SendMessage("Syntax: SaveQuest <id> [saveEnabled=true]");
                 return;
@@ -638,7 +638,7 @@ namespace Server.Engines.MLQuests
 
         public static void EventSink_QuestGumpRequest(Mobile m)
         {
-            if (!Enabled || !(m is PlayerMobile pm))
+            if (!Enabled || m is not PlayerMobile pm)
             {
                 return;
             }
@@ -809,7 +809,7 @@ namespace Server.Engines.MLQuests
             {
                 var from = e.Mobile;
 
-                if (!(obj is PlayerMobile pm))
+                if (obj is not PlayerMobile pm)
                 {
                     LogFailure("That is not a player.");
                     return;
@@ -840,7 +840,7 @@ namespace Server.Engines.MLQuests
 
             public override void Execute(CommandEventArgs e, object obj)
             {
-                if (!(obj is PlayerMobile pm))
+                if (obj is not PlayerMobile pm)
                 {
                     LogFailure("They have no ML quest context.");
                 }

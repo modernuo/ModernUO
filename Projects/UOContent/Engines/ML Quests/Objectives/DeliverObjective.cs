@@ -24,7 +24,7 @@ namespace Server.Engines.MLQuests.Objectives
             {
                 var itemid = CollectObjective.LabelToItemID(name.Number);
 
-                if (itemid <= 0 || itemid > 0x4000)
+                if (itemid is <= 0 or > 0x4000)
                 {
                     logger.Warning("Cliloc {0} is likely giving the wrong item ID", name.Number);
                 }

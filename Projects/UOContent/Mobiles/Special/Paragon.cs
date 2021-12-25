@@ -174,8 +174,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone ||
-                bc.IsParagon)
+            if (bc is BaseChampion or Harrower or BaseVendor or BaseEscortable or Clone || bc.IsParagon)
             {
                 return false;
             }

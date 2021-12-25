@@ -43,6 +43,7 @@ namespace SerializableMigration
                 _ when symbol.IsRectangle3D(compilation) => new[] { "Rect3D" },
                 _ when symbol.IsRace(compilation)        => new[] { "Race" },
                 _ when symbol.IsMap(compilation)         => new[] { "Map" },
+                _ when symbol.IsBitArray(compilation)    => new[] { "BitArray" },
                 _ => null
             };
 

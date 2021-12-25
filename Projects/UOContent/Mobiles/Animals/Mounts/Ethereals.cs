@@ -389,7 +389,7 @@ namespace Server.Mobiles
 
             public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
             {
-                if (type == DisturbType.EquipRequest || type == DisturbType.UseRequest /* || type == DisturbType.Hurt*/)
+                if (type is DisturbType.EquipRequest or DisturbType.UseRequest /* || type == DisturbType.Hurt*/)
                 {
                     return false;
                 }

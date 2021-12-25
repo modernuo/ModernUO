@@ -73,7 +73,7 @@ namespace Server.Commands
 
                 var path = Core.BaseDirectory;
 
-                var name = !(from.Account is Account acct) ? from.Name : acct.Username;
+                var name = from.Account is not Account acct ? from.Name : acct.Username;
 
                 AppendPath(ref path, "Logs");
                 AppendPath(ref path, "Commands");

@@ -116,7 +116,7 @@ namespace Server.Mobiles
 
                 var from = e.Mobile;
 
-                if (!(from.Guild is Guild g) || g.Type != Type)
+                if (from.Guild is not Guild g || g.Type != Type)
                 {
                     Say(SignupNumber);
                 }

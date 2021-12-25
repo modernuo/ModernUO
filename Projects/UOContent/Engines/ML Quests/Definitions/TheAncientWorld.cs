@@ -130,7 +130,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074200); // Thank goodness you are here, there�s no time to lose.
+            MLQuestSystem.Tell(this, pm, 1074200); // Thank goodness you are here, there's no time to lose.
         }
 
         public override void Serialize(IGenericWriter writer)

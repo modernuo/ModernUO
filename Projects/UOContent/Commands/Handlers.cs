@@ -566,7 +566,7 @@ namespace Server.Commands
                         {
                             map = Map.AllMaps[i];
 
-                            if (map.MapIndex == 0x7F || map.MapIndex == 0xFF)
+                            if (map.MapIndex is 0x7F or 0xFF)
                             {
                                 continue;
                             }
@@ -595,7 +595,7 @@ namespace Server.Commands
                         {
                             map = Map.AllMaps[i];
 
-                            if (map.MapIndex == 0x7F || map.MapIndex == 0xFF || from.Map == map)
+                            if (map.MapIndex is 0x7F or 0xFF || from.Map == map)
                             {
                                 continue;
                             }
@@ -629,7 +629,7 @@ namespace Server.Commands
 
                 from.SendMessage("Region name not found");
             }
-            else if (e.Length == 2 || e.Length == 3)
+            else if (e.Length is 2 or 3)
             {
                 var map = from.Map;
 

@@ -15,7 +15,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly HashSet<Mobile> m_UnderEffect = new();
+        private static readonly HashSet<Mobile> _underEffect = new();
 
         public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -41,7 +41,7 @@ namespace Server.Spells.Fourth
                 if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m))
                 {
                     var duration = SpellHelper.GetDuration(Caster, m);
-                    m_UnderEffect.Add(m);
+                    _underEffect.Add(m);
                     Timer.StartTimer(duration, () => RemoveEffect(m));
                     m.UpdateResistances();
                 }
@@ -71,13 +71,13 @@ namespace Server.Spells.Fourth
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static void RemoveEffect(Mobile m)
+        public static bool RemoveEffect(Mobile m)
         {
-            m_UnderEffect.Remove(m);
-
+            var effectRemoved = _underEffect.Remove(m);
             m.UpdateResistances();
+            return effectRemoved;
         }
 
-        public static bool UnderEffect(Mobile m) => m_UnderEffect.Contains(m);
+        public static bool UnderEffect(Mobile m) => _underEffect.Contains(m);
     }
 }

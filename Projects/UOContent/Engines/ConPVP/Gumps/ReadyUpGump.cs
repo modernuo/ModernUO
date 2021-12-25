@@ -211,7 +211,7 @@ namespace Server.Engines.ConPVP
             {
                 case 1: // okay
                     {
-                        if (!(m_From is PlayerMobile pm))
+                        if (m_From is not PlayerMobile pm)
                         {
                             break;
                         }

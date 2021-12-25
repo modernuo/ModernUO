@@ -16,7 +16,7 @@ namespace Server.Items
         {
         }
 
-        public override int LabelNumber => 1061602; // �gis
+        public override int LabelNumber => 1061602; // Ægis
         public override int ArtifactRarity => 11;
 
         public override int BasePhysicalResistance => 15;

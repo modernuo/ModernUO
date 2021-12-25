@@ -24,7 +24,7 @@ namespace Server.Spells.Third
 
         public void Target(Item item)
         {
-            if (!(item is LockableContainer cont))
+            if (item is not LockableContainer cont)
             {
                 Caster.SendLocalizedMessage(501762); // Target must be an unlocked chest.
             }

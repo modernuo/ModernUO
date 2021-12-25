@@ -1107,7 +1107,7 @@ namespace Server.Commands
                     }
                 }
             }
-            else if (srcItem is Teleporter || srcItem is FillableContainer || srcItem is BaseBook)
+            else if (srcItem is Teleporter or FillableContainer or BaseBook)
             {
                 eable = map.GetItemsInRange(new Point3D(x, y, z), 0);
 

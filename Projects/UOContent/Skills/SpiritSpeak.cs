@@ -116,7 +116,7 @@ namespace Server.SkillHandlers
 
             public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
             {
-                if (type == DisturbType.EquipRequest || type == DisturbType.UseRequest)
+                if (type is DisturbType.EquipRequest or DisturbType.UseRequest)
                 {
                     return false;
                 }

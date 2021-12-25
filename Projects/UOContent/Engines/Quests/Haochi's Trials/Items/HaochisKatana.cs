@@ -13,7 +13,7 @@ namespace Server.Engines.Quests.Samurai
 
         public override int LabelNumber => 1063165; // Daimyo Haochi's Katana
 
-        public override bool CanDrop(PlayerMobile player) => !(player.Quest is HaochisTrialsQuest);
+        public override bool CanDrop(PlayerMobile player) => player.Quest is not HaochisTrialsQuest;
 
         public override void Serialize(IGenericWriter writer)
         {

@@ -110,7 +110,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(obj is SwampDragon pet) || pet.HasBarding)
+            if (obj is not SwampDragon pet || pet.HasBarding)
             {
                 from.SendLocalizedMessage(1053025); // That is not an unarmored swamp dragon.
             }

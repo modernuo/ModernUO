@@ -121,7 +121,7 @@ namespace Server.Items
 
         public override void OnSpeech(SpeechEventArgs e)
         {
-            if (!Active || Receivers.Count == 0 || RootParent != null && !(RootParent is Mobile))
+            if (!Active || Receivers.Count == 0 || RootParent != null && RootParent is not Mobile)
             {
                 return;
             }

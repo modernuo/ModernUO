@@ -23,7 +23,7 @@ namespace Server.Ethics.Hero
 
         private void Power_OnTarget(Mobile fromMobile, object obj, Player from)
         {
-            if (!(obj is IPoint3D p))
+            if (obj is not IPoint3D p)
             {
                 return;
             }

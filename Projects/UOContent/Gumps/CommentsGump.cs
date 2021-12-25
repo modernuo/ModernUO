@@ -71,7 +71,7 @@ namespace Server.Gumps
 
         private static void OnTarget(Mobile from, object target)
         {
-            if (!(target is Mobile m) || !m.Player)
+            if (target is not Mobile m || !m.Player)
             {
                 from.SendMessage("You must target a player.");
                 return;

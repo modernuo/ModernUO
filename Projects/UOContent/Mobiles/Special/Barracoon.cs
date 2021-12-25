@@ -145,7 +145,7 @@ namespace Server.Mobiles
 
             foreach (var m in eable)
             {
-                if (m is Ratman || m is RatmanArcher || m is RatmanMage)
+                if (m is Ratman or RatmanArcher or RatmanMage)
                 {
                     rats++;
                     if (rats >= 16)

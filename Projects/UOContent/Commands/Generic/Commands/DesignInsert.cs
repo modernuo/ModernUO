@@ -35,7 +35,7 @@ namespace Server.Commands.Generic
         {
             house = null;
 
-            if (item == null || item is BaseMulti || item is HouseSign || staticsOnly && !(item is Static))
+            if (item is null or BaseMulti or HouseSign || staticsOnly && item is not Static)
             {
                 return DesignInsertResult.InvalidItem;
             }

@@ -273,10 +273,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074200, // Thank goodness you are here, there�s no time to lose.
-                    1074203
+                    1074200, // Thank goodness you are here, there's no time to lose.
+                    1074203 // Hello friend. I realize you are busy but if you would be willing to render me a service I can assure you that you will be judiciously renumerated.
                 )
-            ); // Hello friend. I realize you are busy but if you would be willing to render me a service I can assure you that you will be judiciously renumerated.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)

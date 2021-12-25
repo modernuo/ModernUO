@@ -647,9 +647,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074188, // Weakling! You are not up to the task I have.
-                    1074195
+                    1074195  // You there, in the stupid hat!  Come here.
                 )
-            ); // You there, in the stupid hat!   Come here.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)

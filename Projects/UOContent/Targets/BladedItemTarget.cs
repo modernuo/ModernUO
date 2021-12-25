@@ -52,7 +52,7 @@ namespace Server.Targets
                 {
                     var itemID = target.ItemID;
 
-                    if (itemID == 0xD15 || itemID == 0xD16) // red mushroom
+                    if (itemID is 0xD15 or 0xD16) // red mushroom
                     {
                         var player = from as PlayerMobile;
 

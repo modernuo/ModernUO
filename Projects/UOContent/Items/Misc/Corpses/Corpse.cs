@@ -789,7 +789,7 @@ namespace Server.Items
 
         public bool DevourCorpse()
         {
-            if (Devoured || Deleted || Killer?.Deleted != false || !Killer.Alive || !(Killer is IDevourer devourer) ||
+            if (Devoured || Deleted || Killer?.Deleted != false || !Killer.Alive || Killer is not IDevourer devourer ||
                 Owner?.Deleted != false)
             {
                 return false;
@@ -1003,8 +1003,7 @@ namespace Server.Items
                     var item = items[i];
                     var loc = item.Location;
 
-                    if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable ||
-                        !GetRestoreInfo(item, ref loc))
+                    if (item.Layer is Layer.Hair or Layer.FacialHair || !item.Movable || !GetRestoreInfo(item, ref loc))
                     {
                         continue;
                     }
@@ -1055,7 +1054,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(from is PlayerMobile player))
+            if (from is not PlayerMobile player)
             {
                 return;
             }

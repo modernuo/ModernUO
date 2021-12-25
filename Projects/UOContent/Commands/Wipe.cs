@@ -85,7 +85,7 @@ namespace Server.Commands
 
             foreach (var obj in eable)
             {
-                if (items && obj is Item && !(obj is BaseMulti || obj is HouseSign))
+                if (items && obj is Item && !(obj is BaseMulti or HouseSign))
                 {
                     toDelete.Add(obj);
                 }

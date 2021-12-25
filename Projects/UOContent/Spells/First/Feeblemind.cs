@@ -27,6 +27,8 @@ namespace Server.Spells.First
 
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
+                // TODO: StoneForm immunity
+
                 SpellHelper.AddStatCurse(Caster, m, StatType.Int);
 
                 m.Spell?.OnCasterHurt();
