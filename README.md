@@ -20,7 +20,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Debian 10/11](https://img.shields.io/badge/-bullseye-A81D33?logo=debian)](https://www.debian.org/distrib/)
 [![Ubuntu 16/18/20 LTS](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/download/server)
 [![CentOS 7/8](https://img.shields.io/badge/-8.5-262577?logo=centos&logoColor=white)](https://www.centos.org/download/)
-[![Fedora 32/33/34](https://img.shields.io/badge/-34-0B57A4?logo=fedora&logoColor=white)](https://getfedora.org/en/server/download/)
+[![Fedora 32/33/34](https://img.shields.io/badge/-fedora%2034-0B57A4)](https://getfedora.org/en/server/download/)
 [![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)](https://access.redhat.com/downloads)
 
 #### Running the server
