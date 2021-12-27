@@ -33,9 +33,11 @@ public static class StaffDress
             return;
         }
 
+        pm.Race = Race.Human;
         pm.Karma = pm.Fame = pm.Kills = pm.ShortTermMurders = pm.BodyMod = 0;
         pm.Body = 987;
         pm.SolidHueOverride = pm.HueMod = -1;
+        pm.FacialHairItemID = 0;
         pm.Blessed = true;
         pm.DisplayGuildTitle = false;
         pm.DisplayChampionTitle = false;
@@ -47,13 +49,22 @@ public static class StaffDress
         pm.NetState.SendSpeedControl(SpeedControlSetting.Mount);
         pm.ResetStaffAccess();
 
+        if (pm.AccessLevel < AccessLevel.Administrator)
+        {
+            pm.Hue = Race.Human.ClipSkinHue(pm.Hue & 0x3FFF);
+        }
+
         for (var i = pm.Items.Count - 1; i >= 0; i--)
         {
             var item = pm.Items[i];
 
+            if (item.Layer is Layer.FacialHair)
+            {
+                item.Delete();
+            }
+
             if (item.Layer is not Layer.Backpack
                 and not Layer.Bank
-                and not Layer.FacialHair
                 and not Layer.Hair
                 and not Layer.Mount
                 and not Layer.ShopBuy
