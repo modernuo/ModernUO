@@ -76,7 +76,7 @@ public static class StaffAccess
             return;
         }
 
-        if (originalAccessLevel != null && (!validAccessLevel || newAccessLevel == m.AccessLevel))
+        if (originalAccessLevel != null && (!validAccessLevel || newAccessLevel == originalAccessLevel))
         {
             account.RemoveTag(accountTag);
             newAccessLevel = originalAccessLevel.Value;
