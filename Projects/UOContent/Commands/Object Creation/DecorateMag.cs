@@ -20,7 +20,8 @@ namespace Server.Commands
             CommandSystem.Register("DecorateMag", AccessLevel.Administrator, DecorateMag_OnCommand);
         }
 
-        [Usage("DecorateMag"), Description("Generates world decoration.")]
+        [Usage("DecorateMag")]
+        [Description("Generates world decoration.")]
         private static void DecorateMag_OnCommand(CommandEventArgs e)
         {
             m_Mobile = e.Mobile;
