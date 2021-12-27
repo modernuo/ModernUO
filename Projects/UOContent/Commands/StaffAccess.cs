@@ -47,7 +47,7 @@ public static class StaffAccess
     }
 
     [Usage("StaffAccess <access level>")]
-    [Description("Overrides a staff members access level.")]
+    [Description("Overrides your access level.")]
     public static void StaffAccess_OnCommand(CommandEventArgs e)
     {
         var m = e.Mobile;
@@ -85,7 +85,7 @@ public static class StaffAccess
 
         if (newAccessLevel > m.AccessLevel)
         {
-            m.SendMessage($"You cannot set your staff access to {newAccessLevel.ToString()}");
+            m.SendMessage($"You cannot set your staff access to {newAccessLevel.ToString()}.");
             return;
         }
 
@@ -96,6 +96,6 @@ public static class StaffAccess
         }
 
         m.AccessLevel = newAccessLevel;
-        m.SendMessage($"Staff access set to {newAccessLevel.ToString()}");
+        m.SendMessage($"Staff access set to {newAccessLevel.ToString()}.");
     }
 }
