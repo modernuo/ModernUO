@@ -66,7 +66,7 @@ public static class StaffAccess
 
         var accessLevelArgument = e.GetString(0)?.Trim().ToLower();
         AccessLevel newAccessLevel = AccessLevel.Player;
-        var validAccessLevel = accessLevelArgument != null &&
+        var validAccessLevel = !string.IsNullOrEmpty(accessLevelArgument) &&
                                _accessLevelByString.TryGetValue(accessLevelArgument, out newAccessLevel);
 
         if (!validAccessLevel && originalAccessLevel == null)
