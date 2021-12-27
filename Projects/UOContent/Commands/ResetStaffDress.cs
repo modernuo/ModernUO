@@ -51,7 +51,7 @@ public static class StaffDress
 
         if (pm.AccessLevel < AccessLevel.Administrator)
         {
-            pm.Hue = Race.Human.ClipSkinHue(pm.Hue & 0x3FFF);
+            pm.Hue = Race.Human.ClipSkinHue((pm.Hue + 1) & 0x3FFF);
         }
 
         for (var i = pm.Items.Count - 1; i >= 0; i--)
