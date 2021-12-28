@@ -83,7 +83,7 @@ public static class StaffAccess
             m.SendMessage("Restoring original staff access...");
         }
 
-        if (newAccessLevel > m.AccessLevel)
+        if ((originalAccessLevel ?? m.AccessLevel) < newAccessLevel)
         {
             m.SendMessage($"You cannot set your staff access to {newAccessLevel.ToString()}.");
             return;
