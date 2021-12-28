@@ -23,6 +23,13 @@ namespace SerializableMigration
     {
         string RuleName { get; }
 
+        void GenerateMigrationProperty(
+            StringBuilder source,
+            Compilation compilation,
+            string indent,
+            SerializableProperty serializableProperty
+        );
+
         bool GenerateRuleState(
             Compilation compilation,
             ISymbol symbol,
@@ -37,7 +44,8 @@ namespace SerializableMigration
             StringBuilder source,
             string indent,
             SerializableProperty property,
-            string? parentReference
+            string? parentReference,
+            bool isMigration = false
         );
 
         void GenerateSerializationMethod(
