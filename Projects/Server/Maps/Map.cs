@@ -192,10 +192,8 @@ namespace Server
         public static Map.PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds) =>
             Map.PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
 
-        public static Map.PooledEnumerable<IEntity> GetEntities(
-            Map map, Rectangle2D bounds, bool items = true,
-            bool mobiles = true
-        ) => Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
+        public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
+            Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
 
         public static Map.PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds) =>
             GetMobiles<Mobile>(map, bounds);
@@ -1101,15 +1099,11 @@ namespace Server
 
         public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p) => GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
 
-        public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items = true, bool mobiles = true) =>
-            GetObjectsInBounds(
-                new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1),
-                items,
-                mobiles
-            );
+        public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range) =>
+            GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 
-        public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true) =>
-            PooledEnumeration.GetEntities(this, bounds, items, mobiles);
+        public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds) =>
+            PooledEnumeration.GetEntities(this, bounds);
 
         public IPooledEnumerable<NetState> GetClientsInRange(Point3D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
 
