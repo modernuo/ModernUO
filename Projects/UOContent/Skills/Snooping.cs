@@ -84,9 +84,9 @@ public static class Snooping
             Titles.AwardKarma(from, -4, true);
         }
 
-        if (from.AccessLevel > AccessLevel.Counselor || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
+        if (from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
         {
-            if (cont is TrappableContainer container && container.ExecuteTrap(from))
+            if ((cont as TrappableContainer)?.ExecuteTrap(from) == true)
             {
                 return;
             }
