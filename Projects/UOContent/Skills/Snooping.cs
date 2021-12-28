@@ -59,7 +59,8 @@ public static class Snooping
 
         if (from.AccessLevel == AccessLevel.Player)
         {
-            if (root != null && from.Skills.Snooping.Value < 100.0 && from.Skills.Snooping.Value < Utility.RandomDouble() * 100)
+            var snooping = from.Skills.Snooping.Value;
+            if (root != null && snooping < 100.0 && snooping < Utility.RandomDouble() * 100)
             {
                 var map = from.Map;
 
