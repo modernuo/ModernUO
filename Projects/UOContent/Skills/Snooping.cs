@@ -59,7 +59,7 @@ public static class Snooping
 
         if (from.AccessLevel == AccessLevel.Player)
         {
-            if (root != null && from.Skills.Snooping.Value < 100.0 && from.Skills.Snooping.Value < Utility.Random(100))
+            if (root != null && from.Skills.Snooping.Value < 100.0 && from.Skills.Snooping.Value < Utility.RandomDouble() * 100)
             {
                 var map = from.Map;
 
@@ -97,7 +97,7 @@ public static class Snooping
         {
             from.SendLocalizedMessage(500210); // You failed to peek into the container.
 
-            if (from.Skills.Hiding.Fixed / 2 < Utility.Random(1000))
+            if (from.Skills.Hiding.Value / 2 < Utility.RandomDouble() * 100)
             {
                 from.RevealingAction();
             }
