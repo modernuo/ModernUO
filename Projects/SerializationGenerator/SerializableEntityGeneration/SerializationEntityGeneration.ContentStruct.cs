@@ -37,12 +37,9 @@ namespace SerializationGenerator
 
             foreach (var serializableProperty in properties)
             {
-                var propertyType = serializableProperty.Type;
-                var type = compilation.GetTypeByMetadataName(propertyType)?.IsValueType == true
-                           || SymbolMetadata.IsPrimitiveFromTypeDisplayString(propertyType) && propertyType != "bool"
-                    ? $"{propertyType}{(serializableProperty.UsesSaveFlag == true ? "?" : "")}" : propertyType;
-
-                source.AppendLine($"{indent}    internal readonly {type} {serializableProperty.Name};");
+                SerializableMigrationRulesEngine.Rules[serializableProperty.Rule].GenerateMigrationProperty(
+                    source, compilation, $"{indent}    ", serializableProperty
+                );
             }
 
             var innerIndent = $"{indent}        ";
@@ -100,7 +97,8 @@ namespace SerializationGenerator
                                 source,
                                 $"{innerIndent}    ",
                                 property,
-                                "entity"
+                                "entity",
+                                true
                             );
 
                             source.AppendLine($"{innerIndent}}}\n{innerIndent}else\n{innerIndent}{{");
@@ -114,7 +112,8 @@ namespace SerializationGenerator
                             source,
                             innerIndent,
                             property,
-                            "entity"
+                            "entity",
+                            true
                         );
                     }
                 }

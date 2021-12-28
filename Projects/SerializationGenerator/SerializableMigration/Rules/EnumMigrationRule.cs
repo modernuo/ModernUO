@@ -19,54 +19,55 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public class EnumMigrationRule : MigrationRule
 {
-    public class EnumMigrationRule : ISerializableMigrationRule
+    public override string RuleName => nameof(EnumMigrationRule);
+
+    public override bool GenerateRuleState(
+        Compilation compilation,
+        ISymbol symbol,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        out string[] ruleArguments
+    )
     {
-        public string RuleName => nameof(EnumMigrationRule);
-
-        public bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        )
+        if (symbol is not ITypeSymbol typeSymbol || !typeSymbol.IsEnum())
         {
-            if (symbol is not ITypeSymbol typeSymbol || !typeSymbol.IsEnum())
-            {
-                ruleArguments = null;
-                return false;
-            }
-
-            ruleArguments = Array.Empty<string>();
-            return true;
+            ruleArguments = null;
+            return false;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
+        ruleArguments = Array.Empty<string>();
+        return true;
+    }
 
-            source.AppendLine($"{indent}{property.Name} = reader.ReadEnum<{property.Type}>();");
+    public override void GenerateDeserializationMethod(
+        StringBuilder source, string indent, SerializableProperty property, string? parentReference, bool isMigration = false
+    )
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
 
-        public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
+        source.AppendLine($"{indent}{property.Name} = reader.ReadEnum<{property.Type}>();");
+    }
 
-            source.AppendLine($"{indent}writer.WriteEnum<{property.Type}>({property.Name});");
+    public override void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
+
+        source.AppendLine($"{indent}writer.WriteEnum<{property.Type}>({property.Name});");
     }
 }

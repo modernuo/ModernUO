@@ -19,66 +19,67 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public class SerializationMethodSignatureMigrationRule : MigrationRule
 {
-    public class SerializationMethodSignatureMigrationRule : ISerializableMigrationRule
+    public override string RuleName => nameof(SerializationMethodSignatureMigrationRule);
+
+    public override bool GenerateRuleState(
+        Compilation compilation,
+        ISymbol symbol,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        out string[] ruleArguments
+    )
     {
-        public string RuleName => nameof(SerializationMethodSignatureMigrationRule);
-
-        public bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        )
+        if ((symbol as ITypeSymbol)?.HasPublicSerializeMethod(compilation, serializableTypes) != true)
         {
-            if ((symbol as ITypeSymbol)?.HasPublicSerializeMethod(compilation, serializableTypes) != true)
-            {
-                ruleArguments = null;
-                return false;
-            }
-
-            if (symbol is not INamedTypeSymbol namedTypeSymbol ||
-                !namedTypeSymbol.HasGenericReaderCtor(compilation, parentSymbol, out var requiresParent))
-            {
-                ruleArguments = null;
-                return false;
-            }
-
-            ruleArguments = new[] { requiresParent ? "DeserializationRequiresParent" : "" };
-            return true;
+            ruleArguments = null;
+            return false;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
+        if (symbol is not INamedTypeSymbol namedTypeSymbol ||
+            !namedTypeSymbol.HasGenericReaderCtor(compilation, parentSymbol, out var requiresParent))
         {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
-
-            var propertyName = property.Name;
-            var argument = property.RuleArguments?.Length >= 1 &&
-                           property.RuleArguments[0] == "DeserializationRequiresParent" ? ", this" : "";
-
-            source.AppendLine($"{indent}{propertyName} = new {property.Type}(reader{argument});");
+            ruleArguments = null;
+            return false;
         }
 
-        public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
+        ruleArguments = new[] { requiresParent ? "DeserializationRequiresParent" : "" };
+        return true;
+    }
 
-            var propertyName = property.Name;
-            source.AppendLine($"{indent}{propertyName}.Serialize(writer);");
+    public override void GenerateDeserializationMethod(
+        StringBuilder source, string indent, SerializableProperty property, string? parentReference, bool isMigration = false
+    )
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
+
+        var propertyName = property.Name;
+        var argument = property.RuleArguments?.Length >= 1 &&
+                       property.RuleArguments[0] == "DeserializationRequiresParent" ? ", this" : "";
+
+        source.AppendLine($"{indent}{propertyName} = new {property.Type}(reader{argument});");
+    }
+
+    public override void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
+        }
+
+        var propertyName = property.Name;
+        source.AppendLine($"{indent}{propertyName}.Serialize(writer);");
     }
 }
