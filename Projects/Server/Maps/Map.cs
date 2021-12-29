@@ -612,7 +612,7 @@ namespace Server
 
             eable.Free();
 
-            Array.Sort(pool, ZComparer.Default);
+            Array.Sort(pool, 0, length, ZComparer.Default);
         }
 
         public void FixColumn(int x, int y)
