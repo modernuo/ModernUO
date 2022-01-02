@@ -34,9 +34,8 @@ public partial class NetState
             return false;
         }
 
-        var maxSteps = CalcMoves.MaxSteps;
-        _steps ??= new long[maxSteps + 1]; // Extra index as a sentinel
-
+        _steps ??= new long[CalcMoves.MaxSteps + 1]; // Extra index as a sentinel
+        var maxSteps = _steps.Length - 1;
         var stepsLength = _steps.Length;
 
         var now = Core.TickCount;
@@ -65,7 +64,7 @@ public partial class NetState
         var stepsTaken = (_stepIndex < _expiredIndex ? _stepIndex + stepsLength : _stepIndex) - _expiredIndex;
 
         // Can we take a step?
-        if (stepsTaken >= stepsLength)
+        if (stepsTaken >= maxSteps)
         {
             return false;
         }
@@ -79,7 +78,7 @@ public partial class NetState
         }
 
         // If CalcMoves.MaxSteps is modified, we need to adjust accordingly
-        AdjustSteps(maxSteps);
+        AdjustSteps(CalcMoves.MaxSteps);
 
         return true;
     }
