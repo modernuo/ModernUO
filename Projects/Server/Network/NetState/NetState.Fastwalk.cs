@@ -70,7 +70,7 @@ public partial class NetState
         }
 
         var delay = Mobile.ComputeMovementSpeed(d);
-        _steps[_stepIndex++] = unchecked (now + delay);
+        _steps[_stepIndex++] = now + delay;
 
         if (_stepIndex > maxSteps)
         {
