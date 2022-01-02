@@ -15,78 +15,68 @@
 
 using CalcMoves = Server.Movement.Movement;
 
-namespace Server.Network
+namespace Server.Network;
+
+public partial class NetState
 {
-    public partial class NetState
+    // The next step
+    private int _stepIndex;
+    // The last index to expire
+    private int _expiredIndex;
+
+    private long[] _steps;
+
+    public bool AddStep(Direction d)
     {
-        private int _stepIndex;
-        private int _stepCount;
-        private long _startDelay;
-        private long[] _stepDelays;
-
-        public bool AddStep(Direction d)
+        if (Mobile == null)
         {
-            if (Mobile == null)
-            {
-                return false;
-            }
-
-            var maxSteps = CalcMoves.MaxSteps;
-
-            _stepDelays ??= new long[maxSteps];
-            var length = _stepDelays.Length;
-
-            var index = _stepIndex - _stepCount;
-            if (index < 0)
-            {
-                index += length;
-            }
-
-            var now = Core.TickCount;
-            var last = _startDelay;
-
-            // Discard old steps by decrementing the step counter
-            while (index != _stepIndex || _stepCount >= maxSteps)
-            {
-                var step = _stepDelays[index++];
-                if (now - last < step)
-                {
-                    break;
-                }
-
-                last += step;
-                _stepCount--;
-                if (index >= length)
-                {
-                    index = 0;
-                }
-            }
-
-            _startDelay = last;
-
-            // If we are out of steps, fail
-            if (_stepCount >= maxSteps)
-            {
-                return false;
-            }
-
-            var delay = Mobile.ComputeMovementSpeed(d);
-
-            // Add the delay
-            _stepDelays[_stepIndex++] = delay;
-
-            if (_stepIndex >= length)
-            {
-                _stepIndex = 0;
-            }
-
-            if (_stepCount == 0)
-            {
-                _startDelay = now;
-            }
-            _stepCount++;
-
-            return true;
+            return false;
         }
+
+        var maxSteps = CalcMoves.MaxSteps;
+
+        _steps ??= new long[maxSteps + 1]; // Extra index as a sentinel
+        var stepsLength = _steps.Length;
+
+        var now = Core.TickCount;
+
+        var lastIndex = -1;
+
+        // Expire old steps
+        while (_expiredIndex != _stepIndex)
+        {
+            var step = _steps[_expiredIndex];
+
+            // Is the step ahead of us, or the next step rolled over and we didn't yet
+            if (step > Core.TickCount || lastIndex > -1 && _steps[lastIndex] > step)
+            {
+                break;
+            }
+
+            lastIndex = _expiredIndex++;
+
+            if (_expiredIndex >= stepsLength)
+            {
+                _expiredIndex -= stepsLength;
+            }
+        }
+
+        var stepsTaken = (_stepIndex < _expiredIndex ? _stepIndex + stepsLength : _stepIndex) - _expiredIndex;
+
+        // Can we take a step?
+        if (stepsTaken >= stepsLength)
+        {
+            return false;
+        }
+
+        var delay = Mobile.ComputeMovementSpeed(d);
+        _steps[_stepIndex++] = unchecked (now + delay);
+
+        if (_stepIndex > maxSteps)
+        {
+            _stepIndex -= maxSteps;
+        }
+
+        return true;
     }
 }
