@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Runtime.CompilerServices;
 using CalcMoves = Server.Movement.Movement;
 
 namespace Server.Network;
@@ -34,8 +35,8 @@ public partial class NetState
         }
 
         var maxSteps = CalcMoves.MaxSteps;
-
         _steps ??= new long[maxSteps + 1]; // Extra index as a sentinel
+
         var stepsLength = _steps.Length;
 
         var now = Core.TickCount;
@@ -77,6 +78,37 @@ public partial class NetState
             _stepIndex -= maxSteps;
         }
 
+        // If CalcMoves.MaxSteps is modified, we need to adjust accordingly
+        AdjustSteps(maxSteps);
+
         return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void AdjustSteps(int maxSteps)
+    {
+        var stepsLength = maxSteps + 1;
+
+        if (_steps.Length == stepsLength)
+        {
+            return;
+        }
+
+        var oldSteps = _steps;
+        _steps = new long[stepsLength];
+
+        var expiredIndex = _expiredIndex;
+        var newStepIndex = 0;
+        while (newStepIndex < maxSteps && expiredIndex != _stepIndex)
+        {
+            _steps[newStepIndex++] = oldSteps[expiredIndex++];
+            if (expiredIndex >= oldSteps.Length)
+            {
+                expiredIndex -= oldSteps.Length;
+            }
+        }
+
+        _expiredIndex = 0;
+        _stepIndex = newStepIndex;
     }
 }
