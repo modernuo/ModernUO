@@ -35,7 +35,6 @@ public partial class NetState
         }
 
         _steps ??= new long[CalcMoves.MaxSteps + 1]; // Extra index as a sentinel
-        var maxSteps = _steps.Length - 1;
         var stepsLength = _steps.Length;
 
         var now = Core.TickCount;
@@ -62,6 +61,7 @@ public partial class NetState
         }
 
         var stepsTaken = (_stepIndex < _expiredIndex ? _stepIndex + stepsLength : _stepIndex) - _expiredIndex;
+        var maxSteps = _steps.Length - 1;
 
         // Can we take a step?
         if (stepsTaken >= maxSteps)
