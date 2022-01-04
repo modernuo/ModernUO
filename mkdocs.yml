@@ -3,6 +3,7 @@
 site_name: ModernUO
 site_author: Kamron Batman
 site_url: https://modernuo.com
+edit_uri: edit/main/docs/
 
 # Repository
 repo_name: modernuo/modernuo
