@@ -41,14 +41,16 @@ markdown_extensions:
   - admonition
   - footnotes
   - meta
-  - markdown.extensions.toc:
+  - toc:
+      toc_depth: "1-1"
       permalink: true
   - attr_list
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.superfences
   - pymdownx.snippets
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.caret
   - pymdownx.mark
   - pymdownx.tilde
@@ -67,6 +69,5 @@ markdown_extensions:
 nav:
   - Home: 'index.md'
   - 'Get Started':
-    - 'quick-start.md'
     - 'installation.md'
     - 'building-server.md'
