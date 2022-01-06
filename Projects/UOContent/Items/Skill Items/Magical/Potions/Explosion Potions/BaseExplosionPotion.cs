@@ -215,7 +215,7 @@ namespace Server.Items
                 alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
             }
 
-            var eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
+            var eable = map.GetObjectsInRange(loc, ExplosionRange);
             using var queue = PooledRefQueue<IEntity>.Create();
 
             var toDamage = 0;
@@ -234,7 +234,7 @@ namespace Server.Items
                         queue.Enqueue(entity);
                     }
                 }
-                else if (entity is BaseExplosionPotion)
+                else if (LeveledExplosion && entity is BaseExplosionPotion)
                 {
                     queue.Enqueue(entity);
                 }

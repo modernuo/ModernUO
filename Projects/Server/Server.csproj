@@ -36,7 +36,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
         <PackageReference Include="PollGroup" Version="1.1.0" />
-        <PackageReference Include="Zlib.Bindings" Version="1.7.2" />
+        <PackageReference Include="Zlib.Bindings" Version="1.8.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SerializationGenerator\SerializationGenerator.csproj">

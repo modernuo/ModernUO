@@ -24,25 +24,29 @@ namespace Server.Commands
             CommandSystem.Register("WipeMultis", AccessLevel.GameMaster, WipeMultis_OnCommand);
         }
 
-        [Usage("Wipe"), Description("Wipes all items and npcs in a targeted bounding box.")]
+        [Usage("Wipe")]
+        [Description("Wipes all items and npcs in a targeted bounding box.")]
         private static void WipeAll_OnCommand(CommandEventArgs e)
         {
             BeginWipe(e.Mobile, WipeType.Items | WipeType.Mobiles);
         }
 
-        [Usage("WipeItems"), Description("Wipes all items in a targeted bounding box.")]
+        [Usage("WipeItems")]
+        [Description("Wipes all items in a targeted bounding box.")]
         private static void WipeItems_OnCommand(CommandEventArgs e)
         {
             BeginWipe(e.Mobile, WipeType.Items);
         }
 
-        [Usage("WipeNPCs"), Description("Wipes all npcs in a targeted bounding box.")]
+        [Usage("WipeNPCs")]
+        [Description("Wipes all npcs in a targeted bounding box.")]
         private static void WipeNPCs_OnCommand(CommandEventArgs e)
         {
             BeginWipe(e.Mobile, WipeType.Mobiles);
         }
 
-        [Usage("WipeMultis"), Description("Wipes all multis in a targeted bounding box.")]
+        [Usage("WipeMultis")]
+        [Description("Wipes all multis in a targeted bounding box.")]
         private static void WipeMultis_OnCommand(CommandEventArgs e)
         {
             BeginWipe(e.Mobile, WipeType.Multis);
