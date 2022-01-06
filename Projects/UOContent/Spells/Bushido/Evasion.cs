@@ -33,7 +33,7 @@ namespace Server.Spells.Bushido
                 return false;
             }
 
-            if (!(caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
+            if (caster.FindItemOnLayer(Layer.OneHanded) is not BaseWeapon weap)
             {
                 weap = caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
             }
@@ -44,15 +44,14 @@ namespace Server.Spells.Bushido
                 {
                     if (messages)
                     {
-                        caster.SendLocalizedMessage(
-                            1076206
-                        ); // Your skill with your equipped weapon must be 50 or higher to use Evasion.
+                        // Your skill with your equipped weapon must be 50 or higher to use Evasion.
+                        caster.SendLocalizedMessage(1076206);
                     }
 
                     return false;
                 }
             }
-            else if (!(caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield))
+            else if (caster.FindItemOnLayer(Layer.TwoHanded) is not BaseShield)
             {
                 if (messages)
                 {
@@ -77,7 +76,7 @@ namespace Server.Spells.Bushido
 
         public static bool CheckSpellEvasion(Mobile defender)
         {
-            if (!(defender.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
+            if (defender.FindItemOnLayer(Layer.OneHanded) is not BaseWeapon weap)
             {
                 weap = defender.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
             }
@@ -96,7 +95,7 @@ namespace Server.Spells.Bushido
                         return false;
                     }
                 }
-                else if (!(defender.FindItemOnLayer(Layer.TwoHanded) is BaseShield))
+                else if (defender.FindItemOnLayer(Layer.TwoHanded) is not BaseShield)
                 {
                     return false;
                 }
@@ -162,8 +161,8 @@ namespace Server.Spells.Bushido
                 seconds += (m.Skills.Bushido.Value - 60) / 20;
             }
 
-            if (m.Skills.Anatomy.Value >= 100.0 && m.Skills.Tactics.Value >= 100.0 && m.Skills.Bushido.Value > 100.0
-            ) // Bushido being HIGHER than 100 for bonus is intended
+            // Bushido being HIGHER than 100 for bonus is intended
+            if (m.Skills.Anatomy.Value >= 100.0 && m.Skills.Tactics.Value >= 100.0 && m.Skills.Bushido.Value > 100.0)
             {
                 seconds++;
             }
@@ -194,8 +193,8 @@ namespace Server.Spells.Bushido
                 bonus += (m.Skills.Bushido.Value - 60) * .004 + 0.16;
             }
 
-            if (m.Skills.Anatomy.Value >= 100 && m.Skills.Tactics.Value >= 100 && m.Skills.Bushido.Value > 100
-            ) // Bushido being HIGHER than 100 for bonus is intended
+            // Bushido being HIGHER than 100 for bonus is intended
+            if (m.Skills.Anatomy.Value >= 100 && m.Skills.Tactics.Value >= 100 && m.Skills.Bushido.Value > 100)
             {
                 bonus += 0.10;
             }

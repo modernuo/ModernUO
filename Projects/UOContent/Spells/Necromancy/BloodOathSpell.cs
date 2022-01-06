@@ -34,7 +34,7 @@ namespace Server.Spells.Necromancy
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }
             // only PlayerMobile and BaseCreature implement blood oath checking
-            else if (Caster == m || !(m is PlayerMobile || m is BaseCreature))
+            else if (Caster == m || m is not (PlayerMobile or BaseCreature))
             {
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }

@@ -24,7 +24,7 @@ namespace Server.Commands
 
             foreach (var item in World.Items.Values)
             {
-                if ((item is Static || item is BaseFloor || item is BaseWall)
+                if (item is Static or BaseFloor or BaseWall
                     && item.RootParent == null)
                 {
                     w.WriteLine("SECTION WORLDITEM {0}", count);

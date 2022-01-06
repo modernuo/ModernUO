@@ -343,7 +343,7 @@ namespace Server
 
                 if (endOfSection || i + 1 == end)
                 {
-                    if (number < 0 || number > 255)
+                    if (number is < 0 or > 255)
                     {
                         valid = false;
                         return false;

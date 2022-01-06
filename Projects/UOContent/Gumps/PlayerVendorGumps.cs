@@ -258,7 +258,7 @@ namespace Server.Gumps
         {
             var from = sender.Mobile;
 
-            if (info.ButtonID == 1 || info.ButtonID == 2) // See goods or Customize
+            if (info.ButtonID is 1 or 2) // See goods or Customize
             {
                 m_Vendor.CheckTeleport(from);
             }

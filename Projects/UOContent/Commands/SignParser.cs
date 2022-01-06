@@ -15,7 +15,8 @@ namespace Server.Commands
             CommandSystem.Register("SignGen", AccessLevel.Administrator, SignGen_OnCommand);
         }
 
-        [Usage("SignGen"), Description("Generates world/shop signs on all facets.")]
+        [Usage("SignGen")]
+        [Description("Generates world/shop signs on all facets.")]
         public static void SignGen_OnCommand(CommandEventArgs c)
         {
             Parse(c.Mobile);

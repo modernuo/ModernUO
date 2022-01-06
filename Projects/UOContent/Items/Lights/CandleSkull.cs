@@ -29,7 +29,7 @@ namespace Server.Items
         {
             get
             {
-                if (ItemID == 0x1583 || ItemID == 0x1854)
+                if (ItemID is 0x1583 or 0x1854)
                 {
                     return 0x1854;
                 }
@@ -42,7 +42,7 @@ namespace Server.Items
         {
             get
             {
-                if (ItemID == 0x1853 || ItemID == 0x1584)
+                if (ItemID is 0x1853 or 0x1584)
                 {
                     return 0x1853;
                 }

@@ -356,7 +356,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (c is Armoire || c is FancyArmoire)
+            if (c is Armoire or FancyArmoire)
             {
                 Timer t = new FurnitureTimer(c, m);
                 t.Start();
@@ -382,7 +382,7 @@ namespace Server.Items
                 t.Stop();
             }
 
-            if (c is Armoire || c is FancyArmoire)
+            if (c is Armoire or FancyArmoire)
             {
                 c.ItemID = c.ItemID switch
                 {

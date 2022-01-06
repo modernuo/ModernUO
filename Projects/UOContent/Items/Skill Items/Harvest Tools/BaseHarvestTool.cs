@@ -168,7 +168,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

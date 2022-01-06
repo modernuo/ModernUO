@@ -110,8 +110,7 @@ namespace Server.Mobiles
 
         public override void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
-            if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
-                to is LesserHiryu || to is Daemon)
+            if (to is Dragon or WhiteWyrm or SwampDragon or Drake or Nightmare or Hiryu or LesserHiryu or Daemon)
             {
                 damage *= 3;
             }
@@ -184,7 +183,7 @@ namespace Server.Mobiles
                     {
                         foreach (var m in eable)
                         {
-                            var isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
+                            var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
 
                             if (!isFriendly)
                             {
@@ -215,7 +214,7 @@ namespace Server.Mobiles
                     {
                         foreach (var m in eable)
                         {
-                            var isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
+                            var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
 
                             if (isFriendly)
                             {
@@ -253,7 +252,7 @@ namespace Server.Mobiles
                     {
                         foreach (var m in eable)
                         {
-                            var isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
+                            var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
 
                             if (isFriendly)
                             {

@@ -234,7 +234,7 @@ namespace Server.Items
 
         public static void OnPickedInstrument(Mobile from, object targeted, InstrumentPickedCallback callback)
         {
-            if (!(targeted is BaseInstrument instrument))
+            if (targeted is not BaseInstrument instrument)
             {
                 from.SendLocalizedMessage(500619); // That is not a musical instrument.
             }
@@ -286,7 +286,7 @@ namespace Server.Items
                 val += 100;
             }
 
-            if (targ is VampireBat || targ is VampireBatFamiliar)
+            if (targ is VampireBat or VampireBatFamiliar)
             {
                 val += 100;
             }

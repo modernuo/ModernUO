@@ -153,7 +153,7 @@ namespace Server.Engines.Events
                     return;
                 }
 
-                if (!(targ is Mobile))
+                if (targ is not Mobile)
                 {
                     from.SendLocalizedMessage(1076781); /* There is little chance of getting candy from that! */
                     return;

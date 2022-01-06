@@ -76,7 +76,7 @@ namespace Server.Items
             {
                 var item = list[i];
 
-                if (!(item is Container) && item.StackWith(from, dropped, false))
+                if (item is not Container && item.StackWith(from, dropped, false))
                 {
                     return true;
                 }

@@ -13,7 +13,7 @@ namespace Server.Misc
                 Console.Write("Do you want to create the owner account now? (y/n): ");
 
                 var answer = Console.ReadLine();
-                if (answer == "y" || answer == "Y")
+                if (answer is "y" or "Y")
                 {
                     Console.WriteLine();
 

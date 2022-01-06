@@ -431,7 +431,7 @@ namespace Server.Engines.Quests
         {
             inRestartPeriod = false;
 
-            if (!(check is PlayerMobile pm))
+            if (check is not PlayerMobile pm)
             {
                 return false;
             }

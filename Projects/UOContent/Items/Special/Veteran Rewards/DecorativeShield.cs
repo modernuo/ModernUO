@@ -255,9 +255,8 @@ namespace Server.Items
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {
-                if (m_Shield?.Deleted != false || info.ButtonID < Start || info.ButtonID > End ||
-                    ((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
-                    (info.ButtonID < 0x1582 || info.ButtonID > 0x1585))
+                if (m_Shield?.Deleted != false || info.ButtonID is < Start or > End || ((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
+                    info.ButtonID is < 0x1582 or > 0x1585)
                 {
                     return;
                 }

@@ -178,7 +178,7 @@ namespace Server.Mobiles
                     list.Add(new InternalEntry(from, 6112, 14, m_Mobile, this, OrderType.Stop)); // Command: Stop
                     list.Add(new InternalEntry(from, 6114, 14, m_Mobile, this, OrderType.Stay)); // Command: Stay
 
-                    if (!m_Mobile.Summoned && !(m_Mobile is GrizzledMare))
+                    if (!m_Mobile.Summoned && m_Mobile is not GrizzledMare)
                     {
                         list.Add(new InternalEntry(from, 6110, 14, m_Mobile, this, OrderType.Friend));   // Add Friend
                         list.Add(new InternalEntry(from, 6099, 14, m_Mobile, this, OrderType.Unfriend)); // Remove Friend
@@ -283,17 +283,9 @@ namespace Server.Mobiles
                 }
 
                 if (SolenHelper.CheckRedFriendship(from) &&
-                    (target is RedSolenInfiltratorQueen
-                     || target is RedSolenInfiltratorWarrior
-                     || target is RedSolenQueen
-                     || target is RedSolenWarrior
-                     || target is RedSolenWorker)
+                    target is RedSolenInfiltratorQueen or RedSolenInfiltratorWarrior or RedSolenQueen or RedSolenWarrior or RedSolenWorker
                     || SolenHelper.CheckBlackFriendship(from) &&
-                    (target is BlackSolenInfiltratorQueen
-                     || target is BlackSolenInfiltratorWarrior
-                     || target is BlackSolenQueen
-                     || target is BlackSolenWarrior
-                     || target is BlackSolenWorker))
+                    target is BlackSolenInfiltratorQueen or BlackSolenInfiltratorWarrior or BlackSolenQueen or BlackSolenWarrior or BlackSolenWorker)
                 {
                     from.SendAsciiMessage("You can not force your pet to attack a creature you are protected from.");
                     return;
@@ -1256,7 +1248,7 @@ namespace Server.Mobiles
 
             var distance = m_Mobile.GetDistanceToSqrt(target);
 
-            if (!(distance < 1 || distance > 15))
+            if (!(distance is < 1 or > 15))
             {
                 DoMove(m_Mobile.GetDirectionTo(target));
                 return true;
@@ -1550,7 +1542,7 @@ namespace Server.Mobiles
                     m_Mobile.ControlOrder = OrderType.None;
                 }
 
-                if (m_Mobile.FightMode == FightMode.Closest || m_Mobile.FightMode == FightMode.Aggressor)
+                if (m_Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
                 {
                     Mobile newCombatant = null;
                     var newScore = 0.0;
@@ -1962,8 +1954,7 @@ namespace Server.Mobiles
         {
             var res = DoMoveImpl(d);
 
-            return res == MoveResult.Success || res == MoveResult.SuccessAutoTurn ||
-                   badStateOk && res == MoveResult.BadState;
+            return res is MoveResult.Success or MoveResult.SuccessAutoTurn || badStateOk && res == MoveResult.BadState;
         }
 
         public virtual MoveResult DoMoveImpl(Direction d)
@@ -2540,7 +2531,7 @@ namespace Server.Mobiles
                         continue;
                     }
 
-                    if (acqType == FightMode.Aggressor || acqType == FightMode.Evil)
+                    if (acqType is FightMode.Aggressor or FightMode.Evil)
                     {
                         var bValid = IsHostile(m);
 
@@ -2741,8 +2732,7 @@ namespace Server.Mobiles
                 m_AI = ai;
                 m_Order = order;
 
-                if (mobile.IsDeadPet && (order == OrderType.Guard || order == OrderType.Attack ||
-                                         order == OrderType.Transfer || order == OrderType.Drop))
+                if (mobile.IsDeadPet && order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
                 {
                     Enabled = false;
                 }
@@ -2752,8 +2742,7 @@ namespace Server.Mobiles
             {
                 if (!m_Mobile.Deleted && m_Mobile.Controlled && m_From.CheckAlive())
                 {
-                    if (m_Mobile.IsDeadPet && (m_Order == OrderType.Guard || m_Order == OrderType.Attack ||
-                                               m_Order == OrderType.Transfer || m_Order == OrderType.Drop))
+                    if (m_Mobile.IsDeadPet && m_Order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
                     {
                         return;
                     }

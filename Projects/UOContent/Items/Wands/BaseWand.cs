@@ -244,7 +244,7 @@ namespace Server.Items
 
         public virtual void DoWandTarget(Mobile from, object o)
         {
-            if (Deleted || _charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
+            if (Deleted || _charges <= 0 || Parent != from || o is StaticTarget or LandTarget)
             {
                 return;
             }

@@ -41,11 +41,11 @@ namespace Server.Items
             }
             else if (East)
             {
-                canThrow = dir == Direction.Left || dir == Direction.West || dir == Direction.Up;
+                canThrow = dir is Direction.Left or Direction.West or Direction.Up;
             }
             else
             {
-                canThrow = dir == Direction.Up || dir == Direction.North || dir == Direction.Right;
+                canThrow = dir is Direction.Up or Direction.North or Direction.Right;
             }
 
             if (canThrow)
@@ -60,7 +60,7 @@ namespace Server.Items
 
         public void Throw(Mobile from)
         {
-            if (!(from.Weapon is BaseKnife knife))
+            if (from.Weapon is not BaseKnife knife)
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500751); // Try holding a knife...
                 return;

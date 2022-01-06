@@ -142,7 +142,7 @@ namespace Server.Spells.Necromancy
                 return;
             }
 
-            if (!(item is Corpse c))
+            if (item is not Corpse c)
             {
                 Caster.SendLocalizedMessage(1061084); // You cannot animate that.
             }

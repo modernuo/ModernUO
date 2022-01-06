@@ -451,7 +451,7 @@ namespace Server.Collections
 
             private void ThrowEnumerationNotStartedOrEnded()
             {
-                Debug.Assert(_index == -1 || _index == -2);
+                Debug.Assert(_index is -1 or -2);
                 throw new InvalidOperationException(_index == -1 ? CollectionThrowStrings.InvalidOperation_EnumNotStarted : CollectionThrowStrings.InvalidOperation_EnumEnded);
             }
 

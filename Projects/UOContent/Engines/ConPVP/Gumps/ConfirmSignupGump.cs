@@ -565,7 +565,7 @@ namespace Server.Engines.ConPVP
 
         private void AddPlayer_OnTarget(Mobile from, object obj)
         {
-            if (!(obj is Mobile mob) || mob == from)
+            if (obj is not Mobile mob || mob == from)
             {
                 m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
 
@@ -604,7 +604,7 @@ namespace Server.Engines.ConPVP
             }
             else
             {
-                if (!(mob is PlayerMobile pm))
+                if (mob is not PlayerMobile pm)
                 {
                     return;
                 }

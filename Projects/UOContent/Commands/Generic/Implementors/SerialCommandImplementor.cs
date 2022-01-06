@@ -52,7 +52,7 @@ namespace Server.Commands.Generic
                         {
                             case ObjectTypes.Items:
                                 {
-                                    if (!(obj is Item))
+                                    if (obj is not Item)
                                     {
                                         e.Mobile.SendMessage("This command only works on items.");
                                         return;
@@ -62,7 +62,7 @@ namespace Server.Commands.Generic
                                 }
                             case ObjectTypes.Mobiles:
                                 {
-                                    if (!(obj is Mobile))
+                                    if (obj is not Mobile)
                                     {
                                         e.Mobile.SendMessage("This command only works on mobiles.");
                                         return;

@@ -16,7 +16,7 @@ namespace Server.Engines.ConPVP
         {
             var copy = new List<TourneyParticipant>(participants);
 
-            if (groupType == GroupingType.Nearest || groupType == GroupingType.HighVsLow)
+            if (groupType is GroupingType.Nearest or GroupingType.HighVsLow)
             {
                 copy.Sort();
             }

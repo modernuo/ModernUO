@@ -163,7 +163,7 @@ namespace Server.Mobiles
                     continue;
                 }
 
-                if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+                if (m is not BaseCreature bc || !(bc.Controlled || bc.Summoned || bc.Team != Team))
                 {
                     continue;
                 }

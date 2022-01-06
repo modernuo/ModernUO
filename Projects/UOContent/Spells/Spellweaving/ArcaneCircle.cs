@@ -118,9 +118,7 @@ namespace Server.Spells.Spellweaving
         }
 
         public static bool IsValidTile(int itemID) =>
-            itemID == 0xFEA || itemID == 0x1216 || itemID == 0x307F || itemID == 0x1D10 || itemID == 0x1D0F ||
-            itemID == 0x1D1F ||
-            itemID == 0x1D12;
+            itemID is 0xFEA or 0x1216 or 0x307F or 0x1D10 or 0x1D0F or 0x1D1F or 0x1D12;
 
         private List<Mobile> GetArcanists()
         {
