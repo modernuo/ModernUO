@@ -124,7 +124,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (item is Container || item is BulkOrderBook)
+            if (item is Container or BulkOrderBook)
             {
                 return true;
             }
@@ -142,7 +142,7 @@ namespace Server.Mobiles
         {
             base.GetChildContextMenuEntries(from, list, item);
 
-            if (!(RootParent is PlayerVendor pv) || pv.IsOwner(from))
+            if (RootParent is not PlayerVendor pv || pv.IsOwner(from))
             {
                 return;
             }
@@ -1043,7 +1043,7 @@ namespace Server.Mobiles
 
         public static void TryToBuy(Item item, Mobile from)
         {
-            if (!(item.RootParent is PlayerVendor vendor) || !vendor.CanInteractWith(from, false))
+            if (item.RootParent is not PlayerVendor vendor || !vendor.CanInteractWith(from, false))
             {
                 return;
             }
@@ -1493,7 +1493,7 @@ namespace Server.Mobiles
                             setPrice = true;
                         }
                     }
-                    else if (item is BaseBook || item is BulkOrderBook)
+                    else if (item is BaseBook or BulkOrderBook)
                     {
                         setPrice = true;
                     }

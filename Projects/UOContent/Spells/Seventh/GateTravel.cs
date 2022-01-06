@@ -129,7 +129,7 @@ namespace Server.Spells.Seventh
 
             foreach (var item in eable)
             {
-                if (item is Moongate || item is PublicMoongate)
+                if (item is Moongate or PublicMoongate)
                 {
                     return true;
                 }

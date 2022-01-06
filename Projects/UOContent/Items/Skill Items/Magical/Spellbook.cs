@@ -600,7 +600,7 @@ namespace Server.Items
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is Spellbook book))
+            if (newItem is not Spellbook book)
             {
                 return;
             }

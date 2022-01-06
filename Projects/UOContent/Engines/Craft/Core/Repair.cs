@@ -90,11 +90,7 @@ namespace Server.Engines.Craft
 
                 if (m_CraftSystem is DefTailoring)
                 {
-                    return clothing is BearMask
-                           || clothing is DeerMask
-                           || clothing is TheMostKnowledgePerson
-                           || clothing is TheRobeOfBritanniaAri
-                           || clothing is EmbroideredOakLeafCloak;
+                    return clothing is BearMask or DeerMask or TheMostKnowledgePerson or TheRobeOfBritanniaAri or EmbroideredOakLeafCloak;
                 }
 
                 return false;
@@ -106,44 +102,23 @@ namespace Server.Engines.Craft
 
                 if (m_CraftSystem is DefTinkering)
                 {
-                    return weapon is Cleaver
-                           || weapon is Hatchet
-                           || weapon is Pickaxe
-                           || weapon is ButcherKnife
-                           || weapon is SkinningKnife;
+                    return weapon is Cleaver or Hatchet or Pickaxe or ButcherKnife or SkinningKnife;
                 }
 
                 if (m_CraftSystem is DefCarpentry)
                 {
-                    return weapon is Club
-                           || weapon is BlackStaff
-                           || weapon is MagicWand
-
-                           // TODO: Make these items craftable
-                           || weapon is WildStaff;
+                    return weapon is Club or BlackStaff or MagicWand or WildStaff;
                 }
 
                 if (m_CraftSystem is DefBlacksmithy)
                 {
-                    return weapon is Pitchfork
-
-                           // TODO: Make these items craftable
-                           || weapon is RadiantScimitar
-                           || weapon is WarCleaver
-                           || weapon is ElvenSpellblade
-                           || weapon is AssassinSpike
-                           || weapon is Leafblade
-                           || weapon is RuneBlade
-                           || weapon is ElvenMachete
-                           || weapon is OrnateAxe
-                           || weapon is DiamondMace;
+                    return weapon is Pitchfork or RadiantScimitar or WarCleaver or ElvenSpellblade or AssassinSpike or Leafblade or RuneBlade or ElvenMachete or OrnateAxe or DiamondMace;
                 }
 
                 // TODO: Make these items craftable
                 if (m_CraftSystem is DefBowFletching)
                 {
-                    return weapon is ElvenCompositeLongbow
-                           || weapon is MagicalShortbow;
+                    return weapon is ElvenCompositeLongbow or MagicalShortbow;
                 }
 
                 return false;
@@ -156,36 +131,17 @@ namespace Server.Engines.Craft
                 // TODO: Make these items craftable
                 if (m_CraftSystem is DefTailoring)
                 {
-                    return armor is LeafTonlet
-                           || armor is LeafArms
-                           || armor is LeafChest
-                           || armor is LeafGloves
-                           || armor is LeafGorget
-                           || armor is LeafLegs
-                           || armor is HideChest
-                           || armor is HideGloves
-                           || armor is HideGorget
-                           || armor is HidePants
-                           || armor is HidePauldrons;
+                    return armor is LeafTonlet or LeafArms or LeafChest or LeafGloves or LeafGorget or LeafLegs or HideChest or HideGloves or HideGorget or HidePants or HidePauldrons;
                 }
 
                 if (m_CraftSystem is DefCarpentry)
                 {
-                    return armor is WingedHelm
-                           || armor is RavenHelm
-                           || armor is VultureHelm
-                           || armor is WoodlandArms
-                           || armor is WoodlandChest
-                           || armor is WoodlandGloves
-                           || armor is WoodlandGorget
-                           || armor is WoodlandLegs;
+                    return armor is WingedHelm or RavenHelm or VultureHelm or WoodlandArms or WoodlandChest or WoodlandGloves or WoodlandGorget or WoodlandLegs;
                 }
 
                 if (m_CraftSystem is DefBlacksmithy)
                 {
-                    return armor is Circlet
-                           || armor is RoyalCirclet
-                           || armor is GemmedCirclet;
+                    return armor is Circlet or RoyalCirclet or GemmedCirclet;
                 }
 
                 return false;
@@ -448,7 +404,7 @@ namespace Server.Engines.Craft
                     }
 
                     if (m_CraftSystem.CraftItems.SearchForSubclass(clothing.GetType()) == null &&
-                        !IsSpecialClothing(clothing) && !(clothing is TribalMask || clothing is HornedTribalMask))
+                        !IsSpecialClothing(clothing) && !(clothing is TribalMask or HornedTribalMask))
                     {
                         number = usingDeed
                             ? 1061136

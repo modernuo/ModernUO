@@ -758,7 +758,7 @@ namespace Server.Accounting
 
         private static void EventSink_Connected(Mobile m)
         {
-            if (!(m.Account is Account acc))
+            if (m.Account is not Account acc)
             {
                 return;
             }

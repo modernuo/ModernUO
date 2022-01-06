@@ -19,60 +19,62 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public class PrimitiveUOTypeMigrationRule : MigrationRule
 {
-    public class PrimitiveUOTypeMigrationRule : ISerializableMigrationRule
+    public override string RuleName => nameof(PrimitiveUOTypeMigrationRule);
+
+    public override bool GenerateRuleState(
+        Compilation compilation,
+        ISymbol symbol,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        out string[] ruleArguments
+    )
     {
-        public string RuleName => nameof(PrimitiveUOTypeMigrationRule);
-
-        public bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        )
+        ruleArguments = symbol switch
         {
-            ruleArguments = symbol switch
-            {
-                _ when symbol.IsPoint2D(compilation)     => new[] { "Point2D" },
-                _ when symbol.IsPoint3D(compilation)     => new[] { "Point3D" },
-                _ when symbol.IsRectangle2D(compilation) => new[] { "Rect2D" },
-                _ when symbol.IsRectangle3D(compilation) => new[] { "Rect3D" },
-                _ when symbol.IsRace(compilation)        => new[] { "Race" },
-                _ when symbol.IsMap(compilation)         => new[] { "Map" },
-                _ => null
-            };
+            _ when symbol.IsPoint2D(compilation)     => new[] { "Point2D" },
+            _ when symbol.IsPoint3D(compilation)     => new[] { "Point3D" },
+            _ when symbol.IsRectangle2D(compilation) => new[] { "Rect2D" },
+            _ when symbol.IsRectangle3D(compilation) => new[] { "Rect3D" },
+            _ when symbol.IsRace(compilation)        => new[] { "Race" },
+            _ when symbol.IsMap(compilation)         => new[] { "Map" },
+            _ when symbol.IsBitArray(compilation)    => new[] { "BitArray" },
+            _                                        => null
+        };
 
-            return ruleArguments != null;
+        return ruleArguments != null;
+    }
+
+    public override void GenerateDeserializationMethod(
+        StringBuilder source, string indent, SerializableProperty property, string? parentReference, bool isMigration = false
+    )
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
+        var propertyName = property.Name;
+        source.AppendLine($"{indent}{propertyName} = reader.Read{property.RuleArguments?[0] ?? ""}();");
+    }
 
-            var propertyName = property.Name;
-            source.AppendLine($"{indent}{propertyName} = reader.Read{property.RuleArguments?[0] ?? ""}();");
+    public override void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
 
-        public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
-
-            var propertyName = property.Name;
-            source.AppendLine($"{indent}writer.Write({propertyName});");
-        }
+        var propertyName = property.Name;
+        source.AppendLine($"{indent}writer.Write({propertyName});");
     }
 }

@@ -22,7 +22,7 @@ namespace Server.Items
             {
                 if (!Utility.InRange(old, Location, 2) && Utility.InRange(m.Location, Location, 2))
                 {
-                    if (ItemID == 0x2A7B || ItemID == 0x2A7D)
+                    if (ItemID is 0x2A7B or 0x2A7D)
                     {
                         Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x551, 0x553));
                         ItemID += 1;
@@ -30,7 +30,7 @@ namespace Server.Items
                 }
                 else if (Utility.InRange(old, Location, 2) && !Utility.InRange(m.Location, Location, 2))
                 {
-                    if (ItemID == 0x2A7C || ItemID == 0x2A7E)
+                    if (ItemID is 0x2A7C or 0x2A7E)
                     {
                         ItemID -= 1;
                     }

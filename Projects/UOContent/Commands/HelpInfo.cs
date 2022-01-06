@@ -19,9 +19,8 @@ namespace Server.Commands
             FillTable();
         }
 
-        [Usage("HelpInfo [<command>]"), Description(
-             "Gives information on a specified command, or when no argument specified, displays a gump containing all commands"
-         )]
+        [Usage("HelpInfo [<command>]")]
+        [Description("Gives information on a specified command, or when no argument specified, displays a gump containing all commands")]
         private static void HelpInfo_OnCommand(CommandEventArgs e)
         {
             if (e.Length > 0)
@@ -76,7 +75,7 @@ namespace Server.Commands
                     continue;
                 }
 
-                if (usage == null || !(attrs[0] is DescriptionAttribute desc))
+                if (usage == null || attrs[0] is not DescriptionAttribute desc)
                 {
                     continue;
                 }

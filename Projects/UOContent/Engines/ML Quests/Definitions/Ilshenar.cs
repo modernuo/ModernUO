@@ -127,10 +127,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
-                    1074222
+                    1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
+                    1074222  // Could I trouble you for some assistance?
                 )
-            ); // Could I trouble you for some assistance?
+            );
         }
 
         public override void InitBody()
@@ -254,7 +254,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074221); // Greetings!  I have a small task for you good traveler.
+            MLQuestSystem.Tell(this, pm, 1074221); // Greetings!  I have a small task for you good traveler.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -305,7 +305,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074218); // Hey!  I want to talk to you, now.
+            MLQuestSystem.Tell(this, pm, 1074218); // Hey!  I want to talk to you, now.
         }
 
         public override void Serialize(IGenericWriter writer)

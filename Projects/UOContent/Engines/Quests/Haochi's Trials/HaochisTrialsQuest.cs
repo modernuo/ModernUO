@@ -77,7 +77,7 @@ namespace Server.Engines.Quests.Samurai
         public override void Slice()
         {
             if (!m_SentRadarConversion &&
-                (From.Map != Map.Malas || From.X < 360 || From.X > 400 || From.Y < 760 || From.Y > 780))
+                (From.Map != Map.Malas || From.X is < 360 or > 400 || From.Y is < 760 or > 780))
             {
                 m_SentRadarConversion = true;
                 AddConversation(new RadarConversation());
@@ -102,7 +102,7 @@ namespace Server.Engines.Quests.Samurai
 
         public static bool HasLostHaochisKatana(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }

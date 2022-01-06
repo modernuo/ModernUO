@@ -288,7 +288,7 @@ namespace Server.Commands
             {
                 var obj = realProps[i].GetValue(realObjs[i], null);
 
-                if (!(obj is IConvertible))
+                if (obj is not IConvertible)
                 {
                     return "Property is not IConvertable.";
                 }

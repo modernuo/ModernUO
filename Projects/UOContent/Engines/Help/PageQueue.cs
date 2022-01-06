@@ -128,7 +128,7 @@ namespace Server.Engines.Help
 
         public static bool CheckAllowedToPage(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return true;
             }

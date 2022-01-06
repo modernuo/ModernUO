@@ -132,7 +132,7 @@ namespace Server.Mobiles
             {
                 var m = toGive[i];
 
-                if (!(m is PlayerMobile))
+                if (m is not PlayerMobile)
                 {
                     continue;
                 }
@@ -194,7 +194,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!(m is PlayerMobile pm))
+            if (m is not PlayerMobile pm)
             {
                 return;
             }

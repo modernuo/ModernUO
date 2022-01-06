@@ -325,7 +325,7 @@ namespace Server.Commands.Generic
                     throw new InvalidOperationException("Invalid string comparison operator.");
             }
 
-            if (m_Operator == StringOperator.Equal || m_Operator == StringOperator.NotEqual)
+            if (m_Operator is StringOperator.Equal or StringOperator.NotEqual)
             {
                 emitter.BeginCall(
                     type.GetMethod(

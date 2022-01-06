@@ -50,7 +50,7 @@ namespace Server.Network
         {
             EnsureCapacity(256);
 
-            Stream.Write(!(vendor.FindItemOnLayer(Layer.ShopBuy) is Container buyPack) ? Serial.MinusOne : buyPack.Serial);
+            Stream.Write(vendor.FindItemOnLayer(Layer.ShopBuy) is not Container buyPack ? Serial.MinusOne : buyPack.Serial);
 
             Stream.Write((byte)list.Count);
 

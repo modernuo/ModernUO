@@ -443,7 +443,7 @@ namespace Server
 
                 var weight = TileData.ItemTable[m_ItemID].Weight;
 
-                if (weight == 255 || weight == 0)
+                if (weight is 255 or 0)
                 {
                     weight = 1;
                 }

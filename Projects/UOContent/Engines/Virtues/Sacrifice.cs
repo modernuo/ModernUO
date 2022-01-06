@@ -190,8 +190,7 @@ namespace Server
                 return false;
             }
 
-            return m is Lich || m is Succubus || m is Daemon || m is EvilMage || m is EnslavedGargoyle ||
-                   m is GargoyleEnforcer;
+            return m is Lich or Succubus or Daemon or EvilMage or EnslavedGargoyle or GargoyleEnforcer;
         }
 
         private class InternalTarget : Target

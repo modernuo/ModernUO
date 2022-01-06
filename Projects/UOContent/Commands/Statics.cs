@@ -48,14 +48,16 @@ namespace Server
             CommandSystem.Register("UnfreezeWorld", AccessLevel.Administrator, UnfreezeWorld_OnCommand);
         }
 
-        [Usage("Freeze"), Description("Makes a targeted area of dynamic items static.")]
+        [Usage("Freeze")]
+        [Description("Makes a targeted area of dynamic items static.")]
         public static void Freeze_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
             BoundingBoxPicker.Begin(from, (map, start, end) => FreezeBox_Callback(from, map, start, end));
         }
 
-        [Usage("FreezeMap"), Description("Makes every dynamic item in your map static.")]
+        [Usage("FreezeMap")]
+        [Description("Makes every dynamic item in your map static.")]
         public static void FreezeMap_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
@@ -75,7 +77,8 @@ namespace Server
             }
         }
 
-        [Usage("FreezeWorld"), Description("Makes every dynamic item on all maps static.")]
+        [Usage("FreezeWorld")]
+        [Description("Makes every dynamic item on all maps static.")]
         public static void FreezeWorld_OnCommand(CommandEventArgs e)
         {
             SendWarning(
@@ -168,7 +171,7 @@ namespace Server
                         continue;
                     }
 
-                    if (item is Static || item is BaseFloor || item is BaseWall)
+                    if (item is Static or BaseFloor or BaseWall)
                     {
                         var itemMap = item.Map;
 
@@ -212,7 +215,7 @@ namespace Server
 
                 foreach (var item in eable)
                 {
-                    if (item is Static || item is BaseFloor || item is BaseWall)
+                    if (item is Static or BaseFloor or BaseWall)
                     {
                         var itemMap = item.Map;
 
@@ -306,7 +309,7 @@ namespace Server
                         var xOffset = item.X - state.m_X * 8;
                         var yOffset = item.Y - state.m_Y * 8;
 
-                        if (xOffset < 0 || xOffset >= 8 || yOffset < 0 || yOffset >= 8)
+                        if (xOffset is < 0 or >= 8 || yOffset is < 0 or >= 8)
                         {
                             continue;
                         }
@@ -404,14 +407,16 @@ namespace Server
             }
         }
 
-        [Usage("Unfreeze"), Description("Makes a targeted area of static items dynamic.")]
+        [Usage("Unfreeze")]
+        [Description("Makes a targeted area of static items dynamic.")]
         public static void Unfreeze_OnCommand(CommandEventArgs e)
         {
             var from = e.Mobile;
             BoundingBoxPicker.Begin(from, (map, start, end) => UnfreezeBox_Callback(from, map, start, end));
         }
 
-        [Usage("UnfreezeMap"), Description("Makes every static item in your map dynamic.")]
+        [Usage("UnfreezeMap")]
+        [Description("Makes every static item in your map dynamic.")]
         public static void UnfreezeMap_OnCommand(CommandEventArgs e)
         {
             var map = e.Mobile.Map;
@@ -430,7 +435,8 @@ namespace Server
             }
         }
 
-        [Usage("UnfreezeWorld"), Description("Makes every static item on all maps dynamic.")]
+        [Usage("UnfreezeWorld")]
+        [Description("Makes every static item on all maps dynamic.")]
         public static void UnfreezeWorld_OnCommand(CommandEventArgs e)
         {
             SendWarning(

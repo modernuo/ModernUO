@@ -79,7 +79,7 @@ namespace Server.Items
 
             var version = reader.ReadInt();
 
-            if (ItemID == 0x13E4 || ItemID == 0x13E3)
+            if (ItemID is 0x13E4 or 0x13E3)
             {
                 ItemID = 0xF9D;
             }

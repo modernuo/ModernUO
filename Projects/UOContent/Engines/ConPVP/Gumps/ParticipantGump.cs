@@ -217,7 +217,7 @@ namespace Server.Engines.ConPVP
                     return;
                 }
 
-                if (!(targeted is Mobile mob))
+                if (targeted is not Mobile mob)
                 {
                     from.SendMessage("That is not a player.");
                 }
@@ -238,7 +238,7 @@ namespace Server.Engines.ConPVP
                 }
                 else
                 {
-                    if (!(mob is PlayerMobile pm))
+                    if (mob is not PlayerMobile pm)
                     {
                         return;
                     }

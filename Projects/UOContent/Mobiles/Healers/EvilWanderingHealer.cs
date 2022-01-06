@@ -33,11 +33,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            return skill == SkillName.Anatomy
-                   || skill == SkillName.Camping
-                   || skill == SkillName.Forensics
-                   || skill == SkillName.Healing
-                   || skill == SkillName.SpiritSpeak;
+            return skill is SkillName.Anatomy or SkillName.Camping or SkillName.Forensics or SkillName.Healing or SkillName.SpiritSpeak;
         }
 
         public override bool CheckResurrect(Mobile m)

@@ -258,7 +258,7 @@ namespace Server.Items
                             0x59
                         ); // You may only send items from your backpack to your bank box.
                     }
-                    else if (item is BagOfSending || item is Container)
+                    else if (item is BagOfSending or Container)
                     {
                         from.NetState.SendMessage(
                             m_Bag.Serial,

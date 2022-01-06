@@ -15,7 +15,10 @@ namespace Benchmarks
             // var textEncoding = BenchmarkRunner.Run<BenchmarkTextEncoding>();
             // var logging = BenchmarkRunner.Run<BenchmarkConsoleLogging>();
             // var gumpPacket = BenchmarkRunner.Run<OutgoingGumpPacketBenchmarks>();
-            var rngTest = BenchmarkRunner.Run<BenchmarkXoshiro>();
+            // MapSelectors.Init();
+            // var mapSelectors = BenchmarkRunner.Run<MapSelectors>();
+            // var rngTest = BenchmarkRunner.Run<BenchmarkXoshiro>();
+            var doubleRngText = BenchmarkRunner.Run<BenchmarkDoubleVsFixed>();
         }
     }
 }

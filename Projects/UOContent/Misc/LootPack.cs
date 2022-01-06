@@ -750,7 +750,7 @@ namespace Server
                     return item;
                 }
 
-                if (item is BaseWeapon || item is BaseArmor || item is BaseJewel || item is BaseHat)
+                if (item is BaseWeapon or BaseArmor or BaseJewel or BaseHat)
                 {
                     if (Core.AOS)
                     {

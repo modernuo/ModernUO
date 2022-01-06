@@ -458,7 +458,7 @@ namespace Server.Gumps
                 return Array.Empty<string>();
             }
 
-            if (!(attrs[0] is CustomEnumAttribute ce))
+            if (attrs[0] is not CustomEnumAttribute ce)
             {
                 return Array.Empty<string>();
             }

@@ -82,12 +82,24 @@ html .md-footer-meta.md-typeset a:hover {
   color: #e95420;
 }
 
+.linuxmint {
+  color: #87cF3e;
+}
+
 .debian {
   color: #d70a53;
 }
 
+.fedora {
+  color: #3c6eb4;
+}
+
 .centos {
   color: #212078;
+}
+
+.redhat {
+  color: #be0000;
 }
 
 .codehilitetable .linenodiv pre, .highlighttable .linenodiv pre {

@@ -182,8 +182,8 @@ namespace Server.Gumps
 
                 if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
                 {
-                    AddLabel(135 + half * 160, 80, 0, $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}");
-                    AddLabel(135 + half * 160, 95, 0, $"{xLong}� {xMins}'{(xEast ? "E" : "W")}");
+                    AddLabel(135 + half * 160, 80, 0, $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}");
+                    AddLabel(135 + half * 160, 95, 0, $"{xLong}° {xMins}'{(xEast ? "E" : "W")}");
                 }
 
                 // Drop rune button
@@ -294,7 +294,7 @@ namespace Server.Gumps
                                     ))
                                     {
                                         var location =
-                                            $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                                            $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}' {xMins}'{(xEast ? "E" : "W")}";
                                         from.SendMessage(location);
                                     }
 
@@ -365,7 +365,7 @@ namespace Server.Gumps
                                     ))
                                     {
                                         var location =
-                                            $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                                            $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}' {xMins}'{(xEast ? "E" : "W")}";
                                         from.SendMessage(location);
                                     }
 
@@ -401,7 +401,7 @@ namespace Server.Gumps
                                     ))
                                     {
                                         var location =
-                                            $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                                            $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}' {xMins}'{(xEast ? "E" : "W")}";
                                         from.SendMessage(location);
                                     }
 
@@ -439,7 +439,7 @@ namespace Server.Gumps
                                         ))
                                         {
                                             var location =
-                                                $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                                                $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}' {xMins}'{(xEast ? "E" : "W")}";
                                             from.SendMessage(location);
                                         }
 

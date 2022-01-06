@@ -11,7 +11,7 @@ namespace Server.Engines.Quests.Haven
         {
         }
 
-        public override bool CanDrop(PlayerMobile player) => !(player.Quest is UzeraanTurmoilQuest);
+        public override bool CanDrop(PlayerMobile player) => player.Quest is not UzeraanTurmoilQuest;
 
         public override void Serialize(IGenericWriter writer)
         {

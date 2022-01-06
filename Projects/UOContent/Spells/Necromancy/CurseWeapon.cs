@@ -27,7 +27,7 @@ namespace Server.Spells.Necromancy
 
         public override void OnCast()
         {
-            if (!(Caster.Weapon is BaseWeapon weapon) || weapon is Fists)
+            if (Caster.Weapon is not BaseWeapon weapon || weapon is Fists)
             {
                 Caster.SendLocalizedMessage(501078); // You must be holding a weapon.
             }

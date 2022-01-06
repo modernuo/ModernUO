@@ -65,11 +65,11 @@ namespace Server.Items
                     return;
                 }
 
-                if (!(targeted is Item item) || !item.IsChildOf(from.Backpack))
+                if (targeted is not Item item || !item.IsChildOf(from.Backpack))
                 {
                     from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
                 }
-                else if (!(item is BaseBook))
+                else if (item is not BaseBook)
                 {
                     item.LabelTo(from, 1061911); // You can only use red leaves to seal the ink into book pages!
                 }

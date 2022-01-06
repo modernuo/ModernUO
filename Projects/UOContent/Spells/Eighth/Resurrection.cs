@@ -51,9 +51,8 @@ namespace Server.Spells.Eighth
             }
             else if (m.Region?.IsPartOf("Khaldun") == true)
             {
-                Caster.SendLocalizedMessage(
-                    1010395
-                ); // The veil of death in this area is too strong and resists thy efforts to restore life.
+                // The veil of death in this area is too strong and resists thy efforts to restore life.
+                Caster.SendLocalizedMessage(1010395);
             }
             else if (CheckBSequence(m, true))
             {

@@ -20,7 +20,8 @@ namespace Server.Commands
             CommandSystem.Register("Decorate", AccessLevel.Administrator, Decorate_OnCommand);
         }
 
-        [Usage("Decorate"), Description("Generates world decoration.")]
+        [Usage("Decorate")]
+        [Description("Generates world decoration.")]
         private static void Decorate_OnCommand(CommandEventArgs e)
         {
             m_Mobile = e.Mobile;
@@ -1107,7 +1108,7 @@ namespace Server.Commands
                     }
                 }
             }
-            else if (srcItem is Teleporter || srcItem is FillableContainer || srcItem is BaseBook)
+            else if (srcItem is Teleporter or FillableContainer or BaseBook)
             {
                 eable = map.GetItemsInRange(new Point3D(x, y, z), 0);
 

@@ -350,7 +350,7 @@ namespace Server.Engines.Harvest
 
         public override bool Give(Mobile m, Item item, bool placeAtFeet)
         {
-            if (item is TreasureMap || item is MessageInABottle || item is SpecialFishingNet)
+            if (item is TreasureMap or MessageInABottle or SpecialFishingNet)
             {
                 BaseCreature serp;
 
@@ -395,7 +395,7 @@ namespace Server.Engines.Harvest
                 return true; // we don't want to give the item to the player, it's on the serpent
             }
 
-            return base.Give(m, item, placeAtFeet || item is BigFish || item is WoodenChest || item is MetalGoldenChest);
+            return base.Give(m, item, placeAtFeet || item is BigFish or WoodenChest or MetalGoldenChest);
         }
 
         public override void SendSuccessTo(Mobile from, Item item, HarvestResource resource)
@@ -405,7 +405,7 @@ namespace Server.Engines.Harvest
                 from.SendLocalizedMessage(1042635); // Your fishing pole bends as you pull a big fish from the depths!
                 fish.Fisher = from;
             }
-            else if (item is WoodenChest || item is MetalGoldenChest)
+            else if (item is WoodenChest or MetalGoldenChest)
             {
                 from.SendLocalizedMessage(503175); // You pull up a heavy chest from the depths of the ocean!
             }

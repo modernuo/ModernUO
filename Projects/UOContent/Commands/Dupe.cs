@@ -13,7 +13,8 @@ namespace Server.Commands
             CommandSystem.Register("DupeInBag", AccessLevel.GameMaster, DupeInBag_OnCommand);
         }
 
-        [Usage("Dupe [amount]"), Description("Dupes a targeted item.")]
+        [Usage("Dupe [amount]")]
+        [Description("Dupes a targeted item.")]
         private static void Dupe_OnCommand(CommandEventArgs e)
         {
             var amount = 1;
@@ -26,7 +27,8 @@ namespace Server.Commands
             e.Mobile.SendMessage("What do you wish to dupe?");
         }
 
-        [Usage("DupeInBag <count>"), Description("Dupes an item at it's current location (count) number of times.")]
+        [Usage("DupeInBag <count>")]
+        [Description("Dupes an item at it's current location (count) number of times.")]
         private static void DupeInBag_OnCommand(CommandEventArgs e)
         {
             var amount = 1;

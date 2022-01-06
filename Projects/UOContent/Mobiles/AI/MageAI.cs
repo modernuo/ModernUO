@@ -61,7 +61,7 @@ namespace Server.Mobiles
         {
         }
 
-        public virtual bool SmartAI => m_Mobile is BaseVendor || m_Mobile is BaseEscortable || m_Mobile is Changeling;
+        public virtual bool SmartAI => m_Mobile is BaseVendor or BaseEscortable or Changeling;
 
         public virtual bool IsNecromancer => Core.AOS && m_Mobile.Skills.Necromancy.Value > 50;
 
@@ -792,7 +792,7 @@ namespace Server.Mobiles
                 {
                     spell = DoCombo(c);
                 }
-                else if (SmartAI && (c.Spell is HealSpell || c.Spell is GreaterHealSpell) && !c.Poisoned
+                else if (SmartAI && c.Spell is HealSpell or GreaterHealSpell && !c.Poisoned
                 ) // They have a heal spell out
                 {
                     spell = new PoisonSpell(m_Mobile);

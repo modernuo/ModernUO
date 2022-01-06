@@ -35,7 +35,7 @@ namespace Server.Items
             {
                 if (!Utility.InRange(old, Location, 2) && Utility.InRange(m.Location, Location, 2))
                 {
-                    if (ItemID == 0x2A69 || ItemID == 0x2A6D)
+                    if (ItemID is 0x2A69 or 0x2A6D)
                     {
                         Up();
                         Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Up);
@@ -43,7 +43,7 @@ namespace Server.Items
                 }
                 else if (Utility.InRange(old, Location, 2) && !Utility.InRange(m.Location, Location, 2))
                 {
-                    if (ItemID == 0x2A6C || ItemID == 0x2A70)
+                    if (ItemID is 0x2A6C or 0x2A70)
                     {
                         Down();
                         Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Down);

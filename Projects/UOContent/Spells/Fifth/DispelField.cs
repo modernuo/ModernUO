@@ -28,7 +28,7 @@ namespace Server.Spells.Fifth
             {
                 Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
             }
-            else if (item is Moongate moongate && !moongate.Dispellable)
+            else if (item is Moongate { Dispellable: false })
             {
                 Caster.SendLocalizedMessage(1005047); // That magic is too chaotic
             }

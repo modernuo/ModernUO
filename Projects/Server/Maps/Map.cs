@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,49 +55,97 @@ namespace Server
 
         public static IEnumerable<NetState> SelectClients(Sector s, Rectangle2D bounds)
         {
-            return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile.Location));
+            var clients = new List<NetState>(s.Clients.Count);
+            foreach (var client in s.Clients)
+            {
+                var m = client.Mobile;
+
+                if (m?.Deleted == false && bounds.Contains(m.Location))
+                {
+                    clients.Add(client);
+                }
+            }
+
+            return clients;
         }
 
-        public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds) =>
-            SelectEntities(s, true, true, bounds);
-
-        public static IEnumerable<IEntity> SelectEntities(Sector s, bool items, bool mobiles, Rectangle2D bounds)
+        public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds)
         {
-            var eable = Enumerable.Empty<IEntity>();
-            if (mobiles)
+            var entities = new List<IEntity>(s.Mobiles.Count + s.Items.Count);
+            for (int i = s.Mobiles.Count - 1, j = s.Items.Count - 1; i >= 0 || j >= 0; --i, --j)
             {
-                eable = eable.Union(s.Mobiles.Where(o => o?.Deleted == false));
-            }
+                if (j >= 0)
+                {
+                    Item item = s.Items[j];
+                    if (item is { Deleted: false, Parent: null } && bounds.Contains(item.Location))
+                    {
+                        entities.Add(item);
+                    }
+                }
 
-            if (items)
-            {
-                eable = eable.Union(s.Items.Where(o => o?.Deleted == false && o.Parent == null));
+                if (i >= 0)
+                {
+                    Mobile mob = s.Mobiles[i];
+                    if (mob is { Deleted: false } && bounds.Contains(mob.Location))
+                    {
+                        entities.Add(mob);
+                    }
+                }
             }
-
-            return eable.Where(o => bounds.Contains(o.Location));
+            return entities;
         }
 
         public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
         {
-            return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o.Location));
+            var entities = new List<T>(s.Mobiles.Count);
+            for (int i = s.Mobiles.Count - 1; i >= 0; --i)
+            {
+                if (s.Mobiles[i] is T { Deleted: false } mob && bounds.Contains(mob.Location))
+                {
+                    entities.Add(mob);
+                }
+            }
+            return entities;
         }
 
         public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
         {
-            return s.Items.OfType<T>()
-                .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o.Location));
+            var entities = new List<T>(s.Items.Count);
+            for (int i = s.Items.Count - 1; i >= 0; --i)
+            {
+                if (s.Items[i] is T { Deleted: false, Parent: null } item && bounds.Contains(item.Location))
+                {
+                    entities.Add(item);
+                }
+            }
+            return entities;
         }
 
         public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
         {
-            return s.Multis.Where(o => o?.Deleted == false && bounds.Contains(o.Location));
+            var entities = new List<BaseMulti>(s.Multis.Count);
+            for (int i = s.Multis.Count - 1; i >= 0; --i)
+            {
+                BaseMulti multi = s.Multis[i];
+                if (multi is { Deleted: false } && bounds.Contains(multi.Location))
+                {
+                    entities.Add(multi);
+                }
+            }
+            return entities;
         }
 
         public static IEnumerable<StaticTile[]> SelectMultiTiles(Sector s, Rectangle2D bounds)
         {
-            foreach (var o in s.Multis.Where(o => o?.Deleted == false))
+            for (int l = s.Multis.Count - 1; l >= 0; --l)
             {
-                var c = o.Components;
+                BaseMulti o = s.Multis[l];
+                if (o?.Deleted != false)
+                {
+                    continue;
+                }
+
+                MultiComponentList c = o.Components;
 
                 int x, y, xo, yo;
                 StaticTile[] t, r;
@@ -143,10 +192,8 @@ namespace Server
         public static Map.PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds) =>
             Map.PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
 
-        public static Map.PooledEnumerable<IEntity> GetEntities(
-            Map map, Rectangle2D bounds, bool items = true,
-            bool mobiles = true
-        ) => Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
+        public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
+            Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
 
         public static Map.PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds) =>
             GetMobiles<Mobile>(map, bounds);
@@ -272,9 +319,6 @@ namespace Server
         public const int SectorShift = 4;
         public const int SectorActiveRange = 2;
 
-        private static readonly Queue<List<Item>> m_FixPool = new(128);
-        private static readonly List<Item> m_EmptyFixItems = new();
-
         private static ILogger _logger;
         private static ILogger Logger => _logger ??= LogFactory.GetLogger(typeof(Map));
 
@@ -389,9 +433,55 @@ namespace Server
 
         public int CompareTo(Map other) => other == null ? -1 : MapID.CompareTo(other.MapID);
 
-        public static string[] GetMapNames() => Maps.Where(m => m != null).Select(m => m.Name).ToArray();
+        public static string[] GetMapNames()
+        {
+            var mapCount = 0;
+            for (var i = 0; i < Maps.Length; i++)
+            {
+                var map = Maps[i];
+                if (map != null)
+                {
+                    mapCount++;
+                }
+            }
 
-        public static Map[] GetMapValues() => Maps.Where(m => m != null).ToArray();
+            var mapNames = new string[mapCount];
+            for (int i = 0, mIndex = 0; i < Maps.Length; i++)
+            {
+                var map = Maps[i];
+                if (map != null)
+                {
+                    mapNames[mIndex++] = map.Name;
+                }
+            }
+
+            return mapNames;
+        }
+
+        public static Map[] GetMapValues()
+        {
+            var mapCount = 0;
+            for (var i = 0; i < Maps.Length; i++)
+            {
+                var map = Maps[i];
+                if (map != null)
+                {
+                    mapCount++;
+                }
+            }
+
+            var mapValues = new Map[mapCount];
+            for (int i = 0, mIndex = 0; i < Maps.Length; i++)
+            {
+                var map = Maps[i];
+                if (map != null)
+                {
+                    mapValues[mIndex++] = map;
+                }
+            }
+
+            return mapValues;
+        }
 
         public static Map Parse(string value)
         {
@@ -498,54 +588,31 @@ namespace Server
         public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
             PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
 
-        private static List<Item> AcquireFixItems(Map map, int x, int y)
+        private static void AcquireFixItems(Map map, int x, int y, Item[] pool, out int length)
         {
+            length = 0;
             if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height)
-            {
-                return m_EmptyFixItems;
-            }
-
-            List<Item> pool = null;
-
-            lock (m_FixPool)
-            {
-                if (m_FixPool.Count > 0)
-                {
-                    pool = m_FixPool.Dequeue();
-                }
-            }
-
-            pool ??= new List<Item>(128); // Arbitrary limit
-
-            var eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
-
-            pool.AddRange(
-                eable.Where(item => item.ItemID <= TileData.MaxItemValue && !(item is BaseMulti))
-                    .OrderBy(item => item.Z)
-                    .Take(pool.Capacity)
-            );
-
-            eable.Free();
-
-            return pool;
-        }
-
-        private static void FreeFixItems(List<Item> pool)
-        {
-            if (pool == m_EmptyFixItems)
             {
                 return;
             }
 
-            pool.Clear();
-
-            lock (m_FixPool)
+            var eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
+            foreach (var item in eable)
             {
-                if (m_FixPool.Count < 128)
+                if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue)
                 {
-                    m_FixPool.Enqueue(pool);
+                    if (length == 128)
+                    {
+                        break;
+                    }
+
+                    pool[length++] = item;
                 }
             }
+
+            eable.Free();
+
+            Array.Sort(pool, 0, length, ZComparer.Default);
         }
 
         public void FixColumn(int x, int y)
@@ -555,9 +622,10 @@ namespace Server
 
             GetAverageZ(x, y, out _, out var landAvg, out _);
 
-            var items = AcquireFixItems(this, x, y);
+            var items = ArrayPool<Item>.Shared.Rent(128);
+            AcquireFixItems(this, x, y, items, out var length);
 
-            for (var i = 0; i < items.Count; i++)
+            for (var i = 0; i < length; i++)
             {
                 var toFix = items[i];
 
@@ -592,7 +660,7 @@ namespace Server
                     }
                 }
 
-                for (var j = 0; j < items.Count; ++j)
+                for (var j = 0; j < length; ++j)
                 {
                     if (j == i)
                     {
@@ -622,7 +690,7 @@ namespace Server
                 }
             }
 
-            FreeFixItems(items);
+            ArrayPool<Item>.Shared.Return(items);
         }
 
         /* This could probably be re-implemented if necessary (perhaps via an ITile interface?).
@@ -715,7 +783,7 @@ namespace Server
             {
                 var item = sector.Items[i];
 
-                if (!(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(p.X, p.Y) &&
+                if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(p.X, p.Y) &&
                     !item.Movable)
                 {
                     var id = item.ItemData;
@@ -1031,15 +1099,11 @@ namespace Server
 
         public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p) => GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
 
-        public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items = true, bool mobiles = true) =>
-            GetObjectsInBounds(
-                new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1),
-                items,
-                mobiles
-            );
+        public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range) =>
+            GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 
-        public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true) =>
-            PooledEnumeration.GetEntities(this, bounds, items, mobiles);
+        public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds) =>
+            PooledEnumeration.GetEntities(this, bounds);
 
         public IPooledEnumerable<NetState> GetClientsInRange(Point3D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
 
@@ -1145,7 +1209,7 @@ namespace Server
             {
                 var item = items[i];
 
-                if (!(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y))
+                if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y))
                 {
                     var id = item.ItemData;
                     surface = id.Surface;
@@ -1187,6 +1251,13 @@ namespace Server
 
         public bool CanSpawnMobile(int x, int y, int z) =>
             Region.Find(new Point3D(x, y, z), this).AllowSpawn() && CanFit(x, y, z, 16);
+
+        private class ZComparer : IComparer<Item>
+        {
+            public static readonly ZComparer Default = new();
+
+            public int Compare(Item x, Item y) => x!.Z.CompareTo(y!.Z);
+        }
 
         public Sector GetSector(Point3D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
@@ -1529,9 +1600,7 @@ namespace Server
         {
             public static readonly NullEnumerable<T> Instance = new();
 
-            private readonly IEnumerable<T> m_Empty;
-
-            private NullEnumerable() => m_Empty = Enumerable.Empty<T>();
+            private readonly IEnumerable<T> m_Empty = Enumerable.Empty<T>();
 
             IEnumerator IEnumerable.GetEnumerator() => m_Empty.GetEnumerator();
 

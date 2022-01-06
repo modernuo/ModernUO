@@ -223,7 +223,7 @@ namespace Server.Network
 
         private void SetPacketTime(int packetID)
         {
-            if (packetID < 0 || packetID >= 0x100)
+            if (packetID is < 0 or >= 0x100)
             {
                 return;
             }
@@ -233,7 +233,7 @@ namespace Server.Network
 
         public long GetPacketDelay(int packetID)
         {
-            if (packetID < 0 || packetID >= 0x100)
+            if (packetID is < 0 or >= 0x100)
             {
                 return 0;
             }
@@ -243,7 +243,7 @@ namespace Server.Network
 
         private void UpdatePacketCount(int packetID)
         {
-            if (packetID < 0 || packetID >= 0x100)
+            if (packetID is < 0 or >= 0x100)
             {
                 return;
             }
@@ -728,7 +728,7 @@ namespace Server.Network
                     {
                         reader.Advance((uint)packetLength);
                     }
-                    else if (_parserState == ParserState.AwaitingPartialPacket || _parserState == ParserState.Throttled)
+                    else if (_parserState is ParserState.AwaitingPartialPacket or ParserState.Throttled)
                     {
                         break;
                     }

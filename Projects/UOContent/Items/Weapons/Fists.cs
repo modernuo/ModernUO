@@ -199,7 +199,7 @@ namespace Server.Items
         {
             var item = m.FindItemOnLayer(Layer.OneHanded);
 
-            return (item == null || item is Spellbook) && m.FindItemOnLayer(Layer.TwoHanded) == null;
+            return item is null or Spellbook && m.FindItemOnLayer(Layer.TwoHanded) == null;
         }
 
         private static void EventSink_DisarmRequest(Mobile m)

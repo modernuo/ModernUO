@@ -34,14 +34,7 @@ namespace Server.Items
         [SerializableField(1)]
         private int _charges;
 
-        public BaseWand(WandEffect effect, int minCharges, int maxCharges) : base(
-            Utility.RandomList(
-                0xDF2,
-                0xDF3,
-                0xDF4,
-                0xDF5
-            )
-        )
+        public BaseWand(WandEffect effect, int minCharges, int maxCharges) : base(0xDF2 + Utility.Random(4))
         {
             Weight = 1.0;
             _wandEffect = effect;
@@ -251,7 +244,7 @@ namespace Server.Items
 
         public virtual void DoWandTarget(Mobile from, object o)
         {
-            if (Deleted || _charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
+            if (Deleted || _charges <= 0 || Parent != from || o is StaticTarget or LandTarget)
             {
                 return;
             }

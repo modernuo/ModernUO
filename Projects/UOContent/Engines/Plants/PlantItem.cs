@@ -67,7 +67,7 @@ namespace Server.Engines.Plants
             get => m_PlantStatus;
             set
             {
-                if (m_PlantStatus == value || value < PlantStatus.BowlOfDirt || value > PlantStatus.DeadTwigs)
+                if (m_PlantStatus == value || value is < PlantStatus.BowlOfDirt or > PlantStatus.DeadTwigs)
                 {
                     return;
                 }
@@ -151,7 +151,7 @@ namespace Server.Engines.Plants
                     return true;
                 }
 
-                if (!(RootParent is Mobile owner))
+                if (RootParent is not Mobile owner)
                 {
                     return false;
                 }
@@ -491,7 +491,7 @@ namespace Server.Engines.Plants
 
             var full = false;
 
-            if (effect == PotionEffect.PoisonGreater || effect == PotionEffect.PoisonDeadly)
+            if (effect is PotionEffect.PoisonGreater or PotionEffect.PoisonDeadly)
             {
                 if (PlantSystem.IsFullPoisonPotion)
                 {
@@ -535,9 +535,7 @@ namespace Server.Engines.Plants
                     PlantSystem.StrengthPotion++;
                 }
             }
-            else if (effect == PotionEffect.PoisonLesser || effect == PotionEffect.Poison ||
-                     effect == PotionEffect.CureLesser || effect == PotionEffect.Cure ||
-                     effect == PotionEffect.HealLesser || effect == PotionEffect.Heal || effect == PotionEffect.Strength)
+            else if (effect is PotionEffect.PoisonLesser or PotionEffect.Poison or PotionEffect.CureLesser or PotionEffect.Cure or PotionEffect.HealLesser or PotionEffect.Heal or PotionEffect.Strength)
             {
                 message = 1053068; // This potion is not powerful enough to use on a plant!
                 return false;

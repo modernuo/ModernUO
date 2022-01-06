@@ -152,7 +152,7 @@ namespace Server.Engines.Plants
 
         public override void OnAfterDuped(Item newItem)
         {
-            if (!(newItem is Seed newSeed))
+            if (newItem is not Seed newSeed)
             {
                 return;
             }

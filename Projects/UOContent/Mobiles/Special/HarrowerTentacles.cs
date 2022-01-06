@@ -151,7 +151,7 @@ namespace Server.Mobiles
                         continue;
                     }
 
-                    if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
+                    if (m is not BaseCreature bc || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
                     {
                         continue;
                     }

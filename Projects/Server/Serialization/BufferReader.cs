@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Collections;
 using Server.Text;
 
 namespace Server
@@ -154,6 +155,19 @@ namespace Server
             _buffer.AsSpan(_position, length).CopyTo(buffer);
             _position += length;
             return length;
+        }
+
+        public BitArray ReadBitArray()
+        {
+            var length = ((IGenericReader)this).ReadEncodedInt();
+            if (length > _buffer.Length - _position)
+            {
+                throw new OutOfMemoryException();
+            }
+
+            var bitArray = new BitArray(_buffer.AsSpan(_position, length));
+            _position += length;
+            return bitArray;
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)
