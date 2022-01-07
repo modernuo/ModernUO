@@ -1,5 +1,9 @@
 using BenchmarkDotNet.Running;
-using Benchmarks.Benchmarks.Rng;
+using Benchmarks.EntitiesSelectors;
+using Benchmarks.ItemSelectors;
+using Benchmarks.MobileSelectors;
+using Benchmarks.MultiSelectors;
+using Benchmarks.MultiTilesSelectors;
 
 namespace Benchmarks
 {
@@ -15,10 +19,14 @@ namespace Benchmarks
             // var textEncoding = BenchmarkRunner.Run<BenchmarkTextEncoding>();
             // var logging = BenchmarkRunner.Run<BenchmarkConsoleLogging>();
             // var gumpPacket = BenchmarkRunner.Run<OutgoingGumpPacketBenchmarks>();
-            // MapSelectors.Init();
-            // var mapSelectors = BenchmarkRunner.Run<MapSelectors>();
             // var rngTest = BenchmarkRunner.Run<BenchmarkXoshiro>();
-            var doubleRngText = BenchmarkRunner.Run<BenchmarkDoubleVsFixed>();
+            //var doubleRngText = BenchmarkRunner.Run<BenchmarkDoubleVsFixed>();
+
+            //var mapEntitiesSelectors = BenchmarkRunner.Run<MapEntitiesSelectors>();
+            //var mapMobilesSelectors = BenchmarkRunner.Run<MapMobileSelectors>();
+            //var mapMultiTilesSelectors = BenchmarkRunner.Run<MapMultiTilesSelectors>();
+            //var mapMultiSelectors = BenchmarkRunner.Run<MapMultiSelectors>();
+            var mapItemsSelectors = BenchmarkRunner.Run<MapItemSelectors>();
         }
     }
 }
