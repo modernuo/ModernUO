@@ -47,14 +47,14 @@ public partial class NetState
             var step = _steps[_expiredIndex];
 
             // Is the step ahead of us, or the next step rolled over and we didn't yet
-            if (step > Core.TickCount || lastIndex > -1 && _steps[lastIndex] > step)
+            if (step > now || lastIndex > -1 && _steps[lastIndex] > step)
             {
                 break;
             }
 
             lastIndex = _expiredIndex++;
 
-            if (_expiredIndex >= stepsLength)
+            if (_expiredIndex == stepsLength)
             {
                 _expiredIndex -= stepsLength;
             }
@@ -70,11 +70,19 @@ public partial class NetState
         }
 
         var delay = Mobile.ComputeMovementSpeed(d);
-        _steps[_stepIndex++] = now + delay;
 
-        if (_stepIndex > maxSteps)
+        var prev = _stepIndex - 1;
+        if (prev < 0)
         {
-            _stepIndex -= maxSteps;
+            prev += stepsLength;
+        }
+
+        // Give a 5% buffer on the first step
+        _steps[_stepIndex++] = stepsTaken > 0 ? _steps[prev] + delay : now + delay * 950 / 1000;
+
+        if (_stepIndex == stepsLength)
+        {
+            _stepIndex -= stepsLength;
         }
 
         // If CalcMoves.MaxSteps is modified, we need to adjust accordingly

@@ -9013,7 +9013,10 @@ namespace Server
         public Direction GetDirectionTo(IPoint2D p, bool run = false) =>
             p == null ? Direction.North | (run ? Direction.Running : 0) : GetDirectionTo(p.X, p.Y, run);
 
-        public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
+        public void PublicOverheadMessage(
+            MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true,
+            AccessLevel accessLevel = AccessLevel.Player
+        )
         {
             if (m_Map == null)
             {
@@ -9026,7 +9029,11 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                if (
+                    state.Mobile.AccessLevel >= accessLevel &&
+                    state.Mobile.CanSee(this) &&
+                    (noLineOfSight || state.Mobile.InLOS(this))
+                )
                 {
                     var length = OutgoingMessagePackets.CreateMessage(
                         buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
@@ -9077,7 +9084,8 @@ namespace Server
 
         public void PublicOverheadMessage(
             MessageType type, int hue, int number, AffixType affixType, string affix,
-            string args = "", bool noLineOfSight = false
+            string args = "", bool noLineOfSight = false,
+            AccessLevel accessLevel = AccessLevel.Player
         )
         {
             if (m_Map == null)
@@ -9091,7 +9099,11 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                if (
+                    state.Mobile.AccessLevel >= accessLevel &&
+                    state.Mobile.CanSee(this) &&
+                    (noLineOfSight || state.Mobile.InLOS(this))
+                )
                 {
                     var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
                         buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
