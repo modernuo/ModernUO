@@ -27,6 +27,9 @@ namespace Server.Misc
                     a.AccessLevel = AccessLevel.Owner;
 
                     Console.WriteLine("Account created.");
+
+                    ServerAccess.AddProtectedAccount(a, true);
+                    Console.WriteLine("Added {0} to the protected accounts list.", a.Username);
                 }
                 else
                 {
