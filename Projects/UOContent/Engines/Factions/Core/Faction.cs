@@ -273,9 +273,14 @@ namespace Server.Factions
                 return false;
             }
 
-            var eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
+            var eable = mob.Map.GetObjectsInRange(mob.Location, range);
             foreach (var obj in eable)
             {
+                if (!mobs && obj is Mobile || !items && obj is Item)
+                {
+                    continue;
+                }
+
                 if (type.IsInstanceOfType(obj))
                 {
                     eable.Free();

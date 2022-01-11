@@ -19,56 +19,57 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using SerializationGenerator;
 
-namespace SerializableMigration
+namespace SerializableMigration;
+
+public class SerializableInterfaceMigrationRule : MigrationRule
 {
-    public class SerializableInterfaceMigrationRule : ISerializableMigrationRule
+    public override string RuleName => nameof(SerializableInterfaceMigrationRule);
+
+    public override bool GenerateRuleState(
+        Compilation compilation,
+        ISymbol symbol,
+        ImmutableArray<AttributeData> attributes,
+        ImmutableArray<INamedTypeSymbol> serializableTypes,
+        ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
+        ISymbol? parentSymbol,
+        out string[] ruleArguments
+    )
     {
-        public string RuleName => nameof(SerializableInterfaceMigrationRule);
-
-        public bool GenerateRuleState(
-            Compilation compilation,
-            ISymbol symbol,
-            ImmutableArray<AttributeData> attributes,
-            ImmutableArray<INamedTypeSymbol> serializableTypes,
-            ImmutableArray<INamedTypeSymbol> embeddedSerializableTypes,
-            ISymbol? parentSymbol,
-            out string[] ruleArguments
-        )
+        if (symbol is ITypeSymbol typeSymbol && typeSymbol.HasSerializableInterface(compilation, serializableTypes))
         {
-            if (symbol is ITypeSymbol typeSymbol && typeSymbol.HasSerializableInterface(compilation, serializableTypes))
-            {
-                ruleArguments = Array.Empty<string>();
-                return true;
-            }
-
-            ruleArguments = null;
-            return false;
+            ruleArguments = Array.Empty<string>();
+            return true;
         }
 
-        public void GenerateDeserializationMethod(StringBuilder source, string indent, SerializableProperty property, string? parentReference)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
+        ruleArguments = null;
+        return false;
+    }
 
-            var propertyName = property.Name;
-            source.AppendLine($"{indent}{propertyName} = reader.ReadEntity<{property.Type}>();");
+    public override void GenerateDeserializationMethod(
+        StringBuilder source, string indent, SerializableProperty property, string? parentReference, bool isMigration = false
+    )
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
 
-        public void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
-        {
-            var expectedRule = RuleName;
-            var ruleName = property.Rule;
-            if (expectedRule != ruleName)
-            {
-                throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
-            }
+        var propertyName = property.Name;
+        source.AppendLine($"{indent}{propertyName} = reader.ReadEntity<{property.Type}>();");
+    }
 
-            var propertyName = property.Name;
-            source.AppendLine($"{indent}writer.Write({propertyName});");
+    public override void GenerateSerializationMethod(StringBuilder source, string indent, SerializableProperty property)
+    {
+        var expectedRule = RuleName;
+        var ruleName = property.Rule;
+        if (expectedRule != ruleName)
+        {
+            throw new ArgumentException($"Invalid rule applied to property {ruleName}. Expecting {expectedRule}, but received {ruleName}.");
         }
+
+        var propertyName = property.Name;
+        source.AppendLine($"{indent}writer.Write({propertyName});");
     }
 }

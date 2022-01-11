@@ -93,7 +93,7 @@ namespace Server.Items
 
         public override bool IsChildVisibleTo(Mobile m, Item child) =>
             child is VirtualCheck
-                ? !AccountGold.Enabled || m.NetState?.NewSecureTrading != true
+                ? AccountGold.Enabled && m.NetState is not { NewSecureTrading: true }
                 : base.IsChildVisibleTo(m, child);
 
         public override void Serialize(IGenericWriter writer)

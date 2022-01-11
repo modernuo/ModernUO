@@ -25,6 +25,13 @@ namespace Server.Items
 
     public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability
     {
+        private static bool _enableInstaHit;
+
+        public static void Configure()
+        {
+            _enableInstaHit = ServerConfiguration.GetSetting("melee.enableInstaHit", !Core.UOR);
+        }
+
         private WeaponAccuracyLevel m_AccuracyLevel;
         private WeaponAnimation m_Animation;
         private Mobile m_Crafter;
@@ -950,7 +957,10 @@ namespace Server.Items
                 }
             }
 
-            from.NextCombatTime = Core.TickCount + (int)GetDelay(from).TotalMilliseconds;
+            if (!_enableInstaHit)
+            {
+                from.NextCombatTime = Core.TickCount + (int)GetDelay(from).TotalMilliseconds;
+            }
 
             if (UseSkillMod && m_AccuracyLevel != WeaponAccuracyLevel.Regular)
             {
@@ -989,45 +999,45 @@ namespace Server.Items
 
         public override void OnRemoved(IEntity parent)
         {
-            if (parent is Mobile m)
+            if (parent is not Mobile m)
             {
-                var weapon = m.Weapon as BaseWeapon;
-
-                var modName = Serial.ToString();
-
-                m.RemoveStatMod($"{modName}Str");
-                m.RemoveStatMod($"{modName}Dex");
-                m.RemoveStatMod($"{modName}Int");
-
-                if (weapon != null)
-                {
-                    m.NextCombatTime = Core.TickCount + (int)weapon.GetDelay(m).TotalMilliseconds;
-                }
-
-                if (UseSkillMod && m_SkillMod != null)
-                {
-                    m_SkillMod.Remove();
-                    m_SkillMod = null;
-                }
-
-                if (m_MageMod != null)
-                {
-                    m_MageMod.Remove();
-                    m_MageMod = null;
-                }
-
-                if (Core.AOS)
-                {
-                    SkillBonuses.Remove();
-                }
-
-                ImmolatingWeaponSpell.StopImmolating(this);
-                ForceOfNature.Remove(m);
-
-                m.CheckStatTimers();
-
-                m.Delta(MobileDelta.WeaponDamage);
+                return;
             }
+
+            var modName = Serial.ToString();
+
+            m.RemoveStatMod($"{modName}Str");
+            m.RemoveStatMod($"{modName}Dex");
+            m.RemoveStatMod($"{modName}Int");
+
+            if (!_enableInstaHit && m.Weapon is BaseWeapon weapon)
+            {
+                m.NextCombatTime = Core.TickCount + (long)weapon.GetDelay(m).TotalMilliseconds;
+            }
+
+            if (UseSkillMod && m_SkillMod != null)
+            {
+                m_SkillMod.Remove();
+                m_SkillMod = null;
+            }
+
+            if (m_MageMod != null)
+            {
+                m_MageMod.Remove();
+                m_MageMod = null;
+            }
+
+            if (Core.AOS)
+            {
+                SkillBonuses.Remove();
+            }
+
+            ImmolatingWeaponSpell.StopImmolating(this);
+            ForceOfNature.Remove(m);
+
+            m.CheckStatTimers();
+
+            m.Delta(MobileDelta.WeaponDamage);
         }
 
         public virtual SkillName GetUsedSkill(Mobile m, bool checkSkillAttrs)
