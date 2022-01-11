@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Server.Accounting;
 using Server.Json;
 using Server.Logging;
+using Server.Network;
 
 namespace Server.Misc;
 
@@ -67,33 +68,26 @@ public static class ServerAccess
             return;
         }
 
-        var account = Accounts.GetAccount(username);
-        if (account is not { Banned: true, AccessLevel: >= AccessLevel.Owner })
+        var acct = Accounts.GetAccount(username);
+        if (acct == null || !acct.Banned && acct.AccessLevel >= AccessLevel.Owner || !acct.CheckPassword(e.Password))
         {
             return;
         }
 
-        account.Banned = false;
-        account.AccessLevel = AccessLevel.Owner;
+        acct.Banned = false;
+        acct.AccessLevel = AccessLevel.Owner;
 
         logger.Warning("Protected account \"{0}\" has been reset.", username);
 
-        if (ServerAccessConfiguration.NewPasswordOnReset)
+        if (e.RejectReason is ALRReason.Blocked or ALRReason.BadPass or ALRReason.BadComm)
         {
-            var password = Guid.NewGuid().ToString();
-            logger.Warning("Protected account \"{0}\" password reset to \"{1}\"", username, password);
-            account.SetPassword(password);
+            e.Accepted = true;
         }
-
-        e.Accepted = true;
     }
 }
 
 public record ServerAccessConfiguration
 {
-    [JsonPropertyName("newPasswordOnReset")]
-    public bool NewPasswordOnReset { get; init; }
-
     [JsonPropertyName("protectedAccounts")]
     public HashSet<string> ProtectedAccounts { get; init; }
 }
