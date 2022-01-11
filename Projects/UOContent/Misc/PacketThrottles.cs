@@ -10,7 +10,7 @@ namespace Server.Network
     {
         // Delay in milliseconds
         private static readonly int[] Delays = new int[0x100];
-        private static string ThrottlesConfiguration = "Configuration/throttles.json";
+        private const string ThrottlesConfiguration = "Configuration/throttles.json";
 
         public static void Initialize()
         {
