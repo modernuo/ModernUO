@@ -249,7 +249,10 @@ namespace Server.Engines.Spawners
         }
 
         Region ISpawner.Region => Region.Find(Location, Map);
-
+        public void UpdateEntries(List<SpawnerEntry> entries)
+        {
+            Entries = entries;
+        }
         public void Remove(ISpawnable spawn)
         {
             Defrag();
