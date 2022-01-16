@@ -12,10 +12,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent.Tests", "Projects
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "Projects\Benchmarks\Benchmarks.csproj", "{38B7E4A1-FDDD-486C-98EE-BA7B13712528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationGenerator", "Projects\SerializationGenerator\SerializationGenerator.csproj", "{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationSchemaGenerator", "Projects\SerializationSchemaGenerator\SerializationSchemaGenerator.csproj", "{A30150A3-796C-4C6D-B3E4-B7BEB0021701}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analyze|x64 = Analyze|x64
@@ -53,18 +49,6 @@ Global
 		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Debug|x64.Build.0 = Debug|x64
 		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Release|x64.ActiveCfg = Release|x64
 		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Release|x64.Build.0 = Release|x64
-		{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}.Analyze|x64.ActiveCfg = Analyze|x64
-		{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}.Analyze|x64.Build.0 = Analyze|x64
-		{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}.Debug|x64.ActiveCfg = Debug|x64
-		{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}.Debug|x64.Build.0 = Debug|x64
-		{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}.Release|x64.ActiveCfg = Release|x64
-		{07DDB8CF-F926-44F4-A584-FF2997D2C9D0}.Release|x64.Build.0 = Release|x64
-		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Analyze|x64.ActiveCfg = Analyze|x64
-		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Analyze|x64.Build.0 = Analyze|x64
-		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Debug|x64.ActiveCfg = Debug|x64
-		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Debug|x64.Build.0 = Debug|x64
-		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Release|x64.ActiveCfg = Release|x64
-		{A30150A3-796C-4C6D-B3E4-B7BEB0021701}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
