@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
@@ -18,12 +17,15 @@ public static class ServerAccess
     public static void SaveConfiguration()
     {
         var path = Path.Join(Core.BaseDirectory, _serverAccessConfigurationPath);
-        JsonConfig.Serialize(path, ServerAccessConfiguration);
+
+        JsonConfig.Serialize(path, ServerAccessConfiguration ??= new ServerAccessConfiguration());
     }
 
     public static void AddProtectedAccount(Account acct, bool save = false)
     {
-        ServerAccessConfiguration.ProtectedAccounts.Add(acct.Username.ToLower());
+        var username = acct.Username.ToLower();
+        ServerAccessConfiguration.ProtectedAccounts.Add(username);
+        logger.Information("Protected account added: {0}", username);
 
         if (save)
         {
@@ -33,7 +35,9 @@ public static class ServerAccess
 
     public static void RemoveProtectedAccount(Account acct, bool save = false)
     {
-        ServerAccessConfiguration.ProtectedAccounts.Remove(acct.Username.ToLower());
+        var username = acct.Username.ToLower();
+        ServerAccessConfiguration.ProtectedAccounts.Remove(username);
+        logger.Information("Protected account removed: {0}", username);
 
         if (save)
         {
@@ -47,6 +51,7 @@ public static class ServerAccess
 
         if (!File.Exists(path))
         {
+            SaveConfiguration();
             return;
         }
 
@@ -89,5 +94,5 @@ public static class ServerAccess
 public record ServerAccessConfiguration
 {
     [JsonPropertyName("protectedAccounts")]
-    public HashSet<string> ProtectedAccounts { get; init; }
+    public HashSet<string> ProtectedAccounts { get; set; } = new();
 }
