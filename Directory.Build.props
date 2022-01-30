@@ -34,6 +34,7 @@
         <SelfContained>false</SelfContained>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <PredefinedCulturesOnly>true</PredefinedCulturesOnly>
     </PropertyGroup>
     <PropertyGroup Condition="'$(IsWindows)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
