@@ -10,6 +10,7 @@
         <PublishDir>..\..\Distribution</PublishDir>
         <OutDir>..\..\Distribution</OutDir>
         <Version>0.0.0</Version>
+        <InvariantGlobalization>false</InvariantGlobalization>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution files..." />
