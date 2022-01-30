@@ -77,7 +77,7 @@ namespace Server.Items
 
             if (Core.ML)
             {
-                worth = m_Worth.ToString("N0", CultureInfo.GetCultureInfo("en-US"));
+                worth = m_Worth.ToString("N0", CultureInfo.InvariantCulture);
             }
             else
             {

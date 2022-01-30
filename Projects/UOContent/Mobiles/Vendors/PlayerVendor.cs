@@ -37,7 +37,7 @@ namespace Server.Mobiles
         public int Price { get; }
 
         public string FormattedPrice =>
-            Core.ML ? Price.ToString("N0", CultureInfo.GetCultureInfo("en-US")) : Price.ToString();
+            Core.ML ? Price.ToString("N0", CultureInfo.InvariantCulture) : Price.ToString();
 
         public string Description
         {
