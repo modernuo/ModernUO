@@ -28,6 +28,7 @@
         <DefineConstants Condition="'$(SkipLocalsInitAttribute)'=='true'">NO_LOCAL_INIT</DefineConstants>
         <DefineConstants>MUO</DefineConstants>
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
+        <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
     </PropertyGroup>
     <PropertyGroup Condition="'$(RuntimeIdentifier)'==''">
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
