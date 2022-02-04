@@ -103,8 +103,9 @@ namespace Server.Items
             {
                 case 1: // Classic Houses
                     {
-                        // TODO: Add flag to use ClassicHouses or EJ
-                        m_From.SendGump(new HousePlacementListGump(m_From, HousePlacementEntry.HousesEJ));
+                        var entry = Core.EJ ? HousePlacementEntry.HousesEJ : HousePlacementEntry.ClassicHouses;
+                        m_From.SendGump(new HousePlacementListGump(m_From, entry));
+
                         break;
                     }
                 case 2: // 2-Story Customizable Houses
@@ -318,7 +319,7 @@ namespace Server.Items
         {
             m_Table = new Dictionary<Type, object>();
 
-            FillTable(ClassicHouses);
+            FillTable(Core.EJ ? HousesEJ : ClassicHouses);
             FillTable(TwoStoryFoundations);
             FillTable(ThreeStoryFoundations);
         }
