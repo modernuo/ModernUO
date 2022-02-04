@@ -103,10 +103,8 @@ namespace Server.Items
             {
                 case 1: // Classic Houses
                     {
-                        if (Core.EJ)
-                            m_From.SendGump(new HousePlacementListGump(m_From, HousePlacementEntry.ClassicHouses));
-                        else
-                            m_From.SendGump(new HousePlacementListGump(m_From, HousePlacementEntry.HousesEJ));
+                        var entry = Core.EJ ? HousePlacementEntry.HousesEJ : HousePlacementEntry.ClassicHouses;
+                        m_From.SendGump(new HousePlacementListGump(m_From, entry));
 
                         break;
                     }
