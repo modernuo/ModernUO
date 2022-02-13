@@ -35,7 +35,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Inscribe;
 
-        public override int GumpTitleNumber => 1044009;
+        public override TextDefinition GumpTitle => 1044009;
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefInscription();
 

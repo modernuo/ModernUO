@@ -279,7 +279,7 @@ namespace Server.Engines.Craft
             Skills.Add(craftSkill);
         }
 
-        public bool ConsumeAttributes(Mobile from, ref object message, bool consume)
+        public bool ConsumeAttributes(Mobile from, ref TextDefinition message, bool consume)
         {
             bool consumMana;
             bool consumHits;
@@ -393,7 +393,7 @@ namespace Server.Engines.Craft
             return inResourceTable;
         }
 
-        public bool Find(Mobile from, int[] itemIDs)
+        public static bool Find(Mobile from, int[] itemIDs)
         {
             var map = from.Map;
 
@@ -474,6 +474,7 @@ namespace Server.Engines.Craft
                 throw new ArgumentOutOfRangeException(nameof(types));
             }
 
+            // TODO: Optimize allocation
             var items = new Item[types.Length][];
             var totals = new int[types.Length];
 
@@ -576,13 +577,13 @@ namespace Server.Engines.Craft
 
         public bool ConsumeRes(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
-            ConsumeType consumeType, ref object message
+            ConsumeType consumeType, ref TextDefinition message
         ) =>
             ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false);
 
         public bool ConsumeRes(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
-            ConsumeType consumeType, ref object message, bool isFailure
+            ConsumeType consumeType, ref TextDefinition message, bool isFailure
         )
         {
             var ourPack = from.Backpack;
@@ -662,13 +663,13 @@ namespace Server.Engines.Craft
                         {
                             res = Resources[i];
 
-                            if (res.MessageNumber > 0)
+                            if (res.Message.Number > 0)
                             {
-                                message = res.MessageNumber;
+                                message = res.Message.Number;
                             }
-                            else if (!string.IsNullOrEmpty(res.MessageString))
+                            else if (!string.IsNullOrEmpty(res.Message.String))
                             {
-                                message = res.MessageString;
+                                message = res.Message.String;
                             }
                             else
                             {
@@ -720,10 +721,12 @@ namespace Server.Engines.Craft
             {
                 index = -1;
 
+                var isQuantityType = IsQuantityType(types);
+
                 // TODO: Optimize this
                 for (var i = 0; i < types.Length; i++)
                 {
-                    var quantity = IsQuantityType(types)
+                    var quantity = isQuantityType
                         ? GetQuantity(ourPack, types[i])
                         : ourPack.GetBestGroupAmount(types[i], true, CheckHueGrouping);
 
@@ -772,13 +775,13 @@ namespace Server.Engines.Craft
 
             res = Resources[index];
 
-            if (res.MessageNumber > 0)
+            if (res.Message.Number > 0)
             {
-                message = res.MessageNumber;
+                message = res.Message.Number;
             }
-            else if (!string.IsNullOrEmpty(res.MessageString))
+            else if (!string.IsNullOrEmpty(res.Message.String))
             {
-                message = res.MessageString;
+                message = res.Message.String;
             }
             else
             {
@@ -975,7 +978,7 @@ namespace Server.Engines.Craft
 
             var resHue = 0;
             var maxAmount = 0;
-            object message = null;
+            TextDefinition message = null;
 
             if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message))
             {
@@ -1036,7 +1039,7 @@ namespace Server.Engines.Craft
             }
 
             int checkResHue = 0, checkMaxAmount = 0;
-            object checkMessage = null;
+            TextDefinition checkMessage = null;
 
             // Not enough resource to craft it
             if (!(ConsumeRes(
@@ -1054,13 +1057,13 @@ namespace Server.Engines.Craft
                 {
                     from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
                 }
-                else if (checkMessage is int messageInt && messageInt > 0)
+                else if (checkMessage.Number > 0)
                 {
-                    from.SendLocalizedMessage(messageInt);
+                    from.SendLocalizedMessage(checkMessage.Number);
                 }
                 else
                 {
-                    from.SendMessage(checkMessage.ToString());
+                    from.SendMessage(checkMessage.String);
                 }
 
                 return;
@@ -1072,7 +1075,7 @@ namespace Server.Engines.Craft
             var endquality = 1;
             var resHue = 0;
             var maxAmount = 0;
-            object message = null;
+            TextDefinition message = null;
             var num = 0;
 
             if (CheckSkills(from, typeRes, craftSystem, ref ignored, out var allRequiredSkills))
@@ -1085,13 +1088,13 @@ namespace Server.Engines.Craft
                     {
                         from.SendGump(new CraftGump(from, craftSystem, tool, message));
                     }
-                    else if (message is int messageIn && messageIn > 0)
+                    else if (message.Number > 0)
                     {
-                        from.SendLocalizedMessage(messageIn);
+                        from.SendLocalizedMessage(message.Number);
                     }
                     else
                     {
-                        from.SendMessage(message.ToString());
+                        from.SendMessage(message.String);
                     }
 
                     return;
@@ -1265,13 +1268,13 @@ namespace Server.Engines.Craft
                 {
                     from.SendGump(new CraftGump(from, craftSystem, tool, message));
                 }
-                else if (message is int messageInt && messageInt > 0)
+                else if (message.Number > 0)
                 {
-                    from.SendLocalizedMessage(messageInt);
+                    from.SendLocalizedMessage(message.Number);
                 }
                 else
                 {
-                    from.SendMessage(message.ToString());
+                    from.SendMessage(message.String);
                 }
 
                 return;

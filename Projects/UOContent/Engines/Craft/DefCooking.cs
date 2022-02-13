@@ -13,7 +13,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Cooking;
 
-        public override int GumpTitleNumber => 1044003;
+        public override TextDefinition GumpTitle => 1044003;
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefCooking();
 
