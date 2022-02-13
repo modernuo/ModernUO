@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Drawing;
+
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
@@ -788,7 +790,28 @@ namespace Server
 
         public virtual void Serialize(IGenericWriter writer)
         {
-            writer.Write(9); // version
+            writer.Write(14); // version
+
+            // 14
+            writer.Write(Sockets != null ? Sockets.Count : 0);
+
+            if (Sockets != null)
+            {
+                foreach (var socket in Sockets)
+                {
+                    ItemSocket.Save(socket, writer);
+                }
+            }
+
+            // 13: Merge sync
+            // 12: Light no longer backed by Direction
+
+            // 11
+            //writer.Write(m_GridLocation);
+
+            // 10: Honesty moved to ItemSockets
+
+            // 9
 
             var flags = SaveFlag.None;
 
@@ -1995,6 +2018,17 @@ namespace Server
             list.Add(1062203, "{0}", m.Name); // Blessed for ~1_NAME~
         }
 
+        public virtual void AddItemSocketProperties(ObjectPropertyList list)
+        {
+            if (Sockets != null)
+            {
+                foreach (var socket in Sockets)
+                {
+                    socket.GetProperties(list);
+                }
+            }
+        }
+
         /// <summary>
         ///     Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="ObjectPropertyList" />.
         ///     Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
@@ -2326,6 +2360,64 @@ namespace Server
             return false;
         }
 
+        public virtual bool WillStack(Mobile from, Item item)
+        {
+            if (item == this || item.GetType() != GetType())
+            {
+                return false;
+            }
+
+            if (!item.Stackable || !Stackable)
+            {
+                return false;
+            }
+
+            if (item.Nontransferable || Nontransferable)
+            {
+                return false;
+            }
+
+            /*if ((!item.StackIgnoreItemID || !StackIgnoreItemID) && item.ItemID != ItemID)
+            {
+                return false;
+            }
+
+            if ((!item.StackIgnoreHue || !StackIgnoreHue) && item.Hue != Hue)
+            {
+                return false;
+            }
+
+            if ((!item.StackIgnoreName || !StackIgnoreName) && item.Name != Name)
+            {
+                return false;
+            }*/
+
+            if (item.Amount + Amount > 60000)
+            {
+                return false;
+            }
+
+            if (Sockets == null && item.Sockets != null || Sockets != null && item.Sockets == null)
+            {
+                return false;
+            }
+
+            if (Sockets != null && item.Sockets != null)
+            {
+                if (Sockets.Any(s => !item.HasSocket(s.GetType())))
+                {
+                    return false;
+                }
+
+                if (item.Sockets.Any(s => !HasSocket(s.GetType())))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public virtual bool OnDragDrop(Mobile from, Item dropped)
         {
             var success = Parent is Container container && container.OnStackAttempt(from, this, dropped) ||
@@ -2586,6 +2678,35 @@ namespace Server
 
             switch (version)
             {
+                case 14:
+                    var socketCount = reader.ReadInt();
+
+                    for (var i = 0; i < socketCount; i++)
+                    {
+                        ItemSocket.Load(this, reader);
+                    }
+
+                    goto case 13;
+                case 13:
+                case 12:
+                case 11:
+                    //m_GridLocation = reader.ReadByte();
+                    goto case 10;
+                case 10:
+                    {
+                        // Honesty removed to ItemSockets
+                        if (version < 14)
+                        {
+                            reader.ReadDateTime();
+                            reader.ReadBool();
+                            reader.ReadMobile();
+                            reader.ReadString();
+
+                            HonestyItem = reader.ReadBool();
+                        }
+
+                        goto case 9;
+                    }
                 case 9:
                 case 8:
                 case 7:
@@ -3375,6 +3496,15 @@ namespace Server
 
         public virtual void OnAfterDelete()
         {
+            if (Sockets != null)
+            {
+                Sockets.IterateReverse(socket =>
+                {
+                    socket.Remove();
+                });
+            }
+
+            Timer.DelayCall(EventSink.InvokeItemDeleted, new ItemDeletedEventArgs(this));
         }
 
         public virtual void RemoveItem(Item item)
@@ -3401,6 +3531,13 @@ namespace Server
 
         public virtual void OnAfterDuped(Item newItem)
         {
+            if (Sockets != null)
+            {
+                for (var i = 0; i < Sockets.Count; i++)
+                {
+                    Sockets[i].OnOwnerDuped(newItem);
+                }
+            }
         }
 
         public virtual bool OnDragLift(Mobile from) => true;
@@ -4364,6 +4501,316 @@ namespace Server
             IntWeight = 0x01000000,
             SavedFlags = 0x02000000,
             NullWeight = 0x04000000
+        }
+
+        #region Item Sockets
+        public List<ItemSocket> Sockets { get; private set; }
+
+        public void AttachSocket(ItemSocket socket)
+        {
+            if (Sockets == null)
+            {
+                Sockets = new List<ItemSocket>();
+            }
+
+            Sockets.Add(socket);
+            socket.Owner = this;
+
+            InvalidateProperties();
+        }
+
+        public bool RemoveSocket<T>()
+        {
+            var socket = GetSocket(typeof(T));
+
+            if (socket != null)
+            {
+                RemoveItemSocket(socket);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void RemoveItemSocket(ItemSocket socket)
+        {
+            if (Sockets == null)
+            {
+                return;
+            }
+
+            Sockets.Remove(socket);
+            socket.OnRemoved();
+
+            if (Sockets.Count == 0)
+            {
+                Sockets = null;
+            }
+
+            InvalidateProperties();
+        }
+
+        public T GetSocket<T>() where T : ItemSocket
+        {
+            if (Sockets == null)
+            {
+                return null;
+            }
+
+            return Sockets.FirstOrDefault(s => s.GetType() == typeof(T)) as T;
+        }
+
+        public T GetSocket<T>(Func<T, bool> predicate) where T : ItemSocket
+        {
+            if (Sockets == null)
+            {
+                return null;
+            }
+
+            return Sockets.FirstOrDefault(s => s.GetType() == typeof(T) && (predicate == null || predicate(s as T))) as T;
+        }
+
+        public ItemSocket GetSocket(Type type)
+        {
+            if (Sockets == null)
+            {
+                return null;
+            }
+
+            return Sockets.FirstOrDefault(s => s.GetType() == type);
+        }
+
+        public bool HasSocket<T>()
+        {
+            if (Sockets == null)
+            {
+                return false;
+            }
+
+            return Sockets.Any(s => s.GetType() == typeof(T));
+        }
+
+        public bool HasSocket(Type t)
+        {
+            if (Sockets == null)
+            {
+                return false;
+            }
+
+            return Sockets.Any(s => s.GetType() == t);
+        }
+        #endregion
+    }
+
+    [PropertyObject]
+    public class ItemSocket
+    {
+        private DateTime _Expires;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Item Owner { get; set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime Expires { get => _Expires; set { _Expires = value; CheckTimer(); } }
+
+        public virtual TimeSpan TickDuration => TimeSpan.FromMinutes(1);
+
+        public ItemSocket()
+            : this(TimeSpan.Zero)
+        {
+        }
+
+        public ItemSocket(TimeSpan duration)
+        {
+            if (duration != TimeSpan.Zero)
+            {
+                Expires = DateTime.UtcNow + duration;
+            }
+        }
+
+        public override string ToString()
+        {
+            return "...";
+        }
+
+        public void CheckTimer()
+        {
+            if (Expires != DateTime.MinValue)
+            {
+                if (!SocketTimer.HasTimer(this))
+                {
+                    SocketTimer.RegisterTimer(this);
+                }
+            }
+            else if (SocketTimer.HasTimer(this))
+            {
+                SocketTimer.RemoveTimer(this);
+            }
+        }
+
+        protected void BeginTimer()
+        {
+            SocketTimer.RegisterTimer(this);
+        }
+
+        protected void EndTimer()
+        {
+            SocketTimer.RemoveTimer(this);
+        }
+
+        protected virtual void OnTick()
+        {
+            if (Expires < DateTime.UtcNow || Owner.Deleted)
+            {
+                Remove();
+            }
+        }
+
+        public virtual void Remove()
+        {
+            SocketTimer.RemoveTimer(this);
+            Owner.RemoveItemSocket(this);
+        }
+
+        public virtual void OnRemoved()
+        {
+        }
+
+        public virtual void GetProperties(ObjectPropertyList list)
+        {
+        }
+
+        public virtual void OnOwnerDuped(Item newItem)
+        {
+            ItemSocket newSocket = null;
+
+            try
+            {
+                newSocket = Activator.CreateInstance(GetType()) as ItemSocket;
+            }
+            catch (Exception e)
+            {
+                //Diagnostics.ExceptionLogging.LogException(e);
+            }
+
+            if (newSocket != null)
+            {
+                newSocket.Expires = Expires;
+
+                if (newSocket.Expires != DateTime.MinValue)
+                {
+                    SocketTimer.RegisterTimer(this);
+                }
+
+                newSocket.OnAfterDuped(this);
+                newItem.AttachSocket(newSocket);
+            }
+        }
+
+        public virtual void OnAfterDuped(ItemSocket oldSocket)
+        {
+        }
+
+        public virtual void Serialize(IGenericWriter writer)
+        {
+            writer.Write(0);
+
+            writer.Write(Expires);
+        }
+
+        public virtual void Deserialize(Item owner, IGenericReader reader)
+        {
+            reader.ReadInt(); // version
+
+            owner.AttachSocket(this);
+            Expires = reader.ReadDateTime();
+        }
+
+        public static void Save(ItemSocket socket, IGenericWriter writer)
+        {
+            writer.Write(socket.GetType().Name);
+            socket.Serialize(writer);
+        }
+
+        public static void Load(Item item, IGenericReader reader)
+        {
+            var typeName = ScriptCompiler.FindTypeByName(reader.ReadString());
+            var socket = Activator.CreateInstance(typeName) as ItemSocket;
+
+            socket.Deserialize(item, reader);
+        }
+
+        private class SocketTimer : Timer
+        {
+            public static SocketTimer Instance { get; private set; }
+            public Dictionary<ItemSocket, DateTime> TimerRegistry { get; set; } = new Dictionary<ItemSocket, DateTime>();
+
+            public SocketTimer() : base(TimeSpan.FromMilliseconds(250), TimeSpan.FromMilliseconds(250))
+            {
+                Instance = this;
+                Start();
+
+                //Priority = TimerPriority.FiftyMS;
+            }
+
+            public static bool HasTimer(ItemSocket socket)
+            {
+                return Instance != null && Instance.TimerRegistry.ContainsKey(socket);
+            }
+
+            public static void RegisterTimer(ItemSocket socket)
+            {
+                var timer = Instance;
+
+                if (timer == null)
+                {
+                    timer = new SocketTimer();
+                }
+
+                timer.TimerRegistry[socket] = DateTime.UtcNow + socket.TickDuration;
+            }
+
+            public static void RemoveTimer(ItemSocket socket)
+            {
+                var timer = Instance;
+
+                if (timer != null)
+                {
+                    if (timer.TimerRegistry.ContainsKey(socket))
+                    {
+                        timer.TimerRegistry.Remove(socket);
+                    }
+
+                    if (timer.TimerRegistry.Count == 0)
+                    {
+                        timer.Stop();
+                        Instance = null;
+                    }
+                }
+            }
+
+            protected override void OnTick()
+            {
+                var list = new List<ItemSocket>();
+
+                foreach (var socket in TimerRegistry.Keys.Where(s => TimerRegistry[s] < DateTime.UtcNow))
+                {
+                    list.Add(socket);
+                }
+
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var socket = list[i];
+                    socket.OnTick();
+
+                    if (TimerRegistry.ContainsKey(socket))
+                    {
+                        TimerRegistry[socket] = DateTime.UtcNow + socket.TickDuration;
+                    }
+                }
+
+                ColUtility.Free(list);
+            }
         }
     }
 }
