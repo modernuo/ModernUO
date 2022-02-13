@@ -22,7 +22,7 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [Serializable(6, false)]
+    [Serializable(7, false)]
     public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, "private", "private")]
@@ -93,7 +93,7 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializableField(8)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private Mobile _crafter;
+        private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeCrafter() => _crafter != null;
@@ -193,7 +193,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = from;
+                Crafter = from.RawName;
             }
 
             if (DefaultResource != CraftResource.None)
@@ -699,7 +699,7 @@ namespace Server.Items
 
             if (_crafter != null)
             {
-                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter); // crafted by ~1_NAME~
             }
 
             if (_factionState != null)
@@ -907,7 +907,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -1017,7 +1017,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, OldSaveFlag.Crafter))
             {
-                _crafter = reader.ReadEntity<Mobile>();
+                _crafter = reader.ReadEntity<Mobile>()?.RawName;
             }
 
             if (GetSaveFlag(flags, OldSaveFlag.Quality))

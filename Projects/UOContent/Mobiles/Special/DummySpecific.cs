@@ -42,21 +42,21 @@ namespace Server.Mobiles
             var cht = new ChainChest();
             cht.Movable = false;
             cht.LootType = LootType.Newbied;
-            cht.Crafter = this;
+            cht.Crafter = RawName;
             cht.Quality = ArmorQuality.Regular;
             AddItem(cht);
 
             var chl = new ChainLegs();
             chl.Movable = false;
             chl.LootType = LootType.Newbied;
-            chl.Crafter = this;
+            chl.Crafter = RawName;
             chl.Quality = ArmorQuality.Regular;
             AddItem(chl);
 
             var pla = new PlateArms();
             pla.Movable = false;
             pla.LootType = LootType.Newbied;
-            pla.Crafter = this;
+            pla.Crafter = RawName;
             pla.Quality = ArmorQuality.Regular;
             AddItem(pla);
 
@@ -116,21 +116,21 @@ namespace Server.Mobiles
             var cht = new ChainChest();
             cht.Movable = false;
             cht.LootType = LootType.Newbied;
-            cht.Crafter = this;
+            cht.Crafter = RawName;
             cht.Quality = ArmorQuality.Regular;
             AddItem(cht);
 
             var chl = new ChainLegs();
             chl.Movable = false;
             chl.LootType = LootType.Newbied;
-            chl.Crafter = this;
+            chl.Crafter = RawName;
             chl.Quality = ArmorQuality.Regular;
             AddItem(chl);
 
             var pla = new PlateArms();
             pla.Movable = false;
             pla.LootType = LootType.Newbied;
-            pla.Crafter = this;
+            pla.Crafter = RawName;
             pla.Quality = ArmorQuality.Regular;
             AddItem(pla);
 
@@ -190,21 +190,21 @@ namespace Server.Mobiles
             var cht = new ChainChest();
             cht.Movable = false;
             cht.LootType = LootType.Newbied;
-            cht.Crafter = this;
+            cht.Crafter = RawName;
             cht.Quality = ArmorQuality.Regular;
             AddItem(cht);
 
             var chl = new ChainLegs();
             chl.Movable = false;
             chl.LootType = LootType.Newbied;
-            chl.Crafter = this;
+            chl.Crafter = RawName;
             chl.Quality = ArmorQuality.Regular;
             AddItem(chl);
 
             var pla = new PlateArms();
             pla.Movable = false;
             pla.LootType = LootType.Newbied;
-            pla.Crafter = this;
+            pla.Crafter = RawName;
             pla.Quality = ArmorQuality.Regular;
             AddItem(pla);
 
@@ -328,28 +328,28 @@ namespace Server.Mobiles
             var lea = new LeatherArms();
             lea.Movable = false;
             lea.LootType = LootType.Newbied;
-            lea.Crafter = this;
+            lea.Crafter = RawName;
             lea.Quality = ArmorQuality.Regular;
             AddItem(lea);
 
             var lec = new LeatherChest();
             lec.Movable = false;
             lec.LootType = LootType.Newbied;
-            lec.Crafter = this;
+            lec.Crafter = RawName;
             lec.Quality = ArmorQuality.Regular;
             AddItem(lec);
 
             var leg = new LeatherGorget();
             leg.Movable = false;
             leg.LootType = LootType.Newbied;
-            leg.Crafter = this;
+            leg.Crafter = RawName;
             leg.Quality = ArmorQuality.Regular;
             AddItem(leg);
 
             var lel = new LeatherLegs();
             lel.Movable = false;
             lel.LootType = LootType.Newbied;
-            lel.Crafter = this;
+            lel.Crafter = RawName;
             lel.Quality = ArmorQuality.Regular;
             AddItem(lel);
 
@@ -419,28 +419,28 @@ namespace Server.Mobiles
             var lea = new LeatherArms();
             lea.Movable = false;
             lea.LootType = LootType.Newbied;
-            lea.Crafter = this;
+            lea.Crafter = RawName;
             lea.Quality = ArmorQuality.Regular;
             AddItem(lea);
 
             var lec = new LeatherChest();
             lec.Movable = false;
             lec.LootType = LootType.Newbied;
-            lec.Crafter = this;
+            lec.Crafter = RawName;
             lec.Quality = ArmorQuality.Regular;
             AddItem(lec);
 
             var leg = new LeatherGorget();
             leg.Movable = false;
             leg.LootType = LootType.Newbied;
-            leg.Crafter = this;
+            leg.Crafter = RawName;
             leg.Quality = ArmorQuality.Regular;
             AddItem(leg);
 
             var lel = new LeatherLegs();
             lel.Movable = false;
             lel.LootType = LootType.Newbied;
-            lel.Crafter = this;
+            lel.Crafter = RawName;
             lel.Quality = ArmorQuality.Regular;
             AddItem(lel);
 
@@ -514,28 +514,28 @@ namespace Server.Mobiles
             var lea = new LeatherArms();
             lea.Movable = false;
             lea.LootType = LootType.Newbied;
-            lea.Crafter = this;
+            lea.Crafter = RawName;
             lea.Quality = ArmorQuality.Regular;
             AddItem(lea);
 
             var lec = new LeatherChest();
             lec.Movable = false;
             lec.LootType = LootType.Newbied;
-            lec.Crafter = this;
+            lec.Crafter = RawName;
             lec.Quality = ArmorQuality.Regular;
             AddItem(lec);
 
             var leg = new LeatherGorget();
             leg.Movable = false;
             leg.LootType = LootType.Newbied;
-            leg.Crafter = this;
+            leg.Crafter = RawName;
             leg.Quality = ArmorQuality.Regular;
             AddItem(leg);
 
             var lel = new LeatherLegs();
             lel.Movable = false;
             lel.LootType = LootType.Newbied;
-            lel.Crafter = this;
+            lel.Crafter = RawName;
             lel.Quality = ArmorQuality.Regular;
             AddItem(lel);
 
@@ -611,28 +611,28 @@ namespace Server.Mobiles
             var lea = new LeatherArms();
             lea.Movable = false;
             lea.LootType = LootType.Newbied;
-            lea.Crafter = this;
+            lea.Crafter = RawName;
             lea.Quality = ArmorQuality.Regular;
             AddItem(lea);
 
             var lec = new LeatherChest();
             lec.Movable = false;
             lec.LootType = LootType.Newbied;
-            lec.Crafter = this;
+            lec.Crafter = RawName;
             lec.Quality = ArmorQuality.Regular;
             AddItem(lec);
 
             var leg = new LeatherGorget();
             leg.Movable = false;
             leg.LootType = LootType.Newbied;
-            leg.Crafter = this;
+            leg.Crafter = RawName;
             leg.Quality = ArmorQuality.Regular;
             AddItem(leg);
 
             var lel = new LeatherLegs();
             lel.Movable = false;
             lel.LootType = LootType.Newbied;
-            lel.Crafter = this;
+            lel.Crafter = RawName;
             lel.Quality = ArmorQuality.Regular;
             AddItem(lel);
 
@@ -719,28 +719,28 @@ namespace Server.Mobiles
             var lea = new LeatherArms();
             lea.Movable = false;
             lea.LootType = LootType.Newbied;
-            lea.Crafter = this;
+            lea.Crafter = RawName;
             lea.Quality = ArmorQuality.Regular;
             AddItem(lea);
 
             var lec = new LeatherChest();
             lec.Movable = false;
             lec.LootType = LootType.Newbied;
-            lec.Crafter = this;
+            lec.Crafter = RawName;
             lec.Quality = ArmorQuality.Regular;
             AddItem(lec);
 
             var leg = new LeatherGorget();
             leg.Movable = false;
             leg.LootType = LootType.Newbied;
-            leg.Crafter = this;
+            leg.Crafter = RawName;
             leg.Quality = ArmorQuality.Regular;
             AddItem(leg);
 
             var lel = new LeatherLegs();
             lel.Movable = false;
             lel.LootType = LootType.Newbied;
-            lel.Crafter = this;
+            lel.Crafter = RawName;
             lel.Quality = ArmorQuality.Regular;
             AddItem(lel);
 

@@ -10,7 +10,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [Serializable(8, false)]
+    [Serializable(9, false)]
     public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, setter: "private")]
@@ -99,7 +99,7 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializableField(10)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private Mobile _crafter;
+        private string _crafter;
 
         [SerializableFieldSaveFlag(10)]
         private bool ShouldSerializeCrafter() => _crafter != null;
@@ -572,7 +572,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = from;
+                Crafter = from.RawName;
             }
 
             var resourceType = typeRes ?? craftItem.Resources[0].ItemType;
@@ -1133,7 +1133,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, OldSaveFlag.Crafter))
             {
-                _crafter = reader.ReadEntity<Mobile>();
+                _crafter = reader.ReadEntity<Mobile>()?.RawName;
             }
 
             if (GetSaveFlag(flags, OldSaveFlag.Quality))
@@ -1431,7 +1431,7 @@ namespace Server.Items
 
             if (_crafter != null)
             {
-                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter); // crafted by ~1_NAME~
             }
 
             if (m_FactionState != null)
@@ -1672,7 +1672,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
         [Flags]

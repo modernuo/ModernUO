@@ -126,12 +126,12 @@ namespace Server.Items
                         if (clothing != null)
                         {
                             clothing.Quality = ClothingQuality.Regular;
-                            clothing.Crafter = from;
+                            clothing.Crafter = from.RawName;
                         }
                         else if (armor != null)
                         {
                             armor.Quality = ArmorQuality.Regular;
-                            armor.Crafter = from;
+                            armor.Crafter = from.RawName;
                             armor.PhysicalBonus =
                                 armor.FireBonus =
                                     armor.ColdBonus =
