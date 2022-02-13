@@ -38,7 +38,7 @@ dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 
-echo Generating serialization schemas
+echo Generating serialization migration schema...
 dotnet tool run ModernUOSchemaGenerator ModernUO.sln
 
 exit $?
@@ -72,5 +72,5 @@ dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 
-echo Generating serialization schemas
+echo Generating serialization migration schema...
 dotnet tool run ModernUOSchemaGenerator ModernUO.sln
