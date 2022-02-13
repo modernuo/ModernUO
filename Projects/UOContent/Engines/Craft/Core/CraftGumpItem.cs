@@ -58,13 +58,13 @@ namespace Server.Engines.Craft
             AddHtmlLocalized(10, 277, 150, 22, 1044055, LabelColor); // <CENTER>MATERIALS</CENTER>
             AddHtmlLocalized(10, 362, 150, 22, 1044056, LabelColor); // <CENTER>OTHER</CENTER>
 
-            if (craftSystem.GumpTitleNumber > 0)
+            if (craftSystem.GumpTitle.Number > 0)
             {
-                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
+                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitle.Number, LabelColor);
             }
             else
             {
-                AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
+                AddHtml(10, 12, 510, 20, craftSystem.GumpTitle.String);
             }
 
             AddButton(15, 387, 4014, 4016, 0);

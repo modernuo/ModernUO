@@ -48,13 +48,13 @@ namespace Server.Engines.Craft
             AddImageTiled(215, 37, 305, 250, 2624);
             AddAlphaRegion(10, 10, 510, 417);
 
-            if (craftSystem.GumpTitleNumber > 0)
+            if (craftSystem.GumpTitle.Number > 0)
             {
-                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
+                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitle.Number, LabelColor);
             }
             else
             {
-                AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
+                AddHtml(10, 12, 510, 20, craftSystem.GumpTitle.String);
             }
 
             AddHtmlLocalized(10, 37, 200, 22, 1044010, LabelColor);  // <CENTER>CATEGORIES</CENTER>
