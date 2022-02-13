@@ -434,7 +434,7 @@ namespace Server.Items
                     40,
                     380,
                     60,
-                    @"Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here"
+                    "Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here"
                 );
 
                 AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL
