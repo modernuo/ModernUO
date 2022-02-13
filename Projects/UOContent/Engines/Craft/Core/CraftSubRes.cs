@@ -17,8 +17,7 @@ namespace Server.Engines.Craft
         public CraftSubRes(Type type, TextDefinition name, double reqSkill, int genericNameNumber, TextDefinition message)
         {
             ItemType = type;
-            NameNumber = name;
-            NameString = name;
+            Name = name;
             RequiredSkill = reqSkill;
             GenericNameNumber = genericNameNumber;
             Message = message;
@@ -26,9 +25,7 @@ namespace Server.Engines.Craft
 
         public Type ItemType { get; }
 
-        public string NameString { get; }
-
-        public int NameNumber { get; }
+        public TextDefinition Name { get; }
 
         public int GenericNameNumber { get; }
 

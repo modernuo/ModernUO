@@ -118,8 +118,8 @@ namespace Server.Engines.Craft
             // If the system has more than one resource
             if (craftSystem.CraftSubRes.Init)
             {
-                var nameString = craftSystem.CraftSubRes.NameString;
-                var nameNumber = craftSystem.CraftSubRes.NameNumber;
+                var nameString = craftSystem.CraftSubRes.Name.String;
+                var nameNumber = craftSystem.CraftSubRes.Name.Number;
 
                 var resIndex = context?.LastResourceIndex ?? -1;
 
@@ -129,8 +129,8 @@ namespace Server.Engines.Craft
                 {
                     var subResource = craftSystem.CraftSubRes.GetAt(resIndex);
 
-                    nameString = subResource.NameString;
-                    nameNumber = subResource.NameNumber;
+                    nameString = subResource.Name.String;
+                    nameNumber = subResource.Name.Number;
                     resourceType = subResource.ItemType;
                 }
 
@@ -162,8 +162,8 @@ namespace Server.Engines.Craft
             // For dragon scales
             if (craftSystem.CraftSubRes2.Init)
             {
-                var nameString = craftSystem.CraftSubRes2.NameString;
-                var nameNumber = craftSystem.CraftSubRes2.NameNumber;
+                var nameString = craftSystem.CraftSubRes2.Name.String;
+                var nameNumber = craftSystem.CraftSubRes2.Name.Number;
 
                 var resIndex = context?.LastResourceIndex2 ?? -1;
 
@@ -173,8 +173,8 @@ namespace Server.Engines.Craft
                 {
                     var subResource = craftSystem.CraftSubRes2.GetAt(resIndex);
 
-                    nameString = subResource.NameString;
-                    nameNumber = subResource.NameNumber;
+                    nameString = subResource.Name.String;
+                    nameNumber = subResource.Name.Number;
                     resourceType = subResource.ItemType;
                 }
 
@@ -270,21 +270,21 @@ namespace Server.Engines.Craft
 
                 AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(5, i));
 
-                if (subResource.NameNumber > 0)
+                if (subResource.Name.Number > 0)
                 {
                     AddHtmlLocalized(
                         255,
                         63 + index * 20,
                         250,
                         18,
-                        subResource.NameNumber,
+                        subResource.Name.Number,
                         resourceCount.ToString(),
                         LabelColor
                     );
                 }
                 else
                 {
-                    AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.NameString} ({resourceCount})");
+                    AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.Name.String} ({resourceCount})");
                 }
             }
         }

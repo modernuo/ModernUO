@@ -663,13 +663,13 @@ namespace Server.Engines.Craft
                         {
                             res = Resources[i];
 
-                            if (res.MessageNumber > 0)
+                            if (res.Message.Number > 0)
                             {
-                                message = res.MessageNumber;
+                                message = res.Message.Number;
                             }
-                            else if (!string.IsNullOrEmpty(res.MessageString))
+                            else if (!string.IsNullOrEmpty(res.Message.String))
                             {
-                                message = res.MessageString;
+                                message = res.Message.String;
                             }
                             else
                             {
@@ -775,13 +775,13 @@ namespace Server.Engines.Craft
 
             res = Resources[index];
 
-            if (res.MessageNumber > 0)
+            if (res.Message.Number > 0)
             {
-                message = res.MessageNumber;
+                message = res.Message.Number;
             }
-            else if (!string.IsNullOrEmpty(res.MessageString))
+            else if (!string.IsNullOrEmpty(res.Message.String))
             {
-                message = res.MessageString;
+                message = res.Message.String;
             }
             else
             {
