@@ -97,10 +97,6 @@ public partial class BaseArmor
         {
             _quality = (ArmorQuality)reader.ReadEncodedInt();
         }
-        else
-        {
-            _quality = ArmorQuality.Regular;
-        }
 
         if (GetSaveFlag(flags, OldSaveFlag.Durability))
         {
