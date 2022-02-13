@@ -9,7 +9,7 @@ namespace Server.Gumps
         private readonly WarningGumpCallback m_Callback;
 
         public WarningGump(
-            int header, int headerColor, object content, int contentColor, int width, int height,
+            int header, int headerColor, TextDefinition content, int contentColor, int width, int height,
             WarningGumpCallback callback = null, bool cancelButton = true
         ) : base((640 - width) / 2, (480 - height) / 2)
         {
@@ -28,18 +28,18 @@ namespace Server.Gumps
             AddImageTiled(10, 40, width - 20, height - 80, 2624);
             AddAlphaRegion(10, 40, width - 20, height - 80);
 
-            if (content is int i)
+            if (content.Number > 0)
             {
-                AddHtmlLocalized(10, 40, width - 20, height - 80, i, contentColor, false, true);
+                AddHtmlLocalized(10, 40, width - 20, height - 80, content.Number, contentColor, false, true);
             }
-            else if (content is string)
+            else
             {
                 AddHtml(
                     10,
                     40,
                     width - 20,
                     height - 80,
-                    $"<BASEFONT COLOR=#{contentColor:X6}>{content}</BASEFONT>",
+                    $"<BASEFONT COLOR=#{contentColor:X6}>{content.String}</BASEFONT>",
                     false,
                     true
                 );
@@ -71,7 +71,7 @@ namespace Server.Gumps
             }
             else
             {
-                m_Callback.Invoke(false);
+                m_Callback(false);
             }
         }
     }

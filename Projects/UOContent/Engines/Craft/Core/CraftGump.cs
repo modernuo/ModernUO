@@ -24,7 +24,7 @@ namespace Server.Engines.Craft
         private readonly BaseTool m_Tool;
 
         public CraftGump(
-            Mobile from, CraftSystem craftSystem, BaseTool tool, object notice, CraftPage page = CraftPage.None
+            Mobile from, CraftSystem craftSystem, BaseTool tool, TextDefinition notice, CraftPage page = CraftPage.None
         ) : base(40, 40)
         {
             m_From = from;
@@ -106,13 +106,13 @@ namespace Server.Engines.Craft
             }
             // ****************************************
 
-            if (notice is int noticeInt && noticeInt > 0)
+            if (notice.Number > 0)
             {
-                AddHtmlLocalized(170, 295, 350, 40, noticeInt, LabelColor);
+                AddHtmlLocalized(170, 295, 350, 40, notice.Number, LabelColor);
             }
-            else if (notice is string)
+            else
             {
-                AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice}</BASEFONT>");
+                AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice.String}</BASEFONT>");
             }
 
             // If the system has more than one resource
