@@ -347,9 +347,12 @@ namespace Server.Items
 
                         TitleNumber = reader.ReadEncodedInt();
 
-                        var number = reader.ReadEncodedInt();
-                        var message = reader.ReadString();
-                        Message = number > 0 ? number : message;
+                        if (version == 0)
+                        {
+                            var number = reader.ReadEncodedInt();
+                            var message = reader.ReadString();
+                            Message = number > 0 ? number : message;
+                        }
 
                         break;
                     }
