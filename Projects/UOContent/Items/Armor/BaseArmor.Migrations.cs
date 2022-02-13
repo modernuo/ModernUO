@@ -1,5 +1,4 @@
 using AMA = Server.Items.ArmorMeditationAllowance;
-using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items;
 
