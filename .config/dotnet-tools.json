@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "modernuoschemagenerator": {
+      "version": "1.0.2",
+      "commands": [
+        "ModernUOSchemaGenerator"
+      ]
+    }
+  }
+}
