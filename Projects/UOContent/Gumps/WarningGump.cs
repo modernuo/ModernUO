@@ -28,21 +28,24 @@ namespace Server.Gumps
             AddImageTiled(10, 40, width - 20, height - 80, 2624);
             AddAlphaRegion(10, 40, width - 20, height - 80);
 
-            if (content.Number > 0)
+            if (content != null)
             {
-                AddHtmlLocalized(10, 40, width - 20, height - 80, content.Number, contentColor, false, true);
-            }
-            else
-            {
-                AddHtml(
-                    10,
-                    40,
-                    width - 20,
-                    height - 80,
-                    $"<BASEFONT COLOR=#{contentColor:X6}>{content.String}</BASEFONT>",
-                    false,
-                    true
-                );
+                if (content.Number > 0)
+                {
+                    AddHtmlLocalized(10, 40, width - 20, height - 80, content.Number, contentColor, false, true);
+                }
+                else
+                {
+                    AddHtml(
+                        10,
+                        40,
+                        width - 20,
+                        height - 80,
+                        $"<BASEFONT COLOR=#{contentColor:X6}>{content.String}</BASEFONT>",
+                        false,
+                        true
+                    );
+                }
             }
 
             AddImageTiled(10, height - 30, width - 20, 20, 2624);
