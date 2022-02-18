@@ -25,13 +25,16 @@ namespace Server.Engines.Harvest
 
         public void SendSuccessTo(Mobile m)
         {
-            if (SuccessMessage.Number > 0)
+            if (SuccessMessage != null)
             {
-                m.SendLocalizedMessage(SuccessMessage.Number);
-            }
-            else
-            {
-                m.SendMessage(SuccessMessage.String);
+                if (SuccessMessage.Number > 0)
+                {
+                    m.SendLocalizedMessage(SuccessMessage.Number);
+                }
+                else
+                {
+                    m.SendMessage(SuccessMessage.String);
+                }
             }
         }
     }

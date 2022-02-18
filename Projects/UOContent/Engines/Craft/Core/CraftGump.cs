@@ -106,13 +106,16 @@ namespace Server.Engines.Craft
             }
             // ****************************************
 
-            if (notice.Number > 0)
+            if (notice != null)
             {
-                AddHtmlLocalized(170, 295, 350, 40, notice.Number, LabelColor);
-            }
-            else
-            {
-                AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice.String}</BASEFONT>");
+                if (notice.Number > 0)
+                {
+                    AddHtmlLocalized(170, 295, 350, 40, notice.Number, LabelColor);
+                }
+                else
+                {
+                    AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice.String}</BASEFONT>");
+                }
             }
 
             // If the system has more than one resource

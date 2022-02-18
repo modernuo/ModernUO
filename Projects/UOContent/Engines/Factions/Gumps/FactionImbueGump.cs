@@ -98,13 +98,16 @@ namespace Server.Factions
             {
                 m_Mobile.SendGump(new CraftGump(m_Mobile, m_CraftSystem, m_Tool, m_Notice));
             }
-            else if (m_Notice.Number > 0)
+            else if (m_Notice != null)
             {
-                m_Mobile.SendLocalizedMessage(m_Notice.Number);
-            }
-            else
-            {
-                m_Mobile.SendMessage(m_Notice.String);
+                if (m_Notice.Number > 0)
+                {
+                    m_Mobile.SendLocalizedMessage(m_Notice.Number);
+                }
+                else
+                {
+                    m_Mobile.SendMessage(m_Notice.String);
+                }
             }
         }
     }

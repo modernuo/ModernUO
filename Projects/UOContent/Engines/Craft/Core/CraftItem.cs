@@ -1088,13 +1088,16 @@ namespace Server.Engines.Craft
                     {
                         from.SendGump(new CraftGump(from, craftSystem, tool, message));
                     }
-                    else if (message.Number > 0)
+                    else if (message != null)
                     {
-                        from.SendLocalizedMessage(message.Number);
-                    }
-                    else
-                    {
-                        from.SendMessage(message.String);
+                        if (message.Number > 0)
+                        {
+                            from.SendLocalizedMessage(message.Number);
+                        }
+                        else
+                        {
+                            from.SendMessage(message.String);
+                        }
                     }
 
                     return;
@@ -1268,13 +1271,16 @@ namespace Server.Engines.Craft
                 {
                     from.SendGump(new CraftGump(from, craftSystem, tool, message));
                 }
-                else if (message.Number > 0)
+                else if (message != null)
                 {
-                    from.SendLocalizedMessage(message.Number);
-                }
-                else
-                {
-                    from.SendMessage(message.String);
+                    if (message.Number > 0)
+                    {
+                        from.SendLocalizedMessage(message.Number);
+                    }
+                    else
+                    {
+                        from.SendMessage(message.String);
+                    }
                 }
 
                 return;

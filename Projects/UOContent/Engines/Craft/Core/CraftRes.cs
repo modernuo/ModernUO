@@ -23,11 +23,11 @@ namespace Server.Engines.Craft
 
         public void SendMessage(Mobile from)
         {
-            if (Message.Number > 0)
+            if (Message?.Number > 0)
             {
                 from.SendLocalizedMessage(Message.Number);
             }
-            else if (!string.IsNullOrEmpty(Message.String))
+            else if (!string.IsNullOrEmpty(Message?.String))
             {
                 from.SendMessage(Message.String);
             }
