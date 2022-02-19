@@ -286,7 +286,7 @@ namespace Server.Items
 
         public override void BeginConfirmation(Mobile from)
         {
-            if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && !Message.IsEmpty)
+            if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && Message?.IsEmpty == false)
             {
                 from.CloseGump<WarningGump>();
                 from.SendGump(

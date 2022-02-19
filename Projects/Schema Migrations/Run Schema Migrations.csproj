@@ -8,6 +8,6 @@
         <Message Importance="High" Text="Installing schema generator tool" />
         <Exec Command="dotnet tool restore" />
         <Message Importance="High" Text="Generating migration schemas..." />
-        <Exec Command="dotnet tool run ModernUOSchemaGenerator '$(ProjectDir)..\..\ModernUO.sln'" />
+        <Exec Command="dotnet tool run ModernUOSchemaGenerator -- &quot;$(ProjectDir)..\..\ModernUO.sln&quot;" />
     </Target>
 </Project>
