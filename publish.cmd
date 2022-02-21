@@ -39,7 +39,7 @@ echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distr
 dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 
 echo Generating serialization migration schema...
-dotnet tool run ModernUOSchemaGenerator ModernUO.sln
+dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln
 
 exit $?
 
@@ -73,4 +73,4 @@ echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distrib
 dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 
 echo Generating serialization migration schema...
-dotnet tool run ModernUOSchemaGenerator ModernUO.sln
+dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln
