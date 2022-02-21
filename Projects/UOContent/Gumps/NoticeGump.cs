@@ -9,7 +9,7 @@ namespace Server.Gumps
         private readonly NoticeGumpCallback m_Callback;
 
         public NoticeGump(
-            int header, int headerColor, object content, int contentColor, int width, int height,
+            int header, int headerColor, TextDefinition content, int contentColor, int width, int height,
             NoticeGumpCallback callback = null
         ) : base((640 - width) / 2, (480 - height) / 2)
         {
@@ -28,21 +28,24 @@ namespace Server.Gumps
             AddImageTiled(10, 40, width - 20, height - 80, 2624);
             AddAlphaRegion(10, 40, width - 20, height - 80);
 
-            if (content is int i)
+            if (content != null)
             {
-                AddHtmlLocalized(10, 40, width - 20, height - 80, i, contentColor, false, true);
-            }
-            else if (content is string)
-            {
-                AddHtml(
-                    10,
-                    40,
-                    width - 20,
-                    height - 80,
-                    $"<BASEFONT COLOR=#{contentColor:X6}>{content}</BASEFONT>",
-                    false,
-                    true
-                );
+                if (content.Number > 0)
+                {
+                    AddHtmlLocalized(10, 40, width - 20, height - 80, content.Number, contentColor, false, true);
+                }
+                else
+                {
+                    AddHtml(
+                        10,
+                        40,
+                        width - 20,
+                        height - 80,
+                        $"<BASEFONT COLOR=#{contentColor:X6}>{content.String}</BASEFONT>",
+                        false,
+                        true
+                    );
+                }
             }
 
             AddImageTiled(10, height - 30, width - 20, 20, 2624);

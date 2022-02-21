@@ -11,9 +11,7 @@ namespace Server.Engines.Craft
 
         public Type ResType { get; set; }
 
-        public string NameString { get; set; }
-
-        public int NameNumber { get; set; }
+        public TextDefinition Name { get; set; }
 
         public CraftSubRes GetAt(int index) => this[index];
 

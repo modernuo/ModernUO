@@ -1872,7 +1872,7 @@ namespace Server
 
         public static bool DisableDismountInWarmode { get; set; }
 
-        public static int BodyWeight { get; set; } = 14;
+        public static int BodyWeight { get; set; } = 11; // 11 + 3 for the backpack
 
         [CommandProperty(AccessLevel.GameMaster)]
         public IMount Mount
@@ -4107,19 +4107,25 @@ namespace Server
             switch (type)
             {
                 default:
-                    m_TotalGold += delta;
-                    Delta(MobileDelta.Gold);
-                    break;
+                    {
+                        m_TotalGold += delta;
+                        Delta(MobileDelta.Gold);
+                        break;
+                    }
 
                 case TotalType.Items:
-                    m_TotalItems += delta;
-                    break;
+                    {
+                        m_TotalItems += delta;
+                        break;
+                    }
 
                 case TotalType.Weight:
-                    m_TotalWeight += delta;
-                    Delta(MobileDelta.Weight);
-                    OnWeightChange(m_TotalWeight - delta);
-                    break;
+                    {
+                        m_TotalWeight += delta;
+                        Delta(MobileDelta.Weight);
+                        OnWeightChange(m_TotalWeight - delta);
+                        break;
+                    }
             }
         }
 
