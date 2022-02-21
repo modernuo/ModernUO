@@ -2070,7 +2070,7 @@ namespace Server.Multis
 
         public bool LockDown(Mobile m, Item item, bool checkIsInside)
         {
-            if (!IsCoOwner(m) || !IsActive)
+            if (!IsFriend(m) || !IsActive)
             {
                 return false;
             }
@@ -2325,12 +2325,12 @@ namespace Server.Multis
 
         public void Release(Mobile m, Item item)
         {
-            if (!IsCoOwner(m) || !IsActive)
+            if (!IsFriend(m) || !IsActive)
             {
                 return;
             }
 
-            if (HasLockedDownItem(item))
+            if (HasLockedDownItem(item)) // How do we ensure that friends can only release things locked down by them and not things locked down by co-owners/owners?
             {
                 item.PublicOverheadMessage(MessageType.Label, 0x3B2, 501657); // [no longer locked down]
                 SetLockdown(item, false);
@@ -2338,9 +2338,17 @@ namespace Server.Multis
 
                 (item as RewardBrazier)?.TurnOff();
             }
-            else if (HasSecureItem(item))
+            else if (HasSecureItem(item)) // We don't want friends releasing secured items of the house as this is a co-owner superpower.
             {
-                ReleaseSecure(m, item);
+                if (IsCoOwner(m))
+                {
+                    ReleaseSecure(m, item);
+                }
+                else
+                {
+                    m.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1010418); // You did not lock this down, and you are not able to release this.
+                    return;
+                }               
             }
             else
             {
@@ -2350,7 +2358,7 @@ namespace Server.Multis
 
         public void AddSecure(Mobile m, Item item)
         {
-            if (Secures == null || !IsOwner(m) || !IsActive)
+            if (Secures == null || !IsCoOwner(m) || !IsActive)
             {
                 return;
             }
@@ -2408,7 +2416,7 @@ namespace Server.Multis
                 }
                 else
                 {
-                    info = new SecureInfo((Container)item, SecureLevel.Owner);
+                    info = new SecureInfo((Container)item, SecureLevel.Owner); // Need a fix to change this to co-owner if a co-owner secures the item.
 
                     item.IsLockedDown = false;
                     item.IsSecure = true;
@@ -2472,7 +2480,7 @@ namespace Server.Multis
 
         public void ReleaseSecure(Mobile m, Item item)
         {
-            if (Secures == null || !IsOwner(m) || item is StrongBox || !IsActive)
+            if (Secures == null || !IsCoOwner(m) || item is StrongBox || !IsActive)
             {
                 return;
             }
@@ -2622,7 +2630,7 @@ namespace Server.Multis
 
         public void RemoveBan(Mobile from, Mobile targ)
         {
-            if (!IsCoOwner(from) || Bans == null)
+            if (!IsFriend(from) || Bans == null)
             {
                 return;
             }
@@ -3936,7 +3944,7 @@ namespace Server.Multis
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (!from.Alive || m_House.Deleted || !m_House.IsCoOwner(from))
+            if (!from.Alive || m_House.Deleted || !m_House.IsFriend(from))
             {
                 return;
             }
