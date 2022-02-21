@@ -72,3 +72,6 @@ nav:
   - 'Get Started':
     - 'installation.md'
     - 'building-server.md'
+  - 'Scripting guide':
+      - 'scripting-guide/timers.md'
+      - 'scripting-guide/serialization.md'
