@@ -28,14 +28,9 @@ namespace Server.Mobiles
 
         public TownCrierEntry GetRandomEntry()
         {
-            if (Entries == null || Entries.Count == 0)
+            for (var i = (Entries?.Count ?? 0) - 1; i >= 0; --i)
             {
-                return null;
-            }
-
-            for (var i = Entries.Count - 1; Entries != null && i >= 0; --i)
-            {
-                if (i >= Entries.Count)
+                if (i >= Entries!.Count)
                 {
                     continue;
                 }
@@ -366,7 +361,7 @@ namespace Server.Mobiles
 
         public TownCrierEntry GetRandomEntry()
         {
-            for (var i = Entries?.Count ?? 0 - 1; i >= 0; --i)
+            for (var i = (Entries?.Count ?? 0) - 1; i >= 0; --i)
             {
                 if (i >= Entries!.Count)
                 {
