@@ -3971,10 +3971,7 @@ namespace Server.Items
                             parentMobile.AddSkillMod(m_MageMod);
                         }
 
-                        if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-                        {
-                            PlayerConstructed = true;
-                        }
+                        PlayerConstructed = GetSaveFlag(flags, SaveFlag.PlayerConstructed);
 
                         SkillBonuses = new AosSkillBonuses(this);
 

@@ -160,9 +160,6 @@ public partial class BaseArmor
             SkillBonuses.Deserialize(reader);
         }
 
-        if (GetSaveFlag(flags, OldSaveFlag.PlayerConstructed))
-        {
-            PlayerConstructed = true;
-        }
+        PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
     }
 }
