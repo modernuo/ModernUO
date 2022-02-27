@@ -249,7 +249,7 @@ public static class ServerConfiguration
 
             if (expansion <= Expansion.ML && !hasExpansion)
             {
-                isPre60000 = ServerConfigurationPrompts.SetPre6000Support();
+                isPre60000 = ServerConfigurationPrompts.GetIsClientPre6000();
                 if (isPre60000 == true)
                 {
                     SetSetting("maps.enablePre6000Trammel", true.ToString());
@@ -262,7 +262,7 @@ public static class ServerConfiguration
 
         if (isPre60000 != true)
         {
-            if (ServerConfigurationPrompts.Set7090Support())
+            if (ServerConfigurationPrompts.GetIsClient7090())
             {
                 updated = true;
                 SetSetting("maps.enablePostHSMultiComponentFormat", true);

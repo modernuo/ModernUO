@@ -8,7 +8,7 @@ namespace Server;
 
 public static class ServerConfigurationPrompts
 {
-    internal static bool Set7090Support()
+    internal static bool GetIsClient7090()
     {
         if (UOClient.ServerClientVersion != null)
         {
@@ -46,7 +46,7 @@ public static class ServerConfigurationPrompts
     }
 
 
-    internal static bool SetPre6000Support()
+    internal static bool GetIsClientPre6000()
     {
         if (UOClient.ServerClientVersion != null)
         {
