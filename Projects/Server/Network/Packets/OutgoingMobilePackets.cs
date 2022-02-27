@@ -39,9 +39,9 @@ public static class OutgoingMobilePackets
     public const int MobileStatusMLLength = 91;
     public const int MobileStatusHSLength = 121;
 
-    public static bool ExtendedStatus { get; private set; }
+    public static bool ExtendedStatus { get; private set; } = true;
 
-    public static void Initialize()
+    public static void Configure()
     {
         ExtendedStatus = ServerConfiguration.GetSetting("client.showExtendedStatus", true);
     }
