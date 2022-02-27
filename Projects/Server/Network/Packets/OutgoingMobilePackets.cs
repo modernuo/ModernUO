@@ -64,7 +64,7 @@ public static class OutgoingMobilePackets
 
     public static void SendBondedStatus(this NetState ns, Serial serial, bool bonded)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -96,7 +96,7 @@ public static class OutgoingMobilePackets
 
     public static void SendDeathAnimation(this NetState ns, Serial killed, Serial corpse)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -135,7 +135,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileMoving(this NetState ns, Mobile target, int noto)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -153,7 +153,7 @@ public static class OutgoingMobilePackets
     // Requires cache to have the first byte of each packet initially zeroed.
     public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -202,7 +202,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileHits(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -227,7 +227,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileMana(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -252,7 +252,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileStam(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -277,7 +277,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileAttributes(this NetState ns, Mobile m, bool normalize = false)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -305,7 +305,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileName(this NetState ns, Mobile m)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -346,7 +346,7 @@ public static class OutgoingMobilePackets
         Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
     )
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -371,7 +371,7 @@ public static class OutgoingMobilePackets
 
     public static void SendNewMobileAnimation(this NetState ns, Serial mobile, int action, int frameCount, int delay)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -383,7 +383,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileHealthbar(this NetState ns, Mobile m, Healthbar healthbar)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -438,7 +438,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -454,7 +454,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileStatus(this NetState ns, Mobile beholder, Mobile beheld)
     {
-        if (ns == null || beheld == null)
+        if (ns.CannotSendPackets() || beheld == null)
         {
             return;
         }
@@ -574,7 +574,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileUpdate(this NetState ns, Mobile m)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -597,7 +597,7 @@ public static class OutgoingMobilePackets
 
     public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
     {
-        if (ns == null)
+        if (ns.CannotSendPackets())
         {
             return;
         }
