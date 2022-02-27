@@ -59,9 +59,6 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used. Linux Mint 20 is not supported directly yet, so build explicitly against `ubuntu.20.04` instead.
 
-**Note:** Building in Visual Studio (or Rider) will not run the schema migration. The schema migration ensures future changes
-to the code will be backward compatible.
-
 ## Running the Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
 - Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the server

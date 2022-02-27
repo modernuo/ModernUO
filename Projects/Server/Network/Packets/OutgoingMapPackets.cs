@@ -16,50 +16,49 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class OutgoingMapPackets
 {
-    public static class OutgoingMapPackets
+    private static byte[] _mapPatchesPacket = new byte[41];
+
+    public static void SendMapPatches(this NetState ns)
     {
-        private static byte[] _mapPatchesPacket = new byte[41];
-
-        public static void SendMapPatches(this NetState ns)
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            if (_mapPatchesPacket[0] == 0)
-            {
-                var writer = new SpanWriter(_mapPatchesPacket);
-                writer.Write((byte)0xBF); // Packet ID
-                writer.Write((ushort)41); // Length
-                writer.Write((ushort)0x18); // Subpacket
-                writer.Write(4);
-
-                for (int i = 0; i < 4; i++)
-                {
-                    var map = Map.Maps[i];
-
-                    writer.Write(map?.Tiles.Patch.StaticBlocks ?? 0);
-                    writer.Write(map?.Tiles.Patch.LandBlocks ?? 0);
-                }
-            }
-
-            ns.Send(_mapPatchesPacket);
+            return;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendInvalidMap(this NetState ns) => ns?.Send(stackalloc byte[] { 0xC6 });
-
-        public static void SendMapChange(this NetState ns, Map map)
+        if (_mapPatchesPacket[0] == 0)
         {
-            if (map == null)
-            {
-                return;
-            }
+            var writer = new SpanWriter(_mapPatchesPacket);
+            writer.Write((byte)0xBF);   // Packet ID
+            writer.Write((ushort)41);   // Length
+            writer.Write((ushort)0x18); // Subpacket
+            writer.Write(4);
 
-            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x06, 0x00, 0x08, (byte)map.MapID });
+            for (int i = 0; i < 4; i++)
+            {
+                var map = Map.Maps[i];
+
+                writer.Write(map?.Tiles.Patch.StaticBlocks ?? 0);
+                writer.Write(map?.Tiles.Patch.LandBlocks ?? 0);
+            }
         }
+
+        ns.Send(_mapPatchesPacket);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendInvalidMap(this NetState ns) => ns?.Send(stackalloc byte[] { 0xC6 });
+
+    public static void SendMapChange(this NetState ns, Map map)
+    {
+        if (map == null)
+        {
+            return;
+        }
+
+        ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x06, 0x00, 0x08, (byte)map.MapID });
     }
 }

@@ -16,27 +16,26 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class OutgoingLightPackets
 {
-    public static class OutgoingLightPackets
+    public static void SendPersonalLightLevel(this NetState ns, Serial serial, int level)
     {
-        public static void SendPersonalLightLevel(this NetState ns, Serial serial, int level)
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[6]);
-            writer.Write((byte)0x4E); // Packet ID
-            writer.Write(serial);
-            writer.Write((byte)level);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendGlobalLightLevel(this NetState ns, int level = 0) =>
-            ns?.Send(stackalloc byte[] { 0x4F, (byte)level });
+        var writer = new SpanWriter(stackalloc byte[6]);
+        writer.Write((byte)0x4E); // Packet ID
+        writer.Write(serial);
+        writer.Write((byte)level);
+
+        ns.Send(writer.Span);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendGlobalLightLevel(this NetState ns, int level = 0) =>
+        ns?.Send(stackalloc byte[] { 0x4F, (byte)level });
 }

@@ -97,7 +97,7 @@ namespace Server.Commands
 
                 if (attr == null)
                 {
-                    failReason = $"Property '${propertyName}' not found.";
+                    failReason = $"Property '{propertyName}' not found.";
                     return null;
                 }
 

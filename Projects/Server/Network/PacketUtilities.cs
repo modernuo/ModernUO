@@ -17,7 +17,6 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.HighPerformance;
 
 namespace Server.Network
 {
@@ -55,12 +54,12 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span2D<byte> InitializePackets(this Span2D<byte> buffer)
+        public static Span<byte> InitializePackets(this Span<byte> buffer, int width)
         {
 #if NO_LOCAL_INIT
-            for (var i = 0; i < buffer.Height; i++)
+            for (var i = 0; i < buffer.Length; i += width)
             {
-                buffer.GetRowSpan(i)[0] = 0;
+                buffer[i] = 0;
             }
 #endif
             return buffer;

@@ -1,6 +1,4 @@
 using System;
-using System.Buffers.Binary;
-using System.IO;
 using Server.Buffers;
 using Server.Gumps;
 using Server.Logging;
@@ -14,7 +12,6 @@ namespace Server.Misc
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ClientVerification));
 
         private static bool _enable;
-        private static bool _detectClientRequirement;
         private static InvalidClientResponse _invalidClientResponse;
         private static string _versionExpression;
 
@@ -33,11 +30,6 @@ namespace Server.Misc
             MinRequired = ServerConfiguration.GetSetting("clientVerification.minRequired", (ClientVersion)null);
             MaxRequired = ServerConfiguration.GetSetting("clientVerification.maxRequired", (ClientVersion)null);
 
-            if (MinRequired == null && MaxRequired == null)
-            {
-                _detectClientRequirement = ServerConfiguration.GetOrUpdateSetting("clientVerification.detectFromClientExe", true);
-            }
-
             _enable = ServerConfiguration.GetOrUpdateSetting("clientVerification.enable", true);
             _invalidClientResponse =
                 ServerConfiguration.GetOrUpdateSetting("clientVerification.invalidClientResponse", InvalidClientResponse.Kick);
@@ -53,40 +45,9 @@ namespace Server.Misc
         {
             EventSink.ClientVersionReceived += EventSink_ClientVersionReceived;
 
-            if (_detectClientRequirement)
+            if (MinRequired == null && MaxRequired == null)
             {
-                var path = Core.FindDataFile("client.exe", false);
-
-                if (File.Exists(path))
-                {
-                    using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length, true);
-                    fs.Read(buffer);
-                    // VS_VERSION_INFO (unicode)
-                    Span<byte> vsVersionInfo = stackalloc byte[]
-                    {
-                        0x56, 0x00, 0x53, 0x00, 0x5F, 0x00, 0x56, 0x00,
-                        0x45, 0x00, 0x52, 0x00, 0x53, 0x00, 0x49, 0x00,
-                        0x4F, 0x00, 0x4E, 0x00, 0x5F, 0x00, 0x49, 0x00,
-                        0x4E, 0x00, 0x46, 0x00, 0x4F, 0x00
-                    };
-
-                    for (var i = 0; i < buffer.Length; i++)
-                    {
-                        if (vsVersionInfo.SequenceEqual(buffer.AsSpan(i, 30)))
-                        {
-                            var offset = i + 42; // 30 + 12
-
-                            var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
-                            var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
-                            var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
-                            var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
-
-                            MinRequired = new ClientVersion(majorPart, minorPart, buildPart, privatePart);
-                            break;
-                        }
-                    }
-                }
+                MinRequired = UOClient.ServerClientVersion;
             }
 
             if (MinRequired != null || MaxRequired != null)
