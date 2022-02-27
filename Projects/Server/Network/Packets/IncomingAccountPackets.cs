@@ -318,6 +318,8 @@ namespace Server.Network
             state.SendSeasonChange((byte)m.GetSeason(), true);
             state.SendMapChange(m.Map);
 
+            state.SendPlayMusic(m.Region.Music);
+
             EventSink.InvokeLogin(m);
         }
 
