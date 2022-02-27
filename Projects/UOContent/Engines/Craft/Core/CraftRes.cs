@@ -9,34 +9,27 @@ namespace Server.Engines.Craft
             ItemType = type;
             Amount = amount;
 
-            NameNumber = name;
-            MessageNumber = message;
-
-            NameString = name;
-            MessageString = message;
+            Name = name;
+            Message = message;
         }
 
         public Type ItemType { get; }
 
-        public string MessageString { get; }
+        public TextDefinition Message { get; }
 
-        public int MessageNumber { get; }
-
-        public string NameString { get; }
-
-        public int NameNumber { get; }
+        public TextDefinition Name { get; }
 
         public int Amount { get; }
 
         public void SendMessage(Mobile from)
         {
-            if (MessageNumber > 0)
+            if (Message?.Number > 0)
             {
-                from.SendLocalizedMessage(MessageNumber);
+                from.SendLocalizedMessage(Message.Number);
             }
-            else if (!string.IsNullOrEmpty(MessageString))
+            else if (!string.IsNullOrEmpty(Message?.String))
             {
-                from.SendMessage(MessageString);
+                from.SendMessage(Message.String);
             }
             else
             {

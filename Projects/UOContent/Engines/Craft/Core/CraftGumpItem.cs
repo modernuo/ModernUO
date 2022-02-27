@@ -58,13 +58,13 @@ namespace Server.Engines.Craft
             AddHtmlLocalized(10, 277, 150, 22, 1044055, LabelColor); // <CENTER>MATERIALS</CENTER>
             AddHtmlLocalized(10, 362, 150, 22, 1044056, LabelColor); // <CENTER>OTHER</CENTER>
 
-            if (craftSystem.GumpTitleNumber > 0)
+            if (craftSystem.GumpTitle.Number > 0)
             {
-                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
+                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitle.Number, LabelColor);
             }
             else
             {
-                AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
+                AddHtml(10, 12, 510, 20, craftSystem.GumpTitle.String);
             }
 
             AddButton(15, 387, 4014, 4016, 0);
@@ -230,15 +230,11 @@ namespace Server.Engines.Craft
 
             for (var i = 0; i < m_CraftItem.Resources.Count - (cropScroll ? 1 : 0) && i < 4; i++)
             {
-                Type type;
-                string nameString;
-                int nameNumber;
-
                 var craftResource = m_CraftItem.Resources[i];
 
-                type = craftResource.ItemType;
-                nameString = craftResource.NameString;
-                nameNumber = craftResource.NameNumber;
+                var type = craftResource.ItemType;
+                var nameString = craftResource.Name.String;
+                var nameNumber = craftResource.Name.Number;
 
                 // Resource Mutation
                 if (type == res.ResType && resIndex > -1)
@@ -247,12 +243,12 @@ namespace Server.Engines.Craft
 
                     type = subResource.ItemType;
 
-                    nameString = subResource.NameString;
+                    nameString = subResource.Name.String;
                     nameNumber = subResource.GenericNameNumber;
 
                     if (nameNumber <= 0)
                     {
-                        nameNumber = subResource.NameNumber;
+                        nameNumber = subResource.Name.Number;
                     }
                 }
                 // ******************
