@@ -47,7 +47,7 @@ namespace Server.Engines.VeteranRewards
 
         public static void SendStatueAnimation(this NetState ns, Serial serial, int status, int anim, int frame)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
