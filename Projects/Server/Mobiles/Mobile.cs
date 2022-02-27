@@ -8317,7 +8317,7 @@ namespace Server
         {
             var ns = m_NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return false;
             }
