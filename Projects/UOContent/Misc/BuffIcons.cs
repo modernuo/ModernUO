@@ -162,7 +162,7 @@ namespace Server
             long ticks
         )
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -207,7 +207,7 @@ namespace Server
 
         public static void SendRemoveBuffPacket(NetState ns, Serial mob, BuffIcon iconID)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

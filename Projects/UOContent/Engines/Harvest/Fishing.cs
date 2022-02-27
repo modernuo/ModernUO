@@ -464,12 +464,7 @@ namespace Server.Engines.Harvest
 
                 var ns = from.NetState;
 
-                if (ns == null)
-                {
-                    return;
-                }
-
-                if (number == 1043297 || ns.HighSeas)
+                if (number == 1043297 || ns?.HighSeas == true)
                 {
                     from.SendLocalizedMessage(number, name);
                 }

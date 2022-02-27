@@ -23,7 +23,7 @@ namespace Server.Network
     {
         public static void SendCorpseEquip(this NetState ns, Mobile beholder, Corpse beheld)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -67,7 +67,7 @@ namespace Server.Network
 
         public static void SendCorpseContent(this NetState ns, Mobile beholder, Corpse beheld)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
