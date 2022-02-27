@@ -28,6 +28,7 @@
         <DefineConstants Condition="'$(SkipLocalsInitAttribute)'=='true'">NO_LOCAL_INIT</DefineConstants>
         <DefineConstants>MUO</DefineConstants>
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
+        <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
     </PropertyGroup>
     <PropertyGroup Condition="'$(RuntimeIdentifier)'==''">
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -58,9 +59,9 @@
         <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
         <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
-            <Version>3.4.244</Version>
+            <Version>3.4.255</Version>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <AdditionalFiles Include=".\Rules.ruleset" />
+        <AdditionalFiles Include="..\..\Rules.ruleset" />
     </ItemGroup>
 </Project>

@@ -135,7 +135,7 @@ namespace Server.Items
 
         public static void SendBookContent(this NetState ns, BaseBook book)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -183,7 +183,7 @@ namespace Server.Items
 
         public static void SendBookCover(this NetState ns, Mobile from, BaseBook book)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.HighPerformance;
 using Server.Accounting;
 using Server.Buffers;
 using Server.ContextMenus;
@@ -9,6 +8,7 @@ using Server.Guilds;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
+using Server.Logging;
 using Server.Menus;
 using Server.Mobiles;
 using Server.Network;
@@ -407,6 +407,8 @@ namespace Server
     {
         // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
         private const int WarmodeCatchCount = 4;
+
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Mobile));
 
         // TODO: Make these configurations
         private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
@@ -1872,7 +1874,7 @@ namespace Server
 
         public static bool DisableDismountInWarmode { get; set; }
 
-        public static int BodyWeight { get; set; } = 14;
+        public static int BodyWeight { get; set; } = 11; // 11 + 3 for the backpack
 
         [CommandProperty(AccessLevel.GameMaster)]
         public IMount Mount
@@ -2958,13 +2960,12 @@ namespace Server
                 ? OutgoingVirtualHairPackets.RemovePacketLength
                 : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
-            Span<byte> facialhairPacket = stackalloc byte[facialHairLength].InitializePacket();
+            Span<byte> facialHairPacket = stackalloc byte[facialHairLength].InitializePacket();
 
             const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
             const int width = OutgoingMobilePackets.MobileMovingPacketLength;
-            const int height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
 
-            var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
+            var mobileMovingCache = stackalloc byte[cacheLength].InitializePackets(width);
 
             var ourState = m_NetState;
 
@@ -3066,12 +3067,12 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, facialHairSerial);
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, facialHairSerial);
                     }
                     else
                     {
                         OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
-                            facialhairPacket,
+                            facialHairPacket,
                             this,
                             facialHairSerial,
                             FacialHairItemID,
@@ -3079,7 +3080,7 @@ namespace Server
                             Layer.FacialHair
                         );
                     }
-                    ourState.Send(facialhairPacket);
+                    ourState.Send(facialHairPacket);
                 }
 
                 if (sendOPLUpdate)
@@ -3205,12 +3206,12 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, facialHairSerial);
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, facialHairSerial);
                     }
                     else
                     {
                         OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
-                            facialhairPacket,
+                            facialHairPacket,
                             this,
                             facialHairSerial,
                             FacialHairItemID,
@@ -3218,7 +3219,7 @@ namespace Server
                             Layer.FacialHair
                         );
                     }
-                    state.Send(facialhairPacket);
+                    state.Send(facialHairPacket);
                 }
 
                 SendOPLPacketTo(state);
@@ -4107,19 +4108,25 @@ namespace Server
             switch (type)
             {
                 default:
-                    m_TotalGold += delta;
-                    Delta(MobileDelta.Gold);
-                    break;
+                    {
+                        m_TotalGold += delta;
+                        Delta(MobileDelta.Gold);
+                        break;
+                    }
 
                 case TotalType.Items:
-                    m_TotalItems += delta;
-                    break;
+                    {
+                        m_TotalItems += delta;
+                        break;
+                    }
 
                 case TotalType.Weight:
-                    m_TotalWeight += delta;
-                    Delta(MobileDelta.Weight);
-                    OnWeightChange(m_TotalWeight - delta);
-                    break;
+                    {
+                        m_TotalWeight += delta;
+                        Delta(MobileDelta.Weight);
+                        OnWeightChange(m_TotalWeight - delta);
+                        break;
+                    }
             }
         }
 
@@ -4463,10 +4470,9 @@ namespace Server
                 eable.Free();
 
                 const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
-                var width = OutgoingMobilePackets.MobileMovingPacketLength;
-                var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
+                const int width = OutgoingMobilePackets.MobileMovingPacketLength;
 
-                var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
+                var mobileMovingCache = stackalloc byte[cacheLength].InitializePackets(width);
 
                 foreach (var m in m_MoveClientList)
                 {
@@ -5185,13 +5191,20 @@ namespace Server
                                 item.Spawner = null;
                             }
 
-                            amount = Math.Clamp(amount, 1, item.Amount);
-
                             var oldAmount = item.Amount;
 
-                            if (amount < oldAmount)
+                            if (oldAmount <= 0)
                             {
-                                LiftItemDupe(item, amount);
+                                logger.Error($"Item {item.GetType()} ({item.Serial}) has amount of {oldAmount}, but must be at least 1");
+                            }
+                            else
+                            {
+                                amount = Math.Clamp(amount, 1, oldAmount);
+
+                                if (amount < oldAmount)
+                                {
+                                    LiftItemDupe(item, amount);
+                                }
                             }
 
                             var map = from.Map;
@@ -8301,7 +8314,7 @@ namespace Server
         {
             var ns = m_NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return false;
             }
@@ -9013,7 +9026,10 @@ namespace Server
         public Direction GetDirectionTo(IPoint2D p, bool run = false) =>
             p == null ? Direction.North | (run ? Direction.Running : 0) : GetDirectionTo(p.X, p.Y, run);
 
-        public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
+        public void PublicOverheadMessage(
+            MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true,
+            AccessLevel accessLevel = AccessLevel.Player
+        )
         {
             if (m_Map == null)
             {
@@ -9026,7 +9042,11 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                if (
+                    state.Mobile.AccessLevel >= accessLevel &&
+                    state.Mobile.CanSee(this) &&
+                    (noLineOfSight || state.Mobile.InLOS(this))
+                )
                 {
                     var length = OutgoingMessagePackets.CreateMessage(
                         buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
@@ -9077,7 +9097,8 @@ namespace Server
 
         public void PublicOverheadMessage(
             MessageType type, int hue, int number, AffixType affixType, string affix,
-            string args = "", bool noLineOfSight = false
+            string args = "", bool noLineOfSight = false,
+            AccessLevel accessLevel = AccessLevel.Player
         )
         {
             if (m_Map == null)
@@ -9091,7 +9112,11 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                if (
+                    state.Mobile.AccessLevel >= accessLevel &&
+                    state.Mobile.CanSee(this) &&
+                    (noLineOfSight || state.Mobile.InLOS(this))
+                )
                 {
                     var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
                         buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args

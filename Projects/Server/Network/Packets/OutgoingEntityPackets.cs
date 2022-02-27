@@ -17,135 +17,134 @@ using System;
 using System.Buffers;
 using Server.Items;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class OutgoingEntityPackets
 {
-    public static class OutgoingEntityPackets
+    public const int OPLPacketLength = 9;
+    public const int RemoveEntityLength = 5;
+    public const int MaxWorldEntityPacketLength = 26;
+
+    public static void CreateOPLInfo(Span<byte> buffer, Item item) =>
+        CreateOPLInfo(buffer, item.Serial, item.PropertyList.Hash);
+
+    public static void CreateOPLInfo(Span<byte> buffer, Serial serial, int hash)
     {
-        public const int OPLPacketLength = 9;
-        public const int RemoveEntityLength = 5;
-        public const int MaxWorldEntityPacketLength = 26;
-
-        public static void CreateOPLInfo(Span<byte> buffer, Item item) =>
-            CreateOPLInfo(buffer, item.Serial, item.PropertyList.Hash);
-
-        public static void CreateOPLInfo(Span<byte> buffer, Serial serial, int hash)
+        if (buffer[0] != 0)
         {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xDC); // Packet ID
-            writer.Write(serial);
-            writer.Write(hash);
+            return;
         }
 
-        public static void SendOPLInfo(this NetState ns, IPropertyListObject obj) =>
-            ns.SendOPLInfo(obj.Serial, obj.PropertyList.Hash);
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xDC); // Packet ID
+        writer.Write(serial);
+        writer.Write(hash);
+    }
 
-        public static void SendOPLInfo(this NetState ns, Serial serial, int hash)
+    public static void SendOPLInfo(this NetState ns, IPropertyListObject obj) =>
+        ns.SendOPLInfo(obj.Serial, obj.PropertyList.Hash);
+
+    public static void SendOPLInfo(this NetState ns, Serial serial, int hash)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> buffer = stackalloc byte[OPLPacketLength].InitializePacket();
-            CreateOPLInfo(buffer, serial, hash);
-
-            ns.Send(buffer);
+            return;
         }
 
-        public static void CreateRemoveEntity(Span<byte> buffer, Serial serial)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
+        Span<byte> buffer = stackalloc byte[OPLPacketLength].InitializePacket();
+        CreateOPLInfo(buffer, serial, hash);
 
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x1D); // Packet ID
-            writer.Write(serial);
+        ns.Send(buffer);
+    }
+
+    public static void CreateRemoveEntity(Span<byte> buffer, Serial serial)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
         }
 
-        public static void SendRemoveEntity(this NetState ns, Serial serial)
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0x1D); // Packet ID
+        writer.Write(serial);
+    }
+
+    public static void SendRemoveEntity(this NetState ns, Serial serial)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> buffer = stackalloc byte[RemoveEntityLength].InitializePacket();
-            CreateRemoveEntity(buffer, serial);
-
-            ns.Send(buffer);
+            return;
         }
 
-        public static int CreateWorldEntity(Span<byte> buffer, IEntity entity, bool isHS)
+        Span<byte> buffer = stackalloc byte[RemoveEntityLength].InitializePacket();
+        CreateRemoveEntity(buffer, serial);
+
+        ns.Send(buffer);
+    }
+
+    public static int CreateWorldEntity(Span<byte> buffer, IEntity entity, bool isHS)
+    {
+        if (buffer[0] != 0)
         {
-            if (buffer[0] != 0)
-            {
-                return buffer.Length;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xF3); // Packet ID
-            writer.Write((short)0x1); // command
-
-            int type = 0;
-            int gfx = 0;
-            int amount = 1;
-            int hue = 0;
-            byte light = 0;
-            int flags = 0;
-
-            if (entity is BaseMulti multi)
-            {
-                type = 2;
-                gfx = multi.ItemID & (isHS ? 0xFFFF : 0x7FFF);
-                hue = multi.Hue;
-                amount = multi.Amount;
-            }
-            else if (entity is Item item)
-            {
-                // type = 3 if is damageable
-                gfx = item.ItemID & (isHS ? 0xFFFF : 0x7FFF);
-                hue = item.Hue;
-                amount = item.Amount;
-                light = (byte)item.Light;
-                flags = item.GetPacketFlags();
-            }
-            else if (entity is Mobile mobile)
-            {
-                type = 1;
-                gfx = mobile.Body;
-                hue = mobile.Hue;
-                flags = mobile.GetPacketFlags(true);
-            }
-
-            writer.Write((byte)type);
-            writer.Write(entity.Serial);
-            writer.Write((ushort)gfx);
-            writer.Write((byte)0);
-
-            writer.Write((short)amount); // Min
-            writer.Write((short)amount); // Max
-
-            writer.Write((short)(entity.X & 0x7FFF));
-            writer.Write((short)(entity.Y & 0x3FFF));
-            writer.Write((sbyte)entity.Z);
-
-            writer.Write(light);
-            writer.Write((short)hue);
-            writer.Write((byte)flags);
-
-            if (isHS)
-            {
-                writer.Write((short)0);
-            }
-
-            return writer.Position;
+            return buffer.Length;
         }
+
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xF3); // Packet ID
+        writer.Write((short)0x1); // command
+
+        int type = 0;
+        int gfx = 0;
+        int amount = 1;
+        int hue = 0;
+        byte light = 0;
+        int flags = 0;
+
+        if (entity is BaseMulti multi)
+        {
+            type = 2;
+            gfx = multi.ItemID & (isHS ? 0xFFFF : 0x7FFF);
+            hue = multi.Hue;
+            amount = multi.Amount;
+        }
+        else if (entity is Item item)
+        {
+            // type = 3 if is damageable
+            gfx = item.ItemID & (isHS ? 0xFFFF : 0x7FFF);
+            hue = item.Hue;
+            amount = item.Amount;
+            light = (byte)item.Light;
+            flags = item.GetPacketFlags();
+        }
+        else if (entity is Mobile mobile)
+        {
+            type = 1;
+            gfx = mobile.Body;
+            hue = mobile.Hue;
+            flags = mobile.GetPacketFlags(true);
+        }
+
+        writer.Write((byte)type);
+        writer.Write(entity.Serial);
+        writer.Write((ushort)gfx);
+        writer.Write((byte)0);
+
+        writer.Write((short)amount); // Min
+        writer.Write((short)amount); // Max
+
+        writer.Write((short)(entity.X & 0x7FFF));
+        writer.Write((short)(entity.Y & 0x3FFF));
+        writer.Write((sbyte)entity.Z);
+
+        writer.Write(light);
+        writer.Write((short)hue);
+        writer.Write((byte)flags);
+
+        if (isHS)
+        {
+            writer.Write((short)0);
+        }
+
+        return writer.Position;
     }
 }

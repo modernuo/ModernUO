@@ -28,7 +28,7 @@ namespace Server.Network
 
         public static void SendArrow(this NetState ns, byte command, int x, int y, Serial s)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
