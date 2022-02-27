@@ -168,7 +168,7 @@ namespace Server.Network
 
         public static void SendBBDisplayBoard(this NetState ns, BaseBulletinBoard board)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -203,7 +203,7 @@ namespace Server.Network
 
         public static void SendBBMessage(this NetState ns, BaseBulletinBoard board, BulletinMessage msg, bool content = false)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

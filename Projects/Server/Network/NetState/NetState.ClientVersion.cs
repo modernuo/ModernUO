@@ -19,23 +19,6 @@ namespace Server.Network
 {
     public partial class NetState
     {
-        private static readonly ClientVersion m_Version400a = new("4.0.0a");
-        private static readonly ClientVersion m_Version407a = new("4.0.7a");
-        private static readonly ClientVersion m_Version500a = new("5.0.0a");
-        private static readonly ClientVersion m_Version502b = new("5.0.2b");
-        private static readonly ClientVersion m_Version6000 = new("6.0.0.0");
-        private static readonly ClientVersion m_Version6017 = new("6.0.1.7");
-        private static readonly ClientVersion m_Version60142 = new("6.0.14.2");
-        private static readonly ClientVersion m_Version7000 = new("7.0.0.0");
-        private static readonly ClientVersion m_Version7090 = new("7.0.9.0");
-        private static readonly ClientVersion m_Version70130 = new("7.0.13.0");
-        private static readonly ClientVersion m_Version70160 = new("7.0.16.0");
-        private static readonly ClientVersion m_Version70300 = new("7.0.30.0");
-        private static readonly ClientVersion m_Version70331 = new("7.0.33.1");
-        private static readonly ClientVersion m_Version704565 = new("7.0.45.65");
-        private static readonly ClientVersion m_Version70500 = new("7.0.50.0");
-        private static readonly ClientVersion m_Version70610 = new("7.0.61.0");
-
         public ProtocolChanges ProtocolChanges { get; set; }
         public ClientFlags Flags { get; set; }
 
@@ -52,23 +35,23 @@ namespace Server.Network
         public static ProtocolChanges ProtocolChangesByVersion(ClientVersion version) =>
             version switch
             {
-                var v when v >= m_Version70610  => ProtocolChanges.Version70610,
-                var v when v >= m_Version70500  => ProtocolChanges.Version70500,
-                var v when v >= m_Version704565 => ProtocolChanges.Version704565,
-                var v when v >= m_Version70331  => ProtocolChanges.Version70331,
-                var v when v >= m_Version70300  => ProtocolChanges.Version70300,
-                var v when v >= m_Version70160  => ProtocolChanges.Version70160,
-                var v when v >= m_Version70130  => ProtocolChanges.Version70130,
-                var v when v >= m_Version7090   => ProtocolChanges.Version7090,
-                var v when v >= m_Version7000   => ProtocolChanges.Version7000,
-                var v when v >= m_Version60142  => ProtocolChanges.Version60142,
-                var v when v >= m_Version6017   => ProtocolChanges.Version6017,
-                var v when v >= m_Version6000   => ProtocolChanges.Version6000,
-                var v when v >= m_Version502b   => ProtocolChanges.Version502b,
-                var v when v >= m_Version500a   => ProtocolChanges.Version500a,
-                var v when v >= m_Version407a   => ProtocolChanges.Version407a,
-                var v when v >= m_Version400a   => ProtocolChanges.Version400a,
-                _                               => ProtocolChanges.None
+                var v when v >= ClientVersion.Version70610  => ProtocolChanges.Version70610,
+                var v when v >= ClientVersion.Version70500  => ProtocolChanges.Version70500,
+                var v when v >= ClientVersion.Version704565 => ProtocolChanges.Version704565,
+                var v when v >= ClientVersion.Version70331  => ProtocolChanges.Version70331,
+                var v when v >= ClientVersion.Version70300  => ProtocolChanges.Version70300,
+                var v when v >= ClientVersion.Version70160  => ProtocolChanges.Version70160,
+                var v when v >= ClientVersion.Version70130  => ProtocolChanges.Version70130,
+                var v when v >= ClientVersion.Version7090   => ProtocolChanges.Version7090,
+                var v when v >= ClientVersion.Version7000   => ProtocolChanges.Version7000,
+                var v when v >= ClientVersion.Version60142  => ProtocolChanges.Version60142,
+                var v when v >= ClientVersion.Version6017   => ProtocolChanges.Version6017,
+                var v when v >= ClientVersion.Version6000   => ProtocolChanges.Version6000,
+                var v when v >= ClientVersion.Version502b   => ProtocolChanges.Version502b,
+                var v when v >= ClientVersion.Version500a   => ProtocolChanges.Version500a,
+                var v when v >= ClientVersion.Version407a   => ProtocolChanges.Version407a,
+                var v when v >= ClientVersion.Version400a   => ProtocolChanges.Version400a,
+                _                                           => ProtocolChanges.None
             };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

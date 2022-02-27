@@ -12,7 +12,7 @@ namespace Server
 
         public static void SendHairEquipUpdatePacket(this NetState ns, Mobile m, uint hairSerial,  int itemId, int hue, Layer layer)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -42,7 +42,7 @@ namespace Server
 
         public static void SendRemoveHairPacket(this NetState ns, uint hairSerial)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
