@@ -73,12 +73,12 @@ namespace Server.Misc
             var pmFrom = from as PlayerMobile;
             var pmTarg = target as PlayerMobile;
 
-            if (pmFrom == null && from is BaseCreature { Summoned: true } bcFrom)
+            if (pmFrom == null && from is BaseCreature bcFrom && bcFrom.Summoned)
             {
                 pmFrom = bcFrom.SummonMaster as PlayerMobile;
             }
 
-            if (pmTarg == null && target is BaseCreature { Summoned: true } bcTarg)
+            if (pmTarg == null && target is BaseCreature bcTarg && bcTarg.Summoned)
             {
                 pmTarg = bcTarg.SummonMaster as PlayerMobile;
             }
@@ -149,7 +149,7 @@ namespace Server.Misc
                 return true; // NPCs have no restrictions
             }
 
-            if (target is BaseCreature { Controlled: false })
+            if (target is BaseCreature creature && !creature.Controlled)
             {
                 return false; // Players cannot heal uncontrolled mobiles
             }
@@ -180,7 +180,7 @@ namespace Server.Misc
             var pmTarg = target as PlayerMobile;
             var bcTarg = target as BaseCreature;
 
-            if (pmFrom == null && @from is BaseCreature { Summoned: true } bcFrom)
+            if (pmFrom == null && from is BaseCreature bcFrom && bcFrom.Summoned)
             {
                 pmFrom = bcFrom.SummonMaster as PlayerMobile;
             }
@@ -274,7 +274,7 @@ namespace Server.Misc
         {
             var g = def;
 
-            if (m is BaseCreature { Controlled: true, ControlMaster: { } } c)
+            if (m is BaseCreature c && c.Controlled && c.ControlMaster != null)
             {
                 c.DisplayGuildTitle = false;
 
@@ -456,8 +456,8 @@ namespace Server.Misc
             }
 
             if (target.Kills >= 5 ||
-                target.Body.IsMonster && IsSummoned(bcTarg) && target is not BaseFamiliar and not ArcaneFey and not Golem
-                || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
+                target.Body.IsMonster && IsSummoned(bcTarg) && target is not BaseFamiliar && target is not ArcaneFey &&
+                target is not Golem || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
             {
                 return Notoriety.Murderer;
             }
@@ -559,7 +559,8 @@ namespace Server.Misc
                 return false;
             }
 
-            return m is not BaseCreature { Deleted: false, Controlled: true, ControlMaster: not null } c || !house.IsFriend(c.ControlMaster);
+            return m is not BaseCreature c || c.Deleted || !c.Controlled || c.ControlMaster == null ||
+                   !house.IsFriend(c.ControlMaster);
         }
 
         public static bool IsPet(BaseCreature c) => c?.Controlled == true;
