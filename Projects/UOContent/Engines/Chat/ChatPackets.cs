@@ -103,7 +103,7 @@ namespace Server.Engines.Chat
 
         public static void SendChatMessage(this NetState ns, string lang, int number, string param1, string param2)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

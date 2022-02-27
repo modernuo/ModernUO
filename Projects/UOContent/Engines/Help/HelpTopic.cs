@@ -35,7 +35,7 @@ namespace Server.Engines.Help
 
         public static void SendDisplayHelpTopic(this NetState ns, int topicID, bool display = true)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
