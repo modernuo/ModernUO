@@ -102,7 +102,7 @@ namespace Server.Network
 
         public static void SendServerPollInfo(this NetState ns)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
