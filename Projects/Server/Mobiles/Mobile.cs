@@ -5203,11 +5203,11 @@ namespace Server
                             else
                             {
                                 amount = Math.Clamp(amount, 1, oldAmount);
-                            }
 
-                            if (amount < oldAmount)
-                            {
-                                LiftItemDupe(item, amount);
+                                if (amount < oldAmount)
+                                {
+                                    LiftItemDupe(item, amount);
+                                }
                             }
 
                             var map = from.Map;
