@@ -10,7 +10,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [Serializable(8, false)]
+    [Serializable(9, false)]
     public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, setter: "private")]
@@ -99,7 +99,7 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializableField(10)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private Mobile _crafter;
+        private string _crafter;
 
         [SerializableFieldSaveFlag(10)]
         private bool ShouldSerializeCrafter() => _crafter != null;
@@ -572,7 +572,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = from;
+                Crafter = from.RawName;
             }
 
             var resourceType = typeRes ?? craftItem.Resources[0].ItemType;
@@ -1076,143 +1076,6 @@ namespace Server.Items
             m?.CheckStatTimers();
         }
 
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            var flags = (OldSaveFlag)reader.ReadEncodedInt();
-
-            Attributes = new AosAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Attributes))
-            {
-                Attributes.Deserialize(reader);
-            }
-
-            ArmorAttributes = new AosArmorAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.ArmorAttributes))
-            {
-                ArmorAttributes.Deserialize(reader);
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.PhysicalBonus))
-            {
-                _physicalBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.FireBonus))
-            {
-                _fireBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.ColdBonus))
-            {
-                _coldBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.PoisonBonus))
-            {
-                _poisonBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.EnergyBonus))
-            {
-                _energyBonus = reader.ReadEncodedInt();
-            }
-
-            _identified = GetSaveFlag(flags, OldSaveFlag.Identified);
-
-            if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
-            {
-                _maxHitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.HitPoints))
-            {
-                _hitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Crafter))
-            {
-                _crafter = reader.ReadEntity<Mobile>();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Quality))
-            {
-                _quality = (ArmorQuality)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _quality = ArmorQuality.Regular;
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Durability))
-            {
-                _durability = (ArmorDurabilityLevel)reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Protection))
-            {
-                _protection = (ArmorProtectionLevel)reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resource))
-            {
-                _rawResource = (CraftResource)reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.BaseArmor))
-            {
-                _armorBase = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.StrBonus))
-            {
-                _strBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.DexBonus))
-            {
-                _dexBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.IntBonus))
-            {
-                _intBonus = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.StrReq))
-            {
-                _strReq = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.DexReq))
-            {
-                _dexReq = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.IntReq))
-            {
-                _intReq = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.MedAllowance))
-            {
-                _meditate = (AMA)reader.ReadEncodedInt();
-            }
-
-            SkillBonuses = new AosSkillBonuses(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.SkillBonuses))
-            {
-                SkillBonuses.Deserialize(reader);
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.PlayerConstructed))
-            {
-                PlayerConstructed = true;
-            }
-        }
-
         public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
         {
             if (!Ethic.CheckTrade(from, to, newOwner, this))
@@ -1431,7 +1294,7 @@ namespace Server.Items
 
             if (_crafter != null)
             {
-                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter); // crafted by ~1_NAME~
             }
 
             if (m_FactionState != null)
@@ -1672,7 +1535,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
         [Flags]
