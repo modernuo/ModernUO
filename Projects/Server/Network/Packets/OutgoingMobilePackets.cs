@@ -39,6 +39,13 @@ public static class OutgoingMobilePackets
     public const int MobileStatusMLLength = 91;
     public const int MobileStatusHSLength = 121;
 
+    public static bool ExtendedStatus { get; private set; }
+
+    public static void Initialize()
+    {
+        ExtendedStatus = ServerConfiguration.GetSetting("client.showExtendedStatus", true);
+    }
+
     public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
     {
         if (buffer[0] != 0)
@@ -460,17 +467,13 @@ public static class OutgoingMobilePackets
             version = 0;
             length = MobileStatusCompactLength;
         }
-        else if (ns.ExtendedStatus)
+        else if (ExtendedStatus && ns.ExtendedStatus)
         {
             version = 6;
             length = MobileStatusHSLength;
         }
         else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
         {
-            /*
-             * For the ML era, the version value must be 5 if the original UO distribution
-             * is used and the client is not lower than version 5
-             */
             version = 5;
             length = MobileStatusMLLength;
         }
