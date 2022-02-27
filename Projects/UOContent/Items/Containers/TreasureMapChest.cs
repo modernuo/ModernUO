@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
+using Server.Lootpack;
 using Server.Network;
 using Server.Utilities;
 
@@ -139,11 +140,41 @@ namespace Server.Items
             }
         }
 
+        public static void InitLock(LockableContainer cont, int level)
+        {
+            cont.TrapType = TrapType.ExplosionTrap;
+            cont.TrapPower = level * 25;
+            cont.TrapLevel = level;
+            cont.RequiredSkill = level switch
+            {
+                1 => 36,
+                2 => 76,
+                3 => 84,
+                4 => 92,
+                5 => 100,
+                6 => 100,
+                _ => cont.RequiredSkill
+            };
+            cont.LockLevel = cont.RequiredSkill - 10;
+            cont.MaxLockLevel = cont.RequiredSkill + 40;
+        }
         public static void Fill(LockableContainer cont, int level)
         {
             cont.Movable = false;
             cont.Locked = true;
             int numberItems;
+
+
+            PackWorker.TryToCreatePack(cont.GetType().Name + level.ToString(),
+                out var _pack, out var _stat);
+
+            if (_pack != null)
+            {
+                cont.LockLevel = 0;
+                if (level > 0) InitLock(cont, level);
+                _pack?.Generate(null, cont, true, 1);
+                return;
+            }
 
             if (level == 0)
             {
@@ -158,23 +189,7 @@ namespace Server.Items
             }
             else
             {
-                cont.TrapType = TrapType.ExplosionTrap;
-                cont.TrapPower = level * 25;
-                cont.TrapLevel = level;
-
-                cont.RequiredSkill = level switch
-                {
-                    1 => 36,
-                    2 => 76,
-                    3 => 84,
-                    4 => 92,
-                    5 => 100,
-                    6 => 100,
-                    _ => cont.RequiredSkill
-                };
-
-                cont.LockLevel = cont.RequiredSkill - 10;
-                cont.MaxLockLevel = cont.RequiredSkill + 40;
+                InitLock(cont, level);
 
                 // Publish 67 gold change
                 // if (Core.SA)

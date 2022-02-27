@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Server.Lootpack;
+using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
 
@@ -12,13 +15,14 @@ namespace Server.Gumps
         private readonly int m_Page;
         private readonly Type[] m_SearchResults;
         private readonly string m_SearchString;
+        private static bool m_OnlyMobiles = false;
 
-        public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
+        public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch,bool OnlyMobiles = false) : base(50, 50)
         {
             m_SearchString = searchString;
             m_SearchResults = searchResults;
             m_Page = page;
-
+            m_OnlyMobiles = OnlyMobiles;
             from.CloseGump<AddGump>();
 
             AddPage(0);
@@ -45,8 +49,10 @@ namespace Server.Gumps
                 {
                     var index = i % 10;
 
-                    AddLabel(44, 39 + index * 20, 0x480, searchResults[i].Name);
+                    AddLabel(OnlyMobiles==true?74:44, 39 + index * 20, 0x480, searchResults[i].Name);
                     AddButton(10, 39 + index * 20, 4023, 4025, 4 + i);
+                    if(OnlyMobiles)
+                        AddButton(40, 39 + index * 20, 0xFA5, 0xFA7, 5 + searchResults.Length + i);
                 }
             }
             else
@@ -90,11 +96,17 @@ namespace Server.Gumps
         public static void Initialize()
         {
             CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
+            CommandSystem.Register("MobMenu", AccessLevel.GameMaster, DropMenu_OnCommand);
         }
-
+        
         [Usage("AddMenu [searchString]")]
-        [Description("Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively.")]
-        private static void AddMenu_OnCommand(CommandEventArgs e)
+        [Description(
+             "Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively."
+        )]
+        private static void AddMenu_OnCommand(CommandEventArgs e) => Open(e, false);
+        private static void DropMenu_OnCommand(CommandEventArgs e) => Open(e, true);
+
+        private static void Open(CommandEventArgs e,bool OnlyMobile)
         {
             var val = e.ArgString.Trim();
             Type[] types;
@@ -111,11 +123,10 @@ namespace Server.Gumps
             }
             else
             {
-                types = Match(val);
+                types = Match(val, OnlyMobile);
                 explicitSearch = true;
             }
-
-            e.Mobile.SendGump(new AddGump(e.Mobile, val, 0, types, explicitSearch));
+            e.Mobile.SendGump(new AddGump(e.Mobile, val, 0, types, explicitSearch,OnlyMobile));
         }
 
         private static void Match(string match, Type[] types, HashSet<Type> results)
@@ -162,7 +173,7 @@ namespace Server.Gumps
             }
         }
 
-        public static Type[] Match(string match)
+        public static Type[] Match(string match,bool onlyMobiles=false)
         {
             var results = new HashSet<Type>();
             Type[] types;
@@ -178,20 +189,9 @@ namespace Server.Gumps
             types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
             Match(match, types, results);
 
-            if (results.Count == 0)
-            {
-                return Array.Empty<Type>();
-            }
-
-            var finalResults = new Type[results.Count];
-            var index = 0;
-            foreach (var t in results)
-            {
-                finalResults[index++] = t;
-            }
-
-            Array.Sort(finalResults, TypeNameComparer.Instance);
-            return finalResults;
+            results.Sort(new TypeNameComparer());
+            if(m_OnlyMobiles) results = results.Where(_ => _.FullName.IndexOf("Mobiles")!=-1).ToArray();
+            return results;
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -208,11 +208,11 @@ namespace Server.Gumps
                         if (match.Length < 3)
                         {
                             from.SendMessage("Invalid search string.");
-                            from.SendGump(new AddGump(from, match, m_Page, m_SearchResults, false));
+                            from.SendGump(new AddGump(from, match, m_Page, m_SearchResults, false, m_OnlyMobiles));
                         }
                         else
                         {
-                            from.SendGump(new AddGump(from, match, 0, Match(match), true));
+                            from.SendGump(new AddGump(from, match, 0, Match(match), true, m_OnlyMobiles));
                         }
 
                         break;
@@ -221,7 +221,7 @@ namespace Server.Gumps
                     {
                         if (m_Page > 0)
                         {
-                            from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
+                            from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true, m_OnlyMobiles));
                         }
 
                         break;
@@ -230,7 +230,7 @@ namespace Server.Gumps
                     {
                         if ((m_Page + 1) * 10 < m_SearchResults.Length)
                         {
-                            from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
+                            from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true, m_OnlyMobiles));
                         }
 
                         break;
@@ -238,16 +238,47 @@ namespace Server.Gumps
                 default:
                     {
                         var index = info.ButtonID - 4;
+                        var index2 = info.ButtonID - m_SearchResults.Length - 5;
 
                         if (index >= 0 && index < m_SearchResults.Length)
                         {
-                            from.SendMessage("Where do you wish to place this object? <ESC> to cancel.");
-                            from.Target = new InternalTarget(
-                                m_SearchResults[index],
-                                m_SearchResults,
-                                m_SearchString,
-                                m_Page
-                            );
+                            if(m_OnlyMobiles)
+                            {
+                                var packName = m_SearchResults[index].Name;
+                                var pck=packLoader.GetPackLootByName(packName);
+                                if(pck != null) from.SendGump(new LootPackCreationGump(packName, pck));
+                                else from.SendGump(new LootPackCreationGump(packName, null));
+                            }
+                            else
+                            {
+                                from.SendMessage("Where do you wish to place this object? <ESC> to cancel.");
+                                from.Target = new InternalTarget(
+                                    m_SearchResults[index],
+                                    m_SearchResults,
+                                    m_SearchString,
+                                    m_Page
+                                );
+                            }
+                          
+                        }
+                        else
+                        {
+                            if (m_OnlyMobiles && index2 >=0 && index2 < m_SearchResults.Length)
+                            {
+                                var packName = m_SearchResults[index2].Name;
+                                var pck = packLoader.GetPackByName(packName);
+                                if (pck == null)
+                                {
+                                    var statpack = PackWorker.GetStats(packName);
+                                    if (statpack == null) return;
+                                    from.SendGump(new LootPackItemEditor(from, statpack));
+                                }
+                                else
+                                {
+                                    pck.Stats.Name = packName;
+                                    from.SendGump(new LootPackItemEditor(from, pck.Stats));
+                                }
+                            }
                         }
 
                         break;
