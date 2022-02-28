@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "type": "Server.Items.BaseTreasureChest",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Items.BaseTreasureChest.TreasureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "MinSpawnTime",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "MaxSpawnTime",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    }
+  ]
+}

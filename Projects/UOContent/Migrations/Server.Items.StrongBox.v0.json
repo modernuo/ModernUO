@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Items.StrongBox",
+  "properties": [
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "House",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -90,56 +90,31 @@ public partial class BaseTreasureChest : LockableContainer
             TreasureLevel.Level4 => LockLevel = 70,
             TreasureLevel.Level5 => LockLevel = 90,
             TreasureLevel.Level6 => LockLevel = 100,
-            _                    => RequiredSkill
+            _                    => LockLevel = 120
         };
     }
 
     private void StartResetTimer()
     {
         _resetTimer.Cancel();
+
         var randomDuration = Utility.RandomMinMax(_minSpawnTime.Ticks, _maxSpawnTime.Ticks);
         Timer.StartTimer(TimeSpan.FromTicks(randomDuration), Reset, out _resetTimer);
     }
 
     protected virtual void GenerateTreasure()
     {
-        var minGold = 1;
-        var maxGold = 2;
-
-        switch (_level)
+        var gold = _level switch
         {
-            case TreasureLevel.Level1:
-                minGold = 100;
-                maxGold = 300;
-                break;
+            TreasureLevel.Level1 => Utility.RandomMinMax(100, 300),
+            TreasureLevel.Level2 => Utility.RandomMinMax(300, 600),
+            TreasureLevel.Level3 => Utility.RandomMinMax(600, 900),
+            TreasureLevel.Level4 => Utility.RandomMinMax(900, 1200),
+            TreasureLevel.Level5 => Utility.RandomMinMax(1200, 5000),
+            _                    => Utility.RandomMinMax(5000, 9000),
+        };
 
-            case TreasureLevel.Level2:
-                minGold = 300;
-                maxGold = 600;
-                break;
-
-            case TreasureLevel.Level3:
-                minGold = 600;
-                maxGold = 900;
-                break;
-
-            case TreasureLevel.Level4:
-                minGold = 900;
-                maxGold = 1200;
-                break;
-
-            case TreasureLevel.Level5:
-                minGold = 1200;
-                maxGold = 5000;
-                break;
-
-            case TreasureLevel.Level6:
-                minGold = 5000;
-                maxGold = 9000;
-                break;
-        }
-
-        DropItem(new Gold(minGold, maxGold));
+        DropItem(new Gold(gold));
     }
 
     public void ClearContents()
