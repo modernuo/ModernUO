@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.ParagonChest",
+  "properties": [
+    {
+      "name": "Name",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "InternString"
+      ]
+    }
+  ]
+}
