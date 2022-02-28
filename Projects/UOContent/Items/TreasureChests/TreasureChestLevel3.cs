@@ -41,32 +41,31 @@ public partial class TreasureChestLevel3 : LockableContainer
         // Reagents
         for (var i = Utility.Random(2); i >= 0; i--)
         {
-            var ReagentLoot = Loot.RandomReagent();
-            ReagentLoot.Amount = Utility.Random(1, 9);
-            DropItem(ReagentLoot);
+            var reagents = Loot.RandomReagent();
+            reagents.Amount = Utility.Random(1, 9);
+            DropItem(reagents);
         }
 
         // Scrolls
         for (var i = Utility.Random(3); i > 0; i--)
         {
-            Item ScrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
-            ScrollLoot.Amount = Utility.Random(1, 12);
-            DropItem(ScrollLoot);
+            var scrolls = Loot.RandomScroll(0, 47, SpellbookType.Regular);
+            scrolls.Amount = Utility.Random(1, 12);
+            DropItem(scrolls);
         }
 
         // Potions
         for (var i = Utility.Random(3); i > 0; i--)
         {
-            var PotionLoot = Loot.RandomPotion();
-            DropItem(PotionLoot);
+            DropItem(Loot.RandomPotion());
         }
 
         // Gems
         for (var i = Utility.Random(3); i > 0; i--)
         {
-            var GemLoot = Loot.RandomGem();
-            GemLoot.Amount = Utility.Random(1, 9);
-            DropItem(GemLoot);
+            var gems = Loot.RandomGem();
+            gems.Amount = Utility.Random(1, 9);
+            DropItem(gems);
         }
 
         // Magic Wand

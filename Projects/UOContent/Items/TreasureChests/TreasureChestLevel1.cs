@@ -37,9 +37,9 @@ public partial class TreasureChestLevel1 : LockableContainer
         // Gems
         if (Utility.RandomBool())
         {
-            var GemLoot = Loot.RandomGem();
-            GemLoot.Amount = Utility.Random(1, 3);
-            DropItem(GemLoot);
+            var gems = Loot.RandomGem();
+            gems.Amount = Utility.Random(1, 3);
+            DropItem(gems);
         }
 
         // Weapon

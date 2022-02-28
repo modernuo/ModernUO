@@ -36,17 +36,17 @@ public partial class TreasureChestLevel2 : LockableContainer
         // Reagents
         for (var i = Utility.Random(3); i > 0; i--)
         {
-            var reagent = Loot.RandomReagent();
-            reagent.Amount = Utility.Random(1, 2);
-            DropItem(reagent);
+            var reagents = Loot.RandomReagent();
+            reagents.Amount = Utility.Random(1, 2);
+            DropItem(reagents);
         }
 
         // Scrolls
         if (Utility.RandomBool())
         {
-            var scroll = Loot.RandomScroll(0, 39, SpellbookType.Regular);
-            scroll.Amount = Utility.Random(1, 8);
-            DropItem(scroll);
+            var scrolls = Loot.RandomScroll(0, 39, SpellbookType.Regular);
+            scrolls.Amount = Utility.Random(1, 8);
+            DropItem(scrolls);
         }
 
         // Potions
@@ -58,9 +58,9 @@ public partial class TreasureChestLevel2 : LockableContainer
         // Gems
         if (Utility.RandomBool())
         {
-            var gem = Loot.RandomGem();
-            gem.Amount = Utility.Random(1, 6);
-            DropItem(gem);
+            var gems = Loot.RandomGem();
+            gems.Amount = Utility.Random(1, 6);
+            DropItem(gems);
         }
     }
 
