@@ -121,19 +121,19 @@ public partial class TreasureChestLevel3 : LockableContainer
 
     public override Rectangle2D Bounds => new(18, 105, 144, 73);
 
-    private static readonly ValueTuple<int, int>[] _chestAppearances =
+    private static readonly (int, int)[] _chestAppearances =
     {
         // Wooden Chest
-        ValueTuple.Create(0xe42, 0x49),
-        ValueTuple.Create(0xe43, 0x49),
+        (0xe42, 0x49),
+        (0xe43, 0x49),
 
         // Metal Chest
-        ValueTuple.Create(0x9ab, 0x4A),
-        ValueTuple.Create(0xe7c, 0x4A),
+        (0x9ab, 0x4A),
+        (0xe7c, 0x4A),
 
         // Metal Golden Chest
-        ValueTuple.Create(0xe40, 0x42),
-        ValueTuple.Create(0xe41, 0x42),
+        (0xe40, 0x42),
+        (0xe41, 0x42),
     };
 
     private void SetChestAppearance()

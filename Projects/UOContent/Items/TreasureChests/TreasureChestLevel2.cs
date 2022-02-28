@@ -76,37 +76,37 @@ public partial class TreasureChestLevel2 : LockableContainer
 
     public override Rectangle2D Bounds => new(18, 105, 144, 73);
 
-    private static readonly ValueTuple<int, int>[] _chestAppearances =
+    private static readonly (int, int)[] _chestAppearances =
     {
         // Large Crate
-        ValueTuple.Create(0xe3c, 0x44),
-        ValueTuple.Create(0xe3d, 0x44),
+        (0xe3c, 0x44),
+        (0xe3d, 0x44),
 
         // Medium Crate
-        ValueTuple.Create(0xe3e, 0x44),
-        ValueTuple.Create(0xe3f, 0x44),
+        (0xe3e, 0x44),
+        (0xe3f, 0x44),
 
         // Small Crate
-        ValueTuple.Create(0x9a9, 0x44),
-        ValueTuple.Create(0xe7e, 0x44),
+        (0x9a9, 0x44),
+        (0xe7e, 0x44),
 
         // Wooden Chest
-        ValueTuple.Create(0xe42, 0x49),
-        ValueTuple.Create(0xe43, 0x49),
+        (0xe42, 0x49),
+        (0xe43, 0x49),
 
         // Metal Chest
-        ValueTuple.Create(0x9ab, 0x4A),
-        ValueTuple.Create(0xe7c, 0x4A),
+        (0x9ab, 0x4A),
+        (0xe7c, 0x4A),
 
         // Metal Golden Chest
-        ValueTuple.Create(0xe40, 0x42),
-        ValueTuple.Create(0xe41, 0x42),
+        (0xe40, 0x42),
+        (0xe41, 0x42),
 
         // Keg
-        ValueTuple.Create(0xe7f, 0x3e),
+        (0xe7f, 0x3e),
 
         // Barrel
-        ValueTuple.Create(0xe77, 0x3e),
+        (0xe77, 0x3e),
     };
 
     private void SetChestAppearance()
