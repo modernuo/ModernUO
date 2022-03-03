@@ -3041,6 +3041,12 @@ namespace Server.Mobiles
             return null;
         }
 
+        public virtual bool IsMonster =>
+            !Controlled || GetMaster() is not BaseCreature { Controlled: true };
+
+        public bool InActivePVPCombat() =>
+            Combatant is PlayerMobile && ControlOrder != OrderType.Follow;
+
         public static List<DamageStore> GetLootingRights(List<DamageEntry> damageEntries, int hitsMax)
         {
             var rights = new List<DamageStore>();

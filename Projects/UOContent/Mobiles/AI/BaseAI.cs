@@ -1860,34 +1860,17 @@ namespace Server.Mobiles
             var isPassive = delay == m_Mobile.PassiveSpeed;
             var isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
 
-            if (delay == 0.2)
+            delay = delay switch
             {
-                delay = 0.3;
-            }
-            else if (delay == 0.25)
-            {
-                delay = 0.45;
-            }
-            else if (delay == 0.3)
-            {
-                delay = 0.6;
-            }
-            else if (delay == 0.4)
-            {
-                delay = 0.9;
-            }
-            else if (delay == 0.5)
-            {
-                delay = 1.05;
-            }
-            else if (delay == 0.6)
-            {
-                delay = 1.2;
-            }
-            else if (delay == 0.8)
-            {
-                delay = 1.5;
-            }
+                0.2  => 0.3,
+                0.25 => 0.45,
+                0.3  => 0.6,
+                0.4  => 0.9,
+                0.5  => 1.05,
+                0.6  => 1.2,
+                0.8  => 1.5,
+                _    => delay
+            };
 
             if (isPassive)
             {
@@ -1910,18 +1893,7 @@ namespace Server.Mobiles
 
             if (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued)
             {
-                var offset = (double)m_Mobile.Hits / m_Mobile.HitsMax;
-
-                if (offset < 0.0)
-                {
-                    offset = 0.0;
-                }
-                else if (offset > 1.0)
-                {
-                    offset = 1.0;
-                }
-
-                offset = 1.0 - offset;
+                var offset = 1.0 - Math.Clamp((double)m_Mobile.Hits / m_Mobile.HitsMax, 0.0, 1.0);
 
                 delay += offset * 0.8;
             }
