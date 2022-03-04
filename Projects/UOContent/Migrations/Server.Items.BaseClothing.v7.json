@@ -1,0 +1,99 @@
+{
+  "version": 7,
+  "type": "Server.Items.BaseClothing",
+  "properties": [
+    {
+      "name": "RawResource",
+      "type": "Server.Items.CraftResource",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Attributes",
+      "type": "Server.AosAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ClothingAttributes",
+      "type": "Server.AosArmorAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SkillBonuses",
+      "type": "Server.AosSkillBonuses",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Resistances",
+      "type": "Server.AosElementAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxHitPoints",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "HitPoints",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "PlayerConstructed",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Crafter",
+      "type": "string",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Quality",
+      "type": "Server.Items.ClothingQuality",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "StrRequirement",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

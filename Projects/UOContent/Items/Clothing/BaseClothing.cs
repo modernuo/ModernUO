@@ -22,7 +22,7 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [Serializable(6, false)]
+    [Serializable(7, false)]
     public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, "private", "private")]
@@ -93,7 +93,7 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializableField(8)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private Mobile _crafter;
+        private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeCrafter() => _crafter != null;
@@ -193,7 +193,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = from;
+                Crafter = from.RawName;
             }
 
             if (DefaultResource != CraftResource.None)
@@ -699,7 +699,7 @@ namespace Server.Items
 
             if (_crafter != null)
             {
-                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter); // crafted by ~1_NAME~
             }
 
             if (_factionState != null)
@@ -907,7 +907,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -963,83 +963,6 @@ namespace Server.Items
         }
 
         private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            var flags = (OldSaveFlag)reader.ReadEncodedInt();
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resource))
-            {
-                _rawResource = (CraftResource)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _rawResource = DefaultResource;
-            }
-
-            Attributes = new AosAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Attributes))
-            {
-                Attributes.Deserialize(reader);
-            }
-
-            ClothingAttributes = new AosArmorAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.ClothingAttributes))
-            {
-                ClothingAttributes.Deserialize(reader);
-            }
-
-            SkillBonuses = new AosSkillBonuses(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.SkillBonuses))
-            {
-                SkillBonuses.Deserialize(reader);
-            }
-
-            Resistances = new AosElementAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resistances))
-            {
-                Resistances.Deserialize(reader);
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
-            {
-                _maxHitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.HitPoints))
-            {
-                _hitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Crafter))
-            {
-                _crafter = reader.ReadEntity<Mobile>();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Quality))
-            {
-                _quality = (ClothingQuality)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _quality = ClothingQuality.Regular;
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.StrReq))
-            {
-                _strReq = reader.ReadEncodedInt();
-            }
-            else
-            {
-                _strReq = -1;
-            }
-
-            PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
-        }
 
         [AfterDeserialization]
         private void AfterDeserialization()

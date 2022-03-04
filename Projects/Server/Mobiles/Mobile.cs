@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.HighPerformance;
 using Server.Accounting;
 using Server.Buffers;
 using Server.ContextMenus;
@@ -2961,13 +2960,12 @@ namespace Server
                 ? OutgoingVirtualHairPackets.RemovePacketLength
                 : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
-            Span<byte> facialhairPacket = stackalloc byte[facialHairLength].InitializePacket();
+            Span<byte> facialHairPacket = stackalloc byte[facialHairLength].InitializePacket();
 
             const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
             const int width = OutgoingMobilePackets.MobileMovingPacketLength;
-            const int height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
 
-            var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
+            var mobileMovingCache = stackalloc byte[cacheLength].InitializePackets(width);
 
             var ourState = m_NetState;
 
@@ -3069,12 +3067,12 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, facialHairSerial);
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, facialHairSerial);
                     }
                     else
                     {
                         OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
-                            facialhairPacket,
+                            facialHairPacket,
                             this,
                             facialHairSerial,
                             FacialHairItemID,
@@ -3082,7 +3080,7 @@ namespace Server
                             Layer.FacialHair
                         );
                     }
-                    ourState.Send(facialhairPacket);
+                    ourState.Send(facialHairPacket);
                 }
 
                 if (sendOPLUpdate)
@@ -3208,12 +3206,12 @@ namespace Server
                 {
                     if (removeFacialHair)
                     {
-                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialhairPacket, facialHairSerial);
+                        OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, facialHairSerial);
                     }
                     else
                     {
                         OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
-                            facialhairPacket,
+                            facialHairPacket,
                             this,
                             facialHairSerial,
                             FacialHairItemID,
@@ -3221,7 +3219,7 @@ namespace Server
                             Layer.FacialHair
                         );
                     }
-                    state.Send(facialhairPacket);
+                    state.Send(facialHairPacket);
                 }
 
                 SendOPLPacketTo(state);
@@ -4472,10 +4470,9 @@ namespace Server
                 eable.Free();
 
                 const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
-                var width = OutgoingMobilePackets.MobileMovingPacketLength;
-                var height = OutgoingMobilePackets.MobileMovingPacketCacheHeight;
+                const int width = OutgoingMobilePackets.MobileMovingPacketLength;
 
-                var mobileMovingCache = stackalloc byte[cacheLength].AsSpan2D(height, width).InitializePackets();
+                var mobileMovingCache = stackalloc byte[cacheLength].InitializePackets(width);
 
                 foreach (var m in m_MoveClientList)
                 {
@@ -9029,7 +9026,10 @@ namespace Server
         public Direction GetDirectionTo(IPoint2D p, bool run = false) =>
             p == null ? Direction.North | (run ? Direction.Running : 0) : GetDirectionTo(p.X, p.Y, run);
 
-        public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
+        public void PublicOverheadMessage(
+            MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true,
+            AccessLevel accessLevel = AccessLevel.Player
+        )
         {
             if (m_Map == null)
             {
@@ -9042,7 +9042,11 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                if (
+                    state.Mobile.AccessLevel >= accessLevel &&
+                    state.Mobile.CanSee(this) &&
+                    (noLineOfSight || state.Mobile.InLOS(this))
+                )
                 {
                     var length = OutgoingMessagePackets.CreateMessage(
                         buffer, Serial, Body, type, hue, 3, ascii, Language, Name, text
@@ -9093,7 +9097,8 @@ namespace Server
 
         public void PublicOverheadMessage(
             MessageType type, int hue, int number, AffixType affixType, string affix,
-            string args = "", bool noLineOfSight = false
+            string args = "", bool noLineOfSight = false,
+            AccessLevel accessLevel = AccessLevel.Player
         )
         {
             if (m_Map == null)
@@ -9107,7 +9112,11 @@ namespace Server
 
             foreach (var state in eable)
             {
-                if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                if (
+                    state.Mobile.AccessLevel >= accessLevel &&
+                    state.Mobile.CanSee(this) &&
+                    (noLineOfSight || state.Mobile.InLOS(this))
+                )
                 {
                     var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
                         buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
