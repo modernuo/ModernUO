@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingExtendedCommandPackets.cs                               *
  *                                                                       *
@@ -13,15 +13,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using Server.ContextMenus;
 
 namespace Server.Network;
 
 public static class IncomingExtendedCommandPackets
 {
-    private static readonly PacketHandler[] m_ExtendedHandlersLow = new PacketHandler[0x100];
-    private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh = new();
+    private static readonly PacketHandler[] _extendedHandlers = new PacketHandler[0x100];
 
     // TODO: Change to outside configuration
     public static int[] ValidAnimations { get; set; } =
@@ -71,36 +69,20 @@ public static class IncomingExtendedCommandPackets
 
     public static void RegisterExtended(int packetID, bool ingame, OnPacketReceive onReceive)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
-            m_ExtendedHandlersLow[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
-        }
-        else
-        {
-            m_ExtendedHandlersHigh[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            _extendedHandlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
         }
     }
 
-    public static PacketHandler GetExtendedHandler(int packetID)
-    {
-        if (packetID >= 0 && packetID < 0x100)
-        {
-            return m_ExtendedHandlersLow[packetID];
-        }
-
-        m_ExtendedHandlersHigh.TryGetValue(packetID, out var handler);
-        return handler;
-    }
+    public static PacketHandler GetExtendedHandler(int packetID) =>
+        packetID is >= 0 and < 0x100 ? _extendedHandlers[packetID] : null;
 
     public static void RemoveExtendedHandler(int packetID)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
-            m_ExtendedHandlersLow[packetID] = null;
-        }
-        else
-        {
-            m_ExtendedHandlersHigh.Remove(packetID);
+            _extendedHandlers[packetID] = null;
         }
     }
 

@@ -598,6 +598,14 @@ public static class IncomingPlayerPackets
         var e = World.FindEntity((Serial)reader.ReadUInt32());
         int packetId = reader.ReadUInt16();
 
+        // We will add support if this is ever a real thing.
+        if (packetId > 0xFF)
+        {
+            var reason = $"Sent unsupported encoded packet (0xD7x{packetId:X4}";
+            state.LogInfo(reason);
+            state.Disconnect(reason);
+        }
+
         var ph = IncomingPackets.GetEncodedHandler(packetId);
 
         if (ph == null)
@@ -608,15 +616,13 @@ public static class IncomingPlayerPackets
 
         if (ph.Ingame && state.Mobile == null)
         {
-            state.LogInfo(
-                "Sent in-game packet (0xD7x{0:X2}) before being attached to a mobile",
-                packetId
-            );
-            state.Disconnect($"Sent in-game packet (0xD7x{packetId:X2}) before being attached to a mobile.");
+            var reason = $"Sent in-game packet (0xD7x{packetId:X4}) before being attached to a mobile.";
+            state.LogInfo(reason);
+            state.Disconnect(reason);
         }
         else if (ph.Ingame && state.Mobile.Deleted)
         {
-            state.Disconnect($"Sent in-game packet(0xD7x{packetId:X2}) but mobile is deleted.");
+            state.Disconnect($"Sent in-game packet(0xD7x{packetId:X4}) but mobile is deleted.");
         }
         else
         {
