@@ -20,8 +20,6 @@ namespace Server.Network;
 
 public static class IncomingPackets
 {
-    private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
-
     private static readonly EncodedPacketHandler[] m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
 
     private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh =
@@ -29,17 +27,20 @@ public static class IncomingPackets
 
     public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 
-    public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive) =>
+        Register(new PacketHandler(packetID, length, ingame, onReceive));
+
+    public static void Register(PacketHandler packetHandler)
     {
-        Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
-        m_6017Handlers[packetID] ??= new PacketHandler(packetID, length, ingame, onReceive);
+        Handlers[packetHandler.PacketID] = packetHandler;
     }
 
     public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
 
     public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
             m_EncodedHandlersLow[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
         }
@@ -51,7 +52,7 @@ public static class IncomingPackets
 
     public static EncodedPacketHandler GetEncodedHandler(int packetID)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
             return m_EncodedHandlersLow[packetID];
         }
@@ -62,7 +63,7 @@ public static class IncomingPackets
 
     public static void RemoveEncodedHandler(int packetID)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
             m_EncodedHandlersLow[packetID] = null;
         }

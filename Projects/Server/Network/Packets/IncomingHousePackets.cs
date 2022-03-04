@@ -22,7 +22,7 @@ public static class IncomingHousePackets
         IncomingPackets.Register(0xFB, 2, false, ShowPublicHouseContent);
     }
 
-    public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, int packetLength)
     {
         var showPublicHouseContent = reader.ReadBoolean();
     }
