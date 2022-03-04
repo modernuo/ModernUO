@@ -223,32 +223,20 @@ public partial class NetState : IComparable<NetState>
 
     private void SetPacketTime(int packetID)
     {
-        if (packetID is < 0 or >= 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
-            return;
+            _packetThrottles[packetID] = Core.TickCount;
         }
-
-        _packetThrottles[packetID] = Core.TickCount;
     }
 
-    public long GetPacketDelay(int packetID)
-    {
-        if (packetID is < 0 or >= 0x100)
-        {
-            return 0;
-        }
-
-        return _packetThrottles[packetID];
-    }
+    public long GetPacketTime(int packetID) => packetID is >= 0 and < 0x100 ? _packetThrottles[packetID] : 0;
 
     private void UpdatePacketCount(int packetID)
     {
-        if (packetID is < 0 or >= 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
-            return;
+            _packetCounts[packetID]++;
         }
-
-        _packetCounts[packetID]++;
     }
 
     public int CheckPacketCounts()
