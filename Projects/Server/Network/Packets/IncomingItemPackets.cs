@@ -24,13 +24,13 @@ public static class IncomingItemPackets
     public static void Configure()
     {
         IncomingPackets.Register(0x07, 7, true, LiftReq);
-        IncomingPackets.Register(0x08, 15, true, DropReq);
+        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, DropReq));
         IncomingPackets.Register(0x13, 10, true, EquipReq);
         IncomingPackets.Register(0xEC, 0, false, EquipMacro);
         IncomingPackets.Register(0xED, 0, false, UnequipMacro);
     }
 
-    public static void LiftReq(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void LiftReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         var serial = (Serial)reader.ReadUInt32();
         int amount = reader.ReadUInt16();
@@ -39,7 +39,7 @@ public static class IncomingItemPackets
         state.Mobile.Lift(item, amount, out _, out _);
     }
 
-    public static void EquipReq(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void EquipReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         var from = state.Mobile;
         var item = from.Holding;
@@ -64,19 +64,16 @@ public static class IncomingItemPackets
         item.ClearBounce();
     }
 
-    public static void DropReq(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void DropReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         reader.ReadInt32(); // serial, ignored
         int x = reader.ReadInt16();
         int y = reader.ReadInt16();
         int z = reader.ReadSByte();
+
         if (state.ContainerGridLines)
         {
             reader.ReadByte(); // Grid Location?
-        }
-        else
-        {
-            packetLength -= 1;
         }
 
         Serial dest = (Serial)reader.ReadUInt32();
@@ -110,7 +107,7 @@ public static class IncomingItemPackets
         }
     }
 
-    public static void DropReq6017(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void DropReq6017(NetState state, CircularBufferReader reader, int packetLength)
     {
         reader.ReadInt32(); // serial, ignored
         int x = reader.ReadInt16();
@@ -148,7 +145,7 @@ public static class IncomingItemPackets
         }
     }
 
-    public static void EquipMacro(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void EquipMacro(NetState state, CircularBufferReader reader, int packetLength)
     {
         int count = reader.ReadByte();
         var serialList = new List<Serial>(count);
@@ -160,7 +157,7 @@ public static class IncomingItemPackets
         EventSink.InvokeEquipMacro(state.Mobile, serialList);
     }
 
-    public static void UnequipMacro(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void UnequipMacro(NetState state, CircularBufferReader reader, int packetLength)
     {
         int count = reader.ReadByte();
         var layers = new List<Layer>(count);

@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.IO;
 
 namespace Server.Network;
 
@@ -25,7 +26,7 @@ public static class IncomingVendorPackets
         IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
     }
 
-    public static void VendorBuyReply(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void VendorBuyReply(NetState state, CircularBufferReader reader, int packetLength)
     {
         var vendor = World.FindMobile((Serial)reader.ReadUInt32());
 
@@ -65,7 +66,7 @@ public static class IncomingVendorPackets
         state.SendEndVendorBuy(vendor.Serial);
     }
 
-    public static void VendorSellReply(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void VendorSellReply(NetState state, CircularBufferReader reader, int packetLength)
     {
         var serial = (Serial)reader.ReadUInt32();
         var vendor = World.FindMobile(serial);
