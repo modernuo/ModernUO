@@ -38,8 +38,8 @@ namespace Server.Network
             }
             else
             {
-                Delays[0x03] = 5; // Speech
-                Delays[0xAD] = 5; // Speech
+                Delays[0x03] = 25; // Speech
+                Delays[0xAD] = 25; // Speech
                 Delays[0x75] = 500; // Rename request
             }
 
@@ -141,7 +141,7 @@ namespace Server.Network
                 return true;
             }
 
-            if (Core.TickCount < ns.GetPacketDelay(packetID) + Delays[packetID])
+            if (Core.TickCount < ns.GetPacketTime(packetID) + Delays[packetID])
             {
                 drop = true;
                 return false;
