@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
@@ -1857,72 +1856,24 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            var isPassive = delay == m_Mobile.PassiveSpeed;
-            var isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
+            double max = m_Mobile?.IsMonster == true ? SpeedInfo.MaxDelayMonster : SpeedInfo.MaxDelay;
 
-            delay = delay switch
+            if (m_Mobile?.IsDeadPet == true && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
-                0.2  => 0.3,
-                0.25 => 0.45,
-                0.3  => 0.6,
-                0.4  => 0.9,
-                0.5  => 1.05,
-                0.6  => 1.2,
-                0.8  => 1.5,
-                _    => delay
-            };
+                double offset = m_Mobile.StamMax == 0 ? 1.0 : m_Mobile.Stam / (double)m_Mobile.StamMax;
 
-            if (isPassive)
-            {
-                delay += 0.2;
-            }
-
-            if (!isControlled)
-            {
-                delay += 0.1;
-            }
-            else if (m_Mobile.Controlled)
-            {
-                if (m_Mobile.ControlOrder == OrderType.Follow && m_Mobile.ControlTarget == m_Mobile.ControlMaster)
+                if (offset < 1.0)
                 {
-                    delay *= 0.5;
+                    delay += (max - delay) * (1.0 - offset);
                 }
-
-                delay -= 0.075;
             }
 
-            if (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued)
-            {
-                var offset = 1.0 - Math.Clamp((double)m_Mobile.Hits / m_Mobile.HitsMax, 0.0, 1.0);
-
-                delay += offset * 0.8;
-            }
-
-            if (delay < 0.0)
-            {
-                delay = 0.0;
-            }
-
-            if (double.IsNaN(delay))
-            {
-                using (var op = new StreamWriter("nan_transform.txt", true))
-                {
-                    op.WriteLine(
-                        $"NaN in TransformMoveDelay: {Core.Now}, {GetType()}, {m_Mobile?.GetType()}, {m_Mobile.HitsMax}"
-                    );
-                }
-
-                return 1.0;
-            }
-
-            return delay;
+            return Math.Min(delay, max);
         }
 
         public virtual bool CheckMove() => Core.TickCount - NextMove >= 0;
 
-        public virtual bool DoMove(Direction d) => DoMove(d, false);
-
-        public virtual bool DoMove(Direction d, bool badStateOk)
+        public virtual bool DoMove(Direction d, bool badStateOk = false)
         {
             var res = DoMoveImpl(d);
 
