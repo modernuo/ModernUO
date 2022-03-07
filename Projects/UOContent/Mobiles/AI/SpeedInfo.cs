@@ -24,7 +24,7 @@ public static class SpeedInfo
         MaxMonsterDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDex", 150);
     }
 
-    public static void GetSpeeds(BaseCreature bc, ref double activeSpeed, ref double passiveSpeed)
+    public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
         var isMonster = bc.IsMonster;
         var monsterDelay = isMonster || bc.InActivePVPCombat();

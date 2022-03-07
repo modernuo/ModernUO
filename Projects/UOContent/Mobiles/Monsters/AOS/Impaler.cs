@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Impaler : BaseCreature
     {
         [Constructible]
-        public Impaler() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Impaler() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
         {
             Name = NameList.RandomName("impaler");
             Body = 306;

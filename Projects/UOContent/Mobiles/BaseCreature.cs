@@ -324,9 +324,18 @@ namespace Server.Mobiles
             AIType ai,
             FightMode mode,
             int iRangePerception,
+            int iRangeFight
+        ) : this(ai, mode, iRangePerception, iRangeFight, -1, -1)
+        {
+        }
+
+        public BaseCreature(
+            AIType ai,
+            FightMode mode,
+            int iRangePerception,
             int iRangeFight,
-            double dActiveSpeed,
-            double dPassiveSpeed
+            double passiveSpeed,
+            double activeSpeed
         )
         {
             if (iRangePerception == OldRangePerception)
@@ -346,11 +355,16 @@ namespace Server.Mobiles
 
             m_Team = 0;
 
-            SpeedInfo.GetSpeeds(this, ref dActiveSpeed, ref dPassiveSpeed);
-
-            ActiveSpeed = dActiveSpeed;
-            PassiveSpeed = dPassiveSpeed;
-            m_CurrentSpeed = dPassiveSpeed;
+            if (passiveSpeed < 0 || activeSpeed < 0)
+            {
+                ResetSpeeds();
+            }
+            else
+            {
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = passiveSpeed;
+            }
 
             Debug = false;
 
@@ -4833,6 +4847,16 @@ namespace Server.Mobiles
             {
                 PackWeapon(minLevel, maxLevel, weaponChance);
             }
+        }
+
+        // Reset speeds based on dex. Mainly used during construction and pet commands
+        public void ResetSpeeds(bool currentUseActive = false)
+        {
+            SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()

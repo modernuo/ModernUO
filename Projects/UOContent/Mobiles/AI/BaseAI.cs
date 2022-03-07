@@ -809,31 +809,45 @@ namespace Server.Mobiles
             switch (Action)
             {
                 case ActionType.Wander:
-                    m_Mobile.OnActionWander();
-                    return DoActionWander();
+                    {
+                        m_Mobile.OnActionWander();
+                        return DoActionWander();
+                    }
 
                 case ActionType.Combat:
-                    m_Mobile.OnActionCombat();
-                    return DoActionCombat();
+                    {
+                        m_Mobile.OnActionCombat();
+                        return DoActionCombat();
+                    }
 
                 case ActionType.Guard:
-                    m_Mobile.OnActionGuard();
-                    return DoActionGuard();
+                    {
+                        m_Mobile.OnActionGuard();
+                        return DoActionGuard();
+                    }
 
                 case ActionType.Flee:
-                    m_Mobile.OnActionFlee();
-                    return DoActionFlee();
+                    {
+                        m_Mobile.OnActionFlee();
+                        return DoActionFlee();
+                    }
 
                 case ActionType.Interact:
-                    m_Mobile.OnActionInteract();
-                    return DoActionInteract();
+                    {
+                        m_Mobile.OnActionInteract();
+                        return DoActionInteract();
+                    }
 
                 case ActionType.Backoff:
-                    m_Mobile.OnActionBackoff();
-                    return DoActionBackoff();
+                    {
+                        m_Mobile.OnActionBackoff();
+                        return DoActionBackoff();
+                    }
 
                 default:
-                    return false;
+                    {
+                        return false;
+                    }
             }
         }
 
@@ -842,42 +856,54 @@ namespace Server.Mobiles
             switch (Action)
             {
                 case ActionType.Wander:
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    m_Mobile.FocusMob = null;
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    break;
+                    {
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        m_Mobile.FocusMob = null;
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        break;
+                    }
 
                 case ActionType.Combat:
-                    m_Mobile.Warmode = true;
-                    m_Mobile.FocusMob = null;
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    break;
+                    {
+                        m_Mobile.Warmode = true;
+                        m_Mobile.FocusMob = null;
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        break;
+                    }
 
                 case ActionType.Guard:
-                    m_Mobile.Warmode = true;
-                    m_Mobile.FocusMob = null;
-                    m_Mobile.Combatant = null;
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    m_NextStopGuard = Core.TickCount + (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    break;
+                    {
+                        m_Mobile.Warmode = true;
+                        m_Mobile.FocusMob = null;
+                        m_Mobile.Combatant = null;
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        m_NextStopGuard = Core.TickCount + (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        break;
+                    }
 
                 case ActionType.Flee:
-                    m_Mobile.Warmode = true;
-                    m_Mobile.FocusMob = null;
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    break;
+                    {
+                        m_Mobile.Warmode = true;
+                        m_Mobile.FocusMob = null;
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        break;
+                    }
 
                 case ActionType.Interact:
-                    m_Mobile.Warmode = false;
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    break;
+                    {
+                        m_Mobile.Warmode = false;
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        break;
+                    }
 
                 case ActionType.Backoff:
-                    m_Mobile.Warmode = false;
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    break;
+                    {
+                        m_Mobile.Warmode = false;
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        break;
+                    }
             }
         }
 
@@ -1011,12 +1037,7 @@ namespace Server.Mobiles
 
         public virtual bool Obey()
         {
-            if (m_Mobile.Deleted)
-            {
-                return false;
-            }
-
-            return m_Mobile.ControlOrder switch
+            var shouldObey = !m_Mobile.Deleted && m_Mobile.ControlOrder switch
             {
                 OrderType.None     => DoOrderNone(),
                 OrderType.Come     => DoOrderCome(),
@@ -1033,6 +1054,15 @@ namespace Server.Mobiles
                 OrderType.Transfer => DoOrderTransfer(),
                 _                  => false
             };
+
+            if (shouldObey)
+            {
+                // TODO: This might cause the movement timer to reset too often if someone is spamming commands.
+                // Test this thoroughly.
+                m_Mobile.ResetSpeeds();
+            }
+
+            return shouldObey;
         }
 
         public virtual void OnCurrentOrderChanged()
@@ -1045,104 +1075,128 @@ namespace Server.Mobiles
             switch (m_Mobile.ControlOrder)
             {
                 case OrderType.None:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.Home = m_Mobile.Location;
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.Home = m_Mobile.Location;
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Come:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Drop:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = true;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = true;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Friend:
                 case OrderType.Unfriend:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        break;
+                    }
 
                 case OrderType.Guard:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = true;
-                    m_Mobile.Combatant = null;
-                    var petname = $"{m_Mobile.Name}";
-                    m_Mobile.ControlMaster.SendLocalizedMessage(1049671, petname); // ~1_PETNAME~ is now guarding you.
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = true;
+                        m_Mobile.Combatant = null;
+                        var petname = $"{m_Mobile.Name}";
+                        m_Mobile.ControlMaster.SendLocalizedMessage(1049671, petname); // ~1_PETNAME~ is now guarding you.
+                        break;
+                    }
 
                 case OrderType.Attack:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
-                    m_Mobile.Warmode = true;
-                    m_Mobile.Combatant = null;
-                    break;
+                        m_Mobile.Warmode = true;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Patrol:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Release:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Stay:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Stop:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.Home = m_Mobile.Location;
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.Home = m_Mobile.Location;
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Follow:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
 
                 case OrderType.Transfer:
-                    m_Mobile.ControlMaster.RevealingAction();
-                    m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-                    m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+                    {
+                        m_Mobile.ControlMaster.RevealingAction();
+                        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
-                    m_Mobile.Warmode = false;
-                    m_Mobile.Combatant = null;
-                    break;
+                        m_Mobile.Warmode = false;
+                        m_Mobile.Combatant = null;
+                        break;
+                    }
             }
         }
 
@@ -1823,32 +1877,50 @@ namespace Server.Mobiles
                     switch (iRndMove)
                     {
                         case 0:
-                            DoMove(Direction.Up);
-                            break;
+                            {
+                                DoMove(Direction.Up);
+                                break;
+                            }
                         case 1:
-                            DoMove(Direction.North);
-                            break;
+                            {
+                                DoMove(Direction.North);
+                                break;
+                            }
                         case 2:
-                            DoMove(Direction.Left);
-                            break;
+                            {
+                                DoMove(Direction.Left);
+                                break;
+                            }
                         case 3:
-                            DoMove(Direction.West);
-                            break;
+                            {
+                                DoMove(Direction.West);
+                                break;
+                            }
                         case 5:
-                            DoMove(Direction.Down);
-                            break;
+                            {
+                                DoMove(Direction.Down);
+                                break;
+                            }
                         case 6:
-                            DoMove(Direction.South);
-                            break;
+                            {
+                                DoMove(Direction.South);
+                                break;
+                            }
                         case 7:
-                            DoMove(Direction.Right);
-                            break;
+                            {
+                                DoMove(Direction.Right);
+                                break;
+                            }
                         case 8:
-                            DoMove(Direction.East);
-                            break;
+                            {
+                                DoMove(Direction.East);
+                                break;
+                            }
                         default:
-                            DoMove(m_Mobile.Direction);
-                            break;
+                            {
+                                DoMove(m_Mobile.Direction);
+                                break;
+                            }
                     }
                 }
             }
