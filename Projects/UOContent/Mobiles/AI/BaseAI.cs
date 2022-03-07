@@ -1856,7 +1856,7 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            double max = m_Mobile?.IsMonster == true ? SpeedInfo.MaxDelayMonster : SpeedInfo.MaxDelay;
+            double max = m_Mobile?.IsMonster == true ? SpeedInfo.MaxMonsterDelay : SpeedInfo.MaxDelay;
 
             if (m_Mobile?.IsDeadPet == true && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
