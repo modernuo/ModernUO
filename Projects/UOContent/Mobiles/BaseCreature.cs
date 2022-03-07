@@ -197,16 +197,6 @@ namespace Server.Mobiles
             typeof(SkeletalMage), typeof(BoneMagi), typeof(PatchworkSkeleton)
         };
 
-        private static readonly double[] m_StandardActiveSpeeds =
-        {
-            0.175, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8
-        };
-
-        private static readonly double[] m_StandardPassiveSpeeds =
-        {
-            0.350, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0
-        };
-
         private static Mobile m_NoDupeGuards;
 
         private static readonly bool EnableRummaging = true;
@@ -2003,42 +1993,6 @@ namespace Server.Mobiles
             if (version < 16 && Loyalty != MaxLoyalty)
             {
                 Loyalty *= 10;
-            }
-
-            var activeSpeed = ActiveSpeed;
-            var passiveSpeed = PassiveSpeed;
-
-            SpeedInfo.GetSpeeds(this, ref activeSpeed, ref passiveSpeed);
-
-            var isStandardActive = false;
-            for (var i = 0; !isStandardActive && i < m_StandardActiveSpeeds.Length; ++i)
-            {
-                isStandardActive = ActiveSpeed == m_StandardActiveSpeeds[i];
-            }
-
-            var isStandardPassive = false;
-            for (var i = 0; !isStandardPassive && i < m_StandardPassiveSpeeds.Length; ++i)
-            {
-                isStandardPassive = PassiveSpeed == m_StandardPassiveSpeeds[i];
-            }
-
-            if (isStandardActive && m_CurrentSpeed == ActiveSpeed)
-            {
-                m_CurrentSpeed = activeSpeed;
-            }
-            else if (isStandardPassive && m_CurrentSpeed == PassiveSpeed)
-            {
-                m_CurrentSpeed = passiveSpeed;
-            }
-
-            if (isStandardActive && !m_Paragon)
-            {
-                ActiveSpeed = activeSpeed;
-            }
-
-            if (isStandardPassive && !m_Paragon)
-            {
-                PassiveSpeed = passiveSpeed;
             }
 
             if (version >= 14)
