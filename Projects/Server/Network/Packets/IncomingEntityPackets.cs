@@ -27,7 +27,7 @@ public static class IncomingEntityPackets
         IncomingPackets.Register(0xD6, 0, true, BatchQueryProperties);
     }
 
-    public static void ObjectHelpRequest(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void ObjectHelpRequest(NetState state, CircularBufferReader reader, int packetLength)
     {
         var from = state.Mobile;
 
@@ -56,7 +56,7 @@ public static class IncomingEntityPackets
         }
     }
 
-    public static void UseReq(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void UseReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         var from = state.Mobile;
 
@@ -100,7 +100,7 @@ public static class IncomingEntityPackets
         }
     }
 
-    public static void LookReq(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void LookReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         var from = state.Mobile;
 
@@ -149,7 +149,7 @@ public static class IncomingEntityPackets
         }
     }
 
-    public static void BatchQueryProperties(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void BatchQueryProperties(NetState state, CircularBufferReader reader, int packetLength)
     {
         if (!ObjectPropertyList.Enabled)
         {

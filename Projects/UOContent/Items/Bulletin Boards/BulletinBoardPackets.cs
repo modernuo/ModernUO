@@ -48,7 +48,7 @@ namespace Server.Network
             return $"{seconds} second{(seconds == 1 ? "" : "s")}";
         }
 
-        public static void BBClientRequest(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void BBClientRequest(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 

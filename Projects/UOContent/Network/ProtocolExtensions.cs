@@ -21,11 +21,11 @@ namespace Server.Network
         {
             var packetHandlers = new PacketHandler[0x100];
 
-            void DecodeBundledPacket(NetState state, CircularBufferReader reader, ref int packetLength)
+            void DecodeBundledPacket(NetState state, CircularBufferReader reader, int packetLength)
             {
                 int cmd = reader.ReadByte();
 
-                PacketHandler ph = cmd >= 0 && cmd < packetHandlers.Length ? packetHandlers[cmd] : null;
+                PacketHandler ph = packetHandlers[cmd];
 
                 if (ph == null)
                 {
@@ -43,7 +43,7 @@ namespace Server.Network
                 }
                 else
                 {
-                    ph.OnReceive(state, reader, ref packetLength);
+                    ph.OnReceive(state, reader, packetLength);
                 }
             }
 
