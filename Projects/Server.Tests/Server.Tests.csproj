@@ -14,6 +14,9 @@
         <DataFiles Update="..\..\Distribution\Data\Professions\LBR\prof.txt">
           <Link>Data\Professions\LBR\prof.txt</Link>
         </DataFiles>
+        <DataFiles Update="..\..\Distribution\Data\legacy-speed-info.json">
+          <Link>Data\legacy-speed-info.json</Link>
+        </DataFiles>
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />

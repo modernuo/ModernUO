@@ -1,5 +1,6 @@
 using System;
 using Server.Mobiles;
+using Server.Mobiles.AI;
 
 namespace Server;
 
@@ -26,6 +27,11 @@ public static class SpeedInfo
 
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
+        if (LegacySpeedInfo.GetSpeedByType(bc.GetType(), out activeSpeed, out passiveSpeed))
+        {
+            return;
+        }
+
         var isMonster = bc.IsMonster;
         var monsterDelay = isMonster || bc.InActivePVPCombat();
         var maxDex = isMonster ? MaxMonsterDex : MaxDex;
