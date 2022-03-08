@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         public BaseWarHorse(
             int bodyID, int itemID, AIType aiType, FightMode fightMode, int rangePerception, int rangeFight,
-            double activeSpeed, double passiveSpeed
+            double activeSpeed = -1, double passiveSpeed = -1
         ) : base(
             "a war horse",
             bodyID,

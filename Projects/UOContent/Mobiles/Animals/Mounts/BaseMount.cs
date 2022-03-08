@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
         public BaseMount(
             string name, int bodyID, int itemID, AIType aiType, FightMode fightMode, int rangePerception,
-            int rangeFight, double activeSpeed, double passiveSpeed
+            int rangeFight, double activeSpeed = -1, double passiveSpeed = -1
         ) : base(
             aiType,
             fightMode,

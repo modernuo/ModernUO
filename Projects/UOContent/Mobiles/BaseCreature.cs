@@ -152,7 +152,7 @@ namespace Server.Mobiles
         }
     }
 
-    public class BaseCreature : Mobile, IHonorTarget, IQuestGiver
+    public abstract class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
         public enum Allegiance
         {
@@ -324,18 +324,9 @@ namespace Server.Mobiles
             AIType ai,
             FightMode mode,
             int iRangePerception,
-            int iRangeFight
-        ) : this(ai, mode, iRangePerception, iRangeFight, -1, -1)
-        {
-        }
-
-        public BaseCreature(
-            AIType ai,
-            FightMode mode,
-            int iRangePerception,
             int iRangeFight,
-            double passiveSpeed,
-            double activeSpeed
+            double passiveSpeed = -1,
+            double activeSpeed = -1
         )
         {
             if (iRangePerception == OldRangePerception)
