@@ -36,7 +36,7 @@ public static class SpeedInfo
         var monsterDelay = isMonster || bc.InActivePVPCombat();
         var maxDex = isMonster ? MaxMonsterDex : MaxDex;
 
-        var dex = Math.Min(maxDex, Math.Max(25, bc.Dex));
+        var dex = Math.Clamp(bc.Dex, 25, maxDex);
 
         double min = monsterDelay ? MinMonsterDelay : MinDelay;
         double max = monsterDelay ? MaxMonsterDelay : MaxDelay;

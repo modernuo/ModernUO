@@ -1928,11 +1928,11 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            double max = m_Mobile?.IsMonster == true ? SpeedInfo.MaxMonsterDelay : SpeedInfo.MaxDelay;
+            double max = m_Mobile.IsMonster ? SpeedInfo.MaxMonsterDelay : SpeedInfo.MaxDelay;
 
-            if (m_Mobile?.IsDeadPet == true && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
+            if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
-                double offset = m_Mobile.StamMax == 0 ? 1.0 : m_Mobile.Stam / (double)m_Mobile.StamMax;
+                double offset = m_Mobile.StamMax <= 0 ? 1.0 : m_Mobile.Stam / (double)m_Mobile.StamMax;
 
                 if (offset < 1.0)
                 {
