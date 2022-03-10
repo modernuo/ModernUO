@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class JukaWarrior : BaseCreature
     {
         [Constructible]
-        public JukaWarrior() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public JukaWarrior() : base(AIType.AI_Melee)
         {
             Body = 764;
 

@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Quagmire : BaseCreature
     {
         [Constructible]
-        public Quagmire() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+        public Quagmire() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6)
         {
             Body = 789;
             BaseSoundID = 352;

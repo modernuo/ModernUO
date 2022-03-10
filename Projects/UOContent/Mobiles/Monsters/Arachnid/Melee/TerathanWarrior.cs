@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class TerathanWarrior : BaseCreature
     {
         [Constructible]
-        public TerathanWarrior() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public TerathanWarrior() : base(AIType.AI_Melee)
         {
             Body = 70;
             BaseSoundID = 589;

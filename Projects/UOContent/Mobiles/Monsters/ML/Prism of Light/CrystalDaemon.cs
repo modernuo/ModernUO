@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CrystalDaemon()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Mage)
         {
             Body = 0x310;
             Hue = 0x3E8;

@@ -322,11 +322,11 @@ namespace Server.Mobiles
 
         public BaseCreature(
             AIType ai,
-            FightMode mode,
-            int iRangePerception,
-            int iRangeFight,
-            double passiveSpeed = -1,
-            double activeSpeed = -1
+            FightMode mode = FightMode.Closest,
+            int iRangePerception = 10,
+            int iRangeFight = 1,
+            double activeSpeed = -1,
+            double passiveSpeed = -1
         )
         {
             if (iRangePerception == OldRangePerception)

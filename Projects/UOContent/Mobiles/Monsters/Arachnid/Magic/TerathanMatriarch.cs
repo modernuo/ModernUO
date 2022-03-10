@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class TerathanMatriarch : BaseCreature
     {
         [Constructible]
-        public TerathanMatriarch() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public TerathanMatriarch() : base(AIType.AI_Mage)
         {
             Body = 72;
             BaseSoundID = 599;

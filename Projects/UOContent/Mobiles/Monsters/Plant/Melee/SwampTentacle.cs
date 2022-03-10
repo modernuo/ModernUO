@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SwampTentacle : BaseCreature
     {
         [Constructible]
-        public SwampTentacle() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public SwampTentacle() : base(AIType.AI_Melee)
         {
             Body = 66;
             BaseSoundID = 352;

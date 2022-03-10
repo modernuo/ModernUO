@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Skeleton : BaseCreature
     {
         [Constructible]
-        public Skeleton() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Skeleton() : base(AIType.AI_Melee)
         {
             Body = Utility.RandomList(50, 56);
             BaseSoundID = 0x48D;

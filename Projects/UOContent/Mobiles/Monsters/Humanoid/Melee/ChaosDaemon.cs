@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class ChaosDaemon : BaseCreature
     {
         [Constructible]
-        public ChaosDaemon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public ChaosDaemon() : base(AIType.AI_Melee)
         {
             Body = 792;
             BaseSoundID = 0x3E9;

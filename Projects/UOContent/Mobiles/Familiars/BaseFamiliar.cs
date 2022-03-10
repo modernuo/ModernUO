@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private bool m_LastHidden;
 
         public BaseFamiliar()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, .1, .1)
+            : base(AIType.AI_Melee)
         {
         }
 

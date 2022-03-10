@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class AntLion : BaseCreature
     {
         [Constructible]
-        public AntLion() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public AntLion() : base(AIType.AI_Melee)
         {
             Body = 787;
             BaseSoundID = 1006;

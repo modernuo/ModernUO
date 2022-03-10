@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class HordeMinion : BaseCreature
     {
         [Constructible]
-        public HordeMinion() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public HordeMinion() : base(AIType.AI_Melee)
         {
             Body = 776;
             BaseSoundID = 357;

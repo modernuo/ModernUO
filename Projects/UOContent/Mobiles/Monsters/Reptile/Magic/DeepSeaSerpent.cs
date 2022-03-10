@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class DeepSeaSerpent : BaseCreature
     {
         [Constructible]
-        public DeepSeaSerpent() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public DeepSeaSerpent() : base(AIType.AI_Mage)
         {
             Body = 150;
             BaseSoundID = 447;

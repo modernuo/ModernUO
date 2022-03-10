@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Samurai
     public class CursedSoul : BaseCreature
     {
         [Constructible]
-        public CursedSoul() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+        public CursedSoul() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             Body = 3;
             BaseSoundID = 471;

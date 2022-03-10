@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class SilverSerpent : BaseCreature
     {
         [Constructible]
-        public SilverSerpent() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public SilverSerpent() : base(AIType.AI_Melee)
         {
             Body = 92;
             BaseSoundID = 219;

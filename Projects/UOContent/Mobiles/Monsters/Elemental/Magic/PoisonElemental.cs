@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class PoisonElemental : BaseCreature
     {
         [Constructible]
-        public PoisonElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public PoisonElemental() : base(AIType.AI_Mage)
         {
             Body = 162;
             BaseSoundID = 263;

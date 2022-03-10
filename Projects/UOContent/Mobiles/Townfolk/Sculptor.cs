@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public Sculptor()
-            : base(AIType.AI_Animal, FightMode.None, 10, 1)
+            : base(AIType.AI_Animal, FightMode.None)
         {
             InitStats(31, 41, 51);
 

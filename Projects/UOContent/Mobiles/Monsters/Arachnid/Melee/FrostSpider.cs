@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class FrostSpider : BaseCreature
     {
         [Constructible]
-        public FrostSpider() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public FrostSpider() : base(AIType.AI_Melee)
         {
             Body = 20;
             BaseSoundID = 0x388;

@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class RedSolenInfiltratorQueen : BaseCreature
     {
         [Constructible]
-        public RedSolenInfiltratorQueen() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public RedSolenInfiltratorQueen() : base(AIType.AI_Melee)
         {
             Body = 783;
             BaseSoundID = 959;

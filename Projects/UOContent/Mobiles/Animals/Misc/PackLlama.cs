@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class PackLlama : BaseCreature
     {
         [Constructible]
-        public PackLlama() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public PackLlama() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 292;
             BaseSoundID = 0x3F3;

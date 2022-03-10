@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class YomotsuElder : BaseCreature
     {
         [Constructible]
-        public YomotsuElder() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public YomotsuElder() : base(AIType.AI_Melee)
         {
             Body = 255;
             BaseSoundID = 0x452;

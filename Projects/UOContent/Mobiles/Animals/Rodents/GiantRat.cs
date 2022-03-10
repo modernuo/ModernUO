@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class GiantRat : BaseCreature
     {
         [Constructible]
-        public GiantRat() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public GiantRat() : base(AIType.AI_Melee)
         {
             Body = 0xD7;
             BaseSoundID = 0x188;

@@ -128,7 +128,7 @@ namespace Server.Mobiles
     {
         private Mobile m_Caster;
 
-        public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None, 10, 1)
+        public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None)
         {
             m_Caster = caster;
 

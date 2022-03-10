@@ -10,7 +10,7 @@ namespace Server.Mobiles
         private int m_Thrown;
 
         [Constructible]
-        public OrcBomber() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public OrcBomber() : base(AIType.AI_Melee)
         {
             Body = 182;
             BaseSoundID = 0x45A;

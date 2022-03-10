@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Necro
         private PlayerMobile m_Necromancer;
         private bool m_ToDelete;
 
-        public SummonedPaladin(PlayerMobile necromancer) : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+        public SummonedPaladin(PlayerMobile necromancer) : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             m_Necromancer = necromancer;
 

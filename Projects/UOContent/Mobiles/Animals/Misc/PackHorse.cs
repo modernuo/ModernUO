@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class PackHorse : BaseCreature
     {
         [Constructible]
-        public PackHorse() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public PackHorse() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 291;
             BaseSoundID = 0xA8;

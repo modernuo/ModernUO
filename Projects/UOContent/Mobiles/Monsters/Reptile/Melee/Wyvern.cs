@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Wyvern : BaseCreature
     {
         [Constructible]
-        public Wyvern() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Wyvern() : base(AIType.AI_Melee)
         {
             Body = 62;
             BaseSoundID = 362;

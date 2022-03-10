@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Gaman : BaseCreature
     {
         [Constructible]
-        public Gaman() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public Gaman() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 248;
 

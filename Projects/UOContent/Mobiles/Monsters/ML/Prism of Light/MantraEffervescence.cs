@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public MantraEffervescence()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Mage)
         {
             Body = 0x111;
             BaseSoundID = 0x56E;

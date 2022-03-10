@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Imp : BaseCreature
     {
         [Constructible]
-        public Imp() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public Imp() : base(AIType.AI_Mage)
         {
             Body = 74;
             BaseSoundID = 422;

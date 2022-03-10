@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Alligator : BaseCreature
     {
         [Constructible]
-        public Alligator() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Alligator() : base(AIType.AI_Melee)
         {
             Body = 0xCA;
             BaseSoundID = 660;

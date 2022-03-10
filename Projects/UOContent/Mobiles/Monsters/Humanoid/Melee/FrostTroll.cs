@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class FrostTroll : BaseCreature
     {
         [Constructible]
-        public FrostTroll() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public FrostTroll() : base(AIType.AI_Melee)
         {
             Body = 55;
             BaseSoundID = 461;

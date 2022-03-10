@@ -8,7 +8,7 @@ namespace Server.Mobiles
         private UnhideTimer m_Timer;
 
         [Constructible]
-        public ShadowFiend() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public ShadowFiend() : base(AIType.AI_Melee)
         {
             Body = 0xA8;
 

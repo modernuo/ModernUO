@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class MoundOfMaggots : BaseCreature
     {
         [Constructible]
-        public MoundOfMaggots() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public MoundOfMaggots() : base(AIType.AI_Melee)
         {
             Body = 319;
             BaseSoundID = 898;

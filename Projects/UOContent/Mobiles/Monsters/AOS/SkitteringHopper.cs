@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SkitteringHopper : BaseCreature
     {
         [Constructible]
-        public SkitteringHopper() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+        public SkitteringHopper() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             Body = 302;
             BaseSoundID = 959;

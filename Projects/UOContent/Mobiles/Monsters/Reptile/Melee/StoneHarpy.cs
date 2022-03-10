@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class StoneHarpy : BaseCreature
     {
         [Constructible]
-        public StoneHarpy() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public StoneHarpy() : base(AIType.AI_Melee)
         {
             Body = 73;
             BaseSoundID = 402;

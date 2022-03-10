@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class Leviathan : BaseCreature
     {
         [Constructible]
-        public Leviathan(Mobile fisher = null) : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public Leviathan(Mobile fisher = null) : base(AIType.AI_Mage)
         {
             Fisher = fisher;
 

@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class Bogling : BaseCreature
     {
         [Constructible]
-        public Bogling() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Bogling() : base(AIType.AI_Melee)
         {
             Body = 779;
             BaseSoundID = 422;

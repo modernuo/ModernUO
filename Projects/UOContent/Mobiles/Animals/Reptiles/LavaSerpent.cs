@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class LavaSerpent : BaseCreature
     {
         [Constructible]
-        public LavaSerpent() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public LavaSerpent() : base(AIType.AI_Melee)
         {
             Body = 90;
             BaseSoundID = 219;

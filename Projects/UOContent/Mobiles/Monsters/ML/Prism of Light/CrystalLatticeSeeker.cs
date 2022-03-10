@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CrystalLatticeSeeker()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Mage)
         {
             Body = 0x7B;
             Hue = 0x47E;

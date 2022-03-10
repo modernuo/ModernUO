@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class GiantSerpent : BaseCreature
     {
         [Constructible]
-        public GiantSerpent() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public GiantSerpent() : base(AIType.AI_Melee)
         {
             Body = 0x15;
             Hue = Utility.RandomSnakeHue();

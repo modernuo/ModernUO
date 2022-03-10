@@ -1,6 +1,5 @@
 using System;
 using Server.Mobiles;
-using Server.Mobiles.AI;
 
 namespace Server;
 
@@ -17,11 +16,14 @@ public static class SpeedInfo
 
     public static void Configure()
     {
+        // Default speed determined by dex (0 -> 190) for non-monster NPCs including pets
         MinDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.npcMinDelay", 0.1);
         MaxDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.npcMaxDelay", 0.5);
+        MaxDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.maxDex", 190);
+
+        // Default speed determined by dex (0 -> 150) for monsters
         MinMonsterDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMinDelay", 0.4);
         MaxMonsterDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDelay", 0.8);
-        MaxDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.maxDex", 190);
         MaxMonsterDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDex", 150);
     }
 
@@ -43,7 +45,6 @@ public static class SpeedInfo
         }
 
         activeSpeed = Math.Max(max - (max - min) * ((double)dex / maxDex), min);
-
         passiveSpeed = activeSpeed * 2;
     }
 }

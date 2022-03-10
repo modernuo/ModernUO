@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class AbysmalHorror : BaseCreature
     {
         [Constructible]
-        public AbysmalHorror() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public AbysmalHorror() : base(AIType.AI_Mage)
         {
             Body = 312;
             BaseSoundID = 0x451;

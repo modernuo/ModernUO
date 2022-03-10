@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Corpser : BaseCreature
     {
         [Constructible]
-        public Corpser() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Corpser() : base(AIType.AI_Melee)
         {
             Body = 8;
             BaseSoundID = 684;

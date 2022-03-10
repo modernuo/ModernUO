@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class StrongMongbat : BaseCreature
     {
         [Constructible]
-        public StrongMongbat() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public StrongMongbat() : base(AIType.AI_Melee)
         {
             Body = 39;
             BaseSoundID = 422;

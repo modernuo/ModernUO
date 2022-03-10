@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class AncientLich : BaseCreature
     {
         [Constructible]
-        public AncientLich() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public AncientLich() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("ancient lich");
             Body = 78;

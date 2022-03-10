@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class RottingCorpse : BaseCreature
     {
         [Constructible]
-        public RottingCorpse() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public RottingCorpse() : base(AIType.AI_Melee)
         {
             Body = 155;
             BaseSoundID = 471;

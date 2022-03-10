@@ -10,7 +10,7 @@ namespace Server.Mobiles
         private DateTime m_NextResurrect;
 
         [Constructible]
-        public EtherealWarrior() : base(AIType.AI_Mage, FightMode.Evil, 10, 1)
+        public EtherealWarrior() : base(AIType.AI_Mage, FightMode.Evil)
         {
             Name = NameList.RandomName("ethereal warrior");
             Body = 123;

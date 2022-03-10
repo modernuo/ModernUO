@@ -8,7 +8,7 @@ namespace Server.Mobiles
         private DateTime m_NextAttack;
 
         [Constructible]
-        public SandVortex() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public SandVortex() : base(AIType.AI_Melee)
         {
             Body = 790;
             BaseSoundID = 263;

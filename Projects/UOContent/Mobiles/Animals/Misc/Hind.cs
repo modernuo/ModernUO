@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Hind : BaseCreature
     {
         [Constructible]
-        public Hind() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public Hind() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xED;
 

@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class Yamandon : BaseCreature
     {
         [Constructible]
-        public Yamandon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Yamandon() : base(AIType.AI_Melee)
         {
             Body = 249;
 

@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Llama : BaseCreature
     {
         [Constructible]
-        public Llama() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public Llama() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xDC;
             BaseSoundID = 0x3F3;

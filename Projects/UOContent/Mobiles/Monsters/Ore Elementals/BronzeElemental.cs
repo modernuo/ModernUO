@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class BronzeElemental : BaseCreature
     {
         [Constructible]
-        public BronzeElemental(int oreAmount = 2) : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public BronzeElemental(int oreAmount = 2) : base(AIType.AI_Melee)
         {
             // TODO: Gas attack
             Body = 108;

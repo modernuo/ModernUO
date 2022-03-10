@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class WhiteWyrm : BaseCreature
     {
         [Constructible]
-        public WhiteWyrm() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public WhiteWyrm() : base(AIType.AI_Mage)
         {
             Body = Utility.RandomBool() ? 180 : 49;
             BaseSoundID = 362;

@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class RevenantLion : BaseCreature
     {
         [Constructible]
-        public RevenantLion() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public RevenantLion() : base(AIType.AI_Mage)
         {
             Body = 251;
 

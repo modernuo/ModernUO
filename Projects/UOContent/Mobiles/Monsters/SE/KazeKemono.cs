@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
         [Constructible]
         public KazeKemono()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Mage)
         {
             Body = 196;
             BaseSoundID = 655;

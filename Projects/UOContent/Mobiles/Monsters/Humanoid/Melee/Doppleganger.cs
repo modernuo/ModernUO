@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Doppleganger : BaseCreature
     {
         [Constructible]
-        public Doppleganger() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Doppleganger() : base(AIType.AI_Melee)
         {
             Body = 0x309;
             BaseSoundID = 0x451;

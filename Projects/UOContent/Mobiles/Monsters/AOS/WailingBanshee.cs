@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class WailingBanshee : BaseCreature
     {
         [Constructible]
-        public WailingBanshee() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public WailingBanshee() : base(AIType.AI_Melee)
         {
             Body = 310;
             BaseSoundID = 0x482;

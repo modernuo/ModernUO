@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Slime : BaseCreature
     {
         [Constructible]
-        public Slime() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Slime() : base(AIType.AI_Melee)
         {
             Body = 51;
             BaseSoundID = 456;

@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Chicken : BaseCreature
     {
         [Constructible]
-        public Chicken() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public Chicken() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xD0;
             BaseSoundID = 0x6E;

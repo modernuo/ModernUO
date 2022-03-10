@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Kraken : BaseCreature
     {
         [Constructible]
-        public Kraken() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Kraken() : base(AIType.AI_Melee)
         {
             Body = 77;
             BaseSoundID = 353;

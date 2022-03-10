@@ -15,7 +15,7 @@ namespace Server.Mobiles
         private bool m_CanTalk;
 
         [Constructible]
-        public Ferret() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public Ferret() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0x117;
 

@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class InterredGrizzle : BaseCreature
     {
         [Constructible]
-        public InterredGrizzle() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public InterredGrizzle() : base(AIType.AI_Mage)
         {
             Body = 259;
 

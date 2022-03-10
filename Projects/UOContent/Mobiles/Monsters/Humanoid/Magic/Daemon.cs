@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class Daemon : BaseCreature
     {
         [Constructible]
-        public Daemon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public Daemon() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("daemon");
             Body = 9;

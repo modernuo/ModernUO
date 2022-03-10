@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public Hydra()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Melee)
         {
             Body = 0x109;
             BaseSoundID = 0x16A;

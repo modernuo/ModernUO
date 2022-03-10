@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class VorpalBunny : BaseCreature
     {
         [Constructible]
-        public VorpalBunny() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public VorpalBunny() : base(AIType.AI_Melee)
         {
             Body = 205;
             Hue = 0x480;

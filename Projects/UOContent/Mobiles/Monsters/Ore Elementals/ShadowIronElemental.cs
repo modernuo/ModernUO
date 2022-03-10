@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class ShadowIronElemental : BaseCreature
     {
         [Constructible]
-        public ShadowIronElemental(int oreAmount = 2) : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public ShadowIronElemental(int oreAmount = 2) : base(AIType.AI_Melee)
         {
             Body = 111;
             BaseSoundID = 268;

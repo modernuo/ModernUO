@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class TavaraSewel : BaseCreature
     {
         [Constructible]
-        public TavaraSewel() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public TavaraSewel() : base(AIType.AI_Melee)
         {
             Title = "the Cursed";
 

@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class BoneKnight : BaseCreature
     {
         [Constructible]
-        public BoneKnight() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public BoneKnight() : base(AIType.AI_Melee)
         {
             Body = 57;
             BaseSoundID = 451;

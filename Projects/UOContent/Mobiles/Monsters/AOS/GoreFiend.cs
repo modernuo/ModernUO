@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class GoreFiend : BaseCreature
     {
         [Constructible]
-        public GoreFiend() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public GoreFiend() : base(AIType.AI_Melee)
         {
             Body = 305;
             BaseSoundID = 224;

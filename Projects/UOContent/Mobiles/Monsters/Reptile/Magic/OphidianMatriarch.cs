@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class OphidianMatriarch : BaseCreature
     {
         [Constructible]
-        public OphidianMatriarch() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public OphidianMatriarch() : base(AIType.AI_Mage)
         {
             Body = 87;
             BaseSoundID = 644;

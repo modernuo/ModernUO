@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Efreet : BaseCreature
     {
         [Constructible]
-        public Efreet() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public Efreet() : base(AIType.AI_Mage)
         {
             Body = 131;
             BaseSoundID = 768;

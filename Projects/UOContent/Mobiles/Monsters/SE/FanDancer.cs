@@ -10,7 +10,7 @@ namespace Server.Mobiles
         private static readonly HashSet<Mobile> m_Table = new();
 
         [Constructible]
-        public FanDancer() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public FanDancer() : base(AIType.AI_Melee)
         {
             Body = 247;
             BaseSoundID = 0x372;

@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class IceFiend : BaseCreature
     {
         [Constructible]
-        public IceFiend() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public IceFiend() : base(AIType.AI_Mage)
         {
             Body = 43;
             BaseSoundID = 357;

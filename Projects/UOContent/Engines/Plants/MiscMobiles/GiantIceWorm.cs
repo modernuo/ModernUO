@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class GiantIceWorm : BaseCreature
     {
         [Constructible]
-        public GiantIceWorm() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public GiantIceWorm() : base(AIType.AI_Melee)
         {
             Body = 89;
             BaseSoundID = 0xDC;

@@ -9,7 +9,7 @@ namespace Server.Mobiles
     {
         // public override bool IsInvulnerable => true; // TODO: Wailing banshees are NOT invulnerable, are any of the others?
 
-        public BaseTalismanSummon() : base(AIType.AI_Melee, FightMode.None, 10, 1)
+        public BaseTalismanSummon() : base(AIType.AI_Melee, FightMode.None)
         {
             // TODO: Stats/skills
         }

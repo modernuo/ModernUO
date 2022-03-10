@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class LichLord : BaseCreature
     {
         [Constructible]
-        public LichLord() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public LichLord() : base(AIType.AI_Mage)
         {
             Body = 79;
             BaseSoundID = 412;

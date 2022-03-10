@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Eagle : BaseCreature
     {
         [Constructible]
-        public Eagle() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public Eagle() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 5;
             BaseSoundID = 0x2EE;

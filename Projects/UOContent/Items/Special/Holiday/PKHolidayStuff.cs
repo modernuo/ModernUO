@@ -65,7 +65,7 @@ namespace Server.Items
     public class Spam : Food
     {
         [Constructible]
-        public Spam() : base(0x1044, 1)
+        public Spam() : base(0x1044)
         {
             Stackable = false;
             LootType = LootType.Blessed;

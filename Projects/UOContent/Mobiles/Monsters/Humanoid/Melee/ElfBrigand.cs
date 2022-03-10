@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class ElfBrigand : BaseCreature
     {
         [Constructible]
-        public ElfBrigand() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public ElfBrigand() : base(AIType.AI_Melee)
         {
             SpeechHue = Utility.RandomDyedHue();
             Title = "the brigand";

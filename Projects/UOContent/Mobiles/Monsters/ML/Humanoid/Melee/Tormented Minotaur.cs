@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class TormentedMinotaur : BaseCreature
     {
         [Constructible]
-        public TormentedMinotaur() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public TormentedMinotaur() : base(AIType.AI_Melee)
         {
             Body = 262;
 

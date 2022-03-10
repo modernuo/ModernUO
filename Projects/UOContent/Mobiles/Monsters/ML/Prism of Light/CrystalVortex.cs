@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CrystalVortex()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Melee)
         {
             Body = 0xD;
             Hue = 0x2B2;

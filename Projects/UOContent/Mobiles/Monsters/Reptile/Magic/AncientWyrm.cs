@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class AncientWyrm : BaseCreature
     {
         [Constructible]
-        public AncientWyrm() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public AncientWyrm() : base(AIType.AI_Mage)
         {
             Body = 46;
             BaseSoundID = 362;

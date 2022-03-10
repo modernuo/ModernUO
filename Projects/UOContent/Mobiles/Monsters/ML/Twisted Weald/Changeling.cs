@@ -27,7 +27,7 @@ namespace Server.Mobiles
 
         [Constructible]
         public Changeling()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+            : base(AIType.AI_Mage)
         {
             Body = 264;
             Hue = DefaultHue;

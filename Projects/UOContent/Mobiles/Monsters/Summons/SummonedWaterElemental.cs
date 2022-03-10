@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SummonedWaterElemental : BaseCreature
     {
         [Constructible]
-        public SummonedWaterElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public SummonedWaterElemental() : base(AIType.AI_Mage)
         {
             Body = 16;
             BaseSoundID = 278;

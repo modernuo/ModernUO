@@ -534,7 +534,7 @@ namespace Server.Items
     public class Cake : Food
     {
         [Constructible]
-        public Cake() : base(0x9E9, 1)
+        public Cake() : base(0x9E9)
         {
             Stackable = false;
             Weight = 1.0;
@@ -591,7 +591,7 @@ namespace Server.Items
     public class Cookies : Food
     {
         [Constructible]
-        public Cookies() : base(0x160b, 1)
+        public Cookies() : base(0x160b)
         {
             Stackable = Core.ML;
             Weight = 1.0;
@@ -620,7 +620,7 @@ namespace Server.Items
     public class Muffins : Food
     {
         [Constructible]
-        public Muffins() : base(0x9eb, 1)
+        public Muffins() : base(0x9eb)
         {
             Stackable = false;
             Weight = 1.0;
@@ -650,7 +650,7 @@ namespace Server.Items
     public class CheesePizza : Food
     {
         [Constructible]
-        public CheesePizza() : base(0x1040, 1)
+        public CheesePizza() : base(0x1040)
         {
             Stackable = false;
             Weight = 1.0;
@@ -681,7 +681,7 @@ namespace Server.Items
     public class SausagePizza : Food
     {
         [Constructible]
-        public SausagePizza() : base(0x1040, 1)
+        public SausagePizza() : base(0x1040)
         {
             Stackable = false;
             Weight = 1.0;
@@ -712,7 +712,7 @@ namespace Server.Items
     public class FruitPie : Food
     {
         [Constructible]
-        public FruitPie() : base(0x1041, 1)
+        public FruitPie() : base(0x1041)
         {
             Stackable = false;
             Weight = 1.0;
@@ -743,7 +743,7 @@ namespace Server.Items
     public class MeatPie : Food
     {
         [Constructible]
-        public MeatPie() : base(0x1041, 1)
+        public MeatPie() : base(0x1041)
         {
             Stackable = false;
             Weight = 1.0;
@@ -774,7 +774,7 @@ namespace Server.Items
     public class PumpkinPie : Food
     {
         [Constructible]
-        public PumpkinPie() : base(0x1041, 1)
+        public PumpkinPie() : base(0x1041)
         {
             Stackable = false;
             Weight = 1.0;
@@ -805,7 +805,7 @@ namespace Server.Items
     public class ApplePie : Food
     {
         [Constructible]
-        public ApplePie() : base(0x1041, 1)
+        public ApplePie() : base(0x1041)
         {
             Stackable = false;
             Weight = 1.0;
@@ -836,7 +836,7 @@ namespace Server.Items
     public class PeachCobbler : Food
     {
         [Constructible]
-        public PeachCobbler() : base(0x1041, 1)
+        public PeachCobbler() : base(0x1041)
         {
             Stackable = false;
             Weight = 1.0;
@@ -867,7 +867,7 @@ namespace Server.Items
     public class Quiche : Food
     {
         [Constructible]
-        public Quiche() : base(0x1041, 1)
+        public Quiche() : base(0x1041)
         {
             Stackable = Core.ML;
             Weight = 1.0;

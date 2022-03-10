@@ -10,7 +10,7 @@ namespace Server.Mobiles
         private DateTime m_NextAbilityTime;
 
         [Constructible]
-        public JukaMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1)
+        public JukaMage() : base(AIType.AI_Mage)
         {
             Body = 765;
 

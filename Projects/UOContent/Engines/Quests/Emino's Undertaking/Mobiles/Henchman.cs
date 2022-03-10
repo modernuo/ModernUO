@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Ninja
     public class Henchman : BaseCreature
     {
         [Constructible]
-        public Henchman() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+        public Henchman() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             InitStats(45, 30, 5);
 

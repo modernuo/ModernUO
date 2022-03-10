@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class WhippingVine : BaseCreature
     {
         [Constructible]
-        public WhippingVine() : base(AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public WhippingVine() : base(AIType.AI_Melee)
         {
             Body = 8;
             Hue = 0x851;
