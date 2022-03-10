@@ -579,7 +579,7 @@ namespace Server.Spells
                         return true;
                     }
                 }
-                else if (Caster.NetState?.ClientVersion >= _insufficientManaClientChange)
+                else if (Caster.NetState?.Version >= _insufficientManaClientChange)
                 {
                     Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625, requiredMana); // Insufficient mana. You must have at least ~1_MANA_REQUIREMENT~ Mana to use this spell.
                 }
