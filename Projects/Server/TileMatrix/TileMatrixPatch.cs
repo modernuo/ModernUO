@@ -52,7 +52,7 @@ namespace Server
         {
             using var fsData = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var fsIndex = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var indexReader = new BinaryReader(fsIndex);
+            using var indexReader = new BinaryReader(fsIndex);
 
             var count = (int)(indexReader.BaseStream.Length / 4);
 
@@ -72,8 +72,6 @@ namespace Server
                 matrix.SetLandBlock(x, y, tiles);
             }
 
-            indexReader.Close();
-
             return count;
         }
 
@@ -83,8 +81,8 @@ namespace Server
             using var fsData = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var fsIndex = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var fsLookup = new FileStream(lookupPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var indexReader = new BinaryReader(fsIndex);
-            var lookupReader = new BinaryReader(fsLookup);
+            using var indexReader = new BinaryReader(fsIndex);
+            using var lookupReader = new BinaryReader(fsLookup);
 
             var count = (int)(indexReader.BaseStream.Length / 4);
 
@@ -154,9 +152,6 @@ namespace Server
                     matrix.SetStaticBlock(blockX, blockY, tiles);
                 }
             }
-
-            indexReader.Close();
-            lookupReader.Close();
 
             return count;
         }
