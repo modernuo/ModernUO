@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Server
 {
@@ -51,7 +52,7 @@ namespace Server
         {
             using var fsData = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var fsIndex = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            using var indexReader = new BinaryReader(fsIndex);
+            var indexReader = new BinaryReader(fsIndex);
 
             var count = (int)(indexReader.BaseStream.Length / 4);
 
@@ -63,14 +64,15 @@ namespace Server
                 fsData.Seek(4, SeekOrigin.Current);
 
                 var tiles = new LandTile[64];
-
                 fixed (LandTile* pTiles = tiles)
                 {
-                    NativeReader.Read(fsData, pTiles, 192);
+                    fsData.Read(new Span<byte>(pTiles, 192));
                 }
 
                 matrix.SetLandBlock(x, y, tiles);
             }
+
+            indexReader.Close();
 
             return count;
         }
@@ -127,7 +129,7 @@ namespace Server
 
                 fixed (StaticTile* pTiles = staTiles)
                 {
-                    NativeReader.Read(fsData, pTiles, length);
+                    fsData.Read(new Span<byte>(pTiles, length));
 
                     StaticTile* pCur = pTiles, pEnd = pTiles + tileCount;
 
