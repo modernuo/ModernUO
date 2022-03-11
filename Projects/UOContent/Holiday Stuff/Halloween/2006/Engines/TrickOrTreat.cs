@@ -276,7 +276,7 @@ namespace Server.Engines.Events
         private readonly Mobile m_From;
 
         public NaughtyTwin(Mobile from)
-            : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee, FightMode.None)
         {
             if (TrickOrTreat.CheckMobile(from))
             {

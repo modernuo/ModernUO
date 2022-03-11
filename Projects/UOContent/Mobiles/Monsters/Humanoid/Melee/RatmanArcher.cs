@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class RatmanArcher : BaseCreature
     {
         [Constructible]
-        public RatmanArcher() : base(AIType.AI_Archer, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public RatmanArcher() : base(AIType.AI_Archer)
         {
             Name = NameList.RandomName("ratman");
             Body = 0x8E;

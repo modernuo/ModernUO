@@ -12,7 +12,7 @@ namespace Server.Mobiles
         };
 
         [Constructible]
-        public OphidianKnight() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public OphidianKnight() : base(AIType.AI_Melee)
         {
             Name = m_Names.RandomElement();
             Body = 86;

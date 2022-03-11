@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class PestilentBandage : BaseCreature
     {
         [Constructible]
-        public PestilentBandage() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4) // NEED TO CHECK
+        public PestilentBandage() : base(AIType.AI_Melee) // NEED TO CHECK
         {
             Body = 154;
             Hue = 0x515;

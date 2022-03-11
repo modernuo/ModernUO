@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class GreatHart : BaseCreature
     {
         [Constructible]
-        public GreatHart() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public GreatHart() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xEA;
 

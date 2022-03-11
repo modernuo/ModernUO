@@ -151,7 +151,7 @@ namespace Server.Mobiles
     public class BaseEnraged : BaseCreature
     {
         public BaseEnraged(Mobile summoner)
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             SetStr(50, 200);
             SetDex(50, 200);

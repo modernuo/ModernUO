@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class GazerLarva : BaseCreature
     {
         [Constructible]
-        public GazerLarva() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public GazerLarva() : base(AIType.AI_Melee)
         {
             Body = 778;
             BaseSoundID = 377;

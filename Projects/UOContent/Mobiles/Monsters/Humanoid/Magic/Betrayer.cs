@@ -10,7 +10,7 @@ namespace Server.Mobiles
         private bool m_Stunning;
 
         [Constructible]
-        public Betrayer() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Betrayer() : base(AIType.AI_Mage)
         {
             Body = 767;
 

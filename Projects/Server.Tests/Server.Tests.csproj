@@ -11,9 +11,6 @@
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
-        <DataFiles Update="..\..\Distribution\Data\Professions\LBR\prof.txt">
-          <Link>Data\Professions\LBR\prof.txt</Link>
-        </DataFiles>
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />

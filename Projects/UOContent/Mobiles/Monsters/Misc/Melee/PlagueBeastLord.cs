@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private DecayTimer m_Timer;
 
         [Constructible]
-        public PlagueBeastLord() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public PlagueBeastLord() : base(AIType.AI_Melee)
         {
             Body = 775;
             BaseSoundID = 679;

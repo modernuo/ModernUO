@@ -10,7 +10,7 @@ namespace Server.Mobiles
         };
 
         [Constructible]
-        public OphidianMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public OphidianMage() : base(AIType.AI_Mage)
         {
             Name = m_Names.RandomElement();
             Body = 85;

@@ -4,7 +4,7 @@
     public partial class MrPlainsCookies : Food
     {
         [Constructible]
-        public MrPlainsCookies() : base(0x160C, 1)
+        public MrPlainsCookies() : base(0x160C)
         {
             Weight = 1.0;
             FillFactor = 4;

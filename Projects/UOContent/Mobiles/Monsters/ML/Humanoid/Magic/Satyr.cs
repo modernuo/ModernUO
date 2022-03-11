@@ -15,7 +15,7 @@ namespace Server.Mobiles
         private DateTime m_NextUndress;
 
         [Constructible]
-        public Satyr() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Satyr() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 271;
             BaseSoundID = 0x586;

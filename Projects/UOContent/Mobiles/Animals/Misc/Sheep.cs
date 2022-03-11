@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private DateTime m_NextWoolTime;
 
         [Constructible]
-        public Sheep() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Sheep() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xCF;
             BaseSoundID = 0xD6;

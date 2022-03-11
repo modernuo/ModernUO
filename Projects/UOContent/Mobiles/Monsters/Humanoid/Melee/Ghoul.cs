@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Ghoul : BaseCreature
     {
         [Constructible]
-        public Ghoul() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Ghoul() : base(AIType.AI_Melee)
         {
             Body = 153;
             BaseSoundID = 0x482;

@@ -7,7 +7,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public EnergyVortex()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             if (Core.SE && Utility.RandomDouble() < 0.002) // Per OSI FoF, it's a 1/500 chance.
             {

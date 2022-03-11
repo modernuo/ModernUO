@@ -8,7 +8,7 @@ namespace Server.Mobiles
         private DateTime m_NextAbilityTime;
 
         [Constructible]
-        public MeerEternal() : base(AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+        public MeerEternal() : base(AIType.AI_Mage, FightMode.Evil)
         {
             Body = 772;
 

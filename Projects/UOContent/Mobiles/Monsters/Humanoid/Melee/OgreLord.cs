@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class OgreLord : BaseCreature
     {
         [Constructible]
-        public OgreLord() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public OgreLord() : base(AIType.AI_Melee)
         {
             Body = 83;
             BaseSoundID = 427;

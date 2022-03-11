@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class OrcishMage : BaseCreature
     {
         [Constructible]
-        public OrcishMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public OrcishMage() : base(AIType.AI_Mage)
         {
             Body = 140;
             BaseSoundID = 0x45A;

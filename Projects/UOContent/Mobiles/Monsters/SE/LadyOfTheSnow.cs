@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
         [Constructible]
         public LadyOfTheSnow()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Mage)
         {
             Body = 252;
             BaseSoundID = 0x482;

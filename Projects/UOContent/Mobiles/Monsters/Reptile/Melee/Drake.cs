@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Drake : BaseCreature
     {
         [Constructible]
-        public Drake() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Drake() : base(AIType.AI_Melee)
         {
             Body = Utility.RandomList(60, 61);
             BaseSoundID = 362;

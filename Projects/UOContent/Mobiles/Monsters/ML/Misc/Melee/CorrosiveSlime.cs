@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class CorrosiveSlime : BaseCreature
     {
         [Constructible]
-        public CorrosiveSlime() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public CorrosiveSlime() : base(AIType.AI_Melee)
         {
             Body = 51;
             BaseSoundID = 456;

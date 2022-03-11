@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public Protector()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             Body = 401;
             Female = true;
@@ -86,7 +86,7 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.4)
             c.DropItem( new ProtectorsEssence() );
         }

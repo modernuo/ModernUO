@@ -169,7 +169,7 @@ namespace Server.Engines.Events
         public override string DefaultName => _deadPlayer != null ? $"{_deadPlayer.Name}'s Zombie Skeleton" : "Zombie Skeleton";
 
         public ZombieSkeleton(PlayerMobile player = null)
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             _deadPlayer = player;
 

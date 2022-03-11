@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Devourer : BaseCreature
     {
         [Constructible]
-        public Devourer() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Devourer() : base(AIType.AI_Mage)
         {
             Body = 303;
             BaseSoundID = 357;

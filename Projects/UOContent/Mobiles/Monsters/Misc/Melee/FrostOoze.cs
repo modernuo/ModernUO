@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class FrostOoze : BaseCreature
     {
         [Constructible]
-        public FrostOoze() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public FrostOoze() : base(AIType.AI_Melee)
         {
             Body = 94;
             BaseSoundID = 456;

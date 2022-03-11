@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class RedSolenWorker : BaseCreature
     {
         [Constructible]
-        public RedSolenWorker() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public RedSolenWorker() : base(AIType.AI_Melee)
         {
             Body = 781;
             BaseSoundID = 959;

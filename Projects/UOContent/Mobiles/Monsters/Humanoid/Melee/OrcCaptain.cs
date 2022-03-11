@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class OrcCaptain : BaseCreature
     {
         [Constructible]
-        public OrcCaptain() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public OrcCaptain() : base(AIType.AI_Melee)
         {
             Name = NameList.RandomName("orc");
             Body = 7;

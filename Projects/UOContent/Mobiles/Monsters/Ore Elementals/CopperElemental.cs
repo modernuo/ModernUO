@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class CopperElemental : BaseCreature
     {
         [Constructible]
-        public CopperElemental(int oreAmount = 2) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public CopperElemental(int oreAmount = 2) : base(AIType.AI_Melee)
         {
             Body = 109;
             BaseSoundID = 268;

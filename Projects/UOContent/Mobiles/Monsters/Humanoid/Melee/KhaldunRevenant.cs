@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
         private readonly Mobile m_Target;
 
-        public KhaldunRevenant(Mobile target) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.18, 0.36)
+        public KhaldunRevenant(Mobile target) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.175, 0.35)
         {
             Body = 0x3CA;
             Hue = 0x41CE;

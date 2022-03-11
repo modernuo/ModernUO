@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class HeadlessOne : BaseCreature
     {
         [Constructible]
-        public HeadlessOne() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public HeadlessOne() : base(AIType.AI_Melee)
         {
             Body = 31;
             Hue = Race.Human.RandomSkinHue() & 0x7FFF;

@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CrystalVortex()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             Body = 0xD;
             Hue = 0x2B2;
@@ -59,10 +59,10 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.75)
             c.DropItem( new CrystallineFragments() );
-    
+
           if (Utility.RandomDouble() < 0.06)
             c.DropItem( new JaggedCrystals() );
         }

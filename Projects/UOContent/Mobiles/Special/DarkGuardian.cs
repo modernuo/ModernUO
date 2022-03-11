@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class DarkGuardian : BaseCreature
     {
         [Constructible]
-        public DarkGuardian() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public DarkGuardian() : base(AIType.AI_Mage)
         {
             Body = 78;
             BaseSoundID = 0x3E9;

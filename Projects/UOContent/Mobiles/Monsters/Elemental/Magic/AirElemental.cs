@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class AirElemental : BaseCreature
     {
         [Constructible]
-        public AirElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public AirElemental() : base(AIType.AI_Mage)
         {
             Body = 13;
             Hue = 0x4001;

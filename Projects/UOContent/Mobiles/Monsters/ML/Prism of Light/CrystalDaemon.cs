@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CrystalDaemon()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Mage)
         {
             Body = 0x310;
             Hue = 0x3E8;
@@ -46,7 +46,7 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.4)
             c.DropItem( new ScatteredCrystals() );
         }

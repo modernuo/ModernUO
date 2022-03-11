@@ -152,7 +152,7 @@ namespace Server.Mobiles
         }
     }
 
-    public class BaseCreature : Mobile, IHonorTarget, IQuestGiver
+    public abstract class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
         public enum Allegiance
         {
@@ -195,16 +195,6 @@ namespace Server.Mobiles
             typeof(LichLord), typeof(FleshGolem), typeof(Lich),
             typeof(SkeletalKnight), typeof(BoneKnight), typeof(Mummy),
             typeof(SkeletalMage), typeof(BoneMagi), typeof(PatchworkSkeleton)
-        };
-
-        private static readonly double[] m_StandardActiveSpeeds =
-        {
-            0.175, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8
-        };
-
-        private static readonly double[] m_StandardPassiveSpeeds =
-        {
-            0.350, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0
         };
 
         private static Mobile m_NoDupeGuards;
@@ -332,11 +322,11 @@ namespace Server.Mobiles
 
         public BaseCreature(
             AIType ai,
-            FightMode mode,
-            int iRangePerception,
-            int iRangeFight,
-            double dActiveSpeed,
-            double dPassiveSpeed
+            FightMode mode = FightMode.Closest,
+            int iRangePerception = 10,
+            int iRangeFight = 1,
+            double activeSpeed = -1,
+            double passiveSpeed = -1
         )
         {
             if (iRangePerception == OldRangePerception)
@@ -356,11 +346,16 @@ namespace Server.Mobiles
 
             m_Team = 0;
 
-            SpeedInfo.GetSpeeds(this, ref dActiveSpeed, ref dPassiveSpeed);
-
-            ActiveSpeed = dActiveSpeed;
-            PassiveSpeed = dPassiveSpeed;
-            m_CurrentSpeed = dPassiveSpeed;
+            if (passiveSpeed < 0 || activeSpeed < 0)
+            {
+                ResetSpeeds();
+            }
+            else
+            {
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = passiveSpeed;
+            }
 
             Debug = false;
 
@@ -2005,42 +2000,6 @@ namespace Server.Mobiles
                 Loyalty *= 10;
             }
 
-            var activeSpeed = ActiveSpeed;
-            var passiveSpeed = PassiveSpeed;
-
-            SpeedInfo.GetSpeeds(this, ref activeSpeed, ref passiveSpeed);
-
-            var isStandardActive = false;
-            for (var i = 0; !isStandardActive && i < m_StandardActiveSpeeds.Length; ++i)
-            {
-                isStandardActive = ActiveSpeed == m_StandardActiveSpeeds[i];
-            }
-
-            var isStandardPassive = false;
-            for (var i = 0; !isStandardPassive && i < m_StandardPassiveSpeeds.Length; ++i)
-            {
-                isStandardPassive = PassiveSpeed == m_StandardPassiveSpeeds[i];
-            }
-
-            if (isStandardActive && m_CurrentSpeed == ActiveSpeed)
-            {
-                m_CurrentSpeed = activeSpeed;
-            }
-            else if (isStandardPassive && m_CurrentSpeed == PassiveSpeed)
-            {
-                m_CurrentSpeed = passiveSpeed;
-            }
-
-            if (isStandardActive && !m_Paragon)
-            {
-                ActiveSpeed = activeSpeed;
-            }
-
-            if (isStandardPassive && !m_Paragon)
-            {
-                PassiveSpeed = passiveSpeed;
-            }
-
             if (version >= 14)
             {
                 RemoveIfUntamed = reader.ReadBool();
@@ -3040,6 +2999,12 @@ namespace Server.Mobiles
 
             return null;
         }
+
+        public virtual bool IsMonster =>
+            !Controlled || GetMaster() is not BaseCreature { Controlled: true };
+
+        public bool InActivePVPCombat() =>
+            Combatant is PlayerMobile && ControlOrder != OrderType.Follow;
 
         public static List<DamageStore> GetLootingRights(List<DamageEntry> damageEntries, int hitsMax)
         {
@@ -4873,6 +4838,16 @@ namespace Server.Mobiles
             {
                 PackWeapon(minLevel, maxLevel, weaponChance);
             }
+        }
+
+        // Reset speeds based on dex. Mainly used during construction and pet commands
+        public void ResetSpeeds(bool currentUseActive = false)
+        {
+            SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()

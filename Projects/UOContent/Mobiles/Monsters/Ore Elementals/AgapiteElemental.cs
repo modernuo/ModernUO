@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class AgapiteElemental : BaseCreature
     {
         [Constructible]
-        public AgapiteElemental(int oreAmount = 2) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public AgapiteElemental(int oreAmount = 2) : base(AIType.AI_Melee)
         {
             Body = 107;
             BaseSoundID = 268;

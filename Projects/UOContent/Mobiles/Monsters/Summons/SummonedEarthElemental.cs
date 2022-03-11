@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SummonedEarthElemental : BaseCreature
     {
         [Constructible]
-        public SummonedEarthElemental() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public SummonedEarthElemental() : base(AIType.AI_Melee)
         {
             Body = 14;
             BaseSoundID = 268;

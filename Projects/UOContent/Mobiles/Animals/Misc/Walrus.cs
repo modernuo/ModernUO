@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Walrus : BaseCreature
     {
         [Constructible]
-        public Walrus() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Walrus() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xDD;
             BaseSoundID = 0xE0;

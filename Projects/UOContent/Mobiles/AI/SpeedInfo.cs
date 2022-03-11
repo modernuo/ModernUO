@@ -1,228 +1,50 @@
 using System;
-using System.Collections.Generic;
-using Server.Factions;
 using Server.Mobiles;
 
-namespace Server
+namespace Server;
+
+public static class SpeedInfo
 {
-    public class SpeedInfo
+    public static double MinDelay { get; private set; }
+    public static double MaxDelay { get; private set; }
+    public static double MinMonsterDelay { get; private set; }
+    public static double MaxMonsterDelay { get; private set; }
+
+    // Determines the maximum dex for delay by dex
+    public static int MaxDex { get; private set; }
+    public static int MaxMonsterDex { get; private set; }
+
+    public static void Configure()
     {
-        // Should we use the new method of speeds?
-        private static readonly bool Enabled = true;
+        // Default speed determined by dex (0 -> 190) for non-monster NPCs including pets
+        MinDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.npcMinDelay", 0.1);
+        MaxDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.npcMaxDelay", 0.5);
+        MaxDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.maxDex", 190);
 
-        private static Dictionary<Type, SpeedInfo> m_Table;
+        // Default speed determined by dex (0 -> 150) for monsters
+        MinMonsterDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMinDelay", 0.4);
+        MaxMonsterDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDelay", 0.8);
+        MaxMonsterDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDex", 150);
+    }
 
-        private static readonly SpeedInfo[] m_Speeds =
+    public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
+    {
+        var isMonster = bc.IsMonster;
+        var monsterDelay = isMonster || bc.InActivePVPCombat();
+        var maxDex = isMonster ? MaxMonsterDex : MaxDex;
+
+        var dex = Math.Clamp(bc.Dex, 25, maxDex);
+
+        double min = monsterDelay ? MinMonsterDelay : MinDelay;
+        double max = monsterDelay ? MaxMonsterDelay : MaxDelay;
+
+        if (bc.IsParagon)
         {
-            /* Slow */
-            new(
-                0.3,
-                0.6,
-                new[]
-                {
-                    typeof(AntLion), typeof(ArcticOgreLord), typeof(BogThing),
-                    typeof(Bogle), typeof(BoneKnight), typeof(EarthElemental),
-                    typeof(Ettin), typeof(FrostOoze), typeof(FrostTroll),
-                    typeof(GazerLarva), typeof(Ghoul), typeof(Golem),
-                    typeof(HeadlessOne), typeof(Jwilson), typeof(Mummy),
-                    typeof(Ogre), typeof(OgreLord), typeof(PlagueBeast),
-                    typeof(Quagmire), typeof(Rat), typeof(RottingCorpse),
-                    typeof(SewerRat), typeof(Skeleton), typeof(Slime),
-                    typeof(Zombie), typeof(Walrus), typeof(RestlessSoul),
-                    typeof(CrystalElemental), typeof(DarknightCreeper), typeof(MoundOfMaggots),
-                    typeof(Juggernaut), typeof(Yamandon), typeof(Serado)
-                }
-            ),
-            /* Fast */
-            new(
-                0.2,
-                0.4,
-                new[]
-                {
-                    typeof(LordOaks), typeof(Silvani), typeof(AirElemental),
-                    typeof(AncientWyrm), typeof(Balron), typeof(BladeSpirits),
-                    typeof(DreadSpider), typeof(Efreet), typeof(EtherealWarrior),
-                    typeof(Lich), typeof(Nightmare), typeof(OphidianArchmage),
-                    typeof(OphidianMage), typeof(OphidianWarrior), typeof(OphidianMatriarch),
-                    typeof(OphidianKnight), typeof(PoisonElemental), typeof(Revenant),
-                    typeof(SandVortex), typeof(SavageRider), typeof(SavageShaman),
-                    typeof(SnowElemental), typeof(WhiteWyrm), typeof(Wisp),
-                    typeof(DemonKnight), typeof(GiantBlackWidow), typeof(SummonedAirElemental),
-                    typeof(LesserHiryu), typeof(Hiryu), typeof(LadyOfTheSnow),
-                    typeof(RaiJu), typeof(Ronin), typeof(RuneBeetle),
-                    typeof(Changeling), typeof(LadyJennifyr), typeof(LadyMarai), typeof(MasterJonath),
-                    typeof(MasterMikael), typeof(MasterTheophilus), typeof(RedDeath),
-                    typeof(SirPatrick), typeof(Miasma), typeof(Rend),
-                    typeof(Grobu), typeof(Gnaw), typeof(Guile),
-                    typeof(Irk), typeof(Spite), typeof(LadyLissith),
-                    typeof(LadySabrix), typeof(Malefic), typeof(Silk),
-                    typeof(Virulent)
-                    // TODO: Where to put Lurg, Putrefier, Swoop and Pyre? They seem slower.
-                }
-            ),
-            /* Very Fast */
-            new(
-                0.175,
-                0.350,
-                new[]
-                {
-                    typeof(Barracoon), typeof(Mephitis), typeof(Neira),
-                    typeof(Rikktor), typeof(Semidar), typeof(EnergyVortex),
-                    typeof(EliteNinja), typeof(Pixie), typeof(SilverSerpent),
-                    typeof(VorpalBunny), typeof(FleshRenderer), typeof(KhaldunRevenant),
-                    typeof(FactionDragoon), typeof(FactionKnight), typeof(FactionPaladin),
-                    typeof(FactionHenchman), typeof(FactionMercenary), typeof(FactionNecromancer),
-                    typeof(FactionSorceress), typeof(FactionWizard), typeof(FactionBerserker),
-                    typeof(FactionPaladin), typeof(Leviathan), typeof(FireBeetle),
-                    typeof(FanDancer), typeof(FactionDeathKnight)
-                }
-            ),
-            /* Medium */
-            new(
-                0.25,
-                0.5,
-                new[]
-                {
-                    typeof(AcidElemental), typeof(AgapiteElemental), typeof(Alligator),
-                    typeof(AncientLich), typeof(Betrayer), typeof(Bird),
-                    typeof(BlackBear), typeof(BlackSolenInfiltratorQueen), typeof(BlackSolenInfiltratorWarrior),
-                    typeof(BlackSolenQueen), typeof(BlackSolenWarrior), typeof(BlackSolenWorker),
-                    typeof(BloodElemental), typeof(Boar), typeof(Bogling),
-                    typeof(BoneMagi), typeof(Brigand), typeof(BronzeElemental),
-                    typeof(BrownBear), typeof(Bull), typeof(BullFrog),
-                    typeof(Cat), typeof(Centaur), typeof(ChaosDaemon),
-                    typeof(Chicken), typeof(GolemController), typeof(CopperElemental),
-                    typeof(CopperElemental), typeof(Cougar), typeof(Cow),
-                    typeof(Cyclops), typeof(Daemon), typeof(DeepSeaSerpent),
-                    typeof(DesertOstard), typeof(DireWolf), typeof(Dog),
-                    typeof(Dolphin), typeof(Dragon), typeof(Drake),
-                    typeof(DullCopperElemental), typeof(Eagle), typeof(ElderGazer),
-                    typeof(EvilMage), typeof(EvilMageLord), typeof(Executioner),
-                    typeof(Savage), typeof(FireElemental), typeof(FireGargoyle),
-                    typeof(FireSteed), typeof(ForestOstard), typeof(FrenziedOstard),
-                    typeof(FrostSpider), typeof(Gargoyle), typeof(Gazer),
-                    typeof(IceSerpent), typeof(GiantRat), typeof(GiantSerpent),
-                    typeof(GiantSpider), typeof(GiantToad), typeof(Goat),
-                    typeof(GoldenElemental), typeof(Gorilla), typeof(GreatHart),
-                    typeof(GreyWolf), typeof(GrizzlyBear), typeof(Guardian),
-                    typeof(Harpy), typeof(Harrower), typeof(HellHound),
-                    typeof(Hind), typeof(HordeMinion), typeof(Horse),
-                    typeof(Horse), typeof(IceElemental), typeof(IceFiend),
-                    typeof(IceSnake), typeof(Imp), typeof(JackRabbit),
-                    typeof(Kirin), typeof(Kraken), typeof(PredatorHellCat),
-                    typeof(LavaLizard), typeof(LavaSerpent), typeof(LavaSnake),
-                    typeof(Lizardman), typeof(Llama), typeof(Mongbat),
-                    typeof(StrongMongbat), typeof(MountainGoat), typeof(Orc),
-                    typeof(OrcBomber), typeof(OrcBrute), typeof(OrcCaptain),
-                    typeof(OrcishLord), typeof(OrcishMage), typeof(PackHorse),
-                    typeof(PackLlama), typeof(Panther), typeof(Pig),
-                    typeof(PlagueSpawn), typeof(PolarBear), typeof(Rabbit),
-                    typeof(Ratman), typeof(RatmanArcher), typeof(RatmanMage),
-                    typeof(RedSolenInfiltratorQueen), typeof(RedSolenInfiltratorWarrior), typeof(RedSolenQueen),
-                    typeof(RedSolenWarrior), typeof(RedSolenWorker), typeof(RidableLlama),
-                    typeof(Ridgeback), typeof(Scorpion), typeof(SeaSerpent),
-                    typeof(SerpentineDragon), typeof(Shade), typeof(ShadowIronElemental),
-                    typeof(ShadowWisp), typeof(ShadowWyrm), typeof(Sheep),
-                    typeof(SilverSteed), typeof(SkeletalDragon), typeof(SkeletalMage),
-                    typeof(SkeletalMount), typeof(HellCat), typeof(Snake),
-                    typeof(SnowLeopard), typeof(SpectralArmour), typeof(Spectre),
-                    typeof(StoneGargoyle), typeof(StoneHarpy), typeof(SwampDragon),
-                    typeof(ScaledSwampDragon), typeof(SwampTentacle), typeof(TerathanAvenger),
-                    typeof(TerathanDrone), typeof(TerathanMatriarch), typeof(TerathanWarrior),
-                    typeof(TimberWolf), typeof(Titan), typeof(Troll),
-                    typeof(Unicorn), typeof(ValoriteElemental), typeof(VeriteElemental),
-                    typeof(CoMWarHorse), typeof(MinaxWarHorse), typeof(SLWarHorse),
-                    typeof(TBWarHorse), typeof(WaterElemental), typeof(WhippingVine),
-                    typeof(WhiteWolf), typeof(Wraith), typeof(Wyvern),
-                    typeof(KhaldunZealot), typeof(KhaldunSummoner), typeof(SavageRidgeback),
-                    typeof(LichLord), typeof(SkeletalKnight), typeof(SummonedDaemon),
-                    typeof(SummonedEarthElemental), typeof(SummonedWaterElemental), typeof(SummonedFireElemental),
-                    typeof(MeerWarrior), typeof(MeerEternal), typeof(MeerMage),
-                    typeof(MeerCaptain), typeof(JukaLord), typeof(JukaMage),
-                    typeof(JukaWarrior), typeof(AbysmalHorror), typeof(BoneDemon),
-                    typeof(Devourer), typeof(FleshGolem), typeof(Gibberling),
-                    typeof(GoreFiend), typeof(Impaler), typeof(PatchworkSkeleton),
-                    typeof(Ravager), typeof(ShadowKnight), typeof(SkitteringHopper),
-                    typeof(Treefellow), typeof(VampireBat), typeof(WailingBanshee),
-                    typeof(WandererOfTheVoid), typeof(Cursed), typeof(GrimmochDrummel),
-                    typeof(LysanderGathenwale), typeof(MorgBergen), typeof(ShadowFiend),
-                    typeof(SpectralArmour), typeof(TavaraSewel), typeof(ArcaneDaemon),
-                    typeof(Doppleganger), typeof(EnslavedGargoyle), typeof(ExodusMinion),
-                    typeof(ExodusOverseer), typeof(GargoyleDestroyer), typeof(GargoyleEnforcer),
-                    typeof(Moloch), typeof(BakeKitsune), typeof(DeathwatchBeetleHatchling),
-                    typeof(Kappa), typeof(KazeKemono), typeof(DeathwatchBeetle),
-                    typeof(TsukiWolf), typeof(YomotsuElder), typeof(YomotsuPriest),
-                    typeof(YomotsuWarrior), typeof(RevenantLion), typeof(Oni),
-                    typeof(Gaman), typeof(Crane), typeof(Beetle)
-                }
-            )
-        };
-
-        public SpeedInfo(double activeSpeed, double passiveSpeed, Type[] types)
-        {
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            Types = types;
+            min /= 2;
+            max = min + 0.5;
         }
 
-        public double ActiveSpeed { get; set; }
-
-        public double PassiveSpeed { get; set; }
-
-        public Type[] Types { get; set; }
-
-        public static bool Contains(object obj)
-        {
-            if (!Enabled)
-            {
-                return false;
-            }
-
-            if (m_Table == null)
-            {
-                LoadTable();
-            }
-
-            return m_Table!.ContainsKey(obj.GetType());
-        }
-
-        public static bool GetSpeeds(object obj, ref double activeSpeed, ref double passiveSpeed)
-        {
-            if (!Enabled)
-            {
-                return false;
-            }
-
-            if (m_Table == null)
-            {
-                LoadTable();
-            }
-
-            if (!m_Table!.TryGetValue(obj.GetType(), out var sp))
-            {
-                return false;
-            }
-
-            activeSpeed = sp.ActiveSpeed;
-            passiveSpeed = sp.PassiveSpeed;
-
-            return true;
-        }
-
-        private static void LoadTable()
-        {
-            m_Table = new Dictionary<Type, SpeedInfo>();
-
-            for (var i = 0; i < m_Speeds.Length; ++i)
-            {
-                var info = m_Speeds[i];
-                var types = info.Types;
-
-                for (var j = 0; j < types.Length; ++j)
-                {
-                    m_Table[types[j]] = info;
-                }
-            }
-        }
+        activeSpeed = Math.Max(max - (max - min) * ((double)dex / maxDex), min);
+        passiveSpeed = activeSpeed * 2;
     }
 }

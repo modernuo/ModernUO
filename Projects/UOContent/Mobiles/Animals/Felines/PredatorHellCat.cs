@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class PredatorHellCat : BaseCreature
     {
         [Constructible]
-        public PredatorHellCat() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public PredatorHellCat() : base(AIType.AI_Melee)
         {
             Body = 127;
             BaseSoundID = 0xBA;

@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public Hydra()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             Body = 0x109;
             BaseSoundID = 0x16A;
@@ -67,7 +67,7 @@ namespace Server.Mobiles
             // TODO: uncomment once added
             if (Utility.RandomDouble() < 0.2)
               c.DropItem( new ParrotItem() );
-      
+
             if (Utility.RandomDouble() < 0.05)
               c.DropItem( new ThorvaldsMedallion() );
             */

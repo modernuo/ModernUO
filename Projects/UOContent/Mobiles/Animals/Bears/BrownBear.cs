@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class BrownBear : BaseCreature
     {
         [Constructible]
-        public BrownBear() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public BrownBear() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 167;
             BaseSoundID = 0xA3;

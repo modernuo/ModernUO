@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
         [Constructible]
         public TsukiWolf()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             Body = 250;
             Hue = Utility.Random(3) == 0 ? Utility.RandomNeutralHue() : 0;

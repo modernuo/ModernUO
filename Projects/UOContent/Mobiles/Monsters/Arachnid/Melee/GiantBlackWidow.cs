@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class GiantBlackWidow : BaseCreature
     {
         [Constructible]
-        public GiantBlackWidow() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public GiantBlackWidow() : base(AIType.AI_Melee)
         {
             Body = 0x9D;
             BaseSoundID = 0x388; // TODO: validate

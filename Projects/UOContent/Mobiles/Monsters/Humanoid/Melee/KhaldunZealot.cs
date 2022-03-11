@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class KhaldunZealot : BaseCreature
     {
         [Constructible]
-        public KhaldunZealot() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public KhaldunZealot() : base(AIType.AI_Melee)
         {
             Body = 0x190;
             Title = "the Knight";

@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Spectre : BaseCreature
     {
         [Constructible]
-        public Spectre() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Spectre() : base(AIType.AI_Mage)
         {
             Body = 26;
             Hue = 0x4001;

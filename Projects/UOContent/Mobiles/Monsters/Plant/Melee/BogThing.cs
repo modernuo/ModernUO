@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class BogThing : BaseCreature
     {
         [Constructible]
-        public BogThing() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.6, 1.2)
+        public BogThing() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6)
         {
             Body = 780;
 

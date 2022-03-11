@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class SerpentineDragon : BaseCreature
     {
         [Constructible]
-        public SerpentineDragon() : base(AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+        public SerpentineDragon() : base(AIType.AI_Mage, FightMode.Evil)
         {
             Body = 103;
             BaseSoundID = 362;

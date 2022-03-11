@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class SnowLeopard : BaseCreature
     {
         [Constructible]
-        public SnowLeopard() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public SnowLeopard() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = Utility.RandomList(64, 65);
             BaseSoundID = 0x73;

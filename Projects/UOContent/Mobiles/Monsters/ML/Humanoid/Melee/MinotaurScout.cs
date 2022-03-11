@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class MinotaurScout : BaseCreature
     {
         [Constructible]
-        public MinotaurScout() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4) // NEED TO CHECK
+        public MinotaurScout() : base(AIType.AI_Melee) // NEED TO CHECK
         {
             Body = 281;
 

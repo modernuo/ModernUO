@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class FleshGolem : BaseCreature
     {
         [Constructible]
-        public FleshGolem() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public FleshGolem() : base(AIType.AI_Melee)
         {
             Body = 304;
             BaseSoundID = 684;

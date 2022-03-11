@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Zombie : BaseCreature
     {
         [Constructible]
-        public Zombie() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Zombie() : base(AIType.AI_Melee)
         {
             Body = 3;
             BaseSoundID = 471;

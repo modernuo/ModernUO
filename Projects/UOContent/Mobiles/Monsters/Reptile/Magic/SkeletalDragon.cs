@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SkeletalDragon : BaseCreature
     {
         [Constructible]
-        public SkeletalDragon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public SkeletalDragon() : base(AIType.AI_Mage)
         {
             Body = 104;
             BaseSoundID = 0x488;

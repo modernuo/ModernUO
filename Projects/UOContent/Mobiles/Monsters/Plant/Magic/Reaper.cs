@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Reaper : BaseCreature
     {
         [Constructible]
-        public Reaper() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Reaper() : base(AIType.AI_Mage)
         {
             Body = 47;
             BaseSoundID = 442;

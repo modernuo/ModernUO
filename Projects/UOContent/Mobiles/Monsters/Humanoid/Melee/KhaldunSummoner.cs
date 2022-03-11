@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class KhaldunSummoner : BaseCreature
     {
         [Constructible]
-        public KhaldunSummoner() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public KhaldunSummoner() : base(AIType.AI_Mage)
         {
             Body = 0x190;
             Title = "the Summoner";

@@ -48,7 +48,7 @@ namespace Server.Mobiles
         private bool m_TrueForm;
 
         [Constructible]
-        public Harrower() : base(AIType.AI_Mage, FightMode.Closest, 18, 1, 0.2, 0.4)
+        public Harrower() : base(AIType.AI_Mage, FightMode.Closest, 18)
         {
             Instances.Add(this);
             Body = 146;

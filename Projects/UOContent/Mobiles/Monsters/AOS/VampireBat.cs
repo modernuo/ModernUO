@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class VampireBat : BaseCreature
     {
         [Constructible]
-        public VampireBat() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public VampireBat() : base(AIType.AI_Melee)
         {
             Body = 317;
             BaseSoundID = 0x270;
