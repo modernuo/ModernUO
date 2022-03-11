@@ -2707,7 +2707,7 @@ namespace Server.Mobiles
         public virtual void OnCurrentSpeedChanged()
         {
             m_Timer.Stop();
-            m_Timer.Delay = TimeSpan.FromSeconds(Utility.RandomDouble());
+            m_Timer.Delay = TimeSpan.FromMilliseconds(Utility.Random(128) * 8);
             m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.0, m_Mobile.CurrentSpeed));
             m_Timer.Start();
         }
@@ -2735,70 +2735,72 @@ namespace Server.Mobiles
 
             public override void OnClick()
             {
-                if (!m_Mobile.Deleted && m_Mobile.Controlled && m_From.CheckAlive())
+                if (m_Mobile.Deleted || !m_Mobile.Controlled || !m_From.CheckAlive())
                 {
-                    if (m_Mobile.IsDeadPet && m_Order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    var isOwner = m_From == m_Mobile.ControlMaster;
-                    var isFriend = !isOwner && m_Mobile.IsPetFriend(m_From);
+                if (m_Mobile.IsDeadPet && m_Order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
+                {
+                    return;
+                }
 
-                    if (!isOwner && !isFriend)
-                    {
-                        return;
-                    }
+                var isOwner = m_From == m_Mobile.ControlMaster;
+                var isFriend = !isOwner && m_Mobile.IsPetFriend(m_From);
 
-                    if (isFriend && m_Order != OrderType.Follow && m_Order != OrderType.Stay && m_Order != OrderType.Stop)
-                    {
-                        return;
-                    }
+                if (!isOwner && !isFriend)
+                {
+                    return;
+                }
 
-                    switch (m_Order)
-                    {
-                        case OrderType.Follow:
-                        case OrderType.Attack:
-                        case OrderType.Transfer:
-                        case OrderType.Friend:
-                        case OrderType.Unfriend:
+                if (isFriend && m_Order != OrderType.Follow && m_Order != OrderType.Stay && m_Order != OrderType.Stop)
+                {
+                    return;
+                }
+
+                switch (m_Order)
+                {
+                    case OrderType.Follow:
+                    case OrderType.Attack:
+                    case OrderType.Transfer:
+                    case OrderType.Friend:
+                    case OrderType.Unfriend:
+                        {
+                            if (m_Order == OrderType.Transfer && m_From.HasTrade)
                             {
-                                if (m_Order == OrderType.Transfer && m_From.HasTrade)
-                                {
-                                    m_From.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
-                                }
-                                else if (m_Order == OrderType.Friend && m_From.HasTrade)
-                                {
-                                    m_From.SendLocalizedMessage(1070947); // You cannot friend a pet with a trade pending
-                                }
-                                else
-                                {
-                                    m_AI.BeginPickTarget(m_From, m_Order);
-                                }
-
-                                break;
+                                m_From.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
                             }
-                        case OrderType.Release:
+                            else if (m_Order == OrderType.Friend && m_From.HasTrade)
                             {
-                                if (m_Mobile.Summoned)
-                                {
-                                    goto default;
-                                }
-
-                                m_From.SendGump(new ConfirmReleaseGump(m_From, m_Mobile));
-
-                                break;
+                                m_From.SendLocalizedMessage(1070947); // You cannot friend a pet with a trade pending
                             }
-                        default:
+                            else
                             {
-                                if (m_Mobile.CheckControlChance(m_From))
-                                {
-                                    m_Mobile.ControlOrder = m_Order;
-                                }
-
-                                break;
+                                m_AI.BeginPickTarget(m_From, m_Order);
                             }
-                    }
+
+                            break;
+                        }
+                    case OrderType.Release:
+                        {
+                            if (m_Mobile.Summoned)
+                            {
+                                goto default;
+                            }
+
+                            m_From.SendGump(new ConfirmReleaseGump(m_From, m_Mobile));
+
+                            break;
+                        }
+                    default:
+                        {
+                            if (m_Mobile.CheckControlChance(m_From))
+                            {
+                                m_Mobile.ControlOrder = m_Order;
+                            }
+
+                            break;
+                        }
                 }
             }
         }
@@ -2899,14 +2901,10 @@ namespace Server.Mobiles
                 {
                     var args = $"{to.Name}\t{from.Name}\t ";
 
-                    from.SendLocalizedMessage(
-                        1043248,
-                        args
-                    ); // The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
-                    to.SendLocalizedMessage(
-                        1043249,
-                        args
-                    ); // The pet will not accept you as a master because it does not trust you.~3_BLANK~
+                    // The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
+                    from.SendLocalizedMessage(1043248, args);
+                    // The pet will not accept you as a master because it does not trust you.~3_BLANK~
+                    to.SendLocalizedMessage(1043249, args);
 
                     return false;
                 }
@@ -2914,14 +2912,10 @@ namespace Server.Mobiles
                 {
                     var args = $"{to.Name}\t{from.Name}\t ";
 
-                    from.SendLocalizedMessage(
-                        1043250,
-                        args
-                    ); // The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
-                    to.SendLocalizedMessage(
-                        1043251,
-                        args
-                    ); // The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+                    // The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
+                    from.SendLocalizedMessage(1043250, args);
+                    // The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+                    to.SendLocalizedMessage(1043251, args);
                 }
                 else if (accepted && to.Followers + m_Creature.ControlSlots > to.FollowersMax)
                 {
@@ -2981,10 +2975,8 @@ namespace Server.Mobiles
                         var args = $"{from.Name}\t{m_Creature.Name}\t{to.Name}";
 
                         from.SendLocalizedMessage(1043253, args); // You have transferred your pet to ~3_GETTER~.
-                        to.SendLocalizedMessage(
-                            1043252,
-                            args
-                        ); // ~1_NAME~ has transferred the allegiance of ~2_PET_NAME~ to you.
+                        // ~1_NAME~ has transferred the allegiance of ~2_PET_NAME~ to you.
+                        to.SendLocalizedMessage(1043252, args);
                     }
                 }
             }
@@ -2999,7 +2991,7 @@ namespace Server.Mobiles
 
             public AITimer(BaseAI owner)
                 : base(
-                    TimeSpan.FromSeconds(Utility.RandomDouble()),
+                    TimeSpan.FromSeconds(Utility.Random(128) * 8),
                     TimeSpan.FromSeconds(Math.Max(0.0, owner.m_Mobile.CurrentSpeed))
                 )
             {
