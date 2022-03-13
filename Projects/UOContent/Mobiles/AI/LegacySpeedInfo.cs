@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json.Serialization;
 using Server.Json;
 using Server.Logging;
+using Server.Mobiles;
 
 namespace Server;
 
@@ -27,6 +28,39 @@ public class LegacySpeedInfo
 
         activeSpeed = sp.ActiveSpeed;
         passiveSpeed = sp.PassiveSpeed;
+
+        return true;
+    }
+
+    public static bool TransformMoveDelay(BaseCreature creature, ref double delay)
+    {
+        if (!Enabled)
+        {
+            return false;
+        }
+
+        var isControlled = creature.Controlled || creature.Summoned;
+
+        // Movement is twice as slow as thinking
+        if (!isControlled || creature.IsMonster || creature.InActivePVPCombat())
+        {
+            delay *= 2;
+        }
+
+        if (!isControlled)
+        {
+            delay += 0.1;
+        }
+
+        if (!creature.IsDeadPet && (creature.ReduceSpeedWithDamage || creature.IsSubdued))
+        {
+            double offset = creature.HitsMax <= 0 ? 1.0 : Math.Max(0, creature.Hits) / (double)creature.HitsMax;
+
+            if (offset < 1.0)
+            {
+                delay += (1.0 - offset) * 0.8;
+            }
+        }
 
         return true;
     }

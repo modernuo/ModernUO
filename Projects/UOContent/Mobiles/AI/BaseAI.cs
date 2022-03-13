@@ -1923,6 +1923,11 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
+            if (LegacySpeedInfo.TransformMoveDelay(m_Mobile, ref delay))
+            {
+                return delay;
+            }
+
             // Non-monsters in PVP combat (like pets) are penalized
             if (!m_Mobile.IsMonster && m_Mobile.InActivePVPCombat() && delay <= SpeedInfo.MaxDelay)
             {
@@ -2989,7 +2994,7 @@ namespace Server.Mobiles
             private readonly BaseAI m_Owner;
 
             public AITimer(BaseAI owner) : base(
-                TimeSpan.FromMilliseconds(Utility.Random(128) * 8),
+                TimeSpan.FromMilliseconds(Utility.Random(64) * 8),
                 TimeSpan.FromSeconds(Math.Max(0.0, owner.m_Mobile.CurrentSpeed))
             )
             {

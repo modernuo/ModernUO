@@ -72,12 +72,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (ProcessTarget())
-            {
-                return true;
-            }
-
-            return base.Think();
+            return ProcessTarget() || base.Think();
         }
 
         public virtual double ScaleBySkill(double v, SkillName skill) => v * m_Mobile.Skills[skill].Value / 100;
@@ -387,12 +382,9 @@ namespace Server.Mobiles
         {
             if (!SmartAI)
             {
-                if (ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble())
-                {
-                    return new DispelSpell(m_Mobile);
-                }
-
-                return ChooseSpell(toDispel);
+                return ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble()
+                    ? new DispelSpell(m_Mobile)
+                    : ChooseSpell(toDispel);
             }
 
             var spell = CheckCastHealingSpell();
@@ -743,13 +735,11 @@ namespace Server.Mobiles
                 if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100)
                 {
                     // We are low on health, should we flee?
-
                     bool flee;
 
                     if (m_Mobile.Hits < c.Hits)
                     {
                         // We are more hurt than them
-
                         var diff = c.Hits - m_Mobile.Hits;
 
                         flee = Utility.Random(0, 100) > 10 + diff; // (10 + diff)% chance to flee
@@ -772,7 +762,6 @@ namespace Server.Mobiles
             if (m_Mobile.Spell == null && Core.TickCount - m_NextCastTime >= 0 && m_Mobile.InRange(c, Core.ML ? 10 : 12))
             {
                 // We are ready to cast a spell
-
                 Spell spell;
                 var toDispel = FindDispelTarget(true);
 
@@ -788,18 +777,18 @@ namespace Server.Mobiles
 
                     spell = DoDispel(toDispel);
                 }
-                else if (SmartAI && m_Combo != -1) // We are doing a spell combo
-                {
-                    spell = DoCombo(c);
-                }
-                else if (SmartAI && c.Spell is HealSpell or GreaterHealSpell && !c.Poisoned
-                ) // They have a heal spell out
-                {
-                    spell = new PoisonSpell(m_Mobile);
-                }
                 else
                 {
-                    spell = ChooseSpell(c);
+                    spell = SmartAI switch
+                    {
+                        // We are doing a spell combo
+                        true when m_Combo != -1 => DoCombo(c),
+                        // They have a heal spell out
+                        true when
+                            !c.Poisoned &&
+                            c.Spell is HealSpell or GreaterHealSpell => new PoisonSpell(m_Mobile),
+                        _ => ChooseSpell(c)
+                    };
                 }
 
                 // Now we have a spell picked
