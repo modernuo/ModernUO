@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class ShadowWisp : BaseCreature
     {
         [Constructible]
-        public ShadowWisp() : base(AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.25, 0.5)
+        public ShadowWisp() : base(AIType.AI_Mage, FightMode.Aggressor)
         {
             Body = 165;
             BaseSoundID = 466;

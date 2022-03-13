@@ -324,9 +324,10 @@ namespace Server.Mobiles
             AIType ai,
             FightMode mode = FightMode.Closest,
             int iRangePerception = 10,
-            int iRangeFight = 1,
-            double activeSpeed = -1,
-            double passiveSpeed = -1
+            int iRangeFight = 1
+            // ,
+            // double activeSpeed = 0,
+            // double passiveSpeed = 0
         )
         {
             if (iRangePerception == OldRangePerception)
@@ -344,18 +345,18 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            m_Team = 0;
+            // if (activeSpeed > 0 && passiveSpeed > 0)
+            // {
+            //     ActiveSpeed = activeSpeed;
+            //     PassiveSpeed = passiveSpeed;
+            //     CurrentSpeed = passiveSpeed;
+            // }
+            // else
+            // {
+            //     CurrentSpeed = SpeedInfo.MaxMonsterDelay * 2;
+            // }
 
-            if (passiveSpeed < 0 || activeSpeed < 0)
-            {
-                ResetSpeeds();
-            }
-            else
-            {
-                ActiveSpeed = activeSpeed;
-                PassiveSpeed = passiveSpeed;
-                CurrentSpeed = passiveSpeed;
-            }
+            m_Team = 0;
 
             Debug = false;
 
@@ -686,15 +687,22 @@ namespace Server.Mobiles
         public double PassiveSpeed { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        public double SpeedMod { get; set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentSpeed
         {
-            get => TargetLocation != null ? 0.3 : m_CurrentSpeed;
+            get => TargetLocation != null ? 0.3 : SpeedMod <= 0 ? m_CurrentSpeed : SpeedMod;
             set
             {
                 if (m_CurrentSpeed != value)
                 {
                     m_CurrentSpeed = value;
-                    AIObject?.OnCurrentSpeedChanged();
+
+                    if (SpeedMod <= 0)
+                    {
+                        AIObject?.OnCurrentSpeedChanged();
+                    }
                 }
             }
         }
@@ -1367,6 +1375,14 @@ namespace Server.Mobiles
             if (isTeleport)
             {
                 AIObject?.OnTeleported();
+            }
+        }
+
+        public override void OnRawDexChange(int oldValue)
+        {
+            if (ActiveSpeed <= 0 && PassiveSpeed <= 0)
+            {
+                ResetSpeeds();
             }
         }
 
@@ -2573,7 +2589,6 @@ namespace Server.Mobiles
             if (m_IdleReleaseTime > DateTime.MinValue)
             {
                 // idling...
-
                 if (Core.Now >= m_IdleReleaseTime)
                 {
                     m_IdleReleaseTime = DateTime.MinValue;
@@ -3000,11 +3015,12 @@ namespace Server.Mobiles
             return null;
         }
 
-        public virtual bool IsMonster =>
-            !Controlled || GetMaster() is not BaseCreature { Controlled: true };
+        public virtual bool IsMonster => !Controlled || (GetMaster() as BaseCreature)?.IsMonster == true;
 
         public bool InActivePVPCombat() =>
-            Combatant is PlayerMobile && ControlOrder != OrderType.Follow;
+            ControlOrder != OrderType.Follow &&
+            Combatant is PlayerMobile ||
+            Combatant is BaseCreature { Controlled: true } bc && bc.GetMaster() is PlayerMobile;
 
         public static List<DamageStore> GetLootingRights(List<DamageEntry> damageEntries, int hitsMax)
         {
@@ -3382,6 +3398,8 @@ namespace Server.Mobiles
                 ControlOrder = OrderType.None;
                 Guild = null;
 
+                ResetSpeeds();
+
                 Delta(MobileDelta.Noto);
             }
             else
@@ -3413,6 +3431,8 @@ namespace Server.Mobiles
                     m_DeleteTimer.Stop();
                     m_DeleteTimer = null;
                 }
+
+                ResetSpeeds(true);
 
                 Delta(MobileDelta.Noto);
             }
@@ -4561,6 +4581,13 @@ namespace Server.Mobiles
             return false;
         }
 
+        public void SetSpeed(double active, double passive)
+        {
+            ActiveSpeed = active;
+            PassiveSpeed = passive;
+            CurrentSpeed = PassiveSpeed;
+        }
+
         public void SetDamage(int val)
         {
             m_DamageMin = val;
@@ -4840,8 +4867,7 @@ namespace Server.Mobiles
             }
         }
 
-        // Reset speeds based on dex. Mainly used during construction and pet commands
-        public void ResetSpeeds(bool currentUseActive = false)
+        public virtual void ResetSpeeds(bool currentUseActive = false)
         {
             SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
 

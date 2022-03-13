@@ -1020,6 +1020,21 @@ namespace Server
         public static bool RandomBool() => RandomSources.Source.NextBool();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double RandomMinMax(double min, double max)
+        {
+            if (min > max)
+            {
+                (min, max) = (max, min);
+            }
+            else if (min == max)
+            {
+                return min;
+            }
+
+            return min + RandomSources.Source.NextDouble() * (max - min);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint RandomMinMax(uint min, uint max)
         {
             if (min > max)

@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class Unicorn : BaseMount
     {
         [Constructible]
-        public Unicorn(string name = "a unicorn") : base(name, 0x7A, 0x3EB4, AIType.AI_Mage, FightMode.Evil, 10, 1)
+        public Unicorn(string name = "a unicorn") : base(name, 0x7A, 0x3EB4, AIType.AI_Mage, FightMode.Evil)
         {
             BaseSoundID = 0x4BC;
 
@@ -87,8 +87,8 @@ namespace Server.Mobiles
 
                     if (chanceToCure > Utility.Random(100))
                     {
-                        if (Rider.CurePoison(this)
-                        ) // TODO: Confirm if mount is the one flagged for curing it or the rider is
+                        // TODO: Confirm if mount is the one flagged for curing it or the rider is
+                        if (Rider.CurePoison(this))
                         {
                             Rider.LocalOverheadMessage(
                                 MessageType.Regular,

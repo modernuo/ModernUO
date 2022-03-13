@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class TBWarHorse : BaseWarHorse
     {
         [Constructible]
-        public TBWarHorse() : base(0x76, 0x3EB2, AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+        public TBWarHorse() : base(0x76, 0x3EB2)
         {
         }
 

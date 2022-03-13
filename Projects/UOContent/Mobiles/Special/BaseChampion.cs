@@ -7,8 +7,9 @@ namespace Server.Mobiles
 {
     public abstract class BaseChampion : BaseCreature
     {
-        public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) : base(aiType, mode, 18, 1, 0.1, 0.2)
+        public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) : base(aiType, mode, 18)
         {
+            SetSpeed(0.25, 0.55);
         }
 
         public BaseChampion(Serial serial) : base(serial)

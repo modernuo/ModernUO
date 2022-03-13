@@ -13,8 +13,7 @@ namespace Server.Mobiles
         private Mobile m_Rider;
 
         [Constructible]
-        public EtherealMount(int itemID, int mountID)
-            : base(itemID)
+        public EtherealMount(int itemID, int mountID) : base(itemID)
         {
             m_MountedID = mountID;
             m_RegularID = itemID;

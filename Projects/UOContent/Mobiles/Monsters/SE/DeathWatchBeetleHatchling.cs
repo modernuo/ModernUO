@@ -6,14 +6,7 @@ namespace Server.Mobiles
     public class DeathwatchBeetleHatchling : BaseCreature
     {
         [Constructible]
-        public DeathwatchBeetleHatchling() : base(
-            AIType.AI_Melee,
-            Core.ML ? FightMode.Aggressor : FightMode.Closest,
-            10,
-            1,
-            0.2,
-            0.4
-        )
+        public DeathwatchBeetleHatchling() : base(AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest)
         {
             Body = 242;
 

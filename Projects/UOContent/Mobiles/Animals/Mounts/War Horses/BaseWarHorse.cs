@@ -3,8 +3,8 @@ namespace Server.Mobiles
     public abstract class BaseWarHorse : BaseMount
     {
         public BaseWarHorse(
-            int bodyID, int itemID, AIType aiType, FightMode fightMode, int rangePerception, int rangeFight,
-            double activeSpeed = -1, double passiveSpeed = -1
+            int bodyID, int itemID, AIType aiType = AIType.AI_Melee, FightMode fightMode = FightMode.Aggressor,
+            int rangePerception = 10, int rangeFight = 1
         ) : base(
             "a war horse",
             bodyID,
@@ -12,9 +12,7 @@ namespace Server.Mobiles
             aiType,
             fightMode,
             rangePerception,
-            rangeFight,
-            activeSpeed,
-            passiveSpeed
+            rangeFight
         )
         {
             BaseSoundID = 0xA8;

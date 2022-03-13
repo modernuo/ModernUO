@@ -30,13 +30,12 @@ public static class SpeedInfo
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
         var isMonster = bc.IsMonster;
-        var monsterDelay = isMonster || bc.InActivePVPCombat();
         var maxDex = isMonster ? MaxMonsterDex : MaxDex;
 
         var dex = Math.Clamp(bc.Dex, 25, maxDex);
 
-        double min = monsterDelay ? MinMonsterDelay : MinDelay;
-        double max = monsterDelay ? MaxMonsterDelay : MaxDelay;
+        double min = isMonster ? MinMonsterDelay : MinDelay;
+        double max = isMonster ? MaxMonsterDelay : MaxDelay;
 
         if (bc.IsParagon)
         {

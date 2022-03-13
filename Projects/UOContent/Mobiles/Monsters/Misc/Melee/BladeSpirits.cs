@@ -6,11 +6,11 @@ namespace Server.Mobiles
     public class BladeSpirits : BaseCreature
     {
         [Constructible]
-        public BladeSpirits()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6)
+        public BladeSpirits() : base(AIType.AI_Melee)
         {
             Body = 574;
 
+            SetSpeed(0.6, 1.25);
             SetStr(150);
             SetDex(150);
             SetInt(100);

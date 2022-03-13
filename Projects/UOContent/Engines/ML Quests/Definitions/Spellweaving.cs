@@ -493,14 +493,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Aeluva : BaseCreature
     {
         [Constructible]
-        public Aeluva()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0)
+        public Aeluva() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the arcanist";
             Race = Race.Elf;
             Female = true;
             Body = 606;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -552,13 +553,14 @@ namespace Server.Engines.MLQuests.Definitions
     public class Koole : BaseCreature
     {
         [Constructible]
-        public Koole()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0)
+        public Koole() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the arcanist";
             Race = Race.Elf;
             Body = 605;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -622,14 +624,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Synaeva : BaseCreature
     {
         [Constructible]
-        public Synaeva()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0)
+        public Synaeva() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the arcanist";
             Race = Race.Elf;
             Female = true;
             Body = 606;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -682,14 +685,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class ElderBrae : BaseCreature
     {
         [Constructible]
-        public ElderBrae()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0)
+        public ElderBrae() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the wise";
             Race = Race.Elf;
             Female = true;
             Body = 606;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
