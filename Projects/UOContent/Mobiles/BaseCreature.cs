@@ -1380,7 +1380,7 @@ namespace Server.Mobiles
 
         public override void OnRawDexChange(int oldValue)
         {
-            if (ActiveSpeed <= 0 && PassiveSpeed <= 0)
+            if (oldValue != RawDex && ActiveSpeed <= 0 && PassiveSpeed <= 0)
             {
                 ResetSpeeds();
             }

@@ -29,6 +29,11 @@ public static class SpeedInfo
 
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
+        if (LegacySpeedInfo.GetSpeeds(bc.GetType(), out activeSpeed, out passiveSpeed))
+        {
+            return;
+        }
+
         var isMonster = bc.IsMonster;
         var maxDex = isMonster ? MaxMonsterDex : MaxDex;
 
