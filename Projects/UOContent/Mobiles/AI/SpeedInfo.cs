@@ -42,12 +42,6 @@ public static class SpeedInfo
         double min = isMonster ? MinMonsterDelay : MinDelay;
         double max = isMonster ? MaxMonsterDelay : MaxDelay;
 
-        if (bc.IsParagon)
-        {
-            min /= 2;
-            max = min + 0.5;
-        }
-
         activeSpeed = Math.Max(max - (max - min) * ((double)dex / maxDex), min);
         passiveSpeed = activeSpeed * 2;
     }
