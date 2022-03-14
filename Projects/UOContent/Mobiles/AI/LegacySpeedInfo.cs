@@ -12,7 +12,7 @@ public class LegacySpeedInfo
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(LegacySpeedInfo));
 
-    private static readonly string _tablePath = "Data/npc-speeds.json";
+    private const string _tablePath = "Data/npc-speeds.json";
     private static Dictionary<Type, LegacySpeedEntry> m_Table;
 
     public static bool Enabled { get; private set; }
