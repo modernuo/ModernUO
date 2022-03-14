@@ -14,8 +14,6 @@ namespace Server.Mobiles
         {
             BaseSoundID = Core.AOS ? 0xA8 : 0x16A;
 
-            SetSpeed(0.4, 0.8);
-
             SetStr(496, 525);
             SetDex(86, 105);
             SetInt(86, 125);
