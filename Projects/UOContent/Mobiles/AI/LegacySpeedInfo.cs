@@ -34,7 +34,8 @@ public class LegacySpeedInfo
 
     public static bool TransformMoveDelay(BaseCreature creature, ref double delay)
     {
-        if (!Enabled)
+        // Only apply the transformation to legacy speed creatures, if it is enabled
+        if (!Enabled || !m_Table.ContainsKey(creature.GetType()))
         {
             return false;
         }
