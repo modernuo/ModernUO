@@ -2989,7 +2989,7 @@ namespace Server.Mobiles
             private readonly BaseAI m_Owner;
 
             public AITimer(BaseAI owner) : base(
-                TimeSpan.FromMilliseconds(Utility.Random(64) * 8),
+                TimeSpan.FromMilliseconds(Utility.Random(96) * 8),
                 TimeSpan.FromSeconds(Math.Max(0.0, owner.m_Mobile.CurrentSpeed))
             )
             {
