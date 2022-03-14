@@ -1923,11 +1923,6 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            if (LegacySpeedInfo.TransformMoveDelay(m_Mobile, ref delay))
-            {
-                return delay;
-            }
-
             // Non-monsters in PVP combat (like pets) are penalized
             if (!m_Mobile.IsMonster && m_Mobile.InActivePVPCombat() && delay <= SpeedInfo.MaxDelay)
             {
