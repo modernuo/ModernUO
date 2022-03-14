@@ -29,6 +29,7 @@ public static class SpeedInfo
 
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
+        // Legacy is used if it is enabled, and the type is in the table
         if (LegacySpeedInfo.GetSpeeds(bc.GetType(), out activeSpeed, out passiveSpeed))
         {
             return;
