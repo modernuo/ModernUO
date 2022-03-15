@@ -10,8 +10,7 @@ namespace Server.Mobiles
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         [Constructible]
-        public Hiryu()
-            : base("a hiryu", 243, 0x3E94, AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public Hiryu() : base("a hiryu", 243, 0x3E94, AIType.AI_Melee)
         {
             Hue = GetHue();
 

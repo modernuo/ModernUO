@@ -11,6 +11,8 @@ namespace Server.Mobiles
 
             Hue = 0x8FD;
 
+            SetSpeed(0.1,  0.6);
+
             SetStr(255, 847);
             SetDex(145, 428);
             SetInt(26, 380);
@@ -44,7 +46,7 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.025)
           {
             switch ( Utility.Random( 16 ) )

@@ -1037,7 +1037,7 @@ namespace Server.Mobiles
 
         public virtual bool Obey()
         {
-            var shouldObey = !m_Mobile.Deleted && m_Mobile.ControlOrder switch
+            return !m_Mobile.Deleted && m_Mobile.ControlOrder switch
             {
                 OrderType.None     => DoOrderNone(),
                 OrderType.Come     => DoOrderCome(),
@@ -1054,15 +1054,6 @@ namespace Server.Mobiles
                 OrderType.Transfer => DoOrderTransfer(),
                 _                  => false
             };
-
-            if (shouldObey)
-            {
-                // TODO: This might cause the movement timer to reset too often if someone is spamming commands.
-                // Test this thoroughly.
-                m_Mobile.ResetSpeeds();
-            }
-
-            return shouldObey;
         }
 
         public virtual void OnCurrentOrderChanged()
@@ -1376,6 +1367,10 @@ namespace Server.Mobiles
                             if (Core.AOS)
                             {
                                 m_Mobile.CurrentSpeed = 0.1;
+                            }
+                            else if (m_Mobile.CurrentSpeed == m_Mobile.ActiveSpeed && m_Mobile.ControlTarget == m_Mobile.ControlMaster)
+                            {
+                                m_Mobile.CurrentSpeed = Math.Max(SpeedInfo.MinDelay, m_Mobile.CurrentSpeed * 0.5);
                             }
                         }
                     }
@@ -1928,19 +1923,23 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            double max = m_Mobile.IsMonster ? SpeedInfo.MaxMonsterDelay : SpeedInfo.MaxDelay;
+            // Non-monsters in PVP combat (like pets) are penalized
+            if (!m_Mobile.IsMonster && m_Mobile.InActivePVPCombat() && delay <= SpeedInfo.MaxDelay)
+            {
+                delay += 0.4;
+            }
 
             if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
-                double offset = m_Mobile.StamMax <= 0 ? 1.0 : m_Mobile.Stam / (double)m_Mobile.StamMax;
+                double offset = m_Mobile.StamMax <= 0 ? 1.0 : Math.Max(0, m_Mobile.Stam) / (double)m_Mobile.StamMax;
 
                 if (offset < 1.0)
                 {
-                    delay += (max - delay) * (1.0 - offset);
+                    delay += delay * (1.0 - offset);
                 }
             }
 
-            return Math.Min(delay, max);
+            return delay;
         }
 
         public virtual bool CheckMove() => Core.TickCount - NextMove >= 0;
@@ -2696,20 +2695,20 @@ namespace Server.Mobiles
         {
             if (!m_Timer.Running)
             {
-                m_Timer.Delay = TimeSpan.Zero;
+                // We want to randomize the time at which the AI activates.
+                // This triggers when a mob is first created since it moves from the internal map to it's added location
+                // If we spawn lots of mobs, we don't want their AI synchronized exactly.
+                m_Timer.Delay = TimeSpan.FromMilliseconds(Utility.Random(48) * 8);
                 m_Timer.Start();
             }
         }
 
         /*
-         *  The mobile changed it speed, we must adjust the timer
+         *  The mobile changed speeds, we must adjust the timer
          */
         public virtual void OnCurrentSpeedChanged()
         {
-            m_Timer.Stop();
-            m_Timer.Delay = TimeSpan.FromMilliseconds(Utility.Random(128) * 8);
             m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.0, m_Mobile.CurrentSpeed));
-            m_Timer.Start();
         }
 
         private class InternalEntry : ContextMenuEntry
@@ -2989,14 +2988,12 @@ namespace Server.Mobiles
         {
             private readonly BaseAI m_Owner;
 
-            public AITimer(BaseAI owner)
-                : base(
-                    TimeSpan.FromSeconds(Utility.Random(128) * 8),
-                    TimeSpan.FromSeconds(Math.Max(0.0, owner.m_Mobile.CurrentSpeed))
-                )
+            public AITimer(BaseAI owner) : base(
+                TimeSpan.FromMilliseconds(Utility.Random(96) * 8),
+                TimeSpan.FromSeconds(Math.Max(0.0, owner.m_Mobile.CurrentSpeed))
+            )
             {
                 m_Owner = owner;
-
                 m_Owner.m_NextDetectHidden = Core.TickCount;
             }
 

@@ -3,17 +3,7 @@ namespace Server.Mobiles
     public class ScaledSwampDragon : BaseMount
     {
         [Constructible]
-        public ScaledSwampDragon(string name = "a swamp dragon") : base(
-            name,
-            0x31F,
-            0x3EBE,
-            AIType.AI_Melee,
-            FightMode.Aggressor,
-            10,
-            1,
-            0.2,
-            0.4
-        )
+        public ScaledSwampDragon(string name = "a swamp dragon") : base(name, 0x31F, 0x3EBE, AIType.AI_Melee, FightMode.Aggressor)
         {
             SetStr(201, 300);
             SetDex(66, 85);

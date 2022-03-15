@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class MinaxWarHorse : BaseWarHorse
     {
         [Constructible]
-        public MinaxWarHorse() : base(0x78, 0x3EAF, AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+        public MinaxWarHorse() : base(0x78, 0x3EAF)
         {
         }
 

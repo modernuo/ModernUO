@@ -3,17 +3,7 @@ namespace Server.Mobiles
     public class SavageRidgeback : BaseMount
     {
         [Constructible]
-        public SavageRidgeback(string name = "a savage ridgeback") : base(
-            name,
-            188,
-            0x3EB8,
-            AIType.AI_Melee,
-            FightMode.Aggressor,
-            10,
-            1,
-            0.2,
-            0.4
-        )
+        public SavageRidgeback(string name = "a savage ridgeback") : base(name, 188, 0x3EB8, AIType.AI_Melee, FightMode.Aggressor)
         {
             BaseSoundID = 0x3F3;
 

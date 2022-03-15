@@ -3,10 +3,12 @@ namespace Server.Mobiles
     public class Silvani : BaseCreature
     {
         [Constructible]
-        public Silvani() : base(AIType.AI_Mage, FightMode.Evil, 18, 1, 0.1, 0.2)
+        public Silvani() : base(AIType.AI_Mage, FightMode.Evil, 18)
         {
             Body = 176;
             BaseSoundID = 0x467;
+
+            SetSpeed(0.25, 0.55);
 
             SetStr(253, 400);
             SetDex(157, 850);

@@ -29,20 +29,19 @@ public static class SpeedInfo
 
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
+        // Legacy is used if it is enabled, and the type is in the table
+        if (LegacySpeedInfo.GetSpeeds(bc.GetType(), out activeSpeed, out passiveSpeed))
+        {
+            return;
+        }
+
         var isMonster = bc.IsMonster;
-        var monsterDelay = isMonster || bc.InActivePVPCombat();
         var maxDex = isMonster ? MaxMonsterDex : MaxDex;
 
         var dex = Math.Clamp(bc.Dex, 25, maxDex);
 
-        double min = monsterDelay ? MinMonsterDelay : MinDelay;
-        double max = monsterDelay ? MaxMonsterDelay : MaxDelay;
-
-        if (bc.IsParagon)
-        {
-            min /= 2;
-            max = min + 0.5;
-        }
+        double min = isMonster ? MinMonsterDelay : MinDelay;
+        double max = isMonster ? MaxMonsterDelay : MaxDelay;
 
         activeSpeed = Math.Max(max - (max - min) * ((double)dex / maxDex), min);
         passiveSpeed = activeSpeed * 2;

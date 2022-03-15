@@ -762,13 +762,15 @@ namespace Server.Engines.MLQuests.Definitions
     {
         [Constructible]
         public Beotham()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+            : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the bowcrafter";
             Race = Race.Elf;
             Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -828,14 +830,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Danoel : BaseCreature
     {
         [Constructible]
-        public Danoel()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Danoel() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the metal weaver";
             Race = Race.Elf;
             Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -886,14 +889,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Tallinin : BaseCreature
     {
         [Constructible]
-        public Tallinin()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Tallinin() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the cloth weaver";
             Race = Race.Elf;
             Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -947,14 +951,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Tiana : BaseCreature
     {
         [Constructible]
-        public Tiana()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Tiana() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the guard";
             Race = Race.Elf;
             Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -1018,14 +1023,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class LorekeeperOolua : BaseCreature
     {
         [Constructible]
-        public LorekeeperOolua()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public LorekeeperOolua() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the keeper of tradition";
             Race = Race.Elf;
             Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -1075,14 +1081,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class LorekeeperRollarn : BaseCreature
     {
         [Constructible]
-        public LorekeeperRollarn()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public LorekeeperRollarn() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the keeper of tradition";
             Race = Race.Elf;
             Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -1143,14 +1150,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Dallid : BaseCreature
     {
         [Constructible]
-        public Dallid()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Dallid() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the cook";
             Race = Race.Elf;
             Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -1206,14 +1214,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Canir : BaseCreature
     {
         [Constructible]
-        public Canir()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Canir() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the thaumaturgist";
             Race = Race.Elf;
             Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -1267,14 +1276,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Yellienir : BaseCreature
     {
         [Constructible]
-        public Yellienir()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Yellienir() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the bark weaver";
             Race = Race.Elf;
             Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -1313,14 +1323,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class ElderOnallan : BaseCreature
     {
         [Constructible]
-        public ElderOnallan()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public ElderOnallan() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the wise";
             Race = Race.Elf;
             Body = 0x25D;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

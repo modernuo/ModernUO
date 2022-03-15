@@ -5,8 +5,7 @@ namespace Server.Mobiles
     public class AnimatedWeapon : BaseCreature
     {
         [Constructible]
-        public AnimatedWeapon(Mobile caster, int level)
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6)
+        public AnimatedWeapon(Mobile caster, int level) : base(AIType.AI_Melee)
         {
             Body = 692;
 

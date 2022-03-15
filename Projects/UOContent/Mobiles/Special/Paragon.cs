@@ -6,15 +6,15 @@ namespace Server.Mobiles
 {
     public static class Paragon
     {
-        public static double ChestChance = .10;               // Chance that a paragon will carry a paragon chest
-        public static double ChocolateIngredientChance = .20; // Chance that a paragon will drop a chocolatiering ingredient
+        public const double ChestChance = 0.10;               // Chance that a paragon will carry a paragon chest
+        public const double ChocolateIngredientChance = 0.20; // Chance that a paragon will drop a chocolatiering ingredient
 
         public static Map[] Maps =
         {
             Map.Ilshenar
         };
 
-        private static readonly TimeSpan FastRegenRate = TimeSpan.FromSeconds(.5);
+        private static readonly TimeSpan FastRegenRate = TimeSpan.FromSeconds(0.5);
         private static readonly TimeSpan CPUSaverRate = TimeSpan.FromSeconds(2);
 
         public static Type[] Artifacts =
@@ -36,15 +36,15 @@ namespace Server.Mobiles
         public static int Hue = 0x501; // Paragon hue
 
         // Buffs
-        public static double HitsBuff = 5.0;
-        public static double StrBuff = 1.05;
-        public static double IntBuff = 1.20;
-        public static double DexBuff = 1.20;
-        public static double SkillsBuff = 1.20;
-        public static double SpeedBuff = 1.20;
-        public static double FameBuff = 1.40;
-        public static double KarmaBuff = 1.40;
-        public static int DamageBuff = 5;
+        public const double HitsBuff = 5.0;
+        public const double StrBuff = 1.05;
+        public const double IntBuff = 1.20;
+        public const double DexBuff = 1.20;
+        public const double SkillsBuff = 1.20;
+        public const double SpeedBuff = 1.20;
+        public const double FameBuff = 1.40;
+        public const double KarmaBuff = 1.40;
+        public const int DamageBuff = 5;
 
         public static void Convert(BaseCreature bc)
         {
@@ -186,7 +186,7 @@ namespace Server.Mobiles
                 fame = 32000;
             }
 
-            var chance = 1 / Math.Round(20.0 - fame / 3200);
+            var chance = 1 / Math.Round(20.0 - fame / 3200.0);
 
             return chance > Utility.RandomDouble();
         }
