@@ -21,7 +21,6 @@ using Server.Spells.Necromancy;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
-using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -249,9 +248,6 @@ namespace Server.Mobiles
             typeof(Gold)
         };
 
-        private readonly List<Type> m_SpellAttack;  // List of attack spell/power
-        private readonly List<Type> m_SpellDefense; // List of defensive spell/power
-
         private bool _summoned;
 
         private bool m_bTamable;
@@ -360,9 +356,6 @@ namespace Server.Mobiles
 
             Debug = false;
 
-            m_SpellAttack = new List<Type>();
-            m_SpellDefense = new List<Type>();
-
             m_Controlled = false;
             m_ControlMaster = null;
             ControlTarget = null;
@@ -390,9 +383,6 @@ namespace Server.Mobiles
 
         public BaseCreature(Serial serial) : base(serial)
         {
-            m_SpellAttack = new List<Type>();
-            m_SpellDefense = new List<Type>();
-
             Debug = false;
         }
 
@@ -1689,7 +1679,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(19); // version
+            writer.Write(20); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1709,18 +1699,6 @@ namespace Server.Mobiles
 
             // Version 1
             writer.Write(RangeHome);
-
-            writer.Write(m_SpellAttack.Count);
-            for (var i = 0; i < m_SpellAttack.Count; i++)
-            {
-                writer.Write(m_SpellAttack[i].ToString());
-            }
-
-            writer.Write(m_SpellDefense.Count);
-            for (var i = 0; i < m_SpellDefense.Count; i++)
-            {
-                writer.Write(m_SpellDefense[i].ToString());
-            }
 
             // Version 2
             writer.Write((int)FightMode);
@@ -1854,27 +1832,20 @@ namespace Server.Mobiles
             {
                 RangeHome = reader.ReadInt();
 
-                var iCount = reader.ReadInt();
-                for (var i = 0; i < iCount; i++)
+                if (version < 20)
                 {
-                    var str = reader.ReadString();
-                    var type = Type.GetType(str);
-
-                    if (type != null)
+                    // Spell Attacks
+                    var iCount = reader.ReadInt(); // Count
+                    for (var i = 0; i < iCount; i++)
                     {
-                        m_SpellAttack.Add(type);
+                        reader.ReadString(); // Spell Type
                     }
-                }
 
-                iCount = reader.ReadInt();
-                for (var i = 0; i < iCount; i++)
-                {
-                    var str = reader.ReadString();
-                    var type = Type.GetType(str);
-
-                    if (type != null)
+                    // Spell Defenses
+                    iCount = reader.ReadInt(); // Count
+                    for (var i = 0; i < iCount; i++)
                     {
-                        m_SpellDefense.Add(type);
+                        reader.ReadString(); // Spell Type
                     }
                 }
             }
@@ -2767,43 +2738,6 @@ namespace Server.Mobiles
                 m_NoDupeGuards = m;
                 Timer.StartTimer(ReleaseGuardDupeLock);
             }
-        }
-
-        public void AddSpellAttack(Type type)
-        {
-            m_SpellAttack.Add(type);
-        }
-
-        public void AddSpellDefense(Type type)
-        {
-            m_SpellDefense.Add(type);
-        }
-
-        public Spell GetAttackSpellRandom() => m_SpellAttack.RandomElement()?.CreateInstance<Spell>(this, null);
-
-        public Spell GetDefenseSpellRandom() => m_SpellDefense.RandomElement()?.CreateInstance<Spell>(this, null);
-
-        public Spell GetSpellSpecific(Type type)
-        {
-            int i;
-
-            for (i = 0; i < m_SpellAttack.Count; i++)
-            {
-                if (m_SpellAttack[i] == type)
-                {
-                    return type.CreateInstance<Spell>(this, null);
-                }
-            }
-
-            for (i = 0; i < m_SpellDefense.Count; i++)
-            {
-                if (m_SpellDefense[i] == type)
-                {
-                    return type.CreateInstance<Spell>(this, null);
-                }
-            }
-
-            return null;
         }
 
         public override void OnDoubleClick(Mobile from)
