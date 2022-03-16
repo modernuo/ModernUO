@@ -406,7 +406,15 @@ namespace Server.Movement
 
                 var notWater = !itemData.Wet;
 
-                if (!itemData.Surface && itemData.Impassable && (!canSwim || notWater) || cantWalk && notWater)
+                /*
+                 * To move we must satisfy the following:
+                 * 1. Item is a _passable_ surface and Mob can walk -or-
+                 * 2. Item is water and Mob can swim
+                 */
+                if (
+                    (!itemData.Surface || itemData.Impassable) && (!canSwim || notWater) ||
+                    cantWalk && notWater
+                )
                 {
                     continue;
                 }
@@ -477,7 +485,17 @@ namespace Server.Movement
 
                 var notWater = !itemData.Wet;
 
-                if (item.Movable || !itemData.Surface && itemData.Impassable && (!canSwim || notWater) || cantWalk && notWater)
+                /*
+                 * To move we must satisfy the following:
+                 * 1. Item is not movable
+                 * 2. Item is a _passable_ surface and Mob can walk -or-
+                 *    Item is water and Mob can swim
+                 */
+                if (
+                    item.Movable ||
+                    (!itemData.Surface || itemData.Impassable) && (!canSwim || notWater) ||
+                    cantWalk && notWater
+                )
                 {
                     continue;
                 }
@@ -581,7 +599,7 @@ namespace Server.Movement
             return moveIsOk;
         }
 
-        private bool CanMoveOver(Mobile m, Mobile t) =>
+        private static bool CanMoveOver(Mobile m, Mobile t) =>
             !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet || t.Hidden && t.AccessLevel > AccessLevel.Player;
 
         private void GetStartZ(Mobile m, Map map, Point3D loc, List<Item> itemList, out int zLow, out int zTop)
