@@ -3,6 +3,7 @@ using Server.Items;
 using Server.Multis;
 using Server.Network;
 using Server.Targeting;
+using Server.Regions;
 
 namespace Server.Mobiles
 {
@@ -309,6 +310,10 @@ namespace Server.Mobiles
 
             if (mob is PlayerMobile mobile)
             {
+                mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
+                if (mobile.Region is BaseRegion reg && !reg.MountsAllowed)
+                    return false;
+
                 if (mobile.MountBlockReason != BlockMountType.None)
                 {
                     mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
