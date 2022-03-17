@@ -7,6 +7,7 @@ namespace Server.Mobiles
     {
         public BaseShieldGuard() : base(AIType.AI_Melee, FightMode.Aggressor, 14)
         {
+            SetSpeed(0.5, 2.0);
             InitStats(1000, 1000, 1000);
             Title = "the guard";
 

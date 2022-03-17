@@ -37,6 +37,7 @@ namespace Server.Factions
 
         public BaseFactionGuard(string title) : base(AIType.AI_Melee)
         {
+            SetSpeed(0.3, 1.0);
             Orders = new Orders(this);
             Title = title;
 

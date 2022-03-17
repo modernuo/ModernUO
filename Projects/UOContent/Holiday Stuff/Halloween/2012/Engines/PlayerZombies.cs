@@ -145,8 +145,7 @@ namespace Server.Engines.Events
     public partial class PlayerBones : BaseContainer
     {
         [Constructible]
-        public PlayerBones(string name)
-            : base(Utility.RandomMinMax(0x0ECA, 0x0ED2))
+        public PlayerBones(string name) : base(Utility.RandomMinMax(0x0ECA, 0x0ED2))
         {
             Name = $"{name}'s bones";
 
@@ -168,14 +167,14 @@ namespace Server.Engines.Events
 
         public override string DefaultName => _deadPlayer != null ? $"{_deadPlayer.Name}'s Zombie Skeleton" : "Zombie Skeleton";
 
-        public ZombieSkeleton(PlayerMobile player = null)
-            : base(AIType.AI_Melee)
+        public ZombieSkeleton(PlayerMobile player = null) : base(AIType.AI_Melee)
         {
             _deadPlayer = player;
 
             Body = 0x93;
             BaseSoundID = 0x1c3;
 
+            SetSpeed(0.3, 1.0);
             SetStr(500);
             SetDex(500);
             SetInt(500);
