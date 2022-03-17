@@ -310,9 +310,13 @@ namespace Server.Mobiles
 
             if (mob is PlayerMobile mobile)
             {
-                mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
+               
                 if (mobile.Region is BaseRegion reg && !reg.MountsAllowed)
+                {
+                    mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
                     return false;
+                }
+                  
 
                 if (mobile.MountBlockReason != BlockMountType.None)
                 {
