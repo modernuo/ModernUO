@@ -5,8 +5,7 @@ namespace Server.Mobiles
     public class Hydra : BaseCreature
     {
         [Constructible]
-        public Hydra()
-            : base(AIType.AI_Melee)
+        public Hydra() : base(AIType.AI_Melee)
         {
             Body = 0x109;
             BaseSoundID = 0x16A;

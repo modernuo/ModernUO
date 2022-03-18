@@ -6,8 +6,7 @@ namespace Server.Mobiles
     public class EnergyVortex : BaseCreature
     {
         [Constructible]
-        public EnergyVortex()
-            : base(AIType.AI_Melee)
+        public EnergyVortex() : base(AIType.AI_Melee)
         {
             if (Core.SE && Utility.RandomDouble() < 0.002) // Per OSI FoF, it's a 1/500 chance.
             {
