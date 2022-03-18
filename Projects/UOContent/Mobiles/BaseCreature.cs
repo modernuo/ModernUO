@@ -321,9 +321,6 @@ namespace Server.Mobiles
             FightMode mode = FightMode.Closest,
             int iRangePerception = 10,
             int iRangeFight = 1
-            // ,
-            // double activeSpeed = 0,
-            // double passiveSpeed = 0
         )
         {
             if (iRangePerception == OldRangePerception)
@@ -341,16 +338,12 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            // if (activeSpeed > 0 && passiveSpeed > 0)
-            // {
-            //     ActiveSpeed = activeSpeed;
-            //     PassiveSpeed = passiveSpeed;
-            //     CurrentSpeed = passiveSpeed;
-            // }
-            // else
-            // {
-            //     CurrentSpeed = SpeedInfo.MaxMonsterDelay * 2;
-            // }
+            if (LegacySpeedInfo.Enabled && LegacySpeedInfo.GetSpeeds(GetType(), out var activeSpeed, out var passiveSpeed))
+            {
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = passiveSpeed;
+            }
 
             m_Team = 0;
 

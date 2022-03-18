@@ -150,29 +150,18 @@ namespace Server.Mobiles
 
     public class BaseEnraged : BaseCreature
     {
-        public BaseEnraged(Mobile summoner)
-            : base(AIType.AI_Melee)
+        public BaseEnraged(Mobile summoner) : base(AIType.AI_Melee)
         {
             SetStr(50, 200);
             SetDex(50, 200);
-            SetHits(50, 200);
-            SetStam(50, 200);
 
             /*
-              On OSI, all stats are random 50-200, but
-              str is never less than hits, and dex is never
-              less than stam.
+            * On OSI, all stats are random 50-200, but
+            * str is never less than hits, and dex is never
+            * less than stam.
             */
-
-            if (Str < Hits)
-            {
-                Str = Hits;
-            }
-
-            if (Dex < Stam)
-            {
-                Dex = Stam;
-            }
+            SetHits(50, Str);
+            SetStam(50, Dex);
 
             Karma = -1000;
             Tamable = false;

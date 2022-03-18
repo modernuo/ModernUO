@@ -11,6 +11,7 @@ namespace Server.Engines.Quests.Samurai
             Body = 3;
             BaseSoundID = 471;
 
+            SetSpeed(0.3, 1.0);
             SetStr(20, 40);
             SetDex(40, 60);
             SetInt(15, 25);

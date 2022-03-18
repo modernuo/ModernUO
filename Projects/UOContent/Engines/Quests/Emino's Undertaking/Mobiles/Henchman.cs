@@ -8,6 +8,7 @@ namespace Server.Engines.Quests.Ninja
         [Constructible]
         public Henchman() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
+            SetSpeed(0.3, 1.0);
             InitStats(45, 30, 5);
 
             Hue = Race.Human.RandomSkinHue();

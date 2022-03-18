@@ -10,8 +10,7 @@ namespace Server.Mobiles
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         [Constructible]
-        public TsukiWolf()
-            : base(AIType.AI_Melee)
+        public TsukiWolf() : base(AIType.AI_Melee)
         {
             Body = 250;
             Hue = Utility.Random(3) == 0 ? Utility.RandomNeutralHue() : 0;

@@ -5,9 +5,9 @@ namespace Server.Mobiles
     public class Sculptor : BaseCreature
     {
         [Constructible]
-        public Sculptor()
-            : base(AIType.AI_Animal, FightMode.None)
+        public Sculptor() : base(AIType.AI_Animal, FightMode.None)
         {
+            SetSpeed(0.6, 1.2);
             InitStats(31, 41, 51);
 
             SpeechHue = Utility.RandomDyedHue();
