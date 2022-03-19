@@ -188,9 +188,9 @@ namespace Server.Collections
             }
 
             var index = _head + Utility.Random(_size);
-            if (index > _size)
+            if (index >= _array.Length)
             {
-                index -= _size;
+                index -= _array.Length;
             }
 
             return _array[index];
