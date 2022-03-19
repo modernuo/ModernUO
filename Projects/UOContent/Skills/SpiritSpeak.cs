@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Items;
 using Server.Network;
 using Server.Spells;
@@ -134,7 +133,15 @@ namespace Server.SkillHandlers
             public override void OnCast()
             {
                 var eable = Caster.GetItemsInRange<Corpse>(3);
-                var toChannel = eable.FirstOrDefault(corpse => !corpse.Channeled);
+                Corpse toChannel = null;
+                foreach (var corpse in eable)
+                {
+                    if (!corpse.Channeled)
+                    {
+                        toChannel = corpse;
+                        break;
+                    }
+                }
                 eable.Free();
 
                 var min = 1 + (int)(Caster.Skills.SpiritSpeak.Value * 0.25);

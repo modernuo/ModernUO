@@ -14,7 +14,7 @@ namespace Benchmarks.EntitiesSelectors
     public class MapEntitiesSelectors
     {
         private static readonly Sector sector = new();
-        private static readonly Point3D[] locations = new[] { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
+        private static readonly Point3D[] locations = { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
 
         public static Rectangle2D[] BoundsArray() => new[]
         {
@@ -501,8 +501,8 @@ namespace Benchmarks.EntitiesSelectors
 
     public class Sector
     {
-        public List<BItem> BItems { get; set; } = new List<BItem>();
-        public List<Mobile> Mobiles { get; set; } = new List<Mobile>();
+        public List<BItem> BItems { get; set; } = new();
+        public List<Mobile> Mobiles { get; set; } = new();
     }
 
     public struct BItemWhereHyper : NetFabric.Hyperlinq.IFunction<BItem, bool>

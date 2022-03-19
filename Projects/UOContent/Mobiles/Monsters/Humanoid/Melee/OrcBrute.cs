@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -120,8 +119,16 @@ namespace Server.Mobiles
             }
 
             var eable = GetMobilesInRange<OrcishLord>(10);
+            var count = 0;
+            foreach (var m in eable)
+            {
+                if (++count == 10)
+                {
+                    break;
+                }
+            }
 
-            if (eable.Count() < 10)
+            if (count < 10)
             {
                 BaseCreature orc = new SpawnedOrcishLord { Team = Team };
 

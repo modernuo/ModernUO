@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Spells;
 
@@ -570,8 +569,17 @@ namespace Server.Mobiles
                     return;
                 }
 
-                var toTeleport = m_Owner.GetMobilesInRange(16)
-                    .FirstOrDefault(mob => mob != m_Owner && mob.Player && m_Owner.CanBeHarmful(mob) && m_Owner.CanSee(mob));
+                var eable = m_Owner.GetMobilesInRange(16);
+                Mobile toTeleport = null;
+                foreach (var m in eable)
+                {
+                    if (m != m_Owner && m.Player && m_Owner.CanBeHarmful(m) && m_Owner.CanSee(m))
+                    {
+                        toTeleport = m;
+                        break;
+                    }
+                }
+                eable.Free();
 
                 if (toTeleport == null)
                 {
@@ -602,33 +610,31 @@ namespace Server.Mobiles
                     }
                 }
 
-                var m = toTeleport;
+                var from = toTeleport.Location;
 
-                var from = m.Location;
-
-                m.Location = to;
+                toTeleport.Location = to;
 
                 SpellHelper.Turn(m_Owner, toTeleport);
                 SpellHelper.Turn(toTeleport, m_Owner);
 
-                m.ProcessDelta();
+                toTeleport.ProcessDelta();
 
                 Effects.SendLocationParticles(
-                    EffectItem.Create(from, m.Map, EffectItem.DefaultDuration),
+                    EffectItem.Create(from, toTeleport.Map, EffectItem.DefaultDuration),
                     0x3728,
                     10,
                     10,
                     2023
                 );
                 Effects.SendLocationParticles(
-                    EffectItem.Create(to, m.Map, EffectItem.DefaultDuration),
+                    EffectItem.Create(to, toTeleport.Map, EffectItem.DefaultDuration),
                     0x3728,
                     10,
                     10,
                     5023
                 );
 
-                m.PlaySound(0x1FE);
+                toTeleport.PlaySound(0x1FE);
 
                 m_Owner.Combatant = toTeleport;
             }
