@@ -55,7 +55,8 @@ namespace Server.Gumps
         protected readonly Type m_Type;
         protected int m_Page;
         protected int m_EntryCount;
-
+        public delegate void EditHandler(object m_Object);
+        public static event EditHandler? OnEdit;
         protected virtual int TotalHeight => OffsetSize + (EntryHeight + OffsetSize) * (m_EntryCount + 1);
 
         public PropertiesGump(Mobile mobile, object o) : base(GumpOffsetX, GumpOffsetY)
@@ -251,10 +252,15 @@ namespace Server.Gumps
             {
                 case 0: // Closed
                     {
+                        
                         if (m_Stack?.Count > 0)
                         {
                             var entry = m_Stack.Pop();
                             from.SendGump(new PropertiesGump(from, entry.m_Object, m_Stack, null));
+                        }
+                        else
+                        {
+                            OnEdit?.Invoke(m_Object);
                         }
 
                         break;

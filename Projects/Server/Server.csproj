@@ -34,6 +34,7 @@
         <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
         <PackageReference Include="PollGroup" Version="1.1.0" />
         <PackageReference Include="Zlib.Bindings" Version="1.8.0" />
