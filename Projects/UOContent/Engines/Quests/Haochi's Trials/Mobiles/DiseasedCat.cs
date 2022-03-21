@@ -11,6 +11,7 @@ namespace Server.Engines.Quests.Samurai
             Hue = Utility.RandomAnimalHue();
             BaseSoundID = 0x69;
 
+            SetSpeed(0.3, 1.0);
             SetStr(9);
             SetDex(35);
             SetInt(5);

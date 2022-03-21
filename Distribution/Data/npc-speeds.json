@@ -2,7 +2,7 @@
   {
     "name": "Slow",
     "active": 0.6,
-    "passive": 1.2,
+    "passive": 1.4,
     "types": [
       "AntLion", "ArcticOgreLord", "BogThing",
       "Bogle", "BoneKnight", "EarthElemental",
@@ -14,13 +14,14 @@
       "SewerRat", "Skeleton", "Slime",
       "Zombie", "Walrus", "RestlessSoul",
       "CrystalElemental", "DarknightCreeper", "MoundOfMaggots",
-      "Juggernaut", "Yamandon", "Serado"
+      "Juggernaut", "Yamandon", "Serado",
+      "GreaterDragon", "PlagueBeastLord"
     ]
   },
   {
     "name": "Fast",
-    "active": 0.4,
-    "passive": 0.8,
+    "active": 0.3,
+    "passive": 1.0,
     "types": [
       "LordOaks", "Silvani", "AirElemental",
       "AncientWyrm", "Balron", "BladeSpirits",
@@ -39,12 +40,18 @@
       "Grobu", "Gnaw", "Guile",
       "Irk", "Spite", "LadyLissith",
       "LadySabrix", "Malefic", "Silk",
-      "Virulent", "SeaHorse"
+      "Virulent", "SeaHorse", "UnholyFamiliar",
+      "HolyFamiliar", "GiantIceWorm", "Phoenix",
+      "Succubus", "EnragedRabbit", "EnragedHind",
+      "EnragedHart", "EnragedBlackBear", "EnragedEagle",
+      "RagingGrizzlyBear", "CorrosiveSlime", "DarkWisp",
+      "DarkGuardian", "HarrowerTentacles", "ServantOfSemidar",
+      "Ninja", "Samurai"
     ]
   },
   {
     "name": "Very Fast",
-    "active": 0.35,
+    "active": 0.25,
     "passive": 0.7,
     "types": [
       "Barracoon", "Mephitis", "Neira",
@@ -61,7 +68,7 @@
   {
     "name": "Medium",
     "active": 0.5,
-    "passive": 1.0,
+    "passive": 1.2,
     "types": [
       "AcidElemental", "AgapiteElemental", "Alligator",
       "AncientLich", "Betrayer", "Bird",
@@ -133,7 +140,9 @@
       "Kappa", "KazeKemono", "DeathwatchBeetle",
       "TsukiWolf", "YomotsuElder", "YomotsuPriest",
       "YomotsuWarrior", "RevenantLion", "Oni",
-      "Gaman", "Crane", "Beetle"
+      "Gaman", "Crane", "Beetle",
+      "Parrot", "ElfBrigand", "GreaterMongbat",
+      "AnimatedWeapon", "Reaper", "Corpser"
     ]
   }
 ]

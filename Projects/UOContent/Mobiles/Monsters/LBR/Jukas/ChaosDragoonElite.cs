@@ -10,7 +10,7 @@ namespace Server.Mobiles
             Body = 0x190;
             Hue = Race.Human.RandomSkinHue();
 
-            SetSpeed(0.25, 0.55);
+            SetSpeed(0.25, 1.0);
 
             SetStr(276, 350);
             SetDex(66, 90);

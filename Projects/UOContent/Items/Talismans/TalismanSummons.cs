@@ -11,6 +11,7 @@ namespace Server.Mobiles
 
         public BaseTalismanSummon() : base(AIType.AI_Melee, FightMode.None)
         {
+            SetSpeed(0.3, 1.0);
             // TODO: Stats/skills
         }
 
