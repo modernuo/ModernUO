@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Server.Collections;
 using Server.Spells;
 
 namespace Server.Items
@@ -36,23 +36,30 @@ namespace Server.Items
             attacker.FixedEffect(0x3728, 10, 15);
             attacker.PlaySound(0x2A1);
 
-            var targets = attacker.GetMobilesInRange(1)
-                .Where(
-                    m =>
-                        m?.Deleted == false && m != defender && m != attacker &&
-                        SpellHelper.ValidIndirectTarget(attacker, m) &&
-                        m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
-                        attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m)
-                )
-                .ToList();
+            var eable = attacker.GetMobilesInRange(1);
+            using var queue = PooledRefQueue<Mobile>.Create();
 
-            if (targets.Count <= 0)
+            foreach (var m in eable)
+            {
+                if (m?.Deleted == false && m != defender && m != attacker &&
+                    m.Map == attacker.Map && m.Alive &&
+                    SpellHelper.ValidIndirectTarget(attacker, m) &&
+                    attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+                    attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
+                {
+                    queue.Enqueue(m);
+                }
+            }
+
+            eable.Free();
+
+            if (queue.Count <= 0)
             {
                 return;
             }
 
             var bushido = attacker.Skills.Bushido.Value;
-            var damageBonus = 1.0 + Math.Pow(targets.Count * bushido / 60, 2) / 100;
+            var damageBonus = 1.0 + Math.Pow(queue.Count * bushido / 60, 2) / 100;
 
             if (damageBonus > 2.0)
             {
@@ -61,10 +68,9 @@ namespace Server.Items
 
             attacker.RevealingAction();
 
-            for (var i = 0; i < targets.Count; ++i)
+            while (queue.Count > 0)
             {
-                var m = targets[i];
-
+                var m = queue.Dequeue();
                 attacker.SendLocalizedMessage(1060161); // The whirling attack strikes a target!
                 m.SendLocalizedMessage(1060162);        // You are struck by the whirling attack and take damage!
 

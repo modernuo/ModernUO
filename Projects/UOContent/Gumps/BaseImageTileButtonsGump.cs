@@ -53,8 +53,8 @@ namespace Server.Gumps
         {
         }
 
-        public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) :
-            base(10, 10) // Coords are 0, o on OSI, intentional difference
+        // Coords are 0, 0 on OSI, intentional difference
+        public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) : base(10, 10)
         {
             Buttons = buttons;
             AddPage(0);

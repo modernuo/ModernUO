@@ -2,7 +2,6 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using NetFabric.Hyperlinq;
 using Server;
-using StructLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace Benchmarks.MultiSelectors
     public class MapMultiSelectors
     {
         private static readonly Sector sector = new();
-        private static readonly Point3D[] locations = new[] { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
+        private static readonly Point3D[] locations = { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
 
         public static Rectangle2D[] BoundsArray() => new[]
         {
@@ -291,10 +290,10 @@ namespace Benchmarks.MultiSelectors
 
     public class Sector
     {
-        public List<BaseMulti> Multis { get; set; } = new List<BaseMulti>();
+        public List<BaseMulti> Multis { get; set; } = new();
     }
 
-    public struct MultiWhereHyper : NetFabric.Hyperlinq.IFunction<BaseMulti, bool>
+    public struct MultiWhereHyper : IFunction<BaseMulti, bool>
     {
         private readonly Rectangle2D bounds;
 
