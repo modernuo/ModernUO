@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Server.Items;
 using Server.Logging;
 using Server.Network;
@@ -809,17 +810,22 @@ namespace Server
             return surface;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Bound(int x, int y, out int newX, out int newY)
         {
             newX = Math.Clamp(x, 0, Width - 1);
             newY = Math.Clamp(y, 0, Height - 1);
         }
 
+        public Point2D Bound(Point3D p)
+        {
+            Bound(p.m_X, p.m_Y, out var x, out var y);
+            return new Point2D(x, y);
+        }
+
         public Point2D Bound(Point2D p)
         {
-            var x = Math.Clamp(p.m_X, 0, Width - 1);
-            var y = Math.Clamp(p.m_Y, 0, Height - 1);
-
+            Bound(p.m_X, p.m_Y, out var x, out var y);
             return new Point2D(x, y);
         }
 
@@ -1086,7 +1092,7 @@ namespace Server
             }
             else if (o is IPoint3D d)
             {
-                p = new Point3D(d);
+                p = new Point3D(d.X, d.Y, d.Z);
             }
             else
             {

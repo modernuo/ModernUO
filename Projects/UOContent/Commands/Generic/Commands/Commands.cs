@@ -554,21 +554,19 @@ namespace Server.Commands.Generic
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            if (obj is not IPoint3D p)
+            if (obj is not IPoint3D ip)
             {
                 return;
             }
 
-            if (p is Item item)
+            Point3D p = ip switch
             {
-                p = item.GetWorldTop();
-            }
-            else if (p is Mobile m)
-            {
-                p = m.Location;
-            }
+                Item item => item.GetWorldTop(),
+                Mobile m  => m.Location,
+                _         => new Point3D(ip)
+            };
 
-            Add.Invoke(e.Mobile, new Point3D(p), new Point3D(p), e.Arguments);
+            Add.Invoke(e.Mobile, p, p, e.Arguments);
         }
     }
 

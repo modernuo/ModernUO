@@ -176,7 +176,7 @@ namespace Server.Multis
                 {
                     if (ip is Item item)
                     {
-                        ip = item.GetWorldTop();
+                        ip = from;
                     }
 
                     var p = new Point3D(ip);

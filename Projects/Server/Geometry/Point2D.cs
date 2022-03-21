@@ -47,7 +47,7 @@ namespace Server
             m_Y = y;
         }
 
-        public Point2D(IPoint2D p) : this(p.X, p.Y)
+        public Point2D(Point2D p) : this(p.X, p.Y)
         {
         }
 

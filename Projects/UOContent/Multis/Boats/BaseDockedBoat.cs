@@ -194,29 +194,31 @@ namespace Server.Multis
 
             protected override void OnTarget(Mobile from, object o)
             {
-                if (o is IPoint3D ip)
+                if (o is not IPoint3D ip)
                 {
-                    if (ip is Item item)
-                    {
-                        ip = item.GetWorldTop();
-                    }
+                    return;
+                }
 
-                    var p = new Point3D(ip);
+                Point3D p = ip switch
+                {
+                    Item item => item.GetWorldTop(),
+                    Mobile m  => m.Location,
+                    _         => new Point3D(ip)
+                };
 
-                    var region = Region.Find(p, from.Map);
+                var region = Region.Find(p, from.Map);
 
-                    if (region.IsPartOf<DungeonRegion>())
-                    {
-                        from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
-                    }
-                    else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
-                    {
-                        from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
-                    }
-                    else
-                    {
-                        m_Model.OnPlacement(from, p);
-                    }
+                if (region.IsPartOf<DungeonRegion>())
+                {
+                    from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                }
+                else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
+                {
+                    from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                }
+                else
+                {
+                    m_Model.OnPlacement(from, p);
                 }
             }
         }
