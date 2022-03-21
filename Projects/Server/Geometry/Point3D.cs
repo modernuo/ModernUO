@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -49,11 +50,16 @@ namespace Server
             set => m_Z = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Point3D(IPoint3D p) : this(p.X, p.Y, p.Z)
         {
         }
 
-        public Point3D(IPoint2D p, int z) : this(p.X, p.Y, z)
+        public Point3D(Point3D p) : this(p.X, p.Y, p.Z)
+        {
+        }
+
+        public Point3D(Point2D p, int z) : this(p.X, p.Y, z)
         {
         }
 

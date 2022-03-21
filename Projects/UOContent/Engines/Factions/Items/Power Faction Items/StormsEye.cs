@@ -95,7 +95,7 @@ namespace Server
             foreach (var m in eable)
             {
                 if (from.CanBeHarmful(m, false) &&
-                    m.InLOS(new Point3D(origin, origin.Z + 1)) &&
+                    m.InLOS(new Point3D(origin.X, origin.Y, origin.Z + 1)) &&
                     Faction.Find(m) != null)
                 {
                     targets.Add(from);
@@ -118,7 +118,7 @@ namespace Server
                 }
 
                 Effects.SendMovingEffect(
-                    new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet),
+                    new Entity(Serial.Zero, new Point3D(origin.X, origin.Y, origin.Z + 4), facet),
                     mob,
                     14068,
                     1,
