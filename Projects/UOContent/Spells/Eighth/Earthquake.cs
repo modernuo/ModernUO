@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Server.Collections;
 
 namespace Server.Spells.Eighth
 {
@@ -37,14 +37,21 @@ namespace Server.Spells.Eighth
                     return;
                 }
 
-                var targets = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0))
-                    .Where(
-                        m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-                             (!Core.AOS || Caster.InLOS(m))
-                    );
-
-                foreach (var m in targets)
+                var eable = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0));
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in eable)
                 {
+                    if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
+                        (!Core.AOS || Caster.InLOS(m)))
+                    {
+                        queue.Enqueue(m);
+                    }
+                }
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
+
                     int damage;
 
                     if (Core.AOS)

@@ -920,6 +920,7 @@ namespace Server
             return total + bonus;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this IList<T> list)
         {
             var count = list.Count;
@@ -930,6 +931,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this Span<T> list)
         {
             var count = list.Length;
@@ -1093,6 +1095,15 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double RandomDouble() => RandomSources.Source.NextDouble();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point3D RandomPointIn(Rectangle2D rect, Map map)
+        {
+            var x = Random(rect.X, rect.Width);
+            var y = Random(rect.Y, rect.Height);
+
+            return new Point3D(x, y, map.GetAverageZ(x, y));
+        }
 
         /// <summary>
         ///     Random pink, blue, green, orange, red or yellow hue

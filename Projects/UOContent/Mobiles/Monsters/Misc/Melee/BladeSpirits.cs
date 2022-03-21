@@ -1,5 +1,6 @@
 using System;
-using System.Linq;
+using System.Buffers;
+using Server.Collections;
 
 namespace Server.Mobiles
 {
@@ -72,17 +73,28 @@ namespace Server.Mobiles
             if (Core.SE && Summoned)
             {
                 var eable = GetMobilesInRange(5);
-                var spiritsOrVortexes = eable
-                    .Where(m => m is EnergyVortex or BladeSpirits && ((BaseCreature)m).Summoned)
-                    .ToList();
-
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in eable)
+                {
+                    if (m is EnergyVortex or BladeSpirits && ((BaseCreature)m).Summoned)
+                    {
+                        queue.Enqueue(m);
+                    }
+                }
                 eable.Free();
 
-                while (spiritsOrVortexes.Count > 6)
+                var amount = queue.Count - 6;
+                if (amount > 0)
                 {
-                    var random = spiritsOrVortexes.RandomElement();
-                    Dispel(random);
-                    spiritsOrVortexes.Remove(random);
+                    var mobs = queue.ToPooledArray();
+                    mobs.Shuffle();
+
+                    while (amount > 0)
+                    {
+                        Dispel(mobs[amount--]);
+                    }
+
+                    ArrayPool<Mobile>.Shared.Return(mobs);
                 }
             }
 

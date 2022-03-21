@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Server.Collections;
 
 namespace Server.Mobiles
 {
@@ -70,16 +70,20 @@ namespace Server.Mobiles
                 return;
             }
 
-            var list = GetMobilesInRange(5)
-                .Where(
-                    m =>
-                        m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor
-                )
-                .ToList();
-
-            for (var i = 0; i < list.Count; ++i)
+            var eable = GetMobilesInRange(5);
+            using var queue = PooledRefQueue<Mobile>.Create();
+            foreach (var m in eable)
             {
-                var m = list[i];
+                if (m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor)
+                {
+                    queue.Enqueue(m);
+                }
+            }
+            eable.Free();
+
+            while (queue.Count > 0)
+            {
+                var m = queue.Dequeue();
                 var friendly = true;
 
                 for (var j = 0; friendly && j < caster.Aggressors.Count; ++j)

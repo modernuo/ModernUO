@@ -17,10 +17,14 @@ namespace Server.Random
 {
     public static class RandomSources
     {
-        private static IRandomSource m_Source;
-        private static IRandomSource m_SecureSource;
+        private static IRandomSource _source;
+        private static IRandomSource _secureSource;
 
-        public static IRandomSource Source => m_Source ??= new Xoshiro256PlusPlus();
-        public static IRandomSource SecureSource => m_SecureSource ??= new SecureRandom();
+        public static IRandomSource Source => _source ??= new Xoshiro256PlusPlus();
+        public static IRandomSource SecureSource => _secureSource ??= new SecureRandom();
+
+        public static void SetRng(IRandomSource newSource) => _source = newSource;
+
+        public static void SetSecureRng(IRandomSource newSource) => _secureSource = newSource;
     }
 }

@@ -180,6 +180,22 @@ namespace Server.Collections
             return _array[_head];
         }
 
+        public T PeekRandom()
+        {
+            if (_size == 0)
+            {
+                ThrowForEmptyQueue();
+            }
+
+            var index = _head + Utility.Random(_size);
+            if (index >= _array.Length)
+            {
+                index -= _array.Length;
+            }
+
+            return _array[index];
+        }
+
         public bool TryPeek([MaybeNullWhen(false)] out T result)
         {
             if (_size == 0)

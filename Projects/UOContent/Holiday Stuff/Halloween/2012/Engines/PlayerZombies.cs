@@ -115,8 +115,7 @@ namespace Server.Engines.Events
             }
 
             var map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
-
-            var home = GetRandomPointInRect(m_Cemetaries.RandomElement(), map);
+            var home = Utility.RandomPointIn(m_Cemetaries.RandomElement(), map);
 
             if (map.CanSpawnMobile(home))
             {
@@ -130,14 +129,6 @@ namespace Server.Engines.Events
 
                 _deathQueue.Remove(player);
             }
-        }
-
-        private static Point3D GetRandomPointInRect(Rectangle2D rect, Map map)
-        {
-            var x = Utility.Random(rect.X, rect.Width);
-            var y = Utility.Random(rect.Y, rect.Height);
-
-            return new Point3D(x, y, map.GetAverageZ(x, y));
         }
     }
 

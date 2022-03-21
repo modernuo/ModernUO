@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Events.Halloween;
 using Server.Items;
 
@@ -51,22 +50,23 @@ namespace Server.Engines.Events
                 var rect = m_PumpkinFields[i];
 
                 var spawncount = rect.Height * rect.Width / 20;
-                var pumpkins = map.GetItemsInBounds(rect).OfType<HalloweenPumpkin>().Count();
+                var eable = map.GetItemsInBounds<HalloweenPumpkin>(rect);
+                var pumpkins = 0;
+                foreach (var p in eable)
+                {
+                    if (pumpkins++ >= spawncount)
+                    {
+                        break;
+                    }
+                }
+
+                eable.Free();
 
                 if (spawncount > pumpkins)
                 {
-                    new HalloweenPumpkin().MoveToWorld(RandomPointIn(rect, map), map);
+                    new HalloweenPumpkin().MoveToWorld(Utility.RandomPointIn(rect, map), map);
                 }
             }
-        }
-
-        private static Point3D RandomPointIn(Rectangle2D rect, Map map)
-        {
-            var x = Utility.Random(rect.X, rect.Width);
-            var y = Utility.Random(rect.Y, rect.Height);
-            var z = map.GetAverageZ(x, y);
-
-            return new Point3D(x, y, z);
         }
     }
 }

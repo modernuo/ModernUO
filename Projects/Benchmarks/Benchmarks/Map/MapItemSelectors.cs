@@ -20,7 +20,7 @@ namespace Benchmarks.ItemSelectors
     public class MapItemSelectors
     {
         private static readonly Sector sector = new();
-        private static readonly Point3D[] locations = new[] { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
+        private static readonly Point3D[] locations = { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
 
         public static Rectangle2D[] BoundsArray() => new[]
         {
@@ -352,7 +352,7 @@ namespace Benchmarks.ItemSelectors
 
     public class Sector
     {
-        public List<BItem> BItems { get; set; } = new List<BItem>();
+        public List<BItem> BItems { get; set; } = new();
     }
 
     public struct BItemWhere<T> : StructLinq.IFunction<BItem, bool> where T : BItem
