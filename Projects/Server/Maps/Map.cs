@@ -691,7 +691,7 @@ namespace Server
                 }
             }
 
-            ArrayPool<Item>.Shared.Return(items);
+            ArrayPool<Item>.Shared.Return(items, true);
         }
 
         /* This could probably be re-implemented if necessary (perhaps via an ITile interface?).

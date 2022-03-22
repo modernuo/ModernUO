@@ -100,7 +100,7 @@ namespace Server.Mobiles
                         Dispel(mobs[amount--]);
                     }
 
-                    ArrayPool<Mobile>.Shared.Return(mobs);
+                    ArrayPool<Mobile>.Shared.Return(mobs, true);
                 }
             }
 
