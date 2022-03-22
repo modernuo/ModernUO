@@ -260,14 +260,14 @@ namespace Server.Collections
             return arr;
         }
 
-        public T[] ToPooledArray()
+        public T[] ToPooledArray(bool mt = false)
         {
             if (_size == 0)
             {
                 return Array.Empty<T>();
             }
 
-            T[] arr = (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(_size);
+            T[] arr = (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(_size);
 
             if (_head < _tail)
             {
