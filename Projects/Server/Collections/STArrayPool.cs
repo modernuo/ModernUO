@@ -53,6 +53,8 @@ public class STArrayPool<T> : ArrayPool<T>
                     return buffer;
                 }
             }
+
+            minimumLength = GetMaxSizeForBucket(bucketIndex);
         }
 
         if (minimumLength == 0)

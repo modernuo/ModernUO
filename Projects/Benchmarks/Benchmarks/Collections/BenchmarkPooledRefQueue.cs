@@ -11,20 +11,17 @@ namespace Benchmarks
     [SimpleJob(RuntimeMoniker.Net60)]
     public class BenchmarkPooledRefQueue
     {
-        private static long[][] arrays = new long[16][];
-        private static long[][] stArrays = new long[16][];
-
         [GlobalSetup]
         public void Setup()
         {
             // Allocate
-            arrays = new long[16][];
+            var arrays = new long[16][];
             for (var i = 0; i < 16; i++)
             {
                 arrays[i] = ArrayPool<long>.Shared.Rent(64);
             }
 
-            stArrays = new long[16][];
+            var stArrays = new long[16][];
             for (var i = 0; i < 16; i++)
             {
                 stArrays[i] = STArrayPool<long>.Shared.Rent(64);
@@ -65,6 +62,24 @@ namespace Benchmarks
             for (var i = 0; i < 8; i++)
             {
                 using var queue = PooledRefQueue<long>.Create();
+                for (var j = 0; j < 32; j++)
+                {
+                    queue.Enqueue(j);
+                }
+
+                for (var j = 0; j < 32; j++)
+                {
+                    var num = queue.Dequeue();
+                }
+            }
+        }
+
+        [Benchmark]
+        public void UsePooledRefQueueMT()
+        {
+            for (var i = 0; i < 8; i++)
+            {
+                using var queue = PooledRefQueue<long>.CreateMT();
                 for (var j = 0; j < 32; j++)
                 {
                     queue.Enqueue(j);
