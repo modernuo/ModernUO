@@ -21,7 +21,7 @@ public class STArrayPool<T> : ArrayPool<T>
     public static STArrayPool<T> Shared => _shared;
 
     private static STArray[] _cacheBuckets;
-    private readonly STArrayStack[] _buckets = new STArrayStack[BucketCount];
+    private STArrayStack[] _buckets = new STArrayStack[BucketCount];
 
     private STArrayPool() {}
 
@@ -102,6 +102,15 @@ public class STArrayPool<T> : ArrayPool<T>
                 var bucket = _buckets[bucketIndex] ?? CreateBucketStack(bucketIndex);
                 bucket.TryPush(prev);
             }
+        }
+    }
+
+    public void ResetForTesting()
+    {
+        if (Core.IsRunningFromXUnit)
+        {
+            _cacheBuckets = null;
+            _buckets = new STArrayStack[BucketCount];
         }
     }
 
