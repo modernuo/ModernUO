@@ -207,7 +207,7 @@ public class STArrayPool<T> : ArrayPool<T>
     private sealed class STArrayStack
     {
         // Maximum buffers we will store in our stack
-        private readonly T[][] _arrays = new T[StackArraySize][];
+        private readonly T[][] _arrays = new T[StackArraySize * Environment.ProcessorCount][];
         private int _count;
         private long _ticks;
 

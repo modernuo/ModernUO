@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Server.Buffers;
 
 namespace Server.Collections
 {
@@ -32,7 +32,7 @@ namespace Server.Collections
             {
                 < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum),
                 0   => Array.Empty<T>(),
-                _   => ArrayPool<T>.Shared.Rent(capacity)
+                _   => STArrayPool<T>.Shared.Rent(capacity)
             };
 
             _head = 0;
@@ -261,7 +261,7 @@ namespace Server.Collections
                 return Array.Empty<T>();
             }
 
-            T[] arr = ArrayPool<T>.Shared.Rent(_size);
+            T[] arr = STArrayPool<T>.Shared.Rent(_size);
 
             if (_head < _tail)
             {
@@ -280,7 +280,7 @@ namespace Server.Collections
         // must be >= _size.
         private void SetCapacity(int capacity)
         {
-            T[] newarray = ArrayPool<T>.Shared.Rent(capacity);
+            T[] newarray = STArrayPool<T>.Shared.Rent(capacity);
             if (_size > 0)
             {
                 if (_head < _tail)
@@ -296,7 +296,8 @@ namespace Server.Collections
 
             if (_array.Length > 0)
             {
-                ArrayPool<T>.Shared.Return(_array, true);
+                Clear();
+                STArrayPool<T>.Shared.Return(_array);
             }
 
             _array = newarray;
@@ -377,7 +378,8 @@ namespace Server.Collections
             var array = _array;
             if (array.Length > 0)
             {
-                ArrayPool<T>.Shared.Return(array, true);
+                Clear();
+                STArrayPool<T>.Shared.Return(array);
             }
 
             this = default;
