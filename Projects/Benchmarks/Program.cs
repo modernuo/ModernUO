@@ -28,7 +28,7 @@ namespace Benchmarks
             //var mapMultiSelectors = BenchmarkRunner.Run<MapMultiSelectors>();
             // var mapItemsSelectors = BenchmarkRunner.Run<MapItemSelectors>();
             // var stArray = BenchmarkRunner.Run<BenchmarkSTArray>();
-            var pooledRefQueue = BenchmarkRunner.Run<BenchmarkPooledRefQueue>();
+            // var pooledRefQueue = BenchmarkRunner.Run<BenchmarkPooledRefQueue>();
         }
     }
 }
