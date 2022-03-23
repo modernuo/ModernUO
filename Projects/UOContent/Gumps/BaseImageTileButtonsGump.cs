@@ -109,9 +109,9 @@ namespace Server.Gumps
                     b.ItemID,
                     b.Hue,
                     15,
-                    10,
-                    b.LocalizedTooltip
+                    10
                 );
+                AddTooltip(b.LocalizedTooltip);
                 TextDefinition.AddHtmlText(this, innerX + 84, innerY, 250, 60, b.Label, false, false, 0x7FFF, 0xFFFFFF);
             }
         }
