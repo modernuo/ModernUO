@@ -103,15 +103,17 @@ public class GumpHtmlLocalized : GumpEntry
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
+        var background = Background ? "1" : "0";
+        var scrollbar = Scrollbar ? "1" : "0";
         writer.WriteAscii(
             Type switch
             {
                 GumpHtmlLocalizedType.Plain =>
-                    $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}",
+                    $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {background} {scrollbar} }}",
                 GumpHtmlLocalizedType.Color =>
-                    $"{{ xmfhtmlgumpcolor {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} }}",
+                    $"{{ xmfhtmlgumpcolor {X} {Y} {Width} {Height} {Number} {background} {scrollbar} {Color} }}",
                 _ =>
-                    $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} {Number} @{Args}@ }}"
+                    $"{{ xmfhtmltok {X} {Y} {Width} {Height} {background} {scrollbar} {Color} {Number} @{Args}@ }}"
             }
         );
     }
