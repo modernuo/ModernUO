@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: PacketContainerBuilder.cs                                       *
  *                                                                       *
@@ -14,9 +14,9 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using Server.Buffers;
 
 namespace Server.Network;
 
@@ -89,7 +89,7 @@ public ref struct PacketContainerBuilder
     private void Grow(int additionalCapacityBeyondPos)
     {
         var newLength = Math.Max(Length + additionalCapacityBeyondPos, _bytes.Length * 2);
-        byte[] poolArray = ArrayPool<byte>.Shared.Rent(newLength);
+        byte[] poolArray = STArrayPool<byte>.Shared.Rent(newLength);
 
         _bytes[..Length].CopyTo(poolArray);
 
@@ -97,7 +97,7 @@ public ref struct PacketContainerBuilder
         _bytes = _arrayToReturnToPool = poolArray;
         if (toReturn != null)
         {
-            ArrayPool<byte>.Shared.Return(toReturn);
+            STArrayPool<byte>.Shared.Return(toReturn);
         }
     }
 
@@ -108,7 +108,7 @@ public ref struct PacketContainerBuilder
         this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
         if (toReturn != null)
         {
-            ArrayPool<byte>.Shared.Return(toReturn);
+            STArrayPool<byte>.Shared.Return(toReturn);
         }
     }
 }
