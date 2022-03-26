@@ -51,7 +51,7 @@ namespace Server.Items
     public class WoodenBowlOfCarrots : Food
     {
         [Constructible]
-        public WoodenBowlOfCarrots() : base(0x15F9, 1)
+        public WoodenBowlOfCarrots() : base(0x15F9)
         {
             Stackable = false;
             Weight = 1.0;
@@ -91,7 +91,7 @@ namespace Server.Items
     public class WoodenBowlOfCorn : Food
     {
         [Constructible]
-        public WoodenBowlOfCorn() : base(0x15FA, 1)
+        public WoodenBowlOfCorn() : base(0x15FA)
         {
             Stackable = false;
             Weight = 1.0;
@@ -131,7 +131,7 @@ namespace Server.Items
     public class WoodenBowlOfLettuce : Food
     {
         [Constructible]
-        public WoodenBowlOfLettuce() : base(0x15FB, 1)
+        public WoodenBowlOfLettuce() : base(0x15FB)
         {
             Stackable = false;
             Weight = 1.0;
@@ -171,7 +171,7 @@ namespace Server.Items
     public class WoodenBowlOfPeas : Food
     {
         [Constructible]
-        public WoodenBowlOfPeas() : base(0x15FC, 1)
+        public WoodenBowlOfPeas() : base(0x15FC)
         {
             Stackable = false;
             Weight = 1.0;
@@ -211,7 +211,7 @@ namespace Server.Items
     public class PewterBowlOfCarrots : Food
     {
         [Constructible]
-        public PewterBowlOfCarrots() : base(0x15FE, 1)
+        public PewterBowlOfCarrots() : base(0x15FE)
         {
             Stackable = false;
             Weight = 1.0;
@@ -251,7 +251,7 @@ namespace Server.Items
     public class PewterBowlOfCorn : Food
     {
         [Constructible]
-        public PewterBowlOfCorn() : base(0x15FF, 1)
+        public PewterBowlOfCorn() : base(0x15FF)
         {
             Stackable = false;
             Weight = 1.0;
@@ -291,7 +291,7 @@ namespace Server.Items
     public class PewterBowlOfLettuce : Food
     {
         [Constructible]
-        public PewterBowlOfLettuce() : base(0x1600, 1)
+        public PewterBowlOfLettuce() : base(0x1600)
         {
             Stackable = false;
             Weight = 1.0;
@@ -331,7 +331,7 @@ namespace Server.Items
     public class PewterBowlOfPeas : Food
     {
         [Constructible]
-        public PewterBowlOfPeas() : base(0x1601, 1)
+        public PewterBowlOfPeas() : base(0x1601)
         {
             Stackable = false;
             Weight = 1.0;
@@ -371,7 +371,7 @@ namespace Server.Items
     public class PewterBowlOfPotatos : Food
     {
         [Constructible]
-        public PewterBowlOfPotatos() : base(0x1602, 1)
+        public PewterBowlOfPotatos() : base(0x1602)
         {
             Stackable = false;
             Weight = 1.0;
@@ -461,7 +461,7 @@ namespace Server.Items
     public class WoodenBowlOfStew : Food
     {
         [Constructible]
-        public WoodenBowlOfStew() : base(0x1604, 1)
+        public WoodenBowlOfStew() : base(0x1604)
         {
             Stackable = false;
             Weight = 2.0;
@@ -501,7 +501,7 @@ namespace Server.Items
     public class WoodenBowlOfTomatoSoup : Food
     {
         [Constructible]
-        public WoodenBowlOfTomatoSoup() : base(0x1606, 1)
+        public WoodenBowlOfTomatoSoup() : base(0x1606)
         {
             Stackable = false;
             Weight = 2.0;

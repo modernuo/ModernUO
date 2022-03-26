@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingPackets.cs                                              *
  *                                                                       *
@@ -13,62 +13,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Server.Network;
 
 public static class IncomingPackets
 {
-    private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
-
-    private static readonly EncodedPacketHandler[] m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
-
-    private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh =
-        new();
+    private static readonly EncodedPacketHandler[] _encodedHandlers = new EncodedPacketHandler[0x100];
 
     public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 
-    public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive) =>
+        Register(new PacketHandler(packetID, length, ingame, onReceive));
+
+    public static void Register(PacketHandler packetHandler)
     {
-        Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
-        m_6017Handlers[packetID] ??= new PacketHandler(packetID, length, ingame, onReceive);
+        Handlers[packetHandler.PacketID] = packetHandler;
     }
 
     public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
 
     public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
-            m_EncodedHandlersLow[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
-        }
-        else
-        {
-            m_EncodedHandlersHigh[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
+            _encodedHandlers[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
         }
     }
 
-    public static EncodedPacketHandler GetEncodedHandler(int packetID)
-    {
-        if (packetID >= 0 && packetID < 0x100)
-        {
-            return m_EncodedHandlersLow[packetID];
-        }
-
-        m_EncodedHandlersHigh.TryGetValue(packetID, out var handler);
-        return handler;
-    }
+    public static EncodedPacketHandler GetEncodedHandler(int packetID) =>
+        packetID is >= 0 and < 0x100 ? _encodedHandlers[packetID] : null;
 
     public static void RemoveEncodedHandler(int packetID)
     {
-        if (packetID >= 0 && packetID < 0x100)
+        if (packetID is >= 0 and < 0x100)
         {
-            m_EncodedHandlersLow[packetID] = null;
-        }
-        else
-        {
-            m_EncodedHandlersHigh.Remove(packetID);
+            _encodedHandlers[packetID] = null;
         }
     }
 

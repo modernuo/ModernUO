@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CrystalLatticeSeeker()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Mage)
         {
             Body = 0x7B;
             Hue = 0x47E;
@@ -52,10 +52,10 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.75)
             c.DropItem( new CrystallineFragments() );
-    
+
           if (Utility.RandomDouble() < 0.07)
             c.DropItem( new PiecesOfCrystal() );
         }

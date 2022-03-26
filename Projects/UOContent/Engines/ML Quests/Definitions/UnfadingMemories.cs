@@ -83,14 +83,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Emilio : BaseCreature
     {
         [Constructible]
-        public Emilio()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Emilio() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Tortured Artist";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -130,14 +131,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Thalia : BaseCreature
     {
         [Constructible]
-        public Thalia()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Thalia() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Bride";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

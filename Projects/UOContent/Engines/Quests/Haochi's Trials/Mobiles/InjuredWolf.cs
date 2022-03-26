@@ -5,13 +5,14 @@ namespace Server.Engines.Quests.Samurai
     public class InjuredWolf : BaseCreature
     {
         [Constructible]
-        public InjuredWolf() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public InjuredWolf() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xE1;
             BaseSoundID = 0xE5;
 
             Hue = Utility.RandomAnimalHue();
 
+            SetSpeed(0.3, 1.0);
             SetStr(10, 20);
             SetDex(45, 65);
             SetInt(10, 15);

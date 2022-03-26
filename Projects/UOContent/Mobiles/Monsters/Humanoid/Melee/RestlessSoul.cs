@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class RestlessSoul : BaseCreature
     {
         [Constructible]
-        public RestlessSoul() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+        public RestlessSoul() : base(AIType.AI_Melee)
         {
             Body = 0x3CA;
             Hue = 0x453;

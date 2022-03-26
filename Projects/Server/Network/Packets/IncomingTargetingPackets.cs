@@ -25,7 +25,7 @@ public static class IncomingTargetingPackets
         IncomingPackets.Register(0x6C, 19, true, TargetResponse);
     }
 
-    public static void TargetResponse(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void TargetResponse(NetState state, CircularBufferReader reader, int packetLength)
     {
         int type = reader.ReadByte();
         var targetID = reader.ReadInt32();

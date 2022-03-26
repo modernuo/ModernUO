@@ -92,9 +92,10 @@ namespace Server.Mobiles
         private MLQuest m_MLQuest;
 
         [Constructible]
-        public BaseEscortable()
-            : base(AIType.AI_Melee, FightMode.Aggressor, 22, 1, 0.2, 1.0)
+        public BaseEscortable() : base(AIType.AI_Melee, FightMode.Aggressor, 22)
         {
+            SetSpeed(0.3, 1.0);
+
             InitBody();
             InitOutfit();
 

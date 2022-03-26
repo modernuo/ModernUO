@@ -12,7 +12,7 @@ namespace Server.Mobiles
         private DateTime m_NextAbilityTime;
 
         [Constructible]
-        public MeerMage() : base(AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+        public MeerMage() : base(AIType.AI_Mage, FightMode.Evil)
         {
             Body = 770;
 

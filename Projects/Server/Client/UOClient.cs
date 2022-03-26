@@ -46,20 +46,21 @@ public static class UOClient
     {
         if (ServerClientVersion == null)
         {
-            logger.Warning("Could not detect client version.");
+            logger.Warning("Could not detect client version. This may cause data files to load improperly.");
+            return;
         }
-        else if (CuoSettings.ClientVersion == ServerClientVersion)
+
+        if (_automaticallyDetected)
         {
-            logger.Information($"Automatically detected client version {ServerClientVersion} from CUO settings.");
+            logger.Information(
+                CuoSettings?.ClientVersion == ServerClientVersion
+                    ? $"Automatically detected client version {ServerClientVersion} from CUO settings."
+                    : $"Automatically detected client version {ServerClientVersion}"
+            );
+            return;
         }
-        else if (_automaticallyDetected)
-        {
-            logger.Information($"Automatically detected client version {ServerClientVersion}");
-        }
-        else
-        {
-            logger.Information($"Manually configured to use client version {ServerClientVersion}");
-        }
+
+        logger.Information($"Manually configured to use client version {ServerClientVersion}");
     }
 
     private static ClientVersion DetectCUOClient()

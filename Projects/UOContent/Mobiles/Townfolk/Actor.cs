@@ -5,8 +5,9 @@ namespace Server.Mobiles
     public class Actor : BaseCreature
     {
         [Constructible]
-        public Actor() : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+        public Actor() : base(AIType.AI_Animal, FightMode.None)
         {
+            SetSpeed(0.6, 1.2);
             InitStats(31, 41, 51);
 
             SpeechHue = Utility.RandomDyedHue();

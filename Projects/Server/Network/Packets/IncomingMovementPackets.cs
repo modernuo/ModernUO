@@ -78,7 +78,7 @@ public static class IncomingMovementPackets
         ns.SendTimeSyncResponse();
     }
 
-    public static void MovementReq(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void MovementReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         var from = state.Mobile;
 

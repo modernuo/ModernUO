@@ -3,11 +3,12 @@ namespace Server.Mobiles
     public class ArcaneFiend : BaseCreature
     {
         [Constructible]
-        public ArcaneFiend() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public ArcaneFiend() : base(AIType.AI_Mage)
         {
             Body = 74;
             BaseSoundID = 422;
 
+            SetSpeed(0.3, 1.0);
             SetStr(55);
             SetDex(40);
             SetInt(60);

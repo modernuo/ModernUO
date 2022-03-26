@@ -2,7 +2,6 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using NetFabric.Hyperlinq;
 using Server;
-using StructLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace Benchmarks.MobileSelectors
     public class MapMobileSelectors
     {
         private static readonly Sector sector = new();
-        private static readonly Point3D[] locations = new[] { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
+        private static readonly Point3D[] locations = { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
 
         public static Rectangle2D[] BoundsArray() => new[]
         {
@@ -224,10 +223,10 @@ namespace Benchmarks.MobileSelectors
     {
         public MobileDerived(Point3D location) : base(location) { }
     }
-    
+
     public class Sector
     {
-        public List<Mobile> Mobiles { get; set; } = new List<Mobile>();
+        public List<Mobile> Mobiles { get; set; } = new();
     }
 
     public struct MobileWhereHyper<T> : NetFabric.Hyperlinq.IFunction<Mobile, bool> where T : Mobile

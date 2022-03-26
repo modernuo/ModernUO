@@ -16,25 +16,16 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpMasterGump : GumpEntry
 {
-    public class GumpMasterGump : GumpEntry
+    public GumpMasterGump(int gumpID) => GumpID = gumpID;
+
+    public int GumpID { get; set; }
+
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("mastergump");
-
-        public GumpMasterGump(int gumpID) => GumpID = gumpID;
-
-        public int GumpID { get; set; }
-
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ mastergump {GumpID} }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-        {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(LayoutName);
-            writer.WriteAscii(' ');
-            writer.WriteAscii(GumpID.ToString());
-            writer.Write((ushort)0x207D); // " }"
-        }
+        writer.WriteAscii($"{{ mastergump {GumpID} }}");
     }
 }

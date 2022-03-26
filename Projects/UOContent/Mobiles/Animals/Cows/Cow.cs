@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Cow : BaseCreature
     {
         [Constructible]
-        public Cow() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Cow() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = Utility.RandomList(0xD8, 0xE7);
             BaseSoundID = 0x78;

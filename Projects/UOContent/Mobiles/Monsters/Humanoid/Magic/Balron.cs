@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Balron : BaseCreature
     {
         [Constructible]
-        public Balron() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Balron() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("balron");
             Body = 40;

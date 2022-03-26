@@ -3,7 +3,7 @@ namespace Server.Items
     public class FruitBasket : Food
     {
         [Constructible]
-        public FruitBasket() : base(0x993, 1)
+        public FruitBasket() : base(0x993)
         {
             Weight = 2.0;
             FillFactor = 5;

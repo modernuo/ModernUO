@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class GargoyleEnforcer : BaseCreature
     {
         [Constructible]
-        public GargoyleEnforcer() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public GargoyleEnforcer() : base(AIType.AI_Mage)
         {
             Body = 0x2F2;
             BaseSoundID = 0x174;

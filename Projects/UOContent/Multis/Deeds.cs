@@ -11,41 +11,41 @@ namespace Server.Multis.Deeds
 
         protected override void OnTarget(Mobile from, object o)
         {
-            if (o is IPoint3D ip)
+            if (o is not IPoint3D ip)
             {
-                if (ip is Item item)
-                {
-                    ip = item.GetWorldTop();
-                }
+                return;
+            }
 
-                var p = new Point3D(ip);
+            Point3D p = ip switch
+            {
+                Item item => item.GetWorldTop(),
+                Mobile m  => m.Location,
+                _         => new Point3D(ip)
+            };
 
-                var reg = Region.Find(new Point3D(p), from.Map);
+            var reg = Region.Find(p, from.Map);
 
-                if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
-                {
-                    m_Deed.OnPlacement(from, p);
-                }
-                else if (reg.IsPartOf<TempNoHousingRegion>())
-                {
-                    from.SendLocalizedMessage(
-                        501270
-                    ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
-                }
-                else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
-                {
-                    from.SendLocalizedMessage(
-                        1043287
-                    ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
-                }
-                else if (reg.IsPartOf<HouseRaffleRegion>())
-                {
-                    from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
-                }
-                else
-                {
-                    from.SendLocalizedMessage(501265); // Housing can not be created in this area.
-                }
+            if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
+            {
+                m_Deed.OnPlacement(from, p);
+            }
+            else if (reg.IsPartOf<TempNoHousingRegion>())
+            {
+                // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                from.SendLocalizedMessage(501270);
+            }
+            else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
+            {
+                // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                from.SendLocalizedMessage(1043287);
+            }
+            else if (reg.IsPartOf<HouseRaffleRegion>())
+            {
+                from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
+            }
+            else
+            {
+                from.SendLocalizedMessage(501265); // Housing can not be created in this area.
             }
         }
     }
@@ -184,9 +184,8 @@ namespace Server.Multis.Deeds
                     case HousePlacementResult.BadStatic:
                     case HousePlacementResult.BadRegionHidden:
                         {
-                            from.SendLocalizedMessage(
-                                1043287
-                            ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                            // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                            from.SendLocalizedMessage(1043287);
                             break;
                         }
                     case HousePlacementResult.NoSurface:
@@ -203,16 +202,14 @@ namespace Server.Multis.Deeds
                         }
                     case HousePlacementResult.BadRegionTemp:
                         {
-                            from.SendLocalizedMessage(
-                                501270
-                            ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                            // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                            from.SendLocalizedMessage(501270);
                             break;
                         }
                     case HousePlacementResult.BadRegionRaffle:
                         {
-                            from.SendLocalizedMessage(
-                                1150493
-                            ); // You must have a deed for this plot of land in order to build here.
+                            // You must have a deed for this plot of land in order to build here.
+                            from.SendLocalizedMessage(1150493);
                             break;
                         }
                 }

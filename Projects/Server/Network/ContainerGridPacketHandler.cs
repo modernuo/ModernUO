@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: ISocket.cs                                                      *
+ * File: ContainerGridPacketHandler.cs                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,32 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
+namespace Server.Network;
 
-namespace Server.Network
+public class ContainerGridPacketHandler : PacketHandler
 {
-    public interface ISocket
+    public ContainerGridPacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+        : base(packetID, length, ingame, onReceive)
     {
-        public IntPtr Handle { get; }
-
-        public EndPoint LocalEndPoint { get; }
-
-        public EndPoint RemoteEndPoint { get; }
-
-        public Task<int> SendAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
-
-        public int Send(IList<ArraySegment<byte>> buffer, SocketFlags flags);
-
-        public Task<int> ReceiveAsync(IList<ArraySegment<byte>> buffer, SocketFlags flags);
-
-        public int Receive(IList<ArraySegment<byte>> buffers, SocketFlags flags);
-
-        public void Shutdown(SocketShutdown how);
-
-        public void Close();
     }
+
+    public override int GetLength(NetState ns) => base.GetLength(ns) + (ns.ContainerGridLines ? 1 : 0);
 }

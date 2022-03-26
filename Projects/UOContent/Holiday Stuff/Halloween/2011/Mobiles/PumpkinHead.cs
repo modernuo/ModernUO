@@ -9,7 +9,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public PumpkinHead()
-            : base(Utility.RandomBool() ? AIType.AI_Melee : AIType.AI_Mage, FightMode.Closest, 10, 1, 0.05, 0.1)
+            : base(Utility.RandomBool() ? AIType.AI_Melee : AIType.AI_Mage)
         {
             Body = 1246 + Utility.Random(2);
 

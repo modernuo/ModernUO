@@ -13,7 +13,7 @@ namespace Server.Items
         {
         }
 
-        public CandyCane(int itemID) : base(itemID, 1)
+        public CandyCane(int itemID) : base(itemID)
         {
             Stackable = false;
             LootType = LootType.Blessed;
@@ -126,7 +126,7 @@ namespace Server.Items
 
         [Constructible]
         public GingerBreadCookie()
-            : base(Utility.RandomBool() ? 0x2be1 : 0x2be2, 1)
+            : base(Utility.RandomBool() ? 0x2be1 : 0x2be2)
         {
             Stackable = false;
             LootType = LootType.Blessed;

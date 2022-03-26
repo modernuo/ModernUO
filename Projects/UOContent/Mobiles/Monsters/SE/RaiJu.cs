@@ -8,7 +8,7 @@ namespace Server.Mobiles
         private static readonly HashSet<Mobile> m_Table = new();
 
         [Constructible]
-        public RaiJu() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public RaiJu() : base(AIType.AI_Melee)
         {
             Body = 199;
             BaseSoundID = 0x346;

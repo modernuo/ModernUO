@@ -1,8 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
-using NetFabric.Hyperlinq;
 using Server;
-using StructLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +12,7 @@ namespace Benchmarks.MultiTilesSelectors
     public class MapMultiTilesSelectors
     {
         private static readonly Sector sector = new();
-        private static readonly Point3D[] locations = new[] { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
+        private static readonly Point3D[] locations = { new Point3D(0, 0, 0), new Point3D(50, 50, 0) };
 
         public static Rectangle2D[] BoundsArray() => new[]
         {
@@ -55,7 +53,7 @@ namespace Benchmarks.MultiTilesSelectors
 
             return toRet;
         }
-        
+
         [Benchmark(Baseline = true)]
         public int SelectMultiTilesLinq()
         {
@@ -347,6 +345,6 @@ namespace Benchmarks.MultiTilesSelectors
 
     public class Sector
     {
-        public List<BaseMulti> Multis { get; set; } = new List<BaseMulti>();
+        public List<BaseMulti> Multis { get; set; } = new();
     }
 }

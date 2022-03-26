@@ -21,7 +21,6 @@ using Server.Spells.Necromancy;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
-using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -152,7 +151,7 @@ namespace Server.Mobiles
         }
     }
 
-    public class BaseCreature : Mobile, IHonorTarget, IQuestGiver
+    public abstract class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
         public enum Allegiance
         {
@@ -195,16 +194,6 @@ namespace Server.Mobiles
             typeof(LichLord), typeof(FleshGolem), typeof(Lich),
             typeof(SkeletalKnight), typeof(BoneKnight), typeof(Mummy),
             typeof(SkeletalMage), typeof(BoneMagi), typeof(PatchworkSkeleton)
-        };
-
-        private static readonly double[] m_StandardActiveSpeeds =
-        {
-            0.175, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8
-        };
-
-        private static readonly double[] m_StandardPassiveSpeeds =
-        {
-            0.350, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0
         };
 
         private static Mobile m_NoDupeGuards;
@@ -258,9 +247,6 @@ namespace Server.Mobiles
             // white wyrms eat gold..
             typeof(Gold)
         };
-
-        private readonly List<Type> m_SpellAttack;  // List of attack spell/power
-        private readonly List<Type> m_SpellDefense; // List of defensive spell/power
 
         private bool _summoned;
 
@@ -332,11 +318,9 @@ namespace Server.Mobiles
 
         public BaseCreature(
             AIType ai,
-            FightMode mode,
-            int iRangePerception,
-            int iRangeFight,
-            double dActiveSpeed,
-            double dPassiveSpeed
+            FightMode mode = FightMode.Closest,
+            int iRangePerception = 10,
+            int iRangeFight = 1
         )
         {
             if (iRangePerception == OldRangePerception)
@@ -354,18 +338,16 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
+            if (LegacySpeedInfo.Enabled && LegacySpeedInfo.GetSpeeds(GetType(), out var activeSpeed, out var passiveSpeed))
+            {
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = passiveSpeed;
+            }
+
             m_Team = 0;
 
-            SpeedInfo.GetSpeeds(this, ref dActiveSpeed, ref dPassiveSpeed);
-
-            ActiveSpeed = dActiveSpeed;
-            PassiveSpeed = dPassiveSpeed;
-            m_CurrentSpeed = dPassiveSpeed;
-
             Debug = false;
-
-            m_SpellAttack = new List<Type>();
-            m_SpellDefense = new List<Type>();
 
             m_Controlled = false;
             m_ControlMaster = null;
@@ -394,9 +376,6 @@ namespace Server.Mobiles
 
         public BaseCreature(Serial serial) : base(serial)
         {
-            m_SpellAttack = new List<Type>();
-            m_SpellDefense = new List<Type>();
-
             Debug = false;
         }
 
@@ -691,15 +670,22 @@ namespace Server.Mobiles
         public double PassiveSpeed { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        public double SpeedMod { get; set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentSpeed
         {
-            get => TargetLocation != null ? 0.3 : m_CurrentSpeed;
+            get => TargetLocation != null ? 0.3 : SpeedMod <= 0 ? m_CurrentSpeed : SpeedMod;
             set
             {
                 if (m_CurrentSpeed != value)
                 {
                     m_CurrentSpeed = value;
-                    AIObject?.OnCurrentSpeedChanged();
+
+                    if (SpeedMod <= 0)
+                    {
+                        AIObject?.OnCurrentSpeedChanged();
+                    }
                 }
             }
         }
@@ -1375,6 +1361,14 @@ namespace Server.Mobiles
             }
         }
 
+        public override void OnRawDexChange(int oldValue)
+        {
+            if (oldValue != RawDex && ActiveSpeed <= 0 && PassiveSpeed <= 0)
+            {
+                ResetSpeeds();
+            }
+        }
+
         public override void OnBeforeSpawn(Point3D location, Map m)
         {
             if (Paragon.CheckConvert(this, location, m))
@@ -1678,7 +1672,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(19); // version
+            writer.Write(20); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1698,18 +1692,6 @@ namespace Server.Mobiles
 
             // Version 1
             writer.Write(RangeHome);
-
-            writer.Write(m_SpellAttack.Count);
-            for (var i = 0; i < m_SpellAttack.Count; i++)
-            {
-                writer.Write(m_SpellAttack[i].ToString());
-            }
-
-            writer.Write(m_SpellDefense.Count);
-            for (var i = 0; i < m_SpellDefense.Count; i++)
-            {
-                writer.Write(m_SpellDefense[i].ToString());
-            }
 
             // Version 2
             writer.Write((int)FightMode);
@@ -1843,27 +1825,20 @@ namespace Server.Mobiles
             {
                 RangeHome = reader.ReadInt();
 
-                var iCount = reader.ReadInt();
-                for (var i = 0; i < iCount; i++)
+                if (version < 20)
                 {
-                    var str = reader.ReadString();
-                    var type = Type.GetType(str);
-
-                    if (type != null)
+                    // Spell Attacks
+                    var iCount = reader.ReadInt(); // Count
+                    for (var i = 0; i < iCount; i++)
                     {
-                        m_SpellAttack.Add(type);
+                        reader.ReadString(); // Spell Type
                     }
-                }
 
-                iCount = reader.ReadInt();
-                for (var i = 0; i < iCount; i++)
-                {
-                    var str = reader.ReadString();
-                    var type = Type.GetType(str);
-
-                    if (type != null)
+                    // Spell Defenses
+                    iCount = reader.ReadInt(); // Count
+                    for (var i = 0; i < iCount; i++)
                     {
-                        m_SpellDefense.Add(type);
+                        reader.ReadString(); // Spell Type
                     }
                 }
             }
@@ -2003,42 +1978,6 @@ namespace Server.Mobiles
             if (version < 16 && Loyalty != MaxLoyalty)
             {
                 Loyalty *= 10;
-            }
-
-            var activeSpeed = ActiveSpeed;
-            var passiveSpeed = PassiveSpeed;
-
-            SpeedInfo.GetSpeeds(this, ref activeSpeed, ref passiveSpeed);
-
-            var isStandardActive = false;
-            for (var i = 0; !isStandardActive && i < m_StandardActiveSpeeds.Length; ++i)
-            {
-                isStandardActive = ActiveSpeed == m_StandardActiveSpeeds[i];
-            }
-
-            var isStandardPassive = false;
-            for (var i = 0; !isStandardPassive && i < m_StandardPassiveSpeeds.Length; ++i)
-            {
-                isStandardPassive = PassiveSpeed == m_StandardPassiveSpeeds[i];
-            }
-
-            if (isStandardActive && m_CurrentSpeed == ActiveSpeed)
-            {
-                m_CurrentSpeed = activeSpeed;
-            }
-            else if (isStandardPassive && m_CurrentSpeed == PassiveSpeed)
-            {
-                m_CurrentSpeed = passiveSpeed;
-            }
-
-            if (isStandardActive && !m_Paragon)
-            {
-                ActiveSpeed = activeSpeed;
-            }
-
-            if (isStandardPassive && !m_Paragon)
-            {
-                PassiveSpeed = passiveSpeed;
             }
 
             if (version >= 14)
@@ -2614,7 +2553,6 @@ namespace Server.Mobiles
             if (m_IdleReleaseTime > DateTime.MinValue)
             {
                 // idling...
-
                 if (Core.Now >= m_IdleReleaseTime)
                 {
                     m_IdleReleaseTime = DateTime.MinValue;
@@ -2793,43 +2731,6 @@ namespace Server.Mobiles
                 m_NoDupeGuards = m;
                 Timer.StartTimer(ReleaseGuardDupeLock);
             }
-        }
-
-        public void AddSpellAttack(Type type)
-        {
-            m_SpellAttack.Add(type);
-        }
-
-        public void AddSpellDefense(Type type)
-        {
-            m_SpellDefense.Add(type);
-        }
-
-        public Spell GetAttackSpellRandom() => m_SpellAttack.RandomElement()?.CreateInstance<Spell>(this, null);
-
-        public Spell GetDefenseSpellRandom() => m_SpellDefense.RandomElement()?.CreateInstance<Spell>(this, null);
-
-        public Spell GetSpellSpecific(Type type)
-        {
-            int i;
-
-            for (i = 0; i < m_SpellAttack.Count; i++)
-            {
-                if (m_SpellAttack[i] == type)
-                {
-                    return type.CreateInstance<Spell>(this, null);
-                }
-            }
-
-            for (i = 0; i < m_SpellDefense.Count; i++)
-            {
-                if (m_SpellDefense[i] == type)
-                {
-                    return type.CreateInstance<Spell>(this, null);
-                }
-            }
-
-            return null;
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -3040,6 +2941,13 @@ namespace Server.Mobiles
 
             return null;
         }
+
+        public virtual bool IsMonster => !Controlled || (GetMaster() as BaseCreature)?.IsMonster == true;
+
+        public bool InActivePVPCombat() =>
+            ControlOrder != OrderType.Follow &&
+            Combatant is PlayerMobile ||
+            Combatant is BaseCreature { Controlled: true } bc && bc.GetMaster() is PlayerMobile;
 
         public static List<DamageStore> GetLootingRights(List<DamageEntry> damageEntries, int hitsMax)
         {
@@ -3417,6 +3325,8 @@ namespace Server.Mobiles
                 ControlOrder = OrderType.None;
                 Guild = null;
 
+                ResetSpeeds();
+
                 Delta(MobileDelta.Noto);
             }
             else
@@ -3448,6 +3358,8 @@ namespace Server.Mobiles
                     m_DeleteTimer.Stop();
                     m_DeleteTimer = null;
                 }
+
+                ResetSpeeds(true);
 
                 Delta(MobileDelta.Noto);
             }
@@ -4596,6 +4508,13 @@ namespace Server.Mobiles
             return false;
         }
 
+        public void SetSpeed(double active, double passive)
+        {
+            ActiveSpeed = active;
+            PassiveSpeed = passive;
+            CurrentSpeed = PassiveSpeed;
+        }
+
         public void SetDamage(int val)
         {
             m_DamageMin = val;
@@ -4873,6 +4792,15 @@ namespace Server.Mobiles
             {
                 PackWeapon(minLevel, maxLevel, weaponChance);
             }
+        }
+
+        public virtual void ResetSpeeds(bool currentUseActive = false)
+        {
+            SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()

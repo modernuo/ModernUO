@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class LysanderGathenwale : BaseCreature
     {
         [Constructible]
-        public LysanderGathenwale() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public LysanderGathenwale() : base(AIType.AI_Mage)
         {
             Title = "the Cursed";
 

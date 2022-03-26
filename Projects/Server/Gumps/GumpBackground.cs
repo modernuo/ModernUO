@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright (C) 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: GumpBackground.cs                                               *
  *                                                                       *
@@ -16,48 +16,31 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpBackground : GumpEntry
 {
-    public class GumpBackground : GumpEntry
+    public GumpBackground(int x, int y, int width, int height, int gumpID)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("resizepic");
+        X = x;
+        Y = y;
+        Width = width;
+        Height = height;
+        GumpID = gumpID;
+    }
 
-        public GumpBackground(int x, int y, int width, int height, int gumpID)
-        {
-            X = x;
-            Y = y;
-            Width = width;
-            Height = height;
-            GumpID = gumpID;
-        }
+    public int X { get; set; }
 
-        public int X { get; set; }
+    public int Y { get; set; }
 
-        public int Y { get; set; }
+    public int Width { get; set; }
 
-        public int Width { get; set; }
+    public int Height { get; set; }
 
-        public int Height { get; set; }
+    public int GumpID { get; set; }
 
-        public int GumpID { get; set; }
-
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ resizepic {X} {Y} {GumpID} {Width} {Height} }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-        {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(LayoutName);
-            writer.WriteAscii(' ');
-            writer.WriteAscii(X.ToString());
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Y.ToString());
-            writer.WriteAscii(' ');
-            writer.WriteAscii(GumpID.ToString());
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Width.ToString());
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Height.ToString());
-            writer.Write((ushort)0x207D); // " }"
-        }
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    {
+        writer.WriteAscii($"{{ resizepic {X} {Y} {GumpID} {Width} {Height} }}");
     }
 }

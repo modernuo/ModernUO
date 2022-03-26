@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Server.Buffers;
 
 namespace Server.Collections
 {
@@ -19,20 +20,25 @@ namespace Server.Collections
         private int _head;       // The index from which to dequeue if the queue isn't empty.
         private int _tail;       // The index at which to enqueue if the queue isn't full.
         private int _size;       // Number of elements.
+        private bool _mt;
         private int _version;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PooledRefQueue<T> Create(int capacity = 32) => new(capacity);
+        public static PooledRefQueue<T> Create(int capacity = 32, bool mt = false) => new(capacity, mt);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static PooledRefQueue<T> CreateMT(int capacity = 32) => new(capacity, true);
 
         // Creates a queue with room for capacity objects. The default grow factor
         // is used.
-        public PooledRefQueue(int capacity)
+        public PooledRefQueue(int capacity, bool mt = false)
         {
+            _mt = mt;
             _array = capacity switch
             {
                 < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum),
                 0   => Array.Empty<T>(),
-                _   => ArrayPool<T>.Shared.Rent(capacity)
+                _   => (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity)
             };
 
             _head = 0;
@@ -180,6 +186,22 @@ namespace Server.Collections
             return _array[_head];
         }
 
+        public T PeekRandom()
+        {
+            if (_size == 0)
+            {
+                ThrowForEmptyQueue();
+            }
+
+            var index = _head + Utility.Random(_size);
+            if (index >= _array.Length)
+            {
+                index -= _array.Length;
+            }
+
+            return _array[index];
+        }
+
         public bool TryPeek([MaybeNullWhen(false)] out T result)
         {
             if (_size == 0)
@@ -238,14 +260,14 @@ namespace Server.Collections
             return arr;
         }
 
-        public T[] ToPooledArray()
+        public T[] ToPooledArray(bool mt = false)
         {
             if (_size == 0)
             {
                 return Array.Empty<T>();
             }
 
-            T[] arr = ArrayPool<T>.Shared.Rent(_size);
+            T[] arr = (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(_size);
 
             if (_head < _tail)
             {
@@ -264,7 +286,7 @@ namespace Server.Collections
         // must be >= _size.
         private void SetCapacity(int capacity)
         {
-            T[] newarray = ArrayPool<T>.Shared.Rent(capacity);
+            T[] newarray = (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity);
             if (_size > 0)
             {
                 if (_head < _tail)
@@ -280,7 +302,8 @@ namespace Server.Collections
 
             if (_array.Length > 0)
             {
-                ArrayPool<T>.Shared.Return(_array, true);
+                Clear();
+                (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Return(_array);
             }
 
             _array = newarray;
@@ -361,7 +384,8 @@ namespace Server.Collections
             var array = _array;
             if (array.Length > 0)
             {
-                ArrayPool<T>.Shared.Return(array, true);
+                Clear();
+                (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Return(array);
             }
 
             this = default;

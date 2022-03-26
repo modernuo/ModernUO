@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public HolyFamiliar()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             Body = 100;
             BaseSoundID = 0xE5;

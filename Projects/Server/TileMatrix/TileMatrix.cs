@@ -71,9 +71,9 @@ namespace Server
 
             if (fileIndex != 0x7F)
             {
-                fileIndex = Pre6000ClientSupport && mapID == 1 ? 0 : fileIndex;
+                var mapFileIndex = Pre6000ClientSupport && mapID == 1 ? 0 : fileIndex;
 
-                var mapPath = Core.FindDataFile($"map{fileIndex}.mul", false);
+                var mapPath = Core.FindDataFile($"map{mapFileIndex}.mul", false);
 
                 if (mapPath != null)
                 {
@@ -81,7 +81,7 @@ namespace Server
                 }
                 else
                 {
-                    mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false);
+                    mapPath = Core.FindDataFile($"map{mapFileIndex}LegacyMUL.uop", false);
 
                     if (mapPath != null)
                     {
@@ -90,11 +90,11 @@ namespace Server
                     }
                     else
                     {
-                        logger.Warning($"map{fileIndex}.mul was not found.");
+                        logger.Warning($"map{mapFileIndex}.mul was not found.");
                     }
                 }
 
-                var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false);
+                var indexPath = Core.FindDataFile($"staidx{mapFileIndex}.mul", false);
 
                 if (indexPath != null)
                 {
@@ -103,10 +103,10 @@ namespace Server
                 }
                 else
                 {
-                    logger.Warning($"staidx{fileIndex}.mul was not found.");
+                    logger.Warning($"staidx{mapFileIndex}.mul was not found.");
                 }
 
-                var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false);
+                var staticsPath = Core.FindDataFile($"statics{mapFileIndex}.mul", false);
 
                 if (staticsPath != null)
                 {
@@ -137,7 +137,7 @@ namespace Server
             _staticPatches = new int[BlockWidth][];
             _landPatches = new int[BlockWidth][];
 
-            Patch = new TileMatrixPatch(this, mapID);
+            Patch = new TileMatrixPatch(this, fileIndex);
         }
 
         public StaticTile[][][] EmptyStaticBlock => _emptyStaticBlock;
@@ -365,11 +365,11 @@ namespace Server
                     m_TileBuffer = new StaticTile[count];
                 }
 
-                var staTiles = m_TileBuffer; //new StaticTile[tileCount];
+                var staTiles = m_TileBuffer;
 
                 fixed (StaticTile* pTiles = staTiles)
                 {
-                    NativeReader.Read(DataStream, pTiles, length);
+                    DataStream.Read(new Span<byte>(pTiles, length));
 
                     if (m_Lists == null)
                     {
@@ -455,7 +455,7 @@ namespace Server
 
                 fixed (LandTile* pTiles = tiles)
                 {
-                    NativeReader.Read(MapStream, pTiles, 192);
+                    MapStream.Read(new Span<byte>(pTiles, 192));
                 }
 
                 return tiles;

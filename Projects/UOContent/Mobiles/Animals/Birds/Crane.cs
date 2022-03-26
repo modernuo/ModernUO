@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Crane : BaseCreature
     {
         [Constructible]
-        public Crane() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Crane() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 254;
             BaseSoundID = 0x4D7;
