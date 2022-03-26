@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Server.Buffers;
 
@@ -20,6 +21,7 @@ public class STArrayPool<T> : ArrayPool<T>
 
     public static STArrayPool<T> Shared => _shared;
 
+    private int _trimCallbackCreated;
     private static STArray[] _cacheBuckets;
     private STArrayStack[] _buckets = new STArrayStack[BucketCount];
 
@@ -172,6 +174,12 @@ public class STArrayPool<T> : ArrayPool<T>
     {
         Debug.Assert(_cacheBuckets is null, $"Non-null {nameof(_cacheBuckets)}");
         var buckets = new STArray[BucketCount];
+
+        if (Interlocked.Exchange(ref _trimCallbackCreated, 1) == 0)
+        {
+            Gen2GcCallback.Register(o => ((STArrayPool<T>)o).Trim(), this);
+        }
+
         return _cacheBuckets = buckets;
     }
 
