@@ -4,8 +4,8 @@ namespace Server.Items;
 
 public class FillableEntry
 {
-    protected Type[] m_Types;
-    protected int m_Weight;
+    protected Type[] _types;
+    protected int _weight;
 
     public FillableEntry(Type type) : this(1, new[] { type })
     {
@@ -21,27 +21,23 @@ public class FillableEntry
 
     public FillableEntry(int weight, Type[] types)
     {
-        m_Weight = weight;
-        m_Types = types;
+        _weight = weight;
+        _types = types;
     }
 
     public FillableEntry(int weight, Type[] types, int offset, int count)
     {
-        m_Weight = weight;
-        m_Types = new Type[count];
-
-        for (var i = 0; i < m_Types.Length; ++i)
-        {
-            m_Types[i] = types[offset + i];
-        }
+        _weight = weight;
+        _types = new Type[count];
+        Array.Copy(types, offset, _types, 0, count);
     }
 
-    public Type[] Types => m_Types;
-    public int Weight => m_Weight;
+    public Type[] Types => _types;
+    public int Weight => _weight;
 
     public virtual Item Construct()
     {
-        var item = Loot.Construct(m_Types);
+        var item = Loot.Construct(_types);
 
         if (item is Key key)
         {
@@ -80,13 +76,13 @@ public class FillableBvrge : FillableEntry
     {
         Item item;
 
-        var index = Utility.Random(m_Types.Length);
+        var index = Utility.Random(_types.Length);
 
-        if (m_Types[index] == typeof(BeverageBottle))
+        if (_types[index] == typeof(BeverageBottle))
         {
             item = new BeverageBottle(Content);
         }
-        else if (m_Types[index] == typeof(Jug))
+        else if (_types[index] == typeof(Jug))
         {
             item = new Jug(Content);
         }
