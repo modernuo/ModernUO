@@ -30,11 +30,8 @@ namespace Server.Spells.Third
             }
             else if (BaseHouse.CheckLockedDownOrSecured(cont))
             {
-                Caster.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x22,
-                    501761
-                ); // You cannot cast this on a locked down item.
+                // You cannot cast this on a locked down item.
+                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 501761);
             }
             else if (cont.Locked || cont.LockLevel == ILockpickable.CannotPick || cont is ParagonChest)
             {
