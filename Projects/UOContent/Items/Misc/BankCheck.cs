@@ -73,16 +73,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            string worth;
-
-            if (Core.ML)
-            {
-                worth = m_Worth.ToString("N0", CultureInfo.GetCultureInfo("en-US"));
-            }
-            else
-            {
-                worth = m_Worth.ToString();
-            }
+            var worth = Core.ML ? m_Worth.ToString("N0", CultureInfo.GetCultureInfo("en-US")) : m_Worth.ToString();
 
             list.Add(1060738, worth); // value: ~1_val~
         }
@@ -144,7 +135,7 @@ namespace Server.Items
                 tradeInfo.VirtualCheck?.UpdateTrade(tradeInfo.Mobile);
             }
 
-            owner.SendLocalizedMessage(1042763, Worth.ToString("#,0"));
+            owner.SendLocalizedMessage(1042763, $"{m_Worth:#,0}");
 
             Delete();
 
@@ -211,7 +202,7 @@ namespace Server.Items
             }
             else
             {
-                m_Worth -= deposited;
+                Worth -= deposited;
             }
 
             if (deposited > 0)
