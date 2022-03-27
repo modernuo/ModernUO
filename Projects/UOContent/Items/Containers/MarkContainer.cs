@@ -48,7 +48,7 @@ public partial class MarkContainer : LockableContainer
 
         if (locked)
         {
-            LockLevel = -255;
+            LockLevel = ILockpickable.MagicLock;
         }
     }
 
@@ -225,7 +225,7 @@ public partial class MarkContainer : LockableContainer
         protected override void OnTick()
         {
             Container.Locked = true;
-            Container.LockLevel = -255;
+            Container.LockLevel = ILockpickable.MagicLock;
         }
     }
 }

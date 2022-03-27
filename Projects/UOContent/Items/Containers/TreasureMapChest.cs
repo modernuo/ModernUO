@@ -159,7 +159,7 @@ public partial class TreasureMapChest : LockableContainer
 
         if (level == 0)
         {
-            cont.LockLevel = 0;
+            cont.LockLevel = ILockpickable.CannotPick;
 
             cont.DropItem(new Gold(Utility.RandomMinMax(50, 100)));
 
