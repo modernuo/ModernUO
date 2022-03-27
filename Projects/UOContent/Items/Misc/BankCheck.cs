@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using Server.Accounting;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Haven;
@@ -72,10 +71,7 @@ namespace Server.Items
         public override void GetProperties(ObjectPropertyList list)
         {
             base.GetProperties(list);
-
-            var worth = Core.ML ? m_Worth.ToString("N0", CultureInfo.GetCultureInfo("en-US")) : m_Worth.ToString();
-
-            list.Add(1060738, worth); // value: ~1_val~
+            list.Add(1060738, Core.ML ? $"{m_Worth:N0}" : $"{m_Worth}"); // value: ~1_val~
         }
 
         public override void OnAdded(IEntity parent)
@@ -135,7 +131,7 @@ namespace Server.Items
                 tradeInfo.VirtualCheck?.UpdateTrade(tradeInfo.Mobile);
             }
 
-            owner.SendLocalizedMessage(1042763, $"{m_Worth:#,0}");
+            owner.SendLocalizedMessage(1042763, $"{m_Worth:N0}");
 
             Delete();
 
@@ -208,7 +204,7 @@ namespace Server.Items
             if (deposited > 0)
             {
                 // Gold was deposited in your account:
-                from.SendLocalizedMessage(1042672, true, $"{deposited:#,0}");
+                from.SendLocalizedMessage(1042672, true, $"{deposited:N0}");
 
                 if (from is PlayerMobile pm)
                 {
