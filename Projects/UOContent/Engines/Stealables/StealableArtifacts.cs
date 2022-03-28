@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Server.Items;
 using Server.Logging;
 using Server.Utilities;
 
-namespace Server.Items;
+namespace Server.Engines.Stealables;
 
 public static class StealableArtifacts
 {
