@@ -246,14 +246,19 @@ public static class StealableArtifacts
     {
         writer.WriteEncodedInt(1); // version
 
-        writer.WriteEncodedInt(_artifacts.Length);
+        writer.Write(_enabled);
 
-        for (var i = 0; i < _artifacts.Length; i++)
+        if (_enabled)
         {
-            var si = _artifacts[i];
+            writer.WriteEncodedInt(_artifacts.Length);
 
-            writer.Write(si.Item);
-            writer.WriteDeltaTime(si.NextRespawn);
+            for (var i = 0; i < _artifacts.Length; i++)
+            {
+                var si = _artifacts[i];
+
+                writer.Write(si.Item);
+                writer.WriteDeltaTime(si.NextRespawn);
+            }
         }
     }
 
