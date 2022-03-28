@@ -33,9 +33,10 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Supported IDEs
 &nbsp;&nbsp;&nbsp;
-[<img width="64" alt="Jetbrains Rider 2021.3" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download)
+[<img height="64"
+      title="Jetbrains Rider 2021.3" alt="Jetbrains Rider 2021.3" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[<img width="64" alt="Visual Studio 2022" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png">](https://visualstudio.microsoft.com/downloads)
+[<img height="64" title="Visual Studio 2022" alt="Visual Studio 2022" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png">](https://visualstudio.microsoft.com/downloads)
 <br />
 Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visual Studio 2022+
 ###### Note: VS Code is not currently supported.
@@ -78,4 +79,6 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 Thank you for supporting us! You can find out how by visiting the [sponsors](./SPONSORS.md) page.
 
 </br></br>
-<p align=center>Development Tools provided with &hearts; by <br><a href="https://www.jetbrains.com/?from=ModernUO"><img src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" width="100px" /></a></p>
+<p align=center>Development Tools & Plugins provided with &hearts; by </br><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" height="64px" alt="JetBrains" title="JetBrains" /></a> 
+<a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
+</p>
