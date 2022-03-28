@@ -432,6 +432,8 @@ public static class StealableArtifacts
             base.Deserialize(reader);
 
             StealableArtifacts.Deserialize(reader);
+
+            Timer.DelayCall(Delete);
         }
     }
 }
