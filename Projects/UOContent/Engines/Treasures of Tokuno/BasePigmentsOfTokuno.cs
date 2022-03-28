@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Stealables;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
