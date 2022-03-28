@@ -79,10 +79,10 @@ namespace Server.SkillHandlers
                 var root = toSteal.RootParent;
                 var mobRoot = root as Mobile;
 
-                StealableArtifactsSpawner.StealableInstance si = null;
+                StealableArtifacts.StealableInstance si = null;
                 if (toSteal.Parent == null || !toSteal.Movable)
                 {
-                    si = StealableArtifactsSpawner.GetStealableInstance(toSteal);
+                    si = StealableArtifacts.GetStealableInstance(toSteal);
                 }
 
                 if (!IsEmptyHanded(m_Thief))

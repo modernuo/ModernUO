@@ -234,7 +234,7 @@ namespace Server.Items
                    || IsInTypeList(t, DemonKnight.ArtifactRarity10)
                    || IsInTypeList(t, DemonKnight.ArtifactRarity11)
                    || IsInTypeList(t, MondainsLegacy.Artifacts)
-                   || IsInTypeList(t, StealableArtifactsSpawner.TypesOfEntires)
+                   || IsInTypeList(t, StealableArtifacts.TypesOfEntries)
                    || IsInTypeList(t, Paragon.Artifacts)
                    || IsInTypeList(t, Leviathan.Artifacts)
                    || IsInTypeList(t, TreasureMapChest.Artifacts)
