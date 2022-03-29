@@ -61,7 +61,7 @@
       ]
     },
     {
-      "name": "Mobiles",
+      "name": "RawMobiles",
       "type": "Server.Mobile[]",
       "rule": "ArrayMigrationRule",
       "ruleArguments": [
