@@ -4,6 +4,7 @@ using Benchmarks.ItemSelectors;
 using Benchmarks.MobileSelectors;
 using Benchmarks.MultiSelectors;
 using Benchmarks.MultiTilesSelectors;
+using Server;
 
 namespace Benchmarks
 {
@@ -29,6 +30,9 @@ namespace Benchmarks
             // var mapItemsSelectors = BenchmarkRunner.Run<MapItemSelectors>();
             // var stArray = BenchmarkRunner.Run<BenchmarkSTArray>();
             // var pooledRefQueue = BenchmarkRunner.Run<BenchmarkPooledRefQueue>();
+
+            var timerInsertionTest = BenchmarkRunner.Run<BenchmarkTimerInserts>();
+            // var timerExecutionTest = BenchmarkRunner.Run<BenchmarkTimerExecutions>();
         }
     }
 }

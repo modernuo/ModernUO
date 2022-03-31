@@ -260,6 +260,11 @@ namespace Server
 
             foreach (var t in _rings)
             {
+                if (t == null)
+                {
+                    continue;
+                }
+
                 for (var i = 0; i < _ringSize; i++)
                 {
                     var node = t[i];
