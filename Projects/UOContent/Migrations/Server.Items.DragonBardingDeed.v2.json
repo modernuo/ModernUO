@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "type": "Server.Items.DragonBardingDeed",
+  "properties": [
+    {
+      "name": "CraftedBy",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Exceptional",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "RawResource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

@@ -589,8 +589,8 @@ namespace Server.Items
 
             if (Quality == ArmorQuality.Exceptional)
             {
-                if (!(Core.ML && this is BaseShield)
-                ) // Guessed Core.ML removed exceptional resist bonuses from crafted shields
+                // Guessed Core.ML removed exceptional resist bonuses from crafted shields
+                if (!(Core.ML && this is BaseShield))
                 {
                     DistributeBonuses(
                         tool is BaseRunicTool ? 6 :
