@@ -221,12 +221,17 @@ namespace Server
                         continue;
                     }
 
-                    var name = t.ToString();
-
-                    hash.TryGetValue(name, out var count);
-                    hash[name] = count + 1;
-
-                    total++;
+                    while (t != null)
+                    {
+                        var name = t.ToString();
+                        
+                        hash.TryGetValue(name, out var count);
+                        hash[name] = count + 1;
+                        
+                        total++;
+                        
+                        t = t?._nextTimer;
+                    }
                 }
             }
 
