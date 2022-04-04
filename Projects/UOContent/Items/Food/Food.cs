@@ -48,6 +48,18 @@ namespace Server.Items
             }
         }
 
+        public override bool CanStackWith(Item dropped)
+        {
+            if (dropped is Food food)
+            {
+                if (Poison != food.Poison || Poisoner != food.Poisoner)
+                {
+                    return false;
+                }
+            }
+            return base.CanStackWith(dropped);
+        }
+
         public virtual bool Eat(Mobile from)
         {
             // Fill the Mobile with FillFactor
@@ -262,6 +274,12 @@ namespace Server.Items
     public class FishSteak : Food
     {
         [Constructible]
+        public FishSteak() : this(1)
+        {
+        }
+
+
+        [Constructible]
         public FishSteak(int amount = 1) : base(0x97B, amount) => FillFactor = 3;
 
         public FishSteak(Serial serial) : base(serial)
@@ -287,6 +305,11 @@ namespace Server.Items
 
     public class CheeseWheel : Food
     {
+        [Constructible]
+        public CheeseWheel() : this(1)
+        {
+        }
+
         [Constructible]
         public CheeseWheel(int amount = 1) : base(0x97E, amount) => FillFactor = 3;
 
@@ -314,6 +337,11 @@ namespace Server.Items
     public class CheeseWedge : Food
     {
         [Constructible]
+        public CheeseWedge() : this(1)
+        {
+        }
+
+        [Constructible]
         public CheeseWedge(int amount = 1) : base(0x97D, amount) => FillFactor = 3;
 
         public CheeseWedge(Serial serial) : base(serial)
@@ -340,6 +368,11 @@ namespace Server.Items
     public class CheeseSlice : Food
     {
         [Constructible]
+        public CheeseSlice() : this(1)
+        {
+        }
+
+        [Constructible]
         public CheeseSlice(int amount = 1) : base(0x97C, amount) => FillFactor = 1;
 
         public CheeseSlice(Serial serial) : base(serial)
@@ -365,6 +398,11 @@ namespace Server.Items
 
     public class FrenchBread : Food
     {
+        [Constructible]
+        public FrenchBread() : this(1)
+        {
+        }
+
         [Constructible]
         public FrenchBread(int amount = 1) : base(0x98C, amount)
         {
@@ -394,6 +432,11 @@ namespace Server.Items
     public class FriedEggs : Food
     {
         [Constructible]
+        public FriedEggs() : this(1)
+        {
+        }
+
+        [Constructible]
         public FriedEggs(int amount = 1) : base(0x9B6, amount)
         {
             Weight = 1.0;
@@ -421,6 +464,11 @@ namespace Server.Items
 
     public class CookedBird : Food
     {
+        [Constructible]
+        public CookedBird() : this(1)
+        {
+        }
+
         [Constructible]
         public CookedBird(int amount = 1) : base(0x9B7, amount)
         {
@@ -450,6 +498,11 @@ namespace Server.Items
     public class RoastPig : Food
     {
         [Constructible]
+        public RoastPig() : this(1)
+        {
+        }
+
+        [Constructible]
         public RoastPig(int amount = 1) : base(0x9BB, amount)
         {
             Weight = 45.0;
@@ -478,6 +531,11 @@ namespace Server.Items
     public class Sausage : Food
     {
         [Constructible]
+        public Sausage() : this(1)
+        {
+        }
+
+        [Constructible]
         public Sausage(int amount = 1) : base(0x9C0, amount)
         {
             Weight = 1.0;
@@ -505,6 +563,11 @@ namespace Server.Items
 
     public class Ham : Food
     {
+        [Constructible]
+        public Ham() : this(1)
+        {
+        }
+
         [Constructible]
         public Ham(int amount = 1) : base(0x9C9, amount)
         {
@@ -562,6 +625,11 @@ namespace Server.Items
 
     public class Ribs : Food
     {
+        [Constructible]
+        public Ribs() : this(1)
+        {
+        }
+
         [Constructible]
         public Ribs(int amount = 1) : base(0x9F2, amount)
         {
@@ -898,6 +966,11 @@ namespace Server.Items
     public class LambLeg : Food
     {
         [Constructible]
+        public LambLeg() : this(1)
+        {
+        }
+
+        [Constructible]
         public LambLeg(int amount = 1) : base(0x160a, amount)
         {
             Weight = 2.0;
@@ -925,6 +998,11 @@ namespace Server.Items
 
     public class ChickenLeg : Food
     {
+        [Constructible]
+        public ChickenLeg() : this(1)
+        {
+        }
+
         [Constructible]
         public ChickenLeg(int amount = 1) : base(0x1608, amount)
         {
@@ -955,6 +1033,11 @@ namespace Server.Items
     public class HoneydewMelon : Food
     {
         [Constructible]
+        public HoneydewMelon() : this(1)
+        {
+        }
+
+        [Constructible]
         public HoneydewMelon(int amount = 1) : base(0xC74, amount)
         {
             Weight = 1.0;
@@ -983,6 +1066,11 @@ namespace Server.Items
     [Flippable(0xC64, 0xC65)]
     public class YellowGourd : Food
     {
+        [Constructible]
+        public YellowGourd() : this(1)
+        {
+        }
+
         [Constructible]
         public YellowGourd(int amount = 1) : base(0xC64, amount)
         {
@@ -1013,6 +1101,11 @@ namespace Server.Items
     public class GreenGourd : Food
     {
         [Constructible]
+        public GreenGourd() : this(1)
+        {
+        }
+
+        [Constructible]
         public GreenGourd(int amount = 1) : base(0xC66, amount)
         {
             Weight = 1.0;
@@ -1042,6 +1135,11 @@ namespace Server.Items
     public class EarOfCorn : Food
     {
         [Constructible]
+        public EarOfCorn() : this(1)
+        {
+        }
+
+        [Constructible]
         public EarOfCorn(int amount = 1) : base(0xC81, amount)
         {
             Weight = 1.0;
@@ -1069,6 +1167,11 @@ namespace Server.Items
 
     public class Turnip : Food
     {
+        [Constructible]
+        public Turnip() : this(1)
+        {
+        }
+
         [Constructible]
         public Turnip(int amount = 1) : base(0xD3A, amount)
         {
