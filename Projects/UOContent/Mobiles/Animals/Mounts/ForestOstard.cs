@@ -3,17 +3,7 @@ namespace Server.Mobiles
     public class ForestOstard : BaseMount
     {
         [Constructible]
-        public ForestOstard(string name = "a forest ostard") : base(
-            name,
-            0xDB,
-            0x3EA5,
-            AIType.AI_Animal,
-            FightMode.Aggressor,
-            10,
-            1,
-            0.2,
-            0.4
-        )
+        public ForestOstard(string name = "a forest ostard") : base(name, 0xDB, 0x3EA5, AIType.AI_Animal, FightMode.Aggressor)
         {
             Hue = Utility.RandomSlimeHue() | 0x8000;
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright (C) 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: GumpPage.cs                                                     *
  *                                                                       *
@@ -16,24 +16,25 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpPage : GumpEntry
 {
-    public class GumpPage : GumpEntry
+    private static byte[] _page0 = Gump.StringToBuffer("{ page 0 }");
+
+    public GumpPage(int page) => Page = page;
+
+    public int Page { get; set; }
+
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("page");
-
-        public GumpPage(int page) => Page = page;
-
-        public int Page { get; set; }
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ page {Page} }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        if (Page == 0)
         {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(LayoutName);
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Page.ToString());
-            writer.Write((ushort)0x207D); // " }"
+            writer.Write(_page0);
+        }
+        else
+        {
+            writer.WriteAscii($"{{ page {Page} }}");
         }
     }
 }

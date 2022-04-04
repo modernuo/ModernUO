@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class GiantToad : BaseCreature
     {
         [Constructible]
-        public GiantToad() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public GiantToad() : base(AIType.AI_Melee)
         {
             Body = 80;
             BaseSoundID = 0x26B;

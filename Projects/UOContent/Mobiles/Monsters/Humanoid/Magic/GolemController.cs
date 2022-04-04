@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class GolemController : BaseCreature
     {
         [Constructible]
-        public GolemController() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public GolemController() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("golem controller");
             Title = "the controller";

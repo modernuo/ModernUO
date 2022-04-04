@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.Network;
 using Server.Spells;
+using Server.Spells.Fourth;
 using Server.Targeting;
 
 namespace Server.Items
@@ -10,6 +11,7 @@ namespace Server.Items
     public class Firebomb : Item
     {
         private Mobile m_LitBy;
+        private Point3D _thrownFromLocation;
         private int m_Ticks;
         private TimerExecutionToken _timerToken;
         private List<Mobile> m_Users;
@@ -138,24 +140,34 @@ namespace Server.Items
                         else if (RootParent == null)
                         {
                             var eable = Map.GetMobilesInRange(Location, 1);
-                            var toDamage = eable.ToList();
-
-                            eable.Free();
-
-                            for (var i = 0; i < toDamage.Count; ++i)
+                            using var targets = PooledRefQueue<Mobile>.Create();
+                            foreach (var m in eable)
                             {
-                                var victim = toDamage[i];
-
-                                if (m_LitBy == null || SpellHelper.ValidIndirectTarget(m_LitBy, victim) &&
-                                    m_LitBy.CanBeHarmful(victim, false))
+                                if (m_LitBy == null || SpellHelper.ValidIndirectTarget(m_LitBy, m) &&
+                                    m_LitBy.CanBeHarmful(m, false))
                                 {
-                                    m_LitBy?.DoHarmful(victim);
-
-                                    AOS.Damage(victim, m_LitBy, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
+                                    targets.Enqueue(m);
                                 }
                             }
+                            eable.Free();
 
-                            new FirebombField(m_LitBy, toDamage).MoveToWorld(Location, Map);
+                            while (targets.Count > 0)
+                            {
+                                var victim = targets.Dequeue();
+                                m_LitBy?.DoHarmful(victim);
+                                AOS.Damage(victim, m_LitBy, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
+                            }
+
+                            var loc = _thrownFromLocation;
+                            var eastToWest = SpellHelper.GetEastToWest(loc, Location);
+                            Effects.PlaySound(loc, Map, 0x20C);
+                            var itemID = eastToWest ? 0x398C : 0x3996;
+
+                            for (var i = -2; i <= 2; ++i)
+                            {
+                                var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
+                                new FireFieldSpell.FireFieldItem(itemID, targetLoc, m_LitBy, Map, TimeSpan.FromSeconds(9), i);
+                            }
                         }
 
                         _timerToken.Cancel();
@@ -178,12 +190,12 @@ namespace Server.Items
             }
 
             SpellHelper.GetSurfaceTop(ref p);
-            var loc = new Point3D(p);
+            _thrownFromLocation = new Point3D(p);
             var map = Map;
 
             from.RevealingAction();
 
-            var to = p as IEntity ?? new Entity(Serial.Zero, loc, map);
+            var to = p as IEntity ?? new Entity(Serial.Zero, _thrownFromLocation, map);
 
             Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue);
 
@@ -195,7 +207,7 @@ namespace Server.Items
                         return;
                     }
 
-                    MoveToWorld(loc, map);
+                    MoveToWorld(_thrownFromLocation, map);
                 }
             );
             Internalize();
@@ -203,104 +215,13 @@ namespace Server.Items
 
         private class ThrowTarget : Target
         {
-            public ThrowTarget(Firebomb bomb)
-                : base(12, true, TargetFlags.None) =>
-                Bomb = bomb;
+            public ThrowTarget(Firebomb bomb) : base(12, true, TargetFlags.None) => Bomb = bomb;
 
             public Firebomb Bomb { get; }
 
             protected override void OnTarget(Mobile from, object targeted)
             {
                 Bomb.OnFirebombTarget(from, targeted);
-            }
-        }
-    }
-
-    public class FirebombField : Item
-    {
-        private readonly List<Mobile> m_Burning;
-        private readonly DateTime m_Expire;
-        private readonly Mobile m_LitBy;
-        private TimerExecutionToken _timerToken;
-
-        public FirebombField(Mobile litBy, List<Mobile> toDamage) : base(0x376A)
-        {
-            Movable = false;
-            m_LitBy = litBy;
-            m_Expire = Core.Now + TimeSpan.FromSeconds(10);
-            m_Burning = toDamage;
-            Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnFirebombFieldTimerTick, out _timerToken);
-        }
-
-        public FirebombField(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            // Don't serialize these...
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-        }
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            if (ItemID == 0x398C && m_LitBy == null ||
-                SpellHelper.ValidIndirectTarget(m_LitBy, m) && m_LitBy.CanBeHarmful(m, false))
-            {
-                m_LitBy?.DoHarmful(m);
-
-                AOS.Damage(m, m_LitBy, 2, 0, 100, 0, 0, 0);
-                m.PlaySound(0x208);
-
-                if (!m_Burning.Contains(m))
-                {
-                    m_Burning.Add(m);
-                }
-            }
-
-            return true;
-        }
-
-        private void OnFirebombFieldTimerTick()
-        {
-            if (Deleted)
-            {
-                _timerToken.Cancel();
-                return;
-            }
-
-            if (ItemID == 0x376A)
-            {
-                ItemID = 0x398C;
-                return;
-            }
-
-            for (var i = 0; i < m_Burning.Count;)
-            {
-                var victim = m_Burning[i];
-
-                if (victim.Location == Location && victim.Map == Map &&
-                    (m_LitBy == null || SpellHelper.ValidIndirectTarget(m_LitBy, victim) &&
-                        m_LitBy.CanBeHarmful(victim, false)))
-                {
-                    m_LitBy?.DoHarmful(victim);
-
-                    AOS.Damage(victim, m_LitBy, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
-                    ++i;
-                }
-                else
-                {
-                    m_Burning.RemoveAt(i);
-                }
-            }
-
-            if (Core.Now >= m_Expire)
-            {
-                _timerToken.Cancel();
-                Delete();
             }
         }
     }

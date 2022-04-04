@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class MorgBergen : BaseCreature
     {
         [Constructible]
-        public MorgBergen() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public MorgBergen() : base(AIType.AI_Melee)
         {
             Title = "the Cursed";
 

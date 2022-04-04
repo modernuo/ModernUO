@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class WandererOfTheVoid : BaseCreature
     {
         [Constructible]
-        public WandererOfTheVoid() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public WandererOfTheVoid() : base(AIType.AI_Mage)
         {
             Body = 316;
             BaseSoundID = 377;

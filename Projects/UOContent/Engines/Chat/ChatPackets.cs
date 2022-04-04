@@ -27,7 +27,7 @@ namespace Server.Engines.Chat
             IncomingPackets.Register(0xB3, 0, true, ChatAction);
         }
 
-        public static void OpenChatWindowRequest(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void OpenChatWindowRequest(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
@@ -48,7 +48,7 @@ namespace Server.Engines.Chat
             ChatUser.AddChatUser(from, chatName);
         }
 
-        public static void ChatAction(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void ChatAction(NetState state, CircularBufferReader reader, int packetLength)
         {
             if (!ChatSystem.Enabled)
             {

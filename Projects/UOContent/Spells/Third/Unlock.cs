@@ -40,52 +40,44 @@ namespace Server.Spells.Third
 
                 if (p is Mobile)
                 {
-                    Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503101); // That did not need to be unlocked.
+                    // That did not need to be unlocked.
+                    Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503101);
                 }
                 else if (p is not LockableContainer cont)
                 {
                     Caster.SendLocalizedMessage(501666); // You can't unlock that!
                 }
+                else if (BaseHouse.CheckSecured(cont))
+                {
+                    Caster.SendLocalizedMessage(503098); // You cannot cast this on a secure item.
+                }
+                else if (!cont.Locked)
+                {
+                    // That did not need to be unlocked.
+                    Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503101);
+                }
+                else if (cont.LockLevel == ILockpickable.CannotPick)
+                {
+                    Caster.SendLocalizedMessage(501666); // You can't unlock that!
+                }
                 else
                 {
-                    if (BaseHouse.CheckSecured(cont))
+                    var level = (int)(Caster.Skills.Magery.Value * 0.8) - 4;
+
+                    if (level >= cont.RequiredSkill &&
+                        !(cont is TreasureMapChest chest && chest.Level > 2))
                     {
-                        Caster.SendLocalizedMessage(503098); // You cannot cast this on a secure item.
-                    }
-                    else if (!cont.Locked)
-                    {
-                        Caster.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            503101
-                        ); // That did not need to be unlocked.
-                    }
-                    else if (cont.LockLevel == 0)
-                    {
-                        Caster.SendLocalizedMessage(501666); // You can't unlock that!
+                        cont.Locked = false;
+
+                        if (cont.LockLevel == ILockpickable.MagicLock)
+                        {
+                            cont.LockLevel = cont.RequiredSkill - 10;
+                        }
                     }
                     else
                     {
-                        var level = (int)(Caster.Skills.Magery.Value * 0.8) - 4;
-
-                        if (level >= cont.RequiredSkill &&
-                            !(cont is TreasureMapChest chest && chest.Level > 2))
-                        {
-                            cont.Locked = false;
-
-                            if (cont.LockLevel == -255)
-                            {
-                                cont.LockLevel = cont.RequiredSkill - 10;
-                            }
-                        }
-                        else
-                        {
-                            Caster.LocalOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                503099
-                            ); // My spell does not seem to have an effect on that lock.
-                        }
+                        // My spell does not seem to have an effect on that lock.
+                        Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503099);
                     }
                 }
             }

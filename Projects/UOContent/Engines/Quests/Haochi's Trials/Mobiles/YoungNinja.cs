@@ -6,8 +6,9 @@ namespace Server.Engines.Quests.Samurai
     public class YoungNinja : BaseCreature
     {
         [Constructible]
-        public YoungNinja() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public YoungNinja() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
+            SetSpeed(0.3, 1.0);
             InitStats(45, 30, 5);
             SetHits(20, 30);
 

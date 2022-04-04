@@ -11,13 +11,15 @@ namespace Server.Mobiles
 
         private readonly Mobile m_Target;
 
-        public KhaldunRevenant(Mobile target) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.18, 0.36)
+        public KhaldunRevenant(Mobile target) : base(AIType.AI_Melee)
         {
             Body = 0x3CA;
             Hue = 0x41CE;
 
             m_Target = target;
             m_ExpireTime = Core.Now + TimeSpan.FromMinutes(10.0);
+
+            SetSpeed(0.25, 0.55);
 
             SetStr(401, 500);
             SetDex(296, 315);

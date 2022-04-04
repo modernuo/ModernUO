@@ -70,7 +70,7 @@ namespace Server.Network
             }
         }
 
-        public static void PollInfo(NetState ns, CircularBufferReader reader, ref int packetLength)
+        public static void PollInfo(NetState state, CircularBufferReader reader, int packetLength)
         {
             var version = reader.ReadByte();
 
@@ -83,21 +83,21 @@ namespace Server.Network
 
                     if (!span.SequenceEqual(_token))
                     {
-                        ns.Disconnect("Invalid token sent for ConnectUO");
+                        state.Disconnect("Invalid token sent for ConnectUO");
                         return;
                     }
                 }
             }
 
-            ns.LogInfo($"ConnectUO (v{version}) is requesting stats.");
+            state.LogInfo($"ConnectUO (v{version}) is requesting stats.");
             if (version > ConnectUOProtocolVersion)
             {
                 Utility.PushColor(ConsoleColor.Yellow);
-                ns.LogInfo("Warning! ConnectUO (v{version}) is newer than what is supported.");
+                state.LogInfo("Warning! ConnectUO (v{version}) is newer than what is supported.");
                 Utility.PopColor();
             }
 
-            ns.SendServerPollInfo();
+            state.SendServerPollInfo();
         }
 
         public static void SendServerPollInfo(this NetState ns)

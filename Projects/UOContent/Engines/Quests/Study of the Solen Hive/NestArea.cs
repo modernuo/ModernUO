@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Server.Engines.Quests.Naturalist
 {
     public class NestArea
@@ -38,7 +36,22 @@ namespace Server.Engines.Quests.Naturalist
             m_Rects = rects;
         }
 
-        public static int NonSpecialCount => m_Areas.Count(area => !area.Special);
+        public static int NonSpecialCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (var area in m_Areas)
+                {
+                    if (!area.Special)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
 
         public bool Special { get; }
 
@@ -60,7 +73,15 @@ namespace Server.Engines.Quests.Naturalist
 
         public static NestArea Find(Point3D p)
         {
-            return m_Areas.FirstOrDefault(area => area.Contains(p));
+            foreach (var area in m_Areas)
+            {
+                if (area.Contains(p))
+                {
+                    return area;
+                }
+            }
+
+            return null;
         }
 
         public static NestArea GetByID(int id)

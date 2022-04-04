@@ -4,24 +4,14 @@ namespace Server.Mobiles
 {
     public class SwampDragon : BaseMount
     {
-        private Mobile m_BardingCrafter;
+        private string _bardingCraftedBy;
         private bool m_BardingExceptional;
         private int m_BardingHP;
         private CraftResource m_BardingResource;
         private bool m_HasBarding;
 
         [Constructible]
-        public SwampDragon(string name = "a swamp dragon") : base(
-            name,
-            0x31A,
-            0x3EBD,
-            AIType.AI_Melee,
-            FightMode.Aggressor,
-            10,
-            1,
-            0.2,
-            0.4
-        )
+        public SwampDragon(string name = "a swamp dragon") : base(name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor)
         {
             BaseSoundID = 0x16A;
 
@@ -64,12 +54,12 @@ namespace Server.Mobiles
         public override string CorpseName => "a swamp dragon corpse";
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile BardingCrafter
+        public string BardingCraftedBy
         {
-            get => m_BardingCrafter;
+            get => _bardingCraftedBy;
             set
             {
-                m_BardingCrafter = value;
+                _bardingCraftedBy = value;
                 InvalidateProperties();
             }
         }
@@ -166,9 +156,9 @@ namespace Server.Mobiles
         {
             base.GetProperties(list);
 
-            if (m_HasBarding && m_BardingExceptional && m_BardingCrafter != null)
+            if (m_HasBarding && m_BardingExceptional && _bardingCraftedBy != null)
             {
-                list.Add(1060853, m_BardingCrafter.Name); // armor exceptionally crafted by ~1_val~
+                list.Add(1060853, _bardingCraftedBy); // armor exceptionally crafted by ~1_val~
             }
         }
 
@@ -176,10 +166,10 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write(2); // version
 
             writer.Write(m_BardingExceptional);
-            writer.Write(m_BardingCrafter);
+            writer.Write(_bardingCraftedBy);
             writer.Write(m_HasBarding);
             writer.Write(m_BardingHP);
             writer.Write((int)m_BardingResource);
@@ -193,10 +183,21 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 2:
+                    {
+                        m_BardingExceptional = reader.ReadBool();
+                        _bardingCraftedBy = reader.ReadString();
+                        m_HasBarding = reader.ReadBool();
+                        m_BardingHP = reader.ReadInt();
+                        m_BardingResource = (CraftResource)reader.ReadInt();
+                        break;
+                    }
                 case 1:
                     {
                         m_BardingExceptional = reader.ReadBool();
-                        m_BardingCrafter = reader.ReadEntity<Mobile>();
+                        var crafter = reader.ReadEntity<Mobile>();
+                        // Name might not be set during this deserialization
+                        Timer.StartTimer(() => _bardingCraftedBy = crafter?.RawName);
                         m_HasBarding = reader.ReadBool();
                         m_BardingHP = reader.ReadInt();
                         m_BardingResource = (CraftResource)reader.ReadInt();

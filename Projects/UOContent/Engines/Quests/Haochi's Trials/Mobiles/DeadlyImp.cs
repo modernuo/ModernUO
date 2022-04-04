@@ -5,12 +5,13 @@ namespace Server.Engines.Quests.Samurai
     public class DeadlyImp : BaseCreature
     {
         [Constructible]
-        public DeadlyImp() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public DeadlyImp() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             Body = 74;
             BaseSoundID = 422;
             Hue = 0x66A;
 
+            SetSpeed(0.3, 1.0);
             SetStr(91, 115);
             SetDex(61, 80);
             SetInt(86, 105);

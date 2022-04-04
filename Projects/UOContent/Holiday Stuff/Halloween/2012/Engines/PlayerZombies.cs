@@ -115,8 +115,7 @@ namespace Server.Engines.Events
             }
 
             var map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
-
-            var home = GetRandomPointInRect(m_Cemetaries.RandomElement(), map);
+            var home = Utility.RandomPointIn(m_Cemetaries.RandomElement(), map);
 
             if (map.CanSpawnMobile(home))
             {
@@ -131,22 +130,13 @@ namespace Server.Engines.Events
                 _deathQueue.Remove(player);
             }
         }
-
-        private static Point3D GetRandomPointInRect(Rectangle2D rect, Map map)
-        {
-            var x = Utility.Random(rect.X, rect.Width);
-            var y = Utility.Random(rect.Y, rect.Height);
-
-            return new Point3D(x, y, map.GetAverageZ(x, y));
-        }
     }
 
     [Serializable(0, false)]
     public partial class PlayerBones : BaseContainer
     {
         [Constructible]
-        public PlayerBones(string name)
-            : base(Utility.RandomMinMax(0x0ECA, 0x0ED2))
+        public PlayerBones(string name) : base(Utility.RandomMinMax(0x0ECA, 0x0ED2))
         {
             Name = $"{name}'s bones";
 
@@ -168,14 +158,14 @@ namespace Server.Engines.Events
 
         public override string DefaultName => _deadPlayer != null ? $"{_deadPlayer.Name}'s Zombie Skeleton" : "Zombie Skeleton";
 
-        public ZombieSkeleton(PlayerMobile player = null)
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public ZombieSkeleton(PlayerMobile player = null) : base(AIType.AI_Melee)
         {
             _deadPlayer = player;
 
             Body = 0x93;
             BaseSoundID = 0x1c3;
 
+            SetSpeed(0.3, 1.0);
             SetStr(500);
             SetDex(500);
             SetInt(500);

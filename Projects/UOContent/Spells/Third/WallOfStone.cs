@@ -30,14 +30,16 @@ namespace Server.Spells.Third
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x1F6);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
+
+                Effects.PlaySound(loc, Caster.Map, 0x1F6);
 
                 for (var i = -1; i <= 1; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
-                    var canFit = SpellHelper.AdjustField(ref loc, Caster.Map, 22, true);
+                    var targetLoc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
+                    var canFit = SpellHelper.AdjustField(ref targetLoc, Caster.Map, 22, true);
 
                     // Effects.SendLocationParticles( EffectItem.Create( loc, Caster.Map, EffectItem.DefaultDuration ), 0x376A, 9, 10, 5025 );
 
@@ -46,7 +48,7 @@ namespace Server.Spells.Third
                         continue;
                     }
 
-                    Item item = new InternalItem(loc, Caster.Map, Caster);
+                    Item item = new InternalItem(targetLoc, Caster.Map, Caster);
 
                     Effects.SendLocationParticles(item, 0x376A, 9, 10, 5025);
 

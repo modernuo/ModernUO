@@ -5,9 +5,9 @@ namespace Server.Mobiles
     public class HarborMaster : BaseCreature
     {
         [Constructible]
-        public HarborMaster()
-            : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+        public HarborMaster() : base(AIType.AI_Animal, FightMode.None)
         {
+            SetSpeed(0.6, 1.2);
             InitStats(31, 41, 51);
 
             SetSkill(SkillName.Mining, 36, 68);

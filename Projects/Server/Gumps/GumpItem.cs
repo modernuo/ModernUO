@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright (C) 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: GumpItem.cs                                                     *
  *                                                                       *
@@ -16,50 +16,28 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpItem : GumpEntry
 {
-    public class GumpItem : GumpEntry
+    public GumpItem(int x, int y, int itemID, int hue = 0)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("tilepic");
-        public static readonly byte[] LayoutNameHue = Gump.StringToBuffer("tilepichue");
+        X = x;
+        Y = y;
+        ItemID = itemID;
+        Hue = hue;
+    }
 
-        public GumpItem(int x, int y, int itemID, int hue = 0)
-        {
-            X = x;
-            Y = y;
-            ItemID = itemID;
-            Hue = hue;
-        }
+    public int X { get; set; }
 
-        public int X { get; set; }
+    public int Y { get; set; }
 
-        public int Y { get; set; }
+    public int ItemID { get; set; }
 
-        public int ItemID { get; set; }
+    public int Hue { get; set; }
 
-        public int Hue { get; set; }
-
-        public override string Compile(OrderedHashSet<string> strings) =>
-            Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-        {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(Hue == 0 ? LayoutName : LayoutNameHue);
-            writer.WriteAscii(' ');
-            writer.WriteAscii(X.ToString());
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Y.ToString());
-            writer.WriteAscii(' ');
-            writer.WriteAscii(ItemID.ToString());
-
-            if (Hue != 0)
-            {
-                writer.WriteAscii(' ');
-                writer.WriteAscii(Hue.ToString());
-            }
-
-            writer.Write((ushort)0x207D); // " }"
-        }
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    {
+        writer.WriteAscii(Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}");
     }
 }

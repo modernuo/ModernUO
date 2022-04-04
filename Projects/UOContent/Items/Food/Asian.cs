@@ -27,7 +27,7 @@ namespace Server.Items
     public class WasabiClumps : Food
     {
         [Constructible]
-        public WasabiClumps() : base(0x24EB, 1)
+        public WasabiClumps() : base(0x24EB)
         {
             Stackable = false;
             Weight = 1.0;
@@ -80,7 +80,7 @@ namespace Server.Items
     public class BentoBox : Food
     {
         [Constructible]
-        public BentoBox() : base(0x2836, 1)
+        public BentoBox() : base(0x2836)
         {
             Stackable = false;
             Weight = 5.0;
@@ -120,7 +120,7 @@ namespace Server.Items
     public class SushiRolls : Food
     {
         [Constructible]
-        public SushiRolls() : base(0x283E, 1)
+        public SushiRolls() : base(0x283E)
         {
             Stackable = false;
             Weight = 3.0;
@@ -149,7 +149,7 @@ namespace Server.Items
     public class SushiPlatter : Food
     {
         [Constructible]
-        public SushiPlatter() : base(0x2840, 1)
+        public SushiPlatter() : base(0x2840)
         {
             Stackable = Core.ML;
             Weight = 3.0;
@@ -202,7 +202,7 @@ namespace Server.Items
     public class GreenTea : Food
     {
         [Constructible]
-        public GreenTea() : base(0x284C, 1)
+        public GreenTea() : base(0x284C)
         {
             Stackable = false;
             Weight = 4.0;
@@ -231,7 +231,7 @@ namespace Server.Items
     public class MisoSoup : Food
     {
         [Constructible]
-        public MisoSoup() : base(0x284D, 1)
+        public MisoSoup() : base(0x284D)
         {
             Stackable = false;
             Weight = 4.0;
@@ -260,7 +260,7 @@ namespace Server.Items
     public class WhiteMisoSoup : Food
     {
         [Constructible]
-        public WhiteMisoSoup() : base(0x284E, 1)
+        public WhiteMisoSoup() : base(0x284E)
         {
             Stackable = false;
             Weight = 4.0;
@@ -289,7 +289,7 @@ namespace Server.Items
     public class RedMisoSoup : Food
     {
         [Constructible]
-        public RedMisoSoup() : base(0x284F, 1)
+        public RedMisoSoup() : base(0x284F)
         {
             Stackable = false;
             Weight = 4.0;
@@ -318,7 +318,7 @@ namespace Server.Items
     public class AwaseMisoSoup : Food
     {
         [Constructible]
-        public AwaseMisoSoup() : base(0x2850, 1)
+        public AwaseMisoSoup() : base(0x2850)
         {
             Stackable = false;
             Weight = 4.0;
