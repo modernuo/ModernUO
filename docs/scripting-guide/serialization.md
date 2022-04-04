@@ -35,7 +35,7 @@ title: Serialization
     ```
 
 === "Codegen"
-    ###Basic info
+    ### Basic info
     ModernUO can programatically generate migrations. This feature is based on internal C# Source generators [More info](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/)
 
     Old way of serializing objects:
@@ -87,7 +87,7 @@ title: Serialization
     }
     ```
 
-    ###Step by step
+    ### Step by step
     1. Add ```SerializableAttribute(versionNumber)``` to your class and make it ```partial```
         ```cs
         [Serializable(0)]
@@ -102,7 +102,7 @@ title: Serialization
     1. Build project "Run Schema Migrations". ModernUO will create migration files for you. In this case "Server.Items.ExampleItem.v0.json" and "Server.Items.ExampleItem.Serialization.cs"
       These files contains all information and classes needed for MUO to serialize/deserialize your objects.
 
-    ###Migrations
+    ### Migrations
     When new field is added to serialization, you need to increment versionNumber and make migration files. Here is little example.
 
     New class code will look like this:
