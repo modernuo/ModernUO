@@ -56,7 +56,7 @@ namespace Server.Network
 
         public static void SendGuildMemberLocations(this NetState ns, Mobile from, Guild guild, bool sendLocations)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -116,7 +116,7 @@ namespace Server.Network
 
         public static void SendPartyMemberLocations(this NetState ns, Mobile from, Party party)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

@@ -287,7 +287,7 @@ namespace Server.Engines.Mahjong
 
         public static void SendMahjongJoinGame(this NetState ns, Serial game)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -303,7 +303,7 @@ namespace Server.Engines.Mahjong
 
         public static void SendMahjongPlayersInfo(this NetState ns, MahjongGame game, Mobile to)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -361,7 +361,7 @@ namespace Server.Engines.Mahjong
 
         public static void SendMahjongTileInfo(this NetState ns, MahjongTile tile, Mobile to)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -407,7 +407,7 @@ namespace Server.Engines.Mahjong
 
         public static void SendMahjongTilesInfo(this NetState ns, MahjongGame game, Mobile to)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -460,7 +460,7 @@ namespace Server.Engines.Mahjong
 
         public static void SendMahjongGeneralInfo(this NetState ns, MahjongGame game)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -503,7 +503,7 @@ namespace Server.Engines.Mahjong
 
         public static void SendMahjongRelieve(this NetState ns, Serial game)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

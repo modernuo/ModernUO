@@ -56,8 +56,11 @@ public static class ServerAccess
         }
 
         ServerAccessConfiguration = JsonConfig.Deserialize<ServerAccessConfiguration>(path);
-        var protectedAccounts = string.Join(", ", ServerAccessConfiguration.ProtectedAccounts);
-        logger.Information("Protected accounts registered: {0}", protectedAccounts);
+        if (ServerAccessConfiguration.ProtectedAccounts.Count > 0)
+        {
+            var protectedAccounts = string.Join(", ", ServerAccessConfiguration.ProtectedAccounts);
+            logger.Information("Protected accounts registered: {0}", protectedAccounts);
+        }
     }
 
     public static void Initialize()

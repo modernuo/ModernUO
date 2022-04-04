@@ -481,7 +481,7 @@ namespace Server.Network
 
         public void Send(ReadOnlySpan<byte> span)
         {
-            if (span == null || Connection == null || BlockAllPackets)
+            if (span == null || this.CannotSendPackets())
             {
                 return;
             }

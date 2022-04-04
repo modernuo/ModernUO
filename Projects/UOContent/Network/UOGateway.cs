@@ -61,7 +61,7 @@ namespace Server.Network
             this NetState ns, uint age, int clients, int items, int mobiles, long mem
         )
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -82,7 +82,7 @@ namespace Server.Network
             this NetState ns, string name, int age, int clients, int items, int mobiles, int mem
         )
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

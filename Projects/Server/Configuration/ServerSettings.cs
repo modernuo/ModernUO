@@ -25,7 +25,7 @@ namespace Server
         public List<string> AssemblyDirectories { get; set; } = new();
 
         [JsonPropertyName("dataDirectories")]
-        public List<string> DataDirectories { get; set; } = new();
+        public HashSet<string> DataDirectories { get; set; } = new();
 
         [JsonPropertyName("listeners")]
         public List<IPEndPoint> Listeners { get; set; } = new();

@@ -11,7 +11,8 @@ namespace Server
         private static readonly BinaryReader m_IndexReader;
         private static readonly BinaryReader m_StreamReader;
 
-        private static readonly bool UsingUOPFormat;
+        public static readonly bool PostHSMulFormat;
+        public static readonly bool UsingUOPFormat;
 
         static MultiData()
         {
@@ -21,8 +22,12 @@ namespace Server
             {
                 LoadUOP(multiUOPPath);
                 UsingUOPFormat = true;
+                PostHSMulFormat = false;
                 return;
             }
+
+            // Client version 7.0.9.0+
+            PostHSMulFormat = UOClient.ServerClientVersion >= ClientVersion.Version7090;
 
             var idxPath = Core.FindDataFile("multi.idx");
             var mulPath = Core.FindDataFile("multi.mul");
@@ -223,7 +228,7 @@ namespace Server
 
                 m_StreamReader.BaseStream.Seek(lookup, SeekOrigin.Begin);
 
-                return new MultiComponentList(m_StreamReader, length / (MultiComponentList.PostHSFormat ? 16 : 12));
+                return new MultiComponentList(m_StreamReader, length / (PostHSMulFormat ? 16 : 12));
             }
             catch
             {
@@ -378,15 +383,9 @@ namespace Server
                 allTiles[i].OffsetX = reader.ReadInt16();
                 allTiles[i].OffsetY = reader.ReadInt16();
                 allTiles[i].OffsetZ = reader.ReadInt16();
-
-                if (PostHSFormat)
-                {
-                    allTiles[i].Flags = (TileFlag)reader.ReadUInt64();
-                }
-                else
-                {
-                    allTiles[i].Flags = (TileFlag)reader.ReadUInt32();
-                }
+                allTiles[i].Flags = MultiData.PostHSMulFormat
+                    ? (TileFlag)reader.ReadUInt64()
+                    : (TileFlag)reader.ReadUInt32();
 
                 var e = allTiles[i];
 
@@ -539,7 +538,7 @@ namespace Server
         public static void Configure()
         {
             // OSI Client Patch 7.0.9.0
-            PostHSFormat = ServerConfiguration.GetOrUpdateSetting("maps.enablePostHSMultiComponentFormat", true);
+            PostHSFormat = ServerConfiguration.GetSetting("maps.enablePostHSMultiComponentFormat", true);
         }
 
         public static bool PostHSFormat { get; set; }

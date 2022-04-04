@@ -32,7 +32,7 @@ namespace Server.Items
 
         public static void SendToggleSpecialAbility(this NetState ns, int abilityId, bool active)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

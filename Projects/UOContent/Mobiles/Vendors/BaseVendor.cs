@@ -969,7 +969,7 @@ namespace Server.Mobiles
 
             var ns = from.NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

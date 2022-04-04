@@ -9,6 +9,7 @@ using Server.Guilds;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
+using Server.Logging;
 using Server.Menus;
 using Server.Mobiles;
 using Server.Network;
@@ -407,6 +408,8 @@ namespace Server
     {
         // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
         private const int WarmodeCatchCount = 4;
+
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Mobile));
 
         // TODO: Make these configurations
         private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
@@ -5191,13 +5194,20 @@ namespace Server
                                 item.Spawner = null;
                             }
 
-                            amount = Math.Clamp(amount, 1, item.Amount);
-
                             var oldAmount = item.Amount;
 
-                            if (amount < oldAmount)
+                            if (oldAmount <= 0)
                             {
-                                LiftItemDupe(item, amount);
+                                logger.Error($"Item {item.GetType()} ({item.Serial}) has amount of {oldAmount}, but must be at least 1");
+                            }
+                            else
+                            {
+                                amount = Math.Clamp(amount, 1, oldAmount);
+
+                                if (amount < oldAmount)
+                                {
+                                    LiftItemDupe(item, amount);
+                                }
                             }
 
                             var map = from.Map;
@@ -8307,7 +8317,7 @@ namespace Server
         {
             var ns = m_NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return false;
             }

@@ -671,7 +671,7 @@ namespace Server.Items
             // The client must know about the spellbook or it will crash!
             var ns = to.NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

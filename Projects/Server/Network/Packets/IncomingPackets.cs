@@ -16,91 +16,90 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class IncomingPackets
 {
-    public static class IncomingPackets
+    private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
+
+    private static readonly EncodedPacketHandler[] m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
+
+    private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh =
+        new();
+
+    public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
+
+    public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive)
     {
-        private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
+        Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
+        m_6017Handlers[packetID] ??= new PacketHandler(packetID, length, ingame, onReceive);
+    }
 
-        private static readonly EncodedPacketHandler[] m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
+    public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
 
-        private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh =
-            new();
-
-        public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
-
-        public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
+    {
+        if (packetID >= 0 && packetID < 0x100)
         {
-            Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
-            m_6017Handlers[packetID] ??= new PacketHandler(packetID, length, ingame, onReceive);
+            m_EncodedHandlersLow[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
+        }
+        else
+        {
+            m_EncodedHandlersHigh[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
+        }
+    }
+
+    public static EncodedPacketHandler GetEncodedHandler(int packetID)
+    {
+        if (packetID >= 0 && packetID < 0x100)
+        {
+            return m_EncodedHandlersLow[packetID];
         }
 
-        public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
+        m_EncodedHandlersHigh.TryGetValue(packetID, out var handler);
+        return handler;
+    }
 
-        public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
+    public static void RemoveEncodedHandler(int packetID)
+    {
+        if (packetID >= 0 && packetID < 0x100)
         {
-            if (packetID >= 0 && packetID < 0x100)
-            {
-                m_EncodedHandlersLow[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
-            }
-            else
-            {
-                m_EncodedHandlersHigh[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
-            }
+            m_EncodedHandlersLow[packetID] = null;
         }
-
-        public static EncodedPacketHandler GetEncodedHandler(int packetID)
+        else
         {
-            if (packetID >= 0 && packetID < 0x100)
-            {
-                return m_EncodedHandlersLow[packetID];
-            }
-
-            m_EncodedHandlersHigh.TryGetValue(packetID, out var handler);
-            return handler;
+            m_EncodedHandlersHigh.Remove(packetID);
         }
+    }
 
-        public static void RemoveEncodedHandler(int packetID)
+    public static void RegisterThrottler(int packetID, ThrottlePacketCallback t)
+    {
+        var ph = GetHandler(packetID);
+
+        if (ph != null)
         {
-            if (packetID >= 0 && packetID < 0x100)
-            {
-                m_EncodedHandlersLow[packetID] = null;
-            }
-            else
-            {
-                m_EncodedHandlersHigh.Remove(packetID);
-            }
+            ph.ThrottleCallback = t;
         }
+    }
 
-        public static void RegisterThrottler(int packetID, ThrottlePacketCallback t)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsInfoPacket(byte packetId)
+    {
+        // These packets can arrive at any time during the login process. They're just informational.
+        return packetId switch
         {
-            var ph = GetHandler(packetID);
-
-            if (ph != null)
-            {
-                ph.ThrottleCallback = t;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsInfoPacket(byte packetId)
-        {
-            // These packets can arrive at any time during the login process. They're just informational.
-            return packetId switch
-            {
-                0x01 => true, // Disconnect
-                0x73 => true, // Ping
-                0xA4 => true, // SystemInfo
-                0xB1 => true, // Gump Response
-                0xBB => true, // Account ID
-                0xBD => true, // Client Version
-                0xBE => true, // Assist Version
-                0xD9 => true, // Hardware Info
-                0xDD => true, // Gumps (Packed)
-                0xE1 => true, // Client Type
-                0xF4 => true, // CrashReport
-                _    => false
-            };
-        }
+            0x01 => true, // Disconnect
+            0x73 => true, // Ping
+            0xA4 => true, // SystemInfo
+            0xB1 => true, // Gump Response
+            0xBB => true, // Account ID
+            0xBD => true, // Client Version
+            0xBE => true, // Assist Version
+            0xD9 => true, // Hardware Info
+            0xDD => true, // Gumps (Packed)
+            0xE1 => true, // Client Type
+            0xF4 => true, // CrashReport
+            _    => false
+        };
     }
 }
