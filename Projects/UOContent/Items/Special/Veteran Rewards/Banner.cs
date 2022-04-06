@@ -21,7 +21,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public bool FacingSouth => (ItemID & 0x1) == 0;
 
@@ -74,7 +74,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -155,7 +155,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

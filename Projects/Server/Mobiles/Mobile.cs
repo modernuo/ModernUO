@@ -321,7 +321,7 @@ namespace Server
         StatCap = 0x00002000,
         GhostUpdate = 0x00004000,
         Followers = 0x00008000,
-        Properties = 0x00010000,
+        Tooltip = 0x00010000,
         TithingPoints = 0x00020000,
         Resistances = 0x00040000,
         WeaponDamage = 0x00080000,
@@ -403,7 +403,7 @@ namespace Server
     /// <summary>
     ///     Base class representing players, npcs, and creatures.
     /// </summary>
-    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IPropertyListObject
+    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, ITooltipObject
     {
         // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
         private const int WarmodeCatchCount = 4;
@@ -532,7 +532,7 @@ namespace Server
         private bool m_Player;
         private Poison m_Poison;
         private Prompt m_Prompt;
-        private ObjectPropertyList m_PropertyList;
+        private Tooltip _tooltip;
         private Race m_Race;
         private Region m_Region;
 
@@ -2474,9 +2474,9 @@ namespace Server
         public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
-        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+        public Tooltip Tooltip => _tooltip ??= InitializeTooltip(new Tooltip(this));
 
-        public virtual void GetProperties(ObjectPropertyList list)
+        public virtual void GetProperties(Tooltip list)
         {
             AddNameProperties(list);
         }
@@ -2683,7 +2683,7 @@ namespace Server
 
             OnAfterDelete();
 
-            m_PropertyList = null;
+            _tooltip = null;
         }
 
         [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
@@ -2853,7 +2853,7 @@ namespace Server
             bool sendUpdate = false, sendRemove = false;
             bool sendPublicStats = false, sendPrivateStats = false;
             bool sendMoving = false, sendNonlocalMoving = false;
-            var sendOPLUpdate = ObjectPropertyList.Enabled && (delta & MobileDelta.Properties) != 0;
+            var sendTooltip = Tooltip.Enabled && (delta & MobileDelta.Tooltip) != 0;
 
             bool sendHair = false, sendFacialHair = false, removeHair = false, removeFacialHair = false;
 
@@ -3084,9 +3084,9 @@ namespace Server
                     ourState.Send(facialHairPacket);
                 }
 
-                if (sendOPLUpdate)
+                if (sendTooltip)
                 {
-                    SendOPLPacketTo(ourState);
+                    SendTooltipPacketTo(ourState);
                 }
             }
 
@@ -3101,7 +3101,7 @@ namespace Server
             sendHits = sendHits || sendAll;
 
             if (!(sendRemove || sendIncoming || sendPublicStats || sendHits || sendMoving ||
-                  sendOPLUpdate || sendHair || sendFacialHair || sendHealthbarPoison ||
+                  sendTooltip || sendHair || sendFacialHair || sendHealthbarPoison ||
                   sendHealthbarYellow))
             {
                 return;
@@ -3223,7 +3223,7 @@ namespace Server
                     state.Send(facialHairPacket);
                 }
 
-                SendOPLPacketTo(state);
+                SendTooltipPacketTo(state);
             }
 
             eable.Free();
@@ -3415,14 +3415,14 @@ namespace Server
 
         public virtual void SendPropertiesTo(Mobile from)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            from.NetState?.Send(Tooltip.Buffer);
         }
 
         public virtual void OnAosSingleClick(Mobile from)
         {
-            var opl = PropertyList;
+            var tooltip = Tooltip;
 
-            if (opl.Header > 0)
+            if (tooltip.Header > 0)
             {
                 int hue;
 
@@ -3439,13 +3439,13 @@ namespace Server
                     hue = Notoriety.GetHue(Notoriety.Compute(from, this));
                 }
 
-                from.NetState.SendMessageLocalized(Serial, Body, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs);
+                from.NetState.SendMessageLocalized(Serial, Body, MessageType.Label, hue, 3, tooltip.Header, Name, tooltip.HeaderArgs);
             }
         }
 
         public virtual string ApplyNameSuffix(string suffix) => suffix;
 
-        public virtual void AddNameProperties(ObjectPropertyList list)
+        public virtual void AddNameProperties(Tooltip list)
         {
             var name = Name ?? "";
 
@@ -3504,11 +3504,11 @@ namespace Server
             }
         }
 
-        public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildProperties(Tooltip list, Item item)
         {
         }
 
-        public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildNameProperties(Tooltip list, Item item)
         {
         }
 
@@ -5299,7 +5299,7 @@ namespace Server
 
                 if (item.Parent != null)
                 {
-                    item.SendOPLPacketTo(state);
+                    item.SendTooltipPacketTo(state);
                 }
             }
         }
@@ -6890,19 +6890,19 @@ namespace Server
             eable.Free();
         }
 
-        public void SendOPLPacketTo(NetState state) => SendOPLPacketTo(state, ObjectPropertyList.Enabled);
+        public void SendTooltipPacketTo(NetState state) => SendTooltipPacketTo(state, Tooltip.Enabled);
 
-        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        protected virtual void SendTooltipPacketTo(NetState ns, bool sendTooltipPacket)
         {
-            if (sendOplPacket)
+            if (sendTooltipPacket)
             {
-                ns.SendOPLInfo(this);
+                ns.SendTooltipInfo(this);
             }
         }
 
-        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
+        public virtual void SendTooltipPacketTo(NetState ns, ReadOnlySpan<byte> tooltip)
         {
-            ns?.Send(opl);
+            ns?.Send(tooltip);
         }
 
         public virtual void OnAccessLevelChanged(AccessLevel oldLevel)
@@ -7055,7 +7055,7 @@ namespace Server
                             ns.SendBondedStatus(m.Serial, true);
                         }
 
-                        m.SendOPLPacketTo(ns);
+                        m.SendTooltipPacketTo(ns);
                     }
                 }
             }
@@ -7187,7 +7187,7 @@ namespace Server
                         state.SendBondedStatus(Serial, true);
                     }
 
-                    SendOPLPacketTo(state);
+                    SendTooltipPacketTo(state);
                 }
             }
 
@@ -7309,7 +7309,7 @@ namespace Server
             return delta != 0 ? body : 0;
         }
 
-        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
+        private Tooltip InitializeTooltip(Tooltip list)
         {
             GetProperties(list);
             list.Terminate();
@@ -7318,13 +7318,13 @@ namespace Server
 
         public void ClearProperties()
         {
-            m_PropertyList = null;
+            _tooltip = null;
         }
 
 #nullable enable
         public void InvalidateProperties()
         {
-            if (!ObjectPropertyList.Enabled)
+            if (!Tooltip.Enabled)
             {
                 return;
             }
@@ -7333,22 +7333,22 @@ namespace Server
             {
                 int? oldHash;
                 int newHash;
-                if (m_PropertyList != null)
+                if (_tooltip != null)
                 {
-                    oldHash = m_PropertyList.Hash;
-                    m_PropertyList.Reset();
-                    InitializePropertyList(m_PropertyList);
-                    newHash = m_PropertyList.Hash;
+                    oldHash = _tooltip.Hash;
+                    _tooltip.Reset();
+                    InitializeTooltip(_tooltip);
+                    newHash = _tooltip.Hash;
                 }
                 else
                 {
                     oldHash = null;
-                    newHash = PropertyList.Hash;
+                    newHash = Tooltip.Hash;
                 }
 
                 if (oldHash != newHash)
                 {
-                    Delta(MobileDelta.Properties);
+                    Delta(MobileDelta.Tooltip);
                 }
             }
             else
@@ -7461,7 +7461,7 @@ namespace Server
                                     ns.SendBondedStatus(Serial, true);
                                 }
 
-                                SendOPLPacketTo(ns);
+                                SendTooltipPacketTo(ns);
                             }
 
                             if (inOldRange || !CanSee(m))
@@ -7482,7 +7482,7 @@ namespace Server
                                 ourState.SendBondedStatus(m.Serial, true);
                             }
 
-                            m.SendOPLPacketTo(ourState);
+                            m.SendTooltipPacketTo(ourState);
                         }
                     }
 
@@ -7512,7 +7512,7 @@ namespace Server
                                 ns.SendBondedStatus(Serial, true);
                             }
 
-                            SendOPLPacketTo(ns);
+                            SendTooltipPacketTo(ns);
                         }
                     }
 
@@ -7591,7 +7591,7 @@ namespace Server
                         state.SendBondedStatus(Serial, true);
                     }
 
-                    SendOPLPacketTo(state);
+                    SendTooltipPacketTo(state);
                 }
             }
 

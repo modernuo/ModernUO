@@ -34,7 +34,7 @@ namespace Server.Items
         public override TextDefinition InvalidTransferMessage => 1073480; // Your arcane focus disappears.
         public override bool Nontransferable => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

@@ -353,11 +353,11 @@ namespace Server.Engines.Spawners
             from.SendGump(new SpawnerGump(this));
         }
 
-        public virtual void GetSpawnerProperties(ObjectPropertyList list)
+        public virtual void GetSpawnerProperties(Tooltip list)
         {
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

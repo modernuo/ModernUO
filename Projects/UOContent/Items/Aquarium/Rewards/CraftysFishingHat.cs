@@ -21,7 +21,7 @@ namespace Server.Items
         public override int InitMinHits => 20;
         public override int InitMaxHits => 30;
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(Tooltip list)
         {
             base.AddNameProperties(list);
 

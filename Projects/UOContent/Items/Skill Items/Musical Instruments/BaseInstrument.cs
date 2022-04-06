@@ -359,7 +359,7 @@ namespace Server.Items
             m_Instruments[from] = item;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             var oldUses = m_UsesRemaining;
             CheckReplenishUses(false);

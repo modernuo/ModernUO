@@ -16,7 +16,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1076157; // Decorative Cannon
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -462,7 +462,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

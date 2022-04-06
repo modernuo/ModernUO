@@ -24,7 +24,7 @@ namespace Server.Items
 
         public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             var v = " ";
 

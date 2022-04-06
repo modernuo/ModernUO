@@ -7,7 +7,7 @@ namespace Server
         public static void Configure()
         {
             Mobile.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
-            ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enable", Core.AOS);
+            Tooltip.Enabled = ServerConfiguration.GetSetting("tooltip.enable", Core.AOS);
             var visibleDamage = ServerConfiguration.GetSetting("visibleDamage", Core.AOS);
             Mobile.VisibleDamageType = visibleDamage ? VisibleDamageType.Related : VisibleDamageType.None;
             Mobile.GuildClickMessage = ServerConfiguration.GetSetting("guildClickMessage", !Core.AOS);
@@ -19,13 +19,13 @@ namespace Server
             {
                 AOS.DisableStatInfluences();
 
-                if (ObjectPropertyList.Enabled)
-                {
-                    // single click for everything is overridden to check object property list
-                    IncomingEntityPackets.SingleClickProps = true;
-                }
-
                 Mobile.AOSStatusHandler = AOS.GetStatus;
+            }
+
+            if (Tooltip.Enabled)
+            {
+                // single click for everything is overridden to check object property list
+                IncomingEntityPackets.SingleClickProps = true;
             }
         }
     }

@@ -799,9 +799,9 @@ namespace Server.Items
             return m_Devourer.Devour(this); // Devour the corpse if it hasn't
         }
 
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> tooltip = default)
         {
-            base.SendInfoTo(ns, world, opl);
+            base.SendInfoTo(ns, world, tooltip);
 
             if (((Body)Amount).IsHuman && ItemID == 0x2006)
             {
@@ -1130,7 +1130,7 @@ namespace Server.Items
 
         public override bool CheckContentDisplay(Mobile from) => false;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             if (ItemID == 0x2006) // Corpse form
             {
@@ -1152,11 +1152,11 @@ namespace Server.Items
         public override void OnAosSingleClick(Mobile from)
         {
             var hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
-            var opl = PropertyList;
+            var tooltip = Tooltip;
 
-            if (opl.Header > 0)
+            if (tooltip.Header > 0)
             {
-                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs);
+                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, tooltip.Header, Name, tooltip.HeaderArgs);
             }
         }
 

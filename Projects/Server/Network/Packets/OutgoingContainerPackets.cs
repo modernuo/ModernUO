@@ -30,7 +30,7 @@ public static class OutgoingContainerPackets
             return;
         }
 
-        if (ObjectPropertyList.Enabled && ns.NewSpellbook)
+        if (Tooltip.Enabled && ns.NewSpellbook)
         {
             ns.SendNewSpellbookContent(book, graphic, offset, content);
         }

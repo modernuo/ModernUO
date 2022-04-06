@@ -27,7 +27,7 @@ namespace Server.Items
 
         public virtual TalismanForm Form => TalismanForm.Squirrel;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             list.Add(1075200, $"#{(int)Form}");
         }

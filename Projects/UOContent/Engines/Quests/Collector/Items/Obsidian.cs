@@ -137,11 +137,11 @@ namespace Server.Engines.Quests.Collector
             }
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public static string RandomName(Mobile from) => m_Names.RandomElement() ?? from.Name;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             if (m_Quantity < m_Partial)
             {

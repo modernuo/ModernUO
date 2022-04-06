@@ -63,14 +63,14 @@ namespace Server.Items
 
         public virtual bool RequireDeepWater => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
             AddNetProperties(list);
         }
 
-        protected virtual void AddNetProperties(ObjectPropertyList list)
+        protected virtual void AddNetProperties(Tooltip list)
         {
             // as if the name wasn't enough..
             list.Add(1017410); // Special Fishing Net
@@ -435,7 +435,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1063451; // a fabled fishing net
 
-        protected override void AddNetProperties(ObjectPropertyList list)
+        protected override void AddNetProperties(Tooltip list)
         {
         }
 

@@ -42,7 +42,7 @@ namespace Server.Items
         [SerializableFieldDefault(0)]
         private AosWeaponAttributes WeaponAttributesDefaultValue() => new(this);
 
-        public override void AppendChildNameProperties(ObjectPropertyList list)
+        public override void AppendChildNameProperties(Tooltip list)
         {
             base.AppendChildNameProperties(list);
 

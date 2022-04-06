@@ -190,7 +190,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int WestID { get; set; }
@@ -253,7 +253,7 @@ namespace Server.Items
 
         public Item Deed => new TrophyDeed(WestID, NorthID, DeedNumber, m_AddonNumber, m_Hunter, m_AnimalWeight);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -428,7 +428,7 @@ namespace Server.Items
 
         public override int LabelNumber => m_DeedNumber;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

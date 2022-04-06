@@ -76,15 +76,15 @@ namespace Server.Tests.Network
             ushort graphic = 100;
             ushort offset = 10;
             ulong content = 0x123456789ABCDEF0;
-            bool opl = ObjectPropertyList.Enabled;
+            bool tooltip = Tooltip.Enabled;
 
             var expected = new NewSpellbookContent(serial, graphic, offset, content).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.ContainerGridLines | ProtocolChanges.NewSpellbook;
-            ObjectPropertyList.Enabled = true;
+            Tooltip.Enabled = true;
             ns.SendSpellbookContent(serial, graphic, offset, content);
-            ObjectPropertyList.Enabled = opl;
+            Tooltip.Enabled = tooltip;
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);

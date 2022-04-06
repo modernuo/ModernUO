@@ -227,7 +227,7 @@ namespace Server.Items
             base.OnMovement(m, oldLocation);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

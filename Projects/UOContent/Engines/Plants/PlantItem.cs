@@ -59,7 +59,7 @@ namespace Server.Engines.Plants
 
         public PlantSystem PlantSystem { get; private set; }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public PlantStatus PlantStatus
@@ -248,7 +248,7 @@ namespace Server.Engines.Plants
             InvalidateProperties();
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
             {

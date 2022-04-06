@@ -9,7 +9,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -35,7 +35,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -61,7 +61,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -87,7 +87,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -113,7 +113,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -139,7 +139,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -165,7 +165,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -191,7 +191,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -217,7 +217,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -243,7 +243,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {
@@ -269,7 +269,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public override void Serialize(IGenericWriter writer)
         {

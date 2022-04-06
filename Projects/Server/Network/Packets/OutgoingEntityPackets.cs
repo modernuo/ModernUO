@@ -21,14 +21,14 @@ namespace Server.Network;
 
 public static class OutgoingEntityPackets
 {
-    public const int OPLPacketLength = 9;
+    public const int TooltipPacketLength = 9;
     public const int RemoveEntityLength = 5;
     public const int MaxWorldEntityPacketLength = 26;
 
-    public static void CreateOPLInfo(Span<byte> buffer, Item item) =>
-        CreateOPLInfo(buffer, item.Serial, item.PropertyList.Hash);
+    public static void CreateTooltipInfo(Span<byte> buffer, Item item) =>
+        CreateTooltipInfo(buffer, item.Serial, item.Tooltip.Hash);
 
-    public static void CreateOPLInfo(Span<byte> buffer, Serial serial, int hash)
+    public static void CreateTooltipInfo(Span<byte> buffer, Serial serial, int hash)
     {
         if (buffer[0] != 0)
         {
@@ -41,18 +41,18 @@ public static class OutgoingEntityPackets
         writer.Write(hash);
     }
 
-    public static void SendOPLInfo(this NetState ns, IPropertyListObject obj) =>
-        ns.SendOPLInfo(obj.Serial, obj.PropertyList.Hash);
+    public static void SendTooltipInfo(this NetState ns, ITooltipObject obj) =>
+        ns.SendTooltipInfo(obj.Serial, obj.Tooltip.Hash);
 
-    public static void SendOPLInfo(this NetState ns, Serial serial, int hash)
+    public static void SendTooltipInfo(this NetState ns, Serial serial, int hash)
     {
         if (ns.CannotSendPackets())
         {
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OPLPacketLength].InitializePacket();
-        CreateOPLInfo(buffer, serial, hash);
+        Span<byte> buffer = stackalloc byte[TooltipPacketLength].InitializePacket();
+        CreateTooltipInfo(buffer, serial, hash);
 
         ns.Send(buffer);
     }

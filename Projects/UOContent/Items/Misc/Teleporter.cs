@@ -153,7 +153,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1026095; // teleporter
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -463,7 +463,7 @@ namespace Server.Items
             return true;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -621,7 +621,7 @@ namespace Server.Items
 
         public override bool OnMoveOver(Mobile m) => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -1176,7 +1176,7 @@ namespace Server.Items
             return true;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

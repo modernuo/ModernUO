@@ -66,7 +66,7 @@ namespace Server.Engines.Plants
 
         public override int LabelNumber => 1060810; // seed
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public static Seed RandomBonsaiSeed() => RandomBonsaiSeed(0.5);
 
@@ -124,7 +124,7 @@ namespace Server.Engines.Plants
             return hueInfo.IsBright() ? 1113491 : 1113490; // ~1_amount~ [bright] ~2_val~ seeds
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             list.Add(GetLabel(out var args), args);
         }

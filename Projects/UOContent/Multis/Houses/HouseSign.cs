@@ -36,7 +36,7 @@ namespace Server.Multis
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile OriginalOwner { get; private set; }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         public bool GettingProperties { get; private set; }
 
@@ -52,12 +52,12 @@ namespace Server.Multis
             }
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             list.Add(1061638); // A House Sign
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

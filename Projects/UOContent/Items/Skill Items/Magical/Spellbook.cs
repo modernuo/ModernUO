@@ -695,7 +695,7 @@ namespace Server.Items
             to.NetState.SendSpellbookContent(Serial, ItemID, BookOffset + 1, m_Content);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

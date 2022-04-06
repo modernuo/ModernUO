@@ -88,7 +88,7 @@ namespace Server.Engines.Spawners
             json.SetProperty("region", options, SpawnRegion.Name);
         }
 
-        public override void GetSpawnerProperties(ObjectPropertyList list)
+        public override void GetSpawnerProperties(Tooltip list)
         {
             base.GetSpawnerProperties(list);
 

@@ -20,7 +20,7 @@ namespace Server.Items
 
         public override bool Dye(Mobile from, DyeTub sender) => false;
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(Tooltip list)
         {
             base.AddNameProperties(list);
 
@@ -121,7 +121,7 @@ namespace Server.Items
             return false;
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(Tooltip list)
         {
             base.AddNameProperties(list);
 

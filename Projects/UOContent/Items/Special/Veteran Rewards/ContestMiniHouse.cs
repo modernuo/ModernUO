@@ -111,7 +111,7 @@ namespace Server.Items
             base.OnDoubleClick(from);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

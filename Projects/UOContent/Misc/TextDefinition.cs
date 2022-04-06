@@ -66,7 +66,7 @@ namespace Server
             };
         }
 
-        public static void AddTo(ObjectPropertyList list, TextDefinition def)
+        public static void AddTo(Tooltip list, TextDefinition def)
         {
             if (def == null)
             {

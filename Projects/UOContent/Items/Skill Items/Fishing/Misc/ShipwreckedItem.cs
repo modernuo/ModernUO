@@ -51,7 +51,7 @@ namespace Server.Items
             LabelTo(from, 1050039, $"#{LabelNumber}\t#1041645");
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(Tooltip list)
         {
             base.AddNameProperties(list);
             list.Add(1041645); // recovered from a shipwreck

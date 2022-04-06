@@ -29,7 +29,7 @@ namespace Server.Mobiles
         private readonly List<IBuyItemInfo> _buyInfo = new();
         private readonly List<IShopSellInfo> _sellInfo = new();
 
-        private static bool EnableVendorBuyOPL;
+        private static bool EnableVendorBuyTooltip;
 
         public static void Configure()
         {
@@ -37,7 +37,7 @@ namespace Server.Mobiles
             // CUO is not compatible with this turned off
             // Also items may require a string description for their name to show up properly.
             // See SBAnimalTrainer for an example
-            EnableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
+            EnableVendorBuyTooltip = ServerConfiguration.GetSetting("tooltip.enableForVendorBuy", true);
         }
 
         public static void Initialize()
@@ -876,7 +876,7 @@ namespace Server.Mobiles
             var list = new List<BuyItemState>(buyInfo.Length);
             var cont = BuyPack;
 
-            var opls = EnableVendorBuyOPL ? new List<ObjectPropertyList>(buyInfo.Length) : null;
+            var tooltips = EnableVendorBuyTooltip ? new List<Tooltip>(buyInfo.Length) : null;
 
             for (var idx = 0; idx < buyInfo.Length; idx++)
             {
@@ -906,9 +906,9 @@ namespace Server.Mobiles
                     )
                 );
 
-                if (disp is IPropertyListObject obj)
+                if (disp is ITooltipObject obj)
                 {
-                    opls?.Add(obj.PropertyList);
+                    tooltips?.Add(obj.Tooltip);
                 }
             }
 
@@ -949,7 +949,7 @@ namespace Server.Mobiles
                 if (name != null && list.Count < 250)
                 {
                     list.Add(new BuyItemState(name, cont.Serial, item.Serial, price, item.Amount, item.ItemID, item.Hue));
-                    opls?.Add(item.PropertyList);
+                    tooltips?.Add(item.Tooltip);
                 }
             }
 
@@ -978,11 +978,11 @@ namespace Server.Mobiles
             from.NetState.SendDisplayBuyList(Serial);
             from.NetState.SendMobileStatus(from); // make sure their gold amount is sent
 
-            if (opls != null)
+            if (tooltips != null)
             {
-                for (var i = 0; i < opls.Count; ++i)
+                for (var i = 0; i < tooltips.Count; ++i)
                 {
-                    from.NetState?.Send(opls[i].Buffer);
+                    from.NetState?.Send(tooltips[i].Buffer);
                 }
             }
 

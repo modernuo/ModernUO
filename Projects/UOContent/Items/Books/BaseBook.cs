@@ -174,7 +174,7 @@ namespace Server.Items
             }
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             if (!string.IsNullOrEmpty(_title))
             {

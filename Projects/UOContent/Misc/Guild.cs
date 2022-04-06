@@ -258,13 +258,13 @@ namespace Server.Guilds
             }
         }
 
-        public void InvalidateMemberProperties(bool onlyOPL = false)
+        public void InvalidateMemberProperties(bool onlyTooltip = false)
         {
             for (var i = 0; i < m_Members.Count; i++)
             {
                 var g = m_Members[i];
 
-                g.InvalidateMemberProperties(onlyOPL);
+                g.InvalidateMemberProperties(onlyTooltip);
             }
         }
 
@@ -797,14 +797,14 @@ namespace Server.Guilds
             CommandSystem.Register("GuildProps", AccessLevel.Counselor, GuildProps_OnCommand);
         }
 
-        public void InvalidateMemberProperties(bool onlyOPL = false)
+        public void InvalidateMemberProperties(bool onlyTooltip = false)
         {
             for (var i = 0; i < Members?.Count; i++)
             {
                 var m = Members[i];
                 m.InvalidateProperties();
 
-                if (!onlyOPL)
+                if (!onlyTooltip)
                 {
                     m.Delta(MobileDelta.Noto);
                 }

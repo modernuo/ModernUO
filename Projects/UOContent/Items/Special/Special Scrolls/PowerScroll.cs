@@ -160,7 +160,7 @@ namespace Server.Items
             return new PowerScroll(skillName, 100 + Utility.RandomMinMax(min, max) * 5);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(Tooltip list)
         {
             var level = (Value - 105.0) / 5.0;
 

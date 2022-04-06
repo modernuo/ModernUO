@@ -123,7 +123,7 @@ namespace Server.Items
             _charges = reader.ReadInt();
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

@@ -316,7 +316,7 @@ public static class IncomingExtendedCommandPackets
 
     public static void QueryProperties(NetState state, CircularBufferReader reader, int packetLength)
     {
-        if (!ObjectPropertyList.Enabled)
+        if (!Tooltip.Enabled)
         {
             return;
         }

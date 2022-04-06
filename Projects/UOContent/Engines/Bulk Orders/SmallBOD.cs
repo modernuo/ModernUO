@@ -61,7 +61,7 @@ namespace Server.Engines.BulkOrders
 
         public override int LabelNumber => 1045151; // a bulk order deed
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

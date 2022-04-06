@@ -34,7 +34,7 @@ namespace Server
         /// <summary>
         ///     Resend the item's properties.
         /// </summary>
-        Properties = 0x00000004
+        Tooltip = 0x00000004
     }
 
     /// <summary>
@@ -176,7 +176,7 @@ namespace Server
         Spawner = 0x100
     }
 
-    public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
+    public class Item : IHued, IComparable<Item>, ISpawnable, ITooltipObject
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
@@ -201,7 +201,7 @@ namespace Server
         private Map m_Map;
         private IEntity m_Parent; // Mobile, Item, or null=World
 
-        private ObjectPropertyList m_PropertyList;
+        private Tooltip _tooltip;
 
         [Constructible]
         public Item(int itemID = 0)
@@ -760,16 +760,16 @@ namespace Server
         public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_ItemID;
-        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+        public Tooltip Tooltip => _tooltip ??= InitializeTooltip(new Tooltip(this));
 
         /// <summary>
-        ///     Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
+        ///     Overridable. Fills an <see cref="Server.Tooltip" /> with everything applicable. By default, this invokes
         ///     <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
         ///     <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overridden to add any
         ///     custom
         ///     properties.
         /// </summary>
-        public virtual void GetProperties(ObjectPropertyList list)
+        public virtual void GetProperties(Tooltip list)
         {
             AddNameProperties(list);
         }
@@ -1120,10 +1120,14 @@ namespace Server
 
                 if (m_Map != null)
                 {
-                    Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                    Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                    Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                    Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength].InitializePacket() : null;
+                    Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength]
+                        .InitializePacket();
+                    Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength]
+                        .InitializePacket();
+                    Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength]
+                        .InitializePacket();
+                    Span<byte> tooltip = Tooltip.Enabled ? stackalloc byte[OutgoingEntityPackets.TooltipPacketLength]
+                        .InitializePacket() : null;
 
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
@@ -1141,7 +1145,7 @@ namespace Server
                                     hsWorldItem = hsWorldItem[..length];
                                 }
 
-                                SendInfoTo(state, hsWorldItem, opl);
+                                SendInfoTo(state, hsWorldItem, tooltip);
                             }
                             else if (state.StygianAbyss)
                             {
@@ -1151,7 +1155,7 @@ namespace Server
                                     saWorldItem = saWorldItem[..length];
                                 }
 
-                                SendInfoTo(state, saWorldItem, opl);
+                                SendInfoTo(state, saWorldItem, tooltip);
                             }
                             else
                             {
@@ -1161,7 +1165,7 @@ namespace Server
                                     oldWorldItem = oldWorldItem[..length];
                                 }
 
-                                SendInfoTo(state, oldWorldItem, opl);
+                                SendInfoTo(state, oldWorldItem, tooltip);
                             }
                         }
                     }
@@ -1306,7 +1310,7 @@ namespace Server
                     if (ns != null && rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
                     {
                         ns.SendContainerContentUpdate(this);
-                        SendOPLPacketTo(ns);
+                        SendTooltipPacketTo(ns);
                     }
                 }
 
@@ -1333,7 +1337,7 @@ namespace Server
                     if (ns != null && tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
                     {
                         ns.SendContainerContentUpdate(this);
-                        SendOPLPacketTo(ns);
+                        SendTooltipPacketTo(ns);
                     }
                 }
 
@@ -1363,7 +1367,7 @@ namespace Server
                             if (ns != null && mob.CanSee(this))
                             {
                                 ns.SendContainerContentUpdate(this);
-                                SendOPLPacketTo(ns);
+                                SendTooltipPacketTo(ns);
                             }
                         }
                     }
@@ -1407,17 +1411,17 @@ namespace Server
                             state.SendEquipUpdate(this);
                         }
 
-                        SendOPLPacketTo(state);
+                        SendTooltipPacketTo(state);
                     }
                 }
                 else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
                 {
                     state.SendEquipUpdate(this);
-                    SendOPLPacketTo(state);
+                    SendTooltipPacketTo(state);
                 }
-                else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
+                else if (Tooltip.Enabled && (flags & ItemDelta.Tooltip) != 0)
                 {
-                    SendOPLPacketTo(state);
+                    SendTooltipPacketTo(state);
                 }
             }
 
@@ -1472,7 +1476,7 @@ namespace Server
 
             OnAfterDelete();
 
-            m_PropertyList = null;
+            _tooltip = null;
         }
 
         public ISpawner Spawner
@@ -1806,18 +1810,18 @@ namespace Server
         public virtual bool CheckPropertyConflict(Mobile m) => false;
 
         /// <summary>
-        ///     Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
+        ///     Overridable. Sends the <see cref="Tooltip">object property list</see> to <paramref name="from" />.
         /// </summary>
         public virtual void SendPropertiesTo(Mobile from)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            from.NetState?.Send(Tooltip.Buffer);
         }
 
         /// <summary>
-        ///     Overridable. Adds the name of this item to the given <see cref="ObjectPropertyList" />. This method should be overridden
+        ///     Overridable. Adds the name of this item to the given <see cref="Server.Tooltip" />. This method should be overridden
         ///     if the item requires a complex naming format.
         /// </summary>
-        public virtual void AddNameProperty(ObjectPropertyList list)
+        public virtual void AddNameProperty(Tooltip list)
         {
             var name = Name;
 
@@ -1846,10 +1850,10 @@ namespace Server
         }
 
         /// <summary>
-        ///     Overridable. Adds the loot type of this item to the given <see cref="ObjectPropertyList" />. By default, this will be
+        ///     Overridable. Adds the loot type of this item to the given <see cref="Server.Tooltip" />. By default, this will be
         ///     either 'blessed', 'cursed', or 'insured'.
         /// </summary>
-        public virtual void AddLootTypeProperty(ObjectPropertyList list)
+        public virtual void AddLootTypeProperty(Tooltip list)
         {
             if (m_LootType == LootType.Blessed)
             {
@@ -1866,9 +1870,9 @@ namespace Server
         }
 
         /// <summary>
-        ///     Overridable. Adds any elemental resistances of this item to the given <see cref="ObjectPropertyList" />.
+        ///     Overridable. Adds any elemental resistances of this item to the given <see cref="Server.Tooltip" />.
         /// </summary>
-        public virtual void AddResistanceProperties(ObjectPropertyList list)
+        public virtual void AddResistanceProperties(Tooltip list)
         {
             var v = PhysicalResistance;
 
@@ -1909,7 +1913,7 @@ namespace Server
         /// <summary>
         ///     Overridable. Displays cliloc 1072788-1072789.
         /// </summary>
-        public virtual void AddWeightProperty(ObjectPropertyList list)
+        public virtual void AddWeightProperty(Tooltip list)
         {
             var weight = PileWeight + TotalWeight;
 
@@ -1928,7 +1932,7 @@ namespace Server
         ///     <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if
         ///     <see cref="DisplayLootType" />).
         /// </summary>
-        public virtual void AddNameProperties(ObjectPropertyList list)
+        public virtual void AddNameProperties(Tooltip list)
         {
             AddNameProperty(list);
 
@@ -1967,43 +1971,43 @@ namespace Server
         }
 
         /// <summary>
-        ///     Overridable. Adds the "Quest Item" property to the given <see cref="ObjectPropertyList" />.
+        ///     Overridable. Adds the "Quest Item" property to the given <see cref="Server.Tooltip" />.
         /// </summary>
-        public virtual void AddQuestItemProperty(ObjectPropertyList list)
+        public virtual void AddQuestItemProperty(Tooltip list)
         {
             list.Add(1072351); // Quest Item
         }
 
         /// <summary>
-        ///     Overridable. Adds the "Locked Down & Secure" property to the given <see cref="ObjectPropertyList" />.
+        ///     Overridable. Adds the "Locked Down & Secure" property to the given <see cref="Server.Tooltip" />.
         /// </summary>
-        public virtual void AddSecureProperty(ObjectPropertyList list)
+        public virtual void AddSecureProperty(Tooltip list)
         {
             list.Add(501644); // locked down & secure
         }
 
         /// <summary>
-        ///     Overridable. Adds the "Locked Down" property to the given <see cref="ObjectPropertyList" />.
+        ///     Overridable. Adds the "Locked Down" property to the given <see cref="Server.Tooltip" />.
         /// </summary>
-        public virtual void AddLockedDownProperty(ObjectPropertyList list)
+        public virtual void AddLockedDownProperty(Tooltip list)
         {
             list.Add(501643); // locked down
         }
 
         /// <summary>
-        ///     Overridable. Adds the "Blessed for ~1_NAME~" property to the given <see cref="ObjectPropertyList" />.
+        ///     Overridable. Adds the "Blessed for ~1_NAME~" property to the given <see cref="Server.Tooltip" />.
         /// </summary>
-        public virtual void AddBlessedForProperty(ObjectPropertyList list, Mobile m)
+        public virtual void AddBlessedForProperty(Tooltip list, Mobile m)
         {
             list.Add(1062203, "{0}", m.Name); // Blessed for ~1_NAME~
         }
 
         /// <summary>
-        ///     Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="ObjectPropertyList" />.
+        ///     Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="Server.Tooltip" />.
         ///     Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
         ///     <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>.
         /// </summary>
-        public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildProperties(Tooltip list, Item item)
         {
             if (m_Parent is Item parentItem)
             {
@@ -2017,11 +2021,11 @@ namespace Server
 
         /// <summary>
         ///     Overridable. Event invoked when a child (<paramref name="item" />) is building it's Name
-        ///     <see cref="ObjectPropertyList" />
+        ///     <see cref="Server.Tooltip" />
         ///     . Recursively calls <see cref="Item.GetChildProperties">Item.GetChildNameProperties</see> or
         ///     <see cref="Mobile.GetChildProperties">Mobile.GetChildNameProperties</see>.
         /// </summary>
-        public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildNameProperties(Tooltip list, Item item)
         {
             if (m_Parent is Item parentItem)
             {
@@ -2377,7 +2381,7 @@ namespace Server
             return bounds;
         }
 
-        public virtual void AppendChildProperties(ObjectPropertyList list)
+        public virtual void AppendChildProperties(Tooltip list)
         {
             if (m_Parent is Item item)
             {
@@ -2389,7 +2393,7 @@ namespace Server
             }
         }
 
-        public virtual void AppendChildNameProperties(ObjectPropertyList list)
+        public virtual void AppendChildNameProperties(Tooltip list)
         {
             if (m_Parent is Item item)
             {
@@ -2401,7 +2405,7 @@ namespace Server
             }
         }
 
-        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
+        private Tooltip InitializeTooltip(Tooltip list)
         {
             GetProperties(list);
             AppendChildProperties(list);
@@ -2411,13 +2415,13 @@ namespace Server
 
         public void ClearProperties()
         {
-            m_PropertyList = null;
+            _tooltip = null;
         }
 
 #nullable enable
         public virtual void InvalidateProperties()
         {
-            if (!ObjectPropertyList.Enabled)
+            if (!Tooltip.Enabled)
             {
                 return;
             }
@@ -2426,22 +2430,22 @@ namespace Server
             {
                 int? oldHash;
                 int newHash;
-                if (m_PropertyList != null)
+                if (_tooltip != null)
                 {
-                    oldHash = m_PropertyList.Hash;
-                    m_PropertyList.Reset();
-                    InitializePropertyList(m_PropertyList);
-                    newHash = m_PropertyList.Hash;
+                    oldHash = _tooltip.Hash;
+                    _tooltip.Reset();
+                    InitializeTooltip(_tooltip);
+                    newHash = _tooltip.Hash;
                 }
                 else
                 {
                     oldHash = null;
-                    newHash = PropertyList.Hash;
+                    newHash = Tooltip.Hash;
                 }
 
                 if (oldHash != newHash)
                 {
-                    Delta(ItemDelta.Properties);
+                    Delta(ItemDelta.Tooltip);
                 }
             }
             else
@@ -3082,27 +3086,27 @@ namespace Server
 
         public virtual int GetUpdateRange(Mobile m) => 18;
 
-        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
+        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> tooltip = default)
         {
             SendWorldPacketTo(ns, world);
-            SendOPLPacketTo(ns, opl);
+            SendTooltipPacketTo(ns, tooltip);
         }
 
-        public void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        public void SendTooltipPacketTo(NetState ns, Span<byte> tooltip = default)
         {
-            if (!ObjectPropertyList.Enabled)
+            if (!Tooltip.Enabled)
             {
                 return;
             }
 
-            if (opl == null)
+            if (tooltip == null)
             {
-                ns.SendOPLInfo(this);
+                ns.SendTooltipInfo(this);
                 return;
             }
 
-            OutgoingEntityPackets.CreateOPLInfo(opl, this);
-            ns.Send(opl);
+            OutgoingEntityPackets.CreateTooltipInfo(tooltip, this);
+            ns.Send(tooltip);
         }
 
         public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
@@ -4112,9 +4116,9 @@ namespace Server
 
         public virtual void OnAosSingleClick(Mobile from)
         {
-            var opl = PropertyList;
+            var tooltip = Tooltip;
 
-            if (opl.Header > 0)
+            if (tooltip.Header > 0)
             {
                 from.NetState.SendMessageLocalized(
                     Serial,
@@ -4122,9 +4126,9 @@ namespace Server
                     MessageType.Label,
                     0x3B2,
                     3,
-                    opl.Header,
+                    tooltip.Header,
                     Name,
-                    opl.HeaderArgs
+                    tooltip.HeaderArgs
                 );
             }
         }

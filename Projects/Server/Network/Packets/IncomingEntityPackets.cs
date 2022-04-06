@@ -116,12 +116,9 @@ public static class IncomingEntityPackets
                 {
                     m.OnAosSingleClick(from);
                 }
-                else
+                else if (from.Region.OnSingleClick(from, m))
                 {
-                    if (from.Region.OnSingleClick(from, m))
-                    {
-                        m.OnSingleClick(from);
-                    }
+                    m.OnSingleClick(from);
                 }
             }
         }
@@ -151,7 +148,7 @@ public static class IncomingEntityPackets
 
     public static void BatchQueryProperties(NetState state, CircularBufferReader reader, int packetLength)
     {
-        if (!ObjectPropertyList.Enabled)
+        if (!Tooltip.Enabled)
         {
             return;
         }

@@ -697,11 +697,11 @@ namespace Server.Items
 
                 SendContentTo(ns);
 
-                if (ObjectPropertyList.Enabled)
+                if (Tooltip.Enabled)
                 {
                     for (var i = 0; i < Items.Count; ++i)
                     {
-                        ns.SendOPLInfo(Items[i]);
+                        ns.SendTooltipInfo(Items[i]);
                     }
                 }
             }
@@ -755,7 +755,7 @@ namespace Server.Items
 
         public virtual void SendContentTo(NetState state) => state.SendContainerContent(state.Mobile, this);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

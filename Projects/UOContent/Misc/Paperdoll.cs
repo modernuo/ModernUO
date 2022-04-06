@@ -20,7 +20,7 @@ namespace Server.Misc
 
             for (var i = 0; i < beheld.Items.Count; ++i)
             {
-                beheld.Items[i].SendOPLPacketTo(beholder.NetState);
+                beheld.Items[i].SendTooltipPacketTo(beholder.NetState);
             }
 
             // NOTE: OSI sends MobileUpdate when opening your own paperdoll.

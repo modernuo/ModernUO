@@ -46,7 +46,7 @@ namespace Server.Items
             }
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(Tooltip list)
         {
             base.AddNameProperties(list);
 

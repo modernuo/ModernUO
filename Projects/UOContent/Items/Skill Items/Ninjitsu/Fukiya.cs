@@ -87,7 +87,7 @@ namespace Server.Items
             from.MovingEffect(to, 0x2804, 5, 0, false, false);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

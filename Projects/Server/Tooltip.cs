@@ -6,14 +6,14 @@ using Server.Network;
 
 namespace Server
 {
-    public interface IPropertyListObject : IEntity
+    public interface ITooltipObject : IEntity
     {
-        ObjectPropertyList PropertyList { get; }
+        Tooltip Tooltip { get; }
 
-        void GetProperties(ObjectPropertyList list);
+        void GetProperties(Tooltip list);
     }
 
-    public sealed class ObjectPropertyList
+    public sealed class Tooltip
     {
         // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
         private static readonly int[] m_StringNumbers =
@@ -27,7 +27,7 @@ namespace Server
         private byte[] _buffer;
         private int _position;
 
-        public ObjectPropertyList(IEntity e)
+        public Tooltip(IEntity e)
         {
             Entity = e;
             _buffer = GC.AllocateUninitializedArray<byte>(64);

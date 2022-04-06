@@ -121,11 +121,11 @@ namespace Server.Commands
                                 {
                                     ns.SendMobileIncoming(targ, pm);
 
-                                    pm.SendOPLPacketTo(ns);
+                                    pm.SendTooltipPacketTo(ns);
 
                                     foreach (var item in pm.Items)
                                     {
-                                        item.SendOPLPacketTo(ns);
+                                        item.SendTooltipPacketTo(ns);
                                     }
                                 }
                                 else

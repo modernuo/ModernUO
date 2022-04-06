@@ -32,7 +32,7 @@ namespace Server.Items
         {
         }
 
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+        public override bool ForceShowProperties => Tooltip.Enabled;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsRewardItem
@@ -107,7 +107,7 @@ namespace Server.Items
             m_Fire?.MoveToWorld(new Point3D(X, Y, Z + ItemData.Height), Map);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
@@ -184,7 +184,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

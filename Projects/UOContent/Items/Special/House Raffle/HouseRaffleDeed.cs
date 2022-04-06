@@ -85,7 +85,7 @@ namespace Server.Items
 
         public bool ValidLocation() => m_PlotLocation != Point3D.Zero && m_Facet != null && m_Facet != Map.Internal;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 

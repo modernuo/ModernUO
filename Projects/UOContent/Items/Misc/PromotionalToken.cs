@@ -23,7 +23,7 @@ namespace Server.Items
         public override int LabelNumber => 1070997; // A promotional token
         public abstract Item CreateItemFor(Mobile from);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(Tooltip list)
         {
             base.GetProperties(list);
 
