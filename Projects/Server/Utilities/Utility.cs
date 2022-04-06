@@ -1556,7 +1556,15 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] Combine<T>(this IList<T> source, bool pooled = false, params IList<T>[] arrays)
+        public static T[] Combine<T>(this IList<T> source, params IList<T>[] arrays) =>
+            source.Combine(false, arrays);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] CombinePooled<T>(this IList<T> source, params IList<T>[] arrays) =>
+            source.Combine(true, arrays);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] Combine<T>(this IList<T> source, bool pooled, params IList<T>[] arrays)
         {
             var totalLength = source.Count;
             foreach (var arr in arrays)
