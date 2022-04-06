@@ -1554,5 +1554,32 @@ namespace Server
             min = date.Minute;
             sec = date.Second;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] Combine<T>(this IList<T> source, bool pooled = false, params IList<T>[] arrays)
+        {
+            var totalLength = source.Count;
+            foreach (var arr in arrays)
+            {
+                totalLength += arr.Count;
+            }
+
+            if (totalLength == 0)
+            {
+                return Array.Empty<T>();
+            }
+
+            var combined = pooled ? STArrayPool<T>.Shared.Rent(totalLength) : new T[totalLength];
+
+            source.CopyTo(combined, 0);
+            var position = source.Count;
+            foreach (var arr in arrays)
+            {
+                arr.CopyTo(combined, position);
+                position += arr.Count;
+            }
+
+            return combined;
+        }
     }
 }
