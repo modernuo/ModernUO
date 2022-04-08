@@ -48,6 +48,19 @@ namespace Server.Items
             }
         }
 
+        public override bool CanStackWith(Item dropped)
+        {
+            if (dropped is Food food)
+            {
+                if (Poison != food.Poison || Poisoner != food.Poisoner)
+                {
+                    return false;
+                }
+            }
+            return base.CanStackWith(dropped);
+        }
+
+
         public virtual bool Eat(Mobile from)
         {
             // Fill the Mobile with FillFactor
