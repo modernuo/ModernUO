@@ -11,8 +11,6 @@ namespace Server.Factions
 
         public static void GenerateFactions_OnCommand(CommandEventArgs e)
         {
-            new FactionPersistance();
-
             var factions = Faction.Factions;
 
             foreach (var faction in factions)

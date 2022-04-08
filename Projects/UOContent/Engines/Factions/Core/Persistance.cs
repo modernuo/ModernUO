@@ -1,30 +1,19 @@
+using Server.Logging;
+
 namespace Server.Factions
 {
-    public class FactionPersistance : Item
+    public static class FactionPersistance
     {
-        public FactionPersistance() : base(1)
-        {
-            Movable = false;
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(FactionPersistance));
 
-            if (Instance?.Deleted == true)
-            {
-                Instance = this;
-            }
-            else
-            {
-                base.Delete();
-            }
+        public static void Configure()
+        {
+            GenericPersistence.Register("Factions", Serialize, Deserialize);
         }
 
-        public FactionPersistance(Serial serial) : base(serial) => Instance = this;
-
-        public static FactionPersistance Instance { get; private set; }
-
-        public override string DefaultName => "Faction Persistance - Internal";
-
-        public override void Serialize(IGenericWriter writer)
+        public static void Serialize(IGenericWriter writer)
         {
-            base.Serialize(writer);
+            logger.Information("Saving Factions");
 
             writer.Write(0); // version
 
@@ -47,9 +36,9 @@ namespace Server.Factions
             writer.WriteEncodedInt((int)PersistedType.Terminator);
         }
 
-        public override void Deserialize(IGenericReader reader)
+        public static void Deserialize(IGenericReader reader)
         {
-            base.Deserialize(reader);
+            logger.Information("Loading Factions");
 
             var version = reader.ReadInt();
 
@@ -75,10 +64,6 @@ namespace Server.Factions
                         break;
                     }
             }
-        }
-
-        public override void Delete()
-        {
         }
 
         private enum PersistedType
