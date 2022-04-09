@@ -8,19 +8,40 @@ public static class FactionSystem
 
     public static void Configure()
     {
-        var enabled = ServerConfiguration.GetOrUpdateSetting("factions.enabled", false);
+        var enabled = ServerConfiguration.GetSetting("factions.enabled", false);
         if (enabled)
         {
             Enable(false);
         }
     }
 
-    public static void Enable(bool saveToConfig = true)
+    // This does not do the actual work of removing faction stuff, only turns off the persistence.
+    public static void Disable()
     {
         if (!Enabled)
         {
-            GenericPersistence.Register("Factions", Serialize, Deserialize);
-            Enabled = true;
+            return;
+        }
+
+        Persistence.Unregister("Factions");
+        Enabled = false;
+        ServerConfiguration.SetSetting("factions.enabled", false);
+    }
+
+    // This does not do the actual work of creating faction stuff, only turns on the persistence.
+    public static void Enable(bool saveToConfig = true)
+    {
+        if (Enabled)
+        {
+            return;
+        }
+
+        GenericPersistence.Register("Factions", Serialize, Deserialize);
+        Enabled = true;
+
+        if (saveToConfig)
+        {
+            ServerConfiguration.SetSetting("factions.enabled", true);
         }
     }
 
