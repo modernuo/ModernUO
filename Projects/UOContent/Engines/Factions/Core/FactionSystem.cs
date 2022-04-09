@@ -8,10 +8,11 @@ public static class FactionSystem
 
     public static void Configure()
     {
-        var enabled = ServerConfiguration.GetSetting("factions.enabled", false);
-        if (enabled)
+        Enabled = ServerConfiguration.GetSetting("factions.enabled", false);
+
+        if (Enabled)
         {
-            Enable(false);
+            GenericPersistence.Register("Factions", Serialize, Deserialize);
         }
     }
 
@@ -29,7 +30,7 @@ public static class FactionSystem
     }
 
     // This does not do the actual work of creating faction stuff, only turns on the persistence.
-    public static void Enable(bool saveToConfig = true)
+    public static void Enable()
     {
         if (Enabled)
         {
@@ -38,11 +39,7 @@ public static class FactionSystem
 
         GenericPersistence.Register("Factions", Serialize, Deserialize);
         Enabled = true;
-
-        if (saveToConfig)
-        {
-            ServerConfiguration.SetSetting("factions.enabled", true);
-        }
+        ServerConfiguration.SetSetting("factions.enabled", true);
     }
 
     private static void Serialize(IGenericWriter writer)
