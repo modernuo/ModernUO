@@ -1,9 +1,10 @@
 using System.Linq;
+using ModernUO.Serialization;
 using Server.Mobiles;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SHTeleComponent : AddonComponent
     {
         private bool _active;
@@ -105,7 +106,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SHTeleporter : BaseAddon
     {
         private bool m_Changing;

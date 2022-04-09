@@ -1,8 +1,9 @@
-﻿using Server.Mobiles;
+﻿using ModernUO.Serialization;
+using Server.Mobiles;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public partial class HalloweenPumpkin : Item
     {
         private static readonly string[] m_Staff =

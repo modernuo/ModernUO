@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public abstract partial class BaseDecorationArtifact : Item
 {
     public BaseDecorationArtifact(int itemID) : base(itemID) => Weight = 10.0;
@@ -17,7 +19,7 @@ public abstract partial class BaseDecorationArtifact : Item
     }
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public abstract partial class BaseDecorationContainerArtifact : BaseContainer
 {
     public BaseDecorationContainerArtifact(int itemID) : base(itemID) => Weight = 10.0;

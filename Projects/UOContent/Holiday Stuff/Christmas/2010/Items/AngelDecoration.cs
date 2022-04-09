@@ -1,6 +1,8 @@
-﻿namespace Server.Items.Holiday
+﻿using ModernUO.Serialization;
+
+namespace Server.Items.Holiday
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [TypeAlias("Server.Items.AngelDecoration"), Flippable(0x46FA, 0x46FB)]
     public partial class AngelDecoration : Item
     {

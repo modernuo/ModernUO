@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [TypeAlias("Server.Items.GargishStoneKilt")]
     public partial class GargishStoneKiltType1 : BaseArmor
     {

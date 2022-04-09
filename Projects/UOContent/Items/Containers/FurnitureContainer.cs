@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 
 namespace Server.Items;
 
 [Furniture]
 [Flippable(0x2815, 0x2816)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class TallCabinet : BaseContainer
 {
     [Constructible]
@@ -14,7 +15,7 @@ public partial class TallCabinet : BaseContainer
 
 [Furniture]
 [Flippable(0x2817, 0x2818)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class ShortCabinet : BaseContainer
 {
     [Constructible]
@@ -23,7 +24,7 @@ public partial class ShortCabinet : BaseContainer
 
 [Furniture]
 [Flippable(0x2857, 0x2858)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class RedArmoire : BaseContainer
 {
     [Constructible]
@@ -32,7 +33,7 @@ public partial class RedArmoire : BaseContainer
 
 [Furniture]
 [Flippable(0x285D, 0x285E)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class CherryArmoire : BaseContainer
 {
     [Constructible]
@@ -41,7 +42,7 @@ public partial class CherryArmoire : BaseContainer
 
 [Furniture]
 [Flippable(0x285B, 0x285C)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MapleArmoire : BaseContainer
 {
     [Constructible]
@@ -50,7 +51,7 @@ public partial class MapleArmoire : BaseContainer
 
 [Furniture]
 [Flippable(0x2859, 0x285A)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class ElegantArmoire : BaseContainer
 {
     [Constructible]
@@ -58,7 +59,7 @@ public partial class ElegantArmoire : BaseContainer
 }
 
 [Furniture]
-[Serializable(0)]
+[SerializationGenerator(0)]
 [Flippable(0x2D07, 0x2D08)]
 public partial class FancyElvenArmoire : BaseContainer
 {
@@ -69,7 +70,7 @@ public partial class FancyElvenArmoire : BaseContainer
 }
 
 [Furniture]
-[Serializable(0)]
+[SerializationGenerator(0)]
 [Flippable(0x2D05, 0x2D06)]
 public partial class SimpleElvenArmoire : BaseContainer
 {
@@ -81,7 +82,7 @@ public partial class SimpleElvenArmoire : BaseContainer
 
 [Furniture]
 [Flippable(0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FullBookcase : BaseContainer
 {
     [Constructible]
@@ -90,7 +91,7 @@ public partial class FullBookcase : BaseContainer
 
 [Furniture]
 [Flippable(0xa9d, 0xa9e)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class EmptyBookcase : BaseContainer
 {
     [Constructible]
@@ -101,7 +102,7 @@ public partial class EmptyBookcase : BaseContainer
 
 [Furniture]
 [Flippable(0xa2c, 0xa34)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Drawer : BaseContainer
 {
     [Constructible]
@@ -110,7 +111,7 @@ public partial class Drawer : BaseContainer
 
 [Furniture]
 [Flippable(0xa30, 0xa38)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FancyDrawer : BaseContainer
 {
     [Constructible]
@@ -119,7 +120,7 @@ public partial class FancyDrawer : BaseContainer
 
 [Furniture]
 [Flippable(0xa4f, 0xa53)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Armoire : BaseContainer
 {
     [Constructible]
@@ -142,7 +143,7 @@ public partial class Armoire : BaseContainer
 
 [Furniture]
 [Flippable(0xa4d, 0xa51)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FancyArmoire : BaseContainer
 {
     [Constructible]

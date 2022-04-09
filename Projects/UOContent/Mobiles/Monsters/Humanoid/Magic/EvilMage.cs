@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class EvilMage : BaseCreature
     {
         [Constructible]

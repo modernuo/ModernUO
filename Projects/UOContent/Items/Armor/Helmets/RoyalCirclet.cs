@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2B6F, 0x3166)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class RoyalCirclet : BaseArmor
     {
         [Constructible]

@@ -1,3 +1,5 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum DarkWoodWallTypes
@@ -24,7 +26,7 @@ namespace Server.Items
         EastWallVShort
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DarkWoodWall : BaseWall
     {
         [Constructible]

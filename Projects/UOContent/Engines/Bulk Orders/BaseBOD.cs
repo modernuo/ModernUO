@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 
 namespace Server.Engines.BulkOrders
 {
-    [Serializable(1)]
+    [SerializationGenerator(1)]
     public abstract partial class BaseBOD : Item
     {
         public BaseBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material) : this()

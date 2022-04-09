@@ -1,10 +1,11 @@
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Items;
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class HairRestylingDeed : Item
 {
     [Constructible]

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Multis;
 
 namespace Server.Items
@@ -20,7 +21,7 @@ namespace Server.Items
         bool CouldFit(IPoint3D p, Map map);
     }
 
-    [Serializable(3, false)]
+    [SerializationGenerator(3, false)]
     public abstract partial class BaseAddon : Item, IChoppable, IAddon
     {
         [SerializableField(1, "private", "private")]

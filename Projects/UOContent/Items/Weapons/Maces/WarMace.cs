@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x1407, 0x1406)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WarMace : BaseBashing
     {
         [Constructible]

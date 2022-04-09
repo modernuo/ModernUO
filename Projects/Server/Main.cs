@@ -599,7 +599,7 @@ namespace Server
                 if (World.DirtyTrackingEnabled)
                 {
                     var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
-                    var codeGennedAttribute = type.GetCustomAttribute<SerializableAttribute>(false);
+                    var codeGennedAttribute = type.GetCustomAttribute<ModernUO.Serialization.SerializationGeneratorAttribute>(false);
 
                     if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
                     {

@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
 [Flippable(0xe43, 0xe42)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class WoodenTreasureChest : BaseTreasureChest
 {
     [Constructible]
@@ -11,7 +13,7 @@ public partial class WoodenTreasureChest : BaseTreasureChest
 }
 
 [Flippable(0xe41, 0xe40)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MetalGoldenTreasureChest : BaseTreasureChest
 {
     [Constructible]
@@ -21,7 +23,7 @@ public partial class MetalGoldenTreasureChest : BaseTreasureChest
 }
 
 [Flippable(0x9ab, 0xe7c)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MetalTreasureChest : BaseTreasureChest
 {
     [Constructible]

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class OrnateElvenChestEastAddon : BaseAddonContainer
     {
         [Constructible]
@@ -15,7 +17,7 @@ namespace Server.Items
         public override int DefaultDropSound => 0x42;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class OrnateElvenChestEastDeed : BaseAddonContainerDeed
     {
         [Constructible]

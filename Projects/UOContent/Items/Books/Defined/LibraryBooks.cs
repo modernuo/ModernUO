@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GrammarOfOrcish : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -246,7 +248,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class CallToAnarchy : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -407,7 +409,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ArmsAndWeaponsPrimer : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -578,7 +580,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class SongOfSamlethe : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -647,7 +649,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class TaleOfThreeTribes : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -759,7 +761,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GuideToGuilds : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -947,7 +949,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BirdsOfBritannia : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -1237,7 +1239,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BritannianFlora : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -1432,7 +1434,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ChildrenTalesVol2 : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -1539,7 +1541,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class TalesOfVesperVol1 : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -1760,7 +1762,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DeceitDungeonOfHorror : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -1892,7 +1894,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DimensionalTravel : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -2088,7 +2090,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class EthicalHedonism : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -2349,7 +2351,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class MyStory : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -2851,7 +2853,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DiversityOfOurLand : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -3014,7 +3016,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class QuestOfVirtues : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -3407,7 +3409,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class RegardingLlamas : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -3461,7 +3463,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class TalkingToWisps : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -3561,7 +3563,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class TamingDragons : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -3651,7 +3653,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BoldStranger : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -3804,7 +3806,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BurningOfTrinsic : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4048,7 +4050,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class TheFight : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4190,7 +4192,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class LifeOfATravellingMinstrel : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4379,7 +4381,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class MajorTradeAssociation : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4569,7 +4571,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class RankingsOfTrades : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4670,7 +4672,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class WildGirlOfTheForest : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4844,7 +4846,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class TreatiseOnAlchemy : BaseBook
     {
         public static readonly BookContent Content = new(
@@ -4973,7 +4975,7 @@ namespace Server.Items
         public override BookContent DefaultContent => Content;
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class VirtueBook : BaseBook
     {
         public static readonly BookContent Content = new(

@@ -1,3 +1,5 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum HeadType
@@ -7,7 +9,7 @@ namespace Server.Items
         Tournament
     }
 
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public partial class Head : Item
     {
         [SerializableField(0)]

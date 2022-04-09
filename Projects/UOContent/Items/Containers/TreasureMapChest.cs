@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
@@ -8,7 +9,7 @@ using Server.Utilities;
 
 namespace Server.Items;
 
-[Serializable(2, false)]
+[SerializationGenerator(2, false)]
 public partial class TreasureMapChest : LockableContainer
 {
     [SerializableField(0, setter: "private")]

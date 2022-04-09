@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27A4, 0x27EF)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Wakizashi : BaseSword
     {
         [Constructible]
