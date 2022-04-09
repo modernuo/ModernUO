@@ -11,7 +11,7 @@ namespace Server.Factions
 
         public static void GenerateFactions_OnCommand(CommandEventArgs e)
         {
-            new FactionPersistance();
+            FactionSystem.Enable();
 
             var factions = Faction.Factions;
 
