@@ -64,7 +64,7 @@ namespace Server
         SixthCharacterSlot = 0x00000020,
         SE = 0x00000040,
         ML = 0x00000080,
-        EigthAge = 0x00000100,
+        EighthAge = 0x00000100,
         NinthAge = 0x00000200, // Crystal/Shadow Custom House Tiles
         TenthAge = 0x00000400,
         IncreasedStorage = 0x00000800, // Increased Housing/Bank Storage
