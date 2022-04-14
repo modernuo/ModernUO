@@ -1,10 +1,8 @@
 using System;
 using System.Buffers;
-using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Runtime.InteropServices;
 
 namespace Server;
 
@@ -21,7 +19,10 @@ public static class MultiData
         }
 
         // OSI Client 7.0.9.0+ uses 64bit tiledata flags
-        var postHSMulFormat = ServerConfiguration.GetSetting("maps.enablePostHSMultiComponentFormat", UOClient.ServerClientVersion >= ClientVersion.Version7090);
+        var postHSMulFormat = ServerConfiguration.GetSetting(
+            "maps.enablePostHSMultiComponentFormat",
+            UOClient.ServerClientVersion >= ClientVersion.Version7090
+        );
 
         LoadMul(postHSMulFormat);
     }
@@ -33,11 +34,11 @@ public static class MultiData
 
     private static void LoadUOP(string path)
     {
-        var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         var streamReader = new BinaryReader(stream);
 
         // Head Information Start
-        if (streamReader.ReadInt32() != 0x0050594D) // Not a UOP Files
+        if (streamReader.ReadInt32() != 0x0050594D) // Not a UOP File
         {
             return;
         }
@@ -47,17 +48,12 @@ public static class MultiData
             return;
         }
 
-        // Multi ID List Array Start
         UOPHash.BuildChunkIDs(out var chunkIds);
-        // Multi ID List Array End
 
         streamReader.ReadUInt32(); // format timestamp? 0xFD23EC43
         var startAddress = streamReader.ReadInt64();
 
-        streamReader.ReadInt32();
-        streamReader.ReadInt32();
-
-        stream.Seek(startAddress, SeekOrigin.Begin); // Head Information End
+        stream.Seek(startAddress, SeekOrigin.Begin); // End of head block
 
         long nextBlock;
 
@@ -145,6 +141,8 @@ public static class MultiData
                 stream.Seek(position, SeekOrigin.Begin); // back to position
             } while (index < blockFileCount);
         } while (stream.Seek(nextBlock, SeekOrigin.Begin) != 0);
+
+        streamReader.Close();
     }
 
     private static void LoadMul(bool postHSMulFormat)
@@ -163,6 +161,7 @@ public static class MultiData
         {
             var lookup = idxReader.ReadInt32();
             var length = idxReader.ReadInt32();
+            idx.Seek(4, SeekOrigin.Current); // Extra
 
             if (lookup < 0 || length <= 0)
             {
@@ -170,8 +169,10 @@ public static class MultiData
             }
 
             bin.BaseStream.Seek(lookup, SeekOrigin.Begin);
-            _components[i] = new MultiComponentList(bin, length / (postHSMulFormat ? 16 : 12), postHSMulFormat);
+            _components[i] = new MultiComponentList(bin, length, postHSMulFormat);
         }
+
+        idxReader.Close();
     }
 }
 
@@ -311,8 +312,9 @@ public sealed class MultiComponentList
         }
     }
 
-    public MultiComponentList(BinaryReader reader, int count, bool postHSFormat)
+    public MultiComponentList(BinaryReader reader, int length, bool postHSFormat)
     {
+        var count = length / (postHSFormat ? 16 : 12);
         var allTiles = List = new MultiTileEntry[count];
 
         for (var i = 0; i < count; ++i)
