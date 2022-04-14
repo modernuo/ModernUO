@@ -810,7 +810,7 @@ public static class UOPHash
         }
     }
 
-    private static ulong HashLittle2(ReadOnlySpan<char> s)
+    public static ulong HashLittle2(ReadOnlySpan<char> s)
     {
         var length = s.Length;
 
