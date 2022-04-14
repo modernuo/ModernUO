@@ -249,15 +249,13 @@ namespace Server
             {
                 fullPath = Path.Combine(p, path);
 
-                if (IsLinux)
+                if (IsLinux && !File.Exists(fullPath))
                 {
                     var fi = new FileInfo(fullPath);
                     fullPath = fi.Directory!.EnumerateFiles(
                         fi.Name,
                         new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
                     ).FirstOrDefault()?.FullName;
-
-                    break;
                 }
 
                 if (File.Exists(fullPath))
