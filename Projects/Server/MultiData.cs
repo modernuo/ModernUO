@@ -14,7 +14,6 @@ public static class MultiData
 
         if (File.Exists(multiUOPPath))
         {
-            Console.WriteLine("Loading UOP file");
             LoadUOP(multiUOPPath);
             return;
         }
@@ -22,7 +21,6 @@ public static class MultiData
         // OSI Client 7.0.9.0+ uses 64bit tiledata flags
         var postHSMulFormat = ServerConfiguration.GetSetting("maps.enablePostHSMultiComponentFormat", UOClient.ServerClientVersion >= ClientVersion.Version7090);
 
-        Console.WriteLine("Loading MUL file");
         LoadMul(postHSMulFormat);
     }
 
