@@ -12,8 +12,7 @@ elif [[ $(uname) = "Darwin" ]]; then
   os="-r osx-x64"
 elif [[ -f /etc/os-release ]]; then
   . /etc/os-release
-  NAME="$(tr '[:upper:]' '[:lower:]' <<< $NAME | tr -d [:blank:])"
-  os="-r $NAME.$VERSION_ID-x64"
+  os="-r $(tr '[:upper:]' '[:lower:]' <<< $ID).$VERSION_ID-x64"
 fi
 
 if [[ $config ]]; then

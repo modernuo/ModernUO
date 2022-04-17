@@ -431,7 +431,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Timer.StartTimer(FinishWorldSave);
+            Core.LoopContext.Post(FinishWorldSave);
         }
 
         private static void ProcessDecay()

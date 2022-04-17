@@ -57,17 +57,17 @@ namespace Server
     {
         None = 0x00000000,
         T2A = 0x00000001,
-        UOR = 0x00000002,
+        UOR = 0x00000002, // In later clients, the T2A/UOR flags are negative feature flags to disable body replacement of Pre-AOS graphics.
         UOTD = 0x00000004,
         LBR = 0x00000008,
         AOS = 0x00000010,
         SixthCharacterSlot = 0x00000020,
         SE = 0x00000040,
         ML = 0x00000080,
-        EigthAge = 0x00000100,
-        NinthAge = 0x00000200, /* Crystal/Shadow Custom House Tiles */
+        EighthAge = 0x00000100,
+        NinthAge = 0x00000200, // Crystal/Shadow Custom House Tiles
         TenthAge = 0x00000400,
-        IncreasedStorage = 0x00000800, /* Increased Housing/Bank Storage */
+        IncreasedStorage = 0x00000800, // Increased Housing/Bank Storage
         SeventhCharacterSlot = 0x00001000,
         RoleplayFaces = 0x00002000,
         TrialAccount = 0x00004000,
@@ -86,7 +86,8 @@ namespace Server
         ExpansionUOR = ExpansionT2A | UOR,
         ExpansionUOTD = ExpansionUOR | UOTD,
         ExpansionLBR = ExpansionUOTD | LBR,
-        ExpansionAOS = ExpansionLBR | AOS | LiveAccount,
+        // In later clients, the AOS+ expansions include the Publish 16 LBR flag, but not the previous expansions.
+        ExpansionAOS = LBR | AOS | LiveAccount,
         ExpansionSE = ExpansionAOS | SE,
         ExpansionML = ExpansionSE | ML | NinthAge,
         ExpansionSA = ExpansionML | SA | Gothic | Rustic,

@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Tests", "Projects\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent.Tests", "Projects\UOContent.Tests\UOContent.Tests.csproj", "{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "Projects\Benchmarks\Benchmarks.csproj", "{38B7E4A1-FDDD-486C-98EE-BA7B13712528}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analyze|x64 = Analyze|x64
@@ -43,12 +41,6 @@ Global
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Debug|x64.Build.0 = Debug|x64
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|x64.ActiveCfg = Release|x64
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|x64.Build.0 = Release|x64
-		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Analyze|x64.ActiveCfg = Release|x64
-		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Analyze|x64.Build.0 = Release|x64
-		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Debug|x64.ActiveCfg = Debug|x64
-		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Debug|x64.Build.0 = Debug|x64
-		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Release|x64.ActiveCfg = Release|x64
-		{38B7E4A1-FDDD-486C-98EE-BA7B13712528}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

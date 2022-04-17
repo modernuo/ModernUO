@@ -11,7 +11,8 @@ public partial class BaseClothing
         _resistances = content.Resistances ?? ResistancesDefaultValue();
         _maxHitPoints = content.MaxHitPoints ?? 0;
         _playerConstructed = content.PlayerConstructed;
-        _crafter = content.Crafter?.RawName; // Convert from Mobile -> String via RawName
+        var crafter = content.Crafter;
+        Timer.StartTimer(() => _crafter = crafter?.RawName);
         _quality = content.Quality ?? ClothingQuality.Regular;
         _strReq = content.StrRequirement ?? -1;
     }
@@ -70,7 +71,8 @@ public partial class BaseClothing
 
         if (GetSaveFlag(flags, OldSaveFlag.Crafter))
         {
-            _crafter = reader.ReadEntity<Mobile>()?.RawName;
+            var crafter = reader.ReadEntity<Mobile>();
+            Timer.StartTimer(() => _crafter = crafter?.RawName);
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.Quality))

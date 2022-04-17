@@ -149,7 +149,6 @@ public static class OutgoingAccountPackets
         if (ns.Account.Limit >= 6)
         {
             flags |= FeatureFlags.LiveAccount;
-            flags &= ~FeatureFlags.UOTD;
 
             if (ns.Account.Limit > 6)
             {
