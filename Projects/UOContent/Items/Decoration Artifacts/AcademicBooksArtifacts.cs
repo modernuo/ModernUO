@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class AcademicBooksArtifact : BaseDecorationArtifact
     {
         public override int ArtifactRarity => 8;

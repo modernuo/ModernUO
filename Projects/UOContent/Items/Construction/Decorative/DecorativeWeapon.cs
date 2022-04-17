@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x155E, 0x155F, 0x155C, 0x155D)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DecorativeBowWest : Item
     {
         [Constructible]
@@ -9,7 +11,7 @@ namespace Server.Items
     }
 
     [Flippable(0x155C, 0x155D, 0x155E, 0x155F)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DecorativeBowNorth : Item
     {
         [Constructible]
@@ -17,7 +19,7 @@ namespace Server.Items
     }
 
     [Flippable(0x1560, 0x1561, 0x1562, 0x1563)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DecorativeAxeNorth : Item
     {
         [Constructible]
@@ -25,14 +27,14 @@ namespace Server.Items
     }
 
     [Flippable(0x1562, 0x1563, 0x1560, 0x1561)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DecorativeAxeWest : Item
     {
         [Constructible]
         public DecorativeAxeWest() : base(Utility.Random(0x1562, 2)) => Movable = false;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DecorativeSwordNorth : Item
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -68,7 +70,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, getter: "private", setter: "private")]
@@ -106,7 +108,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DecorativeSwordWest : Item
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -142,7 +144,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0)]
+        [SerializationGenerator(0)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, getter: "private", setter: "private")]
@@ -179,7 +181,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DecorativeDAxeNorth : Item
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -215,7 +217,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0)]
+        [SerializationGenerator(0)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, getter: "private", setter: "private")]
@@ -253,7 +255,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DecorativeDAxeWest : Item
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -290,7 +292,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0)]
+        [SerializationGenerator(0)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, getter: "private", setter: "private")]

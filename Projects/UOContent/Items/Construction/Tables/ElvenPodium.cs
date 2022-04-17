@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     [Flippable(0x2DDD, 0x2DDE)]
     public partial class ElvenPodium : Item
     {

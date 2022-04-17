@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoard : AddonComponent
     {
         [Constructible]
@@ -86,7 +87,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardEastAddon : BaseAddon
     {
         public DartBoardEastAddon()
@@ -97,7 +98,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new DartBoardEastDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -110,7 +111,7 @@ namespace Server.Items
         public override int LabelNumber => 1044326; // dartboard (east)
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardSouthAddon : BaseAddon
     {
         public DartBoardSouthAddon()
@@ -121,7 +122,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new DartBoardSouthDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardSouthDeed : BaseAddonDeed
     {
         [Constructible]

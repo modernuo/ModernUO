@@ -1,10 +1,11 @@
 using System;
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class StValentinesBear : Item
     {
         [InternString]
@@ -190,7 +191,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x48E0, 0x48E1)]
     public partial class StValentinesPanda : StValentinesBear
     {
@@ -200,7 +201,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x48E2, 0x48E3)]
     public partial class StValentinesPolarBear : StValentinesBear
     {

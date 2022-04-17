@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1c06, 0x1c07)]
     public partial class FemaleLeatherChest : BaseArmor
     {

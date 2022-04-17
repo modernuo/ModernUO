@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -1295,7 +1296,7 @@ namespace Server
     }
 
     [PropertyObject]
-    [EmbeddedSerializable(0)]
+    [SerializationGenerator(0)]
     public abstract partial class BaseAttributes
     {
         [SerializableField(0, setter: "private")]
@@ -1321,9 +1322,9 @@ namespace Server
 
         public bool IsEmpty => _names == 0;
 
-        [SerializableParent]
-        private readonly Item _owner;
+        private Item _owner;
 
+        [DirtyTrackingEntity]
         public Item Owner => _owner;
 
         public int GetValue(int bitmask)

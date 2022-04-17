@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1B17, 0x1B18)]
     public partial class RibCage : Item, IScissorable
     {

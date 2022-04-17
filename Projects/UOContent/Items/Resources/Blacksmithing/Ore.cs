@@ -1,10 +1,11 @@
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public abstract partial class BaseOre : Item
     {
         public BaseOre(CraftResource resource, int amount = 1) : base(RandomSize())
@@ -363,7 +364,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class IronOre : BaseOre
     {
         [Constructible]
@@ -382,7 +383,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new IronIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DullCopperOre : BaseOre
     {
         [Constructible]
@@ -393,7 +394,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new DullCopperIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ShadowIronOre : BaseOre
     {
         [Constructible]
@@ -404,7 +405,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new ShadowIronIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class CopperOre : BaseOre
     {
         [Constructible]
@@ -415,7 +416,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new CopperIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BronzeOre : BaseOre
     {
         [Constructible]
@@ -426,7 +427,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new BronzeIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class GoldOre : BaseOre
     {
         [Constructible]
@@ -437,7 +438,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new GoldIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AgapiteOre : BaseOre
     {
         [Constructible]
@@ -448,7 +449,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new AgapiteIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class VeriteOre : BaseOre
     {
         [Constructible]
@@ -459,7 +460,7 @@ namespace Server.Items
         public override BaseIngot GetIngot() => new VeriteIngot();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ValoriteOre : BaseOre
     {
         [Constructible]

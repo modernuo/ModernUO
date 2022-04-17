@@ -1,6 +1,8 @@
-﻿namespace Server.Items.Holiday
+﻿using ModernUO.Serialization;
+
+namespace Server.Items.Holiday
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [TypeAlias("Server.Items.ClownMask", "Server.Items.DaemonMask", "Server.Items.PlagueMask")]
     public partial class BasePaintedMask : Item
     {

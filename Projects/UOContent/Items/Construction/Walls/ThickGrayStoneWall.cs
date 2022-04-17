@@ -6,6 +6,8 @@
  * CREATED : 10-07.2002                 *
  * **************************************/
 
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum ThickGrayStoneWallTypes
@@ -34,7 +36,7 @@ namespace Server.Items
         EastWindow2
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ThickGrayStoneWall : BaseWall
     {
         [Constructible]

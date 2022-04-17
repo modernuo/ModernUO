@@ -1,10 +1,11 @@
 using System;
 using System.Runtime.CompilerServices;
+using ModernUO.Serialization;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseOuterTorso : BaseClothing
     {
         public BaseOuterTorso(int itemID, int hue = 0) : base(itemID, Layer.OuterTorso, hue)
@@ -12,7 +13,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x230E, 0x230D)]
     public partial class GildedDress : BaseOuterTorso
     {
@@ -20,7 +21,7 @@ namespace Server.Items
         public GildedDress(int hue = 0) : base(0x230E, hue) => Weight = 3.0;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1F00, 0x1EFF)]
     public partial class FancyDress : BaseOuterTorso
     {
@@ -28,7 +29,7 @@ namespace Server.Items
         public FancyDress(int hue = 0) : base(0x1F00, hue) => Weight = 3.0;
     }
 
-    [Serializable(3, false)]
+    [SerializationGenerator(3, false)]
     public partial class DeathRobe : Robe
     {
         private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
@@ -141,7 +142,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RewardRobe : BaseOuterTorso, IRewardItem
     {
         [InvalidateProperties]
@@ -223,7 +224,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RewardDress : BaseOuterTorso, IRewardItem
     {
         [InvalidateProperties]
@@ -305,7 +306,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public partial class Robe : BaseOuterTorso, IArcaneEquip
     {
         private int _curArcaneCharges;
@@ -404,7 +405,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class MonkRobe : BaseOuterTorso
     {
         [Constructible]
@@ -425,7 +426,7 @@ namespace Server.Items
     }
 
     [Flippable(0x1f01, 0x1f02)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PlainDress : BaseOuterTorso
     {
         [Constructible]
@@ -433,7 +434,7 @@ namespace Server.Items
     }
 
     [Flippable(0x2799, 0x27E4)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Kamishimo : BaseOuterTorso
     {
         [Constructible]
@@ -441,7 +442,7 @@ namespace Server.Items
     }
 
     [Flippable(0x279C, 0x27E7)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class HakamaShita : BaseOuterTorso
     {
         [Constructible]
@@ -449,7 +450,7 @@ namespace Server.Items
     }
 
     [Flippable(0x2782, 0x27CD)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class MaleKimono : BaseOuterTorso
     {
         [Constructible]
@@ -457,7 +458,7 @@ namespace Server.Items
     }
 
     [Flippable(0x2783, 0x27CE)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FemaleKimono : BaseOuterTorso
     {
         [Constructible]
@@ -465,7 +466,7 @@ namespace Server.Items
     }
 
     [Flippable(0x2FB9, 0x3173)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class MaleElvenRobe : BaseOuterTorso
     {
         [Constructible]
@@ -473,7 +474,7 @@ namespace Server.Items
     }
 
     [Flippable(0x2FBA, 0x3174)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class FemaleElvenRobe : BaseOuterTorso
     {
         [Constructible]

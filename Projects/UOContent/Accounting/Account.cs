@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml;
+using ModernUO.Serialization;
 using Server.Accounting.Security;
 using Server.Misc;
 using Server.Mobiles;
@@ -11,7 +12,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    [Serializable(4)]
+    [SerializationGenerator(4)]
     public partial class Account : IAccount, IComparable<Account>, ISerializable
     {
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);

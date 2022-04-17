@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x26BE, 0x26C8)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Pike : BaseSpear
     {
         [Constructible]

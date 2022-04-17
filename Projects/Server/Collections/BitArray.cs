@@ -15,7 +15,7 @@ namespace Server.Collections;
 
 // A vector of bits.  Use this to store bits efficiently, without having to do bit
 // shifting yourself.
-[System.Serializable]
+[Serializable]
 public sealed class BitArray : ICollection, ICloneable
 {
     private int[] m_array; // Do not rename (binary serialization)

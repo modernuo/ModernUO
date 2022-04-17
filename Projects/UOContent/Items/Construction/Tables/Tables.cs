@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ElegantLowTable : Item
     {
         [Constructible]
@@ -9,7 +11,7 @@ namespace Server.Items
     }
 
     [Furniture]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PlainLowTable : Item
     {
         [Constructible]
@@ -18,7 +20,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB90, 0xB7D)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LargeTable : Item
     {
         [Constructible]
@@ -27,7 +29,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB35, 0xB34)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Nightstand : Item
     {
         [Constructible]
@@ -36,7 +38,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB8F, 0xB7C)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class YewWoodTable : Item
     {
         [Constructible]

@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
@@ -10,7 +11,7 @@ namespace Server.Items
         void BeginSpin(SpinCallback callback, Mobile from, int hue);
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     [TypeAlias("Server.Items.ElvenSpinningwheelEastAddon")]
     public partial class ElvenSpinningWheelEastAddon : BaseAddon, ISpinningWheel
     {
@@ -99,7 +100,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     [TypeAlias("Server.Items.ElvenSpinningwheelEastDeed")]
     public partial class ElvenSpinningWheelEastDeed : BaseAddonDeed
     {

@@ -1,10 +1,11 @@
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Network;
 using Server.Targeting;
 
 namespace Server.Items;
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class NewPlayerTicket : Item
 {
     [SerializableField(0)]

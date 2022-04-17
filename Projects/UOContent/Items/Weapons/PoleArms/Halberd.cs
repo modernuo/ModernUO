@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x143E, 0x143F)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Halberd : BasePoleArm
     {
         [Constructible]

@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x1403, 0x1402)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ShortSpear : BaseSpear
     {
         [Constructible]

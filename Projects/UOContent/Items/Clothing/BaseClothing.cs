@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
@@ -22,7 +23,7 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [Serializable(7, false)]
+    [SerializationGenerator(7, false)]
     public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, "private", "private")]

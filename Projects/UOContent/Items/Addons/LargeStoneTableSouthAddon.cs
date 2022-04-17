@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LargeStoneTableSouthAddon : BaseAddon
     {
         [Constructible]
@@ -17,7 +19,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LargeStoneTableSouthDeed : BaseAddonDeed
     {
         [Constructible]

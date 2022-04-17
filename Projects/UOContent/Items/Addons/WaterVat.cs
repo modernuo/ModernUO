@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class WaterVatEast : BaseAddon
     {
         [Constructible]
@@ -24,7 +26,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class WaterVatSouth : BaseAddon
     {
         [Constructible]

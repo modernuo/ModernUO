@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Futon : Item
     {
         [Constructible]

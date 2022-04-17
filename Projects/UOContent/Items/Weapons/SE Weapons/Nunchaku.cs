@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27AE, 0x27F9)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Nunchaku : BaseBashing
     {
         [Constructible]

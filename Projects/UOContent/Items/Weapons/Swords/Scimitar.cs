@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x13B6, 0x13B5)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Scimitar : BaseSword
     {
         [Constructible]
