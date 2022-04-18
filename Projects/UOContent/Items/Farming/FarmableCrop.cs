@@ -1,91 +1,71 @@
 using System;
+using ModernUO.Serialization;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public abstract partial class FarmableCrop : Item
 {
-    public abstract class FarmableCrop : Item
+    [SerializableField(0)]
+    private bool _picked;
+
+    public FarmableCrop(int itemID) : base(itemID) => Movable = false;
+
+    public abstract Item GetCropObject();
+    public abstract int GetPickedID();
+
+    public override void OnDoubleClick(Mobile from)
     {
-        private bool m_Picked;
+        var map = Map;
+        var loc = Location;
 
-        public FarmableCrop(int itemID) : base(itemID) => Movable = false;
-
-        public FarmableCrop(Serial serial) : base(serial)
+        if (Parent != null || Movable || IsLockedDown || IsSecure || map == null || map == Map.Internal)
         {
+            return;
         }
 
-        public abstract Item GetCropObject();
-        public abstract int GetPickedID();
-
-        public override void OnDoubleClick(Mobile from)
+        if (!from.InRange(loc, 2) || !from.InLOS(this))
         {
-            var map = Map;
-            var loc = Location;
-
-            if (Parent != null || Movable || IsLockedDown || IsSecure || map == null || map == Map.Internal)
-            {
-                return;
-            }
-
-            if (!from.InRange(loc, 2) || !from.InLOS(this))
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-            else if (!m_Picked)
-            {
-                OnPicked(from, loc, map);
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
-
-        public virtual void OnPicked(Mobile from, Point3D loc, Map map)
+        else if (!_picked)
         {
-            ItemID = GetPickedID();
+            OnPicked(from, loc, map);
+        }
+    }
 
-            var spawn = GetCropObject();
+    public virtual void OnPicked(Mobile from, Point3D loc, Map map)
+    {
+        ItemID = GetPickedID();
 
-            spawn?.MoveToWorld(loc, map);
+        var spawn = GetCropObject();
 
-            m_Picked = true;
+        spawn?.MoveToWorld(loc, map);
 
+        _picked = true;
+
+        Unlink();
+
+        Timer.StartTimer(TimeSpan.FromMinutes(5.0), Delete);
+    }
+
+    public void Unlink()
+    {
+        if (Spawner != null)
+        {
+            Spawner.Remove(this);
+            Spawner = null;
+        }
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        if (_picked)
+        {
             Unlink();
-
-            Timer.StartTimer(TimeSpan.FromMinutes(5.0), Delete);
-        }
-
-        public void Unlink()
-        {
-            if (Spawner != null)
-            {
-                Spawner.Remove(this);
-                Spawner = null;
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_Picked);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Picked = version switch
-            {
-                0 => reader.ReadBool(),
-                _ => m_Picked
-            };
-
-            if (m_Picked)
-            {
-                Unlink();
-                Delete();
-            }
+            Delete();
         }
     }
 }
