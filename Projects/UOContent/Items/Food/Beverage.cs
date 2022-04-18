@@ -728,8 +728,8 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         writer.Write(1); // version
 
         writer.Write(Poisoner);
+        writer.Write(Poison);
 
-        Poison.Serialize(Poison, writer);
         writer.Write((int)m_Content);
         writer.Write(m_Quantity);
     }
