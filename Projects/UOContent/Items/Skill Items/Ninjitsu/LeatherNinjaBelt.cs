@@ -136,7 +136,7 @@ namespace Server.Items
 
             writer.Write(m_UsesRemaining);
 
-            Poison.Serialize(m_Poison, writer);
+            writer.Write(m_Poison);
             writer.Write(m_PoisonCharges);
         }
 
@@ -152,7 +152,7 @@ namespace Server.Items
                     {
                         m_UsesRemaining = reader.ReadInt();
 
-                        m_Poison = Poison.Deserialize(reader);
+                        m_Poison = reader.ReadPoison();
                         m_PoisonCharges = reader.ReadInt();
 
                         break;

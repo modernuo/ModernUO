@@ -741,7 +741,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         var version = reader.ReadInt();
 
         Poisoner = reader.ReadEntity<Mobile>();
-        Poison = Poison.Deserialize(reader);
+        Poison = reader.ReadPoison();
         m_Content = (BeverageType)reader.ReadInt();
         m_Quantity = reader.ReadInt();
     }
