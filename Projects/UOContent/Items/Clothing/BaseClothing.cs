@@ -271,25 +271,33 @@ namespace Server.Items
 
             var item = system.CraftItems.SearchFor(GetType());
 
-            if (item?.Resources.Count == 1 && item.Resources[0].Amount >= 2)
+            if (item?.Resources.Count == 1)
             {
-                try
+                var resource = item.Resources[0];
+                if (resource.Amount >= 2)
                 {
-                    var info = CraftResources.GetInfo(_rawResource);
+                    try
+                    {
+                        var info = CraftResources.GetInfo(_rawResource);
 
-                    var resourceType = info.ResourceTypes?[0] ?? item.Resources[0].ItemType;
+                        Type resourceType = null;
+                        if (info?.ResourceTypes.Length > 0)
+                        {
+                            resourceType = info.ResourceTypes[0];
+                        }
 
-                    var res = resourceType.CreateInstance<Item>();
+                        var res = (resourceType ?? resource.ItemType).CreateInstance<Item>();
 
-                    ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
+                        ScissorHelper(from, res, PlayerConstructed ? resource.Amount / 2 : 1);
 
-                    res.LootType = LootType.Regular;
+                        res.LootType = LootType.Regular;
 
-                    return true;
-                }
-                catch
-                {
-                    // ignored
+                        return true;
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
 
