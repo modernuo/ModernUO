@@ -2571,8 +2571,6 @@ namespace Server
             writer.Write(DisarmReady);
             writer.Write(StunReady);
 
-            // Poison.Serialize( m_Poison, writer );
-
             writer.Write(m_StatCap);
 
             writer.Write(NameHue);
@@ -6386,7 +6384,7 @@ namespace Server
                     {
                         if (version <= 25)
                         {
-                            Poison.Deserialize(reader);
+                            reader.ReadPoison();
                         }
 
                         goto case 3;
