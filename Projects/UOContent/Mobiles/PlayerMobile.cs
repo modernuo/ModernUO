@@ -394,7 +394,7 @@ namespace Server.Mobiles
 
         public bool NinjaWepCooldown { get; set; }
 
-        public List<Mobile> AllFollowers => m_AllFollowers ?? (m_AllFollowers = new List<Mobile>());
+        public List<Mobile> AllFollowers => m_AllFollowers ??= new List<Mobile>();
 
         public RankDefinition GuildRank
         {
@@ -1103,7 +1103,10 @@ namespace Server.Mobiles
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool CheckBlock(MountBlock block) => block?._timerToken.Running == true;
+        private static bool CheckBlock(MountBlock block) => block.CheckBlock();
+
+        public void SetMountBlock(BlockMountType type, bool dismount) =>
+            SetMountBlock(type, TimeSpan.MaxValue, dismount);
 
         public void SetMountBlock(BlockMountType type, TimeSpan duration, bool dismount)
         {
@@ -1119,8 +1122,9 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!CheckBlock(m_MountBlock) || m_MountBlock._timerToken.Next < Core.Now + duration)
+            if (!CheckBlock(m_MountBlock) || m_MountBlock.Expiration < Core.Now + duration)
             {
+                m_MountBlock?.RemoveBlock(this);
                 m_MountBlock = new MountBlock(duration, type, this);
             }
         }
@@ -4634,17 +4638,24 @@ namespace Server.Mobiles
 
         private class MountBlock
         {
-            public TimerExecutionToken _timerToken;
+            private TimerExecutionToken _timerToken;
             public readonly BlockMountType m_Type;
 
             public MountBlock(TimeSpan duration, BlockMountType type, Mobile mobile)
             {
                 m_Type = type;
 
-                Timer.StartTimer(duration, () => RemoveBlock(mobile), out _timerToken);
+                if (duration < TimeSpan.MaxValue)
+                {
+                    Timer.StartTimer(duration, () => RemoveBlock(mobile), out _timerToken);
+                }
             }
 
-            private void RemoveBlock(Mobile mobile)
+            public DateTime Expiration => _timerToken.Next;
+
+            public bool CheckBlock() => _timerToken.Next == DateTime.MinValue || _timerToken.Running;
+
+            public void RemoveBlock(Mobile mobile)
             {
                 if (mobile is PlayerMobile pm)
                 {
