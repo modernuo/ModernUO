@@ -589,8 +589,7 @@ namespace Server.Spells.Ninjitsu
                     m_LastTarget = m_Mobile.Combatant;
                 }
 
-                if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
-                    m_Counter-- <= 0)
+                if (m_Mobile.Warmode && m_LastTarget is { Alive: true, Deleted: false } && m_Counter-- <= 0)
                 {
                     if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&
                         m_LastTarget.InRange(m_Mobile.Location, BaseCreature.DefaultRangePerception) &&
