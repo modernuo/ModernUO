@@ -1464,6 +1464,9 @@ namespace Server
                     box.Close();
                 }
 
+                OnBeforeDisconnected();
+                EventSink.InvokeBeforeDisconnected(this);
+
                 m_NetState = value;
                 _logoutTimerToken.Cancel();
 
@@ -7192,6 +7195,10 @@ namespace Server
         }
 
         public virtual void OnConnected()
+        {
+        }
+
+        public virtual void OnBeforeDisconnected()
         {
         }
 
