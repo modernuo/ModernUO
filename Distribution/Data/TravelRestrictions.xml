@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TravelRestrictions>
+  <Region Name="FeluccaT2A" Delegate="IsFeluccaT2A">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="Khaldun" Delegate="IsKhaldun">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="Ilshenar" Delegate="IsIlshenar">
+    <RecallFrom>true</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="TrammelWind" Delegate="IsTrammelWind">
+    <RecallFrom>true</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="FeluccaWind" Delegate="IsFeluccaWind">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="FeluccaDungeon" Delegate="IsFeluccaDungeon">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="TrammelSolen" Delegate="IsTrammelSolenHive">
+    <RecallFrom>true</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="FeluccaSolen" Delegate="IsFeluccaSolenHive">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="MalasCrystalCave" Delegate="IsCrystalCave">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>false</TeleportFrom>
+    <TeleportTo>false</TeleportTo>
+  </Region>
+  <Region Name="MalasGauntlet" Delegate="IsDoomGauntlet">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="MalasGauntletFerry" Delegate="IsDoomFerry">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>false</TeleportTo>
+  </Region>
+  <Region Name="SafeZone" Delegate="IsSafeZone">
+    <RecallFrom>true</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>false</TeleportTo>
+  </Region>
+  <Region Name="FactionStronghold" Delegate="IsFactionStronghold">
+    <RecallFrom>true</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>false</TeleportFrom>
+    <TeleportTo>false</TeleportTo>
+  </Region>
+  <Region Name="ChampionSpawn" Delegate="IsChampionSpawn">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="TokunoMalasDungeon" Delegate="IsTokunoDungeon">
+    <RecallFrom>true</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="DoomLampRoom" Delegate="IsLampRoom">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="DoomGuardianRoom" Delegate="IsGuardianRoom">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>true</TeleportTo>
+  </Region>
+  <Region Name="Heartwood" Delegate="IsHeartwood">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>false</TeleportFrom>
+    <TeleportTo>false</TeleportTo>
+  </Region>
+  <Region Name="MLDungeon" Delegate="IsMLDungeon">
+    <RecallFrom>false</RecallFrom>
+    <RecallTo>false</RecallTo>
+    <GateFrom>false</GateFrom>
+    <GateTo>false</GateTo>
+    <Mark>false</Mark>
+    <TeleportFrom>true</TeleportFrom>
+    <TeleportTo>false</TeleportTo>
+  </Region>
+</TravelRestrictions>

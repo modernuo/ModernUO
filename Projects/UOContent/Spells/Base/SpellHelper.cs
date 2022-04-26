@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Xml;
 using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
@@ -79,6 +82,116 @@ namespace Server.Spells
             1, 0,
             1, 1
         };
+
+        public static void Configure()
+        {// Custom Travel Settings. Needs converted to Json in time.
+            Console.Write("SpellHelper: Loading TravelRestrictions...");
+            if (LoadTravelRestrictions())
+                Console.WriteLine("done");
+            else
+                Console.WriteLine("failed");
+        }
+
+        public static bool LoadTravelRestrictions()
+        {
+            string filePath = Path.Combine("Data", "TravelRestrictions.xml");
+
+            if (!File.Exists(filePath))
+                return false;
+
+            XmlDocument x = new XmlDocument();
+            x.Load(filePath);
+
+            try
+            {
+                XmlElement e = x["TravelRestrictions"];
+
+                if (e == null)
+                    return false;
+
+                foreach (XmlElement r in e.GetElementsByTagName("Region"))
+                {
+                    if (!r.HasAttribute("Name"))
+                    {
+                        Console.WriteLine("Warning: Missing 'Name' attribute in TravelRestrictions.xml");
+                        continue;
+                    }
+
+                    string name = r.GetAttribute("Name");
+
+                    if (m_TravelRestrictions.ContainsKey(name))
+                    {
+                        Console.WriteLine("Warning: Duplicate name '{0}' in TravelRestrictions.xml", name);
+                        continue;
+                    }
+
+                    if (!r.HasAttribute("Delegate"))
+                    {
+                        Console.WriteLine("Warning: Missing 'Delegate' attribute in TravelRestrictions.xml");
+                        continue;
+                    }
+
+                    string d = r.GetAttribute("Delegate");
+
+                    MethodInfo m = typeof(SpellHelper).GetMethod(d);
+                    if (m == null)
+                    {
+                        Console.WriteLine("Warning: TravelRestrictions.xml Delegate '{0}' not found in SpellHelper", d);
+                        continue;
+                    }
+
+                    TravelValidator v = (TravelValidator)Delegate.CreateDelegate(typeof(TravelValidator), m);
+                    TravelRules t = new TravelRules();
+                    t.Validator = v;
+                    m_TravelRestrictions[name] = t;
+
+                    foreach (XmlElement rule in r)
+                    {
+                        switch (rule.Name.ToLower())
+                        {
+                            case "recallfrom": t.RecallFrom = Utility.ToBoolean(rule.InnerText); break;
+                            case "recallto": t.RecallTo = Utility.ToBoolean(rule.InnerText); break;
+                            case "gatefrom": t.GateFrom = Utility.ToBoolean(rule.InnerText); break;
+                            case "gateto": t.GateTo = Utility.ToBoolean(rule.InnerText); break;
+                            case "mark": t.Mark = Utility.ToBoolean(rule.InnerText); break;
+                            case "teleportfrom": t.TeleportFrom = Utility.ToBoolean(rule.InnerText); break;
+                            case "teleportto": t.TeleportTo = Utility.ToBoolean(rule.InnerText); break;
+                            default: Console.WriteLine("Warning: Unknown element '{0}' in TravelRestrictions.xml", rule.Name); break;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+
+            return true;
+        }
+
+        private struct TravelRules
+        {
+            public TravelValidator Validator;
+
+            public bool RecallFrom, RecallTo, GateFrom, GateTo, Mark, TeleportFrom, TeleportTo;
+
+            public bool Allow(TravelCheckType t) => t switch
+            {
+                TravelCheckType.RecallFrom => RecallFrom,
+                TravelCheckType.RecallTo => RecallTo,
+                TravelCheckType.GateFrom => GateFrom,
+                TravelCheckType.GateTo => GateTo,
+                TravelCheckType.Mark => Mark,
+                TravelCheckType.TeleportFrom => TeleportFrom,
+                TravelCheckType.TeleportTo => TeleportTo,
+                _ => false,
+            };
+        }
+
+        private static Dictionary<string, TravelRules> m_TravelRestrictions = new Dictionary<string, TravelRules>();
+
+        private delegate bool TravelValidator(Map map, Point3D loc);
 
         private static readonly TravelValidator[] m_Validators =
         {
@@ -678,9 +791,17 @@ namespace Server.Spells
                 }
             }
 
-            for (var i = 0; isValid && i < m_Validators.Length; ++i)
+            //for (var i = 0; isValid && i < m_Validators.Length; ++i)
+            //{
+            //    isValid = m_Rules[v, i] || !m_Validators[i](map, loc);
+            // }
+            foreach (KeyValuePair<string, TravelRules> r in m_TravelRestrictions)
             {
-                isValid = m_Rules[v, i] || !m_Validators[i](map, loc);
+                isValid = r.Value.Allow(type) || !r.Value.Validator(map, loc);
+                if (!isValid && caster != null)
+                {
+                    break;
+                }
             }
 
             if (!isValid && caster != null)
