@@ -86,7 +86,6 @@ namespace Server
         ExpansionUOR = ExpansionT2A | UOR,
         ExpansionUOTD = ExpansionUOR | UOTD,
         ExpansionLBR = ExpansionUOTD | LBR,
-        // In later clients, the AOS+ expansions include the Publish 16 LBR flag, but not the previous expansions.
         ExpansionAOS = LBR | AOS | LiveAccount,
         ExpansionSE = ExpansionAOS | SE,
         ExpansionML = ExpansionSE | ML | NinthAge,
