@@ -44,7 +44,7 @@ public partial class TreasureMapChest : LockableContainer
     [Tidy]
     [SerializableField(5, setter: "private")]
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-    private HashSet<Item> _lifted = new HashSet<Item>();
+    private HashSet<Item> _lifted;
 
     [Constructible]
     public TreasureMapChest(int level) : this(null, level)
@@ -361,6 +361,11 @@ public partial class TreasureMapChest : LockableContainer
 
     public override void OnItemLifted(Mobile from, Item item)
     {
+        if (_lifted == null)
+        {
+            _lifted = new HashSet<Item>();
+        }
+
         var notYetLifted = !_lifted.Contains(item);
 
         from.RevealingAction();
