@@ -107,7 +107,7 @@ namespace Server.Json
             {
                 var flagValue = Enum.Parse<T>(flagName, false);
                 var flag = ConvertToUInt64(underlyingType, flagValue);
-                if (flag == 0 || (flag & size) == 0)
+                if (flag != 0)
                 {
                     writer.WriteBoolean(flagName, (intValue & flag) != 0);
                 }
