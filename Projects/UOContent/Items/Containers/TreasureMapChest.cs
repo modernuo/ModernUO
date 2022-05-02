@@ -44,7 +44,7 @@ public partial class TreasureMapChest : LockableContainer
     [Tidy]
     [SerializableField(5, setter: "private")]
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-    private HashSet<Item> _lifted;
+    private HashSet<Item> _lifted = new HashSet<Item>();
 
     [Constructible]
     public TreasureMapChest(int level) : this(null, level)
