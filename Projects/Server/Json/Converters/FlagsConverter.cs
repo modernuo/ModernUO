@@ -100,16 +100,17 @@ namespace Server.Json
         {
             writer.WriteStartObject();
             var underlyingType = Enum.GetUnderlyingType(typeof(T));
-            var size = GetUnderlyingTypeLength(Type.GetTypeCode(underlyingType)) - 1;
             var intValue = ConvertToUInt64(underlyingType, value);
 
             foreach (var flagName in Enum.GetNames(typeof(T)))
             {
                 var flagValue = Enum.Parse<T>(flagName, false);
                 var flag = ConvertToUInt64(underlyingType, flagValue);
-                if (flag == 0 || (flag & size) == 0)
+
+                // Do not write out multi-bit values. This is a custom behavior
+                if (flag > 0 && (flag & (flag - 1)) == 0)
                 {
-                    writer.WriteBoolean(flagName, (intValue & flag) != 0);
+                    writer.WriteBoolean(flagName, (intValue & flag) == flag);
                 }
             }
 

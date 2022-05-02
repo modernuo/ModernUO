@@ -86,7 +86,6 @@ namespace Server
         ExpansionUOR = ExpansionT2A | UOR,
         ExpansionUOTD = ExpansionUOR | UOTD,
         ExpansionLBR = ExpansionUOTD | LBR,
-        // In later clients, the AOS+ expansions include the Publish 16 LBR flag, but not the previous expansions.
         ExpansionAOS = LBR | AOS | LiveAccount,
         ExpansionSE = ExpansionAOS | SE,
         ExpansionML = ExpansionSE | ML | NinthAge,
@@ -159,6 +158,12 @@ namespace Server
 
     public class ExpansionInfo
     {
+        public static bool ForceOldAnimations { get; private set; }
+        public static void Configure()
+        {
+            ForceOldAnimations = ServerConfiguration.GetSetting("expansion.forceOldAnimations", false);
+        }
+
         public static string GetEraFolder(string parentDirectory)
         {
             var expansion = Core.Expansion;
@@ -264,32 +269,6 @@ namespace Server
         public CharacterListFlags CharacterListFlags { get; set; }
         public ClientVersion RequiredClient { get; set; }
         public HousingFlags CustomHousingFlag { get; set; }
-
-        public static FeatureFlags GetFeatures(Expansion ex)
-        {
-            var info = GetInfo(ex);
-
-            if (info != null)
-            {
-                return info.SupportedFeatures;
-            }
-
-            return ex switch
-            {
-                Expansion.T2A  => FeatureFlags.ExpansionT2A,
-                Expansion.UOR  => FeatureFlags.ExpansionUOR,
-                Expansion.UOTD => FeatureFlags.ExpansionUOTD,
-                Expansion.LBR  => FeatureFlags.ExpansionLBR,
-                Expansion.AOS  => FeatureFlags.ExpansionAOS,
-                Expansion.SE   => FeatureFlags.ExpansionSE,
-                Expansion.ML   => FeatureFlags.ExpansionML,
-                Expansion.SA   => FeatureFlags.ExpansionSA,
-                Expansion.HS   => FeatureFlags.ExpansionHS,
-                Expansion.TOL  => FeatureFlags.ExpansionTOL,
-                Expansion.EJ   => FeatureFlags.EJ,
-                _              => FeatureFlags.ExpansionNone
-            };
-        }
 
         public static ExpansionInfo GetInfo(Expansion ex) => GetInfo((int)ex);
 
