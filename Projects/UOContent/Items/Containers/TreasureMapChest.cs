@@ -361,12 +361,10 @@ public partial class TreasureMapChest : LockableContainer
 
     public override void OnItemLifted(Mobile from, Item item)
     {
-        if (_lifted == null)
-        {
-            _lifted = new HashSet<Item>();
-        }
-
-        var notYetLifted = !_lifted.Contains(item);
+        
+        _lifted ??= new HashSet<Item>();
+        
+        var notYetLifted = !_lifted.Contains(item); 
 
         from.RevealingAction();
 
