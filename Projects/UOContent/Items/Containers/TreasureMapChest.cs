@@ -361,15 +361,12 @@ public partial class TreasureMapChest : LockableContainer
 
     public override void OnItemLifted(Mobile from, Item item)
     {
-        
-        _lifted ??= new HashSet<Item>();
-        
-        var notYetLifted = !_lifted.Contains(item); 
-
+        var notYetLifted = _lifted?.Contains(item) != true; 
         from.RevealingAction();
 
         if (notYetLifted)
         {
+            _lifted = new HashSet<Item>();
             _lifted.Add(item);
 
             if (Utility.RandomDouble() <= 0.1) // 10% chance to spawn a new monster
