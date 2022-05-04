@@ -55,6 +55,7 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
         IncomingPackets.Register(0xFF, 4, false, KRSeed);
         IncomingPackets.Register(0xE4, 0, false, KREncryptionResponse);
+        IncomingPackets.Register(0x8D, 0, false, KRCreateCharacter);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -186,6 +187,150 @@ public static class IncomingAccountPackets
             state.Disconnect("Character creation blocked.");
         }
     }
+
+    public static void KRCreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        int flags = 0;
+
+        int length = packetLength;
+
+        int unk1 = reader.ReadInt32(); // Pattern
+        int charSlot = reader.ReadInt32();
+        var name = reader.ReadAscii(30);
+        var unknown1 = reader.ReadAscii(30); // "Unknow"
+
+        int profession = reader.ReadByte();
+        int clientFlags = reader.ReadByte();
+
+        int gender = reader.ReadByte();
+        int genderRace = reader.ReadByte();
+
+        var stats = new StatNameValue[]
+        {
+            new(StatType.Str, reader.ReadByte()),
+            new(StatType.Dex, reader.ReadByte()),
+            new(StatType.Int, reader.ReadByte())
+        };
+
+        int hue = reader.ReadInt16();
+        int unk5 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00
+        int unk6 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00	
+
+        var skills = new SkillNameValue[state.NewCharacterCreation ? 4 : 3];
+        skills[0] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        skills[1] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        skills[2] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        if (state.NewCharacterCreation)
+        {
+            skills[3] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        }
+
+        var unknown2 = reader.ReadAscii(25); // Pack of 0x00
+        int unk7 = reader.ReadByte(); // Another 0x00
+
+        int hairHue = reader.ReadInt16();
+        int hairID = reader.ReadInt16();
+
+        int unk8 = reader.ReadByte();
+        int unk9 = reader.ReadInt32();
+        int unk10 = reader.ReadByte();
+        int shirtHue = reader.ReadInt16();
+        int shirtID = reader.ReadInt16();
+        int unk13 = reader.ReadByte();
+        int faceColor = reader.ReadInt16();
+        int faceID = reader.ReadInt16();
+        int unk14 = reader.ReadByte();
+        int beardHue = reader.ReadInt16();
+        int beardID = reader.ReadInt16();
+
+        int cityIndex = 0; // Obsolete
+        int pantsHue = shirtHue; // Obsolete
+        Race race = null;
+        bool female = false;
+
+        female = (gender != 0);
+        race = Race.Races[(byte)(((genderRace - 1)))]; //SA client sends race packet one higher than KR, so this is neccesary
+        if (race == null)
+            race = Race.DefaultRace;
+
+
+        CityInfo[] info = state.CityInfo;
+        var a = state.Account;
+
+        if (clientFlags > 0)
+            flags = clientFlags;
+
+        if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
+        {
+            state.Disconnect("Invalid city selected during character creation.");
+            return;
+        }
+        else
+        {
+            // Check if anyone is using this account
+            for (int i = 0; i < a.Length; ++i)
+            {
+                Mobile check = a[i];
+
+                if (check != null && check.Map != Map.Internal)
+                {
+                    state.LogInfo("Account in use");
+                    state.SendPopupMessage(PMMessage.CharInWorld);
+                    return;
+                }
+            }
+
+            state.Flags = (ClientFlags)flags;
+
+            var args = new CharacterCreatedEventArgs(
+                state,
+                a,
+                name,
+                female,
+                hue,
+                stats,
+                info[cityIndex],
+                skills,
+                shirtHue,
+                pantsHue,
+                hairID,
+                hairHue,
+                beardID,
+                beardHue,
+                profession,
+                race
+            );
+            state.SendClientVersionRequest();
+
+            state.BlockAllPackets = true;
+
+            EventSink.InvokeCharacterCreated(args);
+
+            Mobile m = args.Mobile;
+
+            if (m != null)
+            {
+                state.Mobile = m;
+                m.NetState = state;
+
+                state.BlockAllPackets = false;
+                DoLogin(state, m);
+            }
+            else
+            {
+                state.BlockAllPackets = false;
+                state.Disconnect("Character creation blocked.");
+            }
+        }
+    }
+
+
+
+
+
+
+
+
 
     public static void DeleteCharacter(NetState state, CircularBufferReader reader, int packetLength)
     {
@@ -516,6 +661,7 @@ public static class IncomingAccountPackets
     {
         //<---- Kr Encryption Response Received, Packet 0xE4
     }
+       
 
     private class LoginTimer : Timer
     {
