@@ -122,7 +122,7 @@ public partial class NetState : IComparable<NetState>
         SendPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(SendPipeSize));
         _nextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
-        
+
         try
         {
             Address = Utility.Intern((Connection?.RemoteEndPoint as IPEndPoint)?.Address);
@@ -661,7 +661,7 @@ public partial class NetState : IComparable<NetState>
                                 break;
                             }
                         case ProtocolState.LoginServer_AwaitingLogin:
-                                {
+                            {
                                 if (packetId != 0xCF && packetId != 0x80)
                                 {
                                     LogInfo("Possible encrypted client detected, disconnecting...");
@@ -702,8 +702,8 @@ public partial class NetState : IComparable<NetState>
                                     HandleError(packetId, packetLength);
 #else
                                 // Reset the state because CUO/Orion do not reconnect
-                                    _parserState = ParserState.AwaitingNextPacket;
-                                    _protocolState = ProtocolState.AwaitingSeed;
+                                _parserState = ParserState.AwaitingNextPacket;
+                                _protocolState = ProtocolState.AwaitingSeed;
 #endif
                                 return;
                             }

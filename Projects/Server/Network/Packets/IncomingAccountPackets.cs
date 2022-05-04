@@ -534,9 +534,9 @@ public static class IncomingAccountPackets
             state.Disconnect("Invalid auth id in game login packet.");
             return;
         }
-        
+
         m_AuthIDWindow.Remove(authID);
-        
+
 
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);

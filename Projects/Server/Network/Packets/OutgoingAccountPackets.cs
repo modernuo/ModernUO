@@ -160,6 +160,11 @@ public static class OutgoingAccountPackets
             }
         }
 
+        if (ExpansionInfo.ForceOldAnimations)
+        {
+            flags &= ~FeatureFlags.LBR;
+        }
+
         var length = ns.ExtendedSupportedFeatures ? 5 : 3;
         var writer = new SpanWriter(stackalloc byte[length]);
         writer.Write((byte)0xB9); // Packet ID
