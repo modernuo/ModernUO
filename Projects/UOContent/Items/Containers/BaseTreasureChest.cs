@@ -57,6 +57,8 @@ public partial class BaseTreasureChest : LockableContainer
                 {
                     StartResetTimer();
                 }
+
+                InvalidateProperties();
             }
         }
     }

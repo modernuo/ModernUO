@@ -73,7 +73,11 @@
         public string Giver
         {
             get => m_Maker;
-            set => m_Maker = value;
+            set
+            {
+                m_Maker = value;
+                InvalidateProperties();
+            }
         }
 
         public override string DefaultName => $"A Holiday Bell From {Giver}";
