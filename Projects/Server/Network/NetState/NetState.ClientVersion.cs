@@ -77,6 +77,8 @@ namespace Server.Network
 
         public bool IsSAClient => _version?.Type == ClientType.SA;
 
+        public bool IsKRClient => _version?.Type == ClientType.KR;
+
         private ExpansionInfo m_Expansion;
 
         public ExpansionInfo ExpansionInfo

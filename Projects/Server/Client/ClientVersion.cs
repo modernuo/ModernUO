@@ -25,7 +25,8 @@ public enum ClientType
     Regular,
     UOTD,
     God,
-    SA
+    SA,
+    KR
 }
 
 public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
@@ -49,12 +50,22 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
     {
-        Major = maj;
-        Minor = min;
-        Revision = rev;
-        Patch = pat;
-        Type = type;
-
+        if (maj == 66 && min == 55 && rev ==52 && pat == 00) // Specific check for 2.58.0.6 and 2.58.0.7 KR equivalent to 6.0.13.1 Legacy.
+        {
+            Major = 6;
+            Minor = 0;
+            Revision = 13;
+            Patch = 1;
+            Type = ClientType.KR;
+        }
+        else
+        {
+            Major = maj;
+            Minor = min;
+            Revision = rev;
+            Patch = pat;
+            Type = type;
+        }
         SourceString = Utility.Intern(ToStringImpl());
     }
 

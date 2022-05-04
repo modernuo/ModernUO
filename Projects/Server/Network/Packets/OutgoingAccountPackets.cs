@@ -160,11 +160,6 @@ public static class OutgoingAccountPackets
             }
         }
 
-        if (ExpansionInfo.ForceOldAnimations)
-        {
-            flags &= ~FeatureFlags.LBR;
-        }
-
         var length = ns.ExtendedSupportedFeatures ? 5 : 3;
         var writer = new SpanWriter(stackalloc byte[length]);
         writer.Write((byte)0xB9); // Packet ID
@@ -451,6 +446,101 @@ public static class OutgoingAccountPackets
         writer.WriteLE(si.RawAddress);
         writer.Write((short)si.Address.Port);
         writer.Write(authId);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendKREncryptionReq(this NetState ns)
+    {
+        //Sending Kr Encryption Response, Packet 0xE4 ----->
+        var writer = new SpanWriter(stackalloc byte[77]);
+        writer.Write((byte)0xE3);
+
+        // First 2 - Size
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x4D);
+
+        // Next ones... I have no idea from now on
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x03);
+        writer.Write((byte)0x02);
+        writer.Write((byte)0x01);
+        writer.Write((byte)0x03);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x13);
+        writer.Write((byte)0x02);
+        writer.Write((byte)0x11);
+
+        // Next 16
+        writer.Write((byte)0x00);
+        writer.Write((byte)0xFC);
+        writer.Write((byte)0x2F);
+        writer.Write((byte)0xE3);
+        writer.Write((byte)0x81);
+        writer.Write((byte)0x93);
+        writer.Write((byte)0xCB);
+        writer.Write((byte)0xAF);
+        writer.Write((byte)0x98);
+        writer.Write((byte)0xDD);
+        writer.Write((byte)0x83);
+        writer.Write((byte)0x13);
+        writer.Write((byte)0xD2);
+        writer.Write((byte)0x9E);
+        writer.Write((byte)0xEA);
+        writer.Write((byte)0xE4);
+
+        // Next 16
+        writer.Write((byte)0x13);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x10);
+        writer.Write((byte)0x78);
+        writer.Write((byte)0x13);
+        writer.Write((byte)0xB7);
+        writer.Write((byte)0x7B);
+        writer.Write((byte)0xCE);
+        writer.Write((byte)0xA8);
+        writer.Write((byte)0xD7);
+        writer.Write((byte)0xBC);
+        writer.Write((byte)0x52);
+        writer.Write((byte)0xDE);
+        writer.Write((byte)0x38);
+        // Next 16
+        writer.Write((byte)0x30);
+        writer.Write((byte)0xEA);
+        writer.Write((byte)0xE9);
+        writer.Write((byte)0x1E);
+        writer.Write((byte)0xA3);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x20);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x00);
+        writer.Write((byte)0x10);
+        writer.Write((byte)0x5A);
+        writer.Write((byte)0xCE);
+        writer.Write((byte)0x3E);
+        // Next 13
+        writer.Write((byte)0xE3);
+        writer.Write((byte)0x97);
+        writer.Write((byte)0x92);
+        writer.Write((byte)0xE4);
+        writer.Write((byte)0x8A);
+        writer.Write((byte)0xF1);
+        writer.Write((byte)0x9A);
+        writer.Write((byte)0xD3);
+        writer.Write((byte)0x04);
+        writer.Write((byte)0x41);
+        writer.Write((byte)0x03);
+        writer.Write((byte)0xCB);
+        writer.Write((byte)0x53);
 
         ns.Send(writer.Span);
     }

@@ -91,7 +91,7 @@ public partial class NetState : IComparable<NetState>
         LoginServer_AwaitingLogin,
         LoginServer_AwaitingServerSelect,
         LoginServer_ServerSelectAck,
-
+        LoginServer_AwaitingKrAck,
         GameServer_AwaitingGameServerLogin,
         GameServer_LoggedIn,
 
@@ -122,7 +122,7 @@ public partial class NetState : IComparable<NetState>
         SendPipe = new Pipe<byte>(GC.AllocateUninitializedArray<byte>(SendPipeSize));
         _nextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
-
+        
         try
         {
             Address = Utility.Intern((Connection?.RemoteEndPoint as IPEndPoint)?.Address);
@@ -606,40 +606,62 @@ public partial class NetState : IComparable<NetState>
                     {
                         case ProtocolState.AwaitingSeed:
                             {
-                                if (packetId == 0xEF)
+                                    if (packetId == 0xEF)
+                                    {
+                                        _parserState = ParserState.ProcessingPacket;
+                                        _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                        if (_parserState == ParserState.AwaitingNextPacket)
+                                        {
+                                            _protocolState = ProtocolState.LoginServer_AwaitingLogin;
+                                        }
+                                    }
+                                    else if (length >= 4)
+                                    {
+                                        int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
+
+                                        if (seed == 0)
+                                        {
+                                            HandleError(0, 0);
+                                            return;
+                                        }
+
+                                        _seed = seed;
+                                        packetLength = 4;
+
+                                        _parserState = ParserState.AwaitingNextPacket;
+                                        if (packetId == 0xFF) {
+                                            _parserState = ParserState.ProcessingPacket;
+                                            _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                            if (_parserState == ParserState.AwaitingNextPacket)
+                                            {
+                                                _protocolState = ProtocolState.LoginServer_AwaitingKrAck;
+                                            }
+                                        }
+                                        else
+                                        {
+                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _parserState = ParserState.AwaitingPartialPacket;
+                                    }
+                                    break;
+                            }
+
+                        case ProtocolState.LoginServer_AwaitingKrAck:
+                            {
+                                if (packetId == 0xE4)
                                 {
+                                    Console.WriteLine("<---- Kr Ack Packet Received 0xE4");
                                     _parserState = ParserState.ProcessingPacket;
                                     _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                    if (_parserState == ParserState.AwaitingNextPacket)
-                                    {
-                                        _protocolState = ProtocolState.LoginServer_AwaitingLogin;
-                                    }
-                                }
-                                else if (length >= 4)
-                                {
-                                    int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
-
-                                    if (seed == 0)
-                                    {
-                                        HandleError(0, 0);
-                                        return;
-                                    }
-
-                                    _seed = seed;
-                                    packetLength = 4;
-
-                                    _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
-                                }
-                                else
-                                {
-                                    _parserState = ParserState.AwaitingPartialPacket;
                                 }
                                 break;
                             }
-
                         case ProtocolState.LoginServer_AwaitingLogin:
-                            {
+                                {
                                 if (packetId != 0xCF && packetId != 0x80)
                                 {
                                     LogInfo("Possible encrypted client detected, disconnecting...");
@@ -666,9 +688,9 @@ public partial class NetState : IComparable<NetState>
 
                                 _parserState = ParserState.ProcessingPacket;
                                 _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                if (_parserState == ParserState.AwaitingNextPacket)
+                                  if (_parserState == ParserState.AwaitingNextPacket)
                                 {
-                                    _protocolState = ProtocolState.LoginServer_ServerSelectAck;
+                                    _protocolState = ProtocolState.LoginServer_ServerSelectAck; //Makes no sense to me since will disconnect and new NetState constructor sets ProtocolState to AwaitingSeed.
                                     Disconnect(string.Empty);
                                 }
                                 break;
@@ -680,8 +702,8 @@ public partial class NetState : IComparable<NetState>
                                     HandleError(packetId, packetLength);
 #else
                                 // Reset the state because CUO/Orion do not reconnect
-                                _parserState = ParserState.AwaitingNextPacket;
-                                _protocolState = ProtocolState.AwaitingSeed;
+                                    _parserState = ParserState.AwaitingNextPacket;
+                                    _protocolState = ProtocolState.AwaitingSeed;
 #endif
                                 return;
                             }

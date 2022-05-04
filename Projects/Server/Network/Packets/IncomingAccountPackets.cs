@@ -53,6 +53,8 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xE1, 0, false, ClientType);
         IncomingPackets.Register(0xEF, 21, false, LoginServerSeed);
         IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
+        IncomingPackets.Register(0xFF, 4, false, KRSeed);
+        IncomingPackets.Register(0xE4, 0, false, KREncryptionResponse);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -379,15 +381,17 @@ public static class IncomingAccountPackets
             state.Disconnect("Unable to find auth id.");
         }
 
-        if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed)
+        state.Version = ap.Version;
+
+        if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed && !state.IsKRClient) // Temp fix, excludes KR, valid for no crypt client.
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Invalid auth id in game login packet.");
             return;
         }
-
+        
         m_AuthIDWindow.Remove(authID);
-        state.Version = ap.Version;
+        
 
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
@@ -500,6 +504,17 @@ public static class IncomingAccountPackets
     {
         state.SendAccountLoginRejected(reason);
         state.Disconnect($"Account login rejected due to {reason}");
+    }
+    
+    public static void KRSeed(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        //<---- Kr Seed Received, Packet Received 0xFF (Patched Encryption Client)
+        state.SendKREncryptionReq(); //Sends encryption request expected by KR, Packet 0xE3
+    }
+    
+    public static void KREncryptionResponse(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        //<---- Kr Encryption Response Received, Packet 0xE4
     }
 
     private class LoginTimer : Timer
