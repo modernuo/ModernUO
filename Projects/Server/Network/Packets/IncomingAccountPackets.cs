@@ -197,7 +197,7 @@ public static class IncomingAccountPackets
         int unk1 = reader.ReadInt32(); // Pattern
         int charSlot = reader.ReadInt32();
         var name = reader.ReadAscii(30);
-        var unknown1 = reader.ReadAscii(30); // "Unknow"
+        reader.Seek(30, SeekOrigin.Current); // Password
 
         int profession = reader.ReadByte();
         int clientFlags = reader.ReadByte();
@@ -225,9 +225,8 @@ public static class IncomingAccountPackets
             skills[3] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
         }
 
-        var unknown2 = reader.ReadAscii(25); // Pack of 0x00
-        int unk7 = reader.ReadByte(); // Another 0x00
-
+        var unknown2 = reader.ReadAscii(26); // Pack of 0x00
+        
         int hairHue = reader.ReadInt16();
         int hairID = reader.ReadInt16();
 
@@ -245,91 +244,85 @@ public static class IncomingAccountPackets
 
         int cityIndex = 0; // Obsolete
         int pantsHue = shirtHue; // Obsolete
-        Race race = null;
-        bool female = false;
+        var female = gender != 0;
 
-        female = (gender != 0);
-        race = Race.Races[(byte)(((genderRace - 1)))]; //SA client sends race packet one higher than KR, so this is neccesary
-        if (race == null)
-            race = Race.DefaultRace;
-
+        var race = Race.Races[genderRace - 1] ?? Race.DefaultRace; //SA client sends race packet one higher than KR, so this is neccesary
 
         CityInfo[] info = state.CityInfo;
         var a = state.Account;
 
         if (clientFlags > 0)
+        {
             flags = clientFlags;
+        }
 
         if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
         {
             state.Disconnect("Invalid city selected during character creation.");
             return;
         }
-        else
+        
+        // Check if anyone is using this account
+        for (int i = 0; i < a.Length; ++i)
         {
-            // Check if anyone is using this account
-            for (int i = 0; i < a.Length; ++i)
+            Mobile check = a[i];
+            if (check != null && check.Map != Map.Internal)
             {
-                Mobile check = a[i];
-
-                if (check != null && check.Map != Map.Internal)
-                {
-                    state.LogInfo("Account in use");
-                    state.SendPopupMessage(PMMessage.CharInWorld);
-                    return;
-                }
+                state.LogInfo("Account in use");
+                state.SendPopupMessage(PMMessage.CharInWorld);
+                return;
             }
+        }
 
-            state.Flags = (ClientFlags)flags;
+        state.Flags = (ClientFlags)flags;
 
-            var args = new CharacterCreatedEventArgs(
-                state,
-                a,
-                name,
-                female,
-                hue,
-                stats,
-                info[cityIndex],
-                skills,
-                shirtHue,
-                pantsHue,
-                hairID,
-                hairHue,
-                beardID,
-                beardHue,
-                profession,
-                race
+        var args = new CharacterCreatedEventArgs(
+            state,
+            a,
+            name,
+            female,
+            hue,
+            stats,
+            info[cityIndex],
+            skills,
+            shirtHue,
+            pantsHue,
+            hairID,
+            hairHue,
+            beardID,
+            beardHue,
+            profession,
+            race
             );
-            state.SendClientVersionRequest();
+        state.SendClientVersionRequest();
 
-            state.BlockAllPackets = true;
+        state.BlockAllPackets = true;
 
-            EventSink.InvokeCharacterCreated(args);
+        EventSink.InvokeCharacterCreated(args);
 
-            Mobile m = args.Mobile;
+        Mobile m = args.Mobile;
 
-            if (m != null)
+        if (m != null)
+        {
+            state.Mobile = m;
+            m.NetState = state;
+
+            if (state.Version != null)
             {
-                state.Mobile = m;
-                m.NetState = state;
-
                 state.BlockAllPackets = false;
                 DoLogin(state, m);
             }
             else
             {
-                state.BlockAllPackets = false;
-                state.Disconnect("Character creation blocked.");
+                new LoginTimer(state, m).Start();
             }
         }
+        else
+        {
+            state.BlockAllPackets = false;
+            state.Disconnect("Character creation blocked.");
+        }
     }
-
-
-
-
-
-
-
 
 
     public static void DeleteCharacter(NetState state, CircularBufferReader reader, int packetLength)
