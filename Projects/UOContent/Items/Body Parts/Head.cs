@@ -12,10 +12,12 @@ namespace Server.Items
     [SerializationGenerator(1, false)]
     public partial class Head : Item
     {
+        [InvalidateProperties]
         [SerializableField(0)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private string _playerName;
 
+        [InvalidateProperties]
         [SerializableField(1)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private HeadType _headType;
