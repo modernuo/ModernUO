@@ -366,7 +366,7 @@ public partial class TreasureMapChest : LockableContainer
 
         if (notYetLifted)
         {
-            _lifted = new HashSet<Item>();
+            _lifted ??= new HashSet<Item>();
             _lifted.Add(item);
 
             if (Utility.RandomDouble() <= 0.1) // 10% chance to spawn a new monster
