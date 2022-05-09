@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+#nullable enable
 using System;
 using System.Buffers;
 
@@ -29,7 +30,11 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
         _pos = length;
     }
 
-    public string ToString(string format, IFormatProvider formatProvider = null)
+    public ReadOnlySpan<char> Chars => _arrayToReturnToPool.AsSpan(.._pos);
+
+    public static implicit operator string(PooledArraySpanFormattable f) => f.ToString();
+
+    public string ToString(string? format = null, IFormatProvider formatProvider = null)
     {
         var result = new string(_arrayToReturnToPool.AsSpan(0, _pos));
         Dispose();

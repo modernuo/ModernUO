@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Buffers;
 
 namespace Server;
 
@@ -167,11 +168,16 @@ public static class Localization
     /// <param name="number">Localization number</param>
     /// <param name="handler">interpolated string handler used by the compiler as a string builder during compilation</param>
     /// <returns>A copy of the localization text where the placeholder arguments have been replaced with string representations of the provided interpolation arguments</returns>
-    public static string Format(
+    public static PooledArraySpanFormattable Format(
         int number, string lang,
         [InterpolatedStringHandlerArgument("number", "lang")]
         ref LocalizationInterpolationHandler handler
-    ) => handler.ToStringAndClear();
+    )
+    {
+        var chars = handler.ToPooledArray(out var length);
+        handler = default; // Defensive clear
+        return new PooledArraySpanFormattable(chars, length);
+    }
 
     /// <summary>
     /// Creates a formatted string of the localization entry using the <see cref="FallbackLanguage" />.
@@ -182,9 +188,14 @@ public static class Localization
     /// <param name="number">Localization number</param>
     /// <param name="handler">interpolated string handler used by the compiler as a string builder during compilation</param>
     /// <returns>A copy of the localization text where the placeholder arguments have been replaced with string representations of the provided interpolation arguments</returns>
-    public static string Format(
+    public static PooledArraySpanFormattable Format(
         int number,
         [InterpolatedStringHandlerArgument("number")]
         ref LocalizationInterpolationHandler handler
-    ) => handler.ToStringAndClear();
+    )
+    {
+        var chars = handler.ToPooledArray(out var length);
+        handler = default; // Defensive clear
+        return new PooledArraySpanFormattable(chars, length);
+    }
 }

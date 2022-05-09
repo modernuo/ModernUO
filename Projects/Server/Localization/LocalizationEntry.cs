@@ -13,8 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Server.Buffers;
@@ -86,12 +84,15 @@ public class LocalizationEntry
 
     public string Format(params object[] args) => string.Format(StringFormatter, args);
 
-    public string Format(
-        [InterpolatedStringHandlerArgument("")]
-        ref LocalizationInterpolationHandler handler
-    ) => handler.ToStringAndClear();
-
-    public PooledArraySpanFormattable Formatted(
+    /// <summary>
+    /// Creates a formatted string of the localization entry.
+    /// Uses string interpolation under the hood. This method is preferably relative to the object array method signature.
+    /// Example:
+    /// Format($"{totalItems}{maxItems}{totalWeight}");
+    /// </summary>
+    /// <param name="handler">interpolated string handler used by the compiler as a string builder during compilation</param>
+    /// <returns>A copy of the localization text where the placeholder arguments have been replaced with string representations of the provided interpolation arguments</returns>
+    public PooledArraySpanFormattable Format(
         [InterpolatedStringHandlerArgument("")]
         ref LocalizationInterpolationHandler handler
     )
