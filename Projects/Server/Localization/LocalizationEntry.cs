@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Server.Buffers;
@@ -88,4 +90,75 @@ public class LocalizationEntry
         [InterpolatedStringHandlerArgument("")]
         ref LocalizationInterpolationHandler handler
     ) => handler.ToStringAndClear();
+
+    public SpanFormattable Formatted(
+        [InterpolatedStringHandlerArgument("")]
+        ref LocalizationInterpolationHandler handler
+    )
+    {
+        var chars = handler.ToPooledArray(out var length);
+        handler = default; // Defensive clear
+        return new SpanFormattable(this, chars, length);
+    }
+
+    public static void Initialize()
+    {
+        Localization.TryGetLocalization(1073841, out var entry);
+
+        var totalItems = 50;
+        var maxItems = 100;
+        var totalWeight = 250;
+
+        var formatted = entry.Formatted($"{totalItems}{maxItems}{totalWeight}");
+        Console.WriteLine($"Some Stuff then {formatted}");
+    }
+
+    public struct SpanFormattable : ISpanFormattable, IDisposable
+    {
+        private LocalizationEntry _entry;
+        private char[] _arrayToReturnToPool;
+        private int _pos;
+
+        public SpanFormattable(LocalizationEntry entry, char[] arrayToReturnToPool, int length)
+        {
+            _entry = entry;
+            _arrayToReturnToPool = arrayToReturnToPool;
+            _pos = length;
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider = null)
+        {
+            var result = new string(_arrayToReturnToPool.AsSpan(0, _pos));
+            Dispose();
+
+            return result;
+        }
+
+        public bool TryFormat(
+            Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default,
+            IFormatProvider provider = null
+        )
+        {
+            if (destination.Length < _pos)
+            {
+                charsWritten = 0;
+                return false;
+            }
+
+            _arrayToReturnToPool.AsSpan(0, _pos).CopyTo(destination);
+            Dispose();
+
+            charsWritten = _pos;
+            return true;
+        }
+
+        public void Dispose()
+        {
+            if (_arrayToReturnToPool != null)
+            {
+                ArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+                _arrayToReturnToPool = null;
+            }
+        }
+    }
 }

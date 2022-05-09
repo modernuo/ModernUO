@@ -415,4 +415,15 @@ public ref struct LocalizationInterpolationHandler
         Clear();
         return result;
     }
+
+    public char[] ToPooledArray(out int length)
+    {
+        if (MoveNext() && _current != null)
+        {
+            AppendStringDirect(_current);
+        }
+
+        length = _pos;
+        return _arrayToReturnToPool;
+    }
 }

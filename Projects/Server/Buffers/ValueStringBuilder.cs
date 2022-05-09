@@ -172,7 +172,7 @@ public ref struct ValueStringBuilder
             {
                 Span<char> destination = _chars[_length..];
                 int charsWritten;
-                while (!((ISpanFormattable)value).TryFormat(destination, out charsWritten, default, default))
+                while (!((ISpanFormattable)value).TryFormat(destination, out charsWritten, format, default))
                 {
                     Grow(1);
                 }
@@ -186,7 +186,7 @@ public ref struct ValueStringBuilder
             }
             else
             {
-                Append(((IFormattable)value).ToString(format: null, default)); // constrained call avoiding boxing for value types
+                Append(((IFormattable)value).ToString(format, default)); // constrained call avoiding boxing for value types
             }
         }
         else if (value is not null)
