@@ -101,18 +101,6 @@ public class LocalizationEntry
         return new SpanFormattable(this, chars, length);
     }
 
-    public static void Initialize()
-    {
-        Localization.TryGetLocalization(1073841, out var entry);
-
-        var totalItems = 50;
-        var maxItems = 100;
-        var totalWeight = 250;
-
-        var formatted = entry.Formatted($"{totalItems}{maxItems}{totalWeight}");
-        Console.WriteLine($"Some Stuff then {formatted}");
-    }
-
     public struct SpanFormattable : ISpanFormattable, IDisposable
     {
         private LocalizationEntry _entry;
