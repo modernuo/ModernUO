@@ -91,62 +91,13 @@ public class LocalizationEntry
         ref LocalizationInterpolationHandler handler
     ) => handler.ToStringAndClear();
 
-    public SpanFormattable Formatted(
+    public PooledArraySpanFormattable Formatted(
         [InterpolatedStringHandlerArgument("")]
         ref LocalizationInterpolationHandler handler
     )
     {
         var chars = handler.ToPooledArray(out var length);
         handler = default; // Defensive clear
-        return new SpanFormattable(this, chars, length);
-    }
-
-    public struct SpanFormattable : ISpanFormattable, IDisposable
-    {
-        private LocalizationEntry _entry;
-        private char[] _arrayToReturnToPool;
-        private int _pos;
-
-        public SpanFormattable(LocalizationEntry entry, char[] arrayToReturnToPool, int length)
-        {
-            _entry = entry;
-            _arrayToReturnToPool = arrayToReturnToPool;
-            _pos = length;
-        }
-
-        public string ToString(string format, IFormatProvider formatProvider = null)
-        {
-            var result = new string(_arrayToReturnToPool.AsSpan(0, _pos));
-            Dispose();
-
-            return result;
-        }
-
-        public bool TryFormat(
-            Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default,
-            IFormatProvider provider = null
-        )
-        {
-            if (destination.Length < _pos)
-            {
-                charsWritten = 0;
-                return false;
-            }
-
-            _arrayToReturnToPool.AsSpan(0, _pos).CopyTo(destination);
-            Dispose();
-
-            charsWritten = _pos;
-            return true;
-        }
-
-        public void Dispose()
-        {
-            if (_arrayToReturnToPool != null)
-            {
-                ArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-                _arrayToReturnToPool = null;
-            }
-        }
+        return new PooledArraySpanFormattable(chars, length);
     }
 }
