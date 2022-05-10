@@ -138,8 +138,8 @@ namespace Server.Gumps
                             {
                                 check.Delete();
 
-                                m_Mobile.SendLocalizedMessage(1060397, worth.ToString("#,0"));
                                 // ~1_AMOUNT~ gold has been deposited into your bank box.
+                                m_Mobile.SendLocalizedMessage(1060397, $"{worth:#,0}");
 
                                 m_House.RemoveKeys(m_Mobile);
                                 m_House.Delete();

@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public CorporealBrume()
-            : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Melee)
         {
             Body = 0x104; // TODO: Verify
             BaseSoundID = 0x56B;

@@ -920,6 +920,7 @@ namespace Server
             return total + bonus;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this IList<T> list)
         {
             var count = list.Count;
@@ -930,6 +931,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this Span<T> list)
         {
             var count = list.Length;
@@ -1020,6 +1022,21 @@ namespace Server
         public static bool RandomBool() => RandomSources.Source.NextBool();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double RandomMinMax(double min, double max)
+        {
+            if (min > max)
+            {
+                (min, max) = (max, min);
+            }
+            else if (min == max)
+            {
+                return min;
+            }
+
+            return min + RandomSources.Source.NextDouble() * (max - min);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint RandomMinMax(uint min, uint max)
         {
             if (min > max)
@@ -1078,6 +1095,15 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double RandomDouble() => RandomSources.Source.NextDouble();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point3D RandomPointIn(Rectangle2D rect, Map map)
+        {
+            var x = Random(rect.X, rect.Width);
+            var y = Random(rect.Y, rect.Height);
+
+            return new Point3D(x, y, map.GetAverageZ(x, y));
+        }
 
         /// <summary>
         ///     Random pink, blue, green, orange, red or yellow hue
@@ -1259,96 +1285,6 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long Abs(this long value)
-        {
-            long mask = value >> 63;
-            return (value + mask) ^ mask;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(this uint value)
-        {
-            int digits = 1;
-            if (value >= 100000)
-            {
-                value /= 100000;
-                digits += 5;
-            }
-
-            if (value < 10)
-            {
-                // no-op
-            }
-            else if (value < 100)
-            {
-                digits++;
-            }
-            else if (value < 1000)
-            {
-                digits += 2;
-            }
-            else if (value < 10000)
-            {
-                digits += 3;
-            }
-            else
-            {
-                digits += 4;
-            }
-
-            return digits;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(this int value)
-        {
-            int absValue = Abs(value);
-
-            int digits = 1;
-            if (absValue >= 100000)
-            {
-                absValue /= 100000;
-                digits += 5;
-            }
-
-            if (absValue < 10)
-            {
-                // no-op
-            }
-            else if (absValue < 100)
-            {
-                digits++;
-            }
-            else if (absValue < 1000)
-            {
-                digits += 2;
-            }
-            else if (absValue < 10000)
-            {
-                digits += 3;
-            }
-            else
-            {
-                digits += 4;
-            }
-
-            if (value < 0)
-            {
-                digits += 1; // negative
-            }
-
-            return digits;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint DivRem(uint a, uint b, out uint result)
-        {
-            uint div = a / b;
-            result = a - div * b;
-            return div;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetTimeStamp() => Core.Now.ToTimeStamp();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1527,6 +1463,41 @@ namespace Server
             hour = date.Hour;
             min = date.Minute;
             sec = date.Second;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] Combine<T>(this IList<T> source, params IList<T>[] arrays) =>
+            source.Combine(false, arrays);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] CombinePooled<T>(this IList<T> source, params IList<T>[] arrays) =>
+            source.Combine(true, arrays);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] Combine<T>(this IList<T> source, bool pooled, params IList<T>[] arrays)
+        {
+            var totalLength = source.Count;
+            foreach (var arr in arrays)
+            {
+                totalLength += arr.Count;
+            }
+
+            if (totalLength == 0)
+            {
+                return Array.Empty<T>();
+            }
+
+            var combined = pooled ? STArrayPool<T>.Shared.Rent(totalLength) : new T[totalLength];
+
+            source.CopyTo(combined, 0);
+            var position = source.Count;
+            foreach (var arr in arrays)
+            {
+                arr.CopyTo(combined, position);
+                position += arr.Count;
+            }
+
+            return combined;
         }
     }
 }

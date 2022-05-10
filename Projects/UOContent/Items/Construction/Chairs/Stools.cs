@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Stool : Item
     {
         [Constructible]
@@ -9,7 +11,7 @@ namespace Server.Items
     }
 
     [Furniture]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FootStool : Item
     {
         [Constructible]

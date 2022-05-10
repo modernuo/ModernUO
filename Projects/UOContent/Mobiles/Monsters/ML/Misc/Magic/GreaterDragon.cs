@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class GreaterDragon : BaseCreature
     {
         [Constructible]
-        public GreaterDragon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.3, 0.5)
+        public GreaterDragon() : base(AIType.AI_Mage)
         {
             Body = Utility.RandomList(12, 59);
             BaseSoundID = 362;

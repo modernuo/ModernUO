@@ -16,8 +16,11 @@ namespace Server.Spells.Chivalry
         );
 
         private readonly Runebook m_Book;
-
         private readonly RunebookEntry m_Entry;
+
+        public SacredJourneySpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+        {
+        }
 
         public SacredJourneySpell(
             Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null

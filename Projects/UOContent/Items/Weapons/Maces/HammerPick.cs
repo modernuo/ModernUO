@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x143D, 0x143C)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class HammerPick : BaseBashing
     {
         [Constructible]

@@ -1,12 +1,13 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class EvilMage : BaseCreature
     {
         [Constructible]
-        public EvilMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public EvilMage() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("evil mage");
             Title = "the evil mage";

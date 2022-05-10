@@ -338,30 +338,25 @@ namespace Server.Gumps
 
         public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) : base(
             1071012, // Click a minor artifact to give it to Ihara Soko.
-            buttons.ToList<ImageTileButtonInfo>()
+            buttons
         ) => m_Collector = collector;
 
-        public static List<ItemTileButtonInfo> FindRedeemableItems(Mobile m)
+        public static List<ImageTileButtonInfo> FindRedeemableItems(Mobile m)
         {
             var pack = m.Backpack;
             if (pack == null)
             {
-                return new List<ItemTileButtonInfo>();
+                return new List<ImageTileButtonInfo>();
             }
 
-            var buttons = new List<ItemTileButtonInfo>();
+            var buttons = new List<ImageTileButtonInfo>();
 
             var items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
 
             for (var i = 0; i < items.Length; i++)
             {
                 var item = items[i];
-                if (item is ChestOfHeirlooms heirlooms && !heirlooms.Locked)
-                {
-                    continue;
-                }
-
-                if (item is ChestOfHeirlooms ofHeirlooms && ofHeirlooms.TrapLevel != 10)
+                if (item is ChestOfHeirlooms heirlooms && (!heirlooms.Locked || heirlooms.TrapLevel != 10))
                 {
                     continue;
                 }
@@ -600,9 +595,7 @@ namespace Server.Gumps
                 m_Collector.SayTo(
                     pm,
                     1070984, // You have earned the gratitude of the Empire. I have placed the ~1_OBJTYPE~ in your backpack.
-                    item.Name is not { Length: > 0 }
-                        ? $"#{item.LabelNumber}"
-                        : item.Name
+                    item.Name?.Length > 0 ? item.Name : $"#{item.LabelNumber}"
                 );
             }
             else

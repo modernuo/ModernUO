@@ -40,9 +40,9 @@
     "back": true
   },
   {
-    "src": { "map": "Felucca", "loc": [589, 1637, 0] },
-    "dst": { "map": "Felucca", "loc": [6575, 888, 0] },
-    "back": false
+    "src": { "map": "Felucca", "loc": [588, 1637, 0] },
+    "dst": { "map": "Felucca", "loc": [6472, 868, 26] },
+    "back": true
   },
   {
     "src": { "map": "Felucca", "loc": [766, 1645, 0] },
@@ -2055,16 +2055,6 @@
     "back": false
   },
   {
-    "src": { "map": "Felucca", "loc": [6488, 849, 40] },
-    "dst": { "map": "Felucca", "loc": [6587, 867, 0] },
-    "back": false
-  },
-  {
-    "src": { "map": "Felucca", "loc": [6488, 850, 41] },
-    "dst": { "map": "Felucca", "loc": [6587, 868, 0] },
-    "back": false
-  },
-  {
     "src": { "map": "Felucca", "loc": [6540, 116, -15] },
     "dst": { "map": "Felucca", "loc": [6537, 138, -20] },
     "back": false
@@ -2085,13 +2075,8 @@
     "back": false
   },
   {
-    "src": { "map": "Felucca", "loc": [6574, 889, 0] },
-    "dst": { "map": "Felucca", "loc": [6472, 869, 20] },
-    "back": false
-  },
-  {
-    "src": { "map": "Felucca", "loc": [6575, 889, 0] },
-    "dst": { "map": "Felucca", "loc": [6473, 869, 20] },
+    "src": { "map": "Felucca", "loc": [6477, 860, 9] },
+    "dst": { "map": "Felucca", "loc": [6574, 889, 0] },
     "back": false
   },
   {
@@ -2116,7 +2101,7 @@
   },
   {
     "src": { "map": "Felucca", "loc": [6588, 867, 0] },
-    "dst": { "map": "Felucca", "loc": [6489, 849, 39] },
+    "dst": { "map": "Felucca", "loc": [6488, 849, 40] },
     "back": false
   },
   {
@@ -2220,8 +2205,13 @@
     "back": true
   },
   {
-    "src": { "map": "Trammel", "loc": [589, 1637, 0] },
-    "dst": { "map": "Trammel", "loc": [6575, 888, 0] },
+    "src": { "map": "Trammel", "loc": [588, 1637, 0] },
+    "dst": { "map": "Trammel", "loc": [6472, 868, 26] },
+    "back": true
+  },
+  {
+    "src": { "map": "Trammel", "loc": [6477, 860, 9] },
+    "dst": { "map": "Trammel", "loc": [6574, 889, 0] },
     "back": false
   },
   {
@@ -4180,16 +4170,6 @@
     "back": false
   },
   {
-    "src": { "map": "Trammel", "loc": [6488, 849, 40] },
-    "dst": { "map": "Trammel", "loc": [6587, 867, 0] },
-    "back": false
-  },
-  {
-    "src": { "map": "Trammel", "loc": [6488, 850, 41] },
-    "dst": { "map": "Trammel", "loc": [6587, 868, 0] },
-    "back": false
-  },
-  {
     "src": { "map": "Trammel", "loc": [6540, 116, -15] },
     "dst": { "map": "Trammel", "loc": [6537, 138, -20] },
     "back": false
@@ -4207,16 +4187,6 @@
   {
     "src": { "map": "Trammel", "loc": [6568, 77, -10] },
     "dst": { "map": "Trammel", "loc": [6576, 73, 0] },
-    "back": false
-  },
-  {
-    "src": { "map": "Trammel", "loc": [6574, 889, 0] },
-    "dst": { "map": "Trammel", "loc": [6472, 869, 20] },
-    "back": false
-  },
-  {
-    "src": { "map": "Trammel", "loc": [6575, 889, 0] },
-    "dst": { "map": "Trammel", "loc": [6473, 869, 20] },
     "back": false
   },
   {
@@ -4241,7 +4211,7 @@
   },
   {
     "src": { "map": "Trammel", "loc": [6588, 867, 0] },
-    "dst": { "map": "Trammel", "loc": [6489, 849, 39] },
+    "dst": { "map": "Trammel", "loc": [6488, 849, 40] },
     "back": false
   },
   {

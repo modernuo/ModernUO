@@ -36,14 +36,14 @@ namespace Server.Network
         public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
             _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 
-        public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
         {
             Mobile from = state.Mobile;
 
             state.SendGuildMemberLocations(from, from.Guild as Guild, reader.ReadBoolean());
         }
 
-        public static void QueryPartyMemberLocations(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void QueryPartyMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
         {
             Mobile from = state.Mobile;
             var party = Party.Get(from);
@@ -56,7 +56,7 @@ namespace Server.Network
 
         public static void SendGuildMemberLocations(this NetState ns, Mobile from, Guild guild, bool sendLocations)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -116,7 +116,7 @@ namespace Server.Network
 
         public static void SendPartyMemberLocations(this NetState ns, Mobile from, Party party)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

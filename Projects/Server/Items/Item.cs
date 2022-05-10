@@ -4139,7 +4139,7 @@ namespace Server
 
             var ns = from.NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

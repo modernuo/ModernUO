@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class ElderGazer : BaseCreature
     {
         [Constructible]
-        public ElderGazer() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public ElderGazer() : base(AIType.AI_Mage)
         {
             Body = 22;
             BaseSoundID = 377;

@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27Ab, 0x27F6)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tekagi : BaseKnife
     {
         [Constructible]

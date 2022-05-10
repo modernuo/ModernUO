@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class MeerWarrior : BaseCreature
     {
         [Constructible]
-        public MeerWarrior() : base(AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4)
+        public MeerWarrior() : base(AIType.AI_Melee, FightMode.Evil)
         {
             Body = 771;
 

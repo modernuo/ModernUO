@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class SavageRider : BaseCreature
     {
         [Constructible]
-        public SavageRider() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4)
+        public SavageRider() : base(AIType.AI_Melee)
         {
             Name = NameList.RandomName("savage rider");
 

@@ -24,7 +24,7 @@ namespace Server.Engines.Craft
         private readonly BaseTool m_Tool;
 
         public CraftGump(
-            Mobile from, CraftSystem craftSystem, BaseTool tool, object notice, CraftPage page = CraftPage.None
+            Mobile from, CraftSystem craftSystem, BaseTool tool, TextDefinition notice, CraftPage page = CraftPage.None
         ) : base(40, 40)
         {
             m_From = from;
@@ -48,13 +48,13 @@ namespace Server.Engines.Craft
             AddImageTiled(215, 37, 305, 250, 2624);
             AddAlphaRegion(10, 10, 510, 417);
 
-            if (craftSystem.GumpTitleNumber > 0)
+            if (craftSystem.GumpTitle.Number > 0)
             {
-                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
+                AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitle.Number, LabelColor);
             }
             else
             {
-                AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
+                AddHtml(10, 12, 510, 20, craftSystem.GumpTitle.String);
             }
 
             AddHtmlLocalized(10, 37, 200, 22, 1044010, LabelColor);  // <CENTER>CATEGORIES</CENTER>
@@ -106,20 +106,23 @@ namespace Server.Engines.Craft
             }
             // ****************************************
 
-            if (notice is int noticeInt && noticeInt > 0)
+            if (notice != null)
             {
-                AddHtmlLocalized(170, 295, 350, 40, noticeInt, LabelColor);
-            }
-            else if (notice is string)
-            {
-                AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice}</BASEFONT>");
+                if (notice.Number > 0)
+                {
+                    AddHtmlLocalized(170, 295, 350, 40, notice.Number, LabelColor);
+                }
+                else
+                {
+                    AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice.String}</BASEFONT>");
+                }
             }
 
             // If the system has more than one resource
             if (craftSystem.CraftSubRes.Init)
             {
-                var nameString = craftSystem.CraftSubRes.NameString;
-                var nameNumber = craftSystem.CraftSubRes.NameNumber;
+                var nameString = craftSystem.CraftSubRes.Name.String;
+                var nameNumber = craftSystem.CraftSubRes.Name.Number;
 
                 var resIndex = context?.LastResourceIndex ?? -1;
 
@@ -129,8 +132,8 @@ namespace Server.Engines.Craft
                 {
                     var subResource = craftSystem.CraftSubRes.GetAt(resIndex);
 
-                    nameString = subResource.NameString;
-                    nameNumber = subResource.NameNumber;
+                    nameString = subResource.Name.String;
+                    nameNumber = subResource.Name.Number;
                     resourceType = subResource.ItemType;
                 }
 
@@ -162,8 +165,8 @@ namespace Server.Engines.Craft
             // For dragon scales
             if (craftSystem.CraftSubRes2.Init)
             {
-                var nameString = craftSystem.CraftSubRes2.NameString;
-                var nameNumber = craftSystem.CraftSubRes2.NameNumber;
+                var nameString = craftSystem.CraftSubRes2.Name.String;
+                var nameNumber = craftSystem.CraftSubRes2.Name.Number;
 
                 var resIndex = context?.LastResourceIndex2 ?? -1;
 
@@ -173,8 +176,8 @@ namespace Server.Engines.Craft
                 {
                     var subResource = craftSystem.CraftSubRes2.GetAt(resIndex);
 
-                    nameString = subResource.NameString;
-                    nameNumber = subResource.NameNumber;
+                    nameString = subResource.Name.String;
+                    nameNumber = subResource.Name.Number;
                     resourceType = subResource.ItemType;
                 }
 
@@ -270,21 +273,21 @@ namespace Server.Engines.Craft
 
                 AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(5, i));
 
-                if (subResource.NameNumber > 0)
+                if (subResource.Name.Number > 0)
                 {
                     AddHtmlLocalized(
                         255,
                         63 + index * 20,
                         250,
                         18,
-                        subResource.NameNumber,
+                        subResource.Name.Number,
                         resourceCount.ToString(),
                         LabelColor
                     );
                 }
                 else
                 {
-                    AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.NameString} ({resourceCount})");
+                    AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.Name.String} ({resourceCount})");
                 }
             }
         }

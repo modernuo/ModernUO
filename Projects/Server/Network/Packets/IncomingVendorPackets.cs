@@ -15,96 +15,95 @@
 
 using System.Collections.Generic;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class IncomingVendorPackets
 {
-    public static class IncomingVendorPackets
+    public static void Configure()
     {
-        public static void Configure()
+        IncomingPackets.Register(0x3B, 0, true, VendorBuyReply);
+        IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
+    }
+
+    public static void VendorBuyReply(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var vendor = World.FindMobile((Serial)reader.ReadUInt32());
+
+        if (vendor == null)
         {
-            IncomingPackets.Register(0x3B, 0, true, VendorBuyReply);
-            IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
+            return;
         }
 
-        public static void VendorBuyReply(NetState state, CircularBufferReader reader, ref int packetLength)
+        var flag = reader.ReadByte();
+
+        if (!vendor.Deleted && Utility.InRange(vendor.Location, state.Mobile.Location, 10) && flag == 0x02)
         {
-            var vendor = World.FindMobile((Serial)reader.ReadUInt32());
+            var msgSize = packetLength - 8; // Remaining bytes
 
-            if (vendor == null)
+            if (msgSize / 7 > 100)
             {
                 return;
             }
 
-            var flag = reader.ReadByte();
-
-            if (!vendor.Deleted && Utility.InRange(vendor.Location, state.Mobile.Location, 10) && flag == 0x02)
+            var buyList = new List<BuyItemResponse>(msgSize / 7);
+            while (msgSize > 0)
             {
-                var msgSize = packetLength - 8; // Remaining bytes
-
-                if (msgSize / 7 > 100)
-                {
-                    return;
-                }
-
-                var buyList = new List<BuyItemResponse>(msgSize / 7);
-                while (msgSize > 0)
-                {
-                    var layer = reader.ReadByte();
-                    var serial = (Serial)reader.ReadUInt32();
-                    int amount = reader.ReadInt16();
-
-                    buyList.Add(new BuyItemResponse(serial, amount));
-                    msgSize -= 7;
-                }
-
-                if (buyList.Count <= 0 || (vendor as IVendor)?.OnBuyItems(state.Mobile, buyList) != true)
-                {
-                    return;
-                }
-            }
-
-            state.SendEndVendorBuy(vendor.Serial);
-        }
-
-        public static void VendorSellReply(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var serial = (Serial)reader.ReadUInt32();
-            var vendor = World.FindMobile(serial);
-
-            if (vendor == null)
-            {
-                return;
-            }
-
-            if (vendor.Deleted || !Utility.InRange(vendor.Location, state.Mobile.Location, 10))
-            {
-                state.SendEndVendorSell(vendor.Serial);
-                return;
-            }
-
-            int count = reader.ReadUInt16();
-
-            if (count >= 100 || reader.Remaining != count * 6)
-            {
-                return;
-            }
-
-            var sellList = new List<SellItemResponse>(count);
-
-            for (var i = 0; i < count; i++)
-            {
-                var item = World.FindItem((Serial)reader.ReadUInt32());
+                var layer = reader.ReadByte();
+                var serial = (Serial)reader.ReadUInt32();
                 int amount = reader.ReadInt16();
 
-                if (item != null && amount > 0)
-                {
-                    sellList.Add(new SellItemResponse(item, amount));
-                }
+                buyList.Add(new BuyItemResponse(serial, amount));
+                msgSize -= 7;
             }
 
-            if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
+            if (buyList.Count <= 0 || (vendor as IVendor)?.OnBuyItems(state.Mobile, buyList) != true)
             {
-                state.SendEndVendorSell(vendor.Serial);
+                return;
             }
+        }
+
+        state.SendEndVendorBuy(vendor.Serial);
+    }
+
+    public static void VendorSellReply(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var serial = (Serial)reader.ReadUInt32();
+        var vendor = World.FindMobile(serial);
+
+        if (vendor == null)
+        {
+            return;
+        }
+
+        if (vendor.Deleted || !Utility.InRange(vendor.Location, state.Mobile.Location, 10))
+        {
+            state.SendEndVendorSell(vendor.Serial);
+            return;
+        }
+
+        int count = reader.ReadUInt16();
+
+        if (count >= 100 || reader.Remaining != count * 6)
+        {
+            return;
+        }
+
+        var sellList = new List<SellItemResponse>(count);
+
+        for (var i = 0; i < count; i++)
+        {
+            var item = World.FindItem((Serial)reader.ReadUInt32());
+            int amount = reader.ReadInt16();
+
+            if (item != null && amount > 0)
+            {
+                sellList.Add(new SellItemResponse(item, amount));
+            }
+        }
+
+        if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
+        {
+            state.SendEndVendorSell(vendor.Serial);
         }
     }
 }

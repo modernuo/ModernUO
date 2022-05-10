@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     [TypeAlias("Server.Items.GargishClothChest", "Server.Items.GargishClothChestArmor")]
     public partial class GargishClothChestType1 : BaseArmor
     {

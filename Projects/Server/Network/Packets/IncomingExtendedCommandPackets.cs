@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingExtendedCommandPackets.cs                               *
  *                                                                       *
@@ -13,505 +13,486 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using Server.ContextMenus;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class IncomingExtendedCommandPackets
 {
-    public static class IncomingExtendedCommandPackets
+    private static readonly PacketHandler[] _extendedHandlers = new PacketHandler[0x100];
+
+    // TODO: Change to outside configuration
+    public static int[] ValidAnimations { get; set; } =
     {
-        private static readonly PacketHandler[] m_ExtendedHandlersLow = new PacketHandler[0x100];
-        private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh = new();
+        6, 21, 32, 33,
+        100, 101, 102, 103,
+        104, 105, 106, 107,
+        108, 109, 110, 111,
+        112, 113, 114, 115,
+        116, 117, 118, 119,
+        120, 121, 123, 124,
+        125, 126, 127, 128
+    };
 
-        // TODO: Change to outside configuration
-        public static int[] ValidAnimations { get; set; } =
+    public static void Configure()
+    {
+        IncomingPackets.Register(0xBF, 0, true, ExtendedCommand);
+
+        RegisterExtended(0x05, false, ScreenSize);
+        RegisterExtended(0x06, true, PartyMessage);
+        RegisterExtended(0x09, true, DisarmRequest);
+        RegisterExtended(0x0A, true, StunRequest);
+        RegisterExtended(0x0B, false, Language);
+        RegisterExtended(0x0C, true, CloseStatus);
+        RegisterExtended(0x0E, true, Animate);
+        RegisterExtended(0x0F, false, Empty); // What's this?
+        RegisterExtended(0x10, true, QueryProperties);
+        RegisterExtended(0x13, true, ContextMenuRequest);
+        RegisterExtended(0x15, true, ContextMenuResponse);
+        RegisterExtended(0x1A, true, StatLockChange);
+        RegisterExtended(0x1C, true, CastSpell);
+        RegisterExtended(0x24, false, UnhandledBF);
+        RegisterExtended(0x2C, true, BandageTarget);
+        RegisterExtended(0x2D, true, TargetedSpell);
+        RegisterExtended(0x2E, true, TargetedSkillUse);
+        RegisterExtended(0x30, true, TargetByResourceMacro);
+        RegisterExtended(0x32, true, ToggleFlying);
+    }
+
+    private static void UnhandledBF(NetState state, CircularBufferReader reader, int packetLength)
+    {
+    }
+
+    public static void Empty(NetState state, CircularBufferReader reader, int packetLength)
+    {
+    }
+
+    public static void RegisterExtended(int packetID, bool ingame, OnPacketReceive onReceive)
+    {
+        if (packetID is >= 0 and < 0x100)
         {
-            6, 21, 32, 33,
-            100, 101, 102, 103,
-            104, 105, 106, 107,
-            108, 109, 110, 111,
-            112, 113, 114, 115,
-            116, 117, 118, 119,
-            120, 121, 123, 124,
-            125, 126, 127, 128
-        };
+            _extendedHandlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+        }
+    }
 
-        public static void Configure()
+    public static PacketHandler GetExtendedHandler(int packetID) =>
+        packetID is >= 0 and < 0x100 ? _extendedHandlers[packetID] : null;
+
+    public static void RemoveExtendedHandler(int packetID)
+    {
+        if (packetID is >= 0 and < 0x100)
         {
-            IncomingPackets.Register(0xBF, 0, true, ExtendedCommand);
+            _extendedHandlers[packetID] = null;
+        }
+    }
 
-            RegisterExtended(0x05, false, ScreenSize);
-            RegisterExtended(0x06, true, PartyMessage);
-            RegisterExtended(0x09, true, DisarmRequest);
-            RegisterExtended(0x0A, true, StunRequest);
-            RegisterExtended(0x0B, false, Language);
-            RegisterExtended(0x0C, true, CloseStatus);
-            RegisterExtended(0x0E, true, Animate);
-            RegisterExtended(0x0F, false, Empty); // What's this?
-            RegisterExtended(0x10, true, QueryProperties);
-            RegisterExtended(0x13, true, ContextMenuRequest);
-            RegisterExtended(0x15, true, ContextMenuResponse);
-            RegisterExtended(0x1A, true, StatLockChange);
-            RegisterExtended(0x1C, true, CastSpell);
-            RegisterExtended(0x24, false, UnhandledBF);
-            RegisterExtended(0x2C, true, BandageTarget);
-            RegisterExtended(0x2D, true, TargetedSpell);
-            RegisterExtended(0x2E, true, TargetedSkillUse);
-            RegisterExtended(0x30, true, TargetByResourceMacro);
-            RegisterExtended(0x32, true, ToggleFlying);
+    public static void ExtendedCommand(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        int packetId = reader.ReadUInt16();
+
+        var ph = GetExtendedHandler(packetId);
+
+        if (ph == null)
+        {
+            reader.Trace(state);
+            return;
         }
 
-        private static void UnhandledBF(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-        }
-
-        public static void Empty(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-        }
-
-        public static void RegisterExtended(int packetID, bool ingame, OnPacketReceive onReceive)
-        {
-            if (packetID >= 0 && packetID < 0x100)
-            {
-                m_ExtendedHandlersLow[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
-            }
-            else
-            {
-                m_ExtendedHandlersHigh[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
-            }
-        }
-
-        public static PacketHandler GetExtendedHandler(int packetID)
-        {
-            if (packetID >= 0 && packetID < 0x100)
-            {
-                return m_ExtendedHandlersLow[packetID];
-            }
-
-            m_ExtendedHandlersHigh.TryGetValue(packetID, out var handler);
-            return handler;
-        }
-
-        public static void RemoveExtendedHandler(int packetID)
-        {
-            if (packetID >= 0 && packetID < 0x100)
-            {
-                m_ExtendedHandlersLow[packetID] = null;
-            }
-            else
-            {
-                m_ExtendedHandlersHigh.Remove(packetID);
-            }
-        }
-
-        public static void ExtendedCommand(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            int packetId = reader.ReadUInt16();
-
-            var ph = GetExtendedHandler(packetId);
-
-            if (ph == null)
-            {
-                reader.Trace(state);
-                return;
-            }
-
-            if (ph.Ingame && state.Mobile?.Deleted != false)
-            {
-                if (state.Mobile == null)
-                {
-                    state.LogInfo(
-                        "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
-                        packetId
-                    );
-                }
-
-                state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
-            }
-            else
-            {
-                ph.OnReceive(state, reader, ref packetLength);
-            }
-        }
-
-        public static void ScreenSize(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var width = reader.ReadInt32();
-            var unk = reader.ReadInt32();
-        }
-
-        // TODO: Move out of the core
-        public static void PartyMessage(NetState state, CircularBufferReader reader, ref int packetLength)
+        if (ph.Ingame && state.Mobile?.Deleted != false)
         {
             if (state.Mobile == null)
             {
-                return;
+                state.LogInfo(
+                    "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
+                    packetId
+                );
             }
 
-            switch (reader.ReadByte())
+            state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
+        }
+        else
+        {
+            ph.OnReceive(state, reader, packetLength);
+        }
+    }
+
+    public static void ScreenSize(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var width = reader.ReadInt32();
+        var unk = reader.ReadInt32();
+    }
+
+    // TODO: Move out of the core
+    public static void PartyMessage(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        if (state.Mobile == null)
+        {
+            return;
+        }
+
+        switch (reader.ReadByte())
+        {
+            case 0x01:
+                PartyMessage_AddMember(state, reader, packetLength);
+                break;
+            case 0x02:
+                PartyMessage_RemoveMember(state, reader, packetLength);
+                break;
+            case 0x03:
+                PartyMessage_PrivateMessage(state, reader, packetLength);
+                break;
+            case 0x04:
+                PartyMessage_PublicMessage(state, reader, packetLength);
+                break;
+            case 0x06:
+                PartyMessage_SetCanLoot(state, reader, packetLength);
+                break;
+            case 0x08:
+                PartyMessage_Accept(state, reader, packetLength);
+                break;
+            case 0x09:
+                PartyMessage_Decline(state, reader, packetLength);
+                break;
+            default:
+                reader.Trace(state);
+                break;
+        }
+    }
+
+    public static void PartyMessage_AddMember(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnAdd(state.Mobile);
+    }
+
+    public static void PartyMessage_RemoveMember(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnRemove(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
+    }
+
+    public static void PartyMessage_PrivateMessage(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnPrivateMessage(
+            state.Mobile,
+            World.FindMobile((Serial)reader.ReadUInt32()),
+            reader.ReadBigUniSafe()
+        );
+    }
+
+    public static void PartyMessage_PublicMessage(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnPublicMessage(state.Mobile, reader.ReadBigUniSafe());
+    }
+
+    public static void PartyMessage_SetCanLoot(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnSetCanLoot(state.Mobile, reader.ReadBoolean());
+    }
+
+    public static void PartyMessage_Accept(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnAccept(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
+    }
+
+    public static void PartyMessage_Decline(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
+    }
+
+    public static void Animate(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        var action = reader.ReadInt32();
+
+        var ok = false;
+
+        for (var i = 0; !ok && i < ValidAnimations.Length; ++i)
+        {
+            ok = action == ValidAnimations[i];
+        }
+
+        if (ok && from.Alive && from.Body.IsHuman && !from.Mounted)
+        {
+            from.Animate(action, 7, 1, true, false, 0);
+        }
+    }
+
+    public static void CastSpell(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
+
+        var spellID = reader.ReadInt16() - 1;
+        EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
+    }
+
+    public static void ToggleFlying(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        state.Mobile?.ToggleFlying();
+    }
+
+    public static void StunRequest(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        EventSink.InvokeStunRequest(from);
+    }
+
+    public static void DisarmRequest(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        EventSink.InvokeDisarmRequest(from);
+    }
+
+    public static void StatLockChange(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        int stat = reader.ReadByte();
+        int lockValue = reader.ReadByte();
+
+        if (lockValue > 2)
+        {
+            lockValue = 0;
+        }
+
+        switch (stat)
+        {
+            case 0:
+                from.StrLock = (StatLockType)lockValue;
+                break;
+            case 1:
+                from.DexLock = (StatLockType)lockValue;
+                break;
+            case 2:
+                from.IntLock = (StatLockType)lockValue;
+                break;
+        }
+    }
+
+    public static void CloseStatus(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var serial = (Serial)reader.ReadUInt32();
+    }
+
+    public static void Language(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        from.Language = reader.ReadAscii(4);
+    }
+
+    public static void QueryProperties(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        if (!ObjectPropertyList.Enabled)
+        {
+            return;
+        }
+
+        var from = state.Mobile;
+
+        Serial s = (Serial)reader.ReadUInt32();
+
+        if (s.IsMobile)
+        {
+            var m = World.FindMobile(s);
+
+            if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
             {
-                case 0x01:
-                    PartyMessage_AddMember(state, reader, ref packetLength);
-                    break;
-                case 0x02:
-                    PartyMessage_RemoveMember(state, reader, ref packetLength);
-                    break;
-                case 0x03:
-                    PartyMessage_PrivateMessage(state, reader, ref packetLength);
-                    break;
-                case 0x04:
-                    PartyMessage_PublicMessage(state, reader, ref packetLength);
-                    break;
-                case 0x06:
-                    PartyMessage_SetCanLoot(state, reader, ref packetLength);
-                    break;
-                case 0x08:
-                    PartyMessage_Accept(state, reader, ref packetLength);
-                    break;
-                case 0x09:
-                    PartyMessage_Decline(state, reader, ref packetLength);
-                    break;
-                default:
-                    reader.Trace(state);
-                    break;
+                m.SendPropertiesTo(from);
             }
         }
-
-        public static void PartyMessage_AddMember(NetState state, CircularBufferReader reader, ref int packetLength)
+        else if (s.IsItem)
         {
-            PartyCommands.Handler?.OnAdd(state.Mobile);
-        }
+            var item = World.FindItem(s);
 
-        public static void PartyMessage_RemoveMember(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            PartyCommands.Handler?.OnRemove(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
-        }
-
-        public static void PartyMessage_PrivateMessage(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            PartyCommands.Handler?.OnPrivateMessage(
-                state.Mobile,
-                World.FindMobile((Serial)reader.ReadUInt32()),
-                reader.ReadBigUniSafe()
-            );
-        }
-
-        public static void PartyMessage_PublicMessage(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            PartyCommands.Handler?.OnPublicMessage(state.Mobile, reader.ReadBigUniSafe());
-        }
-
-        public static void PartyMessage_SetCanLoot(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            PartyCommands.Handler?.OnSetCanLoot(state.Mobile, reader.ReadBoolean());
-        }
-
-        public static void PartyMessage_Accept(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            PartyCommands.Handler?.OnAccept(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
-        }
-
-        public static void PartyMessage_Decline(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile((Serial)reader.ReadUInt32()));
-        }
-
-        public static void Animate(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
+            if (item?.Deleted == false && from.CanSee(item) &&
+                Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
             {
-                return;
-            }
-
-            var action = reader.ReadInt32();
-
-            var ok = false;
-
-            for (var i = 0; !ok && i < ValidAnimations.Length; ++i)
-            {
-                ok = action == ValidAnimations[i];
-            }
-
-            if (ok && from.Alive && from.Body.IsHuman && !from.Mounted)
-            {
-                from.Animate(action, 7, 1, true, false, 0);
+                item.SendPropertiesTo(from);
             }
         }
+    }
 
-        public static void CastSpell(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void ContextMenuResponse(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
         {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
-
-            var spellID = reader.ReadInt16() - 1;
-            EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
+            return;
         }
 
-        public static void ToggleFlying(NetState state, CircularBufferReader reader, ref int packetLength)
+        var menu = from.ContextMenu;
+
+        from.ContextMenu = null;
+
+        if (menu != null && from == menu.From)
         {
-            state.Mobile?.ToggleFlying();
-        }
+            var entity = World.FindEntity((Serial)reader.ReadUInt32());
 
-        public static void StunRequest(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
+            if (entity != null && entity == menu.Target && from.CanSee(entity))
             {
-                return;
-            }
+                Point3D p;
 
-            EventSink.InvokeStunRequest(from);
-        }
-
-        public static void DisarmRequest(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            EventSink.InvokeDisarmRequest(from);
-        }
-
-        public static void StatLockChange(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            int stat = reader.ReadByte();
-            int lockValue = reader.ReadByte();
-
-            if (lockValue > 2)
-            {
-                lockValue = 0;
-            }
-
-            switch (stat)
-            {
-                case 0:
-                    from.StrLock = (StatLockType)lockValue;
-                    break;
-                case 1:
-                    from.DexLock = (StatLockType)lockValue;
-                    break;
-                case 2:
-                    from.IntLock = (StatLockType)lockValue;
-                    break;
-            }
-        }
-
-        public static void CloseStatus(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var serial = (Serial)reader.ReadUInt32();
-        }
-
-        public static void Language(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            from.Language = reader.ReadAscii(4);
-        }
-
-        public static void QueryProperties(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            if (!ObjectPropertyList.Enabled)
-            {
-                return;
-            }
-
-            var from = state.Mobile;
-
-            Serial s = (Serial)reader.ReadUInt32();
-
-            if (s.IsMobile)
-            {
-                var m = World.FindMobile(s);
-
-                if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
+                if (entity is Mobile)
                 {
-                    m.SendPropertiesTo(from);
+                    p = entity.Location;
                 }
-            }
-            else if (s.IsItem)
-            {
-                var item = World.FindItem(s);
-
-                if (item?.Deleted == false && from.CanSee(item) &&
-                    Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
+                else if (entity is Item item)
                 {
-                    item.SendPropertiesTo(from);
+                    p = item.GetWorldLocation();
                 }
-            }
-        }
-
-        public static void ContextMenuResponse(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-
-            if (from == null)
-            {
-                return;
-            }
-
-            var menu = from.ContextMenu;
-
-            from.ContextMenu = null;
-
-            if (menu != null && from == menu.From)
-            {
-                var entity = World.FindEntity((Serial)reader.ReadUInt32());
-
-                if (entity != null && entity == menu.Target && from.CanSee(entity))
-                {
-                    Point3D p;
-
-                    if (entity is Mobile)
-                    {
-                        p = entity.Location;
-                    }
-                    else if (entity is Item item)
-                    {
-                        p = item.GetWorldLocation();
-                    }
-                    else
-                    {
-                        return;
-                    }
-
-                    int index = reader.ReadUInt16();
-
-                    if (index >= 0 && index < menu.Entries.Length)
-                    {
-                        var e = menu.Entries[index];
-
-                        var range = e.Range;
-
-                        if (range == -1)
-                        {
-                            range = 18;
-                        }
-
-                        if (e.Enabled && from.InRange(p, range))
-                        {
-                            e.OnClick();
-                        }
-                    }
-                }
-            }
-        }
-
-        public static void ContextMenuRequest(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var from = state.Mobile;
-            var target = World.FindEntity((Serial)reader.ReadUInt32());
-
-            if (from != null && target != null && from.Map == target.Map && from.CanSee(target))
-            {
-                var item = target as Item;
-
-                var checkLocation = item?.GetWorldLocation() ?? target.Location;
-                if (!(Utility.InUpdateRange(from.Location, checkLocation) && from.CheckContextMenuDisplay(target)))
+                else
                 {
                     return;
                 }
 
-                var c = new ContextMenu(from, target);
+                int index = reader.ReadUInt16();
 
-                if (c.Entries.Length > 0)
+                if (index >= 0 && index < menu.Entries.Length)
                 {
-                    if (item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel)
+                    var e = menu.Entries[index];
+
+                    var range = e.Range;
+
+                    if (range == -1)
                     {
-                        for (var i = 0; i < c.Entries.Length; ++i)
-                        {
-                            if (!c.Entries[i].NonLocalUse)
-                            {
-                                c.Entries[i].Enabled = false;
-                            }
-                        }
+                        range = 18;
                     }
 
-                    from.ContextMenu = c;
+                    if (e.Enabled && from.InRange(p, range))
+                    {
+                        e.OnClick();
+                    }
                 }
             }
         }
+    }
 
-        public static void BandageTarget(NetState state, CircularBufferReader reader, ref int packetLength)
+    public static void ContextMenuRequest(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+        var target = World.FindEntity((Serial)reader.ReadUInt32());
+
+        if (from != null && target != null && from.Map == target.Map && from.CanSee(target))
         {
-            var from = state.Mobile;
+            var item = target as Item;
 
-            if (from == null)
+            var checkLocation = item?.GetWorldLocation() ?? target.Location;
+            if (!(Utility.InUpdateRange(from.Location, checkLocation) && from.CheckContextMenuDisplay(target)))
             {
                 return;
             }
 
-            if (from.AccessLevel >= AccessLevel.Counselor || Core.TickCount - from.NextActionTime >= 0)
-            {
-                var bandage = World.FindItem((Serial)reader.ReadUInt32());
+            var c = new ContextMenu(from, target);
 
-                if (bandage == null)
+            if (c.Entries.Length > 0)
+            {
+                if (item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel)
                 {
-                    return;
+                    for (var i = 0; i < c.Entries.Length; ++i)
+                    {
+                        if (!c.Entries[i].NonLocalUse)
+                        {
+                            c.Entries[i].Enabled = false;
+                        }
+                    }
                 }
 
-                var target = World.FindMobile((Serial)reader.ReadUInt32());
-
-                if (target == null)
-                {
-                    return;
-                }
-
-                EventSink.InvokeBandageTargetRequest(from, bandage, target);
-
-                from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
+                from.ContextMenu = c;
             }
-            else
+        }
+    }
+
+    public static void BandageTarget(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var from = state.Mobile;
+
+        if (from == null)
+        {
+            return;
+        }
+
+        if (from.AccessLevel >= AccessLevel.Counselor || Core.TickCount - from.NextActionTime >= 0)
+        {
+            var bandage = World.FindItem((Serial)reader.ReadUInt32());
+
+            if (bandage == null)
             {
-                from.SendActionMessage();
+                return;
             }
-        }
 
-        public static void TargetedSpell(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var spellId = (short)(reader.ReadInt16() - 1); // zero based;
+            var target = World.FindMobile((Serial)reader.ReadUInt32());
 
-            EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
-        }
-
-        public static void TargetedSkillUse(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var skillId = reader.ReadInt16();
-
-            EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
-        }
-
-        public static void TargetByResourceMacro(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var serial = (Serial)reader.ReadUInt32();
-
-            if (serial.IsItem)
+            if (target == null)
             {
-                EventSink.InvokeTargetByResourceMacro(state.Mobile, World.FindItem(serial), reader.ReadInt16());
+                return;
             }
+
+            EventSink.InvokeBandageTargetRequest(from, bandage, target);
+
+            from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
+        }
+        else
+        {
+            from.SendActionMessage();
+        }
+    }
+
+    public static void TargetedSpell(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var spellId = (short)(reader.ReadInt16() - 1); // zero based;
+
+        EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
+    }
+
+    public static void TargetedSkillUse(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var skillId = reader.ReadInt16();
+
+        EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
+    }
+
+    public static void TargetByResourceMacro(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var serial = (Serial)reader.ReadUInt32();
+
+        if (serial.IsItem)
+        {
+            EventSink.InvokeTargetByResourceMacro(state.Mobile, World.FindItem(serial), reader.ReadInt16());
         }
     }
 }

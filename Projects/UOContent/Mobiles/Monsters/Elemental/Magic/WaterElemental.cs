@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class WaterElemental : BaseCreature
     {
         [Constructible]
-        public WaterElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public WaterElemental() : base(AIType.AI_Mage)
         {
             Body = 16;
             BaseSoundID = 278;

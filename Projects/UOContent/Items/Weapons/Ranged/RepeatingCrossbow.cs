@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
     [Flippable(0x26C3, 0x26CD)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RepeatingCrossbow : BaseRanged
     {
         [Constructible]

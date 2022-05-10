@@ -279,7 +279,7 @@ namespace Server.Engines.Craft
             Skills.Add(craftSkill);
         }
 
-        public bool ConsumeAttributes(Mobile from, ref object message, bool consume)
+        public bool ConsumeAttributes(Mobile from, ref TextDefinition message, bool consume)
         {
             bool consumMana;
             bool consumHits;
@@ -393,7 +393,7 @@ namespace Server.Engines.Craft
             return inResourceTable;
         }
 
-        public bool Find(Mobile from, int[] itemIDs)
+        public static bool Find(Mobile from, int[] itemIDs)
         {
             var map = from.Map;
 
@@ -449,7 +449,7 @@ namespace Server.Engines.Craft
             return contains;
         }
 
-        public bool IsQuantityType(Type[][] types)
+        public static bool IsQuantityType(Type[][] types)
         {
             for (int i = 0; i < types.Length; ++i)
             {
@@ -474,6 +474,7 @@ namespace Server.Engines.Craft
                 throw new ArgumentOutOfRangeException(nameof(types));
             }
 
+            // TODO: Optimize allocation
             var items = new Item[types.Length][];
             var totals = new int[types.Length];
 
@@ -487,13 +488,8 @@ namespace Server.Engines.Craft
                     {
                         totals[i] += items[i][j].Amount;
                     }
-                    else
+                    else if (hq is not BaseBeverage beverage || beverage.Content == RequiredBeverage)
                     {
-                        if (hq is BaseBeverage beverage && beverage.Content != RequiredBeverage)
-                        {
-                            continue;
-                        }
-
                         totals[i] += hq.Quantity;
                     }
                 }
@@ -567,7 +563,7 @@ namespace Server.Engines.Craft
                 }
                 else
                 {
-                    if (hq is BaseBeverage beverage && beverage.Content != RequiredBeverage)
+                    if ((hq as BaseBeverage)?.Content != RequiredBeverage)
                     {
                         continue;
                     }
@@ -581,13 +577,13 @@ namespace Server.Engines.Craft
 
         public bool ConsumeRes(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
-            ConsumeType consumeType, ref object message
+            ConsumeType consumeType, ref TextDefinition message
         ) =>
             ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false);
 
         public bool ConsumeRes(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
-            ConsumeType consumeType, ref object message, bool isFailure
+            ConsumeType consumeType, ref TextDefinition message, bool isFailure
         )
         {
             var ourPack = from.Backpack;
@@ -651,14 +647,10 @@ namespace Server.Engines.Craft
                     }
                 }
 
-                if (types[i] == null)
-                {
-                    types[i] = new[] { baseType };
-                }
-
+                types[i] ??= new[] { baseType };
                 amounts[i] = craftRes.Amount;
 
-                // For stackable items that can ben crafted more than one at a time
+                // For stackable items that can be crafted more than one at a time
                 if (UseAllRes)
                 {
                     var tempAmount = ourPack.GetAmount(types[i]);
@@ -671,13 +663,13 @@ namespace Server.Engines.Craft
                         {
                             res = Resources[i];
 
-                            if (res.MessageNumber > 0)
+                            if (res.Message.Number > 0)
                             {
-                                message = res.MessageNumber;
+                                message = res.Message.Number;
                             }
-                            else if (!string.IsNullOrEmpty(res.MessageString))
+                            else if (!string.IsNullOrEmpty(res.Message.String))
                             {
-                                message = res.MessageString;
+                                message = res.Message.String;
                             }
                             else
                             {
@@ -725,79 +717,50 @@ namespace Server.Engines.Craft
 
             int index;
 
-            // Consume ALL
-            if (consumeType == ConsumeType.All)
-            {
-                m_ResHue = 0;
-                m_ResAmount = 0;
-                m_System = craftSystem;
-
-                if (IsQuantityType(types))
-                {
-                    index = ConsumeQuantity(ourPack, types, amounts);
-                }
-                else
-                {
-                    index = ourPack.ConsumeTotalGrouped(types, amounts, true, OnResourceConsumed, CheckHueGrouping);
-                }
-
-                resHue = m_ResHue;
-            }
-            // Consume Half ( for use all resource craft type )
-            else if (consumeType == ConsumeType.Half)
-            {
-                for (var i = 0; i < amounts.Length; i++)
-                {
-                    amounts[i] /= 2;
-
-                    if (amounts[i] < 1)
-                    {
-                        amounts[i] = 1;
-                    }
-                }
-
-                m_ResHue = 0;
-                m_ResAmount = 0;
-                m_System = craftSystem;
-
-                if (IsQuantityType(types))
-                {
-                    index = ConsumeQuantity(ourPack, types, amounts);
-                }
-                else
-                {
-                    index = ourPack.ConsumeTotalGrouped(types, amounts, true, OnResourceConsumed, CheckHueGrouping);
-                }
-
-                resHue = m_ResHue;
-            }
-            else // ConstumeType.None ( it's basically used to know if the crafter has enough resource before starting the process )
+            if (consumeType == ConsumeType.None)
             {
                 index = -1;
 
+                var isQuantityType = IsQuantityType(types);
+
                 // TODO: Optimize this
-                if (IsQuantityType(types))
+                for (var i = 0; i < types.Length; i++)
                 {
-                    for (var i = 0; i < types.Length; i++)
+                    var quantity = isQuantityType
+                        ? GetQuantity(ourPack, types[i])
+                        : ourPack.GetBestGroupAmount(types[i], true, CheckHueGrouping);
+
+                    if (quantity < amounts[i])
                     {
-                        if (GetQuantity(ourPack, types[i]) < amounts[i])
+                        index = i;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (consumeType == ConsumeType.Half)
+                {
+                    for (var i = 0; i < amounts.Length; i++)
+                    {
+                        amounts[i] /= 2;
+
+                        if (amounts[i] < 1)
                         {
-                            index = i;
-                            break;
-                        }
-                        else
-                        {
-                            for (var j = 0; j < types.Length; j++)
-                            {
-                                if (ourPack.GetBestGroupAmount(types[j], true, CheckHueGrouping) < amounts[j])
-                                {
-                                    index = j;
-                                    break;
-                                }
-                            }
+                            amounts[i] = 1;
                         }
                     }
                 }
+
+                m_ResHue = 0;
+                m_ResAmount = 0;
+                m_System = craftSystem;
+
+                index = IsQuantityType(types)
+                    ? ConsumeQuantity(ourPack, types, amounts)
+                    : ourPack.ConsumeTotalGrouped(types, amounts, true, OnResourceConsumed, CheckHueGrouping);
+
+                resHue = m_ResHue;
             }
 
             if (index == -1)
@@ -812,13 +775,13 @@ namespace Server.Engines.Craft
 
             res = Resources[index];
 
-            if (res.MessageNumber > 0)
+            if (res.Message.Number > 0)
             {
-                message = res.MessageNumber;
+                message = res.Message.Number;
             }
-            else if (!string.IsNullOrEmpty(res.MessageString))
+            else if (!string.IsNullOrEmpty(res.Message.String))
             {
-                message = res.MessageString;
+                message = res.Message.String;
             }
             else
             {
@@ -842,7 +805,7 @@ namespace Server.Engines.Craft
             }
         }
 
-        private int CheckHueGrouping(Item a, Item b) => b.Hue.CompareTo(a.Hue);
+        private static int CheckHueGrouping(Item a, Item b) => b.Hue.CompareTo(a.Hue);
 
         public double GetExceptionalChance(CraftSystem system, double chance, Mobile from)
         {
@@ -859,18 +822,16 @@ namespace Server.Engines.Craft
                 bonus = talisman.ExceptionalBonus / 100.0;
             }
 
-            switch (system.ECA)
+            chance = system.ECA switch
             {
-                default:
-                    chance -= 0.6;
-                    break;
-                case CraftECA.FiftyPercentChanceMinusTenPercent:
-                    chance = chance * 0.5 - 0.1;
-                    break;
-                case CraftECA.ChanceMinusSixtyToFourtyFive:
-                    chance -= Math.Clamp(0.60 - (from.Skills[system.MainSkill].Value - 95.0) * 0.03, 0.45, 0.60);
-                    break;
-            }
+                CraftECA.FiftyPercentChanceMinusTenPercent => chance * 0.5 - 0.1,
+                CraftECA.ChanceMinusSixtyToFourtyFive => chance - Math.Clamp(
+                    0.60 - (from.Skills[system.MainSkill].Value - 95.0) * 0.03,
+                    0.45,
+                    0.60
+                ),
+                _ => chance - 0.6
+            };
 
             return chance > 0 ? chance + bonus : chance;
         }
@@ -932,24 +893,20 @@ namespace Server.Engines.Craft
                 }
             }
 
-            double chance;
+            if (!allRequiredSkills)
+            {
+                return 0;
+            }
 
-            if (allRequiredSkills)
-            {
-                chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
-                    (1.0 - craftSystem.GetChanceAtMin(this));
-            }
-            else
-            {
-                chance = 0.0;
-            }
+            double chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
+                (1.0 - craftSystem.GetChanceAtMin(this));
 
             if (allRequiredSkills && from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
             {
                 chance += talisman.SuccessBonus / 100.0;
             }
 
-            if (allRequiredSkills && valMainSkill == maxMainSkill)
+            if (allRequiredSkills && valMainSkill >= maxMainSkill)
             {
                 chance = 1.0;
             }
@@ -959,113 +916,98 @@ namespace Server.Engines.Craft
 
         public void Craft(Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool)
         {
-            if (from.BeginAction<CraftSystem>())
-            {
-                if (RequiredExpansion == Expansion.None ||
-                    from.NetState?.SupportsExpansion(RequiredExpansion) == true)
-                {
-                    var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
-
-                    if (allRequiredSkills && chance >= 0.0)
-                    {
-                        if (Recipe == null || (from as PlayerMobile)?.HasRecipe(Recipe) != false)
-                        {
-                            var badCraft = craftSystem.CanCraft(from, tool, ItemType);
-
-                            if (badCraft <= 0)
-                            {
-                                var resHue = 0;
-                                var maxAmount = 0;
-                                object message = null;
-
-                                if (ConsumeRes(
-                                    from,
-                                    typeRes,
-                                    craftSystem,
-                                    ref resHue,
-                                    ref maxAmount,
-                                    ConsumeType.None,
-                                    ref message
-                                ))
-                                {
-                                    message = null;
-
-                                    if (ConsumeAttributes(from, ref message, false))
-                                    {
-                                        var context = craftSystem.GetContext(from);
-
-                                        context?.OnMade(this);
-
-                                        var iMin = craftSystem.MinCraftEffect;
-                                        var iMax = craftSystem.MaxCraftEffect - iMin + 1;
-                                        var iRandom = Utility.Random(iMax);
-                                        iRandom += iMin + 1;
-                                        new InternalTimer(from, craftSystem, this, typeRes, tool, iRandom).Start();
-                                    }
-                                    else
-                                    {
-                                        from.EndAction<CraftSystem>();
-                                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
-                                    }
-                                }
-                                else
-                                {
-                                    from.EndAction<CraftSystem>();
-                                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
-                                }
-                            }
-                            else
-                            {
-                                from.EndAction<CraftSystem>();
-                                from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
-                            }
-                        }
-                        else
-                        {
-                            from.EndAction<CraftSystem>();
-                            from.SendGump(
-                                new CraftGump(
-                                    from,
-                                    craftSystem,
-                                    tool,
-                                    1072847 // You must learn that recipe from a scroll.
-                                )
-                            );
-                        }
-                    }
-                    else
-                    {
-                        from.EndAction<CraftSystem>();
-                        from.SendGump(
-                            new CraftGump(
-                                from,
-                                craftSystem,
-                                tool,
-                                1044153 // You don't have the required skills to attempt this item.
-                            )
-                        );
-                    }
-                }
-                else
-                {
-                    from.EndAction<CraftSystem>();
-                    from.SendGump(
-                        new CraftGump(
-                            from,
-                            craftSystem,
-                            tool,
-                            RequiredExpansionMessage(RequiredExpansion) // The {0} expansion is required to attempt this item.
-                        )
-                    );
-                }
-            }
-            else
+            if (!from.BeginAction<CraftSystem>())
             {
                 from.SendLocalizedMessage(500119); // You must wait to perform another action
+                return;
             }
+
+            if (RequiredExpansion != Expansion.None && from.NetState?.SupportsExpansion(RequiredExpansion) != true)
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(
+                    new CraftGump(
+                        from,
+                        craftSystem,
+                        tool,
+                        // The {0} expansion is required to attempt this item.
+                        RequiredExpansionMessage(RequiredExpansion)
+                    )
+                );
+                return;
+            }
+
+            var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
+
+            if (!allRequiredSkills || !(chance >= 0.0))
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(
+                    new CraftGump(
+                        from,
+                        craftSystem,
+                        tool,
+                        1044153 // You don't have the required skills to attempt this item.
+                    )
+                );
+                return;
+            }
+
+            if (Recipe != null && (from as PlayerMobile)?.HasRecipe(Recipe) == false)
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(
+                    new CraftGump(
+                        from,
+                        craftSystem,
+                        tool,
+                        1072847 // You must learn that recipe from a scroll.
+                    )
+                );
+                return;
+            }
+
+            var badCraft = craftSystem.CanCraft(from, tool, ItemType);
+
+            if (badCraft > 0)
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
+                return;
+            }
+
+            var resHue = 0;
+            var maxAmount = 0;
+            TextDefinition message = null;
+
+            if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message))
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                return;
+            }
+
+            message = null;
+
+            if (!ConsumeAttributes(from, ref message, false))
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                return;
+            }
+
+            var context = craftSystem.GetContext(from);
+
+            context?.OnMade(this);
+
+            var iMin = craftSystem.MinCraftEffect;
+            var iMax = craftSystem.MaxCraftEffect - iMin + 1;
+            var iRandom = Utility.Random(iMax);
+            iRandom += iMin + 1;
+            new InternalTimer(from, craftSystem, this, typeRes, tool, iRandom).Start();
         }
 
-        private TextDefinition RequiredExpansionMessage(Expansion expansion)
+        private static TextDefinition RequiredExpansionMessage(Expansion expansion)
         {
             return expansion switch
             {
@@ -1097,7 +1039,7 @@ namespace Server.Engines.Craft
             }
 
             int checkResHue = 0, checkMaxAmount = 0;
-            object checkMessage = null;
+            TextDefinition checkMessage = null;
 
             // Not enough resource to craft it
             if (!(ConsumeRes(
@@ -1115,13 +1057,13 @@ namespace Server.Engines.Craft
                 {
                     from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
                 }
-                else if (checkMessage is int messageInt && messageInt > 0)
+                else if (checkMessage.Number > 0)
                 {
-                    from.SendLocalizedMessage(messageInt);
+                    from.SendLocalizedMessage(checkMessage.Number);
                 }
                 else
                 {
-                    from.SendMessage(checkMessage.ToString());
+                    from.SendMessage(checkMessage.String);
                 }
 
                 return;
@@ -1131,15 +1073,13 @@ namespace Server.Engines.Craft
 
             var ignored = 1;
             var endquality = 1;
+            var resHue = 0;
+            var maxAmount = 0;
+            TextDefinition message = null;
+            var num = 0;
 
             if (CheckSkills(from, typeRes, craftSystem, ref ignored, out var allRequiredSkills))
             {
-                // Resource
-                var resHue = 0;
-                var maxAmount = 0;
-
-                object message = null;
-
                 // Not enough resource to craft it
                 if (!(ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref message)
                       && ConsumeAttributes(from, ref message, true)))
@@ -1148,13 +1088,16 @@ namespace Server.Engines.Craft
                     {
                         from.SendGump(new CraftGump(from, craftSystem, tool, message));
                     }
-                    else if (message is int messageIn && messageIn > 0)
+                    else if (message != null)
                     {
-                        from.SendLocalizedMessage(messageIn);
-                    }
-                    else
-                    {
-                        from.SendMessage(message.ToString());
+                        if (message.Number > 0)
+                        {
+                            from.SendLocalizedMessage(message.Number);
+                        }
+                        else
+                        {
+                            from.SendMessage(message.String);
+                        }
                     }
 
                     return;
@@ -1162,15 +1105,13 @@ namespace Server.Engines.Craft
 
                 tool.UsesRemaining--;
 
-                if (craftSystem is DefBlacksmithy)
+                if (craftSystem is DefBlacksmithy &&
+                    from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
                 {
-                    if (from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
+                    hammer.UsesRemaining--;
+                    if (hammer.UsesRemaining < 1)
                     {
-                        hammer.UsesRemaining--;
-                        if (hammer.UsesRemaining < 1)
-                        {
-                            hammer.Delete();
-                        }
+                        hammer.Delete();
                     }
                 }
 
@@ -1183,8 +1124,6 @@ namespace Server.Engines.Craft
                 {
                     tool.Delete();
                 }
-
-                var num = 0;
 
                 Item item;
                 if (customCraft != null)
@@ -1305,8 +1244,11 @@ namespace Server.Engines.Craft
                 {
                     from.SendLocalizedMessage(num);
                 }
+
+                return;
             }
-            else if (!allRequiredSkills)
+
+            if (!allRequiredSkills)
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
@@ -1316,57 +1258,56 @@ namespace Server.Engines.Craft
                 {
                     from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
                 }
+
+                return;
             }
-            else
+
+            var consumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
+
+            // Not enough resource to craft it
+            if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, true))
             {
-                var consumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
-                var resHue = 0;
-                var maxAmount = 0;
-
-                object message = null;
-
-                // Not enough resource to craft it
-                if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, true))
+                if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                }
+                else if (message != null)
+                {
+                    if (message.Number > 0)
                     {
-                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
-                    }
-                    else if (message is int messageInt && messageInt > 0)
-                    {
-                        from.SendLocalizedMessage(messageInt);
+                        from.SendLocalizedMessage(message.Number);
                     }
                     else
                     {
-                        from.SendMessage(message.ToString());
+                        from.SendMessage(message.String);
                     }
-
-                    return;
                 }
 
-                tool.UsesRemaining--;
+                return;
+            }
 
-                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-                {
-                    toolBroken = true;
-                }
+            tool.UsesRemaining--;
 
-                if (toolBroken)
-                {
-                    tool.Delete();
-                }
+            if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+            {
+                toolBroken = true;
+            }
 
-                // SkillCheck failed.
-                var num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
+            if (toolBroken)
+            {
+                tool.Delete();
+            }
 
-                if (!tool.Deleted && tool.UsesRemaining > 0)
-                {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
-                }
-                else if (num > 0)
-                {
-                    from.SendLocalizedMessage(num);
-                }
+            // SkillCheck failed.
+            num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
+
+            if (!tool.Deleted && tool.UsesRemaining > 0)
+            {
+                from.SendGump(new CraftGump(from, craftSystem, tool, num));
+            }
+            else if (num > 0)
+            {
+                from.SendLocalizedMessage(num);
             }
         }
 
@@ -1403,88 +1344,87 @@ namespace Server.Engines.Craft
                 if (m_iCount < m_iCountMax)
                 {
                     m_CraftSystem.PlayCraftEffect(m_From);
+                    return;
                 }
-                else
+
+                m_From.EndAction<CraftSystem>();
+
+                var badCraft = m_CraftSystem.CanCraft(m_From, m_Tool, m_CraftItem.ItemType);
+
+                if (badCraft > 0)
                 {
-                    m_From.EndAction<CraftSystem>();
-
-                    var badCraft = m_CraftSystem.CanCraft(m_From, m_Tool, m_CraftItem.ItemType);
-
-                    if (badCraft > 0)
+                    if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
                     {
-                        if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
-                        {
-                            m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
-                        }
-                        else
-                        {
-                            m_From.SendLocalizedMessage(badCraft);
-                        }
-
-                        return;
-                    }
-
-                    var quality = 1;
-
-                    m_CraftItem.CheckSkills(m_From, m_TypeRes, m_CraftSystem, ref quality, out _, false);
-
-                    var context = m_CraftSystem.GetContext(m_From);
-
-                    if (context == null)
-                    {
-                        return;
-                    }
-
-                    if (typeof(CustomCraft).IsAssignableFrom(m_CraftItem.ItemType))
-                    {
-                        try
-                        {
-                            m_CraftItem.ItemType.CreateInstance<CustomCraft>(
-                                m_From,
-                                m_CraftItem,
-                                m_CraftSystem,
-                                m_TypeRes,
-                                m_Tool,
-                                quality
-                            )?.EndCraftAction();
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
-
-                        return;
-                    }
-
-                    var makersMark = false;
-
-                    if (quality == 2 && m_From.Skills[m_CraftSystem.MainSkill].Base >= 100.0)
-                    {
-                        makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
-                    }
-
-                    if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)
-                    {
-                        m_From.SendGump(
-                            new QueryMakersMarkGump(
-                                quality,
-                                m_From,
-                                m_CraftItem,
-                                m_CraftSystem,
-                                m_TypeRes,
-                                m_Tool
-                            )
-                        );
+                        m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
                     }
                     else
                     {
-                        if (context.MarkOption == CraftMarkOption.DoNotMark)
-                        {
-                            makersMark = false;
-                        }
-
-                        m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
+                        m_From.SendLocalizedMessage(badCraft);
                     }
+
+                    return;
+                }
+
+                var quality = 1;
+
+                m_CraftItem.CheckSkills(m_From, m_TypeRes, m_CraftSystem, ref quality, out _, false);
+
+                var context = m_CraftSystem.GetContext(m_From);
+
+                if (context == null)
+                {
+                    return;
+                }
+
+                if (typeof(CustomCraft).IsAssignableFrom(m_CraftItem.ItemType))
+                {
+                    try
+                    {
+                        m_CraftItem.ItemType.CreateInstance<CustomCraft>(
+                            m_From,
+                            m_CraftItem,
+                            m_CraftSystem,
+                            m_TypeRes,
+                            m_Tool,
+                            quality
+                        )?.EndCraftAction();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+
+                    return;
+                }
+
+                var makersMark = false;
+
+                if (quality == 2 && m_From.Skills[m_CraftSystem.MainSkill].Base >= 100.0)
+                {
+                    makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
+                }
+
+                if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)
+                {
+                    m_From.SendGump(
+                        new QueryMakersMarkGump(
+                            quality,
+                            m_From,
+                            m_CraftItem,
+                            m_CraftSystem,
+                            m_TypeRes,
+                            m_Tool
+                        )
+                    );
+                }
+                else
+                {
+                    if (context.MarkOption == CraftMarkOption.DoNotMark)
+                    {
+                        makersMark = false;
+                    }
+
+                    m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
                 }
             }
         }

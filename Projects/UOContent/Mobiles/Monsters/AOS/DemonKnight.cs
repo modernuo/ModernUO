@@ -8,7 +8,7 @@ namespace Server.Mobiles
         private static bool m_InHere;
 
         [Constructible]
-        public DemonKnight() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public DemonKnight() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("demon knight");
             Title = "the Dark Father";

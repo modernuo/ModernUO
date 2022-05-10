@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Ethics;
 using Server.Guilds;
@@ -3227,16 +3228,21 @@ namespace Server.Multis
 
         private void FixLockdowns_Sandbox()
         {
-            var conts = LockDowns?.Where(item => item is Container).ToList();
-
-            if (conts == null)
+            if (LockDowns?.Count > 0)
             {
-                return;
-            }
+                using var queue = PooledRefQueue<Item>.Create();
+                foreach (var item in LockDowns)
+                {
+                    if (item is Container)
+                    {
+                        queue.Enqueue(item);
+                    }
+                }
 
-            foreach (var cont in conts)
-            {
-                SetLockdown(cont, true, true);
+                while (queue.Count > 0)
+                {
+                    SetLockdown(queue.Dequeue(), true, true);
+                }
             }
         }
 

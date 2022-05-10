@@ -15,7 +15,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Alchemy;
 
-        public override int GumpTitleNumber => 1044001;
+        public override TextDefinition GumpTitle => 1044001;
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefAlchemy();
 

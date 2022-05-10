@@ -6,7 +6,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public HolySteed()
-            : base("a silver steed", 0x75, 0x3EA8, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+            : base("a silver steed", 0x75, 0x3EA8, AIType.AI_Melee, FightMode.Aggressor, 10, 1)
         {
             SetStr(496, 525);
             SetDex(86, 105);

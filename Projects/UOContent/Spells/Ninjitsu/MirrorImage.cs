@@ -128,8 +128,9 @@ namespace Server.Mobiles
     {
         private Mobile _caster;
 
-        public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
+        public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None)
         {
+            SetSpeed(0.3, 1.0);
             _caster = caster;
 
             Body = caster.Body;

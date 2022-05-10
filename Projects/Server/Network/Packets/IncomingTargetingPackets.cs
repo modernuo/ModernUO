@@ -16,130 +16,129 @@
 using Server.Diagnostics;
 using Server.Targeting;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class IncomingTargetingPackets
 {
-    public static class IncomingTargetingPackets
+    public static void Configure()
     {
-        public static void Configure()
+        IncomingPackets.Register(0x6C, 19, true, TargetResponse);
+    }
+
+    public static void TargetResponse(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        int type = reader.ReadByte();
+        var targetID = reader.ReadInt32();
+        int flags = reader.ReadByte();
+        var serial = (Serial)reader.ReadUInt32();
+        int x = reader.ReadInt16();
+        int y = reader.ReadInt16();
+        reader.ReadByte();
+        int z = reader.ReadSByte();
+        int graphic = reader.ReadUInt16();
+
+        if (targetID == unchecked((int)0xDEADBEEF))
         {
-            IncomingPackets.Register(0x6C, 19, true, TargetResponse);
+            return;
         }
 
-        public static void TargetResponse(NetState state, CircularBufferReader reader, ref int packetLength)
+        var from = state.Mobile;
+
+        var t = from.Target;
+
+        if (t == null)
         {
-            int type = reader.ReadByte();
-            var targetID = reader.ReadInt32();
-            int flags = reader.ReadByte();
-            var serial = (Serial)reader.ReadUInt32();
-            int x = reader.ReadInt16();
-            int y = reader.ReadInt16();
-            reader.ReadByte();
-            int z = reader.ReadSByte();
-            int graphic = reader.ReadUInt16();
+            return;
+        }
 
-            if (targetID == unchecked((int)0xDEADBEEF))
+        var prof = TargetProfile.Acquire(t.GetType());
+        prof?.Start();
+
+        try
+        {
+            if (x == -1 && y == -1 && !serial.IsValid)
             {
-                return;
+                // User pressed escape
+                t.Cancel(from, TargetCancelType.Canceled);
             }
-
-            var from = state.Mobile;
-
-            var t = from.Target;
-
-            if (t == null)
+            else if (t.TargetID != targetID)
             {
-                return;
+                // Sanity, prevent fake target
             }
-
-            var prof = TargetProfile.Acquire(t.GetType());
-            prof?.Start();
-
-            try
+            else
             {
-                if (x == -1 && y == -1 && !serial.IsValid)
-                {
-                    // User pressed escape
-                    t.Cancel(from, TargetCancelType.Canceled);
-                }
-                else if (t.TargetID != targetID)
-                {
-                    // Sanity, prevent fake target
-                }
-                else
-                {
-                    object toTarget;
+                object toTarget;
 
-                    if (type == 1)
+                if (type == 1)
+                {
+                    if (graphic == 0)
                     {
-                        if (graphic == 0)
+                        toTarget = new LandTarget(new Point3D(x, y, z), from.Map);
+                    }
+                    else
+                    {
+                        var map = from.Map;
+
+                        if (map == null || map == Map.Internal)
                         {
-                            toTarget = new LandTarget(new Point3D(x, y, z), from.Map);
+                            t.Cancel(from, TargetCancelType.Canceled);
+                            return;
                         }
                         else
                         {
-                            var map = from.Map;
+                            var tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
 
-                            if (map == null || map == Map.Internal)
+                            var valid = false;
+
+                            if (state.HighSeas)
+                            {
+                                var id = TileData.ItemTable[graphic & TileData.MaxItemValue];
+                                if (id.Surface)
+                                {
+                                    z -= id.Height;
+                                }
+                            }
+
+                            for (var i = 0; !valid && i < tiles.Length; ++i)
+                            {
+                                if (tiles[i].Z == z && tiles[i].ID == graphic)
+                                {
+                                    valid = true;
+                                }
+                            }
+
+                            if (!valid)
                             {
                                 t.Cancel(from, TargetCancelType.Canceled);
                                 return;
                             }
                             else
                             {
-                                var tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
-
-                                var valid = false;
-
-                                if (state.HighSeas)
-                                {
-                                    var id = TileData.ItemTable[graphic & TileData.MaxItemValue];
-                                    if (id.Surface)
-                                    {
-                                        z -= id.Height;
-                                    }
-                                }
-
-                                for (var i = 0; !valid && i < tiles.Length; ++i)
-                                {
-                                    if (tiles[i].Z == z && tiles[i].ID == graphic)
-                                    {
-                                        valid = true;
-                                    }
-                                }
-
-                                if (!valid)
-                                {
-                                    t.Cancel(from, TargetCancelType.Canceled);
-                                    return;
-                                }
-                                else
-                                {
-                                    toTarget = new StaticTarget(new Point3D(x, y, z), graphic);
-                                }
+                                toTarget = new StaticTarget(new Point3D(x, y, z), graphic);
                             }
                         }
                     }
-                    else if (serial.IsMobile)
-                    {
-                        toTarget = World.FindMobile(serial);
-                    }
-                    else if (serial.IsItem)
-                    {
-                        toTarget = World.FindItem(serial);
-                    }
-                    else
-                    {
-                        t.Cancel(from, TargetCancelType.Canceled);
-                        return;
-                    }
-
-                    t.Invoke(from, toTarget);
                 }
+                else if (serial.IsMobile)
+                {
+                    toTarget = World.FindMobile(serial);
+                }
+                else if (serial.IsItem)
+                {
+                    toTarget = World.FindItem(serial);
+                }
+                else
+                {
+                    t.Cancel(from, TargetCancelType.Canceled);
+                    return;
+                }
+
+                t.Invoke(from, toTarget);
             }
-            finally
-            {
-                prof?.Finish();
-            }
+        }
+        finally
+        {
+            prof?.Finish();
         }
     }
 }

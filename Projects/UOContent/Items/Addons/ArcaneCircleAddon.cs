@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(1)]
+    [SerializationGenerator(1)]
     public partial class ArcaneCircleAddon : BaseAddon
     {
         [Constructible]
@@ -40,7 +42,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ArcaneCircleDeed : BaseAddonDeed
     {
         [Constructible]

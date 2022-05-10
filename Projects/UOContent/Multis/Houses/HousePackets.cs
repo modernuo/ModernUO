@@ -29,7 +29,7 @@ namespace Server.Multis
 
         public static void SendBeginHouseCustomization(this NetState ns, Serial house)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -50,7 +50,7 @@ namespace Server.Multis
 
         public static void SendEndHouseCustomization(this NetState ns, Serial house)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -71,7 +71,7 @@ namespace Server.Multis
 
         public static void SendDesignStateGeneral(this NetState ns, Serial house, int revision)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

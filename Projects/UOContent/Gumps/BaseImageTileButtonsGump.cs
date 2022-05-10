@@ -53,8 +53,8 @@ namespace Server.Gumps
         {
         }
 
-        public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) :
-            base(10, 10) // Coords are 0, o on OSI, intentional difference
+        // Coords are 0, 0 on OSI, intentional difference
+        public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) : base(10, 10)
         {
             Buttons = buttons;
             AddPage(0);
@@ -109,9 +109,9 @@ namespace Server.Gumps
                     b.ItemID,
                     b.Hue,
                     15,
-                    10,
-                    b.LocalizedTooltip
+                    10
                 );
+                AddTooltip(b.LocalizedTooltip);
                 TextDefinition.AddHtmlText(this, innerX + 84, innerY, 250, 60, b.Label, false, false, 0x7FFF, 0xFFFFFF);
             }
         }

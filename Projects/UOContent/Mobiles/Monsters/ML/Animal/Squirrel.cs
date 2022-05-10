@@ -3,10 +3,11 @@ namespace Server.Mobiles
     public class Squirrel : BaseCreature
     {
         [Constructible]
-        public Squirrel() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Squirrel() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0x116;
 
+            SetSpeed(0.3, 1.0);
             SetStr(44, 50);
             SetDex(35);
             SetInt(5);

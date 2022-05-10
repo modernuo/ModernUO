@@ -35,8 +35,9 @@ namespace Server.Factions
         private DateTime m_OrdersEnd;
         private Town m_Town;
 
-        public BaseFactionGuard(string title) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public BaseFactionGuard(string title) : base(AIType.AI_Melee)
         {
+            SetSpeed(0.3, 1.0);
             Orders = new Orders(this);
             Title = title;
 

@@ -13,18 +13,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Network
-{
-    public static class IncomingHousePackets
-    {
-        public static void Configure()
-        {
-            IncomingPackets.Register(0xFB, 2, false, ShowPublicHouseContent);
-        }
+namespace Server.Network;
 
-        public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, ref int packetLength)
-        {
-            var showPublicHouseContent = reader.ReadBoolean();
-        }
+public static class IncomingHousePackets
+{
+    public static void Configure()
+    {
+        IncomingPackets.Register(0xFB, 2, false, ShowPublicHouseContent);
+    }
+
+    public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        var showPublicHouseContent = reader.ReadBoolean();
     }
 }

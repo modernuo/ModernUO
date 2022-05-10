@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Pig : BaseCreature
     {
         [Constructible]
-        public Pig() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Pig() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xCB;
             BaseSoundID = 0xC4;

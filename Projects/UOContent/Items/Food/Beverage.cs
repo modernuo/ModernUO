@@ -1101,7 +1101,7 @@ namespace Server.Items
 
             writer.Write(Poisoner);
 
-            Poison.Serialize(Poison, writer);
+            writer.Write(Poison);
             writer.Write((int)m_Content);
             writer.Write(m_Quantity);
         }
@@ -1133,7 +1133,7 @@ namespace Server.Items
                     }
                 case 0:
                     {
-                        Poison = Poison.Deserialize(reader);
+                        Poison = reader.ReadPoison();
                         m_Content = (BeverageType)reader.ReadInt();
                         m_Quantity = reader.ReadInt();
                         break;

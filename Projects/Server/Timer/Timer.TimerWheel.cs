@@ -221,12 +221,17 @@ namespace Server
                         continue;
                     }
 
-                    var name = t.ToString();
-
-                    hash.TryGetValue(name, out var count);
-                    hash[name] = count + 1;
-
-                    total++;
+                    while (t != null)
+                    {
+                        var name = t.ToString();
+                        
+                        hash.TryGetValue(name, out var count);
+                        hash[name] = count + 1;
+                        
+                        total++;
+                        
+                        t = t?._nextTimer;
+                    }
                 }
             }
 
@@ -260,6 +265,11 @@ namespace Server
 
             foreach (var t in _rings)
             {
+                if (t == null)
+                {
+                    continue;
+                }
+
                 for (var i = 0; i < _ringSize; i++)
                 {
                     var node = t[i];

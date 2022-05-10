@@ -17,693 +17,698 @@ using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.HighPerformance;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class OutgoingMobilePackets
 {
-    public static class OutgoingMobilePackets
+    public const int BondedStatusPacketLength = 11;
+    public const int DeathAnimationPacketLength = 13;
+    public const int MobileMovingPacketLength = 17;
+    public const int MobileMovingPacketCacheHeight = 7 * 2; // 7 notoriety, 2 client versions
+    public const int MobileMovingPacketCacheByteLength = MobileMovingPacketLength * MobileMovingPacketCacheHeight;
+    public const int AttributeMaximum = 100;
+    public const int MobileAttributePacketLength = 9;
+    public const int MobileAttributesPacketLength = 17;
+    public const int MobileAnimationPacketLength = 14;
+    public const int NewMobileAnimationPacketLength = 10;
+    public const int MobileHealthbarPacketLength = 12;
+    public const int MobileStatusCompactLength = 43;
+    public const int MobileStatusLength = 70;
+    public const int MobileStatusAOSLength = 88;
+    public const int MobileStatusMLLength = 91;
+    public const int MobileStatusHSLength = 121;
+
+    public static bool ExtendedStatus { get; private set; } = true;
+
+    public static void Configure()
     {
-        public const int BondedStatusPacketLength = 11;
-        public const int DeathAnimationPacketLength = 13;
-        public const int MobileMovingPacketLength = 17;
-        public const int MobileMovingPacketCacheHeight = 16; // 8 notoriety, 2 client versions
-        public const int MobileMovingPacketCacheByteLength = MobileMovingPacketLength * MobileMovingPacketCacheHeight;
-        public const int AttributeMaximum = 100;
-        public const int MobileAttributePacketLength = 9;
-        public const int MobileAttributesPacketLength = 17;
-        public const int MobileAnimationPacketLength = 14;
-        public const int NewMobileAnimationPacketLength = 10;
-        public const int MobileHealthbarPacketLength = 12;
-        public const int MobileStatusCompactLength = 43;
-        public const int MobileStatusMaxLength = 121;
+        ExtendedStatus = ServerConfiguration.GetSetting("client.showExtendedStatus", true);
+    }
 
-        public static bool ExtendedStatus { get; set; }
-        
-        public static void Initialize()
+    public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
+    {
+        if (buffer[0] != 0)
         {
-            ExtendedStatus = ServerConfiguration.GetOrUpdateSetting("extendedStatus", false);
+            return;
         }
 
-        public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xBF);   // Packet ID
+        writer.Write((ushort)11);   // Length
+        writer.Write((ushort)0x19); // Subpacket ID
+        writer.Write((byte)0);      // Command
+        writer.Write(serial);
+        writer.Write(bonded);
+    }
 
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xBF); // Packet ID
-            writer.Write((ushort)11); // Length
-            writer.Write((ushort)0x19); // Subpacket ID
-            writer.Write((byte)0); // Command
-            writer.Write(serial);
-            writer.Write(bonded);
+    public static void SendBondedStatus(this NetState ns, Serial serial, bool bonded)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
         }
 
-        public static void SendBondedStatus(this NetState ns, Serial serial, bool bonded)
+        var writer = new SpanWriter(stackalloc byte[11]);
+        writer.Write((byte)0xBF);   // Packet ID
+        writer.Write((ushort)11);   // Length
+        writer.Write((ushort)0x19); // Subpacket ID
+        writer.Write((byte)0);      // Command
+        writer.Write(serial);
+        writer.Write(bonded);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void CreateDeathAnimation(Span<byte> buffer, Serial killed, Serial corpse)
+    {
+        if (buffer[0] != 0)
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[11]);
-            writer.Write((byte)0xBF); // Packet ID
-            writer.Write((ushort)11); // Length
-            writer.Write((ushort)0x19); // Subpacket ID
-            writer.Write((byte)0); // Command
-            writer.Write(serial);
-            writer.Write(bonded);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void CreateDeathAnimation(Span<byte> buffer, Serial killed, Serial corpse)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xAF); // Packet ID
+        writer.Write(killed);
+        writer.Write(corpse);
+        writer.Write(0); // ??
+    }
 
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xAF); // Packet ID
-            writer.Write(killed);
-            writer.Write(corpse);
-            writer.Write(0); // ??
+    public static void SendDeathAnimation(this NetState ns, Serial killed, Serial corpse)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
         }
 
-        public static void SendDeathAnimation(this NetState ns, Serial killed, Serial corpse)
-        {
-            if (ns == null)
-            {
-                return;
-            }
+        Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
+        CreateDeathAnimation(span, killed, corpse);
+        ns.Send(span);
+    }
 
-            Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
-            CreateDeathAnimation(span, killed, corpse);
-            ns.Send(span);
+    public static void CreateMobileMoving(Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
         }
 
-        public static void CreateMobileMoving(Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
+        var loc = m.Location;
+        var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
+
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0x77); // Packet ID
+        writer.Write(m.Serial);
+        writer.Write((short)m.Body);
+        writer.Write((short)loc.m_X);
+        writer.Write((short)loc.m_Y);
+        writer.Write((sbyte)loc.m_Z);
+        writer.Write((byte)m.Direction);
+        writer.Write((short)hue);
+        writer.Write((byte)m.GetPacketFlags(stygianAbyss));
+        writer.Write((byte)noto);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMobileMoving(this NetState ns, Mobile source, Mobile target) =>
+        ns.SendMobileMoving(target, Notoriety.Compute(source, target));
+
+    public static void SendMobileMoving(this NetState ns, Mobile target, int noto)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var loc = m.Location;
-            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x77); // Packet ID
-            writer.Write(m.Serial);
-            writer.Write((short)m.Body);
-            writer.Write((short)loc.m_X);
-            writer.Write((short)loc.m_Y);
-            writer.Write((sbyte)loc.m_Z);
-            writer.Write((byte)m.Direction);
-            writer.Write((short)hue);
-            writer.Write((byte)m.GetPacketFlags(stygianAbyss));
-            writer.Write((byte)noto);
+            return;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMobileMoving(this NetState ns, Mobile source, Mobile target) =>
-            ns.SendMobileMoving(target, Notoriety.Compute(source, target));
+        Span<byte> buffer = stackalloc byte[MobileMovingPacketLength].InitializePacket();
+        CreateMobileMoving(buffer, target, noto, ns.StygianAbyss);
+        ns.Send(buffer);
+    }
 
-        public static void SendMobileMoving(this NetState ns, Mobile target, int noto)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile source, Mobile target) =>
+        ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
+
+    // Requires a buffer of 14 packets, 17 bytes per packet (238 bytes).
+    // Requires cache to have the first byte of each packet initially zeroed.
+    public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> buffer = stackalloc byte[MobileMovingPacketLength].InitializePacket();
-            CreateMobileMoving(buffer, target, noto, ns.StygianAbyss);
-            ns.Send(buffer);
+            return;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMobileMovingUsingCache(this NetState ns, Span2D<byte> cache, Mobile source, Mobile target) =>
-            ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
+        var stygianAbyss = ns.StygianAbyss;
+        // Indexes 0-6 for pre-SA, and 7-13 for SA
+        var row = noto + (stygianAbyss ? 6 : -1);
+        var buffer = cache.Slice(row * MobileMovingPacketLength, MobileMovingPacketLength);
+        CreateMobileMoving(buffer, target, noto, stygianAbyss);
 
-        // Requires a buffer of 16 packets, 17bytes per packet (272 bytes).
-        // Requires cache to have the first byte of each packet zeroed.
-        public static void SendMobileMovingUsingCache(this NetState ns, Span2D<byte> cache, Mobile target, int noto)
+        ns.Send(buffer);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void WriteAttribute(
+        this ref SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false
+    )
+    {
+        if (normalize && max != 0)
         {
-            if (ns == null)
+            if (reverse)
             {
-                return;
-            }
-
-            var stygianAbyss = ns.StygianAbyss;
-            var row = noto * 2 + (stygianAbyss ? 1 : 0);
-            var buffer = cache.GetRowSpan(row);
-            CreateMobileMoving(buffer, target, noto, stygianAbyss);
-
-            ns.Send(buffer);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteAttribute(
-            this ref SpanWriter writer, int max, int cur, bool normalize = false, bool reverse = false
-        )
-        {
-            if (normalize && max != 0)
-            {
-                if (reverse)
-                {
-                    writer.Write((short)(cur * AttributeMaximum / max));
-                    writer.Write((short)AttributeMaximum);
-                }
-                else
-                {
-                    writer.Write((short)AttributeMaximum);
-                    writer.Write((short)(cur * AttributeMaximum / max));
-                }
+                writer.Write((short)(cur * AttributeMaximum / max));
+                writer.Write((short)AttributeMaximum);
             }
             else
             {
-                if (reverse)
-                {
-                    writer.Write((short)cur);
-                    writer.Write((short)max);
-                }
-                else
-                {
-                    writer.Write((short)max);
-                    writer.Write((short)cur);
-                }
+                writer.Write((short)AttributeMaximum);
+                writer.Write((short)(cur * AttributeMaximum / max));
             }
         }
-
-        public static void SendMobileHits(this NetState ns, Mobile m, bool normalize = false)
+        else
         {
-            if (ns == null)
+            if (reverse)
             {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[MobileAttributePacketLength];
-            CreateMobileHits(span, m, normalize);
-            ns.Send(span);
-        }
-
-        public static void CreateMobileHits(Span<byte> buffer, Mobile m, bool normalize = false)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xA1); // Packet ID
-            writer.Write(m.Serial);
-            writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
-        }
-
-        public static void SendMobileMana(this NetState ns, Mobile m, bool normalize = false)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[MobileAttributePacketLength];
-            CreateMobileMana(span, m, normalize);
-            ns.Send(span);
-        }
-
-        public static void CreateMobileMana(Span<byte> buffer, Mobile m, bool normalize = false)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xA2); // Packet ID
-            writer.Write(m.Serial);
-            writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
-        }
-
-        public static void SendMobileStam(this NetState ns, Mobile m, bool normalize = false)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[MobileAttributePacketLength];
-            CreateMobileStam(span, m, normalize);
-            ns.Send(span);
-        }
-
-        public static void CreateMobileStam(Span<byte> buffer, Mobile m, bool normalize = false)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xA3); // Packet ID
-            writer.Write(m.Serial);
-            writer.WriteAttribute(m.StamMax, m.Stam, normalize);
-        }
-
-        public static void SendMobileAttributes(this NetState ns, Mobile m, bool normalize = false)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[MobileAttributesPacketLength];
-            CreateMobileAttributes(span, m, normalize);
-            ns.Send(span);
-        }
-
-        public static void CreateMobileAttributes(Span<byte> buffer, Mobile m, bool normalize = false)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x2D); // Packet ID
-            writer.Write(m.Serial);
-
-            writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
-            writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
-            writer.WriteAttribute(m.StamMax, m.Stam, normalize);
-        }
-
-        public static void SendMobileName(this NetState ns, Mobile m)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[37]);
-            writer.Write((byte)0x98); // Packet ID
-            writer.Write((ushort)37);
-            writer.Write(m.Serial);
-            writer.WriteAscii(m.Name ?? "", 29);
-            writer.Write((byte)0); // Null terminator
-
-            ns.Send(writer.Span);
-        }
-
-        public static void CreateMobileAnimation(
-            Span<byte> buffer,
-            Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
-        )
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x6E); // Packet ID
-            writer.Write(mobile);
-            writer.Write((short)action);
-            writer.Write((short)frameCount);
-            writer.Write((short)repeatCount);
-            writer.Write(!forward); // protocol has really "reverse" but I find this more intuitive
-            writer.Write(repeat);
-            writer.Write((byte)delay);
-        }
-
-        public static void SendMobileAnimation(
-            this NetState ns,
-            Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
-        )
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[MobileAnimationPacketLength];
-            CreateMobileAnimation(span, mobile, action, frameCount, repeatCount, forward, repeat, delay);
-            ns.Send(span);
-        }
-
-        public static void CreateNewMobileAnimation(
-            Span<byte> buffer,
-            Serial mobile, int action, int frameCount, int delay
-        )
-        {
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0xE2); // Packet ID
-            writer.Write(mobile);
-            writer.Write((short)action);
-            writer.Write((short)frameCount);
-            writer.Write((byte)delay);
-        }
-
-        public static void SendNewMobileAnimation(this NetState ns, Serial mobile, int action, int frameCount, int delay)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength];
-            CreateNewMobileAnimation(span, mobile, action, frameCount, delay);
-            ns.Send(span);
-        }
-
-        public static void SendMobileHealthbar(this NetState ns, Mobile m, Healthbar healthbar)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> span = stackalloc byte[MobileHealthbarPacketLength];
-            CreateMobileHealthbar(span, m, healthbar);
-            ns.Send(span);
-        }
-
-        public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar)
-        {
-            if (buffer[0] != 0)
-            {
-                return;
-            }
-
-            switch (healthbar)
-            {
-                case Healthbar.Poison:
-                    {
-                        CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0);
-                        break;
-                    }
-                case Healthbar.Yellow:
-                    {
-                        CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0);
-                        break;
-                    }
-                default:
-                    {
-                        Console.WriteLine("Packets: Invalid Healthbar {0} in {1}", healthbar, nameof(CreateMobileHealthbar));
-                        CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0);
-                        break;
-                    }
-            }
-        }
-
-        public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level)
-        {
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x17); // Packet ID
-            writer.Write((ushort)12);
-            writer.Write(serial);
-            writer.Write((short)1); // Show bar
-            writer.Write((short)healthbar);
-            writer.Write((byte)level); // 0 is off for that bar type
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
-            CreateMobileStatus(buffer, null, m, 0, canBeRenamed);
-
-        public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
-        {
-            if (ns == null)
-            {
-                return;
-            }
-
-            Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
-            CreateMobileStatusCompact(buffer, m, canBeRenamed);
-
-            ns.Send(buffer);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMobileStatus(this NetState ns, Mobile m) => ns.SendMobileStatus(m, m);
-
-        public static void SendMobileStatus(this NetState ns, Mobile beholder, Mobile beheld)
-        {
-            if (ns == null || beheld == null)
-            {
-                return;
-            }
-
-            Span<byte> buffer = stackalloc byte[MobileStatusMaxLength];
-            int version;
-
-            if (beholder != beheld)
-            {
-                version = 0;
-            }
-            else if (Core.HS && ns.ExtendedStatus)
-            {
-                version = 6;
-            }
-            else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
-            {
-                /*
-                 * For the ML era, the version value must be 5 if the original UO distribution
-                 * is used and the client is not lower than version 5
-                 */
-                version = ExtendedStatus ? 6 : 5;
+                writer.Write((short)cur);
+                writer.Write((short)max);
             }
             else
             {
-                version = Core.AOS ? 4 : 3;
+                writer.Write((short)max);
+                writer.Write((short)cur);
             }
+        }
+    }
 
-            var length = CreateMobileStatus(buffer, beholder, beheld, version, beheld.CanBeRenamedBy(beholder));
-            ns.Send(buffer[..length]);
+    public static void SendMobileHits(this NetState ns, Mobile m, bool normalize = false)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
         }
 
-        public static int CreateMobileStatus(
-            Span<byte> buffer, Mobile beholder, Mobile beheld, int version, bool canBeRenamed
-        )
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        CreateMobileHits(span, m, normalize);
+        ns.Send(span);
+    }
+
+    public static void CreateMobileHits(Span<byte> buffer, Mobile m, bool normalize = false)
+    {
+        if (buffer[0] != 0)
         {
-            if (buffer[0] != 0)
-            {
-                return buffer.Length;
-            }
+            return;
+        }
 
-            var name = beheld.Name ?? "";
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xA1); // Packet ID
+        writer.Write(m.Serial);
+        writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+    }
 
-            var writer = new SpanWriter(buffer);
-            writer.Write((byte)0x11); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-            writer.Write(beheld.Serial);
-            writer.WriteAscii(name, 30);
-            writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
-            writer.Write(canBeRenamed);
-            writer.Write((byte)version);
+    public static void SendMobileMana(this NetState ns, Mobile m, bool normalize = false)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
 
-            if (version <= 0)
-            {
-                writer.WritePacketLength();
-                return writer.Position;
-            }
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        CreateMobileMana(span, m, normalize);
+        ns.Send(span);
+    }
 
-            writer.Write(beheld.Female);
+    public static void CreateMobileMana(Span<byte> buffer, Mobile m, bool normalize = false)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
+        }
 
-            writer.Write((short)beheld.Str);
-            writer.Write((short)beheld.Dex);
-            writer.Write((short)beheld.Int);
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xA2); // Packet ID
+        writer.Write(m.Serial);
+        writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+    }
 
-            writer.Write((short)beheld.Stam);
-            writer.Write((short)beheld.StamMax);
-            writer.Write((short)beheld.Mana);
-            writer.Write((short)beheld.ManaMax);
+    public static void SendMobileStam(this NetState ns, Mobile m, bool normalize = false)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
 
-            writer.Write(beheld.TotalGold);
-            writer.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
-            writer.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        CreateMobileStam(span, m, normalize);
+        ns.Send(span);
+    }
 
-            if (version >= 5)
-            {
-                writer.Write((short)beheld.MaxWeight);
-                writer.Write((byte)(beheld.Race?.RaceID + 1 ?? 0)); // Would be 0x00 if it's a non-ML enabled account but...
-            }
+    public static void CreateMobileStam(Span<byte> buffer, Mobile m, bool normalize = false)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
+        }
 
-            writer.Write((short)beheld.StatCap);
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xA3); // Packet ID
+        writer.Write(m.Serial);
+        writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+    }
 
-            writer.Write((byte)beheld.Followers);
-            writer.Write((byte)beheld.FollowersMax);
+    public static void SendMobileAttributes(this NetState ns, Mobile m, bool normalize = false)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
 
-            if (version >= 4)
-            {
-                writer.Write((short)beheld.FireResistance);   // Fire
-                writer.Write((short)beheld.ColdResistance);   // Cold
-                writer.Write((short)beheld.PoisonResistance); // Poison
-                writer.Write((short)beheld.EnergyResistance); // Energy
-                writer.Write((short)beheld.Luck);             // Luck
+        Span<byte> span = stackalloc byte[MobileAttributesPacketLength];
+        CreateMobileAttributes(span, m, normalize);
+        ns.Send(span);
+    }
 
-                var weapon = beheld.Weapon;
+    public static void CreateMobileAttributes(Span<byte> buffer, Mobile m, bool normalize = false)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
+        }
 
-                int min = 0, max = 0;
-                weapon?.GetStatusDamage(beheld, out min, out max);
-                writer.Write((short)min); // Damage min
-                writer.Write((short)max); // Damage max
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0x2D); // Packet ID
+        writer.Write(m.Serial);
 
-                writer.Write(beheld.TithingPoints);
-            }
+        writer.WriteAttribute(m.HitsMax, m.Hits, normalize);
+        writer.WriteAttribute(m.ManaMax, m.Mana, normalize);
+        writer.WriteAttribute(m.StamMax, m.Stam, normalize);
+    }
 
-            if (version >= 6)
-            {
-                for (var i = 0; i < 15; ++i)
+    public static void SendMobileName(this NetState ns, Mobile m)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(stackalloc byte[37]);
+        writer.Write((byte)0x98); // Packet ID
+        writer.Write((ushort)37);
+        writer.Write(m.Serial);
+        writer.WriteAscii(m.Name ?? "", 29);
+        writer.Write((byte)0); // Null terminator
+
+        ns.Send(writer.Span);
+    }
+
+    public static void CreateMobileAnimation(
+        Span<byte> buffer,
+        Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
+    )
+    {
+        if (buffer[0] != 0)
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0x6E); // Packet ID
+        writer.Write(mobile);
+        writer.Write((short)action);
+        writer.Write((short)frameCount);
+        writer.Write((short)repeatCount);
+        writer.Write(!forward); // protocol has really "reverse" but I find this more intuitive
+        writer.Write(repeat);
+        writer.Write((byte)delay);
+    }
+
+    public static void SendMobileAnimation(
+        this NetState ns,
+        Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay
+    )
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        Span<byte> span = stackalloc byte[MobileAnimationPacketLength];
+        CreateMobileAnimation(span, mobile, action, frameCount, repeatCount, forward, repeat, delay);
+        ns.Send(span);
+    }
+
+    public static void CreateNewMobileAnimation(
+        Span<byte> buffer,
+        Serial mobile, int action, int frameCount, int delay
+    )
+    {
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0xE2); // Packet ID
+        writer.Write(mobile);
+        writer.Write((short)action);
+        writer.Write((short)frameCount);
+        writer.Write((byte)delay);
+    }
+
+    public static void SendNewMobileAnimation(this NetState ns, Serial mobile, int action, int frameCount, int delay)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength];
+        CreateNewMobileAnimation(span, mobile, action, frameCount, delay);
+        ns.Send(span);
+    }
+
+    public static void SendMobileHealthbar(this NetState ns, Mobile m, Healthbar healthbar)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        Span<byte> span = stackalloc byte[MobileHealthbarPacketLength];
+        CreateMobileHealthbar(span, m, healthbar);
+        ns.Send(span);
+    }
+
+    public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
+        }
+
+        switch (healthbar)
+        {
+            case Healthbar.Poison:
                 {
-                    writer.Write((short)beheld.GetAOSStatus(i));
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0);
+                    break;
                 }
-            }
+            case Healthbar.Yellow:
+                {
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0);
+                    break;
+                }
+            default:
+                {
+                    Console.WriteLine("Packets: Invalid Healthbar {0} in {1}", healthbar, nameof(CreateMobileHealthbar));
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0);
+                    break;
+                }
+        }
+    }
 
+    public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level)
+    {
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0x17); // Packet ID
+        writer.Write((ushort)12);
+        writer.Write(serial);
+        writer.Write((short)1); // Show bar
+        writer.Write((short)healthbar);
+        writer.Write((byte)level); // 0 is off for that bar type
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
+        CreateMobileStatus(buffer, m, 0, canBeRenamed);
+
+    public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
+        CreateMobileStatusCompact(buffer, m, canBeRenamed);
+
+        ns.Send(buffer);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMobileStatus(this NetState ns, Mobile m) => ns.SendMobileStatus(m, m);
+
+    public static void SendMobileStatus(this NetState ns, Mobile beholder, Mobile beheld)
+    {
+        if (ns.CannotSendPackets() || beheld == null)
+        {
+            return;
+        }
+
+        int version;
+        int length;
+
+        if (beholder != beheld)
+        {
+            version = 0;
+            length = MobileStatusCompactLength;
+        }
+        else if (ExtendedStatus && ns.ExtendedStatus)
+        {
+            version = 6;
+            length = MobileStatusHSLength;
+        }
+        else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
+        {
+            version = 5;
+            length = MobileStatusMLLength;
+        }
+        else if (Core.AOS)
+        {
+            version = 4;
+            length = MobileStatusAOSLength;
+        }
+        else
+        {
+            version = 3;
+            length = MobileStatusLength;
+        }
+
+        Span<byte> buffer = stackalloc byte[length];
+        CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder));
+        ns.Send(buffer);
+    }
+
+    public static void CreateMobileStatus(Span<byte> buffer, Mobile beheld, int version, bool canBeRenamed)
+    {
+        if (buffer[0] != 0)
+        {
+            return;
+        }
+
+        var name = beheld.Name ?? "";
+
+        var writer = new SpanWriter(buffer);
+        writer.Write((byte)0x11); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
+        writer.Write(beheld.Serial);
+        writer.WriteAscii(name, 30);
+        writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
+        writer.Write(canBeRenamed);
+        writer.Write((byte)version);
+
+        if (version <= 0)
+        {
             writer.WritePacketLength();
-            return writer.Position;
+            return;
         }
 
-        public static void SendMobileUpdate(this NetState ns, Mobile m)
+        writer.Write(beheld.Female);
+
+        writer.Write((short)beheld.Str);
+        writer.Write((short)beheld.Dex);
+        writer.Write((short)beheld.Int);
+
+        writer.Write((short)beheld.Stam);
+        writer.Write((short)beheld.StamMax);
+        writer.Write((short)beheld.Mana);
+        writer.Write((short)beheld.ManaMax);
+
+        writer.Write(beheld.TotalGold);
+        writer.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
+        writer.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
+
+        if (version >= 5)
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[19]);
-            writer.Write((byte)0x20); // Packet ID
-            writer.Write(m.Serial);
-            writer.Write((short)m.Body);
-            writer.Write((byte)0);
-            writer.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue));
-            writer.Write((byte)m.GetPacketFlags(ns.StygianAbyss));
-            writer.Write((short)m.X);
-            writer.Write((short)m.Y);
-            writer.Write((short)0);
-            writer.Write((byte)m.Direction);
-            writer.Write((sbyte)m.Z);
-
-            ns.Send(writer.Span);
+            writer.Write((short)beheld.MaxWeight);
+            writer.Write((byte)(beheld.Race?.RaceID + 1 ?? 0)); // Would be 0x00 if it's a non-ML enabled account but...
         }
 
-        public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
-        {
-            if (ns == null)
-            {
-                return;
-            }
+        writer.Write((short)beheld.StatCap);
 
-            Span<bool> layers = stackalloc bool[256];
+        writer.Write((byte)beheld.Followers);
+        writer.Write((byte)beheld.FollowersMax);
+
+        if (version >= 4)
+        {
+            writer.Write((short)beheld.FireResistance);   // Fire
+            writer.Write((short)beheld.ColdResistance);   // Cold
+            writer.Write((short)beheld.PoisonResistance); // Poison
+            writer.Write((short)beheld.EnergyResistance); // Energy
+            writer.Write((short)beheld.Luck);             // Luck
+
+            var weapon = beheld.Weapon;
+
+            int min = 0, max = 0;
+            weapon?.GetStatusDamage(beheld, out min, out max);
+            writer.Write((short)min); // Damage min
+            writer.Write((short)max); // Damage max
+
+            writer.Write(beheld.TithingPoints);
+        }
+
+        if (version >= 6)
+        {
+            for (var i = 0; i < 15; ++i)
+            {
+                writer.Write((short)beheld.GetAOSStatus(i));
+            }
+        }
+
+        writer.WritePacketLength();
+    }
+
+    public static void SendMobileUpdate(this NetState ns, Mobile m)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(stackalloc byte[19]);
+        writer.Write((byte)0x20); // Packet ID
+        writer.Write(m.Serial);
+        writer.Write((short)m.Body);
+        writer.Write((byte)0);
+        writer.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue));
+        writer.Write((byte)m.GetPacketFlags(ns.StygianAbyss));
+        writer.Write((short)m.X);
+        writer.Write((short)m.Y);
+        writer.Write((short)0);
+        writer.Write((byte)m.Direction);
+        writer.Write((sbyte)m.Z);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendMobileIncoming(this NetState ns, Mobile beholder, Mobile beheld)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        Span<bool> layers = stackalloc bool[256];
 #if NO_LOCAL_INIT
             layers.Clear();
 #endif
 
-            var eq = beheld.Items;
-            var maxLength = 23 + (eq.Count + 2) * 9;
-            var writer = new SpanWriter(stackalloc byte[maxLength]);
-            writer.Write((byte)0x78); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+        var eq = beheld.Items;
+        var maxLength = 23 + (eq.Count + 2) * 9;
+        var writer = new SpanWriter(stackalloc byte[maxLength]);
+        writer.Write((byte)0x78); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
 
-            var sa = ns.StygianAbyss;
-            var newPacket = ns.NewMobileIncoming;
-            var itemIdMask = newPacket ? 0xFFFF : 0x7FFF;
+        var sa = ns.StygianAbyss;
+        var newPacket = ns.NewMobileIncoming;
+        var itemIdMask = newPacket ? 0xFFFF : 0x7FFF;
 
-            var hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.Hue;
+        var hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.Hue;
 
-            writer.Write(beheld.Serial);
-            writer.Write((short)beheld.Body);
-            writer.Write((short)beheld.X);
-            writer.Write((short)beheld.Y);
-            writer.Write((sbyte)beheld.Z);
-            writer.Write((byte)beheld.Direction);
-            writer.Write((short)hue);
-            writer.Write((byte)beheld.GetPacketFlags(sa));
-            writer.Write((byte)Notoriety.Compute(beholder, beheld));
+        writer.Write(beheld.Serial);
+        writer.Write((short)beheld.Body);
+        writer.Write((short)beheld.X);
+        writer.Write((short)beheld.Y);
+        writer.Write((sbyte)beheld.Z);
+        writer.Write((byte)beheld.Direction);
+        writer.Write((short)hue);
+        writer.Write((byte)beheld.GetPacketFlags(sa));
+        writer.Write((byte)Notoriety.Compute(beholder, beheld));
 
-            for (var i = 0; i < eq.Count; ++i)
+        for (var i = 0; i < eq.Count; ++i)
+        {
+            var item = eq[i];
+            var layer = (byte)item.Layer;
+
+            if (item.Deleted || !beholder.CanSee(item) || layers[layer])
             {
-                var item = eq[i];
-                var layer = (byte)item.Layer;
-
-                if (item.Deleted || !beholder.CanSee(item) || layers[layer])
-                {
-                    continue;
-                }
-
-                layers[layer] = true;
-                hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : item.Hue;
-
-                var itemID = item.ItemID & itemIdMask;
-                var writeHue = newPacket || hue != 0;
-
-                if (!newPacket && writeHue)
-                {
-                    itemID |= 0x8000;
-                }
-
-                writer.Write(item.Serial);
-                writer.Write((ushort)itemID);
-                writer.Write(layer);
-
-                if (writeHue)
-                {
-                    writer.Write((short)hue);
-                }
+                continue;
             }
 
-            if (beheld.HairItemID > 0 && !layers[(int)Layer.Hair])
+            layers[layer] = true;
+            hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : item.Hue;
+
+            var itemID = item.ItemID & itemIdMask;
+            var writeHue = newPacket || hue != 0;
+
+            if (!newPacket && writeHue)
             {
-                layers[(int)Layer.Hair] = true;
-                hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.HairHue;
-
-                var itemID = beheld.HairItemID & itemIdMask;
-                var writeHue = newPacket || hue != 0;
-
-                if (!newPacket && writeHue)
-                {
-                    itemID |= 0x8000;
-                }
-
-                writer.Write(HairInfo.FakeSerial(beheld.Serial));
-                writer.Write((ushort)itemID);
-                writer.Write((byte)Layer.Hair);
-
-                if (writeHue)
-                {
-                    writer.Write((short)hue);
-                }
+                itemID |= 0x8000;
             }
 
-            if (beheld.FacialHairItemID > 0 && !layers[(int)Layer.FacialHair])
+            writer.Write(item.Serial);
+            writer.Write((ushort)itemID);
+            writer.Write(layer);
+
+            if (writeHue)
             {
-                layers[(int)Layer.FacialHair] = true;
-                hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.FacialHairHue;
-
-                var itemID = beheld.FacialHairItemID & itemIdMask;
-                var writeHue = newPacket || hue != 0;
-
-                if (!newPacket && writeHue)
-                {
-                    itemID |= 0x8000;
-                }
-
-                writer.Write(FacialHairInfo.FakeSerial(beheld.Serial));
-                writer.Write((ushort)itemID);
-                writer.Write((byte)Layer.FacialHair);
-
-                if (writeHue)
-                {
-                    writer.Write((short)hue);
-                }
+                writer.Write((short)hue);
             }
-
-            writer.Write(0); // terminate
-
-            writer.WritePacketLength();
-            ns.Send(writer.Span);
         }
+
+        if (beheld.HairItemID > 0 && !layers[(int)Layer.Hair])
+        {
+            layers[(int)Layer.Hair] = true;
+            hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.HairHue;
+
+            var itemID = beheld.HairItemID & itemIdMask;
+            var writeHue = newPacket || hue != 0;
+
+            if (!newPacket && writeHue)
+            {
+                itemID |= 0x8000;
+            }
+
+            writer.Write(HairInfo.FakeSerial(beheld.Serial));
+            writer.Write((ushort)itemID);
+            writer.Write((byte)Layer.Hair);
+
+            if (writeHue)
+            {
+                writer.Write((short)hue);
+            }
+        }
+
+        if (beheld.FacialHairItemID > 0 && !layers[(int)Layer.FacialHair])
+        {
+            layers[(int)Layer.FacialHair] = true;
+            hue = beheld.SolidHueOverride >= 0 ? beheld.SolidHueOverride : beheld.FacialHairHue;
+
+            var itemID = beheld.FacialHairItemID & itemIdMask;
+            var writeHue = newPacket || hue != 0;
+
+            if (!newPacket && writeHue)
+            {
+                itemID |= 0x8000;
+            }
+
+            writer.Write(FacialHairInfo.FakeSerial(beheld.Serial));
+            writer.Write((ushort)itemID);
+            writer.Write((byte)Layer.FacialHair);
+
+            if (writeHue)
+            {
+                writer.Write((short)hue);
+            }
+        }
+
+        writer.Write(0); // terminate
+
+        writer.WritePacketLength();
+        ns.Send(writer.Span);
     }
 }

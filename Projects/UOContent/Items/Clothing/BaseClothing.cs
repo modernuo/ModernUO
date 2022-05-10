@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
@@ -22,7 +23,7 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [Serializable(6, false)]
+    [SerializationGenerator(7, false)]
     public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, "private", "private")]
@@ -93,7 +94,7 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializableField(8)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private Mobile _crafter;
+        private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeCrafter() => _crafter != null;
@@ -193,7 +194,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = from;
+                Crafter = from.RawName;
             }
 
             if (DefaultResource != CraftResource.None)
@@ -270,25 +271,33 @@ namespace Server.Items
 
             var item = system.CraftItems.SearchFor(GetType());
 
-            if (item?.Resources.Count == 1 && item.Resources[0].Amount >= 2)
+            if (item?.Resources.Count == 1)
             {
-                try
+                var resource = item.Resources[0];
+                if (resource.Amount >= 2)
                 {
-                    var info = CraftResources.GetInfo(_rawResource);
+                    try
+                    {
+                        var info = CraftResources.GetInfo(_rawResource);
 
-                    var resourceType = info.ResourceTypes?[0] ?? item.Resources[0].ItemType;
+                        Type resourceType = null;
+                        if (info?.ResourceTypes.Length > 0)
+                        {
+                            resourceType = info.ResourceTypes[0];
+                        }
 
-                    var res = resourceType.CreateInstance<Item>();
+                        var res = (resourceType ?? resource.ItemType).CreateInstance<Item>();
 
-                    ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
+                        ScissorHelper(from, res, PlayerConstructed ? resource.Amount / 2 : 1);
 
-                    res.LootType = LootType.Regular;
+                        res.LootType = LootType.Regular;
 
-                    return true;
-                }
-                catch
-                {
-                    // ignored
+                        return true;
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
 
@@ -699,7 +708,7 @@ namespace Server.Items
 
             if (_crafter != null)
             {
-                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter); // crafted by ~1_NAME~
             }
 
             if (_factionState != null)
@@ -907,7 +916,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -963,83 +972,6 @@ namespace Server.Items
         }
 
         private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            var flags = (OldSaveFlag)reader.ReadEncodedInt();
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resource))
-            {
-                _rawResource = (CraftResource)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _rawResource = DefaultResource;
-            }
-
-            Attributes = new AosAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Attributes))
-            {
-                Attributes.Deserialize(reader);
-            }
-
-            ClothingAttributes = new AosArmorAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.ClothingAttributes))
-            {
-                ClothingAttributes.Deserialize(reader);
-            }
-
-            SkillBonuses = new AosSkillBonuses(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.SkillBonuses))
-            {
-                SkillBonuses.Deserialize(reader);
-            }
-
-            Resistances = new AosElementAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resistances))
-            {
-                Resistances.Deserialize(reader);
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
-            {
-                _maxHitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.HitPoints))
-            {
-                _hitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Crafter))
-            {
-                _crafter = reader.ReadEntity<Mobile>();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Quality))
-            {
-                _quality = (ClothingQuality)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _quality = ClothingQuality.Regular;
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.StrReq))
-            {
-                _strReq = reader.ReadEncodedInt();
-            }
-            else
-            {
-                _strReq = -1;
-            }
-
-            PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
-        }
 
         [AfterDeserialization]
         private void AfterDeserialization()

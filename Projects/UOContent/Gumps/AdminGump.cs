@@ -261,16 +261,6 @@ namespace Server.Gumps
                         AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
                         AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
 
-                        AddHtml(20, 275, 400, 30, Color(Center("Statics"), LabelColor32));
-
-                        AddButtonLabeled(20, 300, GetButtonID(3, 110), "Freeze (Target)");
-                        AddButtonLabeled(20, 325, GetButtonID(3, 111), "Freeze (World)");
-                        AddButtonLabeled(20, 350, GetButtonID(3, 112), "Freeze (Map)");
-
-                        AddButtonLabeled(220, 300, GetButtonID(3, 120), "Unfreeze (Target)");
-                        AddButtonLabeled(220, 325, GetButtonID(3, 121), "Unfreeze (World)");
-                        AddButtonLabeled(220, 350, GetButtonID(3, 122), "Unfreeze (Map)");
-
                         goto case AdminGumpPage.Administer;
                     }
                 case AdminGumpPage.Administer_Server:

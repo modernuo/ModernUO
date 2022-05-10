@@ -25,7 +25,7 @@ namespace Server.Network
             IncomingPackets.Register(0x56, 11, true, OnMapCommand);
         }
 
-        private static void OnMapCommand(NetState state, CircularBufferReader reader, ref int packetLength)
+        private static void OnMapCommand(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
@@ -65,7 +65,7 @@ namespace Server.Network
 
         public static void SendMapDetails(this NetState ns, MapItem map)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -93,7 +93,7 @@ namespace Server.Network
 
         public static void SendMapCommand(this NetState ns, MapItem map, int command, int x = 0, int y = 0, bool editable = false)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

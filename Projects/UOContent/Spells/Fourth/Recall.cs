@@ -22,6 +22,10 @@ namespace Server.Spells.Fourth
 
         private readonly RunebookEntry m_Entry;
 
+        public RecallSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+        {
+        }
+
         public RecallSpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) : base(
             caster,
             scroll,

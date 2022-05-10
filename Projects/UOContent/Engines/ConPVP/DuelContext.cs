@@ -2745,7 +2745,7 @@ namespace Server.Engines.ConPVP
                 GumpWidth = 300;
                 GumpHeight = 150;
                 MessageColor = 0xFFC000;
-                MessageString = "Are you sure you wish to spectate this duel?";
+                Message = "Are you sure you wish to spectate this duel?";
                 TitleColor = 0x7800;
                 TitleNumber = 1062051; // Gate Warning
 

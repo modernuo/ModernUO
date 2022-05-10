@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Mobiles;
 using Server.Network;
@@ -7,7 +8,7 @@ using Server.Targeting;
 namespace Server.Items
 {
     [Flippable(0xE81, 0xE82)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ShepherdsCrook : BaseStaff
     {
         [Constructible]

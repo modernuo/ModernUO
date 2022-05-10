@@ -3,11 +3,12 @@ namespace Server.Mobiles
     public class RagingGrizzlyBear : BaseCreature
     {
         [Constructible]
-        public RagingGrizzlyBear() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public RagingGrizzlyBear() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 212;
             BaseSoundID = 0xA3;
 
+            SetSpeed(0.3, 1.0);
             SetStr(1251, 1550);
             SetDex(801, 1050);
             SetInt(151, 400);

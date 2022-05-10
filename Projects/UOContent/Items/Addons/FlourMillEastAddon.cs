@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items
@@ -16,7 +17,7 @@ namespace Server.Items
         Working
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FlourMillEastAddon : BaseAddon, IFlourMill
     {
         private static readonly int[][] m_StageTable =
@@ -171,7 +172,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FlourMillEastDeed : BaseAddonDeed
     {
         [Constructible]

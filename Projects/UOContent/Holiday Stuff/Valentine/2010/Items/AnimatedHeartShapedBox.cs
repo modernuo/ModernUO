@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x49CC, 0x49D0)]
     public partial class AnimatedHeartShapedBox : HeartShapedBox
     {

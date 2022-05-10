@@ -21,7 +21,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Tailoring;
 
-        public override int GumpTitleNumber => 1044005; // Tailoring Menu
+        public override TextDefinition GumpTitle => 1044005; // Tailoring Menu
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefTailoring();
 

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items /* High seas, loot from merchant ship's hold, also a "uncommon" loot item */
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WhiteClothDyeTub : DyeTub
     {
         [Constructible]

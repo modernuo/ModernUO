@@ -3,10 +3,12 @@ namespace Server.Mobiles
     public class CorruptedSoul : BaseCreature
     {
         [Constructible]
-        public CorruptedSoul() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, .1, 5)
+        public CorruptedSoul() : base(AIType.AI_Melee)
         {
             Body = 0x3CA;
             Hue = 0x453;
+
+            SetSpeed(0.25, 5);
 
             SetStr(102, 115);
             SetDex(101, 115);

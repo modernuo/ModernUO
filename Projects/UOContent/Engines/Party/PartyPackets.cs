@@ -48,7 +48,7 @@ namespace Server.Engines.PartySystem
 
         public static void SendPartyMemberList(this NetState ns, Party p)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -64,7 +64,7 @@ namespace Server.Engines.PartySystem
 
         public static void SendPartyRemoveMember(this NetState ns, Serial m, Party p = null)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -104,7 +104,7 @@ namespace Server.Engines.PartySystem
 
         public static void SendPartyTextMessage(this NetState ns, Serial m, string text, bool toAll)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -134,7 +134,7 @@ namespace Server.Engines.PartySystem
 
         public static void SendPartyInvitation(this NetState ns, Serial leader)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

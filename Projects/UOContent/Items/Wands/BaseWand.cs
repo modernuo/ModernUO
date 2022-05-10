@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -21,7 +22,7 @@ namespace Server.Items
         ManaDraining
     }
 
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public abstract partial class BaseWand : BaseBashing
     {
         [InvalidateProperties]

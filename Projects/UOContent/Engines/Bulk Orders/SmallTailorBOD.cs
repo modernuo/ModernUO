@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 
 namespace Server.Engines.BulkOrders
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SmallTailorBOD : SmallBOD
     {
         public static double[] m_TailoringMaterialChances =

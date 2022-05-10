@@ -32,3 +32,4 @@
 .DS_Store
 
 /packages/*
+/Distribution/Configuration/server-access.json

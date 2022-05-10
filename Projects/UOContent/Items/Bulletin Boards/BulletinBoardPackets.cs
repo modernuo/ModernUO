@@ -48,7 +48,7 @@ namespace Server.Network
             return $"{seconds} second{(seconds == 1 ? "" : "s")}";
         }
 
-        public static void BBClientRequest(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void BBClientRequest(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
@@ -168,7 +168,7 @@ namespace Server.Network
 
         public static void SendBBDisplayBoard(this NetState ns, BaseBulletinBoard board)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -203,7 +203,7 @@ namespace Server.Network
 
         public static void SendBBMessage(this NetState ns, BaseBulletinBoard board, BulletinMessage msg, bool content = false)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

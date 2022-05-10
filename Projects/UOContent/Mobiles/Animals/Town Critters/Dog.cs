@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Dog : BaseCreature
     {
         [Constructible]
-        public Dog() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Dog() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xD9;
             Hue = Utility.RandomAnimalHue();

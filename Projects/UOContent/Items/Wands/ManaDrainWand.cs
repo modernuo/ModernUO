@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Spells.Fourth;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ManaDrainWand : BaseWand
     {
         [Constructible]

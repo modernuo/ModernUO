@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1c0c, 0x1c0d)]
     public partial class StuddedBustierArms : BaseArmor
     {

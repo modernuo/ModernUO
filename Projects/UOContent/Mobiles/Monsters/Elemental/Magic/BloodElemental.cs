@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class BloodElemental : BaseCreature
     {
         [Constructible]
-        public BloodElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public BloodElemental() : base(AIType.AI_Mage)
         {
             Body = 159;
             BaseSoundID = 278;

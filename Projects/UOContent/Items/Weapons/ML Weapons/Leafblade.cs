@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2D22, 0x2D2E)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class Leafblade : BaseKnife
     {
         [Constructible]

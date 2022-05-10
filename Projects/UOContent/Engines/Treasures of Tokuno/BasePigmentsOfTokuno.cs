@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Stealables;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
@@ -234,7 +235,7 @@ namespace Server.Items
                    || IsInTypeList(t, DemonKnight.ArtifactRarity10)
                    || IsInTypeList(t, DemonKnight.ArtifactRarity11)
                    || IsInTypeList(t, MondainsLegacy.Artifacts)
-                   || IsInTypeList(t, StealableArtifactsSpawner.TypesOfEntires)
+                   || IsInTypeList(t, StealableArtifacts.TypesOfEntries)
                    || IsInTypeList(t, Paragon.Artifacts)
                    || IsInTypeList(t, Leviathan.Artifacts)
                    || IsInTypeList(t, TreasureMapChest.Artifacts)

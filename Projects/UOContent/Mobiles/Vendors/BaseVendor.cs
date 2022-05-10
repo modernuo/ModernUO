@@ -52,9 +52,9 @@ namespace Server.Mobiles
             }
         }
 
-        public BaseVendor(string title = null)
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public BaseVendor(string title = null) : base(AIType.AI_Vendor, FightMode.None, 2)
         {
+            SetSpeed(0.5, 2);
             LoadSBInfo();
 
             Title = title;
@@ -969,7 +969,7 @@ namespace Server.Mobiles
 
             var ns = from.NetState;
 
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

@@ -241,13 +241,15 @@ namespace Server.Misc
                 {
                     res = DeleteResultType.CharBeingPlayed;
                 }
-                else if (RestrictDeletion && Core.Now < m.Created + DeleteDelay)
+                else if (acct.AccessLevel == AccessLevel.Player && RestrictDeletion && Core.Now < m.Created + DeleteDelay)
                 {
                     res = DeleteResultType.CharTooYoung;
                 }
-                else if (m.AccessLevel == AccessLevel.Player &&
+                // Don't need to check current location, if netstate is null, they're logged out
+                else if (
+                    m.AccessLevel == AccessLevel.Player &&
                          Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<JailRegion>()
-                ) // Don't need to check current location, if netstate is null, they're logged out
+                )
                 {
                     res = DeleteResultType.BadRequest;
                 }
@@ -265,7 +267,6 @@ namespace Server.Misc
 
             state.SendCharacterDeleteResult(res);
             state.SendCharacterListUpdate(acct);
-
         }
 
         public static bool CanCreate(IPAddress ip) =>
