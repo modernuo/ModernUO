@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -51,7 +52,7 @@ public class ClothingBlessTarget : Target // Create our targeting class (which w
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class ClothingBlessDeed : Item // Create the item class which is derived from the base item class
 {
     [Constructible]

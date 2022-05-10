@@ -1,5 +1,4 @@
 using System;
-using System.Security.Cryptography;
 using Server.Accounting;
 using Server.Accounting.Security;
 using Xunit;

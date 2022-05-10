@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public abstract partial class BaseHides : Item, ICommodity
     {
         [InvalidateProperties]
@@ -85,7 +87,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1079, 0x1078)]
     public partial class Hides : BaseHides, IScissorable
     {
@@ -113,7 +115,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1079, 0x1078)]
     public partial class SpinedHides : BaseHides, IScissorable
     {
@@ -141,7 +143,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1079, 0x1078)]
     public partial class HornedHides : BaseHides, IScissorable
     {
@@ -169,7 +171,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1079, 0x1078)]
     public partial class BarbedHides : BaseHides, IScissorable
     {

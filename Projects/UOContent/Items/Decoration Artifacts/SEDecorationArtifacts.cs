@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items;
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket1Artifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -13,7 +14,7 @@ public partial class Basket1Artifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket2Artifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -24,7 +25,7 @@ public partial class Basket2Artifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket3WestArtifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -35,7 +36,7 @@ public partial class Basket3WestArtifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket3NorthArtifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -46,7 +47,7 @@ public partial class Basket3NorthArtifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket4Artifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -57,7 +58,7 @@ public partial class Basket4Artifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket5WestArtifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -68,7 +69,7 @@ public partial class Basket5WestArtifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket5NorthArtifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -79,7 +80,7 @@ public partial class Basket5NorthArtifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Basket6Artifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -90,7 +91,7 @@ public partial class Basket6Artifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BowlArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -101,7 +102,7 @@ public partial class BowlArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BowlsVerticalArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -112,7 +113,7 @@ public partial class BowlsVerticalArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BowlsHorizontalArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -123,7 +124,7 @@ public partial class BowlsHorizontalArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class CupsArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -134,7 +135,7 @@ public partial class CupsArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FanWestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -145,7 +146,7 @@ public partial class FanWestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FanNorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -156,7 +157,7 @@ public partial class FanNorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class TripleFanWestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -167,7 +168,7 @@ public partial class TripleFanWestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class TripleFanNorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -178,7 +179,7 @@ public partial class TripleFanNorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FlowersArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -189,7 +190,7 @@ public partial class FlowersArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 7;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting1WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -200,7 +201,7 @@ public partial class Painting1WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting1NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -211,7 +212,7 @@ public partial class Painting1NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting2WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -222,7 +223,7 @@ public partial class Painting2WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting2NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -233,7 +234,7 @@ public partial class Painting2NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting3Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -244,7 +245,7 @@ public partial class Painting3Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting4WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -255,7 +256,7 @@ public partial class Painting4WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 6;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting4NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -266,7 +267,7 @@ public partial class Painting4NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 6;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting5WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -277,7 +278,7 @@ public partial class Painting5WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting5NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -288,7 +289,7 @@ public partial class Painting5NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting6WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -299,7 +300,7 @@ public partial class Painting6WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Painting6NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -310,7 +311,7 @@ public partial class Painting6NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SakeArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -321,7 +322,7 @@ public partial class SakeArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 4;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Sculpture1Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -332,7 +333,7 @@ public partial class Sculpture1Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Sculpture2Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -343,7 +344,7 @@ public partial class Sculpture2Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class DolphinLeftArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -354,7 +355,7 @@ public partial class DolphinLeftArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class DolphinRightArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -365,7 +366,7 @@ public partial class DolphinRightArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class ManStatuetteSouthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -376,7 +377,7 @@ public partial class ManStatuetteSouthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class ManStatuetteEastArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -387,7 +388,7 @@ public partial class ManStatuetteEastArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay1WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -398,7 +399,7 @@ public partial class SwordDisplay1WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay1NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -409,7 +410,7 @@ public partial class SwordDisplay1NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay2WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -420,7 +421,7 @@ public partial class SwordDisplay2WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 6;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay2NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -431,7 +432,7 @@ public partial class SwordDisplay2NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 6;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay3SouthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -442,7 +443,7 @@ public partial class SwordDisplay3SouthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay3EastArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -453,7 +454,7 @@ public partial class SwordDisplay3EastArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay4WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -464,7 +465,7 @@ public partial class SwordDisplay4WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay4NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -475,7 +476,7 @@ public partial class SwordDisplay4NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay5WestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -486,7 +487,7 @@ public partial class SwordDisplay5WestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SwordDisplay5NorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -497,7 +498,7 @@ public partial class SwordDisplay5NorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class TeapotWestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -508,7 +509,7 @@ public partial class TeapotWestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class TeapotNorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -519,7 +520,7 @@ public partial class TeapotNorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class TowerLanternArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -556,7 +557,7 @@ public partial class TowerLanternArtifact : BaseDecorationArtifact
     }
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Urn1Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -567,7 +568,7 @@ public partial class Urn1Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class Urn2Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -578,7 +579,7 @@ public partial class Urn2Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class ZenRock1Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -589,7 +590,7 @@ public partial class ZenRock1Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class ZenRock2Artifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -600,7 +601,7 @@ public partial class ZenRock2Artifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class ZenRock3Artifact : BaseDecorationArtifact
 {
     [Constructible]

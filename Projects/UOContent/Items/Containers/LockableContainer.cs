@@ -1,10 +1,11 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Network;
 
 namespace Server.Items;
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public abstract partial class LockableContainer : TrappableContainer, ILockable, ILockpickable, ICraftable, IShipwreckedItem
 {
     public LockableContainer(int itemID) : base(itemID) => MaxLockLevel = 100;

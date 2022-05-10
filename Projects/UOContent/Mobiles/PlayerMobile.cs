@@ -181,7 +181,7 @@ namespace Server.Mobiles
         private DateTime m_LastYoungMessage = DateTime.MinValue;
         private TimeSpan m_LongTermElapse;
 
-        private MountBlock m_MountBlock;
+        private MountBlock _mountBlock;
 
         private DateTime m_NextJustAward;
 
@@ -240,7 +240,7 @@ namespace Server.Mobiles
 
         public DesignContext DesignContext { get; set; }
 
-        public BlockMountType MountBlockReason => CheckBlock(m_MountBlock) ? m_MountBlock.m_Type : BlockMountType.None;
+        public BlockMountType MountBlockReason => _mountBlock?.MountBlockReason ?? BlockMountType.None;
 
         public override int MaxWeight => (Core.ML && Race == Race.Human ? 100 : 40) + (int)(3.5 * Str);
 
@@ -394,7 +394,7 @@ namespace Server.Mobiles
 
         public bool NinjaWepCooldown { get; set; }
 
-        public List<Mobile> AllFollowers => m_AllFollowers ?? (m_AllFollowers = new List<Mobile>());
+        public List<Mobile> AllFollowers => m_AllFollowers ??= new List<Mobile>();
 
         public RankDefinition GuildRank
         {
@@ -1102,8 +1102,8 @@ namespace Server.Mobiles
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool CheckBlock(MountBlock block) => block?._timerToken.Running == true;
+        public void SetMountBlock(BlockMountType type, bool dismount) =>
+            SetMountBlock(type, TimeSpan.MaxValue, dismount);
 
         public void SetMountBlock(BlockMountType type, TimeSpan duration, bool dismount)
         {
@@ -1119,9 +1119,10 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!CheckBlock(m_MountBlock) || m_MountBlock._timerToken.Next < Core.Now + duration)
+            if (!_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
             {
-                m_MountBlock = new MountBlock(duration, type, this);
+                _mountBlock?.RemoveBlock(this);
+                _mountBlock = new MountBlock(duration, type, this);
             }
         }
 
@@ -4634,21 +4635,30 @@ namespace Server.Mobiles
 
         private class MountBlock
         {
-            public TimerExecutionToken _timerToken;
-            public readonly BlockMountType m_Type;
+            private TimerExecutionToken _timerToken;
+            private BlockMountType _type;
 
             public MountBlock(TimeSpan duration, BlockMountType type, Mobile mobile)
             {
-                m_Type = type;
+                _type = type;
 
-                Timer.StartTimer(duration, () => RemoveBlock(mobile), out _timerToken);
+                if (duration < TimeSpan.MaxValue)
+                {
+                    Timer.StartTimer(duration, () => RemoveBlock(mobile), out _timerToken);
+                }
             }
 
-            private void RemoveBlock(Mobile mobile)
+            public DateTime Expiration => _timerToken.Next;
+
+            public BlockMountType MountBlockReason => CheckBlock() ? _type : BlockMountType.None;
+
+            public bool CheckBlock() => _timerToken.Next == DateTime.MinValue || _timerToken.Running;
+
+            public void RemoveBlock(Mobile mobile)
             {
                 if (mobile is PlayerMobile pm)
                 {
-                    pm.m_MountBlock = null;
+                    pm._mountBlock = null;
                 }
 
                 _timerToken.Cancel();

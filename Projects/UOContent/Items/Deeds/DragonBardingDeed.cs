@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Mobiles;
 using Server.Targeting;
@@ -6,7 +7,7 @@ using Server.Targeting;
 namespace Server.Items;
 
 [TypeAlias("Server.Items.DragonBarding")]
-[Serializable(2, false)]
+[SerializationGenerator(2, false)]
 public partial class DragonBardingDeed : Item, ICraftable
 {
     [InvalidateProperties]

@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
     [Flippable(0x26C2, 0x26CC)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class CompositeBow : BaseRanged
     {
         [Constructible]

@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseClothMaterial : Item, IDyable
     {
         public BaseClothMaterial(int itemID, int amount = 1) : base(itemID)
@@ -91,7 +92,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DarkYarn : BaseClothMaterial
     {
         [Constructible]
@@ -100,7 +101,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LightYarn : BaseClothMaterial
     {
         [Constructible]
@@ -109,7 +110,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LightYarnUnraveled : BaseClothMaterial
     {
         [Constructible]
@@ -118,7 +119,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SpoolOfThread : BaseClothMaterial
     {
         [Constructible]

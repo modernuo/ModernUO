@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
@@ -8,7 +9,7 @@ using Server.Utilities;
 
 namespace Server.Items;
 
-[Serializable(2, false)]
+[SerializationGenerator(2, false)]
 public partial class TreasureMapChest : LockableContainer
 {
     [SerializableField(0, setter: "private")]
@@ -360,12 +361,12 @@ public partial class TreasureMapChest : LockableContainer
 
     public override void OnItemLifted(Mobile from, Item item)
     {
-        var notYetLifted = !_lifted.Contains(item);
-
+        var notYetLifted = _lifted?.Contains(item) != true; 
         from.RevealingAction();
 
         if (notYetLifted)
         {
+            _lifted ??= new HashSet<Item>();
             _lifted.Add(item);
 
             if (Utility.RandomDouble() <= 0.1) // 10% chance to spawn a new monster

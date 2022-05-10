@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0xf4b, 0xf4c)]
     public partial class DoubleAxe : BaseAxe
     {

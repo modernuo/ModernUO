@@ -1,7 +1,9 @@
-﻿namespace Server.Items
+﻿using ModernUO.Serialization;
+
+namespace Server.Items
 {
     [TypeAlias("Server.Items.Lollipop")]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Lollipops : CandyCane
     {
         [Constructible]

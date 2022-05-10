@@ -1,10 +1,11 @@
+using ModernUO.Serialization;
 using Server.Multis;
 using Server.Spells;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x14F0, 0x14EF)]
     public abstract partial class BaseAddonDeed : Item
     {

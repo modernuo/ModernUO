@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x1439, 0x1438)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WarHammer : BaseBashing
     {
         [Constructible]

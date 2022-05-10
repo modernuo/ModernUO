@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Multis;
 using Server.Network;
@@ -7,7 +8,7 @@ using Server.Utilities;
 
 namespace Server.Items
 {
-    [Serializable(4, false)]
+    [SerializationGenerator(4, false)]
     public partial class Aquarium : BaseAddonContainer
     {
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
@@ -1130,7 +1131,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AquariumEastDeed : BaseAddonContainerDeed
     {
         [Constructible]
@@ -1142,7 +1143,7 @@ namespace Server.Items
         public override int LabelNumber => 1074501; // Large Aquarium (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AquariumNorthDeed : BaseAddonContainerDeed
     {
         [Constructible]

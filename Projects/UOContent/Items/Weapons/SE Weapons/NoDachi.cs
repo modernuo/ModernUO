@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27A2, 0x27ED)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class NoDachi : BaseSword
     {
         [Constructible]

@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
@@ -21,10 +22,10 @@ namespace Server.Items
     }
 
     [PropertyObject]
-    [EmbeddedSerializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AquariumState
     {
-        [SerializableParent]
+        [DirtyTrackingEntity]
         private Aquarium _aquarium;
 
         private int _state;
@@ -41,7 +42,7 @@ namespace Server.Items
                 if (_state != value)
                 {
                     _state = Math.Clamp(value, 0, 4);
-                    _aquarium.MarkDirty();
+                    this.MarkDirty();
                 }
             }
         }

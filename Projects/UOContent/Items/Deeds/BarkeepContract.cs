@@ -1,10 +1,11 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 
 namespace Server.Items;
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class BarkeepContract : Item
 {
     [Constructible]

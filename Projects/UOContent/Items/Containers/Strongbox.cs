@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Multis;
 
 namespace Server.Items;
 
 [Flippable(0xE80, 0x9A8)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class StrongBox : BaseContainer, IChoppable
 {
     [InvalidateProperties]

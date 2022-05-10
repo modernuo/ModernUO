@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public partial class BulletinMessage : Item
     {
         public BulletinMessage(Mobile poster, BulletinMessage thread, string subject, string[] lines) : base(0xEB0)

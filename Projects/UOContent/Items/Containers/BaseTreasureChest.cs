@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[Serializable(1, false)]
+[SerializationGenerator(1, false)]
 public partial class BaseTreasureChest : LockableContainer
 {
     public enum TreasureLevel
@@ -56,6 +57,8 @@ public partial class BaseTreasureChest : LockableContainer
                 {
                     StartResetTimer();
                 }
+
+                InvalidateProperties();
             }
         }
     }

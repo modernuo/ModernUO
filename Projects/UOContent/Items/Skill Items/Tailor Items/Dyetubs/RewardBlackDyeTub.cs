@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public partial class RewardBlackDyeTub : DyeTub, IRewardItem
     {
         [SerializableField(0)]

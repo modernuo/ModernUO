@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x906, 0x406F)]
     [TypeAlias("Server.Items.SerpentStoneStaff")]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class SerpentstoneStaff : BaseStaff
     {
         [Constructible]

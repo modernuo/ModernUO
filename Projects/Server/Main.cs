@@ -274,6 +274,21 @@ namespace Server
             return fullPath;
         }
 
+        public static IEnumerable<string> FindDataFileByPattern(string pattern)
+        {
+            var options = new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive };
+            foreach (var p in ServerConfiguration.DataDirectories)
+            {
+                if (Directory.Exists(p))
+                {
+                    foreach (var file in Directory.EnumerateFiles(p, pattern, options))
+                    {
+                        yield return file;
+                    }
+                }
+            }
+        }
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Console.WriteLine(e.IsTerminating ? "Error:" : "Warning:");
@@ -599,7 +614,7 @@ namespace Server
                 if (World.DirtyTrackingEnabled)
                 {
                     var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
-                    var codeGennedAttribute = type.GetCustomAttribute<SerializableAttribute>(false);
+                    var codeGennedAttribute = type.GetCustomAttribute<ModernUO.Serialization.SerializationGeneratorAttribute>(false);
 
                     if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
                     {

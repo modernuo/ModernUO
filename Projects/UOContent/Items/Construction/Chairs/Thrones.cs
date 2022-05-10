@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
     [Flippable(0xB32, 0xB33)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Throne : Item
     {
         [Constructible]
@@ -11,7 +13,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB2E, 0xB2F, 0xB31, 0xB30)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WoodenThrone : Item
     {
         [Constructible]

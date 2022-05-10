@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -11,7 +12,7 @@ namespace Server.Items
         bool Dye(Mobile from, DyeTub sender);
     }
 
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public partial class DyeTub : Item, ISecurable
     {
         [SerializableField(0)]
