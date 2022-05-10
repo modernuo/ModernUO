@@ -146,7 +146,15 @@ public class LocalizationEntry
             _lang = entry.Language;
         }
 
-        public LocalizationInterpolationHandler(int literalLength, int formattedCount, int number, string lang, out bool isValid)
+        public LocalizationInterpolationHandler(
+            int literalLength, int formattedCount, int number, out bool isValid
+        ) : this(literalLength, formattedCount, number, Localization.FallbackLanguage, out isValid)
+        {
+        }
+
+        public LocalizationInterpolationHandler(
+            int literalLength, int formattedCount, int number, string lang, out bool isValid
+        )
         {
             if (Localization.TryGetLocalization(lang, number, out var entry))
             {
