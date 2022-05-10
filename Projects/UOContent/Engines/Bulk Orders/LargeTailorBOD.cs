@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Engines.BulkOrders
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LargeTailorBOD : LargeBOD
     {
         public static double[] m_TailoringMaterialChances =

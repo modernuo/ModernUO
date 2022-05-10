@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     [TypeAlias("Server.Items.ElvenSpinningwheelSouthAddon")]
     public partial class ElvenSpinningWheelSouthAddon : BaseAddon, ISpinningWheel
     {
@@ -90,7 +91,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     [TypeAlias("Server.Items.ElvenSpinningwheelSouthDeed")]
     public partial class ElvenSpinningWheelSouthDeed : BaseAddonDeed
     {

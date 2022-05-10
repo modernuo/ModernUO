@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -8,7 +9,7 @@ public interface ICommodity /* added IsDeedable prop so expansion-based deedable
     bool IsDeedable { get; }
 }
 
-[Serializable(1, false)]
+[SerializationGenerator(1, false)]
 public partial class CommodityDeed : Item
 {
     [SerializableField(0, setter: "private")]

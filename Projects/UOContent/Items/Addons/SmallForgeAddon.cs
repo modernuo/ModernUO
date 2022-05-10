@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SmallForgeAddon : BaseAddon
     {
         [Constructible]
@@ -12,7 +14,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new SmallForgeDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SmallForgeDeed : BaseAddonDeed
     {
         [Constructible]

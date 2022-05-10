@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseFish : Item
     {
         private static readonly TimeSpan DeathDelay = TimeSpan.FromMinutes(5);

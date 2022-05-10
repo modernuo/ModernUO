@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseCloak : BaseClothing
     {
         public BaseCloak(int itemID, int hue = 0) : base(itemID, Layer.Cloak, hue)
@@ -11,7 +12,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public partial class Cloak : BaseCloak, IArcaneEquip
     {
         private int _maxArcaneCharges;
@@ -111,7 +112,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RewardCloak : BaseCloak, IRewardItem
     {
         [InvalidateProperties]
@@ -188,7 +189,7 @@ namespace Server.Items
     }
 
     [Flippable(0x230A, 0x2309)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FurCape : BaseCloak
     {
         [Constructible]

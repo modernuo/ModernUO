@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Buffers;
 using Server.ContextMenus;
 using Server.Gumps;
@@ -7,7 +8,7 @@ using Server.Multis;
 
 namespace Server.Items
 {
-    [Serializable(5, false)]
+    [SerializationGenerator(5, false)]
     public partial class BaseBook : Item, ISecurable
     {
         [SerializableField(0)]

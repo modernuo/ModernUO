@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2D35, 0x2D29)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ElvenMachete : BaseSword
     {
         [Constructible]

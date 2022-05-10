@@ -14,7 +14,7 @@
       "usesSaveFlag": true,
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {
@@ -23,7 +23,7 @@
       "usesSaveFlag": true,
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {
@@ -32,7 +32,7 @@
       "usesSaveFlag": true,
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {
@@ -41,7 +41,7 @@
       "usesSaveFlag": true,
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {

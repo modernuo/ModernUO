@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable]
-    [Serializable(1)]
+    [SerializationGenerator(1)]
     public partial class LeafGloves : BaseArmor, IArcaneEquip
     {
         private int _maxArcaneCharges;

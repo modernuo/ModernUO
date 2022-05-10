@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Targets;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseKnife : BaseMeleeWeapon
     {
         public BaseKnife(int itemID) : base(itemID)

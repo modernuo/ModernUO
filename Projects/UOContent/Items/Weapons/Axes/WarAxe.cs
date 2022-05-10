@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x13B0, 0x13AF)]
     public partial class WarAxe : BaseAxe
     {

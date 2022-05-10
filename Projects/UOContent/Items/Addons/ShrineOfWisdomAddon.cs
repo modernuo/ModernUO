@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ShrineOfWisdomAddon : BaseAddon
     {
         [Constructible]
@@ -17,7 +18,7 @@ namespace Server.Items
     }
 
     [Forge]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ShrineOfWisdomComponent : AddonComponent
     {
         [Constructible]

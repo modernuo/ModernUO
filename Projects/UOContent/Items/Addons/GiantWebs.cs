@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantWeb1 : BaseAddon
     {
         [Constructible]
@@ -21,7 +23,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantWeb2 : BaseAddon
     {
         [Constructible]
@@ -42,7 +44,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantWeb3 : BaseAddon
     {
         [Constructible]
@@ -63,7 +65,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantWeb4 : BaseAddon
     {
         [Constructible]
@@ -84,7 +86,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantWeb5 : BaseAddon
     {
         [Constructible]
@@ -105,7 +107,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantWeb6 : BaseAddon
     {
         [Constructible]

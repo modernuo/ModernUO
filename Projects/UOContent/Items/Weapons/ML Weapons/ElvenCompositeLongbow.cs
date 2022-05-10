@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
     [Flippable(0x2D1E, 0x2D2A)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ElvenCompositeLongbow : BaseRanged
     {
         [Constructible]

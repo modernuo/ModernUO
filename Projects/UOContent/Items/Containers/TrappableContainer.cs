@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items;
@@ -11,7 +12,7 @@ public enum TrapType
     PoisonTrap
 }
 
-[Serializable(3, false)]
+[SerializationGenerator(3, false)]
 public abstract partial class TrappableContainer : BaseContainer, ITelekinesisable
 {
     [SerializableField(0)]

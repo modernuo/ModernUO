@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
     [Flippable(0xF50, 0xF4F)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Crossbow : BaseRanged
     {
         [Constructible]

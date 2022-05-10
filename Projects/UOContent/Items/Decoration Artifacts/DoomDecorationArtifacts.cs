@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BackpackArtifact : BaseDecorationContainerArtifact
 {
     [Constructible]
@@ -11,7 +13,7 @@ public partial class BackpackArtifact : BaseDecorationContainerArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BloodyWaterArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -22,7 +24,7 @@ public partial class BloodyWaterArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BooksWestArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -33,7 +35,7 @@ public partial class BooksWestArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BooksNorthArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -44,7 +46,7 @@ public partial class BooksNorthArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BooksFaceDownArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -55,7 +57,7 @@ public partial class BooksFaceDownArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BottleArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -66,7 +68,7 @@ public partial class BottleArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class BrazierArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -75,7 +77,7 @@ public partial class BrazierArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class CocoonArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -86,7 +88,7 @@ public partial class CocoonArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 7;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class DamagedBooksArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -97,7 +99,7 @@ public partial class DamagedBooksArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class EggCaseArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -108,7 +110,7 @@ public partial class EggCaseArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class GruesomeStandardArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -119,7 +121,7 @@ public partial class GruesomeStandardArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class LampPostArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -128,7 +130,7 @@ public partial class LampPostArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 3;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class LeatherTunicArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -139,7 +141,7 @@ public partial class LeatherTunicArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class RockArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -150,7 +152,7 @@ public partial class RockArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class RuinedPaintingArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -161,7 +163,7 @@ public partial class RuinedPaintingArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 12;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SaddleArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -172,7 +174,7 @@ public partial class SaddleArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 9;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SkinnedDeerArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -183,7 +185,7 @@ public partial class SkinnedDeerArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 8;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SkinnedGoatArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -194,7 +196,7 @@ public partial class SkinnedGoatArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SkullCandleArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -203,7 +205,7 @@ public partial class SkullCandleArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 1;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class StretchedHideArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -214,7 +216,7 @@ public partial class StretchedHideArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 2;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class StuddedLeggingsArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -225,7 +227,7 @@ public partial class StuddedLeggingsArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 5;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class StuddedTunicArtifact : BaseDecorationArtifact
 {
     [Constructible]
@@ -236,7 +238,7 @@ public partial class StuddedTunicArtifact : BaseDecorationArtifact
     public override int ArtifactRarity => 7;
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class TarotCardsArtifact : BaseDecorationArtifact
 {
     [Constructible]

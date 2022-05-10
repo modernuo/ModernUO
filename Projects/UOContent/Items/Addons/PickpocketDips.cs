@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1EC0, 0x1EC3)]
     public partial class PickpocketDip : AddonComponent
     {
@@ -118,7 +119,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PickpocketDipEastAddon : BaseAddon
     {
         [Constructible]
@@ -128,7 +129,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PickpocketDipEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -140,7 +141,7 @@ namespace Server.Items
         public override int LabelNumber => 1044337; // pickpocket dip (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PickpocketDipSouthAddon : BaseAddon
     {
         [Constructible]
@@ -152,7 +153,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new PickpocketDipSouthDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PickpocketDipSouthDeed : BaseAddonDeed
     {
         [Constructible]

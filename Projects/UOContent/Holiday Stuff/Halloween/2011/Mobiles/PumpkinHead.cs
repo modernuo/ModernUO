@@ -1,10 +1,11 @@
 ﻿using System;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Items.Holiday;
 
 namespace Server.Mobiles
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PumpkinHead : BaseCreature
     {
         [Constructible]

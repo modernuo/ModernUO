@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Flax : Item
     {
         [Constructible]

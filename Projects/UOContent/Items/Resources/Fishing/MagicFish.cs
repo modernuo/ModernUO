@@ -1,10 +1,11 @@
 using System;
+using ModernUO.Serialization;
 using Server.Network;
 using Server.Spells;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseMagicFish : Item
     {
         public BaseMagicFish(int hue) : base(0xDD6) => Hue = hue;
@@ -42,7 +43,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PrizedFish : BaseMagicFish
     {
         [Constructible]
@@ -56,7 +57,7 @@ namespace Server.Items
         public override int LabelNumber => 1041073; // prized fish
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WondrousFish : BaseMagicFish
     {
         [Constructible]
@@ -70,7 +71,7 @@ namespace Server.Items
         public override int LabelNumber => 1041074; // wondrous fish
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class TrulyRareFish : BaseMagicFish
     {
         [Constructible]
@@ -84,7 +85,7 @@ namespace Server.Items
         public override int LabelNumber => 1041075; // truly rare fish
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PeculiarFish : BaseMagicFish
     {
         [Constructible]

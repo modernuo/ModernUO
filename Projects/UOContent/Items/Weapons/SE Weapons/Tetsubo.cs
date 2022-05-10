@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27A6, 0x27F1)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tetsubo : BaseBashing
     {
         [Constructible]

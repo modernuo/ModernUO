@@ -1,12 +1,13 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AddonContainerComponent : Item, IChoppable
     {
         [Constructible]
@@ -107,7 +108,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LocalizedContainerComponent : AddonContainerComponent
     {
         [SerializableField(0, setter: "private")]

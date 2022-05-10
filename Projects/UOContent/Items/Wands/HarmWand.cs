@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Spells.Second;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class HarmWand : BaseWand
     {
         [Constructible]

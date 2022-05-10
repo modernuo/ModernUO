@@ -1,10 +1,11 @@
 using System;
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items
 {
     [Flippable(0xF52, 0xF51)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ThrowingDagger : Item
     {
         [Constructible]

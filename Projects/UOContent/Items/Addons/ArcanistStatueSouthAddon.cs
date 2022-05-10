@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ArcanistStatueSouthAddon : BaseAddon
     {
         [Constructible]
@@ -12,7 +14,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new ArcanistStatueSouthDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ArcanistStatueSouthDeed : BaseAddonDeed
     {
         [Constructible]

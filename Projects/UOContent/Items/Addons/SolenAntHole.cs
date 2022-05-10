@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class SolenAntHoleComponent : AddonComponent
     {
         public SolenAntHoleComponent(int itemID) : base(itemID)
@@ -36,7 +37,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(1)]
+    [SerializationGenerator(1)]
     public partial class SolenAntHole : BaseAddon
     {
         [SerializableField(0, getter: "private", setter: "private")]

@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SerializableEntityAttribute.cs                                  *
+ * File: ValueStringBuilderExtensions.cs                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,20 +13,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
+using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server.Buffers;
+
+public static class ValueStringBuilderExtensions
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class SerializableAttribute : Attribute
+    // Compiler generated
+    public static void Append(
+        this ref ValueStringBuilder stringBuilder,
+        [InterpolatedStringHandlerArgument("stringBuilder")]
+        ref ValueStringBuilder.AppendInterpolatedStringHandler handler)
     {
-        public int Version { get; }
-        public bool EncodedVersion { get; }
-
-        public SerializableAttribute(int version, bool encodedVersion = true)
-        {
-            Version = version;
-            EncodedVersion = encodedVersion;
-        }
+        // Reassign since the string builder stored on the interpolated handler is by-value
+        stringBuilder = handler._stringBuilder;
     }
 }

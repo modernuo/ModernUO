@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
@@ -5,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class Fireflies : Item, IAddon
     {
         [Constructible]
@@ -59,7 +60,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class FirefliesDeed : Item
     {
         [Constructible]
