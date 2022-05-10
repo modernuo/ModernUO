@@ -96,20 +96,6 @@ public static class Localization
     public static string GetText(int number, string lang = FallbackLanguage) =>
         TryGetLocalization(lang, number, out var entry) ? entry.Text : null;
 
-    public static string Format(int number, string lang = FallbackLanguage) => GetText(number, lang);
-
-    /// <summary>
-    /// Creates a formatted string of the localization entry using the <see cref="FallbackLanguage" />.
-    /// Uses <see cref="string.Format"/> under the hood.
-    /// Note: This method is not recommended since it uses almost double the memory and 50% more processing.
-    /// Instead use Format with string interpolation.
-    /// </summary>
-    /// <param name="number">Localization number</param>
-    /// <param name="args">An object array containing zero or more objects to format</param>
-    /// <returns>A copy of the localization text where the placeholder arguments have been replaced with string representations of the provided arguments</returns>
-    public static string Format(int number, params object[] args) =>
-        !TryGetLocalization(number, out var entry) ? null : string.Format(entry.StringFormatter, args);
-
     /// <summary>
     /// Creates a formatted string of the localization entry using the specified language.
     /// Uses <see cref="string.Format"/> under the hood.
@@ -120,8 +106,8 @@ public static class Localization
     /// <param name="lang">Language in ISO 639-2 format</param>
     /// <param name="args">An object array containing zero or more objects to format</param>
     /// <returns>A copy of the localization text where the placeholder arguments have been replaced with string representations of the provided arguments</returns>
-    public static string Format(int number, string lang, params object[] args) =>
-        !TryGetLocalization(lang, number, out var entry) ? null : string.Format(entry.StringFormatter, args);
+    public static string Format(int number, string lang = FallbackLanguage, params object[] args) =>
+        TryGetLocalization(lang, number, out var entry) ? entry.Format(args) : null;
 
     /// <summary>
     /// Gets a localization entry using the <see cref="FallbackLanguage" />.
@@ -171,7 +157,7 @@ public static class Localization
     public static PooledArraySpanFormattable Format(
         int number, string lang,
         [InterpolatedStringHandlerArgument("number", "lang")]
-        ref LocalizationInterpolationHandler handler
+        ref LocalizationEntry.LocalizationInterpolationHandler handler
     )
     {
         var chars = handler.ToPooledArray(out var length);
@@ -191,7 +177,7 @@ public static class Localization
     public static PooledArraySpanFormattable Format(
         int number,
         [InterpolatedStringHandlerArgument("number")]
-        ref LocalizationInterpolationHandler handler
+        ref LocalizationEntry.LocalizationInterpolationHandler handler
     )
     {
         var chars = handler.ToPooledArray(out var length);
