@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ArcaneBookshelfSouthAddon : BaseAddonContainer
     {
         [Constructible]
@@ -16,7 +18,7 @@ namespace Server.Items
         public override int LabelNumber => 1032420; // arcane bookshelf
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ArcaneBookshelfSouthDeed : BaseAddonContainerDeed
     {
         [Constructible]

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0xf45, 0xf46)]
     public partial class ExecutionersAxe : BaseAxe
     {

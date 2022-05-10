@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
-    [Serializable(1)]
+    [SerializationGenerator(1)]
     public abstract partial class LargeBOD : BaseBOD
     {
         [InvalidateProperties]

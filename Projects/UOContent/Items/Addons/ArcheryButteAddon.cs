@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [FlippableAttribute(0x100A /*East*/, 0x100B /*South*/)]
     public partial class ArcheryButte : AddonComponent
     {
@@ -293,7 +294,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ArcheryButteAddon : BaseAddon
     {
         [Constructible]
@@ -305,7 +306,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new ArcheryButteDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ArcheryButteDeed : BaseAddonDeed
     {
         [Constructible]

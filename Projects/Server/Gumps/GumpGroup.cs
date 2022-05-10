@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright (C) 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: GumpGroup.cs                                                    *
  *                                                                       *
@@ -16,24 +16,25 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpGroup : GumpEntry
 {
-    public class GumpGroup : GumpEntry
+    private static byte[] _group1 = Gump.StringToBuffer("{ group 1 }");
+
+    public GumpGroup(int group) => Group = group;
+
+    public int Group { get; set; }
+
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("group");
-
-        public GumpGroup(int group) => Group = group;
-
-        public int Group { get; set; }
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ group {Group} }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+        if (Group == 1)
         {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(LayoutName);
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Group.ToString());
-            writer.Write((ushort)0x207D); // " }"
+            writer.Write(_group1);
+        }
+        else
+        {
+            writer.WriteAscii($"{{ group {Group} }}");
         }
     }
 }

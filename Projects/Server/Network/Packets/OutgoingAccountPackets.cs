@@ -149,7 +149,6 @@ public static class OutgoingAccountPackets
         if (ns.Account.Limit >= 6)
         {
             flags |= FeatureFlags.LiveAccount;
-            flags &= ~FeatureFlags.UOTD;
 
             if (ns.Account.Limit > 6)
             {
@@ -159,6 +158,11 @@ public static class OutgoingAccountPackets
             {
                 flags |= FeatureFlags.SixthCharacterSlot;
             }
+        }
+
+        if (ExpansionInfo.ForceOldAnimations)
+        {
+            flags &= ~FeatureFlags.LBR;
         }
 
         var length = ns.ExtendedSupportedFeatures ? 5 : 3;

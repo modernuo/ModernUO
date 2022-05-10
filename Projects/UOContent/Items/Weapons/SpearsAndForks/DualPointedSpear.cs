@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x904, 0x406D)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DualPointedSpear : BaseSpear
     {
         [Constructible]

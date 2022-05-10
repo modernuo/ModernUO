@@ -1,3 +1,5 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum ThinBrickWallTypes
@@ -40,7 +42,7 @@ namespace Server.Items
         EastWallVShort
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ThinBrickWall : BaseWall
     {
         [Constructible]

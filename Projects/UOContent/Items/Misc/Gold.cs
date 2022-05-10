@@ -102,7 +102,7 @@ namespace Server.Items
                 tradeInfo.VirtualCheck?.UpdateTrade(tradeInfo.Mobile);
             }
 
-            owner.SendLocalizedMessage(1042763, Amount.ToString("#,0"));
+            owner.SendLocalizedMessage(1042763, $"{Amount:N0}");
 
             Delete();
 

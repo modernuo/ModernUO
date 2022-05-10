@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Events.Halloween;
 using Server.Items;
 using Server.Mobiles;
@@ -132,7 +133,7 @@ namespace Server.Engines.Events
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PlayerBones : BaseContainer
     {
         [Constructible]
@@ -150,7 +151,7 @@ namespace Server.Engines.Events
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ZombieSkeleton : BaseCreature
     {
         [SerializableField(0, "private", "private")]

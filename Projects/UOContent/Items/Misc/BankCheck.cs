@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using Server.Accounting;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Haven;
@@ -72,19 +71,7 @@ namespace Server.Items
         public override void GetProperties(ObjectPropertyList list)
         {
             base.GetProperties(list);
-
-            string worth;
-
-            if (Core.ML)
-            {
-                worth = m_Worth.ToString("N0", CultureInfo.GetCultureInfo("en-US"));
-            }
-            else
-            {
-                worth = m_Worth.ToString();
-            }
-
-            list.Add(1060738, worth); // value: ~1_val~
+            list.Add(1060738, Core.ML ? $"{m_Worth:N0}" : m_Worth.ToString()); // value: ~1_val~)
         }
 
         public override void OnAdded(IEntity parent)
@@ -144,7 +131,7 @@ namespace Server.Items
                 tradeInfo.VirtualCheck?.UpdateTrade(tradeInfo.Mobile);
             }
 
-            owner.SendLocalizedMessage(1042763, Worth.ToString("#,0"));
+            owner.SendLocalizedMessage(1042763, $"{m_Worth:N0}");
 
             Delete();
 
@@ -159,18 +146,17 @@ namespace Server.Items
                 MessageType.Label,
                 0x3B2,
                 3,
-                1041361,
+                1041361, // A bank check:
                 "",
                 AffixType.Append,
                 $" {m_Worth}"
-            ); // A bank check:
+            );
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             // This probably isn't OSI accurate, but we can't just make the quests redundant.
             // Double-clicking the BankCheck in your pack will now credit your account.
-
             var box = AccountGold.Enabled ? from.Backpack : from.FindBankNoCreate();
 
             if (box == null || !IsChildOf(box))
@@ -180,82 +166,68 @@ namespace Server.Items
                 return;
             }
 
-            Delete();
-
             var deposited = 0;
             var toAdd = m_Worth;
 
             if (AccountGold.Enabled && from.Account?.DepositGold(toAdd) == true)
             {
                 deposited = toAdd;
-                toAdd = 0;
             }
 
-            if (toAdd > 0)
+            while (toAdd > 0)
             {
-                Gold gold;
+                var amount = Math.Min(toAdd, 60000);
 
-                while (toAdd > 60000)
+                var gold = new Gold(amount);
+
+                if (box.TryDropItem(from, gold, false))
                 {
-                    gold = new Gold(60000);
-
-                    if (box.TryDropItem(from, gold, false))
-                    {
-                        toAdd -= 60000;
-                        deposited += 60000;
-                    }
-                    else
-                    {
-                        gold.Delete();
-
-                        from.AddToBackpack(new BankCheck(toAdd));
-                        toAdd = 0;
-
-                        break;
-                    }
+                    toAdd -= amount;
+                    deposited += amount;
                 }
-
-                if (toAdd > 0)
+                else
                 {
-                    gold = new Gold(toAdd);
-
-                    if (box.TryDropItem(from, gold, false))
-                    {
-                        deposited += toAdd;
-                    }
-                    else
-                    {
-                        gold.Delete();
-
-                        from.AddToBackpack(new BankCheck(toAdd));
-                    }
+                    gold.Delete();
+                    break;
                 }
             }
 
-            // Gold was deposited in your account:
-            from.SendLocalizedMessage(1042672, true, deposited.ToString("#,0"));
-
-            if (from is PlayerMobile pm)
+            if (deposited >= m_Worth)
             {
-                var qs = pm.Quest;
+                Delete();
+            }
+            else
+            {
+                Worth -= deposited;
+            }
 
-                if (qs is DarkTidesQuest)
+            if (deposited > 0)
+            {
+                // Gold was deposited in your account:
+                from.SendLocalizedMessage(1042672, true, $"{deposited:N0}");
+
+                if (from is PlayerMobile pm)
                 {
-                    QuestObjective obj = qs.FindObjective<CashBankCheckObjective>();
+                    var qs = pm.Quest;
 
-                    if (obj?.Completed == false)
+                    if (qs is DarkTidesQuest)
                     {
-                        obj.Complete();
+                        QuestObjective obj = qs.FindObjective<CashBankCheckObjective>();
+
+                        if (obj?.Completed == false)
+                        {
+                            obj.Complete();
+                        }
                     }
-                }
 
-                if (qs is UzeraanTurmoilQuest)
-                {
-                    var obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
-
-                    if (obj?.Completed == false)
+                    if (qs is UzeraanTurmoilQuest)
                     {
-                        obj.Complete();
+                        var obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
+
+                        if (obj?.Completed == false)
+                        {
+                            obj.Complete();
+                        }
                     }
                 }
             }

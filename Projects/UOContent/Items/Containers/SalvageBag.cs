@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.Craft;
 using Server.Network;
@@ -8,7 +9,7 @@ using Server.Utilities;
 
 namespace Server.Items;
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class SalvageBag : Bag
 {
     private bool m_Failure;

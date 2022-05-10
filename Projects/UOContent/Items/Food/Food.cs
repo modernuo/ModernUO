@@ -48,6 +48,19 @@ namespace Server.Items
             }
         }
 
+        public override bool CanStackWith(Item dropped)
+        {
+            if (dropped is Food food)
+            {
+                if (Poison != food.Poison || Poisoner != food.Poisoner)
+                {
+                    return false;
+                }
+            }
+            return base.CanStackWith(dropped);
+        }
+
+
         public virtual bool Eat(Mobile from)
         {
             // Fill the Mobile with FillFactor
@@ -129,7 +142,7 @@ namespace Server.Items
 
             writer.Write(Poisoner);
 
-            Poison.Serialize(Poison, writer);
+            writer.Write(Poison);
             writer.Write(FillFactor);
         }
 
@@ -157,12 +170,12 @@ namespace Server.Items
                     }
                 case 2:
                     {
-                        Poison = Poison.Deserialize(reader);
+                        Poison = reader.ReadPoison();
                         break;
                     }
                 case 3:
                     {
-                        Poison = Poison.Deserialize(reader);
+                        Poison = reader.ReadPoison();
                         FillFactor = reader.ReadInt();
                         break;
                     }

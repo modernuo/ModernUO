@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2D28, 0x2D34)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class OrnateAxe : BaseAxe
     {
         [Constructible]

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrownBearRugEastAddon : BaseAddon
     {
         [Constructible]
@@ -20,7 +22,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new BrownBearRugEastDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrownBearRugEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -32,7 +34,7 @@ namespace Server.Items
         public override int LabelNumber => 1049397; // a brown bear rug deed facing east
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrownBearRugSouthAddon : BaseAddon
     {
         [Constructible]
@@ -52,7 +54,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new BrownBearRugSouthDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrownBearRugSouthDeed : BaseAddonDeed
     {
         [Constructible]
@@ -64,7 +66,7 @@ namespace Server.Items
         public override int LabelNumber => 1049398; // a brown bear rug deed facing south
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PolarBearRugEastAddon : BaseAddon
     {
         [Constructible]
@@ -84,7 +86,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new PolarBearRugEastDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PolarBearRugEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -96,7 +98,7 @@ namespace Server.Items
         public override int LabelNumber => 1049399; // a polar bear rug deed facing east
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PolarBearRugSouthAddon : BaseAddon
     {
         [Constructible]
@@ -116,7 +118,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new PolarBearRugSouthDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PolarBearRugSouthDeed : BaseAddonDeed
     {
         [Constructible]

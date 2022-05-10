@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
@@ -7,7 +8,7 @@ using Server.Prompts;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BallotBox : AddonComponent
     {
         public static readonly int MaxTopicLines = 6;
@@ -312,7 +313,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BallotBoxAddon : BaseAddon
     {
         public BallotBoxAddon()
@@ -321,7 +322,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BallotBoxDeed : BaseAddonDeed
     {
         [Constructible]

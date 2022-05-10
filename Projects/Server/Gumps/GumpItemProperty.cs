@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright (C) 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: GumpItemProperty.cs                                             *
  *                                                                       *
@@ -16,25 +16,16 @@
 using System.Buffers;
 using Server.Collections;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GumpItemProperty : GumpEntry
 {
-    public class GumpItemProperty : GumpEntry
+    public GumpItemProperty(Serial serial) => Serial = serial;
+
+    public Serial Serial { get; set; }
+
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        public static readonly byte[] LayoutName = Gump.StringToBuffer("itemproperty");
-
-        public GumpItemProperty(Serial serial) => Serial = serial;
-
-        public Serial Serial { get; set; }
-
-        public override string Compile(OrderedHashSet<string> strings) => $"{{ itemproperty {Serial.Value} }}";
-
-        public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-        {
-            writer.Write((ushort)0x7B20); // "{ "
-            writer.Write(LayoutName);
-            writer.WriteAscii(' ');
-            writer.WriteAscii(Serial.Value.ToString());
-            writer.Write((ushort)0x207D); // " }"
-        }
+        writer.WriteAscii($"{{ itemproperty {Serial.Value} }}");
     }
 }

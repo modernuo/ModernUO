@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0xF5C, 0xF5D)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Mace : BaseBashing
     {
         [Constructible]

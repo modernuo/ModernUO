@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "type": "Server.Items.TreasureMapChest",
+  "properties": [
+    {
+      "name": "Guardians",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "",
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Temporary",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Level",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ExpireTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@TimerDrift"
+      ]
+    },
+    {
+      "name": "Lifted",
+      "type": "System.Collections.Generic.HashSet\u003CServer.Item\u003E",
+      "rule": "HashSetMigrationRule",
+      "ruleArguments": [
+        "@Tidy",
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

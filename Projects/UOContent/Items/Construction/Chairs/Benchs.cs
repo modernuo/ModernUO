@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0xB2D, 0xB2C)]
     public partial class WoodenBench : Item
     {

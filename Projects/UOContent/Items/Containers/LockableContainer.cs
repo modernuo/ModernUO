@@ -1,356 +1,236 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class LockableContainer : TrappableContainer, ILockable, ILockpickable, ICraftable, IShipwreckedItem
 {
-    public abstract class LockableContainer : TrappableContainer, ILockable, ILockpickable, ICraftable, IShipwreckedItem
+    public LockableContainer(int itemID) : base(itemID) => MaxLockLevel = 100;
+
+    public override bool TrapOnOpen => !_trapOnLockpick;
+
+    public override bool DisplaysContent => !_rawLocked;
+
+    public int OnCraft(
+        int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
+        CraftItem craftItem, int resHue
+    )
     {
-        private bool m_Locked;
-
-        public LockableContainer(int itemID) : base(itemID) => MaxLockLevel = 100;
-
-        public LockableContainer(Serial serial) : base(serial)
+        if (from.CheckSkill(SkillName.Tinkering, -5.0, 15.0))
         {
+            from.SendLocalizedMessage(500636); // Your tinker skill was sufficient to make the item lockable.
+
+            var key = new Key(KeyType.Copper, Key.RandomValue());
+
+            _keyValue = key.KeyValue;
+            DropItem(key);
+
+            var tinkering = from.Skills.Tinkering.Value;
+            var level = (int)(tinkering * 0.8);
+
+            _requiredSkill = Math.Min(level - 4, 95);
+            _maxLockLevel = Math.Min(level + 35, 95);
+
+            // Lock level of 0 means it is not pickable, so change it to -1
+            _lockLevel = level == 14 ? -1 : Math.Min(level - 14, 95);
+        }
+        else
+        {
+            from.SendLocalizedMessage(500637); // Your tinker skill was insufficient to make the item lockable.
         }
 
-        public override bool TrapOnOpen => !TrapOnLockpick;
+        return 1;
+    }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool TrapOnLockpick { get; set; }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Mobile Picker { get; set; }
 
-        public override bool DisplaysContent => !m_Locked;
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private bool _isShipwreckedItem;
 
-        public int OnCraft(
-            int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
-            CraftItem craftItem, int resHue
-        )
+    [SerializableField(1)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private bool _trapOnLockpick;
+
+    [SerializableField(2)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private int _requiredSkill;
+
+    [SerializableField(3)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private int _maxLockLevel;
+
+    [SerializableField(4)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private uint _keyValue;
+
+    [SerializableField(5)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private int _lockLevel;
+
+    [SerializableField(6, getter: "private", setter: "private")]
+    private bool _rawLocked;
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual bool Locked
+    {
+        get => _rawLocked;
+        set
         {
-            if (from.CheckSkill(SkillName.Tinkering, -5.0, 15.0))
+            _rawLocked = value;
+
+            if (_rawLocked)
             {
-                from.SendLocalizedMessage(500636); // Your tinker skill was sufficient to make the item lockable.
-
-                var key = new Key(KeyType.Copper, Key.RandomValue());
-
-                KeyValue = key.KeyValue;
-                DropItem(key);
-
-                var tinkering = from.Skills.Tinkering.Value;
-                var level = (int)(tinkering * 0.8);
-
-                RequiredSkill = level - 4;
-                LockLevel = level - 14;
-                MaxLockLevel = level + 35;
-
-                if (LockLevel == 0)
-                {
-                    LockLevel = -1;
-                }
-                else if (LockLevel > 95)
-                {
-                    LockLevel = 95;
-                }
-
-                if (RequiredSkill > 95)
-                {
-                    RequiredSkill = 95;
-                }
-
-                if (MaxLockLevel > 95)
-                {
-                    MaxLockLevel = 95;
-                }
-            }
-            else
-            {
-                from.SendLocalizedMessage(500637); // Your tinker skill was insufficient to make the item lockable.
+                Picker = null;
             }
 
-            return 1;
+            InvalidateProperties();
+            this.MarkDirty();
+        }
+    }
+
+    public virtual void LockPick(Mobile from)
+    {
+        Locked = false;
+        Picker = from;
+
+        if (_trapOnLockpick && ExecuteTrap(from))
+        {
+            _trapOnLockpick = false;
+        }
+    }
+
+    public override bool CheckContentDisplay(Mobile from) => !_rawLocked && base.CheckContentDisplay(from);
+
+    public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
+    {
+        if (from.AccessLevel < AccessLevel.GameMaster && _rawLocked)
+        {
+            from.SendLocalizedMessage(501747); // It appears to be locked.
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual bool Locked
+        return base.TryDropItem(from, dropped, sendFullMessage);
+    }
+
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+        if (from.AccessLevel < AccessLevel.GameMaster && _rawLocked)
         {
-            get => m_Locked;
-            set
-            {
-                m_Locked = value;
-
-                if (m_Locked)
-                {
-                    Picker = null;
-                }
-
-                InvalidateProperties();
-            }
+            from.SendLocalizedMessage(501747); // It appears to be locked.
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public uint KeyValue { get; set; }
+        return base.OnDragDropInto(from, item, p);
+    }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Picker { get; set; }
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject) =>
+        base.CheckLift(from, item, ref reject) &&
+        (item == this || from.AccessLevel >= AccessLevel.GameMaster || !_rawLocked);
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxLockLevel { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int LockLevel { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int RequiredSkill { get; set; }
-
-        public virtual void LockPick(Mobile from)
+    public override bool CheckItemUse(Mobile from, Item item)
+    {
+        if (!base.CheckItemUse(from, item))
         {
-            Locked = false;
-            Picker = from;
-
-            if (TrapOnLockpick && ExecuteTrap(from))
-            {
-                TrapOnLockpick = false;
-            }
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsShipwreckedItem { get; set; }
-
-        public override void Serialize(IGenericWriter writer)
+        if (item != this && from.AccessLevel < AccessLevel.GameMaster && _rawLocked)
         {
-            base.Serialize(writer);
-
-            writer.Write(6); // version
-
-            writer.Write(IsShipwreckedItem);
-
-            writer.Write(TrapOnLockpick);
-
-            writer.Write(RequiredSkill);
-
-            writer.Write(MaxLockLevel);
-
-            writer.Write(KeyValue);
-            writer.Write(LockLevel);
-            writer.Write(m_Locked);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return false;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        return true;
+    }
+
+    public virtual bool CheckLocked(Mobile from)
+    {
+        if (!_rawLocked)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 6:
-                    {
-                        IsShipwreckedItem = reader.ReadBool();
-
-                        goto case 5;
-                    }
-                case 5:
-                    {
-                        TrapOnLockpick = reader.ReadBool();
-
-                        goto case 4;
-                    }
-                case 4:
-                    {
-                        RequiredSkill = reader.ReadInt();
-
-                        goto case 3;
-                    }
-                case 3:
-                    {
-                        MaxLockLevel = reader.ReadInt();
-
-                        goto case 2;
-                    }
-                case 2:
-                    {
-                        KeyValue = reader.ReadUInt();
-
-                        goto case 1;
-                    }
-                case 1:
-                    {
-                        LockLevel = reader.ReadInt();
-
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        if (version < 3)
-                        {
-                            MaxLockLevel = 100;
-                        }
-
-                        if (version < 4)
-                        {
-                            if (MaxLockLevel - LockLevel == 40)
-                            {
-                                RequiredSkill = LockLevel + 6;
-                                LockLevel = RequiredSkill - 10;
-                                MaxLockLevel = RequiredSkill + 39;
-                            }
-                            else
-                            {
-                                RequiredSkill = LockLevel;
-                            }
-                        }
-
-                        m_Locked = reader.ReadBool();
-
-                        break;
-                    }
-            }
+            return false;
         }
 
-        public override bool CheckContentDisplay(Mobile from) => !m_Locked && base.CheckContentDisplay(from);
+        var inaccessible = from.AccessLevel < AccessLevel.GameMaster;
 
-        public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
+        int number = inaccessible
+            ? 501747 // It appears to be locked.
+            : 502502;    // That is locked, but you open it with your godly powers.
+
+        from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number);
+
+        return inaccessible;
+    }
+
+    public override void OnTelekinesis(Mobile from)
+    {
+        if (CheckLocked(from))
         {
-            if (from.AccessLevel < AccessLevel.GameMaster && m_Locked)
-            {
-                from.SendLocalizedMessage(501747); // It appears to be locked.
-                return false;
-            }
-
-            return base.TryDropItem(from, dropped, sendFullMessage);
+            Effects.SendLocationParticles(
+                EffectItem.Create(Location, Map, EffectItem.DefaultDuration),
+                0x376A,
+                9,
+                32,
+                5022
+            );
+            Effects.PlaySound(Location, Map, 0x1F5);
+            return;
         }
 
-        public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
-        {
-            if (from.AccessLevel < AccessLevel.GameMaster && m_Locked)
-            {
-                from.SendLocalizedMessage(501747); // It appears to be locked.
-                return false;
-            }
+        base.OnTelekinesis(from);
+    }
 
-            return base.OnDragDropInto(from, item, p);
+    public override void OnDoubleClickSecureTrade(Mobile from)
+    {
+        if (CheckLocked(from))
+        {
+            return;
         }
 
-        public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
+        base.OnDoubleClickSecureTrade(from);
+    }
+
+    public override void Open(Mobile from)
+    {
+        if (CheckLocked(from))
         {
-            if (!base.CheckLift(from, item, ref reject))
-            {
-                return false;
-            }
-
-            if (item != this && from.AccessLevel < AccessLevel.GameMaster && m_Locked)
-            {
-                return false;
-            }
-
-            return true;
+            return;
         }
 
-        public override bool CheckItemUse(Mobile from, Item item)
+        base.Open(from);
+    }
+
+    public override void OnSnoop(Mobile from)
+    {
+        if (CheckLocked(from))
         {
-            if (!base.CheckItemUse(from, item))
-            {
-                return false;
-            }
-
-            if (item != this && from.AccessLevel < AccessLevel.GameMaster && m_Locked)
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-                return false;
-            }
-
-            return true;
+            return;
         }
 
-        public virtual bool CheckLocked(Mobile from)
+        base.OnSnoop(from);
+    }
+
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+        base.AddNameProperties(list);
+
+        if (_isShipwreckedItem)
         {
-            var inaccessible = false;
-
-            if (m_Locked)
-            {
-                int number;
-
-                if (from.AccessLevel >= AccessLevel.GameMaster)
-                {
-                    number = 502502; // That is locked, but you open it with your godly powers.
-                }
-                else
-                {
-                    number = 501747; // It appears to be locked.
-                    inaccessible = true;
-                }
-
-                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number);
-            }
-
-            return inaccessible;
+            list.Add(1041645); // recovered from a shipwreck
         }
+    }
 
-        public override void OnTelekinesis(Mobile from)
+    public override void OnSingleClick(Mobile from)
+    {
+        base.OnSingleClick(from);
+
+        if (_isShipwreckedItem)
         {
-            if (CheckLocked(from))
-            {
-                Effects.SendLocationParticles(
-                    EffectItem.Create(Location, Map, EffectItem.DefaultDuration),
-                    0x376A,
-                    9,
-                    32,
-                    5022
-                );
-                Effects.PlaySound(Location, Map, 0x1F5);
-                return;
-            }
-
-            base.OnTelekinesis(from);
-        }
-
-        public override void OnDoubleClickSecureTrade(Mobile from)
-        {
-            if (CheckLocked(from))
-            {
-                return;
-            }
-
-            base.OnDoubleClickSecureTrade(from);
-        }
-
-        public override void Open(Mobile from)
-        {
-            if (CheckLocked(from))
-            {
-                return;
-            }
-
-            base.Open(from);
-        }
-
-        public override void OnSnoop(Mobile from)
-        {
-            if (CheckLocked(from))
-            {
-                return;
-            }
-
-            base.OnSnoop(from);
-        }
-
-        public override void AddNameProperties(ObjectPropertyList list)
-        {
-            base.AddNameProperties(list);
-
-            if (IsShipwreckedItem)
-            {
-                list.Add(1041645); // recovered from a shipwreck
-            }
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            base.OnSingleClick(from);
-
-            if (IsShipwreckedItem)
-            {
-                LabelTo(from, 1041645); // recovered from a shipwreck
-            }
+            LabelTo(from, 1041645); // recovered from a shipwreck
         }
     }
 }

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry1N : Item
     {
         [SerializableField(0, "private", "private")]
@@ -35,7 +37,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0)]
+        [SerializationGenerator(0)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -71,7 +73,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry2N : Item
     {
         [SerializableField(0, "private", "private")]
@@ -106,7 +108,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -142,7 +144,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry2W : Item
     {
         [SerializableField(0, "private", "private")]
@@ -177,7 +179,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -213,7 +215,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry3N : Item
     {
         [SerializableField(0, "private", "private")]
@@ -248,7 +250,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -284,7 +286,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry3W : Item
     {
         [SerializableField(0, "private", "private")]
@@ -319,7 +321,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -355,7 +357,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry4N : Item
     {
         [SerializableField(0, "private", "private")]
@@ -390,7 +392,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -426,7 +428,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry4W : Item
     {
         [SerializableField(0, "private", "private")]
@@ -461,7 +463,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -497,7 +499,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry5N : Item
     {
         [SerializableField(0, "private", "private")]
@@ -532,7 +534,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -568,7 +570,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry5W : Item
     {
         [SerializableField(0, "private", "private")]
@@ -603,7 +605,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -639,7 +641,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry6N : Item
     {
         [SerializableField(0, "private", "private")]
@@ -674,7 +676,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]
@@ -710,7 +712,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tapestry6W : Item
     {
         [SerializableField(0, "private", "private")]
@@ -745,7 +747,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0, "private", "private")]

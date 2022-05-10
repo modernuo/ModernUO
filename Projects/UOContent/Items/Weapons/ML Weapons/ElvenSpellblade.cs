@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2D20, 0x2D2C)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ElvenSpellblade : BaseKnife
     {
         [Constructible]

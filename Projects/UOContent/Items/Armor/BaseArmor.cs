@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
@@ -10,7 +11,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [Serializable(9, false)]
+    [SerializationGenerator(9, false)]
     public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, setter: "private")]
@@ -589,8 +590,8 @@ namespace Server.Items
 
             if (Quality == ArmorQuality.Exceptional)
             {
-                if (!(Core.ML && this is BaseShield)
-                ) // Guessed Core.ML removed exceptional resist bonuses from crafted shields
+                // Guessed Core.ML removed exceptional resist bonuses from crafted shields
+                if (!(Core.ML && this is BaseShield))
                 {
                     DistributeBonuses(
                         tool is BaseRunicTool ? 6 :

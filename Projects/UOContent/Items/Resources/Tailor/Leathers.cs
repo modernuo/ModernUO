@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public abstract partial class BaseLeather : Item, ICommodity
     {
         [InvalidateProperties]
@@ -85,7 +87,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1081, 0x1082)]
     public partial class Leather : BaseLeather
     {
@@ -95,7 +97,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1081, 0x1082)]
     public partial class SpinedLeather : BaseLeather
     {
@@ -105,7 +107,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1081, 0x1082)]
     public partial class HornedLeather : BaseLeather
     {
@@ -115,7 +117,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1081, 0x1082)]
     public partial class BarbedLeather : BaseLeather
     {

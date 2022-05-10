@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27AD, 0x27F8)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Kama : BaseKnife
     {
         [Constructible]

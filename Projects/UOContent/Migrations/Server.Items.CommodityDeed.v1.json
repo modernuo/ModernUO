@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.CommodityDeed",
+  "properties": [
+    {
+      "name": "Commodity",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x903, 0x406E)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DiscMace : BaseBashing
     {
         [Constructible]

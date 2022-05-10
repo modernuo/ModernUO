@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.FarmableCrop",
+  "properties": [
+    {
+      "name": "Picked",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

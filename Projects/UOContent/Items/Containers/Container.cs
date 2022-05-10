@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Mobiles;
 using Server.Multis;
@@ -159,7 +160,7 @@ public abstract class BaseContainer : Container
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class CreatureBackpack : Backpack // Used on BaseCreature
 {
     [Constructible]
@@ -209,7 +210,7 @@ public partial class CreatureBackpack : Backpack // Used on BaseCreature
     public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage) => false;
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class StrongBackpack : Backpack // Used on Pack animals
 {
     [Constructible]
@@ -229,7 +230,7 @@ public partial class StrongBackpack : Backpack // Used on Pack animals
         base.CheckContentDisplay(from);
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Backpack : BaseContainer, IDyable
 {
     [Constructible]
@@ -265,14 +266,14 @@ public partial class Backpack : BaseContainer, IDyable
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Pouch : TrappableContainer
 {
     [Constructible]
     public Pouch() : base(0xE79) => Weight = 1.0;
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public abstract partial class BaseBagBall : BaseContainer, IDyable
 {
     public BaseBagBall(int itemID) : base(itemID) => Weight = 1.0;
@@ -290,7 +291,7 @@ public abstract partial class BaseBagBall : BaseContainer, IDyable
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class SmallBagBall : BaseBagBall
 {
     [Constructible]
@@ -299,7 +300,7 @@ public partial class SmallBagBall : BaseBagBall
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class LargeBagBall : BaseBagBall
 {
     [Constructible]
@@ -308,7 +309,7 @@ public partial class LargeBagBall : BaseBagBall
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Bag : BaseContainer, IDyable
 {
     [Constructible]
@@ -327,28 +328,28 @@ public partial class Bag : BaseContainer, IDyable
     }
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Barrel : BaseContainer
 {
     [Constructible]
     public Barrel() : base(0xE77) => Weight = 25.0;
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Keg : BaseContainer
 {
     [Constructible]
     public Keg() : base(0xE7F) => Weight = 15.0;
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class PicnicBasket : BaseContainer
 {
     [Constructible]
     public PicnicBasket() : base(0xE7A) => Weight = 2.0;
 }
 
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class Basket : BaseContainer
 {
     [Constructible]
@@ -357,7 +358,7 @@ public partial class Basket : BaseContainer
 
 [Furniture]
 [Flippable(0x9AA, 0xE7D)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class WoodenBox : LockableContainer
 {
     [Constructible]
@@ -366,7 +367,7 @@ public partial class WoodenBox : LockableContainer
 
 [Furniture]
 [Flippable(0x9A9, 0xE7E)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class SmallCrate : LockableContainer
 {
     [Constructible]
@@ -375,7 +376,7 @@ public partial class SmallCrate : LockableContainer
 
 [Furniture]
 [Flippable(0xE3F, 0xE3E)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MediumCrate : LockableContainer
 {
     [Constructible]
@@ -384,7 +385,7 @@ public partial class MediumCrate : LockableContainer
 
 [Furniture]
 [Flippable(0xE3D, 0xE3C)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class LargeCrate : LockableContainer
 {
     [Constructible]
@@ -393,7 +394,7 @@ public partial class LargeCrate : LockableContainer
 
 [DynamicFlipping]
 [Flippable(0x9A8, 0xE80)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MetalBox : LockableContainer
 {
     [Constructible]
@@ -404,7 +405,7 @@ public partial class MetalBox : LockableContainer
 
 [DynamicFlipping]
 [Flippable(0x9AB, 0xE7C)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MetalChest : LockableContainer
 {
     [Constructible]
@@ -414,7 +415,7 @@ public partial class MetalChest : LockableContainer
 }
 
 [DynamicFlipping, Flippable(0xE41, 0xE40)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class MetalGoldenChest : LockableContainer
 {
     [Constructible]
@@ -425,7 +426,7 @@ public partial class MetalGoldenChest : LockableContainer
 
 [Furniture]
 [Flippable(0xe43, 0xe42)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class WoodenChest : LockableContainer
 {
     [Constructible]
@@ -434,7 +435,7 @@ public partial class WoodenChest : LockableContainer
 
 [Furniture]
 [Flippable(0x280B, 0x280C)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class PlainWoodenChest : LockableContainer
 {
     [Constructible]
@@ -445,7 +446,7 @@ public partial class PlainWoodenChest : LockableContainer
 
 [Furniture]
 [Flippable(0x280D, 0x280E)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class OrnateWoodenChest : LockableContainer
 {
     [Constructible]
@@ -456,7 +457,7 @@ public partial class OrnateWoodenChest : LockableContainer
 
 [Furniture]
 [Flippable(0x280F, 0x2810)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class GildedWoodenChest : LockableContainer
 {
     [Constructible]
@@ -467,7 +468,7 @@ public partial class GildedWoodenChest : LockableContainer
 
 [Furniture]
 [Flippable(0x2811, 0x2812)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class WoodenFootLocker : LockableContainer
 {
     [Constructible]
@@ -476,7 +477,7 @@ public partial class WoodenFootLocker : LockableContainer
 
 [Furniture]
 [Flippable(0x2813, 0x2814)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FinishedWoodenChest : LockableContainer
 {
     [Constructible]
@@ -486,7 +487,7 @@ public partial class FinishedWoodenChest : LockableContainer
 }
 
 [Furniture]
-[Serializable(0)]
+[SerializationGenerator(0)]
 [Flippable(0x2DF1, 0x2DF2)]
 public partial class RarewoodChest : LockableContainer
 {
@@ -497,7 +498,7 @@ public partial class RarewoodChest : LockableContainer
 }
 
 [Furniture]
-[Serializable(0)]
+[SerializationGenerator(0)]
 [Flippable(0x2DF3, 0x2DF4)]
 public partial class DecorativeBox : LockableContainer
 {

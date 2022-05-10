@@ -249,15 +249,13 @@ namespace Server
             {
                 fullPath = Path.Combine(p, path);
 
-                if (IsLinux)
+                if (IsLinux && !File.Exists(fullPath))
                 {
                     var fi = new FileInfo(fullPath);
                     fullPath = fi.Directory!.EnumerateFiles(
                         fi.Name,
                         new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
                     ).FirstOrDefault()?.FullName;
-
-                    break;
                 }
 
                 if (File.Exists(fullPath))
@@ -274,6 +272,21 @@ namespace Server
             }
 
             return fullPath;
+        }
+
+        public static IEnumerable<string> FindDataFileByPattern(string pattern)
+        {
+            var options = new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive };
+            foreach (var p in ServerConfiguration.DataDirectories)
+            {
+                if (Directory.Exists(p))
+                {
+                    foreach (var file in Directory.EnumerateFiles(p, pattern, options))
+                    {
+                        yield return file;
+                    }
+                }
+            }
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -602,7 +615,7 @@ namespace Server
                 if (World.DirtyTrackingEnabled)
                 {
                     var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
-                    var codeGennedAttribute = type.GetCustomAttribute<SerializableAttribute>(false);
+                    var codeGennedAttribute = type.GetCustomAttribute<ModernUO.Serialization.SerializationGeneratorAttribute>(false);
 
                     if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
                     {
