@@ -32,6 +32,7 @@ public ref struct LocalizationInterpolationHandler
     private int _index;
     private string?[] _slices;
     private string? _current;
+    private string _lang;
 
     public LocalizationInterpolationHandler(int literalLength, int formattedCount, LocalizationEntry entry, out bool isValid)
     {
@@ -42,6 +43,7 @@ public ref struct LocalizationInterpolationHandler
         _pos = 0;
         _index = 0;
         _current = null;
+        _lang = entry.Language;
     }
 
     public LocalizationInterpolationHandler(int literalLength, int formattedCount, int number, out bool isValid)
@@ -67,6 +69,7 @@ public ref struct LocalizationInterpolationHandler
         _pos = 0;
         _index = 0;
         _current = null;
+        _lang = lang;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -218,7 +221,7 @@ public ref struct LocalizationInterpolationHandler
 
     public void AppendFormatted(ReadOnlySpan<char> value)
     {
-        if (!ReadyToAppend())
+        if (!ReadyToAppend() || TryAppendClilocNumber(value))
         {
             return;
         }
@@ -279,21 +282,48 @@ public ref struct LocalizationInterpolationHandler
 
     public void AppendFormatted(string? value)
     {
-        if (ReadyToAppend())
+        if (!ReadyToAppend() || TryAppendClilocNumber(value))
         {
-            if (value?.TryCopyTo(_chars[_pos..]) == true)
-            {
-                _pos += value.Length;
-            }
-            else
-            {
-                AppendFormattedSlow(value);
-            }
+            return;
+        }
+
+        if (value?.TryCopyTo(_chars[_pos..]) == true)
+        {
+            _pos += value.Length;
+        }
+        else
+        {
+            AppendFormattedSlow(value);
         }
     }
 
     public void AppendFormatted(string? value, int alignment, string? format = null) =>
         AppendFormatted<string?>(value, alignment, format);
+
+    private bool TryAppendClilocNumber(ReadOnlySpan<char> value)
+    {
+        if (
+            value[0] != '#' ||
+            !int.TryParse(value[1..], out var number) ||
+            !Localization.TryGetLocalization(_lang, number, out var entry)
+        )
+        {
+            return false;
+        }
+
+        var text = entry.Text;
+
+        if (text.TryCopyTo(_chars[_pos..]))
+        {
+            _pos += text.Length;
+        }
+        else
+        {
+            AppendFormattedSlow(text);
+        }
+
+        return true;
+    }
 
     private void AppendOrInsertAlignmentIfNeeded(int startingPos, int alignment)
     {
