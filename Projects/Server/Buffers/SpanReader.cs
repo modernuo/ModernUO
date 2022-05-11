@@ -166,7 +166,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
-            int sizeT = TextEncoding.GetByteLengthForEncoding(encoding);
+            int byteLength = encoding.GetByteLengthForEncoding();
 
             bool isFixedLength = fixedLength > -1;
 
@@ -174,7 +174,7 @@ namespace System.Buffers
             int size;
             if (isFixedLength)
             {
-                size = fixedLength * sizeT;
+                size = fixedLength * byteLength;
                 if (size > Remaining)
                 {
                     throw new OutOfMemoryException();
@@ -183,8 +183,8 @@ namespace System.Buffers
             else
             {
                 // In case the remaining is not evenly divisible
-                size = remaining - (remaining & (sizeT - 1));
-                int index = _buffer.Slice(Position, size).IndexOfTerminator(sizeT);
+                size = remaining - (remaining & (byteLength - 1));
+                int index = _buffer.Slice(Position, size).IndexOfTerminator(byteLength);
                 size = index < 0 ? size : index;
             }
 
