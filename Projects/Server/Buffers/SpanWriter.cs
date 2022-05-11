@@ -316,7 +316,12 @@ public ref struct SpanWriter
         var src = value[..charLength];
 
         var byteLength = encoding.GetByteLengthForEncoding();
-        var byteCount = encoding.GetByteCount(value) + Math.Max(0, fixedLength - value.Length) * byteLength;
+        var byteCount = encoding.GetByteCount(src);
+        if (fixedLength > src.Length)
+        {
+            byteCount += (fixedLength - src.Length) * byteLength;
+        }
+
         if (byteCount == 0)
         {
             return;
