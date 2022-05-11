@@ -245,7 +245,7 @@ namespace Server.Network
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
         {
-            int sizeT = TextEncoding.GetByteLengthForEncoding(encoding);
+            int byteLength = encoding.GetByteLengthForEncoding();
 
             bool isFixedLength = fixedLength > -1;
 
@@ -254,7 +254,7 @@ namespace Server.Network
 
             if (isFixedLength)
             {
-                size = fixedLength * sizeT;
+                size = fixedLength * byteLength;
                 if (size > Remaining)
                 {
                     throw new OutOfMemoryException();
@@ -262,7 +262,7 @@ namespace Server.Network
             }
             else
             {
-                size = remaining - (remaining & (sizeT - 1));
+                size = remaining - (remaining & (byteLength - 1));
             }
 
             ReadOnlySpan<byte> span;
@@ -273,7 +273,7 @@ namespace Server.Network
                 var firstLength = Math.Min(_first.Length - Position, size);
 
                 // Find terminator
-                index = _first.Slice(Position, firstLength).IndexOfTerminator(sizeT);
+                index = _first.Slice(Position, firstLength).IndexOfTerminator(byteLength);
 
                 if (index < 0)
                 {
@@ -285,7 +285,7 @@ namespace Server.Network
                     }
                     else
                     {
-                        index = _second[..remaining].IndexOfTerminator(sizeT);
+                        index = _second[..remaining].IndexOfTerminator(byteLength);
 
                         int secondLength = index < 0 ? remaining : index;
                         int length = firstLength + secondLength;
@@ -295,7 +295,7 @@ namespace Server.Network
                         _first[Position..].CopyTo(bytes);
                         _second[..secondLength].CopyTo(bytes[firstLength..]);
 
-                        Position += length + (index >= 0 ? sizeT : 0);
+                        Position += length + (index >= 0 ? byteLength : 0);
                         return TextEncoding.GetString(bytes, encoding, safeString);
                     }
                 }
@@ -306,7 +306,7 @@ namespace Server.Network
             {
                 size = Math.Min(remaining, size);
                 span = _second.Slice( Position - _first.Length, size);
-                index = span.IndexOfTerminator(sizeT);
+                index = span.IndexOfTerminator(byteLength);
 
                 if (index >= 0)
                 {
@@ -318,7 +318,7 @@ namespace Server.Network
                 }
             }
 
-            Position += isFixedLength ? size : index + sizeT;
+            Position += isFixedLength ? size : index + byteLength;
             return TextEncoding.GetString(span, encoding, safeString);
         }
 

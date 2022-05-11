@@ -509,7 +509,7 @@ public class LocalizationEntry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GrowCore(uint requiredMinCapacity)
         {
-            var newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, 1073741823));
+            var newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, 0x3FFFFFDF));
             var arraySize = (int)Math.Clamp(newCapacity, 256, int.MaxValue);
 
             var newArray = ArrayPool<char>.Shared.Rent(arraySize);
