@@ -15,7 +15,6 @@
 
 #nullable enable
 using System;
-using System.Buffers;
 
 namespace Server.Buffers;
 
@@ -64,7 +63,7 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
     {
         if (_arrayToReturnToPool != null)
         {
-            ArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
             _arrayToReturnToPool = null;
         }
     }

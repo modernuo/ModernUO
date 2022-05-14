@@ -137,7 +137,7 @@ public class LocalizationEntry
         public LocalizationInterpolationHandler(int literalLength, int formattedCount, LocalizationEntry entry, out bool isValid)
         {
             _slices = entry.TextSlices;
-            _chars = _arrayToReturnToPool = ArrayPool<char>.Shared.Rent(256);
+            _chars = _arrayToReturnToPool = STArrayPool<char>.Shared.Rent(256);
             isValid = true;
 
             _pos = 0;
@@ -159,7 +159,7 @@ public class LocalizationEntry
             if (Localization.TryGetLocalization(lang, number, out var entry))
             {
                 _slices = entry.TextSlices;
-                _chars = _arrayToReturnToPool = ArrayPool<char>.Shared.Rent(256);
+                _chars = _arrayToReturnToPool = STArrayPool<char>.Shared.Rent(256);
                 isValid = true;
             }
             else
@@ -509,10 +509,10 @@ public class LocalizationEntry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void GrowCore(uint requiredMinCapacity)
         {
-            var newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, 1073741823));
+            var newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, 0x3FFFFFDF));
             var arraySize = (int)Math.Clamp(newCapacity, 256, int.MaxValue);
 
-            var newArray = ArrayPool<char>.Shared.Rent(arraySize);
+            var newArray = STArrayPool<char>.Shared.Rent(arraySize);
             _chars[.._pos].CopyTo(newArray);
 
             var toReturn = _arrayToReturnToPool;
@@ -520,7 +520,7 @@ public class LocalizationEntry
 
             if (toReturn is not null)
             {
-                ArrayPool<char>.Shared.Return(toReturn);
+                STArrayPool<char>.Shared.Return(toReturn);
             }
         }
 
@@ -533,7 +533,7 @@ public class LocalizationEntry
             this = default; // defensive clear
             if (toReturn is not null)
             {
-                ArrayPool<char>.Shared.Return(toReturn);
+                STArrayPool<char>.Shared.Return(toReturn);
             }
         }
 

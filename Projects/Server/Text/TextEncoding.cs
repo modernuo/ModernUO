@@ -105,7 +105,7 @@ namespace Server.Text
         public static int GetBytesUtf8(this ReadOnlySpan<char> str, Span<byte> buffer) => UTF8.GetBytes(str, buffer);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetByteLengthForEncoding(Encoding encoding) =>
+        public static int GetByteLengthForEncoding(this Encoding encoding) =>
             encoding.BodyName switch
             {
                 "utf-16BE" => 2,
