@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server
 {
     [NoSort]
@@ -46,22 +48,22 @@ namespace Server
             var start = value.IndexOfOrdinal('(');
             var end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var x);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
 
             start = end;
             end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var y);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
 
             start = end;
             end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var w);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var w);
 
             start = end;
             end = value.IndexOf(')', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var h);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var h);
 
             return new Rectangle2D(x, y, w, h);
         }
