@@ -225,7 +225,7 @@ public static class IncomingAccountPackets
             skills[3] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
         }
 
-        var unknown2 = reader.ReadAscii(26); // Pack of 0x00
+        reader.Seek(26, SeekOrigin.Current); // Pack of 0x00
         
         int hairHue = reader.ReadInt16();
         int hairID = reader.ReadInt16();

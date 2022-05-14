@@ -455,6 +455,12 @@ public static class OutgoingAccountPackets
         ns.Send(writer.Span);
     }
 
+    /**
+        * Packet: 0xE3
+        * Length: 77 bytes
+        *
+        * Sends Encryption Request (KR Only)
+        */
     public static void SendKREncryptionReq(this NetState ns)
     {
         //Sending Kr Encryption Response, Packet 0xE4 ----->
@@ -547,6 +553,19 @@ public static class OutgoingAccountPackets
         writer.Write((byte)0xCB);
         writer.Write((byte)0x53);
 
+        ns.Send(writer.Span);
+    }
+
+    /**
+        * Packet: 0x29
+        * Length: 1 byte
+        *
+        * Sends Item Drop Confirmation
+        */
+    public static void KRDropConfirm(this NetState ns)
+    {
+        var writer = new SpanWriter(stackalloc byte[1]);
+        writer.Write((byte)0x29);
         ns.Send(writer.Span);
     }
 }

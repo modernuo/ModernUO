@@ -24,7 +24,6 @@ public enum ClientType
 {
     Regular,
     UOTD,
-    God,
     SA,
     KR
 }
@@ -50,22 +49,11 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
     {
-        if (maj == 66 && min == 55 && rev ==52 && pat == 00) // Specific check for 2.58.0.6 and 2.58.0.7 KR equivalent to 6.0.13.1 Legacy.
-        {
-            Major = 6;
-            Minor = 0;
-            Revision = 13;
-            Patch = 1;
-            Type = ClientType.KR;
-        }
-        else
-        {
-            Major = maj;
-            Minor = min;
-            Revision = rev;
-            Patch = pat;
-            Type = type;
-        }
+        Major = maj;
+        Minor = min;
+        Revision = rev;
+        Patch = pat;
+        Type = type;
         SourceString = Utility.Intern(ToStringImpl());
     }
 
@@ -86,8 +74,8 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
             }
 
             Major = Utility.ToInt32(fmt.AsSpan()[..br1]);
-            Minor = Utility.ToInt32(fmt.Substring(br1 + 1, br2 - br1 - 1));
-            Revision = Utility.ToInt32(fmt.Substring(br2 + 1, br3 - br2 - 1));
+            Minor = Utility.ToInt32(fmt.AsSpan(br1 + 1, br2 - br1 - 1));
+            Revision = Utility.ToInt32(fmt.AsSpan(br2 + 1, br3 - br2 - 1));
 
             if (br3 < fmt.Length)
             {
@@ -100,26 +88,21 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                 }
                 else
                 {
-                    Patch = Utility.ToInt32(fmt.Substring(br3 + 1, fmt.Length - br3 - 1));
+                    Patch = Utility.ToInt32(fmt.AsSpan(br3 + 1, fmt.Length - br3 - 1));
                 }
             }
 
-            if (fmt.InsensitiveContains("god") || fmt.InsensitiveContains("gq"))
+            Type = Major switch
             {
-                Type = ClientType.God;
-            }
-            else if (fmt.InsensitiveContains("third dawn") ||
-                     fmt.InsensitiveContains("uo:td") ||
-                     fmt.InsensitiveContains("uotd") ||
-                     fmt.InsensitiveContains("uo3d") ||
-                     fmt.InsensitiveContains("uo:3d"))
-            {
-                Type = ClientType.UOTD;
-            }
-            else
-            {
-                Type = ClientType.Regular;
-            }
+                66 => ClientType.KR,
+                67 => ClientType.SA,
+                _ when fmt.InsensitiveContains("third dawn") ||
+                       fmt.InsensitiveContains("uo:td") ||
+                       fmt.InsensitiveContains("uotd") ||
+                       fmt.InsensitiveContains("uo3d") ||
+                       fmt.InsensitiveContains("uo:3d") => ClientType.UOTD,
+                _ => ClientType.Regular
+            };
         }
         catch
         {

@@ -606,47 +606,45 @@ public partial class NetState : IComparable<NetState>
                     {
                         case ProtocolState.AwaitingSeed:
                             {
-                                    if (packetId == 0xEF)
+                                if (packetId == 0xEF)
+                                {
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                    if (_parserState == ParserState.AwaitingNextPacket)
+                                    {
+                                        _protocolState = ProtocolState.LoginServer_AwaitingLogin;
+                                    }
+                                }
+                                else if (length >= 4)
+                                {
+                                    int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
+                                    if (seed == 0)
+                                    {
+                                        HandleError(0, 0);
+                                        return;
+                                    }
+                                    _seed = seed;
+                                    packetLength = 4;
+                                    _parserState = ParserState.AwaitingNextPacket;
+                                    if (packetId == 0xFF)
                                     {
                                         _parserState = ParserState.ProcessingPacket;
                                         _parserState = HandlePacket(packetReader, packetId, out packetLength);
                                         if (_parserState == ParserState.AwaitingNextPacket)
                                         {
-                                            _protocolState = ProtocolState.LoginServer_AwaitingLogin;
-                                        }
-                                    }
-                                    else if (length >= 4)
-                                    {
-                                        int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
-
-                                        if (seed == 0)
-                                        {
-                                            HandleError(0, 0);
-                                            return;
-                                        }
-
-                                        _seed = seed;
-                                        packetLength = 4;
-
-                                        _parserState = ParserState.AwaitingNextPacket;
-                                        if (packetId == 0xFF) {
-                                            _parserState = ParserState.ProcessingPacket;
-                                            _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                            if (_parserState == ParserState.AwaitingNextPacket)
-                                            {
-                                                _protocolState = ProtocolState.LoginServer_AwaitingKrAck;
-                                            }
-                                        }
-                                        else
-                                        {
-                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                            _protocolState = ProtocolState.LoginServer_AwaitingKrAck;
                                         }
                                     }
                                     else
                                     {
-                                        _parserState = ParserState.AwaitingPartialPacket;
+                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                     }
-                                    break;
+                                }
+                                else
+                                {
+                                    _parserState = ParserState.AwaitingPartialPacket;
+                                }
+                            break;
                             }
 
                         case ProtocolState.LoginServer_AwaitingKrAck:
