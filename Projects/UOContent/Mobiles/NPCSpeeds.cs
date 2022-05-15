@@ -19,6 +19,10 @@ public static class NPCSpeeds
     public static int MinDex { get; private set; }
     public static int MaxDex { get; private set; }
 
+    // Time period to lock NPCs into idling
+    public static int MinIdleSeconds { get; private set; }
+    public static int MaxIdleSeconds { get; private set; }
+
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
         // Used for scaling pet's speed by dex in HS+
@@ -64,6 +68,8 @@ public static class NPCSpeeds
         MaxDelay = ServerConfiguration.GetSetting("movement.delay.npcMaxDelay", 0.4);
         MaxDex = ServerConfiguration.GetSetting("movement.delay.npcMinDex", 50);
         MaxDex = ServerConfiguration.GetSetting("movement.delay.npcMaxDex", 200);
+        MinIdleSeconds = ServerConfiguration.GetSetting("movement.delay.npcMinIdle", 15);
+        MaxIdleSeconds = ServerConfiguration.GetSetting("movement.delay.npcMaxIdle", 25);
 
         var path = Path.Combine(Core.BaseDirectory, _tablePath);
         if (!File.Exists(path))

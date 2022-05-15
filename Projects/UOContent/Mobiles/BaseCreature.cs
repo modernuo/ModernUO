@@ -1625,23 +1625,35 @@ namespace Server.Mobiles
                     switch (sc)
                     {
                         case ScaleType.Red:
-                            corpse.AddCarvedItem(new RedScales(scales), from);
-                            break;
+                            {
+                                corpse.AddCarvedItem(new RedScales(scales), from);
+                                break;
+                            }
                         case ScaleType.Yellow:
-                            corpse.AddCarvedItem(new YellowScales(scales), from);
-                            break;
+                            {
+                                corpse.AddCarvedItem(new YellowScales(scales), from);
+                                break;
+                            }
                         case ScaleType.Black:
-                            corpse.AddCarvedItem(new BlackScales(scales), from);
-                            break;
+                            {
+                                corpse.AddCarvedItem(new BlackScales(scales), from);
+                                break;
+                            }
                         case ScaleType.Green:
-                            corpse.AddCarvedItem(new GreenScales(scales), from);
-                            break;
+                            {
+                                corpse.AddCarvedItem(new GreenScales(scales), from);
+                                break;
+                            }
                         case ScaleType.White:
-                            corpse.AddCarvedItem(new WhiteScales(scales), from);
-                            break;
+                            {
+                                corpse.AddCarvedItem(new WhiteScales(scales), from);
+                                break;
+                            }
                         case ScaleType.Blue:
-                            corpse.AddCarvedItem(new BlueScales(scales), from);
-                            break;
+                            {
+                                corpse.AddCarvedItem(new BlueScales(scales), from);
+                                break;
+                            }
                         case ScaleType.All:
                             {
                                 corpse.AddCarvedItem(new RedScales(scales), from);
@@ -2565,18 +2577,23 @@ namespace Server.Mobiles
                 return false; // not idling, but don't want to enter idle state
             }
 
-            m_IdleReleaseTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(15, 25));
+            var idleSeconds = Utility.RandomMinMax(NPCSpeeds.MinIdleSeconds, NPCSpeeds.MaxIdleSeconds);
+            m_IdleReleaseTime = Core.Now + TimeSpan.FromSeconds(idleSeconds);
 
             if (Body.IsHuman)
             {
                 switch (Utility.Random(2))
                 {
                     case 0:
-                        CheckedAnimate(5, 5, 1, true, true, 1);
-                        break;
+                        {
+                            CheckedAnimate(5, 5, 1, true, true, 1);
+                            break;
+                        }
                     case 1:
-                        CheckedAnimate(6, 5, 1, true, false, 1);
-                        break;
+                        {
+                            CheckedAnimate(6, 5, 1, true, false, 1);
+                            break;
+                        }
                 }
             }
             else if (Body.IsAnimal)
@@ -2584,14 +2601,20 @@ namespace Server.Mobiles
                 switch (Utility.Random(3))
                 {
                     case 0:
-                        CheckedAnimate(3, 3, 1, true, false, 1);
-                        break;
+                        {
+                            CheckedAnimate(3, 3, 1, true, false, 1);
+                            break;
+                        }
                     case 1:
-                        CheckedAnimate(9, 5, 1, true, false, 1);
-                        break;
+                        {
+                            CheckedAnimate(9, 5, 1, true, false, 1);
+                            break;
+                        }
                     case 2:
-                        CheckedAnimate(10, 5, 1, true, false, 1);
-                        break;
+                        {
+                            CheckedAnimate(10, 5, 1, true, false, 1);
+                            break;
+                        }
                 }
             }
             else if (Body.IsMonster)
@@ -2599,11 +2622,15 @@ namespace Server.Mobiles
                 switch (Utility.Random(2))
                 {
                     case 0:
-                        CheckedAnimate(17, 5, 1, true, false, 1);
-                        break;
+                        {
+                            CheckedAnimate(17, 5, 1, true, false, 1);
+                            break;
+                        }
                     case 1:
-                        CheckedAnimate(18, 5, 1, true, false, 1);
-                        break;
+                        {
+                            CheckedAnimate(18, 5, 1, true, false, 1);
+                            break;
+                        }
                 }
             }
 
@@ -2860,17 +2887,25 @@ namespace Server.Mobiles
                     switch (Utility.Random(4))
                     {
                         case 0:
-                            PackItem(new CocoaButter());
-                            break;
+                            {
+                                PackItem(new CocoaButter());
+                                break;
+                            }
                         case 1:
-                            PackItem(new CocoaLiquor());
-                            break;
+                            {
+                                PackItem(new CocoaLiquor());
+                                break;
+                            }
                         case 2:
-                            PackItem(new SackOfSugar());
-                            break;
+                            {
+                                PackItem(new SackOfSugar());
+                                break;
+                            }
                         case 3:
-                            PackItem(new Vanilla());
-                            break;
+                            {
+                                PackItem(new Vanilla());
+                                break;
+                            }
                     }
                 }
             }
@@ -3947,20 +3982,30 @@ namespace Server.Mobiles
                     switch (Utility.Random(5))
                     {
                         case 0:
-                            physDamage += BreathChaosDamage;
-                            break;
+                            {
+                                physDamage += BreathChaosDamage;
+                                break;
+                            }
                         case 1:
-                            fireDamage += BreathChaosDamage;
-                            break;
+                            {
+                                fireDamage += BreathChaosDamage;
+                                break;
+                            }
                         case 2:
-                            coldDamage += BreathChaosDamage;
-                            break;
+                            {
+                                coldDamage += BreathChaosDamage;
+                                break;
+                            }
                         case 3:
-                            poisDamage += BreathChaosDamage;
-                            break;
+                            {
+                                poisDamage += BreathChaosDamage;
+                                break;
+                            }
                         case 4:
-                            nrgyDamage += BreathChaosDamage;
-                            break;
+                            {
+                                nrgyDamage += BreathChaosDamage;
+                                break;
+                            }
                     }
                 }
 
@@ -4614,20 +4659,30 @@ namespace Server.Mobiles
             switch (type)
             {
                 case ResistanceType.Physical:
-                    PhysicalDamage = val;
-                    break;
+                    {
+                        PhysicalDamage = val;
+                        break;
+                    }
                 case ResistanceType.Fire:
-                    FireDamage = val;
-                    break;
+                    {
+                        FireDamage = val;
+                        break;
+                    }
                 case ResistanceType.Cold:
-                    ColdDamage = val;
-                    break;
+                    {
+                        ColdDamage = val;
+                        break;
+                    }
                 case ResistanceType.Poison:
-                    PoisonDamage = val;
-                    break;
+                    {
+                        PoisonDamage = val;
+                        break;
+                    }
                 case ResistanceType.Energy:
-                    EnergyDamage = val;
-                    break;
+                    {
+                        EnergyDamage = val;
+                        break;
+                    }
             }
         }
 
@@ -4641,20 +4696,30 @@ namespace Server.Mobiles
             switch (type)
             {
                 case ResistanceType.Physical:
-                    m_PhysicalResistance = val;
-                    break;
+                    {
+                        m_PhysicalResistance = val;
+                        break;
+                    }
                 case ResistanceType.Fire:
-                    m_FireResistance = val;
-                    break;
+                    {
+                        m_FireResistance = val;
+                        break;
+                    }
                 case ResistanceType.Cold:
-                    m_ColdResistance = val;
-                    break;
+                    {
+                        m_ColdResistance = val;
+                        break;
+                    }
                 case ResistanceType.Poison:
-                    m_PoisonResistance = val;
-                    break;
+                    {
+                        m_PoisonResistance = val;
+                        break;
+                    }
                 case ResistanceType.Energy:
-                    m_EnergyResistance = val;
-                    break;
+                    {
+                        m_EnergyResistance = val;
+                        break;
+                    }
             }
 
             UpdateResistances();
