@@ -8,16 +8,16 @@ namespace Server.Mobiles;
 
 public static class NPCSpeeds
 {
+    private const string _tablePath = "Data/npc-speeds.json";
+    private static Dictionary<Type, SpeedClassEntry> _speedsByType = new();
+    private static Dictionary<string, SpeedClassEntry> _speedsByName = new();
+
     // Enabled for pets on HS+
     public static bool ScaleSpeedByDex { get; private set; }
     public static double MinDelay { get; private set; }
     public static double MaxDelay { get; private set; }
     public static int MinDex { get; private set; }
     public static int MaxDex { get; private set; }
-
-    private const string _tablePath = "Data/npc-speeds.json";
-    private static Dictionary<Type, SpeedClassEntry> _speedsByType = new();
-    private static Dictionary<string, SpeedClassEntry> _speedsByName = new();
 
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
