@@ -4796,7 +4796,7 @@ namespace Server.Mobiles
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
         }
 
-        public virtual void ResetSpeeds(bool currentUseActive = false)
+        public void ResetSpeeds(bool currentUseActive = false)
         {
             GetSpeeds(out var activeSpeed, out var passiveSpeed);
 
