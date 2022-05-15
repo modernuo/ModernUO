@@ -64,10 +64,10 @@ public class LegacySpeedInfo
 
     public record LegacySpeedEntry
     {
-        [JsonPropertyName("activeSpeed")]
+        [JsonPropertyName("active")]
         public double ActiveSpeed { get; init; }
 
-        [JsonPropertyName("passiveSpeed")]
+        [JsonPropertyName("passive")]
         public double PassiveSpeed { get; init; }
 
         [JsonPropertyName("types")]
