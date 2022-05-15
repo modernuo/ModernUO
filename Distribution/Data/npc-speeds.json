@@ -1,8 +1,8 @@
 [
   {
     "name": "Slow",
-    "active": 0.6,
-    "passive": 1.4,
+    "activeSpeed": 0.3,
+    "passiveSpeed": 0.6,
     "types": [
       "AntLion", "ArcticOgreLord", "BogThing",
       "Bogle", "BoneKnight", "EarthElemental",
@@ -19,56 +19,9 @@
     ]
   },
   {
-    "name": "Fast",
-    "active": 0.3,
-    "passive": 1.0,
-    "types": [
-      "LordOaks", "Silvani", "AirElemental",
-      "AncientWyrm", "Balron", "BladeSpirits",
-      "DreadSpider", "Efreet", "EtherealWarrior",
-      "Lich", "Nightmare", "OphidianArchmage",
-      "OphidianMage", "OphidianWarrior", "OphidianMatriarch",
-      "OphidianKnight", "PoisonElemental", "Revenant",
-      "SandVortex", "SavageRider", "SavageShaman",
-      "SnowElemental", "WhiteWyrm", "Wisp",
-      "DemonKnight", "GiantBlackWidow", "SummonedAirElemental",
-      "LesserHiryu", "Hiryu", "LadyOfTheSnow",
-      "RaiJu", "Ronin", "RuneBeetle",
-      "Changeling", "LadyJennifyr", "LadyMarai", "MasterJonath",
-      "MasterMikael", "MasterTheophilus", "RedDeath",
-      "SirPatrick", "Miasma", "Rend",
-      "Grobu", "Gnaw", "Guile",
-      "Irk", "Spite", "LadyLissith",
-      "LadySabrix", "Malefic", "Silk",
-      "Virulent", "SeaHorse", "UnholyFamiliar",
-      "HolyFamiliar", "GiantIceWorm", "Phoenix",
-      "Succubus", "EnragedRabbit", "EnragedHind",
-      "EnragedHart", "EnragedBlackBear", "EnragedEagle",
-      "RagingGrizzlyBear", "CorrosiveSlime", "DarkWisp",
-      "DarkGuardian", "HarrowerTentacles", "ServantOfSemidar",
-      "Ninja", "Samurai"
-    ]
-  },
-  {
-    "name": "Very Fast",
-    "active": 0.25,
-    "passive": 0.7,
-    "types": [
-      "Barracoon", "Mephitis", "Neira",
-      "Rikktor", "Semidar", "EnergyVortex",
-      "EliteNinja", "Pixie", "SilverSerpent",
-      "VorpalBunny", "FleshRenderer", "KhaldunRevenant",
-      "FactionDragoon", "FactionKnight", "FactionPaladin",
-      "FactionHenchman", "FactionMercenary", "FactionNecromancer",
-      "FactionSorceress", "FactionWizard", "FactionBerserker",
-      "FactionPaladin", "Leviathan", "FireBeetle",
-      "FanDancer", "FactionDeathKnight"
-    ]
-  },
-  {
     "name": "Medium",
-    "active": 0.5,
-    "passive": 1.2,
+    "activeSpeed": 0.25,
+    "passiveSpeed": 0.5,
     "types": [
       "AcidElemental", "AgapiteElemental", "Alligator",
       "AncientLich", "Betrayer", "Bird",
@@ -143,6 +96,53 @@
       "Gaman", "Crane", "Beetle",
       "Parrot", "ElfBrigand", "GreaterMongbat",
       "AnimatedWeapon", "Reaper", "Corpser"
+    ]
+  },
+  {
+    "name": "Fast",
+    "activeSpeed": 0.2,
+    "passiveSpeed": 0.4,
+    "types": [
+      "LordOaks", "Silvani", "AirElemental",
+      "AncientWyrm", "Balron", "BladeSpirits",
+      "DreadSpider", "Efreet", "EtherealWarrior",
+      "Lich", "Nightmare", "OphidianArchmage",
+      "OphidianMage", "OphidianWarrior", "OphidianMatriarch",
+      "OphidianKnight", "PoisonElemental",
+      "SandVortex", "SavageRider", "SavageShaman",
+      "SnowElemental", "WhiteWyrm", "Wisp",
+      "DemonKnight", "GiantBlackWidow", "SummonedAirElemental",
+      "LesserHiryu", "Hiryu", "LadyOfTheSnow",
+      "RaiJu", "Ronin", "RuneBeetle",
+      "Changeling", "LadyJennifyr", "LadyMarai", "MasterJonath",
+      "MasterMikael", "MasterTheophilus", "RedDeath",
+      "SirPatrick", "Miasma", "Rend",
+      "Grobu", "Gnaw", "Guile",
+      "Irk", "Spite", "LadyLissith",
+      "LadySabrix", "Malefic", "Silk",
+      "Virulent", "SeaHorse", "UnholyFamiliar",
+      "HolyFamiliar", "GiantIceWorm", "Phoenix",
+      "Succubus", "EnragedRabbit", "EnragedHind",
+      "EnragedHart", "EnragedBlackBear", "EnragedEagle",
+      "RagingGrizzlyBear", "CorrosiveSlime", "DarkWisp",
+      "DarkGuardian", "HarrowerTentacles", "ServantOfSemidar",
+      "Reptalon"
+    ]
+  },
+  {
+    "name": "Very Fast",
+    "activeSpeed": 0.175,
+    "passiveSpeed": 0.35,
+    "types": [
+      "Barracoon", "Mephitis", "Neira",
+      "Rikktor", "Semidar", "EnergyVortex",
+      "EliteNinja", "Pixie", "SilverSerpent",
+      "VorpalBunny", "FleshRenderer", "KhaldunRevenant",
+      "FactionDragoon", "FactionKnight", "FactionPaladin",
+      "FactionHenchman", "FactionMercenary", "FactionNecromancer",
+      "FactionSorceress", "FactionWizard", "FactionBerserker",
+      "FactionPaladin", "Leviathan", "FireBeetle",
+      "FanDancer", "FactionDeathKnight", "Revenant"
     ]
   }
 ]

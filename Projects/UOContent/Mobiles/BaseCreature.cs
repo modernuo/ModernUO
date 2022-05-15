@@ -338,12 +338,12 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            if (LegacySpeedInfo.Enabled && LegacySpeedInfo.GetSpeeds(GetType(), out var activeSpeed, out var passiveSpeed))
-            {
-                ActiveSpeed = activeSpeed;
-                PassiveSpeed = passiveSpeed;
-                CurrentSpeed = passiveSpeed;
-            }
+            // We don't use ResetSpeeds because we set legacy speed also
+            SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = passiveSpeed;
 
             m_Team = 0;
 
@@ -879,6 +879,8 @@ namespace Server.Mobiles
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
 
+        public virtual bool ScaleSpeedByDex => !LegacySpeedInfo.Enabled;
+
         // used for deleting untamed creatures [in houses]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool RemoveIfUntamed { get; set; }
@@ -1363,7 +1365,8 @@ namespace Server.Mobiles
 
         public override void OnRawDexChange(int oldValue)
         {
-            if (oldValue != RawDex && ActiveSpeed <= 0 && PassiveSpeed <= 0)
+            // This only really happens for pets or when a GM modifies a mob.
+            if (oldValue != RawDex && ScaleSpeedByDex)
             {
                 ResetSpeeds();
             }
@@ -3323,11 +3326,6 @@ namespace Server.Mobiles
                 Controlled = false;
                 ControlTarget = null;
                 ControlOrder = OrderType.None;
-                Guild = null;
-
-                ResetSpeeds();
-
-                Delta(MobileDelta.Noto);
             }
             else
             {
@@ -3351,18 +3349,19 @@ namespace Server.Mobiles
                 Controlled = true;
                 ControlTarget = null;
                 ControlOrder = OrderType.Come;
-                Guild = null;
+
 
                 if (m_DeleteTimer != null)
                 {
                     m_DeleteTimer.Stop();
                     m_DeleteTimer = null;
                 }
-
-                ResetSpeeds(true);
-
-                Delta(MobileDelta.Noto);
             }
+
+            Guild = null;
+            ResetSpeeds();
+
+            Delta(MobileDelta.Noto);
 
             InvalidateProperties();
 
@@ -4794,13 +4793,21 @@ namespace Server.Mobiles
             }
         }
 
+        public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
+        {
+            SpeedInfo.GetSpeeds(this, out activeSpeed, out passiveSpeed);
+        }
+
         public virtual void ResetSpeeds(bool currentUseActive = false)
         {
-            SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
+            if (ScaleSpeedByDex)
+            {
+                GetSpeeds(out var activeSpeed, out var passiveSpeed);
 
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
+            }
         }
 
         public virtual void DropBackpack()

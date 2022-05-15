@@ -7,6 +7,7 @@ using Server.Engines.Spawners;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
+using Server.Logging;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Spellweaving;
@@ -41,6 +42,8 @@ namespace Server.Mobiles
 
     public abstract class BaseAI
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseAI));
+
         private static readonly SkillName[] m_KeywordTable =
         {
             SkillName.Parry,
@@ -1091,7 +1094,7 @@ namespace Server.Mobiles
                         m_Mobile.ControlMaster.RevealingAction();
                         m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
                         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                        m_Mobile.Warmode = true;
+                        m_Mobile.Warmode = false;
                         m_Mobile.Combatant = null;
                         break;
                     }
@@ -1923,19 +1926,31 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            // Non-monsters in PVP combat (like pets) are penalized
-            if (!m_Mobile.IsMonster && m_Mobile.InActivePVPCombat() && delay <= SpeedInfo.MaxDelay)
+            // Monster is Idle
+            if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(delay - m_Mobile.PassiveSpeed) < 0.0001)
             {
-                delay += 0.4;
+                delay *= 3;
             }
 
             if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
-                double offset = m_Mobile.StamMax <= 0 ? 1.0 : Math.Max(0, m_Mobile.Stam) / (double)m_Mobile.StamMax;
+                int stats, statsMax;
+                if (LegacySpeedInfo.Enabled)
+                {
+                    stats = m_Mobile.Hits;
+                    statsMax = m_Mobile.HitsMax;
+                }
+                else
+                {
+                    stats = m_Mobile.Stam;
+                    statsMax = m_Mobile.StamMax;
+                }
+
+                var offset = statsMax <= 0 ? 1.0 : Math.Max(0, stats) / (double)statsMax;
 
                 if (offset < 1.0)
                 {
-                    delay += delay * (1.0 - offset);
+                    delay += m_Mobile.PassiveSpeed * (1.0 - offset);
                 }
             }
 
@@ -1969,13 +1984,20 @@ namespace Server.Mobiles
             m_Mobile.Direction = d;
 
             var delay = (int)(TransformMoveDelay(m_Mobile.CurrentSpeed) * 1000);
-
             NextMove += delay;
 
             if (Core.TickCount - NextMove > 0)
             {
                 NextMove = Core.TickCount;
             }
+
+            logger.Information(
+                "{TickCount} ({MobName}): Next Move in {Delay} {NextMove}",
+                Core.TickCount,
+                m_Mobile.GetType().Name,
+                delay,
+                NextMove
+            );
 
             m_Mobile.Pushing = false;
 
@@ -2430,6 +2452,13 @@ namespace Server.Mobiles
 
             m_Mobile.NextReacquireTime = Core.TickCount + (int)m_Mobile.ReacquireDelay.TotalMilliseconds;
 
+            logger.Information(
+                "{TickCount} ({MobName}): Acquiring {Delay}",
+                Core.TickCount,
+                m_Mobile.GetType().Name,
+                (int)m_Mobile.ReacquireDelay.TotalMilliseconds
+            );
+
             m_Mobile.DebugSay("Acquiring...");
 
             var map = m_Mobile.Map;
@@ -2708,7 +2737,15 @@ namespace Server.Mobiles
          */
         public virtual void OnCurrentSpeedChanged()
         {
-            m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.0, m_Mobile.CurrentSpeed));
+            m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.008, m_Mobile.CurrentSpeed));
+            logger.Information(
+                "{TickCount} ({MobName}): Adjusting Speed {Interval} ({Active} {Passive})",
+                Core.TickCount,
+                m_Mobile.GetType().Name,
+                m_Timer.Interval,
+                m_Mobile.ActiveSpeed,
+                m_Mobile.PassiveSpeed
+            );
         }
 
         private class InternalEntry : ContextMenuEntry

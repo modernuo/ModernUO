@@ -11,7 +11,6 @@ namespace Server.Engines.Quests.Haven
         [Constructible]
         public MilitiaFighter() : base(AIType.AI_Melee)
         {
-            SetSpeed(0.3, 1.0);
             InitStats(40, 30, 5);
             Title = "the Militia Fighter";
 

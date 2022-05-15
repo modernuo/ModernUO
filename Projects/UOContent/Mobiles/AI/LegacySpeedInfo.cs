@@ -16,19 +16,18 @@ public class LegacySpeedInfo
 
     public static bool Enabled { get; private set; }
 
-    public static bool GetSpeeds(Type type, out double activeSpeed, out double passiveSpeed)
+    public static void GetSpeeds(Type type, out double activeSpeed, out double passiveSpeed)
     {
-        if (!(Enabled && m_Table.TryGetValue(type, out var sp)))
+        if (!m_Table.TryGetValue(type, out var sp))
         {
-            activeSpeed = 0;
-            passiveSpeed = 0;
-            return false;
+            // "Fast"
+            activeSpeed = 0.2;
+            passiveSpeed = 0.4;
+            return;
         }
 
         activeSpeed = sp.ActiveSpeed;
         passiveSpeed = sp.PassiveSpeed;
-
-        return true;
     }
 
     public static void Configure()
@@ -65,10 +64,10 @@ public class LegacySpeedInfo
 
     public record LegacySpeedEntry
     {
-        [JsonPropertyName("active")]
+        [JsonPropertyName("activeSpeed")]
         public double ActiveSpeed { get; init; }
 
-        [JsonPropertyName("passive")]
+        [JsonPropertyName("passiveSpeed")]
         public double PassiveSpeed { get; init; }
 
         [JsonPropertyName("types")]

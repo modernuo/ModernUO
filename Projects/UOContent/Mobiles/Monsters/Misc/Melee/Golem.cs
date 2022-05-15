@@ -18,8 +18,6 @@ namespace Server.Mobiles
                 Hue = 2101;
             }
 
-            SetSpeed(0.9, 1.5);
-
             SetStr((int)(251 * scalar), (int)(350 * scalar));
             SetDex((int)(76 * scalar), (int)(100 * scalar));
             SetInt((int)(101 * scalar), (int)(150 * scalar));

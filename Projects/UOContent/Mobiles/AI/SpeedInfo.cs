@@ -16,22 +16,33 @@ public static class SpeedInfo
 
     public static void Configure()
     {
-        // Default speed determined by dex (0 -> 190) for non-monster NPCs including pets
-        MinDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.npcMinDelay", 0.1);
-        MaxDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.npcMaxDelay", 0.5);
-        MaxDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.maxDex", 190);
+        /**
+         * According to testing by ServUO devs, the settings on OSI should be the following.
+         * Unfortunately they are horribly slow:
+         * Non-Monsters:
+         * MinDelay = 0.1
+         * MaxDelay = 0.5
+         * MaxDex = 190
+         *
+         * Monsters:
+         * MinDelay = 0.4
+         * MaxDelay = 0.8
+         * MaxDex = 150
+         */
+        MinDelay = ServerConfiguration.GetSetting("movement.delay.npcMinDelay", 0.1);
+        MaxDelay = ServerConfiguration.GetSetting("movement.delay.npcMaxDelay", 0.375);
+        MaxDex = ServerConfiguration.GetSetting("movement.delay.maxDex", 150);
 
-        // Default speed determined by dex (0 -> 150) for monsters
-        MinMonsterDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMinDelay", 0.4);
-        MaxMonsterDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDelay", 0.8);
-        MaxMonsterDex = ServerConfiguration.GetOrUpdateSetting("movement.delay.monsterMaxDex", 150);
+        MinMonsterDelay = ServerConfiguration.GetSetting("movement.delay.monsterMinDelay", 0.2);
+        MaxMonsterDelay = ServerConfiguration.GetSetting("movement.delay.monsterMaxDelay", 0.325);
+        MaxMonsterDex = ServerConfiguration.GetSetting("movement.delay.monsterMaxDex", 150);
     }
 
     public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
     {
-        // Legacy is used if it is enabled, and the type is in the table
-        if (LegacySpeedInfo.GetSpeeds(bc.GetType(), out activeSpeed, out passiveSpeed))
+        if (!bc.ScaleSpeedByDex)
         {
+            LegacySpeedInfo.GetSpeeds(bc.GetType(), out activeSpeed, out passiveSpeed);
             return;
         }
 
