@@ -42,8 +42,6 @@ namespace Server.Mobiles
 
     public abstract class BaseAI
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseAI));
-
         private static readonly SkillName[] m_KeywordTable =
         {
             SkillName.Parry,
@@ -1921,7 +1919,7 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            // Monster is Idle
+            // Monster is passive
             if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(delay - m_Mobile.PassiveSpeed) < 0.0001)
             {
                 delay *= 3;
@@ -1985,14 +1983,6 @@ namespace Server.Mobiles
             {
                 NextMove = Core.TickCount;
             }
-
-            logger.Information(
-                "{TickCount} ({MobName}): Next Move in {Delay} {NextMove}",
-                Core.TickCount,
-                m_Mobile.GetType().Name,
-                delay,
-                NextMove
-            );
 
             m_Mobile.Pushing = false;
 
@@ -2447,13 +2437,6 @@ namespace Server.Mobiles
 
             m_Mobile.NextReacquireTime = Core.TickCount + (int)m_Mobile.ReacquireDelay.TotalMilliseconds;
 
-            logger.Information(
-                "{TickCount} ({MobName}): Acquiring {Delay}",
-                Core.TickCount,
-                m_Mobile.GetType().Name,
-                (int)m_Mobile.ReacquireDelay.TotalMilliseconds
-            );
-
             m_Mobile.DebugSay("Acquiring...");
 
             var map = m_Mobile.Map;
@@ -2733,14 +2716,6 @@ namespace Server.Mobiles
         public virtual void OnCurrentSpeedChanged()
         {
             m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.008, m_Mobile.CurrentSpeed));
-            logger.Information(
-                "{TickCount} ({MobName}): Adjusting Speed {Interval} ({Active} {Passive})",
-                Core.TickCount,
-                m_Mobile.GetType().Name,
-                m_Timer.Interval,
-                m_Mobile.ActiveSpeed,
-                m_Mobile.PassiveSpeed
-            );
         }
 
         private class InternalEntry : ContextMenuEntry
