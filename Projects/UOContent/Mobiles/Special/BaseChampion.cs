@@ -9,7 +9,6 @@ namespace Server.Mobiles
     {
         public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) : base(aiType, mode, 18)
         {
-            SetSpeed(0.25, 0.55);
         }
 
         public BaseChampion(Serial serial) : base(serial)

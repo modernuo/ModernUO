@@ -283,7 +283,7 @@ namespace Server.Engines.MLQuests.Definitions
             Body = 788;
             BaseSoundID = 0x3EE;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
         }
 
@@ -622,7 +622,7 @@ namespace Server.Engines.MLQuests.Definitions
             Body = 400;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new Tunic(Utility.RandomNeutralHue()));
@@ -678,7 +678,7 @@ namespace Server.Engines.MLQuests.Definitions
             Body = 400;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new FancyShirt(Utility.RandomNeutralHue()));
@@ -722,7 +722,7 @@ namespace Server.Engines.MLQuests.Definitions
             Body = 401;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

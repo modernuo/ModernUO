@@ -2012,7 +2012,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2079,7 +2079,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2147,7 +2147,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2213,7 +2213,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2280,7 +2280,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2346,7 +2346,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2410,7 +2410,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2482,7 +2482,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2546,7 +2546,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2624,7 +2624,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2684,7 +2684,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2748,7 +2748,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2810,7 +2810,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2887,7 +2887,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2971,7 +2971,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3039,7 +3039,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3109,7 +3109,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3172,7 +3172,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3242,7 +3242,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3306,7 +3306,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3369,7 +3369,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3419,7 +3419,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3492,7 +3492,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3555,7 +3555,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3625,7 +3625,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3690,7 +3690,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3754,7 +3754,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3817,7 +3817,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3881,7 +3881,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3943,7 +3943,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3988,7 +3988,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4046,7 +4046,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4090,7 +4090,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4139,7 +4139,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4185,7 +4185,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4231,7 +4231,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4275,7 +4275,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4319,7 +4319,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4364,7 +4364,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4415,7 +4415,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4459,7 +4459,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4512,7 +4512,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4569,7 +4569,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4621,7 +4621,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4686,7 +4686,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4742,7 +4742,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4797,7 +4797,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4853,7 +4853,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
