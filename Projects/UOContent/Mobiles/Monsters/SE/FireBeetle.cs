@@ -7,10 +7,11 @@ namespace Server.Mobiles
     public class FireBeetle : BaseMount
     {
         [Constructible]
-        public FireBeetle() : base("a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee, FightMode.Closest, 10, 1)
+        public FireBeetle() : base("a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee)
         {
+            SetStam(100);
             SetStr(300);
-            SetDex(100);
+            SetDex(65, 100);
             SetInt(500);
 
             SetHits(200);

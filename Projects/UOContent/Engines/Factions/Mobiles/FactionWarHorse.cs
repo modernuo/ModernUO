@@ -10,7 +10,7 @@ namespace Server.Factions
 
         [Constructible]
         public FactionWarHorse(Faction faction = null)
-            : base("a war horse", 0xE2, 0x3EA0, AIType.AI_Melee, FightMode.Aggressor, 10, 1)
+            : base("a war horse", 0xE2, 0x3EA0, AIType.AI_Melee, FightMode.Aggressor)
         {
             BaseSoundID = 0xA8;
 

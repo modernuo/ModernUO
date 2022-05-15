@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class CuSidhe : BaseMount
     {
         [Constructible]
-        public CuSidhe(string name = null) : base(name, 277, 0x3E91, AIType.AI_Animal, FightMode.Aggressor, 10, 1)
+        public CuSidhe(string name = null) : base(name, 277, 0x3E91, AIType.AI_Animal, FightMode.Aggressor)
         {
             var chance = Utility.RandomDouble() * 23301;
 

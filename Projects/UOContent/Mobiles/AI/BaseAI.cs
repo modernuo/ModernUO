@@ -1113,8 +1113,7 @@ namespace Server.Mobiles
                         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
                         m_Mobile.Warmode = true;
                         m_Mobile.Combatant = null;
-                        var petname = $"{m_Mobile.Name}";
-                        m_Mobile.ControlMaster.SendLocalizedMessage(1049671, petname); // ~1_PETNAME~ is now guarding you.
+                        m_Mobile.ControlMaster.SendLocalizedMessage(1049671, m_Mobile.Name); // ~1_PETNAME~ is now guarding you.
                         break;
                     }
 
@@ -1370,10 +1369,6 @@ namespace Server.Mobiles
                             if (Core.AOS)
                             {
                                 m_Mobile.CurrentSpeed = 0.1;
-                            }
-                            else if (m_Mobile.CurrentSpeed == m_Mobile.ActiveSpeed && m_Mobile.ControlTarget == m_Mobile.ControlMaster)
-                            {
-                                m_Mobile.CurrentSpeed = Math.Max(SpeedInfo.MinDelay, m_Mobile.CurrentSpeed * 0.5);
                             }
                         }
                     }
@@ -1935,15 +1930,15 @@ namespace Server.Mobiles
             if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
                 int stats, statsMax;
-                if (LegacySpeedInfo.Enabled)
-                {
-                    stats = m_Mobile.Hits;
-                    statsMax = m_Mobile.HitsMax;
-                }
-                else
+                if (Core.HS)
                 {
                     stats = m_Mobile.Stam;
                     statsMax = m_Mobile.StamMax;
+                }
+                else
+                {
+                    stats = m_Mobile.Hits;
+                    statsMax = m_Mobile.HitsMax;
                 }
 
                 var offset = statsMax <= 0 ? 1.0 : Math.Max(0, stats) / (double)statsMax;

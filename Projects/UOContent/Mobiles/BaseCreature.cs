@@ -338,12 +338,7 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            // We don't use ResetSpeeds because we set legacy speed also
-            SpeedInfo.GetSpeeds(this, out var activeSpeed, out var passiveSpeed);
-
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = passiveSpeed;
+            ResetSpeeds();
 
             m_Team = 0;
 
@@ -879,7 +874,7 @@ namespace Server.Mobiles
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
 
-        public virtual bool ScaleSpeedByDex => !LegacySpeedInfo.Enabled;
+        public virtual bool ScaleSpeedByDex => NPCSpeeds.ScaleSpeedByDex && !IsMonster;
 
         // used for deleting untamed creatures [in houses]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -4793,21 +4788,21 @@ namespace Server.Mobiles
             }
         }
 
+        // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
+        public virtual string SpeedClass => null;
+
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
-            SpeedInfo.GetSpeeds(this, out activeSpeed, out passiveSpeed);
+            NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
         }
 
         public virtual void ResetSpeeds(bool currentUseActive = false)
         {
-            if (ScaleSpeedByDex)
-            {
-                GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
 
-                ActiveSpeed = activeSpeed;
-                PassiveSpeed = passiveSpeed;
-                CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
-            }
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()
