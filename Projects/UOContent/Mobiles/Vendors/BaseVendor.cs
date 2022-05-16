@@ -54,12 +54,11 @@ namespace Server.Mobiles
 
         public BaseVendor(string title = null) : base(AIType.AI_Vendor, FightMode.None, 2)
         {
-            SetSpeed(0.5, 2);
             LoadSBInfo();
-
             Title = title;
             InitBody();
             InitOutfit();
+            SetSpeed(0.5, 2.0);
 
             // these packs MUST exist, or the client will crash when the packets are sent
             Container pack = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };

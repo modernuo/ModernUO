@@ -484,9 +484,14 @@ public sealed class Map : IComparable<Map>
         return mapValues;
     }
 
-    public static Map Parse(string value)
+    // Handles null checks
+    public static Map Parse(string value) => Parse(value ?? ReadOnlySpan<char>.Empty);
+
+    public static Map Parse(ReadOnlySpan<char> value)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        value = value.Trim();
+
+        if (value.Length == 0)
         {
             return null;
         }
@@ -513,7 +518,7 @@ public sealed class Map : IComparable<Map>
                 continue;
             }
 
-            if (index >= 0 && map.MapIndex == index || map.Name.InsensitiveEquals(value))
+            if (index >= 0 && map.MapIndex == index || value.InsensitiveEquals(map.Name))
             {
                 return map;
             }

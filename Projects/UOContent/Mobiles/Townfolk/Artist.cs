@@ -7,11 +7,10 @@ namespace Server.Mobiles
         [Constructible]
         public Artist() : base(AIType.AI_Animal, FightMode.None)
         {
-            SetSpeed(0.6, 1.2);
             InitStats(31, 41, 51);
-
             SetSkill(SkillName.Healing, 36, 68);
 
+            SetSpeed(0.2, 0.4);
             SpeechHue = Utility.RandomDyedHue();
             Title = "the artist";
             Hue = Race.Human.RandomSkinHue();

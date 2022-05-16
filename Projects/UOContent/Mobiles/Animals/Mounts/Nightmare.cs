@@ -14,7 +14,26 @@ namespace Server.Mobiles
         {
             BaseSoundID = Core.AOS ? 0xA8 : 0x16A;
 
-            SetStr(496, 525);
+            // Publish 97
+            if (Core.TOL)
+            {
+                if (Utility.RandomDouble() < 0.3)
+                {
+                    SetStr(296, 315);
+                    ControlSlots = 2;
+                }
+                else
+                {
+                    SetStr(496, 525);
+                    ControlSlots = 3;
+                }
+            }
+            else
+            {
+                SetStr(496, 525);
+                ControlSlots = 2;
+            }
+
             SetDex(86, 105);
             SetInt(86, 125);
 
@@ -44,7 +63,6 @@ namespace Server.Mobiles
             VirtualArmor = 60;
 
             Tamable = true;
-            ControlSlots = 2;
             MinTameSkill = 95.1;
 
             switch (Utility.Random(3))
