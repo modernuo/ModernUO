@@ -203,7 +203,7 @@ public partial class Pitcher : BaseBeverage
     }
 }
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(2, false)]
 public abstract partial class BaseBeverage : Item, IHasQuantity
 {
     private readonly int[] _swampTiles =
@@ -227,18 +227,18 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
     private Mobile _poisoner;
 
-    // Field 2
-    private BeverageType _content;
+    [SerializableField(2, getter: "private", setter: "private")]
+    private BeverageType _rawContent;
 
-    // Field 3
-    private int _quantity;
+    [SerializableField(3, getter: "private", setter: "private")]
+    private int _rawQuantity;
 
     public BaseBeverage() => ItemID = ComputeItemID();
 
     public BaseBeverage(BeverageType type)
     {
-        _content = type;
-        _quantity = MaxQuantity;
+        _rawContent = type;
+        _rawQuantity = MaxQuantity;
         ItemID = ComputeItemID();
     }
 
@@ -253,7 +253,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
                 return EmptyLabelNumber;
             }
 
-            return BaseLabelNumber + (int)_content;
+            return BaseLabelNumber + (int)_rawContent;
         }
     }
 
@@ -267,22 +267,21 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
     public abstract int MaxQuantity { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsEmpty => _quantity <= 0;
+    public bool IsEmpty => _rawQuantity <= 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool ContainsAlcohol => !IsEmpty && _content is not BeverageType.Milk and not BeverageType.Water;
+    public bool ContainsAlcohol => !IsEmpty && _rawContent is not BeverageType.Milk and not BeverageType.Water;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsFull => _quantity >= MaxQuantity;
+    public bool IsFull => _rawQuantity >= MaxQuantity;
 
-    [SerializableField(2)]
     [CommandProperty(AccessLevel.GameMaster)]
     public BeverageType Content
     {
-        get => _content;
+        get => _rawContent;
         set
         {
-            _content = value;
+            RawContent = value;
 
             InvalidateProperties();
 
@@ -290,7 +289,6 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
             if (itemID > 0)
             {
-                this.MarkDirty();
                 ItemID = itemID;
             }
             else
@@ -300,14 +298,13 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         }
     }
 
-    [SerializableField(3)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int Quantity
     {
-        get => _quantity;
+        get => _rawQuantity;
         set
         {
-            _quantity = Math.Clamp(value, 0, MaxQuantity);
+            RawQuantity = Math.Clamp(value, 0, MaxQuantity);
 
             InvalidateProperties();
 
@@ -316,7 +313,6 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
             if (itemID > 0)
             {
                 ItemID = itemID;
-                this.MarkDirty();
             }
             else
             {
@@ -329,7 +325,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
     public virtual int GetQuantityDescription()
     {
-        return (_quantity * 100 / MaxQuantity) switch
+        return (_rawQuantity * 100 / MaxQuantity) switch
         {
             <= 0  => 1042975,
             <= 33 => 1042974,
@@ -726,6 +722,14 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         }
 
         return false;
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _poison = reader.ReadPoison();
+        _poisoner = reader.ReadEntity<Mobile>();
+        _rawContent = (BeverageType)reader.ReadInt();
+        _rawQuantity = reader.ReadInt();
     }
 
     public static void Initialize()
