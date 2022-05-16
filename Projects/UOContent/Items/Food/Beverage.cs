@@ -45,20 +45,21 @@ public partial class BeverageBottle : BaseBeverage
 
     public override int ComputeItemID()
     {
-        if (!IsEmpty)
+        if (IsEmpty)
         {
-            switch (Content)
-            {
-                case BeverageType.Ale:    return 0x99F;
-                case BeverageType.Cider:  return 0x99F;
-                case BeverageType.Liquor: return 0x99B;
-                case BeverageType.Milk:   return 0x99B;
-                case BeverageType.Wine:   return 0x9C7;
-                case BeverageType.Water:  return 0x99B;
-            }
+            return 0;
         }
 
-        return 0;
+        return Content switch
+        {
+            BeverageType.Ale    => 0x99F,
+            BeverageType.Cider  => 0x99F,
+            BeverageType.Liquor => 0x99B,
+            BeverageType.Milk   => 0x99B,
+            BeverageType.Wine   => 0x9C7,
+            BeverageType.Water  => 0x99B,
+            _                   => 0
+        };
     }
 }
 
@@ -145,17 +146,17 @@ public partial class GlassMug : BaseBeverage
     {
         if (IsEmpty)
         {
-            return ItemID >= 0x1F81 && ItemID <= 0x1F84 ? ItemID : 0x1F81;
+            return ItemID is >= 0x1F81 and <= 0x1F84 ? ItemID : 0x1F81;
         }
 
         return Content switch
         {
             BeverageType.Ale    => ItemID == 0x9EF ? 0x9EF : 0x9EE,
-            BeverageType.Cider  => ItemID >= 0x1F7D && ItemID <= 0x1F80 ? ItemID : 0x1F7D,
-            BeverageType.Liquor => ItemID >= 0x1F85 && ItemID <= 0x1F88 ? ItemID : 0x1F85,
-            BeverageType.Milk   => ItemID >= 0x1F89 && ItemID <= 0x1F8C ? ItemID : 0x1F89,
-            BeverageType.Wine   => ItemID >= 0x1F8D && ItemID <= 0x1F90 ? ItemID : 0x1F8D,
-            BeverageType.Water  => ItemID >= 0x1F91 && ItemID <= 0x1F94 ? ItemID : 0x1F91,
+            BeverageType.Cider  => Math.Clamp(ItemID, 0x1F7D, 0x1F80),
+            BeverageType.Liquor => Math.Clamp(ItemID, 0x1F85, 0x1F88),
+            BeverageType.Milk   => Math.Clamp(ItemID, 0x1F89, 0x1F8C),
+            BeverageType.Wine   => Math.Clamp(ItemID, 0x1F8D, 0x1F90),
+            BeverageType.Water  => Math.Clamp(ItemID, 0x1F91, 0x1F94),
             _                   => 0
         };
     }
@@ -202,10 +203,10 @@ public partial class Pitcher : BaseBeverage
     }
 }
 
-[SerializationGenerator(0)]
+[SerializationGenerator(0, false)]
 public abstract partial class BaseBeverage : Item, IHasQuantity
 {
-    private static readonly int[] m_SwampTiles =
+    private readonly int[] _swampTiles =
     {
         0x9C4, 0x9EB,
         0x3D65, 0x3D65,
@@ -218,15 +219,26 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
     private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
-    private BeverageType m_Content;
-    private int m_Quantity;
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private Poison _poison;
+
+    [SerializableField(1)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private Mobile _poisoner;
+
+    // Field 2
+    private BeverageType _content;
+
+    // Field 3
+    private int _quantity;
 
     public BaseBeverage() => ItemID = ComputeItemID();
 
     public BaseBeverage(BeverageType type)
     {
-        m_Content = type;
-        m_Quantity = MaxQuantity;
+        _content = type;
+        _quantity = MaxQuantity;
         ItemID = ComputeItemID();
     }
 
@@ -241,7 +253,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
                 return EmptyLabelNumber;
             }
 
-            return BaseLabelNumber + (int)m_Content;
+            return BaseLabelNumber + (int)_content;
         }
     }
 
@@ -255,27 +267,22 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
     public abstract int MaxQuantity { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsEmpty => m_Quantity <= 0;
+    public bool IsEmpty => _quantity <= 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool ContainsAlchohol => !IsEmpty && m_Content != BeverageType.Milk && m_Content != BeverageType.Water;
+    public bool ContainsAlcohol => !IsEmpty && _content is not BeverageType.Milk and not BeverageType.Water;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsFull => m_Quantity >= MaxQuantity;
+    public bool IsFull => _quantity >= MaxQuantity;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Poison Poison { get; set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Poisoner { get; set; }
-
+    [SerializableField(2)]
     [CommandProperty(AccessLevel.GameMaster)]
     public BeverageType Content
     {
-        get => m_Content;
+        get => _content;
         set
         {
-            m_Content = value;
+            _content = value;
 
             InvalidateProperties();
 
@@ -283,6 +290,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
             if (itemID > 0)
             {
+                this.MarkDirty();
                 ItemID = itemID;
             }
             else
@@ -292,13 +300,14 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         }
     }
 
+    [SerializableField(3)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int Quantity
     {
-        get => m_Quantity;
+        get => _quantity;
         set
         {
-            m_Quantity = Math.Clamp(value, 0, MaxQuantity);
+            _quantity = Math.Clamp(value, 0, MaxQuantity);
 
             InvalidateProperties();
 
@@ -307,6 +316,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
             if (itemID > 0)
             {
                 ItemID = itemID;
+                this.MarkDirty();
             }
             else
             {
@@ -319,7 +329,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
     public virtual int GetQuantityDescription()
     {
-        return (m_Quantity * 100 / MaxQuantity) switch
+        return (_quantity * 100 / MaxQuantity) switch
         {
             <= 0  => 1042975,
             <= 33 => 1042974,
@@ -493,9 +503,9 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
                 {
                     var contains = false;
 
-                    for (var i = 0; !contains && i < m_SwampTiles.Length; i += 2)
+                    for (var i = 0; !contains && i < _swampTiles.Length; i += 2)
                     {
-                        contains = tileID >= m_SwampTiles[i] && tileID <= m_SwampTiles[i + 1];
+                        contains = tileID >= _swampTiles[i] && tileID <= _swampTiles[i + 1];
                     }
 
                     if (contains)
@@ -561,7 +571,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
                 from.Thirst += 1;
             }
 
-            if (ContainsAlchohol)
+            if (ContainsAlcohol)
             {
                 var bac = Content switch
                 {
@@ -617,31 +627,28 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
                  component.Addon is WaterVatEast or WaterVatSouth &&
                  Content == BeverageType.Water)
         {
-            if (from is PlayerMobile player)
+            if (from is PlayerMobile { Quest: SolenMatriarchQuest qs })
             {
-                if (player.Quest is SolenMatriarchQuest qs)
+                QuestObjective obj = qs.FindObjective<GatherWaterObjective>();
+
+                if (obj?.Completed == false)
                 {
-                    QuestObjective obj = qs.FindObjective<GatherWaterObjective>();
+                    var vat = component.Addon;
 
-                    if (obj?.Completed == false)
+                    if (vat.X > 5784 && vat.X < 5814 && vat.Y > 1903 && vat.Y < 1934 &&
+                        (qs.RedSolen && vat.Map == Map.Trammel || !qs.RedSolen && vat.Map == Map.Felucca))
                     {
-                        var vat = component.Addon;
-
-                        if (vat.X > 5784 && vat.X < 5814 && vat.Y > 1903 && vat.Y < 1934 &&
-                            (qs.RedSolen && vat.Map == Map.Trammel || !qs.RedSolen && vat.Map == Map.Felucca))
+                        if (obj.CurProgress + Quantity > obj.MaxProgress)
                         {
-                            if (obj.CurProgress + Quantity > obj.MaxProgress)
-                            {
-                                var delta = obj.MaxProgress - obj.CurProgress;
+                            var delta = obj.MaxProgress - obj.CurProgress;
 
-                                Quantity -= delta;
-                                obj.CurProgress = obj.MaxProgress;
-                            }
-                            else
-                            {
-                                obj.CurProgress += Quantity;
-                                Quantity = 0;
-                            }
+                            Quantity -= delta;
+                            obj.CurProgress = obj.MaxProgress;
+                        }
+                        else
+                        {
+                            obj.CurProgress += Quantity;
+                            Quantity = 0;
                         }
                     }
                 }
@@ -721,31 +728,6 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         return false;
     }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(1); // version
-
-        writer.Write(Poisoner);
-        writer.Write(Poison);
-
-        writer.Write((int)m_Content);
-        writer.Write(m_Quantity);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        Poisoner = reader.ReadEntity<Mobile>();
-        Poison = reader.ReadPoison();
-        m_Content = (BeverageType)reader.ReadInt();
-        m_Quantity = reader.ReadInt();
-    }
-
     public static void Initialize()
     {
         EventSink.Login += EventSink_Login;
@@ -784,11 +766,8 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
     {
         private readonly Mobile m_Drunk;
 
-        public HeaveTimer(Mobile drunk)
-            : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
-        {
+        public HeaveTimer(Mobile drunk) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>
             m_Drunk = drunk;
-        }
 
         protected override void OnTick()
         {
