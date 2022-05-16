@@ -242,20 +242,8 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         ItemID = ComputeItemID();
     }
 
-    public override int LabelNumber
-    {
-        get
-        {
-            var num = BaseLabelNumber;
-
-            if (IsEmpty || num == 0)
-            {
-                return EmptyLabelNumber;
-            }
-
-            return BaseLabelNumber + (int)_rawContent;
-        }
-    }
+    public override int LabelNumber =>
+        IsEmpty || BaseLabelNumber == 0 ? EmptyLabelNumber : BaseLabelNumber + (int)_rawContent;
 
     public virtual bool ShowQuantity => MaxQuantity > 1;
     public virtual bool Fillable => true;

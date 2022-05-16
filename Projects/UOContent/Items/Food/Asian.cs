@@ -7,7 +7,6 @@ public partial class Wasabi : Food
 {
     [Constructible]
     public Wasabi() : base(0x24E8) => Weight = 1.0;
-
 }
 
 [SerializationGenerator(0, false)]
@@ -20,10 +19,10 @@ public partial class WasabiClumps : Food
         Weight = 1.0;
         FillFactor = 2;
     }
-
 }
 
-public class EmptyBentoBox : Item
+[SerializationGenerator(0, false)]
+public partial class EmptyBentoBox : Item
 {
     [Constructible]
     public EmptyBentoBox() : base(0x2834) => Weight = 5.0;
@@ -63,7 +62,6 @@ public partial class SushiRolls : Food
         Weight = 3.0;
         FillFactor = 2;
     }
-
 }
 
 [SerializationGenerator(0, false)]
@@ -76,14 +74,13 @@ public partial class SushiPlatter : Food
         Weight = 3.0;
         FillFactor = 2;
     }
-
 }
 
-public class GreenTeaBasket : Item
+[SerializationGenerator(0, false)]
+public partial class GreenTeaBasket : Item
 {
     [Constructible]
     public GreenTeaBasket() : base(0x284B) => Weight = 10.0;
-
 }
 
 [SerializationGenerator(0, false)]
@@ -96,7 +93,6 @@ public partial class GreenTea : Food
         Weight = 4.0;
         FillFactor = 2;
     }
-
 }
 
 [SerializationGenerator(0, false)]
@@ -109,7 +105,6 @@ public partial class MisoSoup : Food
         Weight = 4.0;
         FillFactor = 2;
     }
-
 }
 
 [SerializationGenerator(0, false)]
@@ -122,7 +117,6 @@ public partial class WhiteMisoSoup : Food
         Weight = 4.0;
         FillFactor = 2;
     }
-
 }
 
 [SerializationGenerator(0, false)]
@@ -135,7 +129,6 @@ public partial class RedMisoSoup : Food
         Weight = 4.0;
         FillFactor = 2;
     }
-
 }
 
 [SerializationGenerator(0, false)]
@@ -148,5 +141,4 @@ public partial class AwaseMisoSoup : Food
         Weight = 4.0;
         FillFactor = 2;
     }
-
 }
