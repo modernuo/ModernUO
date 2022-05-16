@@ -508,9 +508,8 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
                     {
                         Delete();
 
-                        player.SendLocalizedMessage(
-                            1055035
-                        ); // You dip the container into the disgusting swamp water, collecting enough for the Hag's vile stew.
+                        // You dip the container into the disgusting swamp water, collecting enough for the Hag's vile stew.
+                        player.SendLocalizedMessage(1055035);
                         obj.Complete();
                     }
                 }
