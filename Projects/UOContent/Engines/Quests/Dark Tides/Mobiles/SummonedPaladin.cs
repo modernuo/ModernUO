@@ -13,7 +13,6 @@ namespace Server.Engines.Quests.Necro
         {
             m_Necromancer = necromancer;
 
-            SetSpeed(0.3, 1.0);
             InitStats(45, 30, 5);
             Title = "the Paladin";
 

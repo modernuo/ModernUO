@@ -10,7 +10,6 @@ namespace Server.Mobiles
             Body = 0x33;
             Hue = 0x4001;
 
-            SetSpeed(0.3, 1.0);
             SetStr(150);
             SetDex(150);
             SetInt(100);

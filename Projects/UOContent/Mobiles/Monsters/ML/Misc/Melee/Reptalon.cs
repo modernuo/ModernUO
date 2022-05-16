@@ -9,8 +9,6 @@ namespace Server.Mobiles
         {
             BaseSoundID = 0x16A;
 
-            SetSpeed(0.25, 0.55);
-
             SetStr(1001, 1025);
             SetDex(152, 164);
             SetInt(251, 289);

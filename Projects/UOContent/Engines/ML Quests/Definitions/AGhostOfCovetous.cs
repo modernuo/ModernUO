@@ -96,8 +96,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Ben : BaseCreature
     {
         [Constructible]
-        public Ben()
-            : base(AIType.AI_Vendor, FightMode.None, 2)
+        public Ben() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Apprentice Necromancer";
             Body = 0x190;

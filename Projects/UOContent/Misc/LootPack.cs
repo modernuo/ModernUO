@@ -1092,7 +1092,7 @@ namespace Server
                 return;
             }
 
-            Count = Utility.ToInt32(str.Substring(start, index));
+            Count = Utility.ToInt32(str.AsSpan(start, index));
 
             start = index + 1;
             index = str.IndexOf('+', start);
@@ -1109,7 +1109,7 @@ namespace Server
                 index = str.Length;
             }
 
-            Sides = Utility.ToInt32(str.Substring(start, index - start));
+            Sides = Utility.ToInt32(str.AsSpan(start, index - start));
 
             if (index == str.Length)
             {
@@ -1119,7 +1119,7 @@ namespace Server
             start = index + 1;
             index = str.Length;
 
-            Bonus = Utility.ToInt32(str.Substring(start, index - start));
+            Bonus = Utility.ToInt32(str.AsSpan(start, index - start));
 
             if (negative)
             {

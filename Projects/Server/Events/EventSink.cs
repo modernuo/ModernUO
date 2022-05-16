@@ -64,6 +64,9 @@ namespace Server
         public static event Action<Mobile> Connected;
         public static void InvokeConnected(Mobile m) => Connected?.Invoke(m);
 
+        public static event Action<Mobile> BeforeDisconnected;
+        public static void InvokeBeforeDisconnected(Mobile m) => BeforeDisconnected?.Invoke(m);
+
         public static event Action<Mobile> Disconnected;
         public static void InvokeDisconnected(Mobile m) => Disconnected?.Invoke(m);
 

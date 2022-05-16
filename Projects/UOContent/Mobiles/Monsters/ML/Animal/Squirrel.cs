@@ -7,7 +7,6 @@ namespace Server.Mobiles
         {
             Body = 0x116;
 
-            SetSpeed(0.3, 1.0);
             SetStr(44, 50);
             SetDex(35);
             SetInt(5);

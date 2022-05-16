@@ -278,7 +278,6 @@ namespace Server.Engines.Events
 
         public NaughtyTwin(Mobile from) : base(AIType.AI_Melee, FightMode.None)
         {
-            SetSpeed(0.3, 1.0);
             if (TrickOrTreat.CheckMobile(from))
             {
                 Body = from.Body;

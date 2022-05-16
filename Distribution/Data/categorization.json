@@ -3337,7 +3337,6 @@
       { "type": "DiseasedCat" },
       { "type": "Doppleganger" },
       { "type": "Drithen" },
-      { "type": "DummyThief" },
       { "type": "Efreet" },
       { "type": "ElderAbbein" },
       { "type": "ElderAcob" },
@@ -3628,19 +3627,6 @@
       { "type": "DeepSeaSerpent" },
       { "type": "Dolphin" },
       { "type": "SeaSerpent" }
-    ]
-  },
-  {
-    "category": "Mobiles.Dummies",
-    "objects": [
-      { "type": "DummyAssassin" },
-      { "type": "DummyFence" },
-      { "type": "DummyHealer" },
-      { "type": "DummyMace" },
-      { "type": "DummyNox" },
-      { "type": "DummyStun" },
-      { "type": "DummySuper" },
-      { "type": "DummySword" }
     ]
   },
   {

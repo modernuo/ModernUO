@@ -654,7 +654,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x47D;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -719,7 +719,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -776,7 +776,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -855,7 +855,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairHue = 0x47D;
             Female = true;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -939,7 +939,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1021,7 +1021,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x44E;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1086,7 +1086,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x8A7;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1146,7 +1146,7 @@ namespace Server.Engines.MLQuests.Definitions
             Hue = 0x8374;
             HairItemID = 0;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1228,7 +1228,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x457;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1284,7 +1284,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1367,7 +1367,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1424,7 +1424,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x47D;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1480,7 +1480,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1542,7 +1542,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x46C;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.ArmsLore, 120.0);
@@ -1604,7 +1604,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x203E;
             FacialHairHue = 0x477;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1662,7 +1662,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x477;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1720,7 +1720,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x456;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1848,7 +1848,7 @@ namespace Server.Engines.MLQuests.Definitions
             Title = "the Hiding Instructor";
             Body = 0xF7;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Hiding, 120.0);
@@ -1900,7 +1900,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Hiding, 120.0);
@@ -1962,7 +1962,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204B;
             FacialHairHue = 0x47D;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Hiding, 120.0);
@@ -2100,7 +2100,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x457;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Magery, 120.0);
@@ -2180,7 +2180,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x455;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Magery, 120.0);
@@ -2240,7 +2240,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x44E;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.ArmsLore, 120.0);
@@ -2301,7 +2301,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x47B;
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.ArmsLore, 120.0);
