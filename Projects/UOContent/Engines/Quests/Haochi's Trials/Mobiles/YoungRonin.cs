@@ -8,7 +8,6 @@ namespace Server.Engines.Quests.Samurai
         [Constructible]
         public YoungRonin() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
-            SetSpeed(0.3, 1.0);
             InitStats(45, 30, 5);
             SetHits(10, 20);
 

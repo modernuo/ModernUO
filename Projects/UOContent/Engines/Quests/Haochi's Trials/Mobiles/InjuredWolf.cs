@@ -12,7 +12,6 @@ namespace Server.Engines.Quests.Samurai
 
             Hue = Utility.RandomAnimalHue();
 
-            SetSpeed(0.3, 1.0);
             SetStr(10, 20);
             SetDex(45, 65);
             SetInt(10, 15);
