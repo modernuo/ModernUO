@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "type": "Server.Items.BaseBeverage",
+  "properties": [
+    {
+      "name": "Poison",
+      "type": "Server.Poison",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Poison"
+      ]
+    },
+    {
+      "name": "Poisoner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "RawContent",
+      "type": "Server.Items.BeverageType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "RawQuantity",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
