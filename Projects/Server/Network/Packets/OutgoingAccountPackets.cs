@@ -564,8 +564,6 @@ public static class OutgoingAccountPackets
         */
     public static void KRDropConfirm(this NetState ns)
     {
-        var writer = new SpanWriter(stackalloc byte[1]);
-        writer.Write((byte)0x29);
-        ns.Send(writer.Span);
+        ns?.Send(stackalloc byte[] { 0x29 });
     }
 }

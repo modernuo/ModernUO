@@ -194,7 +194,7 @@ public static class IncomingAccountPackets
 
         int length = packetLength;
 
-        int unk1 = reader.ReadInt32(); // Pattern
+        int unk1 = reader.ReadInt32(); // 0xEDEDEDED
         int charSlot = reader.ReadInt32();
         var name = reader.ReadAscii(30);
         reader.Seek(30, SeekOrigin.Current); // Password
@@ -242,8 +242,8 @@ public static class IncomingAccountPackets
         int beardHue = reader.ReadInt16();
         int beardID = reader.ReadInt16();
 
-        int cityIndex = 0; // Obsolete
-        int pantsHue = shirtHue; // Obsolete
+        int cityIndex = 0;
+        int pantsHue = shirtHue;
         var female = gender != 0;
 
         var race = Race.Races[genderRace - 1] ?? Race.DefaultRace; //SA client sends race packet one higher than KR, so this is neccesary

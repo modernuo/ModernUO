@@ -35,6 +35,18 @@ namespace Server.Network
         public static ProtocolChanges ProtocolChangesByVersion(ClientVersion version) =>
             version switch
             {
+                var v when v >= ClientVersion.Version670061 => ProtocolChanges.Version70610,  //EC 4.0.61.1
+                var v when v >= ClientVersion.Version670050 => ProtocolChanges.Version70500,  //EC 4.0.50.0
+                var v when v >= ClientVersion.Version670045 => ProtocolChanges.Version704565, //EC 4.0.45.0
+                var v when v >= ClientVersion.Version670033 => ProtocolChanges.Version70331,  //EC 4.0.33.0
+                var v when v >= ClientVersion.Version670030 => ProtocolChanges.Version70300,  //EC 4.0.30.0
+                var v when v >= ClientVersion.Version670016 => ProtocolChanges.Version70160,  //EC 4.0.16.0
+                var v when v >= ClientVersion.Version670013 => ProtocolChanges.Version70130,  //EC 4.0.13.1
+                var v when v >= ClientVersion.Version670009 => ProtocolChanges.Version7090,   //EC 4.0.9.0
+                var v when v >= ClientVersion.Version670000 => ProtocolChanges.Version7000,   //EC 4.0.0.2 (First release)
+                var v when v >= ClientVersion.Version665553 => ProtocolChanges.Version60142,  //KR 2.59.0.2
+                var v when v >= ClientVersion.Version665539 => ProtocolChanges.Version6017,   //KR 2.45.0.4
+                var v when v >= ClientVersion.Version665538 => ProtocolChanges.Version6000,   //KR 2.44.0.15 (First release)
                 var v when v >= ClientVersion.Version70610  => ProtocolChanges.Version70610,
                 var v when v >= ClientVersion.Version70500  => ProtocolChanges.Version70500,
                 var v when v >= ClientVersion.Version704565 => ProtocolChanges.Version704565,

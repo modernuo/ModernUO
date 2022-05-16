@@ -651,7 +651,6 @@ public partial class NetState : IComparable<NetState>
                             {
                                 if (packetId == 0xE4)
                                 {
-                                    Console.WriteLine("<---- Kr Ack Packet Received 0xE4");
                                     _parserState = ParserState.ProcessingPacket;
                                     _parserState = HandlePacket(packetReader, packetId, out packetLength);
                                     _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
@@ -686,7 +685,7 @@ public partial class NetState : IComparable<NetState>
 
                                 _parserState = ParserState.ProcessingPacket;
                                 _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                  if (_parserState == ParserState.AwaitingNextPacket)
+                                if (_parserState == ParserState.AwaitingNextPacket)
                                 {
                                     _protocolState = ProtocolState.LoginServer_ServerSelectAck; //Makes no sense to me since will disconnect and new NetState constructor sets ProtocolState to AwaitingSeed.
                                     Disconnect(string.Empty);
