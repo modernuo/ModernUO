@@ -138,9 +138,9 @@ namespace Server
         public void Write(BitArray bitArray)
         {
             var byteLength = BitArray.GetByteArrayLengthFromBitLength(bitArray.Length);
-            FlushIfNeeded(byteLength + 4);
 
-            ((IGenericWriter)this).WriteEncodedInt(byteLength);
+            ((IGenericWriter)this).WriteEncodedInt(bitArray.Length);
+            FlushIfNeeded(byteLength);
             bitArray.CopyTo(_buffer.AsSpan((int)Index, byteLength));
             Index += byteLength;
         }
