@@ -10,6 +10,5 @@
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
-        <PackageReference Update="Serilog" Version="2.11.0" />
     </ItemGroup>
 </Project>
