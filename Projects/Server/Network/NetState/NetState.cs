@@ -516,9 +516,6 @@ public partial class NetState : IComparable<NetState>
         }
         catch (Exception ex)
         {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
             TraceException(ex);
             Disconnect("Exception while sending.");
         }
@@ -861,18 +858,14 @@ public partial class NetState : IComparable<NetState>
         }
         catch (SocketException ex)
         {
-            // Socket exceptions are generally ok, just spammy
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
-
-            Disconnect(string.Empty);
+            if (ex.SocketErrorCode != SocketError.WouldBlock)
+            {
+                logger.Debug(ex, "Disconnected due to socket exception");
+                Disconnect(string.Empty);
+            }
         }
         catch (Exception ex)
         {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
             Disconnect($"Disconnected with error: {ex}");
             TraceException(ex);
         }
@@ -910,19 +903,15 @@ public partial class NetState : IComparable<NetState>
         }
         catch (SocketException ex)
         {
-#if DEBUG
-                if (ex.ErrorCode != 54 && ex.ErrorCode != 89 && ex.ErrorCode != 995)
-                {
-                    Console.WriteLine(ex);
-                }
-#endif
+            if (ex.ErrorCode is not 54 and not 89 and not 995)
+            {
+                logger.Debug(ex, "Disconnected due to a socket exception");
+            }
+
             Disconnect(string.Empty);
         }
         catch (Exception ex)
         {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
             Disconnect($"Disconnected with error: {ex}");
             TraceException(ex);
         }
