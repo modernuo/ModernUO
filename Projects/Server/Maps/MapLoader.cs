@@ -70,9 +70,7 @@ namespace Server
                 }
                 catch (Exception ex)
                 {
-#if DEBUG
-                    Console.WriteLine(ex);
-#endif
+                    logger.Debug(ex, "Failed to load map definition {MapDefName} ({MapDefId})", def.Name, def.Id);
                     failures.Add($"\tInvalid map definition {def.Name} ({def.Id})");
                 }
             }

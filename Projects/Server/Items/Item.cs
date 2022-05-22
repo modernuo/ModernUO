@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
+using Server.Logging;
 using Server.Network;
 using Server.Targeting;
 
@@ -177,6 +178,8 @@ namespace Server
 
     public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
+
         public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
         public static readonly List<Item> EmptyItems = new();
         private static readonly Queue<Item> m_DeltaQueue = new();
@@ -3277,9 +3280,7 @@ namespace Server
                 }
                 catch (Exception ex)
                 {
-#if DEBUG
-                    Console.WriteLine("Process Delta Queue for {0} failed: {1}", item, ex);
-#endif
+                    logger.Debug(ex, "Process Delta Queue for {Item} failed", item);
                 }
             }
 

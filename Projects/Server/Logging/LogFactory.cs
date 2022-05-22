@@ -1,6 +1,6 @@
 ﻿/*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: LogFactory.cs                                                   *
  *                                                                       *
@@ -16,16 +16,18 @@
 using System;
 using Serilog;
 
-namespace Server.Logging
-{
-    public static class LogFactory
-    {
-        private static readonly Serilog.ILogger serilogLogger = new LoggerConfiguration()
-            .WriteTo.Async(a => a.Console(
-                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
-            ))
-            .CreateLogger();
+namespace Server.Logging;
 
-        public static ILogger GetLogger(Type declaringType) => new SerilogLogger(serilogLogger.ForContext(declaringType));
-    }
+public static class LogFactory
+{
+    private static readonly Serilog.ILogger serilogLogger = new LoggerConfiguration()
+        .WriteTo.Async(a => a.Console(
+            outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
+        ))
+#if DEBUG
+        .MinimumLevel.Debug()
+#endif
+        .CreateLogger();
+
+    public static ILogger GetLogger(Type declaringType) => new SerilogLogger(serilogLogger.ForContext(declaringType));
 }
