@@ -7908,9 +7908,7 @@ namespace Server
                 }
                 catch (Exception ex)
                 {
-#if DEBUG
-                    Console.WriteLine("Process Delta Queue for {0} failed: {1}", mob, ex);
-#endif
+                    logger.Debug(ex, "Process Delta Queue for {Mobile} failed", mob);
                 }
             }
 
