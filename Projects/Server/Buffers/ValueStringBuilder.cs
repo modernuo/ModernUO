@@ -3,6 +3,7 @@
 
 #nullable enable
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,35 +14,45 @@ public ref struct ValueStringBuilder
     private char[] _arrayToReturnToPool;
     private Span<char> _chars;
     private int _length;
+    private bool _mt;
 
-    public ValueStringBuilder() : this(64)
+    private ArrayPool<char> ArrayPool
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _mt ? ArrayPool<char>.Shared : STArrayPool<char>.Shared;
+    }
+
+    public ValueStringBuilder(bool mt = false) : this(64, mt)
     {
     }
 
     // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
-    public ValueStringBuilder(ReadOnlySpan<char> initialString) : this(initialString.Length)
+    public ValueStringBuilder(ReadOnlySpan<char> initialString, bool mt = false) : this(initialString.Length, mt)
     {
         Append(initialString);
     }
 
-    public ValueStringBuilder(ReadOnlySpan<char> initialString, Span<char> initialBuffer) : this(initialBuffer)
+    public ValueStringBuilder(ReadOnlySpan<char> initialString, Span<char> initialBuffer, bool mt = false) : this(initialBuffer, mt)
     {
         Append(initialString);
     }
 
-    public ValueStringBuilder(Span<char> initialBuffer)
+    public ValueStringBuilder(Span<char> initialBuffer, bool mt = false)
     {
+        _mt = mt;
         _arrayToReturnToPool = null;
         _chars = initialBuffer;
         _length = 0;
     }
 
     // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
-    public ValueStringBuilder(int initialCapacity)
+    public ValueStringBuilder(int initialCapacity, bool mt = false)
     {
-        _arrayToReturnToPool = STArrayPool<char>.Shared.Rent(initialCapacity);
+        _mt = mt;
+        _arrayToReturnToPool = null;
         _chars = _arrayToReturnToPool;
         _length = 0;
+        _arrayToReturnToPool = ArrayPool.Rent(initialCapacity);
     }
 
     public int Length => _length;
@@ -319,7 +330,7 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void Grow(int additionalCapacityBeyondPos)
     {
-        char[] poolArray = STArrayPool<char>.Shared.Rent(Math.Max(_length + additionalCapacityBeyondPos, _chars.Length * 2));
+        char[] poolArray = ArrayPool.Rent(Math.Max(_length + additionalCapacityBeyondPos, _chars.Length * 2));
 
         _chars[.._length].CopyTo(poolArray);
 
@@ -327,7 +338,7 @@ public ref struct ValueStringBuilder
         _chars = _arrayToReturnToPool = poolArray;
         if (toReturn != null)
         {
-            STArrayPool<char>.Shared.Return(toReturn);
+            ArrayPool.Return(toReturn);
         }
     }
 
@@ -338,7 +349,7 @@ public ref struct ValueStringBuilder
         this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
         if (toReturn != null)
         {
-            STArrayPool<char>.Shared.Return(toReturn);
+            ArrayPool.Return(toReturn);
         }
     }
 #nullable restore

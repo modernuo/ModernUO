@@ -607,7 +607,7 @@ namespace Server
                 Interlocked.Increment(ref _mobileCount);
             }
 
-            ValueStringBuilder errors = new ValueStringBuilder();
+            ValueStringBuilder errors = new ValueStringBuilder(true);
 
             try
             {
