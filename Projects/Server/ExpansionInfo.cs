@@ -47,7 +47,7 @@ namespace Server
         Malas = 0x00000008,
         Tokuno = 0x00000010,
         TerMur = 0x00000020,
-        Unk1 = 0x00000040,
+        KR = 0x00000040,
         Unk2 = 0x00000080,
         UOTD = 0x00000100
     }
