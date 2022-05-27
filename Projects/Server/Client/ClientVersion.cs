@@ -17,26 +17,21 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Buffers;
+using Server.Network;
 
 namespace Server;
 
-public enum ClientType
-{
-    Regular,
-    UOTD,
-    SA,
-    KR
-}
-
-public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
+public record ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
 {
     public static readonly ClientVersion Version400a = new("4.0.0a");
     public static readonly ClientVersion Version407a = new("4.0.7a");
     public static readonly ClientVersion Version500a = new("5.0.0a");
     public static readonly ClientVersion Version502b = new("5.0.2b");
     public static readonly ClientVersion Version6000 = new("6.0.0.0");
+    public static readonly ClientVersion Version6000KR = new("66.55.38"); // KR 2.44.0.15 (First release)
     public static readonly ClientVersion Version6017 = new("6.0.1.7");
     public static readonly ClientVersion Version60142 = new("6.0.14.2");
+    public static readonly ClientVersion Version60142KR = new("66.55.53"); // KR 2.59.0.2
     public static readonly ClientVersion Version7000 = new("7.0.0.0");
     public static readonly ClientVersion Version7090 = new("7.0.9.0");
     public static readonly ClientVersion Version70130 = new("7.0.13.0");
@@ -46,33 +41,16 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
     public static readonly ClientVersion Version704565 = new("7.0.45.65");
     public static readonly ClientVersion Version70500 = new("7.0.50.0");
     public static readonly ClientVersion Version70610 = new("7.0.61.0");
-    public static readonly ClientVersion Version665538 = new("66.55.38"); //KR 2.44.0.15 (Frist release)
-    public static readonly ClientVersion Version665539 = new("66.55.39"); //KR 2.45.0.4
-    public static readonly ClientVersion Version665553 = new("66.55.53"); //KR 2.59.0.2
-    public static readonly ClientVersion Version670000 = new("67.00.00"); //EC 4.0.0.2 (First release)
-    public static readonly ClientVersion Version670009 = new("67.00.09"); //EC 4.0.9.0
-    public static readonly ClientVersion Version670013 = new("67.00.13"); //EC 4.0.13.1
-    public static readonly ClientVersion Version670016 = new("67.00.16"); //EC 4.0.16.0
-    public static readonly ClientVersion Version670030 = new("67.00.30"); //EC 4.0.30.0
-    public static readonly ClientVersion Version670033 = new("67.00.33"); //EC 4.0.33.0
-    public static readonly ClientVersion Version670045 = new("67.00.45"); //EC 4.0.45.0
-    public static readonly ClientVersion Version670050 = new("67.00.50"); //EC 4.0.50.0
-    public static readonly ClientVersion Version670061 = new("67.00.61"); //EC 4.0.61.1
+    public static readonly ClientVersion Version70654 = new("7.0.65.4"); // Insufficient mana change
 
-    public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
+    public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Classic)
     {
-        Major = maj;
+        Major = type == ClientType.SA && maj > 60 ? maj - 60 : maj;
         Minor = min;
         Revision = rev;
         Patch = pat;
         Type = type;
 
-        Type = maj switch
-        {
-            66 => ClientType.KR,
-            67 => ClientType.SA,
-            _ => Type
-        };
         SourceString = Utility.Intern(ToStringImpl());
     }
 
@@ -111,17 +89,23 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                 }
             }
 
-            Type = Major switch
+            if (Major == 66)
             {
-                66 => ClientType.KR,
-                67 => ClientType.SA,
-                _ when fmt.InsensitiveContains("third dawn") ||
-                       fmt.InsensitiveContains("uo:td") ||
-                       fmt.InsensitiveContains("uotd") ||
-                       fmt.InsensitiveContains("uo3d") ||
-                       fmt.InsensitiveContains("uo:3d") => ClientType.UOTD,
-                _ => ClientType.Regular
-            };
+                Type = ClientType.KR;
+            }
+            else if (Major > 66)
+            {
+                Major -= 60;
+                Type = ClientType.SA;
+            }
+            else if (fmt.InsensitiveContains("third dawn") ||
+                     fmt.InsensitiveContains("uo:td") ||
+                     fmt.InsensitiveContains("uotd") ||
+                     fmt.InsensitiveContains("uo3d") ||
+                     fmt.InsensitiveContains("uo:3d"))
+            {
+                Type = ClientType.UOTD;
+            }
         }
         catch
         {
@@ -129,7 +113,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
             Minor = 0;
             Revision = 0;
             Patch = 0;
-            Type = ClientType.Regular;
+            Type = ClientType.Classic;
         }
     }
 
@@ -182,6 +166,12 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
             return -1;
         }
 
+        // Don't test patch for EC since it is always 0 but compatible with classic non-zero
+        if (Type == ClientType.SA || o.Type == ClientType.SA)
+        {
+            return 0;
+        }
+
         if (Patch > o.Patch)
         {
             return 1;
@@ -197,10 +187,6 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y) => Compare(x, y);
 
-    public static bool operator ==(ClientVersion l, ClientVersion r) => Compare(l, r) == 0;
-
-    public static bool operator !=(ClientVersion l, ClientVersion r) => Compare(l, r) != 0;
-
     public static bool operator >=(ClientVersion l, ClientVersion r) => Compare(l, r) >= 0;
 
     public static bool operator >(ClientVersion l, ClientVersion r) => Compare(l, r) > 0;
@@ -209,25 +195,15 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     public static bool operator <(ClientVersion l, ClientVersion r) => Compare(l, r) < 0;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override int GetHashCode() => HashCode.Combine(Major, Minor, Revision, Patch, Type);
-
-    public override bool Equals(object obj)
-    {
-        var v = obj as ClientVersion;
-
-        return Major == v?.Major
-               && Minor == v.Minor
-               && Revision == v.Revision
-               && Patch == v.Patch
-               && Type == v.Type;
-    }
-
     private string ToStringImpl()
     {
         using var builder = new ValueStringBuilder(stackalloc char[32]);
 
-        if (Major > 5 || Minor > 0 || Revision > 6)
+        if (Type == ClientType.SA)
+        {
+            builder.Append($"{Major + 60:00}.{Minor:00}.{Revision:00}");
+        }
+        else if (Major > 5 || Minor > 0 || Revision > 6)
         {
             builder.Append($"{Major}.{Minor}.{Revision}.{Patch}");
         }
@@ -270,5 +246,32 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
         }
 
         return a.CompareTo(b);
+    }
+
+    public ProtocolChanges ProtocolChanges
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => this switch
+        {
+            var v when v.Type is ClientType.KR && v >= Version60142KR => ProtocolChanges.Version60142,
+            var v when v.Type is ClientType.KR                        => ProtocolChanges.Version6000,
+            var v when v >= Version70610                              => ProtocolChanges.Version70610,
+            var v when v >= Version70500                              => ProtocolChanges.Version70500,
+            var v when v >= Version704565                             => ProtocolChanges.Version704565,
+            var v when v >= Version70331                              => ProtocolChanges.Version70331,
+            var v when v >= Version70300                              => ProtocolChanges.Version70300,
+            var v when v >= Version70160                              => ProtocolChanges.Version70160,
+            var v when v >= Version70130                              => ProtocolChanges.Version70130,
+            var v when v >= Version7090                               => ProtocolChanges.Version7090,
+            var v when v >= Version7000                               => ProtocolChanges.Version7000,
+            var v when v >= Version60142                              => ProtocolChanges.Version60142,
+            var v when v >= Version6017                               => ProtocolChanges.Version6017,
+            var v when v >= Version6000                               => ProtocolChanges.Version6000,
+            var v when v >= Version502b                               => ProtocolChanges.Version502b,
+            var v when v >= Version500a                               => ProtocolChanges.Version500a,
+            var v when v >= Version407a                               => ProtocolChanges.Version407a,
+            var v when v >= Version400a                               => ProtocolChanges.Version400a,
+            _                                                         => ProtocolChanges.None
+        };
     }
 }

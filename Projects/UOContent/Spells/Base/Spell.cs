@@ -459,8 +459,6 @@ namespace Server.Spells
             }
         }
 
-        private static ClientVersion _insufficientManaClientChange = new ClientVersion("7.0.65.4");
-
         public bool Cast()
         {
             StartCastTime = Core.TickCount;
@@ -579,7 +577,7 @@ namespace Server.Spells
                         return true;
                     }
                 }
-                else if (Caster.NetState?.Version >= _insufficientManaClientChange)
+                else if (Caster.NetState?.Version >= ClientVersion.Version70654)
                 {
                     // Insufficient mana. You must have at least ~1_MANA_REQUIREMENT~ Mana to use this spell.
                     Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625, requiredMana.ToString());

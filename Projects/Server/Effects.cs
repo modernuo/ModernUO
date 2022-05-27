@@ -59,7 +59,7 @@ namespace Server
 
         public static bool SendParticlesTo(NetState state) =>
             ParticleSupportType == ParticleSupportType.Full ||
-            ParticleSupportType == ParticleSupportType.Detect && state.IsUOTDClient;
+            ParticleSupportType == ParticleSupportType.Detect && state.IsEnhancedClient;
 
         public static void PlaySound(IEntity e, int soundID) => PlaySound(e.Location, e.Map, soundID);
 
