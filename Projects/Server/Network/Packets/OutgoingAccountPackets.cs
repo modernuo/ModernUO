@@ -377,6 +377,11 @@ public static class OutgoingAccountPackets
                      CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
         }
 
+        if (ns.IsEnhancedClient)
+        {
+            flags |= CharacterListFlags.KR | CharacterListFlags.UO3DClientType;
+        }
+
         writer.Write((int)flags);
         if (client70130)
         {

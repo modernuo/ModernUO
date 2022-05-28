@@ -433,8 +433,8 @@ public static class OutgoingMobilePackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
-        CreateMobileStatus(buffer, m, 0, canBeRenamed);
+    public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed, bool enhanced) =>
+        CreateMobileStatus(buffer, m, 0, canBeRenamed, enhanced);
 
     public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
     {
@@ -444,7 +444,7 @@ public static class OutgoingMobilePackets
         }
 
         Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
-        CreateMobileStatusCompact(buffer, m, canBeRenamed);
+        CreateMobileStatusCompact(buffer, m, canBeRenamed, ns.IsEnhancedClient);
 
         ns.Send(buffer);
     }
@@ -489,11 +489,11 @@ public static class OutgoingMobilePackets
         }
 
         Span<byte> buffer = stackalloc byte[length];
-        CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder));
+        CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder), ns.IsEnhancedClient);
         ns.Send(buffer);
     }
 
-    public static void CreateMobileStatus(Span<byte> buffer, Mobile beheld, int version, bool canBeRenamed)
+    public static void CreateMobileStatus(Span<byte> buffer, Mobile beheld, int version, bool canBeRenamed, bool enhanced)
     {
         if (buffer[0] != 0)
         {
@@ -563,7 +563,8 @@ public static class OutgoingMobilePackets
 
         if (version >= 6)
         {
-            for (var i = 0; i < 15; ++i)
+            var count = enhanced ? 29 : 15;
+            for (var i = 0; i < count; ++i)
             {
                 writer.Write((short)beheld.GetAOSStatus(i));
             }

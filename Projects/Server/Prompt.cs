@@ -64,7 +64,7 @@ public abstract class Prompt
     }
 
     public class PromptGump : Gump
-    {g
+    {
         public override int TypeID => 0x2AE;
 
         public PromptGump(Prompt prompt, Mobile to) : base(0, 0)
