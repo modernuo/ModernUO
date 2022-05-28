@@ -197,10 +197,12 @@ public static class IncomingAccountPackets
         int unk1 = reader.ReadInt32(); // 0xEDEDEDED
         int charSlot = reader.ReadInt32();
         var name = reader.ReadAscii(30);
-        reader.Seek(30, SeekOrigin.Current); // Password
+        reader.Seek(30, SeekOrigin.Current); // Password "Unknown"
 
         int profession = reader.ReadByte();
-        int clientFlags = reader.ReadByte();
+        int cityIndex = reader.ReadByte();
+        // KR Clients send ClientFlags & CityIndex together
+        cityIndex &= ~0x40;
 
         int gender = reader.ReadByte();
         int genderRace = reader.ReadByte();
@@ -225,31 +227,30 @@ public static class IncomingAccountPackets
             skills[3] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
         }
 
-        reader.Seek(26, SeekOrigin.Current); // Pack of 0x00
+        reader.Seek(25, SeekOrigin.Current);
+        reader.ReadByte(); // 0xB
 
         int hairHue = reader.ReadInt16();
         int hairID = reader.ReadInt16();
 
-        int unk8 = reader.ReadByte();
+        int unk8 = reader.ReadByte(); // 0xC
         int unk9 = reader.ReadInt32();
-        int unk10 = reader.ReadByte();
+        int unk10 = reader.ReadByte(); // 0xD
         int shirtHue = reader.ReadInt16();
         int shirtID = reader.ReadInt16();
-        int unk13 = reader.ReadByte();
+        int unk13 = reader.ReadByte(); // 0xF
         int faceColor = reader.ReadInt16();
         int faceID = reader.ReadInt16();
-        int unk14 = reader.ReadByte();
+        int unk14 = reader.ReadByte(); // 0x10
         int beardHue = reader.ReadInt16();
         int beardID = reader.ReadInt16();
 
         var female = gender != 0;
 
-        var race = Race.Races[genderRace - 1] ?? Race.DefaultRace; //SA client sends race packet one higher than KR, so this is neccesary
+        var race = Race.Races[genderRace - 1] ?? Race.DefaultRace; // SA client sends race packet one higher than KR, so this is neccesary
 
         CityInfo[] info = state.CityInfo;
         var a = state.Account;
-
-        int cityIndex = clientFlags < 0x40 ? clientFlags : 0;
 
         if (info == null || a == null || cityIndex >= info.Length)
         {
@@ -269,7 +270,7 @@ public static class IncomingAccountPackets
             }
         }
 
-        state.Flags = (ClientFlags)clientFlags;
+        state.Flags = (ClientFlags)0xFF;
 
         var args = new CharacterCreatedEventArgs(
             state,
