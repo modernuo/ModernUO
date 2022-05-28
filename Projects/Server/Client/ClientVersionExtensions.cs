@@ -35,9 +35,9 @@ public static class ClientVersionExtensions
     public static string TypeName(this ClientType type) =>
         type switch
         {
-            ClientType.Classic => "classic",
             ClientType.UOTD    => "UO:TD",
             ClientType.KR      => "UO:KR",
             ClientType.SA      => "UO:SA",
+            _ => "classic",
         };
 }
