@@ -612,15 +612,6 @@ public partial class NetState : IComparable<NetState>
                                         _protocolState = ProtocolState.LoginServer_AwaitingLogin;
                                     }
                                 }
-                                else if (packetId == 0xFF)
-                                {
-                                    _parserState = ParserState.ProcessingPacket;
-                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                    if (_parserState == ParserState.AwaitingNextPacket)
-                                    {
-                                        _protocolState = ProtocolState.LoginServer_AwaitingECAck;
-                                    }
-                                }
                                 else if (length >= 4)
                                 {
                                     int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
@@ -632,6 +623,18 @@ public partial class NetState : IComparable<NetState>
 
                                     _seed = seed;
                                     packetLength = 4;
+
+                                    if (packetId == 0xFF)
+                                    {
+                                        _parserState = ParserState.ProcessingPacket;
+                                        _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                        if (_parserState == ParserState.AwaitingNextPacket)
+                                        {
+                                            _protocolState = ProtocolState.LoginServer_AwaitingECAck;
+                                            break;
+                                        }
+                                    }
+
                                     _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                 }
