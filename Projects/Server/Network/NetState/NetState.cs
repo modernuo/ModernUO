@@ -91,7 +91,7 @@ public partial class NetState : IComparable<NetState>
         LoginServer_AwaitingLogin,
         LoginServer_AwaitingServerSelect,
         LoginServer_ServerSelectAck,
-        LoginServer_AwaitingKrAck,
+        LoginServer_AwaitingECAck,
         GameServer_AwaitingGameServerLogin,
         GameServer_LoggedIn,
 
@@ -612,6 +612,15 @@ public partial class NetState : IComparable<NetState>
                                         _protocolState = ProtocolState.LoginServer_AwaitingLogin;
                                     }
                                 }
+                                else if (packetId == 0xFF)
+                                {
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                    if (_parserState == ParserState.AwaitingNextPacket)
+                                    {
+                                        _protocolState = ProtocolState.LoginServer_AwaitingECAck;
+                                    }
+                                }
                                 else if (length >= 4)
                                 {
                                     int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
@@ -620,38 +629,31 @@ public partial class NetState : IComparable<NetState>
                                         HandleError(0, 0);
                                         return;
                                     }
+
                                     _seed = seed;
                                     packetLength = 4;
                                     _parserState = ParserState.AwaitingNextPacket;
-                                    if (packetId == 0xFF)
-                                    {
-                                        _parserState = ParserState.ProcessingPacket;
-                                        _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                        if (_parserState == ParserState.AwaitingNextPacket)
-                                        {
-                                            _protocolState = ProtocolState.LoginServer_AwaitingKrAck;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
-                                    }
+                                    _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                 }
                                 else
                                 {
                                     _parserState = ParserState.AwaitingPartialPacket;
                                 }
-                            break;
+                                break;
                             }
 
-                        case ProtocolState.LoginServer_AwaitingKrAck:
+                        case ProtocolState.LoginServer_AwaitingECAck:
                             {
-                                if (packetId == 0xE4)
+                                if (packetId != 0xE4)
                                 {
-                                    _parserState = ParserState.ProcessingPacket;
-                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                    _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    LogInfo("Possible encrypted client detected, disconnecting...");
+                                    HandleError(packetId, packetLength);
+                                    return;
                                 }
+
+                                _parserState = ParserState.ProcessingPacket;
+                                _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                 break;
                             }
                         case ProtocolState.LoginServer_AwaitingLogin:
