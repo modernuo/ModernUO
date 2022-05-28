@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Server.Buffers;
 using CV = Server.ClientVersion;
 
 namespace Server.Network;
@@ -201,7 +200,7 @@ public static class IncomingAccountPackets
 
         int profession = reader.ReadByte();
         int cityIndex = reader.ReadByte();
-        // KR Clients send ClientFlags & CityIndex together
+        // KR Clients send ClientFlags instead of city index
         cityIndex &= ~0x40;
 
         int gender = reader.ReadByte();

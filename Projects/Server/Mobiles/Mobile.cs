@@ -2011,7 +2011,7 @@ namespace Server
                 }
 
                 m_Prompt = newPrompt;
-                NetState.SendPrompt(newPrompt);
+                newPrompt.SendTo(this);
             }
         }
 
