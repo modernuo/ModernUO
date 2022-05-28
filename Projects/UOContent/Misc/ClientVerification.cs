@@ -81,7 +81,7 @@ namespace Server.Misc
 
         private static void EventSink_ClientVersionReceived(NetState state, ClientVersion version)
         {
-            using var message = new ValueStringBuilder();
+            using var message = ValueStringBuilder.Create();
 
             if (!_enable || state.Mobile?.AccessLevel != AccessLevel.Player)
             {
