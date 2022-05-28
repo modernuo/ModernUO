@@ -58,7 +58,7 @@ public static class IncomingAccountPackets
         // Enhanced Client
         IncomingPackets.Register(0xFF, 4, false, SeedEC);
         IncomingPackets.Register(0xE4, 0, false, EncryptionResponse);
-        IncomingPackets.Register(0x8D, 0, false, CharacterCreationEC);
+        IncomingPackets.Register(0x8D, 0, false, CreateCharacterEC);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -73,6 +73,7 @@ public static class IncomingAccountPackets
 
         reader.Seek(2, SeekOrigin.Current);
         var flags = reader.ReadInt32();
+        // Unknown, Login Count
         reader.Seek(8, SeekOrigin.Current);
         int prof = reader.ReadByte();
         reader.Seek(15, SeekOrigin.Current);
@@ -130,7 +131,7 @@ public static class IncomingAccountPackets
         var info = state.CityInfo;
         var a = state.Account;
 
-        if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
+        if (info == null || a == null || cityIndex >= info.Length)
         {
             state.Disconnect("Invalid city selected during character creation.");
             return;
@@ -191,12 +192,8 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void CharacterCreationEC(NetState state, CircularBufferReader reader, int packetLength)
+    public static void CreateCharacterEC(NetState state, CircularBufferReader reader, int packetLength)
     {
-        int flags = 0;
-
-        int length = packetLength;
-
         int unk1 = reader.ReadInt32(); // 0xEDEDEDED
         int charSlot = reader.ReadInt32();
         var name = reader.ReadAscii(30);
@@ -245,8 +242,6 @@ public static class IncomingAccountPackets
         int beardHue = reader.ReadInt16();
         int beardID = reader.ReadInt16();
 
-        int cityIndex = 0;
-        int pantsHue = shirtHue;
         var female = gender != 0;
 
         var race = Race.Races[genderRace - 1] ?? Race.DefaultRace; //SA client sends race packet one higher than KR, so this is neccesary
@@ -254,12 +249,9 @@ public static class IncomingAccountPackets
         CityInfo[] info = state.CityInfo;
         var a = state.Account;
 
-        if (clientFlags > 0)
-        {
-            flags = clientFlags;
-        }
+        int cityIndex = clientFlags < 0x40 ? clientFlags : 0;
 
-        if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
+        if (info == null || a == null || cityIndex >= info.Length)
         {
             state.Disconnect("Invalid city selected during character creation.");
             return;
@@ -277,7 +269,7 @@ public static class IncomingAccountPackets
             }
         }
 
-        state.Flags = (ClientFlags)flags;
+        state.Flags = (ClientFlags)clientFlags;
 
         var args = new CharacterCreatedEventArgs(
             state,
@@ -289,14 +281,14 @@ public static class IncomingAccountPackets
             info[cityIndex],
             skills,
             shirtHue,
-            pantsHue,
+            shirtHue,
             hairID,
             hairHue,
             beardID,
             beardHue,
             profession,
             race
-            );
+        );
         state.SendClientVersionRequest();
 
         state.BlockAllPackets = true;
@@ -373,6 +365,7 @@ public static class IncomingAccountPackets
 
         var flags = reader.ReadInt32();
 
+        // Unknown, Login Count, Unknown x 4
         reader.Seek(24, SeekOrigin.Current);
 
         var charSlot = reader.ReadInt32();
