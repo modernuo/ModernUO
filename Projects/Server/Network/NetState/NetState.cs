@@ -684,7 +684,7 @@ public partial class NetState : IComparable<NetState>
                                 _parserState = HandlePacket(packetReader, packetId, out packetLength);
                                 if (_parserState == ParserState.AwaitingNextPacket)
                                 {
-                                    _protocolState = ProtocolState.LoginServer_ServerSelectAck; //Makes no sense to me since will disconnect and new NetState constructor sets ProtocolState to AwaitingSeed.
+                                    _protocolState = ProtocolState.LoginServer_ServerSelectAck;
                                     Disconnect(string.Empty);
                                 }
                                 break;

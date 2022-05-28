@@ -105,9 +105,10 @@ public static class IncomingItemPackets
         {
             from.Drop(loc);
         }
-        if (state.IsKRClient)
+
+        if (state.IsEnhancedClient)
         {
-            state.KRDropConfirm();
+            state.DropConfirmEC();
         }
     }
 

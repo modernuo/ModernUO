@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Server.Buffers;
 using CV = Server.ClientVersion;
 
 namespace Server.Network;
@@ -53,9 +54,11 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xE1, 0, false, ClientType);
         IncomingPackets.Register(0xEF, 21, false, LoginServerSeed);
         IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
-        IncomingPackets.Register(0xFF, 4, false, KRSeed);
-        IncomingPackets.Register(0xE4, 0, false, KREncryptionResponse);
-        IncomingPackets.Register(0x8D, 0, false, KRCreateCharacter);
+
+        // Enhanced Client
+        IncomingPackets.Register(0xFF, 4, false, SeedEC);
+        IncomingPackets.Register(0xE4, 0, false, EncryptionResponse);
+        IncomingPackets.Register(0x8D, 0, false, CharacterCreationEC);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -188,7 +191,7 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void KRCreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
+    public static void CharacterCreationEC(NetState state, CircularBufferReader reader, int packetLength)
     {
         int flags = 0;
 
@@ -214,7 +217,7 @@ public static class IncomingAccountPackets
 
         int hue = reader.ReadInt16();
         int unk5 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00
-        int unk6 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00	
+        int unk6 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00
 
         var skills = new SkillNameValue[state.NewCharacterCreation ? 4 : 3];
         skills[0] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
@@ -226,7 +229,7 @@ public static class IncomingAccountPackets
         }
 
         reader.Seek(26, SeekOrigin.Current); // Pack of 0x00
-        
+
         int hairHue = reader.ReadInt16();
         int hairID = reader.ReadInt16();
 
@@ -261,7 +264,7 @@ public static class IncomingAccountPackets
             state.Disconnect("Invalid city selected during character creation.");
             return;
         }
-        
+
         // Check if anyone is using this account
         for (int i = 0; i < a.Length; ++i)
         {
@@ -643,18 +646,29 @@ public static class IncomingAccountPackets
         state.SendAccountLoginRejected(reason);
         state.Disconnect($"Account login rejected due to {reason}");
     }
-    
-    public static void KRSeed(NetState state, CircularBufferReader reader, int packetLength)
+
+    public static void SeedEC(NetState state, CircularBufferReader reader, int packetLength)
     {
-        //<---- Kr Seed Received, Packet Received 0xFF (Patched Encryption Client)
-        state.SendKREncryptionReq(); //Sends encryption request expected by KR, Packet 0xE3
+        state.SendEncryptionReq();
     }
-    
-    public static void KREncryptionResponse(NetState state, CircularBufferReader reader, int packetLength)
+
+    public static void EncryptionResponse(NetState state, CircularBufferReader reader, int packetLength)
     {
-        //<---- Kr Encryption Response Received, Packet 0xE4
+        // We don't support encryption keys
+        // var length = reader.ReadInt32();
+        // Span<byte> publicKey = STArrayPool<byte>.Shared.Rent(length);
+        // reader.Read(publicKey);
+
+        /**
+         * KR client uses hardcoded values. What about EC client?
+         * Base: 3 (As in the dynamic data)
+         * Prime: 00 c7 77 96 c9 ea 6a 9e 9f 71 a7 27 19 d6 77 80 43
+         * Private Key: 00 00 00 00 00 00 00 00 02 B3 43 65 0B 45 D4 AA
+         * Public Key: 72 0E EF C3 38 13 27 5A 18 F8 AB 8A 24 68 CE 62
+         *
+         * Session Key: 26 5D E0 9A D8 C9 1F 51 8B 62 6D 16 72 4B 83 A3
+         */
     }
-       
 
     private class LoginTimer : Timer
     {

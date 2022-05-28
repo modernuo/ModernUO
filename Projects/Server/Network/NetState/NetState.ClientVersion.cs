@@ -55,8 +55,7 @@ public partial class NetState
 
     public bool IsSAClient => _version?.Type == ClientType.SA;
 
-    public bool IsEnhancedClient =>
-        HasFlag(ClientFlags.UOTD) || _version?.Type is ClientType.UOTD or ClientType.KR or ClientType.SA;
+    public bool IsEnhancedClient => _version?.Type is ClientType.UOTD or ClientType.KR or ClientType.SA;
 
     private ExpansionInfo m_Expansion;
 
