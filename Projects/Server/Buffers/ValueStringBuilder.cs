@@ -22,9 +22,11 @@ public ref struct ValueStringBuilder
         get => _mt ? ArrayPool<char>.Shared : STArrayPool<char>.Shared;
     }
 
-    public ValueStringBuilder(bool mt = false) : this(64, mt)
-    {
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValueStringBuilder Create(int capacity = 64, bool mt = false) => new(capacity, mt);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValueStringBuilder CreateMT(int capacity = 64) => new(capacity, true);
 
     // If this ctor is used, you cannot pass in stackalloc ROS for append/replace.
     public ValueStringBuilder(ReadOnlySpan<char> initialString, bool mt = false) : this(initialString.Length, mt)
