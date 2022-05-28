@@ -99,7 +99,7 @@ public static class OutgoingMessagePackets
 
         Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
         var length = CreateMessageLocalizedAffix(
-            buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
+            buffer, ns.IsEnhancedClient, serial, graphic, type, hue, font, number, name, affixType, affix, args
         );
 
         ns.Send(buffer[..length]);
@@ -110,7 +110,7 @@ public static class OutgoingMessagePackets
         52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
 
     public static int CreateMessageLocalizedAffix(
-        Span<byte> buffer,
+        Span<byte> buffer, bool isEnhanced,
         Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
         AffixType affixType, string affix = "", string args = ""
     )
@@ -141,7 +141,14 @@ public static class OutgoingMessagePackets
         writer.Write((byte)affixType);
         writer.WriteAscii(name, 30);
         writer.WriteAsciiNull(affix);
-        writer.WriteBigUniNull(args);
+        if (isEnhanced)
+        {
+            writer.WriteLittleUniNull(args);
+        }
+        else
+        {
+            writer.WriteBigUniNull(args);
+        }
 
         writer.WritePacketLength();
         return writer.Position;
