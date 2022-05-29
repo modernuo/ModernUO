@@ -481,7 +481,7 @@ public static class OutgoingAccountPackets
         writer.Write(0x13); // Length
         writer.Write(0x021100FCu);
         writer.Write(0x2FE38193u);
-        writer.Write(0xCBAF98D0u);
+        writer.Write(0xCBAF98DDu);
         writer.Write(0x8313D29Eu);
         writer.Write((ushort)0xEAE4);
         writer.Write((byte)0x13);

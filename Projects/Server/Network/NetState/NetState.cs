@@ -631,12 +631,12 @@ public partial class NetState : IComparable<NetState>
                                         if (_parserState == ParserState.AwaitingNextPacket)
                                         {
                                             _protocolState = ProtocolState.LoginServer_AwaitingECAck;
-                                            break;
                                         }
                                     }
-
-                                    _parserState = ParserState.AwaitingNextPacket;
-                                    _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    else
+                                    {
+                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    }
                                 }
                                 else
                                 {
