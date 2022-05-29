@@ -70,12 +70,12 @@ public partial class NetState
                     var info = ExpansionInfo.Table[i];
 
                     // KR sends same client flags as EC
-                    if (Version?.Type == ClientType.KR && (info.ClientFlags & ClientFlags.TerMur) != 0)
+                    if (IsKRClient && (info.ClientFlags & ClientFlags.TerMur) != 0)
                     {
                         continue;
                     }
 
-                    if ((info.RequiredClient == null || Version?.Type != ClientType.KR) &&
+                    if ((info.RequiredClient == null || !IsKRClient) &&
                         Version >= info.RequiredClient || HasFlag(info.ClientFlags))
                     {
                         m_Expansion = info;
