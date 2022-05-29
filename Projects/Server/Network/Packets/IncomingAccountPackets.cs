@@ -517,7 +517,8 @@ public static class IncomingAccountPackets
 
         state.Version = ap.Version;
 
-        if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed && !state.IsKRClient) // Temp fix, excludes KR, valid for no crypt client.
+        if (state._authId != 0 && authID != state._authId ||
+            state._authId == 0 && authID != state._seed && !state.IsKRClient && !state.IsSAClient)
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Invalid auth id in game login packet.");
@@ -525,7 +526,6 @@ public static class IncomingAccountPackets
         }
 
         m_AuthIDWindow.Remove(authID);
-
 
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
