@@ -21,7 +21,7 @@ using Server.Network;
 
 namespace Server;
 
-public record ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
+public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>, IEquatable<ClientVersion>
 {
     public static readonly ClientVersion Version400a = new("4.0.0a");
     public static readonly ClientVersion Version407a = new("4.0.7a");
@@ -204,6 +204,10 @@ public record ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersio
 
     public static bool operator <(ClientVersion l, ClientVersion r) => Compare(l, r) < 0;
 
+    public static bool operator ==(ClientVersion l, ClientVersion r) => Equals(l, r);
+
+    public static bool operator !=(ClientVersion l, ClientVersion r) => !Equals(l, r);
+
     private string ToStringImpl()
     {
         using var builder = new ValueStringBuilder(stackalloc char[32]);
@@ -283,4 +287,14 @@ public record ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersio
             _                                                         => ProtocolChanges.None
         };
     }
+
+    public bool Equals(ClientVersion other) =>
+        !ReferenceEquals(null, other) && (ReferenceEquals(this, other) || Major == other.Major &&
+            Minor == other.Minor && Revision == other.Revision && Patch == other.Patch && Type == other.Type);
+
+    public override bool Equals(object obj) =>
+        !ReferenceEquals(null, obj) &&
+        (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((ClientVersion)obj));
+
+    public override int GetHashCode() => HashCode.Combine(Major, Minor, Revision, Patch);
 }
