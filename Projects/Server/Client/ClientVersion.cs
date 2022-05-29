@@ -45,11 +45,20 @@ public record ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersio
 
     public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Classic)
     {
-        Major = type == ClientType.SA && maj > 60 ? maj - 60 : maj;
+        if (maj >= 67)
+        {
+            Major = maj - 60;
+            Type = ClientType.SA;
+        }
+        else
+        {
+            Major = maj;
+            Type = maj == 66 ? ClientType.KR : type;
+        }
+
         Minor = min;
         Revision = rev;
         Patch = pat;
-        Type = type;
 
         SourceString = Utility.Intern(ToStringImpl());
     }
