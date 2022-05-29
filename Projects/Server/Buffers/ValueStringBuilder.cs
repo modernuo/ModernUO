@@ -347,12 +347,12 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Dispose()
     {
-        char[] toReturn = _arrayToReturnToPool;
-        this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
-        if (toReturn != null)
+        if (_arrayToReturnToPool != null)
         {
-            ArrayPool.Return(toReturn);
+            ArrayPool.Return(_arrayToReturnToPool);
         }
+
+        this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
     }
 #nullable restore
 
