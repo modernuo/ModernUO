@@ -38,6 +38,7 @@ public static class OutgoingMobilePackets
     public const int MobileStatusAOSLength = 88;
     public const int MobileStatusMLLength = 91;
     public const int MobileStatusHSLength = 121;
+    public const int MobileStatusECLength = 149;
 
     public static bool ExtendedStatus { get; private set; } = true;
 
@@ -433,8 +434,8 @@ public static class OutgoingMobilePackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed, bool enhanced) =>
-        CreateMobileStatus(buffer, m, 0, canBeRenamed, enhanced);
+    public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
+        CreateMobileStatus(buffer, m, 0, canBeRenamed, false);
 
     public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
     {
@@ -444,7 +445,7 @@ public static class OutgoingMobilePackets
         }
 
         Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
-        CreateMobileStatusCompact(buffer, m, canBeRenamed, ns.IsEnhancedClient);
+        CreateMobileStatusCompact(buffer, m, canBeRenamed);
 
         ns.Send(buffer);
     }
@@ -470,7 +471,7 @@ public static class OutgoingMobilePackets
         else if (ExtendedStatus && ns.ExtendedStatus)
         {
             version = 6;
-            length = MobileStatusHSLength;
+            length = ns.IsEnhancedClient ? MobileStatusECLength : MobileStatusHSLength;
         }
         else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
         {

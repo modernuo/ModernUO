@@ -78,7 +78,7 @@ public class STArrayPool<T> : ArrayPool<T>
     {
         if (array is null)
         {
-            throw new ArgumentNullException(nameof(array));
+            return;
         }
 
         var bucketIndex = SelectBucketIndex(array.Length);

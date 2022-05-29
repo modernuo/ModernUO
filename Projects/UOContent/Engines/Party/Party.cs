@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Buffers;
 using Server.Factions;
 using Server.Network;
 using Server.Targeting;
@@ -231,9 +232,28 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")];
+            Span<byte> ccBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")]
+                .InitializePacket();
+            Span<byte> ecBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")]
+                .InitializePacket();
+
             var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                buffer,
+                ccBuffer,
+                false,
+                Serial.MinusOne,
+                -1,
+                MessageType.Label,
+                0x3B2,
+                3,
+                1008094,
+                "",
+                AffixType.Prepend | AffixType.System,
+                from.Name
+            );
+
+            OutgoingMessagePackets.CreateMessageLocalizedAffix(
+                ecBuffer,
+                true,
                 Serial.MinusOne,
                 -1,
                 MessageType.Label,
@@ -246,9 +266,11 @@ namespace Server.Engines.PartySystem
             );
 
             // : joined the party.
-            buffer = buffer[..length];
-            SendToAll(buffer);
-            SendToAllListeners(buffer);
+            ccBuffer = ccBuffer[..length];
+            ecBuffer = ecBuffer[..length];
+
+            SendToAll(ccBuffer, ecBuffer);
+            SendToAllListeners(ccBuffer, ecBuffer);
 
             from.SendLocalizedMessage(1005445); // You have been added to the party.
 
@@ -462,22 +484,28 @@ namespace Server.Engines.PartySystem
             SendToAllListeners(buffer);
         }
 
-        public void SendToAllListeners(Span<byte> span)
+        public void SendToAllListeners(Span<byte> packet) => SendToAll(packet, packet);
+
+        public void SendToAllListeners(Span<byte> ccPacket, Span<byte> ecPacket)
         {
             foreach (var mob in m_Listeners)
             {
                 if (mob.Party != this)
                 {
-                    mob.NetState?.Send(span);
+                    var ns = mob.NetState;
+                    ns?.Send(ns.IsEnhancedClient ? ecPacket : ccPacket);
                 }
             }
         }
 
-        public void SendToAll(Span<byte> span)
+        public void SendToAll(Span<byte> packet) => SendToAll(packet, packet);
+
+        public void SendToAll(Span<byte> ccPacket, Span<byte> ecPacket)
         {
             for (var i = 0; i < Members.Count; ++i)
             {
-                Members[i].Mobile.NetState?.Send(span);
+                var ns = Members[i].Mobile.NetState;
+                ns?.Send(ns.IsEnhancedClient ? ecPacket : ccPacket);
             }
         }
 
@@ -499,7 +527,8 @@ namespace Server.Engines.PartySystem
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.NetState.SendPartyMemberList(p);
 
-                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")].InitializePacket();
+                Span<byte> ccBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")].InitializePacket();
+                byte[] ecBuffer = null;
                 Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
 
                 var ns = m_Mobile.NetState;
@@ -513,8 +542,20 @@ namespace Server.Engines.PartySystem
                         continue;
                     }
 
+                    var targetNS = m.NetState;
+                    var isEnhanced = targetNS?.IsEnhancedClient == true;
+
+                    if (isEnhanced && ecBuffer == null)
+                    {
+                        ecBuffer = STArrayPool<byte>.Shared.Rent(OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, ""));
+                        ecBuffer.AsSpan().InitializePacket();
+                    }
+
+                    Span<byte> buffer = isEnhanced ? ecBuffer : ccBuffer;
+
                     var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
                         buffer,
+                        isEnhanced,
                         Serial.MinusOne,
                         -1,
                         MessageType.Label,
@@ -531,10 +572,10 @@ namespace Server.Engines.PartySystem
                         buffer = buffer[..length]; // Adjust to the actual size
                     }
 
-                    m.NetState?.Send(buffer);
-                    m.NetState.SendMobileStatusCompact(m_Mobile, m_Mobile.CanBeRenamedBy(m));
+                    targetNS?.Send(buffer);
+                    targetNS.SendMobileStatusCompact(m_Mobile, m_Mobile.CanBeRenamedBy(m));
                     OutgoingMobilePackets.CreateMobileAttributes(attrsPacket, m_Mobile, true);
-                    m.NetState?.Send(attrsPacket);
+                    targetNS?.Send(attrsPacket);
                     ns.SendMobileStatusCompact(m, m.CanBeRenamedBy(m_Mobile));
                     ns.SendMobileAttributes(m, true);
                 }

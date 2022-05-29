@@ -1995,9 +1995,8 @@ namespace Server
             set
             {
                 var oldPrompt = m_Prompt;
-                var newPrompt = value;
 
-                if (oldPrompt == newPrompt)
+                if (oldPrompt == value)
                 {
                     return;
                 }
@@ -2005,13 +2004,13 @@ namespace Server
                 m_Prompt = null;
 
                 // TODO: Cancel the prompt anyway?
-                if (newPrompt != null)
+                if (value != null)
                 {
                     oldPrompt?.OnCancel(this);
+                    value.SendTo(this);
                 }
 
-                m_Prompt = newPrompt;
-                newPrompt.SendTo(this);
+                m_Prompt = value;
             }
         }
 
@@ -9109,7 +9108,8 @@ namespace Server
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+            Span<byte> ccBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+            byte[] ecBuffer = null;
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -9121,8 +9121,29 @@ namespace Server
                     (noLineOfSight || state.Mobile.InLOS(this))
                 )
                 {
+                    var isEnhanced = state.IsEnhancedClient;
+
+                    if (isEnhanced && ecBuffer == null)
+                    {
+                        ecBuffer = STArrayPool<byte>.Shared.Rent(OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args));
+                        ecBuffer.AsSpan().InitializePacket();
+                    }
+
+                    Span<byte> buffer = isEnhanced ? ecBuffer : ccBuffer;
+
                     var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                        buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
+                        buffer,
+                        isEnhanced,
+                        Serial,
+                        Body,
+                        type,
+                        hue,
+                        3,
+                        number,
+                        Name,
+                        affixType,
+                        affix,
+                        args
                     );
 
                     if (length != buffer.Length)
@@ -9133,6 +9154,8 @@ namespace Server
                     state.Send(buffer);
                 }
             }
+
+            STArrayPool<byte>.Shared.Return(ecBuffer);
 
             eable.Free();
         }
