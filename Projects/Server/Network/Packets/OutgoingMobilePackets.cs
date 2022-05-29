@@ -390,11 +390,11 @@ public static class OutgoingMobilePackets
         }
 
         Span<byte> span = stackalloc byte[MobileHealthbarPacketLength];
-        CreateMobileHealthbar(span, m, healthbar);
+        CreateMobileHealthbar(span, m, healthbar, ns.IsEnhancedClient);
         ns.Send(span);
     }
 
-    public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar)
+    public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar, bool isEnhanced)
     {
         if (buffer[0] != 0)
         {
@@ -405,27 +405,27 @@ public static class OutgoingMobilePackets
         {
             case Healthbar.Poison:
                 {
-                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0);
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0, isEnhanced);
                     break;
                 }
             case Healthbar.Yellow:
                 {
-                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0);
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0, isEnhanced);
                     break;
                 }
             default:
                 {
                     Console.WriteLine("Packets: Invalid Healthbar {0} in {1}", healthbar, nameof(CreateMobileHealthbar));
-                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0);
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0, isEnhanced);
                     break;
                 }
         }
     }
 
-    public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level)
+    public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level, bool isEnhanced)
     {
         var writer = new SpanWriter(buffer);
-        writer.Write((byte)0x17); // Packet ID
+        writer.Write((byte)(isEnhanced ? 0x16 : 0x17)); // Packet ID
         writer.Write((ushort)12);
         writer.Write(serial);
         writer.Write((short)1); // Show bar
