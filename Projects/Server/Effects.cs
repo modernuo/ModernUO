@@ -379,7 +379,7 @@ namespace Server
             int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
         )
         {
-            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+            Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
             OutgoingEffectPackets.CreateMovingHuedEffect(
                 effect,
                 from, to, itemID, fromLocation, toLocation, speed, duration, fixedDirection,

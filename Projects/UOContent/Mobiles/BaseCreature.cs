@@ -3750,7 +3750,7 @@ namespace Server.Mobiles
 
             IsDeadPet = false;
 
-            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength];
+            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
             OutgoingMobilePackets.CreateBondedStatus(buffer, Serial, false);
             Effects.SendPacket(Location, Map, buffer);
 

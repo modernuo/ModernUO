@@ -102,7 +102,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
+        Span<byte> span = stackalloc byte[DeathAnimationPacketLength].InitializePacket();
         CreateDeathAnimation(span, killed, corpse);
         ns.Send(span);
     }
@@ -208,7 +208,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength].InitializePacket();
         CreateMobileHits(span, m, normalize);
         ns.Send(span);
     }
@@ -233,7 +233,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength].InitializePacket();
         CreateMobileMana(span, m, normalize);
         ns.Send(span);
     }
@@ -258,7 +258,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength].InitializePacket();
         CreateMobileStam(span, m, normalize);
         ns.Send(span);
     }
@@ -283,7 +283,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributesPacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributesPacketLength].InitializePacket();
         CreateMobileAttributes(span, m, normalize);
         ns.Send(span);
     }
@@ -352,7 +352,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAnimationPacketLength];
+        Span<byte> span = stackalloc byte[MobileAnimationPacketLength].InitializePacket();
         CreateMobileAnimation(span, mobile, action, frameCount, repeatCount, forward, repeat, delay);
         ns.Send(span);
     }
@@ -377,7 +377,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength];
+        Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength].InitializePacket();
         CreateNewMobileAnimation(span, mobile, action, frameCount, delay);
         ns.Send(span);
     }
@@ -389,7 +389,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileHealthbarPacketLength];
+        Span<byte> span = stackalloc byte[MobileHealthbarPacketLength].InitializePacket();
         CreateMobileHealthbar(span, m, healthbar, ns.IsEnhancedClient);
         ns.Send(span);
     }
@@ -444,7 +444,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
+        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength].InitializePacket();
         CreateMobileStatusCompact(buffer, m, canBeRenamed);
 
         ns.Send(buffer);
@@ -489,7 +489,7 @@ public static class OutgoingMobilePackets
             length = MobileStatusLength;
         }
 
-        Span<byte> buffer = stackalloc byte[length];
+        Span<byte> buffer = stackalloc byte[length].InitializePacket();
         CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder), ns.IsEnhancedClient);
         ns.Send(buffer);
     }
