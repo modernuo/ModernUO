@@ -3245,6 +3245,9 @@ namespace Server
                 SendOPLPacketTo(state);
             }
 
+            STArrayPool<byte>.Shared.Return(ecHbpBuffer);
+            STArrayPool<byte>.Shared.Return(ecHbyBuffer);
+
             eable.Free();
         }
 
