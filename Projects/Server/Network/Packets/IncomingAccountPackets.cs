@@ -509,7 +509,7 @@ public static class IncomingAccountPackets
 
         var authID = reader.ReadInt32();
 
-        if (!m_AuthIDWindow.TryGetValue(authID, out var ap))
+        if (!m_AuthIDWindow.Remove(authID, out var ap))
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Unable to find auth id.");
@@ -524,8 +524,6 @@ public static class IncomingAccountPackets
             state.Disconnect("Invalid auth id in game login packet.");
             return;
         }
-
-        m_AuthIDWindow.Remove(authID);
 
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
