@@ -579,6 +579,8 @@ namespace Server.Engines.PartySystem
                     ns.SendMobileStatusCompact(m, m.CanBeRenamedBy(m_Mobile));
                     ns.SendMobileAttributes(m, true);
                 }
+
+                STArrayPool<byte>.Shared.Return(ecBuffer);
             }
         }
     }
