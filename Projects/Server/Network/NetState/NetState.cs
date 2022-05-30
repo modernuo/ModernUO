@@ -15,7 +15,6 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -51,9 +50,9 @@ public partial class NetState : IComparable<NetState>
 
     private static GCHandle[] _polledStates = new GCHandle[2048];
     private static readonly IPollGroup _pollGroup = PollGroup.Create();
-    private static readonly Queue<NetState> FlushPending = new(2048);
-    private static readonly Queue<NetState> FlushedPartials = new(2048);
-    private static readonly ConcurrentQueue<NetState> Disposed = new();
+    private static readonly Queue<NetState> _flushPending = new(2048);
+    private static readonly Queue<NetState> _flushedPartials = new(256);
+    private static readonly Queue<NetState> _disposed = new(256);
 
     public static NetStateCreatedCallback CreatedCallback { get; set; }
 
@@ -74,6 +73,8 @@ public partial class NetState : IComparable<NetState>
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     internal GCHandle _handle;
     private bool _packetLogging;
+
+    public GCHandle Handle => _handle;
 
     internal enum ParserState
     {
@@ -508,7 +509,7 @@ public partial class NetState : IComparable<NetState>
 
             if (!_flushQueued)
             {
-                FlushPending.Enqueue(this);
+                _flushPending.Enqueue(this);
                 _flushQueued = true;
             }
 
@@ -930,15 +931,15 @@ public partial class NetState : IComparable<NetState>
 
     public static void FlushAll()
     {
-        while (FlushPending.Count != 0)
+        while (_flushPending.Count != 0)
         {
-            FlushPending.Dequeue()?.Flush();
+            _flushPending.Dequeue()?.Flush();
         }
     }
 
     public static void Slice()
     {
-        int count = _pollGroup.Poll(ref _polledStates);
+        int count = _pollGroup.Poll(_polledStates);
 
         if (count > 0)
         {
@@ -949,24 +950,34 @@ public partial class NetState : IComparable<NetState>
             }
         }
 
-        while (FlushPending.TryDequeue(out var ns))
+        while (_flushPending.TryDequeue(out var ns))
         {
             if (!ns.Flush())
             {
                 // Incomplete data, so we need to requeue
-                FlushedPartials.Enqueue(ns);
+                _flushedPartials.Enqueue(ns);
             }
         }
 
-        var hasDisposes = !Disposed.IsEmpty;
-        while (Disposed.TryDequeue(out var ns))
+        var hasDisposes = false;
+        while (_disposed.TryDequeue(out var ns))
         {
+            hasDisposes = true;
             ns.Dispose();
+        }
+
+        // If they weren't disconnected, requeue them
+        while (_flushedPartials.TryDequeue(out var ns))
+        {
+            if (ns.Running)
+            {
+                _flushPending.Enqueue(ns);
+            }
         }
 
         if (hasDisposes)
         {
-            _pollGroup.Poll(ref _polledStates);
+            _pollGroup.Poll(_polledStates.Length);
         }
     }
 
@@ -1025,20 +1036,19 @@ public partial class NetState : IComparable<NetState>
 
         _running = false;
 
-        try
-        {
-            if (_disconnectReason != string.Empty)
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
             {
-                throw new Exception("Attempted to disconnect a netstate twice.");
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to disconnect a netstate from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                Utility.PopColor();
+                return;
             }
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
-        }
+#endif
 
         _disconnectReason = reason;
-        Disposed.Enqueue(this);
+        _disposed.Enqueue(this);
     }
 
     public static void TraceDisconnect(string reason, string ip)
@@ -1088,7 +1098,7 @@ public partial class NetState : IComparable<NetState>
         TcpServer.Instances.Remove(this);
         try
         {
-            _pollGroup.Remove(Connection);
+            _pollGroup.Remove(Connection, _handle);
         }
         catch (Exception ex)
         {
