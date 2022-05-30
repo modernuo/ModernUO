@@ -2074,9 +2074,12 @@ namespace Server
                     MoveToWorld(from.Location, from.Map);
                 }
             }
-            else if ((parent as Mobile)?.EquipItem(this) == false)
+            else if (parent is Mobile mobile)
             {
-                MoveToWorld(bounce.WorldLoc, bounce.Map);
+                if (!mobile.EquipItem(this))
+                {
+                    MoveToWorld(bounce.WorldLoc, bounce.Map);
+                }
             }
             else
             {
