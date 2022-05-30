@@ -79,6 +79,7 @@ public static class IncomingPackets
             0xD9 => true, // Hardware Info
             0xDD => true, // Gumps (Packed)
             0xE1 => true, // Client Type
+            0xF1 => true, // Freeshard Protocol
             0xF4 => true, // CrashReport
             _    => false
         };
