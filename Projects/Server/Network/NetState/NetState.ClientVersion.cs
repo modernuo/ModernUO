@@ -28,7 +28,7 @@ public partial class NetState
     public ClientVersion Version
     {
         get => _version;
-        set => ProtocolChanges = (_version = value).ProtocolChanges;
+        set => ProtocolChanges = (_version = value)?.ProtocolChanges ?? ProtocolChanges.None;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
