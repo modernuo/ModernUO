@@ -75,6 +75,8 @@ public partial class NetState : IComparable<NetState>
     internal GCHandle _handle;
     private bool _packetLogging;
 
+    public GCHandle Handle => _handle;
+
     internal enum ParserState
     {
         AwaitingNextPacket,
