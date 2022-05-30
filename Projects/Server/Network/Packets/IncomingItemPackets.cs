@@ -105,6 +105,10 @@ public static class IncomingItemPackets
         {
             from.Drop(loc);
         }
+        if (state.IsKRClient)
+        {
+            state.KRDropConfirm();
+        }
     }
 
     public static void EquipMacro(NetState state, CircularBufferReader reader, int packetLength)

@@ -92,7 +92,7 @@ public partial class NetState : IComparable<NetState>
         LoginServer_AwaitingLogin,
         LoginServer_AwaitingServerSelect,
         LoginServer_ServerSelectAck,
-
+        LoginServer_AwaitingKrAck,
         GameServer_AwaitingGameServerLogin,
         GameServer_LoggedIn,
 
@@ -616,26 +616,45 @@ public partial class NetState : IComparable<NetState>
                                 else if (length >= 4)
                                 {
                                     int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
-
                                     if (seed == 0)
                                     {
                                         HandleError(0, 0);
                                         return;
                                     }
-
                                     _seed = seed;
                                     packetLength = 4;
-
                                     _parserState = ParserState.AwaitingNextPacket;
-                                    _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    if (packetId == 0xFF)
+                                    {
+                                        _parserState = ParserState.ProcessingPacket;
+                                        _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                        if (_parserState == ParserState.AwaitingNextPacket)
+                                        {
+                                            _protocolState = ProtocolState.LoginServer_AwaitingKrAck;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    }
                                 }
                                 else
                                 {
                                     _parserState = ParserState.AwaitingPartialPacket;
                                 }
-                                break;
+                            break;
                             }
 
+                        case ProtocolState.LoginServer_AwaitingKrAck:
+                            {
+                                if (packetId == 0xE4)
+                                {
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                    _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                }
+                                break;
+                            }
                         case ProtocolState.LoginServer_AwaitingLogin:
                             {
                                 if (packetId != 0xCF && packetId != 0x80)
@@ -666,7 +685,7 @@ public partial class NetState : IComparable<NetState>
                                 _parserState = HandlePacket(packetReader, packetId, out packetLength);
                                 if (_parserState == ParserState.AwaitingNextPacket)
                                 {
-                                    _protocolState = ProtocolState.LoginServer_ServerSelectAck;
+                                    _protocolState = ProtocolState.LoginServer_ServerSelectAck; //Makes no sense to me since will disconnect and new NetState constructor sets ProtocolState to AwaitingSeed.
                                     Disconnect(string.Empty);
                                 }
                                 break;

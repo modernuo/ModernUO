@@ -24,8 +24,8 @@ public enum ClientType
 {
     Regular,
     UOTD,
-    God,
-    SA
+    SA,
+    KR
 }
 
 public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
@@ -46,6 +46,18 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
     public static readonly ClientVersion Version704565 = new("7.0.45.65");
     public static readonly ClientVersion Version70500 = new("7.0.50.0");
     public static readonly ClientVersion Version70610 = new("7.0.61.0");
+    public static readonly ClientVersion Version665538 = new("66.55.38"); //KR 2.44.0.15 (Frist release)
+    public static readonly ClientVersion Version665539 = new("66.55.39"); //KR 2.45.0.4
+    public static readonly ClientVersion Version665553 = new("66.55.53"); //KR 2.59.0.2
+    public static readonly ClientVersion Version670000 = new("67.00.00"); //EC 4.0.0.2 (First release)
+    public static readonly ClientVersion Version670009 = new("67.00.09"); //EC 4.0.9.0
+    public static readonly ClientVersion Version670013 = new("67.00.13"); //EC 4.0.13.1
+    public static readonly ClientVersion Version670016 = new("67.00.16"); //EC 4.0.16.0
+    public static readonly ClientVersion Version670030 = new("67.00.30"); //EC 4.0.30.0
+    public static readonly ClientVersion Version670033 = new("67.00.33"); //EC 4.0.33.0
+    public static readonly ClientVersion Version670045 = new("67.00.45"); //EC 4.0.45.0
+    public static readonly ClientVersion Version670050 = new("67.00.50"); //EC 4.0.50.0
+    public static readonly ClientVersion Version670061 = new("67.00.61"); //EC 4.0.61.1
 
     public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
     {
@@ -55,6 +67,12 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
         Patch = pat;
         Type = type;
 
+        Type = maj switch
+        {
+            66 => ClientType.KR,
+            67 => ClientType.SA,
+            _ => Type
+        };
         SourceString = Utility.Intern(ToStringImpl());
     }
 
@@ -93,22 +111,17 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                 }
             }
 
-            if (fmt.InsensitiveContains("god") || fmt.InsensitiveContains("gq"))
+            Type = Major switch
             {
-                Type = ClientType.God;
-            }
-            else if (fmt.InsensitiveContains("third dawn") ||
-                     fmt.InsensitiveContains("uo:td") ||
-                     fmt.InsensitiveContains("uotd") ||
-                     fmt.InsensitiveContains("uo3d") ||
-                     fmt.InsensitiveContains("uo:3d"))
-            {
-                Type = ClientType.UOTD;
-            }
-            else
-            {
-                Type = ClientType.Regular;
-            }
+                66 => ClientType.KR,
+                67 => ClientType.SA,
+                _ when fmt.InsensitiveContains("third dawn") ||
+                       fmt.InsensitiveContains("uo:td") ||
+                       fmt.InsensitiveContains("uotd") ||
+                       fmt.InsensitiveContains("uo3d") ||
+                       fmt.InsensitiveContains("uo:3d") => ClientType.UOTD,
+                _ => ClientType.Regular
+            };
         }
         catch
         {
