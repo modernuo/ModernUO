@@ -51,7 +51,7 @@ public partial class NetState : IComparable<NetState>
     private static GCHandle[] _polledStates = new GCHandle[2048];
     private static readonly IPollGroup _pollGroup = PollGroup.Create();
     private static readonly Queue<NetState> _flushPending = new(2048);
-    private static readonly Queue<NetState> _flushedPartials = new(2048);
+    private static readonly Queue<NetState> _flushedPartials = new(256);
     private static readonly Queue<NetState> _disposed = new(256);
 
     public static NetStateCreatedCallback CreatedCallback { get; set; }
