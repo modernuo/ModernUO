@@ -564,35 +564,37 @@ namespace Server.Items
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
-            if (dropped is SpellScroll scroll && scroll.Amount == 1)
+            if (dropped is not SpellScroll { Amount: 1 } scroll)
             {
-                var type = GetTypeForSpell(scroll.SpellID);
+                return false;
+            }
 
-                if (type != SpellbookType)
-                {
-                    return false;
-                }
+            var type = GetTypeForSpell(scroll.SpellID);
 
-                if (HasSpell(scroll.SpellID))
-                {
-                    from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
-                    return false;
-                }
+            if (type != SpellbookType)
+            {
+                return false;
+            }
 
-                var val = scroll.SpellID - BookOffset;
+            if (HasSpell(scroll.SpellID))
+            {
+                from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
+                return false;
+            }
 
-                if (val >= 0 && val < BookCount)
-                {
-                    m_Content |= (ulong)1 << val;
-                    ++SpellCount;
+            var val = scroll.SpellID - BookOffset;
 
-                    InvalidateProperties();
+            if (val >= 0 && val < BookCount)
+            {
+                m_Content |= (ulong)1 << val;
+                ++SpellCount;
 
-                    scroll.Delete();
+                InvalidateProperties();
 
-                    from.SendSound(0x249, GetWorldLocation());
-                    return true;
-                }
+                scroll.Delete();
+
+                from.SendSound(0x249, GetWorldLocation());
+                return true;
             }
 
             return false;
