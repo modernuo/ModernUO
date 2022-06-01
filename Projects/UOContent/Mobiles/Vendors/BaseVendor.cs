@@ -906,7 +906,7 @@ namespace Server.Mobiles
                     )
                 );
 
-                if (disp is IPropertyListObject obj)
+                if (disp is IObjectPropertyListEntity obj)
                 {
                     opls?.Add(obj.PropertyList);
                 }

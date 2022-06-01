@@ -176,7 +176,7 @@ namespace Server
         Spawner = 0x100
     }
 
-    public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
+    public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
@@ -201,7 +201,7 @@ namespace Server
         private Map m_Map;
         private IEntity m_Parent; // Mobile, Item, or null=World
 
-        private IPropertyList m_PropertyList;
+        private ObjectPropertyList m_PropertyList;
 
         [Constructible]
         public Item(int itemID = 0)
@@ -760,7 +760,7 @@ namespace Server
         public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_ItemID;
-        public IPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
         /// <summary>
         ///     Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
@@ -2393,7 +2393,7 @@ namespace Server
             }
         }
 
-        private IPropertyList InitializePropertyList(IPropertyList list)
+        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
         {
             GetProperties(list);
             AppendChildProperties(list);

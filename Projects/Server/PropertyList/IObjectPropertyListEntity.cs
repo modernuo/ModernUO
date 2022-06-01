@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: IPropertyLIstObject.cs                                          *
+ * File: IObjectPropertyListEntity.cs                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,9 +15,9 @@
 
 namespace Server;
 
-public interface IPropertyListObject : IEntity
+public interface IObjectPropertyListEntity : IEntity
 {
-    IPropertyList PropertyList { get; }
+    ObjectPropertyList PropertyList { get; }
 
     void GetProperties(IPropertyList list);
 }

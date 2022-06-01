@@ -403,7 +403,7 @@ namespace Server
     /// <summary>
     ///     Base class representing players, npcs, and creatures.
     /// </summary>
-    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IPropertyListObject
+    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
     {
         // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
         private const int WarmodeCatchCount = 4;
@@ -532,7 +532,7 @@ namespace Server
         private bool m_Player;
         private Poison m_Poison;
         private Prompt m_Prompt;
-        private IPropertyList m_PropertyList;
+        private ObjectPropertyList m_PropertyList;
         private Race m_Race;
         private Region m_Region;
 
@@ -2474,7 +2474,7 @@ namespace Server
         public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
-        public IPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
         public virtual void GetProperties(IPropertyList list)
         {
@@ -7309,7 +7309,7 @@ namespace Server
             return delta != 0 ? body : 0;
         }
 
-        private IPropertyList InitializePropertyList(IPropertyList list)
+        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
         {
             GetProperties(list);
             list.Terminate();
