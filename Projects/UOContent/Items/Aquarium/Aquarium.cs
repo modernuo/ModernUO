@@ -370,12 +370,12 @@ namespace Server.Items
 
             if (_vacationLeft > 0)
             {
-                list.Add(1074430, _vacationLeft.ToString()); // Vacation days left: ~1_DAYS
+                list.Add(1074430, $"{_vacationLeft}"); // Vacation days left: ~1_DAYS
             }
 
             if (_events.Count > 0)
             {
-                list.Add(1074426, _events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                list.Add(1074426, $"{_events.Count}"); // ~1_NUM~ event(s) to view!
             }
 
             if (_rewardAvailable)

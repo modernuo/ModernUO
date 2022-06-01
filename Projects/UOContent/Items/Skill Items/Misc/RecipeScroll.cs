@@ -50,7 +50,7 @@ namespace Server.Items
 
             if (r != null)
             {
-                list.Add(1049644, r.TextDefinition.ToString()); // [~1_stuff~]
+                list.Add(1049644, $"{r.TextDefinition}"); // [~1_stuff~]
             }
         }
 

@@ -24,7 +24,7 @@ namespace Server.Items
         {
             base.AddNameProperties(list);
 
-            list.Add(1060741, _charges.ToString()); // charges: ~1_val~
+            list.Add(1060741, $"{_charges}"); // charges: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)

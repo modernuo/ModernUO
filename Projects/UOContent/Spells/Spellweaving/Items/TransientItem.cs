@@ -82,7 +82,7 @@ namespace Server.Items
 
             var remaining = CreationTime + LifeSpan - Core.Now;
 
-            list.Add(1072517, ((int)remaining.TotalSeconds).ToString()); // Lifespan: ~1_val~ seconds
+            list.Add(1072517, $"{((int)remaining.TotalSeconds)}"); // Lifespan: ~1_val~ seconds
         }
 
         public override void Serialize(IGenericWriter writer)

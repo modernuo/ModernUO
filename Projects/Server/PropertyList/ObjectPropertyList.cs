@@ -2,7 +2,6 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Server.Buffers;
@@ -142,43 +141,19 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         _pos = 0;
     }
 
-    // public void Add(int number, string format, object arg0)
-    // {
-    //     Add(number, string.Format(format, arg0));
-    // }
-    //
-    // public void Add(int number, string format, object arg0, object arg1)
-    // {
-    //     Add(number, string.Format(format, arg0, arg1));
-    // }
-    //
-    // public void Add(int number, string format, object arg0, object arg1, object arg2)
-    // {
-    //     Add(number, string.Format(format, arg0, arg1, arg2));
-    // }
-    //
-    // public void Add(int number, string format, params object[] args)
-    // {
-    //     Add(number, string.Format(format, args));
-    // }
-
     private int GetStringNumber() => _stringNumbers[_stringNumbersIndex++ % _stringNumbers.Length];
 
-    public void Add(string text) => Add(GetStringNumber(), text);
+    public void Add(string argument) => Add(GetStringNumber(), argument);
 
-    // public void Add(string format, string arg0) => Add(GetStringNumber(), string.Format(format, arg0));
-    //
-    // public void Add(string format, string arg0, string arg1) =>
-    //     Add(GetStringNumber(), string.Format(format, arg0, arg1));
-    //
-    // public void Add(string format, string arg0, string arg1, string arg2) =>
-    //     Add(GetStringNumber(), string.Format(format, arg0, arg1, arg2));
-    //
-    // public void Add(string format, params object[] args) => Add(GetStringNumber(), string.Format(format, args));
+    public void Add(
+        [InterpolatedStringHandlerArgument("")]
+        ref IPropertyList.PropertyListInterpolatedStringHandler handler
+    ) => Add(GetStringNumber(), ref handler);
 
     // String Interpolation
     public void Add(
         int number,
+        [InterpolatedStringHandlerArgument("")]
         ref IPropertyList.PropertyListInterpolatedStringHandler handler)
     {
         if (number == 0)
@@ -417,11 +392,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     public void AppendFormatted(object? value, int alignment = 0, string? format = null) =>
         AppendFormatted<object?>(value, alignment, format);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool HasCustomFormatter(IFormatProvider provider) =>
-        provider.GetType() != typeof(CultureInfo) &&
-        provider.GetFormat(typeof(ICustomFormatter)) != null;
-
     private void AppendOrInsertAlignmentIfNeeded(int startingPos, int alignment)
     {
         Debug.Assert(startingPos >= 0 && startingPos <= _pos);
@@ -508,7 +478,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
         STArrayPool<char>.Shared.Return(toReturn);
     }
-
 
     public void Dispose()
     {

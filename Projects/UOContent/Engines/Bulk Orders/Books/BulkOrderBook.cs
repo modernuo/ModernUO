@@ -262,7 +262,7 @@ namespace Server.Engines.BulkOrders
         {
             base.GetProperties(list);
 
-            list.Add(1062344, Entries.Count.ToString()); // Deeds in book: ~1_val~
+            list.Add(1062344, $"{Entries.Count}"); // Deeds in book: ~1_val~
 
             if (!string.IsNullOrEmpty(m_BookName))
             {

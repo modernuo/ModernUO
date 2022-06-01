@@ -69,7 +69,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1062925, Petals.ToString()); // Petals:  ~1_COUNT~
+            list.Add(1062925, $"{Petals}"); // Petals:  ~1_COUNT~
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)

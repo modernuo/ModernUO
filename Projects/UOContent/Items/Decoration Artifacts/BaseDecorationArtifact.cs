@@ -15,7 +15,7 @@ public abstract partial class BaseDecorationArtifact : Item
     {
         base.GetProperties(list);
 
-        list.Add(1061078, ArtifactRarity.ToString()); // artifact rarity ~1_val~
+        list.Add(1061078, $"{ArtifactRarity}"); // artifact rarity ~1_val~
     }
 }
 
@@ -32,6 +32,6 @@ public abstract partial class BaseDecorationContainerArtifact : BaseContainer
     {
         base.AddNameProperties(list);
 
-        list.Add(1061078, ArtifactRarity.ToString()); // artifact rarity ~1_val~
+        list.Add(1061078, $"{ArtifactRarity}"); // artifact rarity ~1_val~
     }
 }

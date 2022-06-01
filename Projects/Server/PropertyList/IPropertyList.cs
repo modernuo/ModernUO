@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
@@ -11,6 +12,7 @@ public interface IPropertyList
     public void Add(string text);
 
     // String Interpolator
+    public void Add(ref PropertyListInterpolatedStringHandler handler);
     public void Add(int number, ref PropertyListInterpolatedStringHandler handler);
     public void InitializePropertyListInterpolation(int literalLength, int formattedCount);
     public void AppendLiteral(string value);
@@ -24,6 +26,7 @@ public interface IPropertyList
     public void AppendFormatted(string? value);
     public void AppendFormatted(string? value, int alignment, string? format = null);
 
+    [InterpolatedStringHandler]
     public ref struct PropertyListInterpolatedStringHandler
     {
         private IPropertyList _propertyList;
