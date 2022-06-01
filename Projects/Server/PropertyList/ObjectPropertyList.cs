@@ -147,14 +147,14 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void Add(
         [InterpolatedStringHandlerArgument("")]
-        ref IPropertyList.PropertyListInterpolatedStringHandler handler
+        ref IPropertyList.InterpolatedStringHandler handler
     ) => Add(GetStringNumber(), ref handler);
 
     // String Interpolation
     public void Add(
         int number,
         [InterpolatedStringHandlerArgument("")]
-        ref IPropertyList.PropertyListInterpolatedStringHandler handler)
+        ref IPropertyList.InterpolatedStringHandler handler)
     {
         if (number == 0)
         {
@@ -191,7 +191,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         _bufferPos += writer.BytesWritten;
     }
 
-    public void InitializePropertyListInterpolation(int literalLength, int formattedCount)
+    public void InitializeInterpolation(int literalLength, int formattedCount)
     {
         _arrayToReturnToPool ??= STArrayPool<char>.Shared.Rent(GetDefaultLength(literalLength, formattedCount));
         _pos = 0;
