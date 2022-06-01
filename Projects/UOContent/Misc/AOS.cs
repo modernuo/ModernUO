@@ -1459,7 +1459,7 @@ namespace Server
                 }
             }
 
-            if (Owner.Parent is Mobile m)
+            if (Owner?.Parent is Mobile m)
             {
                 m.CheckStatTimers();
                 m.UpdateResistances();
@@ -1475,7 +1475,7 @@ namespace Server
                 }
             }
 
-            Owner.InvalidateProperties();
+            Owner?.InvalidateProperties();
         }
 
         private int GetIndex(uint mask)

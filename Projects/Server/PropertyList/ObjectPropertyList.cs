@@ -31,7 +31,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     private int _pos;
     private char[]? _arrayToReturnToPool;
 
-    public ObjectPropertyList(IEntity e)
+    public ObjectPropertyList(IEntity? e)
     {
         Entity = e;
         _buffer = GC.AllocateUninitializedArray<byte>(64);
@@ -40,12 +40,12 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         writer.Write((byte)0xD6); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
         writer.Write((ushort)1);
-        writer.Write(e.Serial);
+        writer.Write(e?.Serial ?? Serial.Zero);
         writer.Write((ushort)0);
         _bufferPos = writer.Position + 4; // Hash
     }
 
-    public IEntity Entity { get; }
+    public IEntity? Entity { get; }
 
     public int Hash => 0x40000000 + _hash;
 
