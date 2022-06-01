@@ -5196,7 +5196,12 @@ namespace Server
 
                             if (oldAmount <= 0)
                             {
-                                logger.Error($"Item {item.GetType()} ({item.Serial}) has amount of {oldAmount}, but must be at least 1");
+                                logger.Error(
+                                    "Item {Type} ({Serial}) has amount of {OldAmount}, but must be at least 1",
+                                    item.GetType(),
+                                    item.Serial,
+                                    oldAmount
+                                );
                             }
                             else
                             {

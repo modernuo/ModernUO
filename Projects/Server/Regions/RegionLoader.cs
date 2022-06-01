@@ -64,7 +64,7 @@ namespace Server
             if (failures.Count == 0)
             {
                 logger.Information(
-                    "Regions loaded ({0} regions, {1} failures) ({2:F2} seconds)",
+                    "Regions loaded ({Count} regions, {FailureCount} failures) ({Duration:F2} seconds)",
                     count,
                     failures.Count,
                     stopwatch.Elapsed.TotalSeconds
@@ -73,13 +73,13 @@ namespace Server
             else
             {
                 logger.Warning(
-                    "Failed loading regions ({0} regions, {1} failures) ({2:F2} seconds)",
+                    "Failed loading regions ({Count} regions, {FailureCount} failures) ({Duration:F2} seconds)",
                     count,
                     failures.Count,
                     stopwatch.Elapsed.TotalSeconds
                 );
 
-                logger.Warning(string.Join(Environment.NewLine, failures));
+                logger.Warning("{Failures}", failures);
             }
         }
     }
