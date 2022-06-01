@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace Server.Text;
 
-public interface ISelfInterpolatedStringHandler<T>
+public interface ISelfInterpolatedStringHandler
 {
     public void Add([InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
     public void Add(int number, [InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
@@ -37,9 +37,9 @@ public interface ISelfInterpolatedStringHandler<T>
     [InterpolatedStringHandler]
     public ref struct InterpolatedStringHandler
     {
-        private ISelfInterpolatedStringHandler<T> _parent;
+        private ISelfInterpolatedStringHandler _parent;
 
-        public InterpolatedStringHandler(int literalLength, int formattedCount, ISelfInterpolatedStringHandler<T> parent)
+        public InterpolatedStringHandler(int literalLength, int formattedCount, ISelfInterpolatedStringHandler parent)
         {
             _parent = parent;
             _parent.InitializeInterpolation(literalLength, formattedCount);

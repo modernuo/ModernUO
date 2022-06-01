@@ -17,7 +17,7 @@ using Server.Text;
 
 namespace Server;
 
-public interface IPropertyList : ISelfInterpolatedStringHandler<IPropertyList>
+public interface IPropertyList : ISelfInterpolatedStringHandler
 {
     public void Reset();
     public void Terminate();
