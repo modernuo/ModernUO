@@ -30,7 +30,7 @@ namespace Server.Items
 
         public override string DefaultName => "a gambling stone";
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

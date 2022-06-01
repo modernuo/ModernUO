@@ -26,7 +26,7 @@ namespace Server.Items
             ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

@@ -196,7 +196,7 @@ namespace Server.Items
             m_SkillMod = null;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

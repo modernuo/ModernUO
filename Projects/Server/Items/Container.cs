@@ -755,7 +755,7 @@ namespace Server.Items
 
         public virtual void SendContentTo(NetState state) => state.SendContainerContent(state.Mobile, this);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

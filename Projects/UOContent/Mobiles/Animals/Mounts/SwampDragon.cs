@@ -152,7 +152,7 @@ namespace Server.Mobiles
 
         public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

@@ -78,7 +78,7 @@ namespace Server.Items
             return base.CheckLift(from, item, ref reject);
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

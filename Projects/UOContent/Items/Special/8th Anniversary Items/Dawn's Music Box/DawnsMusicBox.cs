@@ -141,7 +141,7 @@ namespace Server.Items
             box.Tracks.AddRange(Tracks);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

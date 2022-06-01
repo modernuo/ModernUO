@@ -253,7 +253,7 @@ namespace Server.Items
 
         public Item Deed => new TrophyDeed(WestID, NorthID, DeedNumber, m_AddonNumber, m_Hunter, m_AnimalWeight);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -428,7 +428,7 @@ namespace Server.Items
 
         public override int LabelNumber => m_DeedNumber;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

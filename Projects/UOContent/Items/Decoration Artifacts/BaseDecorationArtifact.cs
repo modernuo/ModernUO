@@ -11,7 +11,7 @@ public abstract partial class BaseDecorationArtifact : Item
 
     public override bool ForceShowProperties => true;
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 
@@ -28,7 +28,7 @@ public abstract partial class BaseDecorationContainerArtifact : BaseContainer
 
     public override bool ForceShowProperties => true;
 
-    public override void AddNameProperties(ObjectPropertyList list)
+    public override void AddNameProperties(IPropertyList list)
     {
         base.AddNameProperties(list);
 

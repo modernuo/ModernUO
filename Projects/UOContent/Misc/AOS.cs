@@ -1035,7 +1035,7 @@ namespace Server
             set => SetSkill(4, value);
         }
 
-        public void GetProperties(ObjectPropertyList list)
+        public void GetProperties(IPropertyList list)
         {
             for (var i = 0; i < 5; ++i)
             {

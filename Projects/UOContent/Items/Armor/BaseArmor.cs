@@ -1223,7 +1223,7 @@ namespace Server.Items
             base.OnRemoved(parent);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var oreType = _rawResource switch
             {
@@ -1282,7 +1282,7 @@ namespace Server.Items
 
         public virtual int GetLuckBonus() => CraftResources.GetInfo(_rawResource)?.AttributeInfo?.ArmorLuck ?? 0;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

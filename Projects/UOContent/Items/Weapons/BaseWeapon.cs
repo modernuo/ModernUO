@@ -2750,7 +2750,7 @@ namespace Server.Items
             return hue;
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var oreType = m_Resource switch
             {
@@ -2815,7 +2815,7 @@ namespace Server.Items
 
         public virtual int GetLuckBonus() => CraftResources.GetInfo(m_Resource)?.AttributeInfo?.WeaponLuck ?? 0;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

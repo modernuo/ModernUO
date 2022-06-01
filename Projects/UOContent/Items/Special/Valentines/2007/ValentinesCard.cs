@@ -52,7 +52,7 @@ namespace Server.Items
          *
          */
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(m_LabelNumber, $"{m_To ?? Unsigned}\t{m_From ?? Unsigned}");
         }

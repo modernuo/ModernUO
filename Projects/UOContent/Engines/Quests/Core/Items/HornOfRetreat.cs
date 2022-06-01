@@ -43,7 +43,7 @@ namespace Server.Engines.Quests
 
         public virtual bool ValidateUse(Mobile from) => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

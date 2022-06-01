@@ -532,7 +532,7 @@ namespace Server
         private bool m_Player;
         private Poison m_Poison;
         private Prompt m_Prompt;
-        private ObjectPropertyList m_PropertyList;
+        private IPropertyList m_PropertyList;
         private Race m_Race;
         private Region m_Region;
 
@@ -2474,9 +2474,9 @@ namespace Server
         public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
         public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
-        public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+        public IPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
-        public virtual void GetProperties(ObjectPropertyList list)
+        public virtual void GetProperties(IPropertyList list)
         {
             AddNameProperties(list);
         }
@@ -3445,7 +3445,7 @@ namespace Server
 
         public virtual string ApplyNameSuffix(string suffix) => suffix;
 
-        public virtual void AddNameProperties(ObjectPropertyList list)
+        public virtual void AddNameProperties(IPropertyList list)
         {
             var name = Name ?? "";
 
@@ -3504,11 +3504,11 @@ namespace Server
             }
         }
 
-        public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildProperties(IPropertyList list, Item item)
         {
         }
 
-        public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildNameProperties(IPropertyList list, Item item)
         {
         }
 
@@ -7309,7 +7309,7 @@ namespace Server
             return delta != 0 ? body : 0;
         }
 
-        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
+        private IPropertyList InitializePropertyList(IPropertyList list)
         {
             GetProperties(list);
             list.Terminate();

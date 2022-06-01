@@ -248,7 +248,7 @@ namespace Server.Engines.Plants
             InvalidateProperties();
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
             {

@@ -934,12 +934,12 @@ namespace Server.Engines.CannedEvil
             return new Point3D(X + x, Y + y, Z - 15);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add("champion spawn");
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

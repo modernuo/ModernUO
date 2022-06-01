@@ -14,7 +14,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1074431; // An aquarium flake sphere
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

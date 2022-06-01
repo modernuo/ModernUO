@@ -29,7 +29,7 @@ namespace Server.Items
 
         public override string DefaultTitle => "<basefont color=#FFFFFF>Scroll of Alacrity:</basefont>";
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

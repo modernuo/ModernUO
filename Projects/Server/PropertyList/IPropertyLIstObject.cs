@@ -17,7 +17,7 @@ namespace Server;
 
 public interface IPropertyListObject : IEntity
 {
-    ObjectPropertyList PropertyList { get; }
+    IPropertyList PropertyList { get; }
 
-    void GetProperties(ObjectPropertyList list);
+    void GetProperties(IPropertyList list);
 }

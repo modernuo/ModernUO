@@ -115,7 +115,7 @@ namespace Server.Items
         public override BaseAddon Addon => new MiniHouseAddon(m_Type);
         public override int LabelNumber => 1062096; // a mini house deed
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

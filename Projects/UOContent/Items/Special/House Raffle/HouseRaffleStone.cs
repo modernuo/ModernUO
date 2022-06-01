@@ -398,7 +398,7 @@ namespace Server.Items
 
         public string FormatPrice() => m_TicketPrice == 0 ? "FREE" : $"{m_TicketPrice} gold";
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
