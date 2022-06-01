@@ -175,7 +175,7 @@ namespace Server.Items
             }
             else
             {
-                list.Add("a power scroll of {0} ({1} Skill)", GetName(), Value);
+                list.Add($"a power scroll of {GetName()} ({Value} Skill)");
             }
         }
 
@@ -189,7 +189,7 @@ namespace Server.Items
             }
             else
             {
-                LabelTo(from, "a power scroll of {0} ({1} Skill)", GetName(), Value);
+                LabelTo(from, $"a power scroll of {GetName()} ({Value} Skill)");
             }
         }
 

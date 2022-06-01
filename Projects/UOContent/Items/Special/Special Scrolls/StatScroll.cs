@@ -59,7 +59,8 @@ namespace Server.Items
             }
             else
             {
-                list.Add("a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
+                var diff = Value - 225;
+                list.Add($"a scroll of power ({(diff >= 0 ? "+" : "")}{diff} Maximum Stats)");
             }
         }
 
@@ -73,7 +74,8 @@ namespace Server.Items
             }
             else
             {
-                LabelTo(from, "a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
+                var diff = Value - 225;
+                LabelTo(from, $"a scroll of power ({(diff >= 0 ? "+" : "")}{diff} Maximum Stats)");
             }
         }
 

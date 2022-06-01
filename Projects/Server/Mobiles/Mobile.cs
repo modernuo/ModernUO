@@ -3478,7 +3478,7 @@ namespace Server
 
             suffix = ApplyNameSuffix(suffix);
 
-            list.Add(1050045, "{0} \t{1}\t {2}", prefix, name, suffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+            list.Add(1050045, $"{prefix}\t{name}\t{suffix}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
             if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
             {
@@ -3488,14 +3488,11 @@ namespace Server
 
                 if (title.Length > 0)
                 {
-                    if (NewGuildDisplay)
-                    {
-                        list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
-                    }
-                    else
-                    {
-                        list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
-                    }
+                    list.Add(
+                        NewGuildDisplay
+                            ? $"{Utility.FixHtml(title)}, {Utility.FixHtml(guild.Name)}"
+                            : $"{Utility.FixHtml(title)}, {Utility.FixHtml(guild.Name)} Guild{type}"
+                    );
                 }
                 else
                 {

@@ -3531,32 +3531,26 @@ namespace Server.Mobiles
                     {
                         list.Add(
                             1042734,
-                            "{0}\t{1}",
-                            pl.Sheriff.Definition.FriendlyName,
-                            faction.Definition.PropName
+                            $"{pl.Sheriff.Definition.FriendlyName}\t{faction.Definition.PropName}"
                         ); // The Sheriff of  ~1_CITY~, ~2_FACTION_NAME~
                     }
                     else if (pl.Finance != null)
                     {
                         list.Add(
-                            1042735,
-                            "{0}\t{1}",
-                            pl.Finance.Definition.FriendlyName,
-                            faction.Definition.PropName
-                        ); // The Finance Minister of ~1_CITY~, ~2_FACTION_NAME~
+                            1042735, // The Finance Minister of ~1_CITY~, ~2_FACTION_NAME~
+                            $"{pl.Finance.Definition.FriendlyName}\t{faction.Definition.PropName}"
+                        );
                     }
                     else if (pl.MerchantTitle != MerchantTitle.None)
                     {
                         list.Add(
-                            1060776,
-                            "{0}\t{1}",
-                            MerchantTitles.GetInfo(pl.MerchantTitle).Title,
-                            faction.Definition.PropName
-                        ); // ~1_val~, ~2_val~
+                            1060776, // ~1_val~, ~2_val~
+                            $"{MerchantTitles.GetInfo(pl.MerchantTitle).Title}\t{faction.Definition.PropName}"
+                        );
                     }
                     else
                     {
-                        list.Add(1060776, "{0}\t{1}", pl.Rank.Title, faction.Definition.PropName); // ~1_val~, ~2_val~
+                        list.Add(1060776, $"{pl.Rank.Title}\t{faction.Definition.PropName}"); // ~1_val~, ~2_val~
                     }
                 }
             }

@@ -256,16 +256,16 @@ namespace Server.Items
             {
                 if (ammo is Arrow)
                 {
-                    list.Add(1075265, "{0}\t{1}", ammo.Amount, Capacity); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ arrows
+                    list.Add(1075265, $"{ammo.Amount}\t{Capacity}"); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ arrows
                 }
                 else if (ammo is Bolt)
                 {
-                    list.Add(1075266, "{0}\t{1}", ammo.Amount, Capacity); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ bolts
+                    list.Add(1075266, $"{ammo.Amount}\t{Capacity}"); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ bolts
                 }
             }
             else
             {
-                list.Add(1075265, "{0}\t{1}", 0, Capacity); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ arrows
+                list.Add(1075265, $"0\t{Capacity}"); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ arrows
             }
 
             int prop;
@@ -429,13 +429,9 @@ namespace Server.Items
             var weight = ammo != null ? ammo.Weight + ammo.Amount : 0;
 
             list.Add(
-                1072241,
-                "{0}\t{1}\t{2}\t{3}",
-                Items.Count,
-                DefaultMaxItems,
-                (int)weight,
-                DefaultMaxWeight
-            ); // Contents: ~1_COUNT~/~2_MAXCOUNT items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
+                1072241, // Contents: ~1_COUNT~/~2_MAXCOUNT items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
+                $"{Items.Count}\t{DefaultMaxItems}\t{(int)weight}\t{DefaultMaxWeight}"
+            );
 
             if ((prop = m_WeightReduction) != 0)
             {

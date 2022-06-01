@@ -1041,7 +1041,7 @@ namespace Server
             {
                 if (GetValues(i, out var skill, out var bonus))
                 {
-                    list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
+                    list.Add(1060451 + i, $"#{GetLabel(skill)}\t{bonus}");
                 }
             }
         }

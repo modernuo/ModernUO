@@ -608,41 +608,33 @@ namespace Server.Items
             if (m_Killer?.IsEmpty == false && m_Killer.Amount > 0)
             {
                 list.Add(
-                    1072388,
-                    "{0}\t{1}",
-                    m_Killer.Name?.ToString() ?? "Unknown",
-                    m_Killer.Amount
-                ); // ~1_NAME~ Killer: +~2_val~%
+                    1072388, // ~1_NAME~ Killer: +~2_val~%
+                    $"{m_Killer.Name ?? "Unknown"}\t{m_Killer.Amount}"
+                );
             }
 
             if (m_Protection?.IsEmpty == false && m_Protection.Amount > 0)
             {
                 list.Add(
-                    1072387,
-                    "{0}\t{1}",
-                    m_Protection.Name?.ToString() ?? "Unknown",
-                    m_Protection.Amount
-                ); // ~1_NAME~ Protection: +~2_val~%
+                    1072387, // ~1_NAME~ Protection: +~2_val~%
+                    $"{m_Protection.Name ?? "Unknown"}\t{m_Protection.Amount}"
+                );
             }
 
             if (m_ExceptionalBonus != 0)
             {
                 list.Add(
-                    1072395,
-                    "#{0}\t{1}",
-                    AosSkillBonuses.GetLabel(m_Skill),
-                    m_ExceptionalBonus
-                ); // ~1_NAME~ Exceptional Bonus: ~2_val~%
+                    1072395, // ~1_NAME~ Exceptional Bonus: ~2_val~%
+                    $"#{AosSkillBonuses.GetLabel(m_Skill)}\t{m_ExceptionalBonus}"
+                );
             }
 
             if (m_SuccessBonus != 0)
             {
                 list.Add(
-                    1072394,
-                    "#{0}\t{1}",
-                    AosSkillBonuses.GetLabel(m_Skill),
-                    m_SuccessBonus
-                ); // ~1_NAME~ Bonus: ~2_val~%
+                    1072394, // ~1_NAME~ Bonus: ~2_val~%
+                    $"#{AosSkillBonuses.GetLabel(m_Skill)}\t{m_SuccessBonus}"
+                );
             }
 
             SkillBonuses.GetProperties(list);

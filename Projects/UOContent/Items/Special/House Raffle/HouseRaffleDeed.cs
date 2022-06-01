@@ -92,12 +92,11 @@ namespace Server.Items
             if (ValidLocation())
             {
                 list.Add(
-                    1060658,
-                    "location\t{0}",
-                    HouseRaffleStone.FormatLocation(m_PlotLocation, m_Facet, false)
-                );                                        // ~1_val~: ~2_val~
-                list.Add(1060659, "facet\t{0}", m_Facet); // ~1_val~: ~2_val~
-                list.Add(1150486);                        // [Marked Item]
+                    1060658, // ~1_val~: ~2_val~
+                    $"location\t{HouseRaffleStone.FormatLocation(m_PlotLocation, m_Facet, false)}"
+                );
+                list.Add(1060659, $"facet\t{m_Facet}"); // ~1_val~: ~2_val~
+                list.Add(1150486);                      // [Marked Item]
             }
 
             if (IsExpired)

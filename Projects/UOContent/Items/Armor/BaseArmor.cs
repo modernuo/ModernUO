@@ -1223,8 +1223,6 @@ namespace Server.Items
             base.OnRemoved(parent);
         }
 
-        private string GetNameString() => Name ?? $"#{LabelNumber}";
-
         public override void AddNameProperty(ObjectPropertyList list)
         {
             var oreType = _rawResource switch
@@ -1249,31 +1247,26 @@ namespace Server.Items
                 _                           => 0
             };
 
-            if (_quality == ArmorQuality.Exceptional)
+            var name = Name;
+
+            if (oreType != 0)
             {
-                if (oreType != 0)
-                {
-                    list.Add(1053100, "#{0}\t{1}", oreType, GetNameString()); // exceptional ~1_oretype~ ~2_armortype~
-                }
-                else
-                {
-                    list.Add(1050040, GetNameString()); // exceptional ~1_ITEMNAME~
-                }
+                list.Add(
+                    _quality == ArmorQuality.Exceptional ? 1053100 : 1053099,
+                    name != null ? $"#{oreType}\t{Name}" : $"#{oreType}\t#{LabelNumber}"
+                );
+            }
+            else if (_quality == ArmorQuality.Exceptional)
+            {
+                list.Add(1050040, name ?? $"#{LabelNumber}"); // exceptional ~1_ITEMNAME~
+            }
+            else if (name == null)
+            {
+                list.Add(LabelNumber);
             }
             else
             {
-                if (oreType != 0)
-                {
-                    list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
-                }
-                else if (Name == null)
-                {
-                    list.Add(LabelNumber);
-                }
-                else
-                {
-                    list.Add(Name);
-                }
+                list.Add(Name);
             }
         }
 
@@ -1471,7 +1464,7 @@ namespace Server.Items
 
             if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", _hitPoints, _maxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, $"{_hitPoints}\t{_maxHitPoints}"); // durability ~1_val~ / ~2_val~
             }
         }
 

@@ -2716,8 +2716,6 @@ namespace Server.Items
             from.Animate(action, 7, 1, true, false, 0);
         }
 
-        private string GetNameString() => Name ?? $"#{LabelNumber}";
-
         public int GetElementalDamageHue()
         {
             GetDamageTypes(null, out _, out var fire, out var cold, out var pois, out var nrgy, out _, out _);
@@ -2776,17 +2774,19 @@ namespace Server.Items
                 _                           => 0
             };
 
+            var name = Name;
+
             if (oreType != 0)
             {
-                list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
+                list.Add(1053099, name != null ? $"#{oreType}\t{name}" : $"#{oreType}\t#{LabelNumber}"); // ~1_oretype~ ~2_armortype~
             }
-            else if (Name == null)
+            else if (name == null)
             {
                 list.Add(LabelNumber);
             }
             else
             {
-                list.Add(Name);
+                list.Add(name);
             }
 
             /*
@@ -3161,7 +3161,7 @@ namespace Server.Items
                 list.Add(1079978, direct.ToString()); // Direct Damage: ~1_PERCENT~%
             }
 
-            list.Add(1061168, "{0}\t{1}", MinDamage.ToString(), MaxDamage.ToString()); // weapon damage ~1_val~ - ~2_val~
+            list.Add(1061168, $"{MinDamage}\t{MaxDamage}"); // weapon damage ~1_val~ - ~2_val~
 
             if (Core.ML)
             {
@@ -3222,7 +3222,7 @@ namespace Server.Items
 
             if (m_Hits >= 0 && m_MaxHits > 0)
             {
-                list.Add(1060639, "{0}\t{1}", m_Hits, m_MaxHits); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, $"{m_Hits}\t{m_MaxHits}"); // durability ~1_val~ / ~2_val~
             }
         }
 

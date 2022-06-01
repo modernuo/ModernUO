@@ -662,8 +662,6 @@ namespace Server.Items
             };
         }
 
-        private string GetNameString() => Name ?? $"#{LabelNumber}";
-
         public override void AddNameProperty(ObjectPropertyList list)
         {
             var oreType = _rawResource switch
@@ -688,17 +686,19 @@ namespace Server.Items
                 _                           => 0
             };
 
+            var name = Name;
+
             if (oreType != 0)
             {
-                list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
+                list.Add(1053099, name != null ? $"#{oreType}\t{name}" : $"#{oreType}\t#{LabelNumber}"); // ~1_oretype~ ~2_armortype~
             }
-            else if (Name == null)
+            else if (name == null)
             {
                 list.Add(LabelNumber);
             }
             else
             {
-                list.Add(Name);
+                list.Add(name);
             }
         }
 
@@ -889,7 +889,7 @@ namespace Server.Items
 
             if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", _hitPoints, _maxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, $"{_hitPoints}\t{_maxHitPoints}"); // durability ~1_val~ / ~2_val~
             }
         }
 

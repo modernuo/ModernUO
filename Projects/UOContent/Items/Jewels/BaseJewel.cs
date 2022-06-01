@@ -392,7 +392,7 @@ namespace Server.Items
 
             if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, $"{m_HitPoints}\t{m_MaxHitPoints}"); // durability ~1_val~ / ~2_val~
             }
         }
 

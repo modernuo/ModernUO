@@ -79,7 +79,7 @@ namespace Server.Items
 
             if (m_Bonus != 0)
             {
-                list.Add(1060451, "#1042354\t{0}", m_Bonus.ToString()); // ~1_skillname~ +~2_val~
+                list.Add(1060451, $"#1042354\t{m_Bonus}"); // ~1_skillname~ +~2_val~
             }
         }
 

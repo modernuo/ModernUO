@@ -1829,7 +1829,7 @@ namespace Server
                 }
                 else
                 {
-                    list.Add(1050039, "{0}\t#{1}", m_Amount, LabelNumber); // ~1_NUMBER~ ~2_ITEMNAME~
+                    list.Add(1050039, $"{m_Amount}\t#{LabelNumber}"); // ~1_NUMBER~ ~2_ITEMNAME~
                 }
             }
             else
@@ -1840,7 +1840,7 @@ namespace Server
                 }
                 else
                 {
-                    list.Add(1050039, "{0}\t{1}", m_Amount, Name); // ~1_NUMBER~ ~2_ITEMNAME~
+                    list.Add(1050039, $"{m_Amount}\t{Name}"); // ~1_NUMBER~ ~2_ITEMNAME~
                 }
             }
         }
@@ -1995,7 +1995,7 @@ namespace Server
         /// </summary>
         public virtual void AddBlessedForProperty(ObjectPropertyList list, Mobile m)
         {
-            list.Add(1062203, "{0}", m.Name); // Blessed for ~1_NAME~
+            list.Add(1062203, m.Name); // Blessed for ~1_NAME~
         }
 
         /// <summary>
