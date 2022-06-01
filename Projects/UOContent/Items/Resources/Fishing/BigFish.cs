@@ -37,7 +37,7 @@ namespace Server.Items
                     list.Add(1070857, _fisher.Name); // Caught by ~1_fisherman~
                 }
 
-                list.Add(1070858, $"{((int)Weight)}"); // ~1_weight~ stones
+                list.Add(1070858, $"{(int)Weight}"); // ~1_weight~ stones
             }
         }
 
