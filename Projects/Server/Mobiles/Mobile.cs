@@ -3447,55 +3447,49 @@ namespace Server
 
         public virtual void AddNameProperties(IPropertyList list)
         {
-            var name = Name ?? "";
+            var name = Name ?? " ";
 
             string prefix;
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
             {
-                prefix = m_Female ? "Lady" : "Lord";
+                prefix = m_Female ? "Lady " : "Lord ";
             }
             else
             {
-                prefix = "";
+                prefix = " ";
             }
 
-            var suffix = "";
+            var title = PropertyTitle && !string.IsNullOrEmpty(Title) ? Title : "";
 
-            if (PropertyTitle && !string.IsNullOrEmpty(Title))
-            {
-                suffix = Title;
-            }
-
+            string suffix;
             var guild = m_Guild;
-
             if (guild != null && (m_Player || m_DisplayGuildTitle))
             {
-                suffix = suffix.Length > 0
-                    ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
+                suffix = title.Length > 0
+                    ? $"{title} [{Utility.FixHtml(guild.Abbreviation)}]"
                     : $"[{Utility.FixHtml(guild.Abbreviation)}]";
             }
+            else
+            {
+                suffix = " ";
+            }
 
-            suffix = ApplyNameSuffix(suffix);
-
-            list.Add(1050045, $"{prefix}\t{name}\t{suffix}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+            list.Add(1050045, $"{prefix}\t{name}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
             if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
             {
                 var type = guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length ? m_GuildTypes[(int)guild.Type] : "";
 
-                var title = GuildTitle?.Trim() ?? "";
+                var guildTitle = GuildTitle?.Trim() ?? "";
 
-                if (title.Length > 0)
+                if (guildTitle.Length > 0)
                 {
-                    if (NewGuildDisplay)
-                    {
-                        list.Add($"{Utility.FixHtml(title)}, {Utility.FixHtml(guild.Name)}");
-                    }
-                    else
-                    {
-                        list.Add($"{Utility.FixHtml(title)}, {Utility.FixHtml(guild.Name)} Guild{type}");
-                    }
+                    list.Add(
+                        NewGuildDisplay
+                            ? $"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}"
+                            : $"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}"
+                    );
                 }
                 else
                 {
