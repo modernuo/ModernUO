@@ -21,7 +21,6 @@ namespace Server.Text;
 public interface ISelfInterpolatedStringHandler
 {
     public void Add([InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
-    public void Add(int number, [InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
     public void InitializeInterpolation(int literalLength, int formattedCount);
     public void AppendLiteral(string value);
     public void AppendFormatted<T>(T value);

@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Runtime.CompilerServices;
 using Server.Text;
 
 namespace Server;
@@ -23,4 +24,7 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     public void Terminate();
     public void Add(int number, string argument = null);
     public void Add(string text);
+
+    // String Interpolation
+    public void Add(int number, [InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
 }
