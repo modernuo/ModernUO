@@ -322,7 +322,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         };
     }
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 

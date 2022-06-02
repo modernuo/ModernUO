@@ -3700,7 +3700,7 @@ namespace Server.Multis
 
             public override string DefaultName => "a house transfer contract";
 
-            public override void GetProperties(ObjectPropertyList list)
+            public override void GetProperties(IPropertyList list)
             {
                 base.GetProperties(list);
 

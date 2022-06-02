@@ -560,12 +560,25 @@ namespace Server
                 return str;
             }
 
-            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(40960, str.Length)]);
+            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(128, str.Length)]);
             ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
             ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
             sb.ReplaceAny(invalid, replacement, 0, sb.Length);
 
             return sb.ToString();
+        }
+
+        public static void FixHtml(Span<char> chars)
+        {
+            if (chars.Length == 0)
+            {
+                return;
+            }
+
+            ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
+            ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
+
+            chars.ReplaceAny(invalid, replacement);
         }
 
         public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);

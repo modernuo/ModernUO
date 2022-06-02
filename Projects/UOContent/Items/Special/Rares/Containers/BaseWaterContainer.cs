@@ -101,7 +101,7 @@
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             if (IsEmpty)
             {

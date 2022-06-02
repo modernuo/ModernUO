@@ -124,7 +124,7 @@ namespace Server.Engines.Plants
             return hueInfo.IsBright() ? 1113491 : 1113490; // ~1_amount~ [bright] ~2_val~ seeds
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(GetLabel(out var args), args);
         }

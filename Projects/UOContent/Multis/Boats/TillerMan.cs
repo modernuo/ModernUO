@@ -29,7 +29,7 @@ namespace Server.Items
             };
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -46,7 +46,7 @@ namespace Server.Items
             PublicOverheadMessage(MessageType.Regular, 0x3B2, number, args);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (m_Boat?.ShipName != null)
             {

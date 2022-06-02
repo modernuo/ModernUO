@@ -47,7 +47,7 @@ namespace Server.Items
 
         public bool CanSign => !IsSigned || Core.Now <= EditLimit;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (_owner != null)
             {
@@ -63,7 +63,7 @@ namespace Server.Items
             AddLine(list, 1150303, _line3); // [ ~1_LINE2~ ]
         }
 
-        private static void AddLine(ObjectPropertyList list, int cliloc, string line)
+        private static void AddLine(IPropertyList list, int cliloc, string line)
         {
             if (line != null)
             {

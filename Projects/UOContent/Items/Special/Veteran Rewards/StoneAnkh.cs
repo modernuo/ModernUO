@@ -15,7 +15,7 @@ namespace Server.Items
 
         public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -90,7 +90,7 @@ namespace Server.Items
             from.SendLocalizedMessage(500489); // You can't use an axe on that.
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -202,7 +202,7 @@ namespace Server.Items
             base.OnDoubleClick(m);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

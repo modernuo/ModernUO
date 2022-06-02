@@ -29,11 +29,11 @@ namespace Server.Items
 
         public override string DefaultTitle => "<basefont color=#FFFFFF>Scroll of Alacrity:</basefont>";
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1071345, "{0} 15 Minutes", GetName()); // Skill: ~1_val~
+            list.Add(1071345, $"{GetName()} 15 Minutes"); // Skill: ~1_val~
         }
 
         public override bool CanUse(Mobile from)

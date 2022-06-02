@@ -176,7 +176,7 @@ namespace Server
         Spawner = 0x100
     }
 
-    public class Item : IHued, IComparable<Item>, ISpawnable, IPropertyListObject
+    public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
@@ -769,7 +769,7 @@ namespace Server
         ///     custom
         ///     properties.
         /// </summary>
-        public virtual void GetProperties(ObjectPropertyList list)
+        public virtual void GetProperties(IPropertyList list)
         {
             AddNameProperties(list);
         }
@@ -1817,7 +1817,7 @@ namespace Server
         ///     Overridable. Adds the name of this item to the given <see cref="ObjectPropertyList" />. This method should be overridden
         ///     if the item requires a complex naming format.
         /// </summary>
-        public virtual void AddNameProperty(ObjectPropertyList list)
+        public virtual void AddNameProperty(IPropertyList list)
         {
             var name = Name;
 
@@ -1829,7 +1829,7 @@ namespace Server
                 }
                 else
                 {
-                    list.Add(1050039, "{0}\t#{1}", m_Amount, LabelNumber); // ~1_NUMBER~ ~2_ITEMNAME~
+                    list.Add(1050039, $"{m_Amount}\t#{LabelNumber}"); // ~1_NUMBER~ ~2_ITEMNAME~
                 }
             }
             else
@@ -1840,7 +1840,7 @@ namespace Server
                 }
                 else
                 {
-                    list.Add(1050039, "{0}\t{1}", m_Amount, Name); // ~1_NUMBER~ ~2_ITEMNAME~
+                    list.Add(1050039, $"{m_Amount}\t{Name}"); // ~1_NUMBER~ ~2_ITEMNAME~
                 }
             }
         }
@@ -1849,7 +1849,7 @@ namespace Server
         ///     Overridable. Adds the loot type of this item to the given <see cref="ObjectPropertyList" />. By default, this will be
         ///     either 'blessed', 'cursed', or 'insured'.
         /// </summary>
-        public virtual void AddLootTypeProperty(ObjectPropertyList list)
+        public virtual void AddLootTypeProperty(IPropertyList list)
         {
             if (m_LootType == LootType.Blessed)
             {
@@ -1868,59 +1868,51 @@ namespace Server
         /// <summary>
         ///     Overridable. Adds any elemental resistances of this item to the given <see cref="ObjectPropertyList" />.
         /// </summary>
-        public virtual void AddResistanceProperties(ObjectPropertyList list)
+        public virtual void AddResistanceProperties(IPropertyList list)
         {
             var v = PhysicalResistance;
 
             if (v != 0)
             {
-                list.Add(1060448, v.ToString()); // physical resist ~1_val~%
+                list.Add(1060448, $"{v}"); // physical resist ~1_val~%
             }
 
             v = FireResistance;
 
             if (v != 0)
             {
-                list.Add(1060447, v.ToString()); // fire resist ~1_val~%
+                list.Add(1060447, $"{v}"); // fire resist ~1_val~%
             }
 
             v = ColdResistance;
 
             if (v != 0)
             {
-                list.Add(1060445, v.ToString()); // cold resist ~1_val~%
+                list.Add(1060445, $"{v}"); // cold resist ~1_val~%
             }
 
             v = PoisonResistance;
 
             if (v != 0)
             {
-                list.Add(1060449, v.ToString()); // poison resist ~1_val~%
+                list.Add(1060449, $"{v}"); // poison resist ~1_val~%
             }
 
             v = EnergyResistance;
 
             if (v != 0)
             {
-                list.Add(1060446, v.ToString()); // energy resist ~1_val~%
+                list.Add(1060446, $"{v}"); // energy resist ~1_val~%
             }
         }
 
         /// <summary>
         ///     Overridable. Displays cliloc 1072788-1072789.
         /// </summary>
-        public virtual void AddWeightProperty(ObjectPropertyList list)
+        public virtual void AddWeightProperty(IPropertyList list)
         {
             var weight = PileWeight + TotalWeight;
-
-            if (weight == 1)
-            {
-                list.Add(1072788, weight.ToString()); // Weight: ~1_WEIGHT~ stone
-            }
-            else
-            {
-                list.Add(1072789, weight.ToString()); // Weight: ~1_WEIGHT~ stones
-            }
+            list.Add(weight == 1 ? 1072788 : 1072789, $"{weight}");
         }
 
         /// <summary>
@@ -1928,7 +1920,7 @@ namespace Server
         ///     <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if
         ///     <see cref="DisplayLootType" />).
         /// </summary>
-        public virtual void AddNameProperties(ObjectPropertyList list)
+        public virtual void AddNameProperties(IPropertyList list)
         {
             AddNameProperty(list);
 
@@ -1969,7 +1961,7 @@ namespace Server
         /// <summary>
         ///     Overridable. Adds the "Quest Item" property to the given <see cref="ObjectPropertyList" />.
         /// </summary>
-        public virtual void AddQuestItemProperty(ObjectPropertyList list)
+        public virtual void AddQuestItemProperty(IPropertyList list)
         {
             list.Add(1072351); // Quest Item
         }
@@ -1977,7 +1969,7 @@ namespace Server
         /// <summary>
         ///     Overridable. Adds the "Locked Down & Secure" property to the given <see cref="ObjectPropertyList" />.
         /// </summary>
-        public virtual void AddSecureProperty(ObjectPropertyList list)
+        public virtual void AddSecureProperty(IPropertyList list)
         {
             list.Add(501644); // locked down & secure
         }
@@ -1985,7 +1977,7 @@ namespace Server
         /// <summary>
         ///     Overridable. Adds the "Locked Down" property to the given <see cref="ObjectPropertyList" />.
         /// </summary>
-        public virtual void AddLockedDownProperty(ObjectPropertyList list)
+        public virtual void AddLockedDownProperty(IPropertyList list)
         {
             list.Add(501643); // locked down
         }
@@ -1993,9 +1985,9 @@ namespace Server
         /// <summary>
         ///     Overridable. Adds the "Blessed for ~1_NAME~" property to the given <see cref="ObjectPropertyList" />.
         /// </summary>
-        public virtual void AddBlessedForProperty(ObjectPropertyList list, Mobile m)
+        public virtual void AddBlessedForProperty(IPropertyList list, Mobile m)
         {
-            list.Add(1062203, "{0}", m.Name); // Blessed for ~1_NAME~
+            list.Add(1062203, m.Name); // Blessed for ~1_NAME~
         }
 
         /// <summary>
@@ -2003,7 +1995,7 @@ namespace Server
         ///     Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
         ///     <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>.
         /// </summary>
-        public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildProperties(IPropertyList list, Item item)
         {
             if (m_Parent is Item parentItem)
             {
@@ -2021,7 +2013,7 @@ namespace Server
         ///     . Recursively calls <see cref="Item.GetChildProperties">Item.GetChildNameProperties</see> or
         ///     <see cref="Mobile.GetChildProperties">Mobile.GetChildNameProperties</see>.
         /// </summary>
-        public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildNameProperties(IPropertyList list, Item item)
         {
             if (m_Parent is Item parentItem)
             {
@@ -2377,7 +2369,7 @@ namespace Server
             return bounds;
         }
 
-        public virtual void AppendChildProperties(ObjectPropertyList list)
+        public virtual void AppendChildProperties(IPropertyList list)
         {
             if (m_Parent is Item item)
             {
@@ -2389,7 +2381,7 @@ namespace Server
             }
         }
 
-        public virtual void AppendChildNameProperties(ObjectPropertyList list)
+        public virtual void AppendChildNameProperties(IPropertyList list)
         {
             if (m_Parent is Item item)
             {
