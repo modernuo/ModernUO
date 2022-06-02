@@ -2784,7 +2784,7 @@ namespace Server.Mobiles
             base.OnDoubleClick(from);
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

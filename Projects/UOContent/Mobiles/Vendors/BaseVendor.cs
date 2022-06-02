@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Factions;
@@ -876,7 +877,7 @@ namespace Server.Mobiles
             var list = new List<BuyItemState>(buyInfo.Length);
             var cont = BuyPack;
 
-            var opls = EnableVendorBuyOPL ? new List<ObjectPropertyList>(buyInfo.Length) : null;
+            using var opls = PooledRefQueue<ObjectPropertyList>.Create(EnableVendorBuyOPL ? buyInfo.Length : 0);
 
             for (var idx = 0; idx < buyInfo.Length; idx++)
             {
@@ -906,9 +907,9 @@ namespace Server.Mobiles
                     )
                 );
 
-                if (disp is IPropertyListObject obj)
+                if (disp is IObjectPropertyListEntity obj)
                 {
-                    opls?.Add(obj.PropertyList);
+                    opls.Enqueue(obj.PropertyList);
                 }
             }
 
@@ -949,7 +950,7 @@ namespace Server.Mobiles
                 if (name != null && list.Count < 250)
                 {
                     list.Add(new BuyItemState(name, cont.Serial, item.Serial, price, item.Amount, item.ItemID, item.Hue));
-                    opls?.Add(item.PropertyList);
+                    opls.Enqueue(item.PropertyList);
                 }
             }
 
@@ -978,12 +979,9 @@ namespace Server.Mobiles
             from.NetState.SendDisplayBuyList(Serial);
             from.NetState.SendMobileStatus(from); // make sure their gold amount is sent
 
-            if (opls != null)
+            while (opls.Count > 0)
             {
-                for (var i = 0; i < opls.Count; ++i)
-                {
-                    from.NetState?.Send(opls[i].Buffer);
-                }
+                from.NetState?.Send(opls.Dequeue().Buffer);
             }
 
             SayTo(from, 500186); // Greetings.  Have a look around.

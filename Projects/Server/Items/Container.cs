@@ -755,7 +755,7 @@ namespace Server.Items
 
         public virtual void SendContentTo(NetState state) => state.SendContainerContent(state.Mobile, this);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -767,21 +767,14 @@ namespace Server.Items
                     {
                         list.Add(
                             1073841, // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
-                            "{0}\t{1}\t{2}",
-                            TotalItems,
-                            MaxItems,
-                            TotalWeight
+                            $"{TotalItems}\t{MaxItems}\t{TotalWeight}"
                         );
                     }
                     else
                     {
                         list.Add(
                             1072241, // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
-                            "{0}\t{1}\t{2}\t{3}",
-                            TotalItems,
-                            MaxItems,
-                            TotalWeight,
-                            MaxWeight
+                            $"{TotalItems}\t{MaxItems}\t{TotalWeight}\t{MaxWeight}"
                         );
                     }
 
@@ -790,7 +783,7 @@ namespace Server.Items
                 else
                 {
                     // ~1_COUNT~ items, ~2_WEIGHT~ stones
-                    list.Add(1050044, "{0}\t{1}", TotalItems, TotalWeight);
+                    list.Add(1050044, $"{TotalItems}\t{TotalWeight}");
                 }
             }
         }

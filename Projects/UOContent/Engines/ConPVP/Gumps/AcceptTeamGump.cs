@@ -163,23 +163,20 @@ namespace Server.Engines.ConPVP
             AddBorderedText(35, y, 190, 20, $"Tiebreaker: {tieText}", LabelColor32, BlackColor32);
             y += 20;
 
-            var sdText = "Off";
+            string sdText;
 
             if (tourney.SuddenDeath > TimeSpan.Zero)
             {
-                sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
-
-                if (tourney.SuddenDeathRounds > 0)
-                {
-                    sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
-                }
-                else
-                {
-                    sdText = $"{sdText} (all rounds)";
-                }
+                sdText = tourney.SuddenDeathRounds > 0 ?
+                    $"Sudden Death: {(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2} (first {tourney.SuddenDeathRounds} rounds)" :
+                    $"Sudden Death: {(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2} (all rounds)";
+            }
+            else
+            {
+                sdText = "Sudden Death: Off";
             }
 
-            AddBorderedText(35, y, 240, 20, $"Sudden Death: {sdText}", LabelColor32, BlackColor32);
+            AddBorderedText(35, y, 240, 20, sdText, LabelColor32, BlackColor32);
             y += 20;
 
             y += 6;

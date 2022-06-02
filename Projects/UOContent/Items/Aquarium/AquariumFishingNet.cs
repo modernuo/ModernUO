@@ -15,7 +15,7 @@ namespace Server.Items
 
         public override bool RequireDeepWater => false;
 
-        protected override void AddNetProperties(ObjectPropertyList list)
+        protected override void AddNetProperties(IPropertyList list)
         {
         }
 

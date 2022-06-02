@@ -78,7 +78,7 @@ public ref struct RawInterpolatedStringHandler
     /// <param name="formattedCount">The number of interpolation expressions in the interpolated string.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] // becomes a constant when inputs are constant
     internal static int GetDefaultLength(int literalLength, int formattedCount) =>
-        Math.Max(MinimumArrayPoolLength, literalLength + (formattedCount * GuessedLengthPerHole));
+        Math.Max(MinimumArrayPoolLength, literalLength + formattedCount * GuessedLengthPerHole);
 
     /// <summary>Clears the handler, returning any rented array to the pool.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] // used only on a few hot paths

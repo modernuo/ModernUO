@@ -102,7 +102,7 @@ namespace Server.Multis
             }
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (m_ShipName != null)
             {

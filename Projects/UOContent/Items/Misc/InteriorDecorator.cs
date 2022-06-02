@@ -41,7 +41,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1041280; // an interior decorator
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
