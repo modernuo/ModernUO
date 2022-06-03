@@ -39,11 +39,8 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
     {
         _value ??= new string(_arrayToReturnToPool.AsSpan(0, _pos));
 
-        if (_arrayToReturnToPool != null)
-        {
-            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-            _arrayToReturnToPool = null;
-        }
+        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+        _arrayToReturnToPool = null;
 
         return _value;
     }
@@ -66,12 +63,8 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
 
     public void Dispose()
     {
-        if (_arrayToReturnToPool != null)
-        {
-            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-            _arrayToReturnToPool = null;
-        }
-
+        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+        _arrayToReturnToPool = null;
         this = default; // Defensive clear
     }
 }
