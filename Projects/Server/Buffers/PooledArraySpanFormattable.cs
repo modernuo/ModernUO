@@ -22,11 +22,13 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
 {
     private char[] _arrayToReturnToPool;
     private int _pos;
+    private string _value;
 
     public PooledArraySpanFormattable(char[] arrayToReturnToPool, int length)
     {
         _arrayToReturnToPool = arrayToReturnToPool;
         _pos = length;
+        _value = null;
     }
 
     public ReadOnlySpan<char> Chars => _arrayToReturnToPool.AsSpan(.._pos);
@@ -35,10 +37,12 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
 
     public string ToString(string? format = null, IFormatProvider formatProvider = null)
     {
-        var result = new string(_arrayToReturnToPool.AsSpan(0, _pos));
-        Dispose();
+        _value ??= new string(_arrayToReturnToPool.AsSpan(0, _pos));
 
-        return result;
+        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+        _arrayToReturnToPool = null;
+
+        return _value;
     }
 
     public bool TryFormat(
@@ -53,18 +57,14 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
         }
 
         _arrayToReturnToPool.AsSpan(0, _pos).CopyTo(destination);
-        Dispose();
-
         charsWritten = _pos;
         return true;
     }
 
     public void Dispose()
     {
-        if (_arrayToReturnToPool != null)
-        {
-            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-            _arrayToReturnToPool = null;
-        }
+        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+        _arrayToReturnToPool = null;
+        this = default; // Defensive clear
     }
 }
