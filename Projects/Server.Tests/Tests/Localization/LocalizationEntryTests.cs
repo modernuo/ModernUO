@@ -14,6 +14,6 @@ public class LocalizationEntryTests
         string stringParam = Localization.Format(500002, "enu", $"{"#500003"}");
 
         Assert.Equal("This tests clilocs as parameters.", numericFormatter);
-        Assert.Equal("This tests clilocs as parameters"., stringParam);
+        Assert.Equal("This tests clilocs as parameters.", stringParam);
     }
 }
