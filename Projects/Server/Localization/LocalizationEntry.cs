@@ -84,24 +84,6 @@ public class LocalizationEntry
         builder.Dispose();
     }
 
-    public string Format(params object[] args)
-    {
-        if (args == null || args.Length == 0 || StringFormatter == null)
-        {
-            return Text;
-        }
-
-        for (var i = 0; i < args.Length; i++)
-        {
-            if (args[i] is string s && s[0] == '#' && int.TryParse(s.AsSpan(1), out var number))
-            {
-                args[i] = Localization.GetText(number, Language);
-            }
-        }
-
-        return string.Format(StringFormatter, args);
-    }
-
     /// <summary>
     /// Creates a formatted string of the localization entry.
     /// Uses string interpolation under the hood. This method is preferably relative to the object array method signature.

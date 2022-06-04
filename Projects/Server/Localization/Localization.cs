@@ -42,6 +42,37 @@ public static class Localization
         }
     }
 
+    public static void Add(string lang, int number, string text)
+    {
+        var entry = new LocalizationEntry(lang, number, text);
+        if (!_localizations.TryGetValue(lang, out var entries))
+        {
+            entries = new Dictionary<int, LocalizationEntry>();
+            _localizations[lang] = entries;
+            if (lang == FallbackLanguage)
+            {
+                _fallbackEntries ??= entries;
+            }
+        }
+
+        entries.Add(number, entry);
+    }
+
+    public static bool Remove(string lang, int number)
+    {
+        if (!_localizations.TryGetValue(lang, out var entries) || !entries.Remove(number))
+        {
+            return false;
+        }
+
+        if (entries.Count == 0)
+        {
+            _localizations.Remove(lang);
+        }
+
+        return true;
+    }
+
     public static Dictionary<int, LocalizationEntry> LoadClilocs(string lang) =>
         LoadClilocs(lang, Core.FindDataFile($"cliloc.{lang}", false));
 
@@ -95,19 +126,6 @@ public static class Localization
     /// <returns>Original text for the localizaton entry</returns>
     public static string GetText(int number, string lang = FallbackLanguage) =>
         TryGetLocalization(lang, number, out var entry) ? entry.Text : null;
-
-    /// <summary>
-    /// Creates a formatted string of the localization entry using the specified language.
-    /// Uses <see cref="string.Format"/> under the hood.
-    /// Note: This method is not recommended since it uses almost double the memory and 50% more processing.
-    /// Instead use Format with string interpolation.
-    /// </summary>
-    /// <param name="number">Localization number</param>
-    /// <param name="lang">Language in ISO 639-2 format</param>
-    /// <param name="args">An object array containing zero or more objects to format</param>
-    /// <returns>A copy of the localization text where the placeholder arguments have been replaced with string representations of the provided arguments</returns>
-    public static string Format(int number, string lang = FallbackLanguage, params object[] args) =>
-        TryGetLocalization(lang, number, out var entry) ? entry.Format(args) : null;
 
     /// <summary>
     /// Gets a localization entry using the <see cref="FallbackLanguage" />.
