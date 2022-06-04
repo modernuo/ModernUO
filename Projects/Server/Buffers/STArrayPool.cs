@@ -127,6 +127,11 @@ public class STArrayPool<T> : ArrayPool<T>
             buckets[i]?.Trim(ticks, pressure, GetMaxSizeForBucket(i));
         }
 
+        if (_cacheBuckets == null)
+        {
+            return true;
+        }
+
         // Under high pressure, release all cached buckets
         if (pressure == MemoryPressure.High)
         {
