@@ -89,7 +89,7 @@ namespace Server.Items
 
         public string TranslocationItemName => "bracelet of binding";
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(
                 1054000,

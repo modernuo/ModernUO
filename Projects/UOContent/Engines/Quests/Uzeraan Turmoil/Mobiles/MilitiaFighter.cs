@@ -108,7 +108,7 @@ namespace Server.Engines.Quests.Haven
         {
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (ItemID == 0x2006) // Corpse form
             {

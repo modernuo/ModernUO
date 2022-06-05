@@ -23,7 +23,7 @@ public partial class NewPlayerTicket : Item
 
     public override bool DisplayLootType => false;
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 

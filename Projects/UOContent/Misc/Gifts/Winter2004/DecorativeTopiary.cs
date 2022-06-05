@@ -20,7 +20,7 @@ namespace Server.Items
             LabelTo(from, 1070880); // Winter 2004
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

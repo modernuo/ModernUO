@@ -32,7 +32,7 @@ namespace Server.Items
         public static ScrollofTranscendence CreateRandom(int min, int max) =>
             new(Utility.RandomSkill(), Utility.RandomMinMax(min, max) * 0.1);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
             list.Add(1076759, $"{GetName()}\t{Value:0.#} Skill Points");

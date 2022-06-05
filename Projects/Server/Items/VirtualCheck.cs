@@ -120,7 +120,7 @@ namespace Server.Items
             LabelTo(from, "Offer: {0:#,0} platinum, {1:#,0} gold", Plat, Gold);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

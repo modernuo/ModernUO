@@ -31,7 +31,7 @@ namespace Server.Engines.Quests.Collector
             }
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var info = ImageTypeInfo.Get(m_Image);
             list.Add(1060847, $"#1055126\t#{info.Name}"); // a painted image of:

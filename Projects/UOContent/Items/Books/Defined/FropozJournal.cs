@@ -137,7 +137,7 @@ namespace Server.Items
 
         public override BookContent DefaultContent => Content;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add("Fropoz's Journal");
         }
