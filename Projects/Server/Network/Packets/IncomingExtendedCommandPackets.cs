@@ -103,8 +103,7 @@ public static class IncomingExtendedCommandPackets
             if (state.Mobile == null)
             {
                 state.LogInfo(
-                    "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
-                    packetId
+                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
                 );
             }
 

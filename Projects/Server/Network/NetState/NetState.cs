@@ -346,12 +346,6 @@ public partial class NetState : IComparable<NetState>
         logger.Information("Client: {NetState}: {Message}", this, text);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void LogInfo(string format, params object[] args)
-    {
-        LogInfo(string.Format(format, args));
-    }
-
     public void AddMenu(IMenu menu)
     {
         Menus ??= new List<IMenu>();
@@ -1127,13 +1121,6 @@ public partial class NetState : IComparable<NetState>
 
         var count = TcpServer.Instances.Count;
 
-        if (a != null)
-        {
-            LogInfo("Disconnected. [{0} Online] [{1}]", count, a);
-        }
-        else
-        {
-            LogInfo("Disconnected. [{0} Online]", count);
-        }
+        LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
     }
 }
