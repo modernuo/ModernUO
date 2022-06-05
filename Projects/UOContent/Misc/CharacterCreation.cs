@@ -138,7 +138,7 @@ namespace Server.Misc
 
             if (newChar == null)
             {
-                logger.Information("Login: {0}: Character creation failed, account full", state);
+                logger.Information("Login: {NetState}: Character creation failed, account full", state);
                 return;
             }
 

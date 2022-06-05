@@ -25,7 +25,7 @@ public static class ServerAccess
     {
         var username = acct.Username.ToLower();
         ServerAccessConfiguration.ProtectedAccounts.Add(username);
-        logger.Information("Protected account added: {0}", username);
+        logger.Information("Protected account added: {Username}", username);
 
         if (save)
         {
@@ -37,7 +37,7 @@ public static class ServerAccess
     {
         var username = acct.Username.ToLower();
         ServerAccessConfiguration.ProtectedAccounts.Remove(username);
-        logger.Information("Protected account removed: {0}", username);
+        logger.Information("Protected account removed: {Username}", username);
 
         if (save)
         {
@@ -59,7 +59,7 @@ public static class ServerAccess
         if (ServerAccessConfiguration.ProtectedAccounts.Count > 0)
         {
             var protectedAccounts = string.Join(", ", ServerAccessConfiguration.ProtectedAccounts);
-            logger.Information("Protected accounts registered: {0}", protectedAccounts);
+            logger.Information("Protected accounts registered: {Count}", protectedAccounts);
         }
     }
 
@@ -85,7 +85,7 @@ public static class ServerAccess
         acct.Banned = false;
         acct.AccessLevel = AccessLevel.Owner;
 
-        logger.Warning("Protected account \"{0}\" has been reset.", username);
+        logger.Warning("Protected account \"{Username}\" has been reset.", username);
 
         if (e.RejectReason is ALRReason.Blocked or ALRReason.BadPass or ALRReason.BadComm)
         {

@@ -343,13 +343,7 @@ public partial class NetState : IComparable<NetState>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void LogInfo(string text)
     {
-        logger.Information("Client: {0}: {1}", this, text);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void LogInfo(string format, params object[] args)
-    {
-        LogInfo(string.Format(format, args));
+        logger.Information("Client: {NetState}: {Message}", this, text);
     }
 
     public void AddMenu(IMenu menu)
@@ -861,7 +855,7 @@ public partial class NetState : IComparable<NetState>
         {
             if (ex.SocketErrorCode != SocketError.WouldBlock)
             {
-                logger.Debug(ex, "Disconnected due to socket exception");
+                logger.Debug(ex, "Disconnected due to a socket exception");
                 Disconnect(string.Empty);
             }
         }
@@ -1127,13 +1121,6 @@ public partial class NetState : IComparable<NetState>
 
         var count = TcpServer.Instances.Count;
 
-        if (a != null)
-        {
-            LogInfo("Disconnected. [{0} Online] [{1}]", count, a);
-        }
-        else
-        {
-            LogInfo("Disconnected. [{0} Online]", count);
-        }
+        LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
     }
 }

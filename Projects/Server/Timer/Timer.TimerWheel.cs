@@ -199,7 +199,7 @@ namespace Server
 
             // TODO: Handle timers > 17yrs
 #if DEBUG_TIMERS
-            logger.Error($"Timer is more than max duration. ({originalDelay})");
+            logger.Error("Timer is more than max duration. ({Duration})", originalDelay);
 #endif
         }
 
@@ -224,12 +224,12 @@ namespace Server
                     while (t != null)
                     {
                         var name = t.ToString();
-                        
+
                         hash.TryGetValue(name, out var count);
                         hash[name] = count + 1;
-                        
+
                         total++;
-                        
+
                         t = t?._nextTimer;
                     }
                 }
