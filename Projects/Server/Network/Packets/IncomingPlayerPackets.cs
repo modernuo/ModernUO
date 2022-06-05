@@ -202,7 +202,7 @@ public static class IncomingPlayerPackets
                 }
             default:
                 {
-                    state.LogInfo("Unknown text-command type 0x{0:X2}: {1}", state, type, command);
+                    state.LogInfo($"Unknown text-command type 0x{state:X2}: {type} ({command})");
                     break;
                 }
         }

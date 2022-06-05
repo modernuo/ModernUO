@@ -80,18 +80,18 @@ namespace Server
             if (failures.Count > 0)
             {
                 logger.Warning(
-                    "Map Definitions loaded with failures ({0} maps, {1} failures) ({2:F2} seconds)",
+                    "Map Definitions loaded with failures ({Count} maps, {FailureCount} failures) ({Duration:F2} seconds)",
                     count,
                     failures.Count,
                     stopwatch.Elapsed.TotalSeconds
                 );
 
-                logger.Warning(string.Join(Environment.NewLine, failures));
+                logger.Warning("Map load failures: {Failure}", failures);
             }
             else
             {
                 logger.Information(
-                    "Map Definitions loaded successfully ({0} maps, {1} failures) ({2:F2} seconds)",
+                    "Map Definitions loaded successfully ({Count} maps, {FailureCount} failures) ({Duration:F2} seconds)",
                     count,
                     failures.Count,
                     stopwatch.Elapsed.TotalSeconds

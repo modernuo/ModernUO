@@ -320,8 +320,7 @@ public sealed class Map : IComparable<Map>
     public const int SectorShift = 4;
     public const int SectorActiveRange = 2;
 
-    private static ILogger _logger;
-    private static ILogger Logger => _logger ??= LogFactory.GetLogger(typeof(Map));
+    private static ILogger logger = LogFactory.GetLogger(typeof(Map));
 
     private readonly int m_FileIndex;
     private readonly Sector[][] m_Sectors;
@@ -409,7 +408,7 @@ public sealed class Map : IComparable<Map>
         {
             if (this == Internal && m_Name != "Internal")
             {
-                Logger.Warning($"Internal map name was '{m_Name}'\n{new StackTrace()}");
+                logger.Warning("Internal map name was '{Name}'\n{StackTrace}", m_Name, new StackTrace());
                 m_Name = "Internal";
             }
 
@@ -419,8 +418,7 @@ public sealed class Map : IComparable<Map>
         {
             if (this == Internal && value != "Internal")
             {
-                Logger.Warning($"Attempted to set internal map name to '{value}'\n{new StackTrace()}");
-
+                logger.Warning("Attempted to set internal map name to '{Value}'\n{StackTrace}", value, new StackTrace());
                 value = "Internal";
             }
 
@@ -1045,7 +1043,7 @@ public sealed class Map : IComparable<Map>
 
         if (Regions.ContainsKey(regName))
         {
-            Logger.Warning($"Duplicate region name '{regName}' for map '{Name}'");
+            logger.Warning("Duplicate region name '{RegionName}' for map '{MapName}'", regName, Name);
         }
         else
         {
@@ -1101,7 +1099,7 @@ public sealed class Map : IComparable<Map>
         }
         else
         {
-            Logger.Warning($"Warning: Invalid object ({o}) in line of sight");
+            logger.Warning("Warning: Invalid object ({Object}) in line of sight", o);
             p = Point3D.Zero;
         }
 

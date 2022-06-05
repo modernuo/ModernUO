@@ -31,7 +31,7 @@ public static class AccountPrompt
                     AccessLevel = AccessLevel.Owner
                 };
 
-                logger.Information("Owner account created: {0}", username);
+                logger.Information("Owner account created: {Username}", username);
                 ServerAccess.AddProtectedAccount(a, true);
             }
             else

@@ -77,7 +77,7 @@ namespace Server.Network
 
             foreach (var ipep in listeningAddresses)
             {
-                logger.Information("Listening: {0}:{1}", ipep.Address, ipep.Port);
+                logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
             }
 
             ListeningAddresses = listeningAddresses.ToArray();
@@ -119,12 +119,12 @@ namespace Server.Network
                 // WSAEADDRINUSE
                 if (se.ErrorCode == 10048)
                 {
-                    logger.Warning("Listener: {0}:{1}: Failed (In Use)", ipep.Address, ipep.Port);
+                    logger.Warning("Listener: {Address}:{Port}: Failed (In Use)", ipep.Address, ipep.Port);
                 }
                 // WSAEADDRNOTAVAIL
                 else if (se.ErrorCode == 10049)
                 {
-                    logger.Warning("Listener {0}:{1}: Failed (Unavailable)", ipep.Address, ipep.Port);
+                    logger.Warning("Listener {Address}:{Port}: Failed (Unavailable)", ipep.Address, ipep.Port);
                 }
                 else
                 {
@@ -142,7 +142,7 @@ namespace Server.Network
             while (++count <= MaxConnectionsPerLoop && _connectedQueue.TryDequeue(out var ns))
             {
                 Instances.Add(ns);
-                ns.LogInfo("Connected. [{0} Online]", Instances.Count);
+                ns.LogInfo($"Connected. [{Instances.Count} Online]");
             }
         }
 
@@ -166,7 +166,7 @@ namespace Server.Network
                             if (socket.RemoteEndPoint is IPEndPoint ipep)
                             {
                                 var ip = ipep.Address.ToString();
-                                logger.Warning("Listener {0}: Failed (Maximum connections reached)", ip);
+                                logger.Warning("Listener {Address}: Failed (Maximum connections reached)", ip);
                                 NetState.TraceDisconnect("Maximum connections reached.", ip);
                             }
 

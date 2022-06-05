@@ -46,11 +46,11 @@ namespace Server
 
             if (exception == null)
             {
-                logger.Information("Maps loaded ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+                logger.Information("Maps loaded ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
             }
             else
             {
-                logger.Error(exception, "Loading maps failed ({0:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+                logger.Error(exception, "Loading maps failed ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
                 throw exception;
             }
         }
