@@ -252,10 +252,13 @@ namespace Server
                 if (IsLinux && !File.Exists(fullPath))
                 {
                     var fi = new FileInfo(fullPath);
-                    fullPath = fi.Directory!.EnumerateFiles(
-                        fi.Name,
-                        new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
-                    ).FirstOrDefault()?.FullName;
+                    if (fi.Directory != null && Directory.Exists(fi.Directory.FullName))
+                    {
+                        fullPath = fi.Directory.EnumerateFiles(
+                            fi.Name,
+                            new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
+                        ).FirstOrDefault()?.FullName;
+                    }
                 }
 
                 if (File.Exists(fullPath))
