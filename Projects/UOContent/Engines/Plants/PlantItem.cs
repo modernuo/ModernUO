@@ -253,76 +253,61 @@ namespace Server.Engines.Plants
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
             {
                 base.AddNameProperty(list);
+                return;
             }
-            else if (m_PlantStatus < PlantStatus.Seed)
+
+            var container = GetLocalizedContainerType();
+            var dirt = PlantSystem.GetLocalizedDirtStatus();
+            var health = PlantSystem.GetLocalizedHealth();
+            var plantStatus = GetLocalizedPlantStatus();
+
+            if (m_PlantStatus < PlantStatus.Seed)
             {
-                string args;
+                list.Add(
+                    1060830, // a ~1_val~ of ~2_val~ dirt
+                    ShowContainerType ? $"{container:#}\t{dirt:#}" : $"{dirt:#}"
+                );
+                return;
+            }
 
-                if (ShowContainerType)
-                {
-                    args = $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}";
-                }
-                else
-                {
-                    args = $"#{PlantSystem.GetLocalizedDirtStatus()}";
-                }
+            var typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
+            var hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
 
-                list.Add(1060830, args); // a ~1_val~ of ~2_val~ dirt
+            if (m_PlantStatus >= PlantStatus.DecorativePlant)
+            {
+                list.Add(typeInfo.GetPlantLabelDecorative(hueInfo), $"{hueInfo.Name:#}\t{typeInfo.Name:#}");
+                return;
+            }
+
+            if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+            {
+                list.Add(
+                    typeInfo.GetPlantLabelFullGrown(hueInfo),
+                    $"{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}"
+                );
+                return;
+            }
+
+            if (m_ShowType)
+            {
+                list.Add(
+                    m_PlantStatus == PlantStatus.Plant
+                        ? typeInfo.GetPlantLabelPlant(hueInfo)
+                        : typeInfo.GetPlantLabelSeed(hueInfo),
+                    ShowContainerType
+                        ? $"{container:#}\t{dirt:#}\t{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}\t{plantStatus:#}"
+                        : $"{dirt:#}\t{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}\t{plantStatus:#}"
+                );
             }
             else
             {
-                var typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
-                var hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
-
-                if (m_PlantStatus >= PlantStatus.DecorativePlant)
-                {
-                    list.Add(typeInfo.GetPlantLabelDecorative(hueInfo), $"#{hueInfo.Name}\t#{typeInfo.Name}");
-                }
-                else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
-                {
-                    list.Add(
-                        typeInfo.GetPlantLabelFullGrown(hueInfo),
-                        $"#{PlantSystem.GetLocalizedHealth()}\t#{hueInfo.Name}\t#{typeInfo.Name}"
-                    );
-                }
-                else
-                {
-                    string args;
-
-                    if (ShowContainerType)
-                    {
-                        args =
-                            $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
-                    }
-                    else
-                    {
-                        args = $"#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
-                    }
-
-                    if (m_ShowType)
-                    {
-                        args += $"\t#{hueInfo.Name}\t#{typeInfo.Name}\t#{GetLocalizedPlantStatus()}";
-
-                        if (m_PlantStatus == PlantStatus.Plant)
-                        {
-                            list.Add(typeInfo.GetPlantLabelPlant(hueInfo), args);
-                        }
-                        else
-                        {
-                            list.Add(typeInfo.GetPlantLabelSeed(hueInfo), args);
-                        }
-                    }
-                    else
-                    {
-                        args +=
-                            $"\t#{(typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory)}\t#{GetLocalizedPlantStatus()}";
-
-                        list.Add(
-                            hueInfo.IsBright() ? 1060832 : 1060831,
-                            args
-                        ); // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
-                    }
-                }
+                var category = typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory;
+                list.Add(
+                    hueInfo.IsBright() ? 1060832 : 1060831,
+                    ShowContainerType
+                        ? $"{container:#}\t{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}"
+                        : $"{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}"
+                );
             }
         }
 

@@ -88,7 +88,7 @@ namespace Server.Items
 
                 if (fish != null)
                 {
-                    list.Add(1074494, $"#{fish.LabelNumber}"); // Contains: ~1_CREATURE~
+                    list.Add(1074494, $"{fish.LabelNumber:#}"); // Contains: ~1_CREATURE~
                 }
             }
         }

@@ -365,12 +365,12 @@ namespace Server.Engines.Spawners
             {
                 list.Add(1060742); // active
 
-                list.Add(1060656, $"{m_Count}");                            // amount to make: ~1_val~
-                list.Add(1061169, $"{m_HomeRange}");                        // range ~1_val~
-                list.Add(1050039, $"walking range:\t{m_WalkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
-                list.Add(1053099, $"group:\t{m_Group}");                    // ~1_oretype~: ~2_armortype~
-                list.Add(1060847, $"team:\t{m_Team}");                      // ~1_val~ ~2_val~
-                list.Add(1063483, $"delay:\t{m_MinDelay} to {m_MaxDelay}"); // ~1_MATERIAL~: ~2_ITEMNAME~
+                list.Add(1060656, $"{m_Count}");                                // amount to make: ~1_val~
+                list.Add(1061169, $"{m_HomeRange}");                            // range ~1_val~
+                list.Add(1050039, $"{"walking range:"}\t{m_WalkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
+                list.Add(1053099, $"{"group:"}\t{m_Group}");                    // ~1_oretype~: ~2_armortype~
+                list.Add(1060847, $"{"team:"}\t{m_Team}");                      // ~1_val~ ~2_val~
+                list.Add(1063483, $"{"delay:"}\t{m_MinDelay} to {m_MaxDelay}"); // ~1_MATERIAL~: ~2_ITEMNAME~
 
                 GetSpawnerProperties(list);
 

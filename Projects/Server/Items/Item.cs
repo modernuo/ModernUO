@@ -1829,7 +1829,7 @@ namespace Server
                 }
                 else
                 {
-                    list.Add(1050039, $"{m_Amount}\t#{LabelNumber}"); // ~1_NUMBER~ ~2_ITEMNAME~
+                    list.Add(1050039, $"{m_Amount}\t{LabelNumber:#}"); // ~1_NUMBER~ ~2_ITEMNAME~
                 }
             }
             else

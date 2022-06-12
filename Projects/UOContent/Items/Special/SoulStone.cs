@@ -129,11 +129,11 @@ namespace Server.Items
             {
                 list.Add(
                     1070721, // Skill stored: ~1_skillname~ ~2_skillamount~
-                    $"#{AosSkillBonuses.GetLabel(Skill)}\t{SkillValue:F1}"
+                    $"{AosSkillBonuses.GetLabel(Skill):#}\t{SkillValue:F1}"
                 );
             }
 
-            list.Add(1041602, LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
+            list.Add(1041602, LastUserName ?? $"{1074235:#}"); // Owner: ~1_val~
         }
 
         private static bool CheckCombat(Mobile m, TimeSpan time)

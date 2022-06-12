@@ -68,11 +68,12 @@ public partial class CommodityDeed : Item
 
         if (Commodity != null)
         {
-            var args = Commodity.Name == null
-                ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
-                : $"{Commodity.Name}\t{Commodity.Amount}";
-
-            list.Add(1060658, args); // ~1_val~: ~2_val~
+            list.Add(
+                1060658, // ~1_val~: ~2_val~
+                Commodity.Name == null
+                    ? $"{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber:#}\t{Commodity.Amount}"
+                    : $"{Commodity.Name}\t{Commodity.Amount}"
+            );
         }
         else
         {
@@ -86,11 +87,13 @@ public partial class CommodityDeed : Item
 
         if (Commodity != null)
         {
-            var args = Commodity.Name == null
-                ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
-                : $"{Commodity.Name}\t{Commodity.Amount}";
-
-            LabelTo(from, 1060658, args); // ~1_val~: ~2_val~
+            LabelTo(
+                from,
+                1060658, // ~1_val~: ~2_val~
+                Commodity.Name == null
+                    ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
+                    : $"{Commodity.Name}\t{Commodity.Amount}"
+            );
         }
     }
 

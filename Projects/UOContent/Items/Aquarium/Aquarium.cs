@@ -399,8 +399,8 @@ namespace Server.Items
                 list.Add(1074249, $"{decorations}"); // Decorations: ~1_NUM~
             }
 
-            list.Add(1074250, $"#{FoodNumber()}");  // Food state: ~1_STATE~
-            list.Add(1074251, $"#{WaterNumber()}"); // Water state: ~1_STATE~
+            list.Add(1074250, $"{FoodNumber():#}");  // Food state: ~1_STATE~
+            list.Add(1074251, $"{WaterNumber():#}"); // Water state: ~1_STATE~
 
             if (_food.State == (int)FoodState.Dead)
             {

@@ -253,7 +253,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value)
     {
-
         string? s;
         if (value is IFormattable)
         {
@@ -284,6 +283,14 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value, string? format)
     {
+        // We support localization '#' cliloc formatter for custom property lists
+        // This allows someone to build an IPropertyList that creates HTML using the same syntax as LocalizationInterpolationHandler
+        if (format == "#")
+        {
+            AppendLiteral("#");
+            format = null;
+        }
+
         string? s;
         if (value is IFormattable)
         {

@@ -1253,12 +1253,12 @@ namespace Server.Items
             {
                 list.Add(
                     _quality == ArmorQuality.Exceptional ? 1053100 : 1053099,
-                    name != null ? $"#{oreType}\t{Name}" : $"#{oreType}\t#{LabelNumber}"
+                    name != null ? $"{oreType:#}\t{Name}" : $"{oreType:#}\t{LabelNumber:#}"
                 );
             }
             else if (_quality == ArmorQuality.Exceptional)
             {
-                list.Add(1050040, name ?? $"#{LabelNumber}"); // exceptional ~1_ITEMNAME~
+                list.Add(1050040, name ?? $"{LabelNumber:#}"); // exceptional ~1_ITEMNAME~
             }
             else if (name == null)
             {

@@ -564,7 +564,7 @@ namespace Server.Items
             }
             else if (m_Removal != TalismanRemoval.None)
             {
-                list.Add(1072389, $"#{1072000 + (int)m_Removal}"); // Talisman of ~1_name~
+                list.Add(1072389, $"{1072000 + (int)m_Removal:#}"); // Talisman of ~1_name~
             }
             else
             {
@@ -625,7 +625,7 @@ namespace Server.Items
             {
                 list.Add(
                     1072395, // ~1_NAME~ Exceptional Bonus: ~2_val~%
-                    $"#{AosSkillBonuses.GetLabel(m_Skill)}\t{m_ExceptionalBonus}"
+                    $"{AosSkillBonuses.GetLabel(m_Skill):#}\t{m_ExceptionalBonus}"
                 );
             }
 
@@ -633,7 +633,7 @@ namespace Server.Items
             {
                 list.Add(
                     1072394, // ~1_NAME~ Bonus: ~2_val~%
-                    $"#{AosSkillBonuses.GetLabel(m_Skill)}\t{m_SuccessBonus}"
+                    $"{AosSkillBonuses.GetLabel(m_Skill):#}\t{m_SuccessBonus}"
                 );
             }
 
