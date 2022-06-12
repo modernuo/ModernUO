@@ -26,23 +26,15 @@ namespace Server.Items
 
         public override void AddNameProperty(IPropertyList list)
         {
-            var v = " ";
-
-            if (!CraftResources.IsStandard(Resource))
+            if (CraftResources.IsStandard(Resource))
             {
-                var num = CraftResources.GetLocalizationNumber(Resource);
-
-                if (num > 0)
-                {
-                    v = $"#{num}";
-                }
-                else
-                {
-                    v = CraftResources.GetName(Resource);
-                }
+                list.Add(1061119, $"{" "}"); // ~1_LEATHER_TYPE~ runic sewing kit
+                return;
             }
 
-            list.Add(1061119, v); // ~1_LEATHER_TYPE~ runic sewing kit
+            var num = CraftResources.GetLocalizationNumber(Resource);
+            // ~1_LEATHER_TYPE~ runic sewing kit
+            list.Add(1061119, num > 0 ? $"#{num}" : CraftResources.GetName(Resource));
         }
 
         public override void OnSingleClick(Mobile from)

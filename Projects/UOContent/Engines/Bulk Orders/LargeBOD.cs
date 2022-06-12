@@ -59,7 +59,7 @@ namespace Server.Engines.BulkOrders
             for (var i = 0; i < _entries.Length; ++i)
             {
                 var entry = _entries[i];
-                list.Add(1060658 + i, $"#{entry.Details.Number}\t{entry.Amount}"); // ~1_val~: ~2_val~
+                list.Add(1060658 + i, $"{entry.Details.Number:#}\t{entry.Amount}"); // ~1_val~: ~2_val~
             }
         }
 
