@@ -85,7 +85,7 @@ namespace Server.Items
 
         public string TranslocationItemName => "crystal ball of pet summoning";
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(
                 1054131,

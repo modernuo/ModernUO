@@ -398,7 +398,7 @@ namespace Server.Items
 
         public string FormatPrice() => m_TicketPrice == 0 ? "FREE" : $"{m_TicketPrice} gold";
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -411,13 +411,13 @@ namespace Server.Items
             {
                 case HouseRaffleState.Active:
                     {
-                        list.Add(1060658, "ticket price\t{0}", FormatPrice());  // ~1_val~: ~2_val~
-                        list.Add(1060659, "ends\t{0}", m_Started + m_Duration); // ~1_val~: ~2_val~
+                        list.Add(1060658, $"{"ticket price"}\t{FormatPrice()}");  // ~1_val~: ~2_val~
+                        list.Add(1060659, $"{"ends"}\t{m_Started + m_Duration}"); // ~1_val~: ~2_val~
                         break;
                     }
                 case HouseRaffleState.Completed:
                     {
-                        list.Add(1060658, "winner\t{0}", m_Winner == null ? "unknown" : m_Winner.Name); // ~1_val~: ~2_val~
+                        list.Add(1060658, $"winner\t{m_Winner?.Name ?? "Unknown"}"); // ~1_val~: ~2_val~
                         break;
                     }
             }
@@ -438,9 +438,9 @@ namespace Server.Items
                     {
                         LabelTo(
                             from,
-                            1060658,
-                            $"Winner\t{(m_Winner == null ? "Unknown" : m_Winner.Name)}"
-                        ); // ~1_val~: ~2_val~
+                            1060658, // ~1_val~: ~2_val~
+                            $"Winner\t{m_Winner?.Name ?? "Unknown"}"
+                        );
                         break;
                     }
             }

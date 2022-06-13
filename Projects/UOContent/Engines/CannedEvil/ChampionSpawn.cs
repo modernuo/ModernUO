@@ -934,22 +934,22 @@ namespace Server.Engines.CannedEvil
             return new Point3D(X + x, Y + y, Z - 15);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add("champion spawn");
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (m_Active)
             {
-                list.Add(1060742); // active
-                list.Add(1060658, "Type\t{0}", m_Type); // ~1_val~: ~2_val~
-                list.Add(1060659, "Level\t{0}", Level); // ~1_val~: ~2_val~
-                list.Add(1060660, "Kills\t{0} of {1} ({2:F1}%)", m_Kills, MaxKills, 100.0 * ((double)m_Kills / MaxKills)); // ~1_val~: ~2_val~
-                //list.Add(1060661, "Spawn Range\t{0}", m_SpawnRange); // ~1_val~: ~2_val~
+                list.Add(1060742);                         // active
+                list.Add(1060658, $"{"Type"}\t{m_Type}"); // ~1_val~: ~2_val~
+                list.Add(1060659, $"{"Level"}\t{Level}"); // ~1_val~: ~2_val~
+                var killRatio = 100.0 * ((double)m_Kills / MaxKills);
+                list.Add(1060660, $"{"Kills"}\t{m_Kills} of {MaxKills} ({killRatio:F1}%)"); // ~1_val~: ~2_val~
             }
             else
             {
@@ -961,11 +961,11 @@ namespace Server.Engines.CannedEvil
         {
             if (m_Active)
             {
-                LabelTo(from, "{0} (Active; Level: {1}; Kills: {2}/{3})", m_Type, Level, m_Kills, MaxKills);
+                LabelTo(from, $"{m_Type} (Active; Level: {Level}; Kills: {m_Kills}/{MaxKills})");
             }
             else
             {
-                LabelTo(from, "{0} (Inactive)", m_Type);
+                LabelTo(from, $"{m_Type} (Inactive)");
             }
         }
 

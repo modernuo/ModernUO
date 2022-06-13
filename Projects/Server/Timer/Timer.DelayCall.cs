@@ -147,7 +147,7 @@ namespace Server
             {
                 if (Running)
                 {
-                    logger.Error($"Timer is returned while still running!\n{new StackTrace()}");
+                    logger.Error("Timer is returned while still running!\n{StackTrace}", new StackTrace());
                     return;
                 }
 
@@ -163,7 +163,7 @@ namespace Server
                     if (_poolCount >= _poolCapacity)
                     {
 #if DEBUG_TIMERS
-                        logger.Warning($"DelayCallTimer pool reached maximum of {_poolCapacity} timers");
+                        logger.Warning("DelayCallTimer pool reached maximum of {Capacity} timers", _poolCapacity);
                         _allowFinalization = true;
 #endif
                         return;
@@ -181,7 +181,7 @@ namespace Server
                 if (timer != null)
                 {
 #if DEBUG_TIMERS
-                    logger.Information($"Getting from pool: ({_poolCount} / {_poolCapacity})");
+                    logger.Information("Getting from pool: ({Count} / {Capacity})", _poolCount, _poolCapacity);
 #endif
 
                     timer.Init(delay, interval, count);
@@ -197,7 +197,7 @@ namespace Server
                 _timerPoolDepletionAmount++;
 
 #if DEBUG_TIMERS
-                logger.Warning($"Timer pool depleted and timer was allocated.\n{new StackTrace()}");
+                logger.Warning("Timer pool depleted and timer was allocated.\n{StackTrace}", new StackTrace());
 #endif
                 return new DelayCallTimer(delay, interval, count, callback);
             }
@@ -211,7 +211,7 @@ namespace Server
             {
                 if (!_allowFinalization)
                 {
-                    logger.Warning($"Pooled timer was not returned to the pool.\n{_stackTraces[GetHashCode()]}");
+                    logger.Warning("Pooled timer was not returned to the pool.\n{StackTrace}", _stackTraces[GetHashCode()]);
                 }
             }
 #endif

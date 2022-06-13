@@ -285,4 +285,22 @@ public static class StringHelpers
             4 => MemoryMarshal.Cast<byte, uint>(buffer).IndexOf((uint)0) * 4,
             _ => buffer.IndexOf((byte)0)
         };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ReplaceAny(this Span<char> chars, ReadOnlySpan<char> invalidChars, ReadOnlySpan<char> replacementChars)
+    {
+        while (true)
+        {
+            var indexOf = chars.IndexOfAny(invalidChars);
+            if (indexOf == -1)
+            {
+                break;
+            }
+
+            var chr = chars[indexOf];
+
+            chars[indexOf] = replacementChars[invalidChars.IndexOf(chr)];
+            chars = chars[(indexOf + 1)..];
+        }
+    }
 }

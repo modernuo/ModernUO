@@ -219,7 +219,7 @@ namespace Server.Mobiles
             PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1060768, from.NetState); // enraged
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
             list.Add(1060768); // enraged

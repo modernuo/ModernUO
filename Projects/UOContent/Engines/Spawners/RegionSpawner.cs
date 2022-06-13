@@ -88,13 +88,13 @@ namespace Server.Engines.Spawners
             json.SetProperty("region", options, SpawnRegion.Name);
         }
 
-        public override void GetSpawnerProperties(ObjectPropertyList list)
+        public override void GetSpawnerProperties(IPropertyList list)
         {
             base.GetSpawnerProperties(list);
 
             if (Running && m_SpawnRegion != null)
             {
-                list.Add(1076228, "region:\t{0}", m_SpawnRegion.Name); // ~1_DUMMY~ ~2_DUMMY~
+                list.Add(1076228, $"{"region:"}\t{m_SpawnRegion.Name}"); // ~1_DUMMY~ ~2_DUMMY~
             }
         }
 

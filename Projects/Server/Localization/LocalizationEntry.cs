@@ -84,24 +84,6 @@ public class LocalizationEntry
         builder.Dispose();
     }
 
-    public string Format(params object[] args)
-    {
-        if (args == null || args.Length == 0 || StringFormatter == null)
-        {
-            return Text;
-        }
-
-        for (var i = 0; i < args.Length; i++)
-        {
-            if (args[i] is string s && s[0] == '#' && int.TryParse(s.AsSpan(1), out var number))
-            {
-                args[i] = Localization.GetText(number, Language);
-            }
-        }
-
-        return string.Format(StringFormatter, args);
-    }
-
     /// <summary>
     /// Creates a formatted string of the localization entry.
     /// Uses string interpolation under the hood. This method is preferably relative to the object array method signature.
@@ -256,13 +238,69 @@ public class LocalizationEntry
             }
         }
 
-        public void AppendFormatted<T>(T value, string? format)
+        // Each numeric needs its own override
+        public void AppendFormatted(int value, string? format)
         {
             if (!ReadyToAppend())
             {
                 return;
             }
 
+            if (!TryAppendCliloc(value, format))
+            {
+                AppendFormattedDirect(value, format);
+            }
+        }
+
+        public void AppendFormatted(uint value, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            if (!TryAppendCliloc((int)value, format))
+            {
+                AppendFormattedDirect(value, format);
+            }
+        }
+
+        public void AppendFormatted(long value, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            if (!TryAppendCliloc((int)value, format))
+            {
+                AppendFormattedDirect(value, format);
+            }
+        }
+
+        public void AppendFormatted(ulong value, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            if (!TryAppendCliloc((int)value, format))
+            {
+                AppendFormattedDirect(value, format);
+            }
+        }
+
+        public void AppendFormatted<T>(T value, string? format)
+        {
+            if (ReadyToAppend())
+            {
+                AppendFormattedDirect(value, format);
+            }
+        }
+
+        private void AppendFormattedDirect<T>(T value, string? format)
+        {
             string? s;
             if (value is IFormattable)
             {
@@ -307,6 +345,95 @@ public class LocalizationEntry
             }
         }
 
+        // Each numeric needs its own override
+        public void AppendFormatted(int value, int alignment, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            var startingPos = _pos;
+            if (TryAppendCliloc(value, format))
+            {
+                AppendFormatted(value, format);
+                if (alignment != 0)
+                {
+                    AppendOrInsertAlignmentIfNeeded(startingPos, alignment);
+                }
+            }
+            else
+            {
+                AppendFormattedDirect(value, alignment, format);
+            }
+        }
+
+        public void AppendFormatted(uint value, int alignment, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            var startingPos = _pos;
+            if (TryAppendCliloc((int)value, format))
+            {
+                AppendFormatted(value, format);
+                if (alignment != 0)
+                {
+                    AppendOrInsertAlignmentIfNeeded(startingPos, alignment);
+                }
+            }
+            else
+            {
+                AppendFormattedDirect(value, alignment, format);
+            }
+        }
+
+        public void AppendFormatted(long value, int alignment, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            var startingPos = _pos;
+            if (TryAppendCliloc((int)value, format))
+            {
+                AppendFormatted(value, format);
+                if (alignment != 0)
+                {
+                    AppendOrInsertAlignmentIfNeeded(startingPos, alignment);
+                }
+            }
+            else
+            {
+                AppendFormattedDirect(value, alignment, format);
+            }
+        }
+
+        public void AppendFormatted(ulong value, int alignment, string? format)
+        {
+            if (!ReadyToAppend())
+            {
+                return;
+            }
+
+            var startingPos = _pos;
+            if (TryAppendCliloc((int)value, format))
+            {
+                AppendFormatted(value, format);
+                if (alignment != 0)
+                {
+                    AppendOrInsertAlignmentIfNeeded(startingPos, alignment);
+                }
+            }
+            else
+            {
+                AppendFormattedDirect(value, alignment, format);
+            }
+        }
+
         public void AppendFormatted<T>(T value, int alignment, string? format)
         {
             if (!ReadyToAppend())
@@ -314,6 +441,11 @@ public class LocalizationEntry
                 return;
             }
 
+            AppendFormattedDirect(value, alignment, format);
+        }
+
+        private void AppendFormattedDirect<T>(T value, int alignment, string? format)
+        {
             var startingPos = _pos;
             AppendFormatted(value, format);
             if (alignment != 0)
@@ -324,7 +456,7 @@ public class LocalizationEntry
 
         public void AppendFormatted(ReadOnlySpan<char> value)
         {
-            if (!ReadyToAppend() || TryAppendClilocNumber(value))
+            if (!ReadyToAppend() || TryAppendClilocByNumericString(value))
             {
                 return;
             }
@@ -380,12 +512,33 @@ public class LocalizationEntry
             }
         }
 
-        public void AppendFormatted(object? value, int alignment = 0, string? format = null) =>
-            AppendFormatted<object?>(value, alignment, format);
+        public void AppendFormatted(object? value, int alignment = 0, string? format = null)
+        {
+            if (value is int i)
+            {
+                AppendFormatted(i, alignment, format);
+            }
+            else if (value is uint ui)
+            {
+                AppendFormatted(ui, alignment, format);
+            }
+            else if (value is long l)
+            {
+                AppendFormatted(l, alignment, format);
+            }
+            else if (value is ulong ul)
+            {
+                AppendFormatted(ul, alignment, format);
+            }
+            else
+            {
+                AppendFormatted<object?>(value, alignment, format);
+            }
+        }
 
         public void AppendFormatted(string? value)
         {
-            if (!ReadyToAppend() || TryAppendClilocNumber(value))
+            if (!ReadyToAppend() || TryAppendClilocByNumericString(value))
             {
                 return;
             }
@@ -403,13 +556,9 @@ public class LocalizationEntry
         public void AppendFormatted(string? value, int alignment, string? format = null) =>
             AppendFormatted<string?>(value, alignment, format);
 
-        private bool TryAppendClilocNumber(ReadOnlySpan<char> value)
+        public bool TryAppendCliloc(int number, string? format)
         {
-            if (
-                value[0] != '#' ||
-                !int.TryParse(value[1..], out var number) ||
-                !Localization.TryGetLocalization(_lang, number, out var entry)
-            )
+            if (format != "#" || !Localization.TryGetLocalization(_lang, number, out var entry))
             {
                 return false;
             }
@@ -427,6 +576,9 @@ public class LocalizationEntry
 
             return true;
         }
+
+        private bool TryAppendClilocByNumericString(ReadOnlySpan<char> value) =>
+            value[0] == '#' && long.TryParse(value[1..], out var number) && TryAppendCliloc((int)number, "#");
 
         private void AppendOrInsertAlignmentIfNeeded(int startingPos, int alignment)
         {

@@ -30,11 +30,11 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1070998, $"#{1076595}"); // Use this to redeem<br>Your Heritage Items
+            list.AddLocalized(1070998, 1076595); // Use this to redeem<br>Your Heritage Items
         }
 
         public override void Serialize(IGenericWriter writer)

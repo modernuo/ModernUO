@@ -172,7 +172,7 @@ public partial class CreatureBackpack : Backpack // Used on BaseCreature
         Weight = 3.0;
     }
 
-    public override void AddNameProperty(ObjectPropertyList list)
+    public override void AddNameProperty(IPropertyList list)
     {
         if (Name != null)
         {

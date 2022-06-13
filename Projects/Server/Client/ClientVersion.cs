@@ -39,6 +39,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
     public static readonly ClientVersion Version60142 = new("6.0.14.2");
     public static readonly ClientVersion Version7000 = new("7.0.0.0");
     public static readonly ClientVersion Version7090 = new("7.0.9.0");
+    public static readonly ClientVersion Version70120 = new("7.0.12.0"); // Plant localization change
     public static readonly ClientVersion Version70130 = new("7.0.13.0");
     public static readonly ClientVersion Version70160 = new("7.0.16.0");
     public static readonly ClientVersion Version70300 = new("7.0.30.0");

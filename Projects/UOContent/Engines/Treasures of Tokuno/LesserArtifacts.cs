@@ -713,7 +713,7 @@ namespace Server.Items
             Utility.Intern(ref m_UrnName);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(1070935, m_UrnName); // Ancient Urn of ~1_name~
         }
@@ -772,7 +772,7 @@ namespace Server.Items
             Utility.Intern(ref m_SwordsName);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(1070936, m_SwordsName); // Honorable Swords of ~1_name~
         }

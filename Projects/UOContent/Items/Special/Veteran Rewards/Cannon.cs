@@ -16,7 +16,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1076157; // Decorative Cannon
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -27,7 +27,7 @@ namespace Server.Items
                     list.Add(1076223); // 7th Year Veteran Reward
                 }
 
-                list.Add(1076207, addon.Charges.ToString()); // Remaining Charges: ~1_val~
+                list.Add(1076207, addon.Charges); // Remaining Charges: ~1_val~
             }
         }
 
@@ -462,7 +462,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -471,7 +471,7 @@ namespace Server.Items
                 list.Add(1076223); // 7th Year Veteran Reward
             }
 
-            list.Add(1076207, m_Charges.ToString()); // Remaining Charges: ~1_val~
+            list.Add(1076207, m_Charges); // Remaining Charges: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)

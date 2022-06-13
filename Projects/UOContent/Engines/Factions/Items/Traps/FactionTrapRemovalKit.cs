@@ -30,12 +30,12 @@ namespace Server.Factions
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             // NOTE: OSI does not list uses remaining; intentional difference
-            list.Add(1060584, Charges.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, Charges); // uses remaining: ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)

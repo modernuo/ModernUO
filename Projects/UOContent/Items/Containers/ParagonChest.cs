@@ -35,7 +35,7 @@ public partial class ParagonChest : LockableContainer
         LabelTo(from, 1063449, _name);
     }
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 

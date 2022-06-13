@@ -255,7 +255,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    state.LogInfo("Deleting character {0} (0x{1:X})", index, m.Serial.Value);
+                    state.LogInfo($"Deleting character {index} (0x{m.Serial.Value:X})");
 
                     acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
@@ -314,16 +314,16 @@ namespace Server.Misc
             if (!CanCreate(state.Address))
             {
                 logger.Information(
-                    "Login: {0}: Account '{1}' not created, ip already has {2} account{3}.",
+                    $"Login: {{NetState}} Account '{{Username}}' not created, ip already has {{AccountCount}} account{(MaxAccountsPerIP == 1 ? "" : "s")}.",
                     state,
                     un,
-                    MaxAccountsPerIP,
-                    MaxAccountsPerIP == 1 ? "" : "s"
+                    MaxAccountsPerIP
                 );
+
                 return null;
             }
 
-            logger.Information("Login: {0}: Creating new account '{1}'", state, un);
+            logger.Information("Login: {NetState}: Creating new account '{Username}'", state, un);
 
             var a = new Account(un, pw);
 
@@ -337,7 +337,7 @@ namespace Server.Misc
                 e.Accepted = false;
                 e.RejectReason = ALRReason.InUse;
 
-                logger.Information("Login: {0}: Past IP limit threshold", e.State);
+                logger.Information("Login: {NetState}: Past IP limit threshold", e.State);
 
                 using var op = new StreamWriter("ipLimits.log", true);
                 op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, Core.Now);
@@ -365,28 +365,28 @@ namespace Server.Misc
                 }
                 else
                 {
-                    logger.Information("Login: {0}: Invalid username '{1}'", e.State, un);
+                    logger.Information("Login: {NetState} Invalid username '{Username}'", e.State, un);
                     e.RejectReason = ALRReason.Invalid;
                 }
             }
             else if (!acct.HasAccess(e.State))
             {
-                logger.Information("Login: {0}: Access denied for '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Access denied for '{Username}'", e.State, un);
                 e.RejectReason = LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass;
             }
             else if (!acct.CheckPassword(pw))
             {
-                logger.Information("Login: {0}: Invalid password for '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, un);
                 e.RejectReason = ALRReason.BadPass;
             }
             else if (acct.Banned)
             {
-                logger.Information("Login: {0}: Banned account '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Banned account '{Username}'", e.State, un);
                 e.RejectReason = ALRReason.Blocked;
             }
             else
             {
-                logger.Information("Login: {0}: Valid credentials for '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Valid credentials for '{Username}'", e.State, un);
                 e.State.Account = acct;
                 e.Accepted = true;
 
@@ -405,7 +405,7 @@ namespace Server.Misc
             {
                 e.Accepted = false;
 
-                logger.Warning("Login: {0}: Past IP limit threshold", e.State);
+                logger.Warning("Login: {NetState} Past IP limit threshold", e.State);
 
                 using var op = new StreamWriter("ipLimits.log", true);
                 op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, Core.Now);
@@ -422,24 +422,24 @@ namespace Server.Misc
             }
             else if (!acct.HasAccess(e.State))
             {
-                logger.Information("Login: {0}: Access denied for '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Access denied for '{Username}'", e.State, un);
                 e.Accepted = false;
             }
             else if (!acct.CheckPassword(pw))
             {
-                logger.Information("Login: {0}: Invalid password for '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, un);
                 e.Accepted = false;
             }
             else if (acct.Banned)
             {
-                logger.Information("Login: {0}: Banned account '{1}'", e.State, un);
+                logger.Information("Login: {NetState} Banned account '{Username}'", e.State, un);
                 e.Accepted = false;
             }
             else
             {
                 acct.LogAccess(e.State);
 
-                logger.Information("Login: {0}: Account '{1}' at character list", e.State, un);
+                logger.Information("Login: {NetState} Account '{Username}' at character list", e.State, un);
                 e.State.Account = acct;
                 e.Accepted = true;
                 e.CityInfo = StartingCities;

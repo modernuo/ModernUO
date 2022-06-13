@@ -34,7 +34,7 @@ namespace Server.Network
 
                 if (ph.Ingame && state.Mobile == null)
                 {
-                    state.LogInfo("Sent in-game packet (0x{0:X2}x{1:X2}) before having been attached to a mobile", packetId, cmd);
+                    state.LogInfo($"Sent in-game packet (0x{packetId:X2}x{cmd:X2}) before having been attached to a mobile");
                     state.Disconnect("Sent in-game packet before being attached to a mobile.");
                 }
                 else if (ph.Ingame && state.Mobile.Deleted)
