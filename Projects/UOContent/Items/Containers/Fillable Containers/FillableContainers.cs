@@ -84,8 +84,7 @@ public partial class FillableMetalChest : FillableContainer
 public partial class FillableMetalGoldenChest : FillableContainer
 {
     [Constructible]
-    public FillableMetalGoldenChest()
-        : base(0xE41)
+    public FillableMetalGoldenChest() : base(0xE41)
     {
     }
 }
@@ -95,8 +94,7 @@ public partial class FillableMetalGoldenChest : FillableContainer
 public partial class FillableWoodenChest : FillableContainer
 {
     [Constructible]
-    public FillableWoodenChest()
-        : base(0xE43)
+    public FillableWoodenChest() : base(0xE43)
     {
     }
 }

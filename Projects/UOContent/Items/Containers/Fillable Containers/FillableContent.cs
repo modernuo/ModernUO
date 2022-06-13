@@ -93,6 +93,7 @@ public partial class FillableContent
 
         Mobile nearest = null;
 
+        // TODO: Replace with vendor shop regions and a fallback override.
         foreach (var mob in map.GetMobilesInRange(loc, 20))
         {
             if (nearest != null && mob.GetDistanceToSqrt(loc) > nearest.GetDistanceToSqrt(loc) &&

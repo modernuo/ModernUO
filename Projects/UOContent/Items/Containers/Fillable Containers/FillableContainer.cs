@@ -33,7 +33,7 @@ public abstract partial class FillableContainer : LockableContainer
     public virtual int SpawnThreshold => 2;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime NextRespawnTime => _respawnTimer.Next;
+    public DateTime NextRespawnTime => _respawnTimer?.Next ?? DateTime.MinValue;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public FillableContentType ContentType
@@ -117,8 +117,14 @@ public abstract partial class FillableContainer : LockableContainer
 
     public void CheckRespawn()
     {
-        var canSpawn = _rawContentType != FillableContentType.None && !Deleted && GetItemsCount() <= SpawnThreshold && !Movable &&
-                       Parent == null && !IsLockedDown && !IsSecure;
+        var canSpawn =
+            _rawContentType != FillableContentType.None &&
+            !Deleted && !Movable && Parent == null && !IsLockedDown && !IsSecure &&
+            (
+                GetItemsCount() <= SpawnThreshold ||
+                IsLockable && !Locked ||
+                IsTrappable && TrapType == TrapType.None
+            );
 
         if (canSpawn)
         {
@@ -193,7 +199,7 @@ public abstract partial class FillableContainer : LockableContainer
 
     public virtual void GenerateContent()
     {
-        if (_rawContentType != FillableContentType.None || Deleted)
+        if (_rawContentType == FillableContentType.None || Deleted)
         {
             return;
         }
