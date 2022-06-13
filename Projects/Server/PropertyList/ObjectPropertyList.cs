@@ -119,46 +119,10 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         _hash ^= (val >> 26) & 0x3F;
     }
 
-    public void Add(int number, string? arguments = null)
-    {
-        if (number == 0)
-        {
-            return;
-        }
-
-        arguments ??= "";
-
-        if (Header == 0)
-        {
-            Header = number;
-            HeaderArgs = arguments;
-        }
-
-        AddHash(number);
-        if (arguments.Length > 0)
-        {
-            AddHash(arguments.GetHashCode(StringComparison.Ordinal));
-        }
-
-        int strLength = arguments.Length * 2;
-        int length = _bufferPos + 6 + strLength;
-        while (length > _buffer.Length)
-        {
-            Flush();
-        }
-
-        var writer = new SpanWriter(_buffer.AsSpan(_bufferPos));
-        writer.Write(number);
-        writer.Write((ushort)strLength);
-        writer.WriteLittleUni(arguments);
-
-        _bufferPos += writer.BytesWritten;
-        _pos = 0;
-    }
+    public void Add(int number, string? arguments = null) => InternalAdd(number, $"{arguments ?? ""}");
+    public void Add(string argument) => Add(GetStringNumber(), $"{argument}");
 
     private int GetStringNumber() => _stringNumbers[_stringNumbersIndex++ % _stringNumbers.Length];
-
-    public void Add(string argument) => Add(GetStringNumber(), argument);
 
     // String Interpolation
     public void Add(

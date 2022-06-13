@@ -587,7 +587,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    list.Add(1072304, "Nobody"); // Owned by ~1_name~
+                    list.Add(1072304, $"{"Nobody"}"); // Owned by ~1_name~
                 }
             }
 

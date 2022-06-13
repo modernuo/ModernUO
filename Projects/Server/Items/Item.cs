@@ -1987,7 +1987,7 @@ namespace Server
         /// </summary>
         public virtual void AddBlessedForProperty(IPropertyList list, Mobile m)
         {
-            list.Add(1062203, m.Name); // Blessed for ~1_NAME~
+            list.Add(1062203, $"{m.Name}"); // Blessed for ~1_NAME~
         }
 
         /// <summary>
