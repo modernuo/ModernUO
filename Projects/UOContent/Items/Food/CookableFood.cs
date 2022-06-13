@@ -4,7 +4,7 @@ using Server.Targeting;
 namespace Server.Items;
 
 [SerializationGenerator(0, false)]
-public partial abstract class CookableFood : Item
+public abstract partial class CookableFood : Item
 {
     [SerializableField(0)]
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
