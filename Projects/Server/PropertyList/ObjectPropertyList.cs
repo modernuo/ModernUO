@@ -119,29 +119,22 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         _hash ^= (val >> 26) & 0x3F;
     }
 
-    public void Add(int number, string? arguments = null)
+    public void Add(int number)
     {
         if (number == 0)
         {
             return;
         }
 
-        arguments ??= "";
-
         if (Header == 0)
         {
             Header = number;
-            HeaderArgs = arguments;
+            HeaderArgs = "";
         }
 
         AddHash(number);
-        if (arguments.Length > 0)
-        {
-            AddHash(arguments.GetHashCode(StringComparison.Ordinal));
-        }
 
-        int strLength = arguments.Length * 2;
-        int length = _bufferPos + 6 + strLength;
+        int length = _bufferPos + 6;
         while (length > _buffer.Length)
         {
             Flush();
@@ -149,24 +142,31 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
         var writer = new SpanWriter(_buffer.AsSpan(_bufferPos));
         writer.Write(number);
-        writer.Write((ushort)strLength);
-        writer.WriteLittleUni(arguments);
-
-        _bufferPos += writer.BytesWritten;
-        _pos = 0;
+        writer.Write((ushort)0);
+        _bufferPos += 6;
     }
+
+    public void Add(int number, string? arguments) => InternalAdd(number, $"{arguments}");
+    public void Add(string argument) => InternalAdd(GetStringNumber(), $"{argument}");
+    public void Add(int number, int value) => InternalAdd(number, $"{value}");
+    public void AddLocalized(int value) => InternalAdd(GetStringNumber(), $"{value:#}");
+    public void AddLocalized(int number, int value) => InternalAdd(number, $"{value:#}");
 
     private int GetStringNumber() => _stringNumbers[_stringNumbersIndex++ % _stringNumbers.Length];
 
-    public void Add(string argument) => Add(GetStringNumber(), argument);
-
+    // String Interpolation
     public void Add(
         [InterpolatedStringHandlerArgument("")]
         ref IPropertyList.InterpolatedStringHandler handler
-    ) => Add(GetStringNumber(), ref handler);
+    ) => InternalAdd(GetStringNumber(), ref handler);
 
-    // String Interpolation
     public void Add(
+        int number,
+        [InterpolatedStringHandlerArgument("")]
+        ref IPropertyList.InterpolatedStringHandler handler
+    ) => InternalAdd(number, ref handler);
+
+    private void InternalAdd(
         int number,
         [InterpolatedStringHandlerArgument("")]
         ref IPropertyList.InterpolatedStringHandler handler)
@@ -182,14 +182,10 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         {
             Header = number;
             HeaderArgs = chars.ToString();
-            HeaderArgs.GetHashCode(StringComparison.Ordinal);
         }
 
         AddHash(number);
-        if (chars.Length > 0)
-        {
-            AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
-        }
+        AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
 
         int strLength = chars.Length * 2;
         int length = _bufferPos + 6 + strLength;
@@ -253,7 +249,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value)
     {
-
         string? s;
         if (value is IFormattable)
         {
@@ -284,6 +279,14 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value, string? format)
     {
+        // We support localization '#' cliloc formatter for custom property lists
+        // This allows someone to build an IPropertyList that creates HTML using the same syntax as LocalizationInterpolationHandler
+        if (format == "#")
+        {
+            AppendLiteral("#");
+            format = null;
+        }
+
         string? s;
         if (value is IFormattable)
         {

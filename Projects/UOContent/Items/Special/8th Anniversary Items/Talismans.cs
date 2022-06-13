@@ -29,7 +29,7 @@ namespace Server.Items
 
         public override void AddNameProperty(IPropertyList list)
         {
-            list.Add(1075200, $"#{(int)Form}");
+            list.Add(1075200, $"{(int)Form:#}");
         }
 
         public override void Serialize(IGenericWriter writer)

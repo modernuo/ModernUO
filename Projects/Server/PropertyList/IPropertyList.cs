@@ -22,9 +22,25 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
 {
     public void Reset();
     public void Terminate();
-    public void Add(int number, string argument = null);
+
+    public void Add(int number);
+
+    /** Convenience method for $"{argument}". */
+    public void Add(int number, string argument);
+
+    /** Convenience method for $"{text}". */
     public void Add(string text);
 
+    /** Convenience method for $"{value}". */
+    public void Add(int number, int value);
+
+    /** Convenience method for $"{value:#}". */
+    public void AddLocalized(int value);
+
+    /** Convenience method for $"{value:#}". */
+    public void AddLocalized(int number, int value);
+
     // String Interpolation
+    public void Add([InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
     public void Add(int number, [InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
 }

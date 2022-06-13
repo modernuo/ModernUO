@@ -799,9 +799,9 @@ namespace Server.Items
             return m_Devourer.Devour(this); // Devour the corpse if it hasn't
         }
 
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
-            base.SendInfoTo(ns, world, opl);
+            base.SendInfoTo(ns, world);
 
             if (((Body)Amount).IsHuman && ItemID == 0x2006)
             {

@@ -27,7 +27,17 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1070998, $"{ItemName}"); // Use this to redeem<br>your ~1_PROMO~
+            if (ItemName != null)
+            {
+                if (ItemName.Number > 0)
+                {
+                    list.Add(1070998, ItemName.Number); // Use this to redeem<br>your ~1_PROMO~
+                }
+                else
+                {
+                    list.Add(1070998, ItemName.String); // Use this to redeem<br>your ~1_PROMO~
+                }
+            }
         }
 
         public override void OnDoubleClick(Mobile from)

@@ -264,7 +264,7 @@ namespace Server.Items
                     list.Add(1070857, m_Hunter.Name); // Caught by ~1_fisherman~
                 }
 
-                list.Add(1070858, $"{m_AnimalWeight}"); // ~1_weight~ stones
+                list.Add(1070858, m_AnimalWeight); // ~1_weight~ stones
             }
         }
 
@@ -439,7 +439,7 @@ namespace Server.Items
                     list.Add(1070857, m_Hunter.Name); // Caught by ~1_fisherman~
                 }
 
-                list.Add(1070858, $"{m_AnimalWeight}"); // ~1_weight~ stones
+                list.Add(1070858, m_AnimalWeight); // ~1_weight~ stones
             }
         }
 

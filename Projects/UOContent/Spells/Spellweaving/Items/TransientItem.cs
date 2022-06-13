@@ -53,9 +53,9 @@ namespace Server.Items
         public virtual void SendTimeRemainingMessage(Mobile to)
         {
             to.SendLocalizedMessage(
-                1072516,
+                1072516, // ~1_name~ will expire in ~2_val~ seconds!
                 $"{Name ?? $"#{LabelNumber}"}\t{(int)LifeSpan.TotalSeconds}"
-            ); // ~1_name~ will expire in ~2_val~ seconds!
+            );
         }
 
         public override void OnDelete()

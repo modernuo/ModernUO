@@ -18,7 +18,7 @@ namespace Server.Items
         {
             base.AddNameProperties(list);
 
-            list.Add(1074432, $"{VacationDays}"); // Vacation days: ~1_DAYS~
+            list.AddLocalized(1074432, VacationDays); // Vacation days: ~1_DAYS~
         }
     }
 }

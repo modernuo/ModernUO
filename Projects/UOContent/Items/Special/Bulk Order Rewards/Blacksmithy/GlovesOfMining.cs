@@ -202,7 +202,7 @@ namespace Server.Items
 
             if (m_Bonus != 0)
             {
-                list.Add(1062005, $"{m_Bonus}"); // mining bonus +~1_val~
+                list.Add(1062005, m_Bonus); // mining bonus +~1_val~
             }
         }
 

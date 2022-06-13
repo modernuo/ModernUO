@@ -77,7 +77,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1060584, $"{m_UsesRemaining}"); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
 
             if (m_Poison != null && m_PoisonCharges > 0)
             {

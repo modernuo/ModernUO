@@ -314,7 +314,7 @@ namespace Server.Factions
 
             if (m_Faction != null && Map == Faction.Facet)
             {
-                list.Add(1060846, m_Faction.Definition.PropName); // Guard: ~1_val~
+                list.Add(1060846, $"{m_Faction.Definition.PropName}"); // Guard: ~1_val~
             }
         }
 

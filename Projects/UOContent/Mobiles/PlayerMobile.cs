@@ -3525,14 +3525,15 @@ namespace Server.Mobiles
 
                     if (faction.Commander == this)
                     {
-                        list.Add(1042733, faction.Definition.PropName); // Commanding Lord of the ~1_FACTION_NAME~
+                        // Commanding Lord of the ~1_FACTION_NAME~
+                        list.Add(1042733, $"{faction.Definition.PropName}");
                     }
                     else if (pl.Sheriff != null)
                     {
                         list.Add(
-                            1042734,
+                            1042734, // The Sheriff of  ~1_CITY~, ~2_FACTION_NAME~
                             $"{pl.Sheriff.Definition.FriendlyName}\t{faction.Definition.PropName}"
-                        ); // The Sheriff of  ~1_CITY~, ~2_FACTION_NAME~
+                        );
                     }
                     else if (pl.Finance != null)
                     {

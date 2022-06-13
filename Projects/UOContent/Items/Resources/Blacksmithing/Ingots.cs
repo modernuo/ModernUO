@@ -72,7 +72,7 @@ namespace Server.Items
         {
             if (Amount > 1)
             {
-                list.Add(1050039, $"{Amount}\t#{1027154}"); // ~1_NUMBER~ ~2_ITEMNAME~
+                list.Add(1050039, $"{Amount}\t{1027154:#}"); // ~1_NUMBER~ ~2_ITEMNAME~
             }
             else
             {

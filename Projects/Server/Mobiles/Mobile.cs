@@ -3435,9 +3435,9 @@ namespace Server
 
         public int GetAOSStatus(int index) => AOSStatusHandler?.Invoke(this, index) ?? 0;
 
-        public virtual void SendPropertiesTo(Mobile from)
+        public virtual void SendPropertiesTo(NetState ns)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            ns?.Send(PropertyList.Buffer);
         }
 
         public virtual void OnAosSingleClick(Mobile from)
@@ -3507,11 +3507,14 @@ namespace Server
 
                 if (guildTitle.Length > 0)
                 {
-                    list.Add(
-                        NewGuildDisplay
-                            ? $"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}"
-                            : $"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}"
-                    );
+                    if (NewGuildDisplay)
+                    {
+                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}");
+                    }
+                    else
+                    {
+                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}");
+                    }
                 }
                 else
                 {
@@ -6911,19 +6914,12 @@ namespace Server
             eable.Free();
         }
 
-        public void SendOPLPacketTo(NetState state) => SendOPLPacketTo(state, ObjectPropertyList.Enabled);
-
-        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        public virtual void SendOPLPacketTo(NetState ns)
         {
-            if (sendOplPacket)
+            if (ObjectPropertyList.Enabled)
             {
                 ns.SendOPLInfo(this);
             }
-        }
-
-        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
-        {
-            ns?.Send(opl);
         }
 
         public virtual void OnAccessLevelChanged(AccessLevel oldLevel)
