@@ -56,7 +56,7 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
     - `linuxmint.17`, `linuxmint.18`, `linuxmint.19` - Linux Mint
     - `debian.10`, `debian.11` - Debian
     - `centos.7`, `centos.8` - CentOS
-    - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
+    - `fedora.32`, `fedora.33`, `fedora.34`, `fedora.35`, `fedora.36` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used. Linux Mint 20 is not supported directly yet, so build explicitly against `ubuntu.20.04` instead.
 
