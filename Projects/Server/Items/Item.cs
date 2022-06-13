@@ -1874,35 +1874,35 @@ namespace Server
 
             if (v != 0)
             {
-                list.Add(1060448, $"{v}"); // physical resist ~1_val~%
+                list.Add(1060448, v); // physical resist ~1_val~%
             }
 
             v = FireResistance;
 
             if (v != 0)
             {
-                list.Add(1060447, $"{v}"); // fire resist ~1_val~%
+                list.Add(1060447, v); // fire resist ~1_val~%
             }
 
             v = ColdResistance;
 
             if (v != 0)
             {
-                list.Add(1060445, $"{v}"); // cold resist ~1_val~%
+                list.Add(1060445, v); // cold resist ~1_val~%
             }
 
             v = PoisonResistance;
 
             if (v != 0)
             {
-                list.Add(1060449, $"{v}"); // poison resist ~1_val~%
+                list.Add(1060449, v); // poison resist ~1_val~%
             }
 
             v = EnergyResistance;
 
             if (v != 0)
             {
-                list.Add(1060446, $"{v}"); // energy resist ~1_val~%
+                list.Add(1060446, v); // energy resist ~1_val~%
             }
         }
 
@@ -1987,7 +1987,7 @@ namespace Server
         /// </summary>
         public virtual void AddBlessedForProperty(IPropertyList list, Mobile m)
         {
-            list.Add(1062203, $"{m.Name}"); // Blessed for ~1_NAME~
+            list.Add(1062203, m.Name); // Blessed for ~1_NAME~
         }
 
         /// <summary>

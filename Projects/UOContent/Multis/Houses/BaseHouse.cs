@@ -3730,7 +3730,7 @@ namespace Server.Multis
                 }
                 else
                 {
-                    list.Add(1061114, $"{"unknown"}"); // Location: ~1_val~
+                    list.Add(1061114, "unknown"); // Location: ~1_val~
                 }
             }
 

@@ -950,7 +950,6 @@ namespace Server.Engines.CannedEvil
                 list.Add(1060659, $"{"Level"}\t{Level}"); // ~1_val~: ~2_val~
                 var killRatio = 100.0 * ((double)m_Kills / MaxKills);
                 list.Add(1060660, $"{"Kills"}\t{m_Kills} of {MaxKills} ({killRatio:F1}%)"); // ~1_val~: ~2_val~
-                //list.Add(1060661, "Spawn Range\t{0}", m_SpawnRange); // ~1_val~: ~2_val~
             }
             else
             {

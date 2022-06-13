@@ -38,7 +38,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1060485, $"{StrengthBonus}"); // strength bonus ~1_val~
+            list.Add(1060485, StrengthBonus); // strength bonus ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)

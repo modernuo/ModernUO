@@ -28,7 +28,7 @@ namespace Server.Items
         {
             if (CraftResources.IsStandard(Resource))
             {
-                list.Add(1061119, $"{" "}"); // ~1_LEATHER_TYPE~ runic sewing kit
+                list.Add(1061119, " "); // ~1_LEATHER_TYPE~ runic sewing kit
                 return;
             }
 

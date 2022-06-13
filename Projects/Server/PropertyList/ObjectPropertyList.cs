@@ -120,7 +120,10 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     }
 
     public void Add(int number, string? arguments = null) => InternalAdd(number, $"{arguments ?? ""}");
-    public void Add(string argument) => Add(GetStringNumber(), $"{argument}");
+    public void Add(string argument) => InternalAdd(GetStringNumber(), $"{argument}");
+    public void Add(int number, int value) => InternalAdd(number, $"{value}");
+    public void AddLocalized(int value) => InternalAdd(GetStringNumber(), $"{value:#}");
+    public void AddLocalized(int number, int value) => InternalAdd(number, $"{value:#}");
 
     private int GetStringNumber() => _stringNumbers[_stringNumbersIndex++ % _stringNumbers.Length];
 

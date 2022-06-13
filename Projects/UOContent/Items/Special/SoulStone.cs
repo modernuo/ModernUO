@@ -139,7 +139,7 @@ namespace Server.Items
             }
             else
             {
-                list.Add(1041602, $"{1074235:#}"); // Owner: ~1_val~
+                list.AddLocalized(1041602, 1074235); // Owner: ~1_val~
             }
         }
 
@@ -975,7 +975,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1060584, $"{m_UsesRemaining}"); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)

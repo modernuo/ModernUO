@@ -54,7 +54,7 @@ namespace Server.Engines.BulkOrders
                 list.Add(LargeBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
             }
 
-            list.Add(1060656, $"{AmountMax}"); // amount to make: ~1_val~
+            list.Add(1060656, AmountMax); // amount to make: ~1_val~
 
             for (var i = 0; i < _entries.Length; ++i)
             {

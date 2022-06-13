@@ -125,7 +125,7 @@ namespace Server.Items
         {
             base.AddNameProperties(list);
 
-            list.Add(1075217, $"{m_Charges}"); // ~1_val~ charges remaining
+            list.Add(1075217, m_Charges); // ~1_val~ charges remaining
         }
 
         public override void OnDelete()

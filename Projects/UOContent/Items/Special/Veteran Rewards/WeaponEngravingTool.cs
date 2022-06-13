@@ -110,7 +110,7 @@ namespace Server.Items
 
             if (ShowUsesRemaining)
             {
-                list.Add(1060584, $"{m_UsesRemaining}"); // uses remaining: ~1_val~
+                list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
             }
         }
 

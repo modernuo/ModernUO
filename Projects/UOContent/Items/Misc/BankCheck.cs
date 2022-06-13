@@ -77,7 +77,7 @@ namespace Server.Items
             }
             else
             {
-                list.Add(1060738, $"{m_Worth}"); // value: ~1_val~
+                list.Add(1060738, m_Worth); // value: ~1_val~
             }
         }
 
