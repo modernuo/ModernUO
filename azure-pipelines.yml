@@ -45,10 +45,10 @@ jobs:
         os: fedora.34
       'Fedora 35':
         containerImage: fedora:35
-        os: fedora.34
+        os: fedora.35
       'Fedora 36':
         containerImage: fedora:36
-        os: fedora.34
+        os: fedora.36
 
   displayName: Linux
 
