@@ -41,7 +41,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     private int _stringNumbersIndex;
     private byte[] _buffer;
     private int _bufferPos;
-    private int _formattedCount;
 
     // For string interpolation
     private int _pos;
@@ -82,7 +81,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         HeaderArgs = null;
         STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
         _pos = 0;
-        _formattedCount = 0;
     }
 
     private void Flush()
@@ -187,12 +185,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         }
 
         AddHash(number);
-
-        // Sometimes we might have an empty argument, but it is still an argument.
-        if (chars.Length > 0 || _formattedCount > 0)
-        {
-            AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
-        }
+        AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
 
         int strLength = chars.Length * 2;
         int length = _bufferPos + 6 + strLength;
@@ -211,7 +204,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void InitializeInterpolation(int literalLength, int formattedCount)
     {
-        _formattedCount = formattedCount;
         _arrayToReturnToPool ??= STArrayPool<char>.Shared.Rent(GetDefaultLength(literalLength, formattedCount));
         _pos = 0;
     }
