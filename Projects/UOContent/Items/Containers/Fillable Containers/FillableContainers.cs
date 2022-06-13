@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
 [Flippable(0xA97, 0xA99, 0xA98, 0xA9A, 0xA9B, 0xA9C)]
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class LibraryBookcase : FillableContainer
 {
     [Constructible]
@@ -25,7 +27,7 @@ public partial class LibraryBookcase : FillableContainer
 }
 
 [Flippable(0xE3D, 0xE3C)]
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FillableLargeCrate : FillableContainer
 {
     [Constructible]
@@ -33,7 +35,7 @@ public partial class FillableLargeCrate : FillableContainer
 }
 
 [Flippable(0x9A9, 0xE7E)]
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FillableSmallCrate : FillableContainer
 {
     [Constructible]
@@ -41,7 +43,7 @@ public partial class FillableSmallCrate : FillableContainer
 }
 
 [Flippable(0x9AA, 0xE7D)]
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FillableWoodenBox : FillableContainer
 {
     [Constructible]
@@ -49,7 +51,7 @@ public partial class FillableWoodenBox : FillableContainer
 }
 
 [Flippable(0x9A8, 0xE80)]
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FillableMetalBox : FillableContainer
 {
     [Constructible]
@@ -58,7 +60,7 @@ public partial class FillableMetalBox : FillableContainer
     }
 }
 
-[Serializable(0)]
+[SerializationGenerator(0)]
 public partial class FillableBarrel : FillableContainer
 {
     [Constructible]
@@ -68,7 +70,7 @@ public partial class FillableBarrel : FillableContainer
 }
 
 [Flippable(0x9AB, 0xE7C)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FillableMetalChest : FillableContainer
 {
     [Constructible]
@@ -78,7 +80,7 @@ public partial class FillableMetalChest : FillableContainer
 }
 
 [Flippable(0xE41, 0xE40)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FillableMetalGoldenChest : FillableContainer
 {
     [Constructible]
@@ -89,7 +91,7 @@ public partial class FillableMetalGoldenChest : FillableContainer
 }
 
 [Flippable(0xE43, 0xE42)]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class FillableWoodenChest : FillableContainer
 {
     [Constructible]

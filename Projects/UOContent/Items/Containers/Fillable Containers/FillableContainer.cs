@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[Serializable(2, false)]
+[SerializationGenerator(2, false)]
 public abstract partial class FillableContainer : LockableContainer
 {
     [SerializableField(0)]
