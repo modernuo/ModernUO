@@ -251,7 +251,7 @@ namespace Server.Multis
 
             if (ce != ZlibError.Okay)
             {
-                logger.Warning("ZLib error: {0} (#{1})", ce, (int)ce);
+                logger.Warning("ZLib error: {Error} (#{ErrorCode})", ce, (int)ce);
                 length = 0;
                 size = 0;
             }

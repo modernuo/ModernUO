@@ -78,7 +78,7 @@ namespace Server.Items
             return base.CheckLift(from, item, ref reject);
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
@@ -88,7 +88,7 @@ namespace Server.Items
 
                 if (fish != null)
                 {
-                    list.Add(1074494, "#{0}", fish.LabelNumber); // Contains: ~1_CREATURE~
+                    list.AddLocalized(1074494, fish.LabelNumber); // Contains: ~1_CREATURE~
                 }
             }
         }

@@ -107,44 +107,6 @@ public static class IncomingItemPackets
         }
     }
 
-    public static void DropReq6017(NetState state, CircularBufferReader reader, int packetLength)
-    {
-        reader.ReadInt32(); // serial, ignored
-        int x = reader.ReadInt16();
-        int y = reader.ReadInt16();
-        int z = reader.ReadSByte();
-        reader.ReadByte(); // Grid Location?
-        Serial dest = (Serial)reader.ReadUInt32();
-
-        var loc = new Point3D(x, y, z);
-
-        var from = state.Mobile;
-
-        if (dest.IsMobile)
-        {
-            from.Drop(World.FindMobile(dest), loc);
-        }
-        else if (dest.IsItem)
-        {
-            var item = World.FindItem(dest);
-
-            if (item is BaseMulti multi && multi.AllowsRelativeDrop)
-            {
-                loc.m_X += multi.X;
-                loc.m_Y += multi.Y;
-                from.Drop(loc);
-            }
-            else
-            {
-                from.Drop(item, loc);
-            }
-        }
-        else
-        {
-            from.Drop(loc);
-        }
-    }
-
     public static void EquipMacro(NetState state, CircularBufferReader reader, int packetLength)
     {
         int count = reader.ReadByte();

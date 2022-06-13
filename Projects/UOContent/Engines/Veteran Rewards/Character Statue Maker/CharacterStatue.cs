@@ -128,7 +128,7 @@ namespace Server.Mobiles
             DisplayPaperdollTo(from);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -496,7 +496,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

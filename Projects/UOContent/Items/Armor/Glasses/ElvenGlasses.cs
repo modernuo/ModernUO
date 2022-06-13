@@ -42,7 +42,7 @@ namespace Server.Items
         [SerializableFieldDefault(0)]
         private AosWeaponAttributes WeaponAttributesDefaultValue() => new(this);
 
-        public override void AppendChildNameProperties(ObjectPropertyList list)
+        public override void AppendChildNameProperties(IPropertyList list)
         {
             base.AppendChildNameProperties(list);
 
@@ -50,77 +50,77 @@ namespace Server.Items
 
             if ((prop = _weaponAttributes.HitColdArea) != 0)
             {
-                list.Add(1060416, prop.ToString()); // hit cold area ~1_val~%
+                list.Add(1060416, prop); // hit cold area ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitDispel) != 0)
             {
-                list.Add(1060417, prop.ToString()); // hit dispel ~1_val~%
+                list.Add(1060417, prop); // hit dispel ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitEnergyArea) != 0)
             {
-                list.Add(1060418, prop.ToString()); // hit energy area ~1_val~%
+                list.Add(1060418, prop); // hit energy area ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitFireArea) != 0)
             {
-                list.Add(1060419, prop.ToString()); // hit fire area ~1_val~%
+                list.Add(1060419, prop); // hit fire area ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitFireball) != 0)
             {
-                list.Add(1060420, prop.ToString()); // hit fireball ~1_val~%
+                list.Add(1060420, prop); // hit fireball ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitHarm) != 0)
             {
-                list.Add(1060421, prop.ToString()); // hit harm ~1_val~%
+                list.Add(1060421, prop); // hit harm ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitLeechHits) != 0)
             {
-                list.Add(1060422, prop.ToString()); // hit life leech ~1_val~%
+                list.Add(1060422, prop); // hit life leech ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitLightning) != 0)
             {
-                list.Add(1060423, prop.ToString()); // hit lightning ~1_val~%
+                list.Add(1060423, prop); // hit lightning ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitLowerAttack) != 0)
             {
-                list.Add(1060424, prop.ToString()); // hit lower attack ~1_val~%
+                list.Add(1060424, prop); // hit lower attack ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitLowerDefend) != 0)
             {
-                list.Add(1060425, prop.ToString()); // hit lower defense ~1_val~%
+                list.Add(1060425, prop); // hit lower defense ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitMagicArrow) != 0)
             {
-                list.Add(1060426, prop.ToString()); // hit magic arrow ~1_val~%
+                list.Add(1060426, prop); // hit magic arrow ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitLeechMana) != 0)
             {
-                list.Add(1060427, prop.ToString()); // hit mana leech ~1_val~%
+                list.Add(1060427, prop); // hit mana leech ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitPhysicalArea) != 0)
             {
-                list.Add(1060428, prop.ToString()); // hit physical area ~1_val~%
+                list.Add(1060428, prop); // hit physical area ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitPoisonArea) != 0)
             {
-                list.Add(1060429, prop.ToString()); // hit poison area ~1_val~%
+                list.Add(1060429, prop); // hit poison area ~1_val~%
             }
 
             if ((prop = _weaponAttributes.HitLeechStam) != 0)
             {
-                list.Add(1060430, prop.ToString()); // hit stamina leech ~1_val~%
+                list.Add(1060430, prop); // hit stamina leech ~1_val~%
             }
         }
     }

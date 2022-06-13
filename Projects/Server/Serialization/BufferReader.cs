@@ -159,13 +159,15 @@ namespace Server
 
         public BitArray ReadBitArray()
         {
-            var length = ((IGenericReader)this).ReadEncodedInt();
+            var bitLength = ((IGenericReader)this).ReadEncodedInt();
+            var length = BitArray.GetByteArrayLengthFromBitLength(bitLength);
+
             if (length > _buffer.Length - _position)
             {
                 throw new OutOfMemoryException();
             }
 
-            var bitArray = new BitArray(_buffer.AsSpan(_position, length));
+            var bitArray = new BitArray(_buffer.AsSpan(_position, length), bitLength);
             _position += length;
             return bitArray;
         }

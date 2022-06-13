@@ -121,21 +121,26 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public SecureLevel Level { get; set; }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (!IsEmpty)
             {
                 list.Add(
-                    1070721,
-                    "#{0}\t{1:F1}",
-                    AosSkillBonuses.GetLabel(Skill),
-                    SkillValue
-                ); // Skill stored: ~1_skillname~ ~2_skillamount~
+                    1070721, // Skill stored: ~1_skillname~ ~2_skillamount~
+                    $"{AosSkillBonuses.GetLabel(Skill):#}\t{SkillValue:F1}"
+                );
             }
 
-            list.Add(1041602, "{0}", LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
+            if (LastUserName != null)
+            {
+                list.Add(1041602, LastUserName); // Owner: ~1_val~
+            }
+            else
+            {
+                list.AddLocalized(1041602, 1074235); // Owner: ~1_val~
+            }
         }
 
         private static bool CheckCombat(Mobile m, TimeSpan time)
@@ -966,11 +971,11 @@ namespace Server.Items
             set { }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -1094,7 +1099,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

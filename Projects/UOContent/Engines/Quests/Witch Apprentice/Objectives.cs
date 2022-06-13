@@ -391,13 +391,10 @@ namespace Server.Engines.Quests.Hag
 
                 if (creature.GetType() == type)
                 {
-                    System.From.SendLocalizedMessage(
-                        1055043,
-                        $"#{info.Name}"
-                    ); // You gather a ~1_INGREDIENT_NAME~ from the corpse.
+                    // You gather a ~1_INGREDIENT_NAME~ from the corpse.
+                    System.From.SendLocalizedMessage(1055043, $"#{info.Name}");
 
                     CurProgress++;
-
                     break;
                 }
             }

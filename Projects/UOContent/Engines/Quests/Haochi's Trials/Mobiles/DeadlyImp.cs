@@ -11,7 +11,6 @@ namespace Server.Engines.Quests.Samurai
             BaseSoundID = 422;
             Hue = 0x66A;
 
-            SetSpeed(0.3, 1.0);
             SetStr(91, 115);
             SetDex(61, 80);
             SetInt(86, 105);

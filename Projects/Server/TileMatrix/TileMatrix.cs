@@ -90,7 +90,7 @@ namespace Server
                     }
                     else
                     {
-                        logger.Warning($"map{mapFileIndex}.mul was not found.");
+                        logger.Warning("{File} was not found.", $"map{mapFileIndex}.mul");
                     }
                 }
 
@@ -103,7 +103,7 @@ namespace Server
                 }
                 else
                 {
-                    logger.Warning($"staidx{mapFileIndex}.mul was not found.");
+                    logger.Warning("{File} was not found.", $"staidx{mapFileIndex}.mul");
                 }
 
                 var staticsPath = Core.FindDataFile($"statics{mapFileIndex}.mul", false);
@@ -114,7 +114,7 @@ namespace Server
                 }
                 else
                 {
-                    logger.Warning($"statics{fileIndex}.mul was not found.");
+                    logger.Warning("{File} was not found.", $"statics{fileIndex}.mul");
                 }
             }
 

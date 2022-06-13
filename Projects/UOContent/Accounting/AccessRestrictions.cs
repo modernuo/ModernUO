@@ -22,14 +22,14 @@ namespace Server
 
                 if (Firewall.IsBlocked(ip))
                 {
-                    logger.Information("Client: {0}: Firewall blocked connection attempt.", ip);
+                    logger.Information("Client: {IP}: Firewall blocked connection attempt.", ip);
                     e.AllowConnection = false;
                     return;
                 }
 
                 if (IPLimiter.SocketBlock && !IPLimiter.Verify(ip))
                 {
-                    logger.Warning("Client: {0}: Past IP limit threshold", ip);
+                    logger.Warning("Client: {IP}: Past IP limit threshold", ip);
 
                     using (var op = new StreamWriter("ipLimits.log", true))
                     {

@@ -91,17 +91,17 @@ namespace Server.Items
 
         public override bool HandlesOnSpeech => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             list.Add(Active ? 1060742 : 1060743);  // active / inactive
             list.Add(1060745);                     // broadcast
-            list.Add(1060741, Charges.ToString()); // charges: ~1_val~
+            list.Add(1060741, Charges); // charges: ~1_val~
 
             if (Receivers.Count > 0)
             {
-                list.Add(1060746, Receivers.Count.ToString()); // links: ~1_val~
+                list.Add(1060746, Receivers.Count); // links: ~1_val~
             }
         }
 
@@ -338,7 +338,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

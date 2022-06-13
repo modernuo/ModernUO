@@ -1,346 +1,144 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class Wasabi : Food
 {
-    public class Wasabi : Item
+    [Constructible]
+    public Wasabi() : base(0x24E8) => Weight = 1.0;
+}
+
+[SerializationGenerator(0, false)]
+public partial class WasabiClumps : Food
+{
+    [Constructible]
+    public WasabiClumps() : base(0x24EB)
     {
-        [Constructible]
-        public Wasabi() : base(0x24E8) => Weight = 1.0;
+        Stackable = false;
+        Weight = 1.0;
+        FillFactor = 2;
+    }
+}
 
-        public Wasabi(Serial serial) : base(serial)
-        {
-        }
+[SerializationGenerator(0, false)]
+public partial class EmptyBentoBox : Item
+{
+    [Constructible]
+    public EmptyBentoBox() : base(0x2834) => Weight = 5.0;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+}
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+[SerializationGenerator(0, false)]
+public partial class BentoBox : Food
+{
+    [Constructible]
+    public BentoBox() : base(0x2836)
+    {
+        Stackable = false;
+        Weight = 5.0;
+        FillFactor = 2;
     }
 
-    public class WasabiClumps : Food
+    public override bool Eat(Mobile from)
     {
-        [Constructible]
-        public WasabiClumps() : base(0x24EB)
+        if (!base.Eat(from))
         {
-            Stackable = false;
-            Weight = 1.0;
-            FillFactor = 2;
+            return false;
         }
 
-        public WasabiClumps(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        from.AddToBackpack(new EmptyBentoBox());
+        return true;
     }
+}
 
-    public class EmptyBentoBox : Item
+[SerializationGenerator(0, false)]
+public partial class SushiRolls : Food
+{
+    [Constructible]
+    public SushiRolls() : base(0x283E)
     {
-        [Constructible]
-        public EmptyBentoBox() : base(0x2834) => Weight = 5.0;
-
-        public EmptyBentoBox(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = false;
+        Weight = 3.0;
+        FillFactor = 2;
     }
+}
 
-    public class BentoBox : Food
+[SerializationGenerator(0, false)]
+public partial class SushiPlatter : Food
+{
+    [Constructible]
+    public SushiPlatter() : base(0x2840)
     {
-        [Constructible]
-        public BentoBox() : base(0x2836)
-        {
-            Stackable = false;
-            Weight = 5.0;
-            FillFactor = 2;
-        }
-
-        public BentoBox(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new EmptyBentoBox());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = Core.ML;
+        Weight = 3.0;
+        FillFactor = 2;
     }
+}
 
-    public class SushiRolls : Food
+[SerializationGenerator(0, false)]
+public partial class GreenTeaBasket : Item
+{
+    [Constructible]
+    public GreenTeaBasket() : base(0x284B) => Weight = 10.0;
+}
+
+[SerializationGenerator(0, false)]
+public partial class GreenTea : Food
+{
+    [Constructible]
+    public GreenTea() : base(0x284C)
     {
-        [Constructible]
-        public SushiRolls() : base(0x283E)
-        {
-            Stackable = false;
-            Weight = 3.0;
-            FillFactor = 2;
-        }
-
-        public SushiRolls(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = false;
+        Weight = 4.0;
+        FillFactor = 2;
     }
+}
 
-    public class SushiPlatter : Food
+[SerializationGenerator(0, false)]
+public partial class MisoSoup : Food
+{
+    [Constructible]
+    public MisoSoup() : base(0x284D)
     {
-        [Constructible]
-        public SushiPlatter() : base(0x2840)
-        {
-            Stackable = Core.ML;
-            Weight = 3.0;
-            FillFactor = 2;
-        }
-
-        public SushiPlatter(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = false;
+        Weight = 4.0;
+        FillFactor = 2;
     }
+}
 
-    public class GreenTeaBasket : Item
+[SerializationGenerator(0, false)]
+public partial class WhiteMisoSoup : Food
+{
+    [Constructible]
+    public WhiteMisoSoup() : base(0x284E)
     {
-        [Constructible]
-        public GreenTeaBasket() : base(0x284B) => Weight = 10.0;
-
-        public GreenTeaBasket(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = false;
+        Weight = 4.0;
+        FillFactor = 2;
     }
+}
 
-    public class GreenTea : Food
+[SerializationGenerator(0, false)]
+public partial class RedMisoSoup : Food
+{
+    [Constructible]
+    public RedMisoSoup() : base(0x284F)
     {
-        [Constructible]
-        public GreenTea() : base(0x284C)
-        {
-            Stackable = false;
-            Weight = 4.0;
-            FillFactor = 2;
-        }
-
-        public GreenTea(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = false;
+        Weight = 4.0;
+        FillFactor = 2;
     }
+}
 
-    public class MisoSoup : Food
+[SerializationGenerator(0, false)]
+public partial class AwaseMisoSoup : Food
+{
+    [Constructible]
+    public AwaseMisoSoup() : base(0x2850)
     {
-        [Constructible]
-        public MisoSoup() : base(0x284D)
-        {
-            Stackable = false;
-            Weight = 4.0;
-            FillFactor = 2;
-        }
-
-        public MisoSoup(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class WhiteMisoSoup : Food
-    {
-        [Constructible]
-        public WhiteMisoSoup() : base(0x284E)
-        {
-            Stackable = false;
-            Weight = 4.0;
-            FillFactor = 2;
-        }
-
-        public WhiteMisoSoup(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class RedMisoSoup : Food
-    {
-        [Constructible]
-        public RedMisoSoup() : base(0x284F)
-        {
-            Stackable = false;
-            Weight = 4.0;
-            FillFactor = 2;
-        }
-
-        public RedMisoSoup(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class AwaseMisoSoup : Food
-    {
-        [Constructible]
-        public AwaseMisoSoup() : base(0x2850)
-        {
-            Stackable = false;
-            Weight = 4.0;
-            FillFactor = 2;
-        }
-
-        public AwaseMisoSoup(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Stackable = false;
+        Weight = 4.0;
+        FillFactor = 2;
     }
 }

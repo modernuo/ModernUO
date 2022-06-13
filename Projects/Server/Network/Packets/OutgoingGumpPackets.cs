@@ -78,7 +78,7 @@ public static class OutgoingGumpPackets
 
         if (error != ZlibError.Okay)
         {
-            logger.Warning($"Gump compression failed {error}");
+            logger.Warning("Gump compression failed: {Error}", error);
 
             writer.Write(4);
             writer.Write(0);

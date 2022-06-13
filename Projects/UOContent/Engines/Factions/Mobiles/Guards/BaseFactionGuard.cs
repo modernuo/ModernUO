@@ -37,7 +37,6 @@ namespace Server.Factions
 
         public BaseFactionGuard(string title) : base(AIType.AI_Melee)
         {
-            SetSpeed(0.3, 1.0);
             Orders = new Orders(this);
             Title = title;
 
@@ -309,13 +308,13 @@ namespace Server.Factions
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (m_Faction != null && Map == Faction.Facet)
             {
-                list.Add(1060846, m_Faction.Definition.PropName); // Guard: ~1_val~
+                list.Add(1060846, $"{m_Faction.Definition.PropName}"); // Guard: ~1_val~
             }
         }
 

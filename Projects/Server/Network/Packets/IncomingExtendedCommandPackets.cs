@@ -103,8 +103,7 @@ public static class IncomingExtendedCommandPackets
             if (state.Mobile == null)
             {
                 state.LogInfo(
-                    "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
-                    packetId
+                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
                 );
             }
 
@@ -331,7 +330,7 @@ public static class IncomingExtendedCommandPackets
 
             if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
             {
-                m.SendPropertiesTo(from);
+                m.SendPropertiesTo(state);
             }
         }
         else if (s.IsItem)
@@ -341,7 +340,7 @@ public static class IncomingExtendedCommandPackets
             if (item?.Deleted == false && from.CanSee(item) &&
                 Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
             {
-                item.SendPropertiesTo(from);
+                item.SendPropertiesTo(state);
             }
         }
     }

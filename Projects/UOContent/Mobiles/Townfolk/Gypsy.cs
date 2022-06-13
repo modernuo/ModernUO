@@ -7,15 +7,13 @@ namespace Server.Mobiles
         [Constructible]
         public Gypsy() : base(AIType.AI_Animal, FightMode.None)
         {
-            SetSpeed(0.6, 1.2);
             InitStats(31, 41, 51);
-
-            SpeechHue = Utility.RandomDyedHue();
-
             SetSkill(SkillName.Cooking, 65, 88);
             SetSkill(SkillName.Snooping, 65, 88);
             SetSkill(SkillName.Stealing, 65, 88);
 
+            SetSpeed(0.2, 0.4);
+            SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();
 
             if (Female = Utility.RandomBool())

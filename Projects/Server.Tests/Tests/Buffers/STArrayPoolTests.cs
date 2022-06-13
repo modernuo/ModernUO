@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Server.Tests.Tests.Buffers;
 
+[Collection("Sequential Tests")]
 public class STArrayPoolTests
 {
     [Theory]
@@ -48,7 +49,7 @@ public class STArrayPoolTests
             weakReferences1[i] = new WeakReference(arrays1[i]);
 
             arrays2[i] = STArrayPool<byte>.Shared.Rent(64);
-            weakReferences2[i] = new WeakReference(arrays1[i]);
+            weakReferences2[i] = new WeakReference(arrays2[i]);
         }
 
         for (var i = 0; i < arrays1.Length; i++)

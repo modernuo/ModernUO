@@ -47,14 +47,12 @@ public static class FactionSystem
         writer.WriteEncodedInt(0); // version
 
         var factions = Faction.Factions;
-
         for (var i = 0; i < factions.Count; i++)
         {
             factions[i].State.Serialize(writer);
         }
 
         var towns = Town.Towns;
-
         for (var i = 0; i < towns.Count; i++)
         {
             towns[i].State.Serialize(writer);
@@ -65,13 +63,13 @@ public static class FactionSystem
     {
         var version = reader.ReadEncodedInt();
 
-        var count = reader.ReadEncodedInt();
+        var count = Faction.Factions.Count;
         for (var i = 0; i < count; i++)
         {
             new FactionState(reader);
         }
 
-        count = reader.ReadEncodedInt();
+        count = Town.Towns.Count;
         for (var i = 0; i < count; i++)
         {
             new TownState(reader);

@@ -41,7 +41,7 @@ public static class OutgoingEntityPackets
         writer.Write(hash);
     }
 
-    public static void SendOPLInfo(this NetState ns, IPropertyListObject obj) =>
+    public static void SendOPLInfo(this NetState ns, IObjectPropertyListEntity obj) =>
         ns.SendOPLInfo(obj.Serial, obj.PropertyList.Hash);
 
     public static void SendOPLInfo(this NetState ns, Serial serial, int hash)

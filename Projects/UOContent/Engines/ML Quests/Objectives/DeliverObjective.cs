@@ -26,7 +26,7 @@ namespace Server.Engines.MLQuests.Objectives
 
                 if (itemid is <= 0 or > 0x4000)
                 {
-                    logger.Warning("Cliloc {0} is likely giving the wrong item ID", name.Number);
+                    logger.Warning("Cliloc {Number} is likely giving the wrong item ID", name.Number);
                 }
             }
         }

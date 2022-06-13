@@ -13,7 +13,7 @@ namespace Server.Items
         public override int LabelNumber => 1074601; // Fish bones
         public override double DefaultWeight => 1.0;
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

@@ -166,7 +166,6 @@ namespace Server.Engines.Events
             Body = 0x93;
             BaseSoundID = 0x1c3;
 
-            SetSpeed(0.3, 1.0);
             SetStr(500);
             SetDex(500);
             SetInt(500);

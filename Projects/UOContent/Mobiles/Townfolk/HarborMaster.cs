@@ -7,11 +7,10 @@ namespace Server.Mobiles
         [Constructible]
         public HarborMaster() : base(AIType.AI_Animal, FightMode.None)
         {
-            SetSpeed(0.6, 1.2);
             InitStats(31, 41, 51);
-
             SetSkill(SkillName.Mining, 36, 68);
 
+            SetSpeed(0.2, 0.4);
             SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();
             Blessed = true;

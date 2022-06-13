@@ -128,7 +128,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsRewardItem { get; set; }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
