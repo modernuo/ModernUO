@@ -168,15 +168,15 @@ namespace Server.Items
 
             if (m_MapDest != null)
             {
-                list.Add(1060658, $"Map\t{m_MapDest}");
+                list.Add(1060658, $"{"Map"}\t{m_MapDest}");
             }
 
             if (m_PointDest != Point3D.Zero)
             {
-                list.Add(1060659, $"Coords\t{m_PointDest}");
+                list.Add(1060659, $"{"Coords"}\t{m_PointDest}");
             }
 
-            list.Add(1060660, $"Creatures\t{(m_Creatures ? "Yes" : "No")}");
+            list.Add(1060660, $"{"Creatures"}\t{(m_Creatures ? "Yes" : "No")}");
         }
 
         public override void OnSingleClick(Mobile from)
@@ -483,11 +483,11 @@ namespace Server.Items
 
             if (m_MessageString != null)
             {
-                list.Add(1060662, $"Message\t{m_MessageString}");
+                list.Add(1060662, $"{"Message"}\t{m_MessageString}");
             }
             else if (m_MessageNumber != 0)
             {
-                list.Add(1060662, $"Message\t#{m_MessageNumber}");
+                list.Add(1060662, $"{"Message"}\t{m_MessageNumber:#}");
             }
         }
 
@@ -625,16 +625,16 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1060661, $"Range\t{m_Range}");
+            list.Add(1060661, $"{"Range"}\t{m_Range}");
 
             if (m_Keyword >= 0)
             {
-                list.Add(1060662, $"Keyword\t{m_Keyword}");
+                list.Add(1060662, $"{"Keyword"}\t{m_Keyword}");
             }
 
             if (m_Substring != null)
             {
-                list.Add(1060663, $"Substring\t{m_Substring}");
+                list.Add(1060663, $"{"Substring"}\t{m_Substring}");
             }
         }
 

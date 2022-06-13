@@ -246,9 +246,13 @@ namespace Server.Items
                 {
                     list.Add(House != null ? 1062453 : 1060806, $"a recall rune for {desc}"); // ~1_val~ (Trammel)[(House)]
                 }
+                else if (House != null)
+                {
+                    list.Add($"a recall rune for {desc} ({m_TargetMap})(House)");
+                }
                 else
                 {
-                    list.Add(House != null ? $"a recall rune for {desc} ({m_TargetMap})(House)" : $"a recall rune for {desc} ({m_TargetMap})");
+                    list.Add($"a recall rune for {desc} ({m_TargetMap})");
                 }
             }
         }

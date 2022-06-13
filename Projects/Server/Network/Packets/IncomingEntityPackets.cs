@@ -175,7 +175,7 @@ public static class IncomingEntityPackets
 
                 if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
                 {
-                    m.SendPropertiesTo(from);
+                    m.SendPropertiesTo(state);
                 }
             }
             else if (s.IsItem)
@@ -185,7 +185,7 @@ public static class IncomingEntityPackets
                 if (item?.Deleted == false && from.CanSee(item) &&
                     Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
                 {
-                    item.SendPropertiesTo(from);
+                    item.SendPropertiesTo(state);
                 }
             }
         }

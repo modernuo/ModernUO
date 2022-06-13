@@ -557,14 +557,19 @@ namespace Server.Items
             }
             else if (m_Summoner?.IsEmpty == false)
             {
-                list.Add(
-                    1072400,
-                    m_Summoner?.Name ?? "Unknown"
-                ); // Talisman of ~1_name~ Summoning
+                var name = m_Summoner?.Name;
+                if (name?.Number > 0)
+                {
+                    list.Add(1072400, name.Number); // Talisman of ~1_name~ Summoning
+                }
+                else
+                {
+                    list.Add(1072400, name?.String ?? "Unknown"); // Talisman of ~1_name~ Summoning
+                }
             }
             else if (m_Removal != TalismanRemoval.None)
             {
-                list.Add(1072389, $"#{1072000 + (int)m_Removal}"); // Talisman of ~1_name~
+                list.AddLocalized(1072389, 1072000 + (int)m_Removal); // Talisman of ~1_name~
             }
             else
             {
@@ -595,7 +600,7 @@ namespace Server.Items
             {
                 if (m_ChargeTime > 0)
                 {
-                    list.Add(1074884, $"{m_ChargeTime}"); // Charge time left: ~1_val~
+                    list.Add(1074884, m_ChargeTime); // Charge time left: ~1_val~
                 }
                 else
                 {
@@ -625,7 +630,7 @@ namespace Server.Items
             {
                 list.Add(
                     1072395, // ~1_NAME~ Exceptional Bonus: ~2_val~%
-                    $"#{AosSkillBonuses.GetLabel(m_Skill)}\t{m_ExceptionalBonus}"
+                    $"{AosSkillBonuses.GetLabel(m_Skill):#}\t{m_ExceptionalBonus}"
                 );
             }
 
@@ -633,7 +638,7 @@ namespace Server.Items
             {
                 list.Add(
                     1072394, // ~1_NAME~ Bonus: ~2_val~%
-                    $"#{AosSkillBonuses.GetLabel(m_Skill)}\t{m_SuccessBonus}"
+                    $"{AosSkillBonuses.GetLabel(m_Skill):#}\t{m_SuccessBonus}"
                 );
             }
 
@@ -643,72 +648,72 @@ namespace Server.Items
 
             if ((prop = Attributes.WeaponDamage) != 0)
             {
-                list.Add(1060401, $"{prop}"); // damage increase ~1_val~%
+                list.Add(1060401, prop); // damage increase ~1_val~%
             }
 
             if ((prop = Attributes.DefendChance) != 0)
             {
-                list.Add(1060408, $"{prop}"); // defense chance increase ~1_val~%
+                list.Add(1060408, prop); // defense chance increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusDex) != 0)
             {
-                list.Add(1060409, $"{prop}"); // dexterity bonus ~1_val~
+                list.Add(1060409, prop); // dexterity bonus ~1_val~
             }
 
             if ((prop = Attributes.EnhancePotions) != 0)
             {
-                list.Add(1060411, $"{prop}"); // enhance potions ~1_val~%
+                list.Add(1060411, prop); // enhance potions ~1_val~%
             }
 
             if ((prop = Attributes.CastRecovery) != 0)
             {
-                list.Add(1060412, $"{prop}"); // faster cast recovery ~1_val~
+                list.Add(1060412, prop); // faster cast recovery ~1_val~
             }
 
             if ((prop = Attributes.CastSpeed) != 0)
             {
-                list.Add(1060413, $"{prop}"); // faster casting ~1_val~
+                list.Add(1060413, prop); // faster casting ~1_val~
             }
 
             if ((prop = Attributes.AttackChance) != 0)
             {
-                list.Add(1060415, $"{prop}"); // hit chance increase ~1_val~%
+                list.Add(1060415, prop); // hit chance increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusHits) != 0)
             {
-                list.Add(1060431, $"{prop}"); // hit point increase ~1_val~
+                list.Add(1060431, prop); // hit point increase ~1_val~
             }
 
             if ((prop = Attributes.BonusInt) != 0)
             {
-                list.Add(1060432, $"{prop}"); // intelligence bonus ~1_val~
+                list.Add(1060432, prop); // intelligence bonus ~1_val~
             }
 
             if ((prop = Attributes.LowerManaCost) != 0)
             {
-                list.Add(1060433, $"{prop}"); // lower mana cost ~1_val~%
+                list.Add(1060433, prop); // lower mana cost ~1_val~%
             }
 
             if ((prop = Attributes.LowerRegCost) != 0)
             {
-                list.Add(1060434, $"{prop}"); // lower reagent cost ~1_val~%
+                list.Add(1060434, prop); // lower reagent cost ~1_val~%
             }
 
             if ((prop = Attributes.Luck) != 0)
             {
-                list.Add(1060436, $"{prop}"); // luck ~1_val~
+                list.Add(1060436, prop); // luck ~1_val~
             }
 
             if ((prop = Attributes.BonusMana) != 0)
             {
-                list.Add(1060439, $"{prop}"); // mana increase ~1_val~
+                list.Add(1060439, prop); // mana increase ~1_val~
             }
 
             if ((prop = Attributes.RegenMana) != 0)
             {
-                list.Add(1060440, $"{prop}"); // mana regeneration ~1_val~
+                list.Add(1060440, prop); // mana regeneration ~1_val~
             }
 
             if (Attributes.NightSight != 0)
@@ -718,17 +723,17 @@ namespace Server.Items
 
             if ((prop = Attributes.ReflectPhysical) != 0)
             {
-                list.Add(1060442, $"{prop}"); // reflect physical damage ~1_val~%
+                list.Add(1060442, prop); // reflect physical damage ~1_val~%
             }
 
             if ((prop = Attributes.RegenStam) != 0)
             {
-                list.Add(1060443, $"{prop}"); // stamina regeneration ~1_val~
+                list.Add(1060443, prop); // stamina regeneration ~1_val~
             }
 
             if ((prop = Attributes.RegenHits) != 0)
             {
-                list.Add(1060444, $"{prop}"); // hit point regeneration ~1_val~
+                list.Add(1060444, prop); // hit point regeneration ~1_val~
             }
 
             if (Attributes.SpellChanneling != 0)
@@ -738,32 +743,32 @@ namespace Server.Items
 
             if ((prop = Attributes.SpellDamage) != 0)
             {
-                list.Add(1060483, $"{prop}"); // spell damage increase ~1_val~%
+                list.Add(1060483, prop); // spell damage increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusStam) != 0)
             {
-                list.Add(1060484, $"{prop}"); // stamina increase ~1_val~
+                list.Add(1060484, prop); // stamina increase ~1_val~
             }
 
             if ((prop = Attributes.BonusStr) != 0)
             {
-                list.Add(1060485, $"{prop}"); // strength bonus ~1_val~
+                list.Add(1060485, prop); // strength bonus ~1_val~
             }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
             {
-                list.Add(1060486, $"{prop}"); // swing speed increase ~1_val~%
+                list.Add(1060486, prop); // swing speed increase ~1_val~%
             }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
             {
-                list.Add(1075210, $"{prop}"); // Increased Karma Loss ~1val~%
+                list.Add(1075210, prop); // Increased Karma Loss ~1val~%
             }
 
             if (m_MaxCharges > 0)
             {
-                list.Add(1060741, $"{m_Charges}"); // charges: ~1_val~
+                list.Add(1060741, m_Charges); // charges: ~1_val~
             }
 
             if (m_Slayer != TalismanSlayerName.None)

@@ -129,11 +129,18 @@ namespace Server.Items
             {
                 list.Add(
                     1070721, // Skill stored: ~1_skillname~ ~2_skillamount~
-                    $"#{AosSkillBonuses.GetLabel(Skill)}\t{SkillValue:F1}"
+                    $"{AosSkillBonuses.GetLabel(Skill):#}\t{SkillValue:F1}"
                 );
             }
 
-            list.Add(1041602, LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
+            if (LastUserName != null)
+            {
+                list.Add(1041602, LastUserName); // Owner: ~1_val~
+            }
+            else
+            {
+                list.AddLocalized(1041602, 1074235); // Owner: ~1_val~
+            }
         }
 
         private static bool CheckCombat(Mobile m, TimeSpan time)
@@ -968,7 +975,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1060584, $"{m_UsesRemaining}"); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)

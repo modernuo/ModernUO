@@ -83,7 +83,7 @@ namespace Server.Multis
                         level = DecayLevel.IDOC;
                     }
 
-                    list.Add(1062028, $"#{1043009 + (int)level}"); // Condition: This structure is ...
+                    list.AddLocalized(1062028, 1043009 + (int)level); // Condition: This structure is ...
                 }
             }
         }

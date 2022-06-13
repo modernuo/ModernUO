@@ -106,7 +106,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            list.Add(1060741, $"{m_Charges}"); // charges: ~1_val~
+            list.Add(1060741, m_Charges); // charges: ~1_val~
         }
 
         public override void OnSingleClick(Mobile from)

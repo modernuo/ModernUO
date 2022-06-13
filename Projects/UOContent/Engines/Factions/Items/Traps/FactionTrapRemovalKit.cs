@@ -35,7 +35,7 @@ namespace Server.Factions
             base.GetProperties(list);
 
             // NOTE: OSI does not list uses remaining; intentional difference
-            list.Add(1060584, $"{Charges}"); // uses remaining: ~1_val~
+            list.Add(1060584, Charges); // uses remaining: ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)

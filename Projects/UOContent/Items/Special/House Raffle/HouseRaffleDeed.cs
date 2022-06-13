@@ -93,9 +93,9 @@ namespace Server.Items
             {
                 list.Add(
                     1060658, // ~1_val~: ~2_val~
-                    $"location\t{HouseRaffleStone.FormatLocation(m_PlotLocation, m_Facet, false)}"
+                    $"{"location"}\t{HouseRaffleStone.FormatLocation(m_PlotLocation, m_Facet, false)}"
                 );
-                list.Add(1060659, $"facet\t{m_Facet}"); // ~1_val~: ~2_val~
+                list.Add(1060659, $"{"facet"}\t{m_Facet}"); // ~1_val~: ~2_val~
                 list.Add(1150486);                      // [Marked Item]
             }
 

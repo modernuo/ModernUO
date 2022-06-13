@@ -1471,8 +1471,7 @@ namespace Server
             World.RemoveEntity(this);
 
             OnAfterDelete();
-
-            m_PropertyList = null;
+            ClearProperties();
         }
 
         public ISpawner Spawner
@@ -1808,9 +1807,9 @@ namespace Server
         /// <summary>
         ///     Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
         /// </summary>
-        public virtual void SendPropertiesTo(Mobile from)
+        public virtual void SendPropertiesTo(NetState ns)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            ns?.Send(PropertyList.Buffer);
         }
 
         /// <summary>
@@ -1829,7 +1828,7 @@ namespace Server
                 }
                 else
                 {
-                    list.Add(1050039, $"{m_Amount}\t#{LabelNumber}"); // ~1_NUMBER~ ~2_ITEMNAME~
+                    list.Add(1050039, $"{m_Amount}\t{LabelNumber:#}"); // ~1_NUMBER~ ~2_ITEMNAME~
                 }
             }
             else
@@ -1874,35 +1873,35 @@ namespace Server
 
             if (v != 0)
             {
-                list.Add(1060448, $"{v}"); // physical resist ~1_val~%
+                list.Add(1060448, v); // physical resist ~1_val~%
             }
 
             v = FireResistance;
 
             if (v != 0)
             {
-                list.Add(1060447, $"{v}"); // fire resist ~1_val~%
+                list.Add(1060447, v); // fire resist ~1_val~%
             }
 
             v = ColdResistance;
 
             if (v != 0)
             {
-                list.Add(1060445, $"{v}"); // cold resist ~1_val~%
+                list.Add(1060445, v); // cold resist ~1_val~%
             }
 
             v = PoisonResistance;
 
             if (v != 0)
             {
-                list.Add(1060449, $"{v}"); // poison resist ~1_val~%
+                list.Add(1060449, v); // poison resist ~1_val~%
             }
 
             v = EnergyResistance;
 
             if (v != 0)
             {
-                list.Add(1060446, $"{v}"); // energy resist ~1_val~%
+                list.Add(1060446, v); // energy resist ~1_val~%
             }
         }
 
@@ -2401,7 +2400,7 @@ namespace Server
             return list;
         }
 
-        public void ClearProperties()
+        public virtual void ClearProperties()
         {
             m_PropertyList = null;
         }
@@ -3080,7 +3079,7 @@ namespace Server
             SendOPLPacketTo(ns, opl);
         }
 
-        public void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        public virtual void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
         {
             if (!ObjectPropertyList.Enabled)
             {

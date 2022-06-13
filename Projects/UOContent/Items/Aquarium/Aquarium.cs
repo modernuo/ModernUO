@@ -389,18 +389,18 @@ namespace Server.Items
 
             if (dead > 0)
             {
-                list.Add(1074248, $"{dead}"); // Dead Creatures: ~1_NUM~
+                list.Add(1074248, dead); // Dead Creatures: ~1_NUM~
             }
 
             var decorations = Items.Count - LiveCreatures - dead;
 
             if (decorations > 0)
             {
-                list.Add(1074249, $"{decorations}"); // Decorations: ~1_NUM~
+                list.Add(1074249, decorations); // Decorations: ~1_NUM~
             }
 
-            list.Add(1074250, $"#{FoodNumber()}");  // Food state: ~1_STATE~
-            list.Add(1074251, $"#{WaterNumber()}"); // Water state: ~1_STATE~
+            list.AddLocalized(1074250, FoodNumber());  // Food state: ~1_STATE~
+            list.AddLocalized(1074251, WaterNumber()); // Water state: ~1_STATE~
 
             if (_food.State == (int)FoodState.Dead)
             {
@@ -912,12 +912,8 @@ namespace Server.Items
 
             AddItem(item);
 
-            from?.SendLocalizedMessage(
-                1073635,
-                item.LabelNumber != 0
-                    ? $"#{item.LabelNumber}"
-                    : item.Name
-            ); // You add the following decoration to your aquarium: ~1_NAME~
+            // You add the following decoration to your aquarium: ~1_NAME~
+            from?.SendLocalizedMessage(1073635, item.LabelNumber != 0 ? $"#{item.LabelNumber}" : item.Name);
 
             InvalidateProperties();
             return true;
