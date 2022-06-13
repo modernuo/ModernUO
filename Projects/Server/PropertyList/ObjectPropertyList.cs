@@ -41,6 +41,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     private int _stringNumbersIndex;
     private byte[] _buffer;
     private int _bufferPos;
+    private int _formattedCount;
 
     // For string interpolation
     private int _pos;
@@ -81,6 +82,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         HeaderArgs = null;
         STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
         _pos = 0;
+        _formattedCount = 0;
     }
 
     private void Flush()
@@ -119,7 +121,34 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         _hash ^= (val >> 26) & 0x3F;
     }
 
-    public void Add(int number, string? arguments = null) => InternalAdd(number, $"{arguments ?? ""}");
+    public void Add(int number)
+    {
+        if (number == 0)
+        {
+            return;
+        }
+
+        if (Header == 0)
+        {
+            Header = number;
+            HeaderArgs = "";
+        }
+
+        AddHash(number);
+
+        int length = _bufferPos + 6;
+        while (length > _buffer.Length)
+        {
+            Flush();
+        }
+
+        var writer = new SpanWriter(_buffer.AsSpan(_bufferPos));
+        writer.Write(number);
+        writer.Write((ushort)0);
+        _bufferPos += 6;
+    }
+
+    public void Add(int number, string? arguments) => InternalAdd(number, $"{arguments}");
     public void Add(string argument) => InternalAdd(GetStringNumber(), $"{argument}");
     public void Add(int number, int value) => InternalAdd(number, $"{value}");
     public void AddLocalized(int value) => InternalAdd(GetStringNumber(), $"{value:#}");
@@ -155,11 +184,12 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         {
             Header = number;
             HeaderArgs = chars.ToString();
-            HeaderArgs.GetHashCode(StringComparison.Ordinal);
         }
 
         AddHash(number);
-        if (chars.Length > 0)
+
+        // Sometimes we might have an empty argument, but it is still an argument.
+        if (chars.Length > 0 || _formattedCount > 0)
         {
             AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
         }
@@ -181,6 +211,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void InitializeInterpolation(int literalLength, int formattedCount)
     {
+        _formattedCount = formattedCount;
         _arrayToReturnToPool ??= STArrayPool<char>.Shared.Rent(GetDefaultLength(literalLength, formattedCount));
         _pos = 0;
     }

@@ -23,8 +23,10 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     public void Reset();
     public void Terminate();
 
+    public void Add(int number);
+
     /** Convenience method for $"{argument}". */
-    public void Add(int number, string argument = null);
+    public void Add(int number, string argument);
 
     /** Convenience method for $"{text}". */
     public void Add(string text);
