@@ -368,7 +368,7 @@ namespace Server.Engines.Plants
             if (m_PlantStatus < PlantStatus.Seed)
             {
                 // Clients above 7.0.12.0 use the regular PropertyList
-                if (list == PropertyList)
+                if (list != _oldClientPropertyList)
                 {
                     // a ~1_val~ of ~2_val~ dirt
                     list.Add(1060830, $"{container:#}\t{dirt:#}");
@@ -406,7 +406,7 @@ namespace Server.Engines.Plants
                     ? typeInfo.GetPlantLabelPlant(hueInfo)
                     : typeInfo.GetPlantLabelSeed(hueInfo);
 
-                if (list == PropertyList)
+                if (list != _oldClientPropertyList)
                 {
                     list.Add(
                         plantNumber,
@@ -425,7 +425,7 @@ namespace Server.Engines.Plants
             {
                 var category = typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory;
                 var plantNumber = hueInfo.IsBright() ? 1060832 : 1060831;
-                if (list == PropertyList)
+                if (list != _oldClientPropertyList)
                 {
                     list.Add(plantNumber, $"{container:#}\t{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}");
                 }
