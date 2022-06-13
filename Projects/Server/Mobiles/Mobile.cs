@@ -3413,9 +3413,9 @@ namespace Server
 
         public int GetAOSStatus(int index) => AOSStatusHandler?.Invoke(this, index) ?? 0;
 
-        public virtual void SendPropertiesTo(Mobile from)
+        public virtual void SendPropertiesTo(NetState ns)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            ns?.Send(PropertyList.Buffer);
         }
 
         public virtual void OnAosSingleClick(Mobile from)

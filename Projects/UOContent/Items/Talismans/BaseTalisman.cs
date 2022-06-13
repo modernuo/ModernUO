@@ -557,10 +557,15 @@ namespace Server.Items
             }
             else if (m_Summoner?.IsEmpty == false)
             {
-                list.Add(
-                    1072400,
-                    m_Summoner?.Name ?? "Unknown"
-                ); // Talisman of ~1_name~ Summoning
+                var name = m_Summoner?.Name;
+                if (name?.Number > 0)
+                {
+                    list.Add(1072400, name.Number); // Talisman of ~1_name~ Summoning
+                }
+                else
+                {
+                    list.Add(1072400, name?.String ?? "Unknown"); // Talisman of ~1_name~ Summoning
+                }
             }
             else if (m_Removal != TalismanRemoval.None)
             {

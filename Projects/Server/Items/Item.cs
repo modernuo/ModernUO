@@ -1471,8 +1471,7 @@ namespace Server
             World.RemoveEntity(this);
 
             OnAfterDelete();
-
-            m_PropertyList = null;
+            ClearProperties();
         }
 
         public ISpawner Spawner
@@ -1808,9 +1807,9 @@ namespace Server
         /// <summary>
         ///     Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
         /// </summary>
-        public virtual void SendPropertiesTo(Mobile from)
+        public virtual void SendPropertiesTo(NetState ns)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            ns?.Send(PropertyList.Buffer);
         }
 
         /// <summary>
@@ -2401,7 +2400,7 @@ namespace Server
             return list;
         }
 
-        public void ClearProperties()
+        public virtual void ClearProperties()
         {
             m_PropertyList = null;
         }
@@ -3080,7 +3079,7 @@ namespace Server
             SendOPLPacketTo(ns, opl);
         }
 
-        public void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        public virtual void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
         {
             if (!ObjectPropertyList.Enabled)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Gumps;
@@ -30,16 +31,13 @@ namespace Server.Engines.Plants
 
     public class PlantItem : Item, ISecurable
     {
-        /*
-         * Clients 7.0.12.0+ expect a container type in the plant label.
-         * To support older (and only older) clients, change this to false.
-         */
-        private static readonly bool ShowContainerType = true;
         private PlantHue m_PlantHue;
-
         private PlantStatus m_PlantStatus;
         private PlantType m_PlantType;
         private bool m_ShowType;
+
+        // For clients older than 7.0.12.0
+        private ObjectPropertyList _oldClientPropertyList;
 
         [Constructible]
         public PlantItem(bool fertileDirt = false) : base(0x1602)
@@ -58,6 +56,9 @@ namespace Server.Engines.Plants
         }
 
         public PlantSystem PlantSystem { get; private set; }
+
+        public ObjectPropertyList OldClientPropertyList =>
+            _oldClientPropertyList ??= InitializePropertyList(_oldClientPropertyList);
 
         public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
@@ -248,11 +249,114 @@ namespace Server.Engines.Plants
             InvalidateProperties();
         }
 
-        public override void AddNameProperty(IPropertyList list)
+        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
+        {
+            GetProperties(list);
+            AppendChildProperties(list);
+            list.Terminate();
+            return list;
+        }
+
+        // Overridden to support new and old client localization
+        public override void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        {
+            if (!ObjectPropertyList.Enabled)
+            {
+                return;
+            }
+
+            if (ns.Version < ClientVersion.Version70120)
+            {
+                ns.SendOPLInfo(Serial, OldClientPropertyList.Hash);
+                return;
+            }
+
+            ns.SendOPLInfo(this);
+        }
+
+        public override void SendPropertiesTo(NetState ns)
+        {
+            if (ns?.Version < ClientVersion.Version70120)
+            {
+                ns?.Send(OldClientPropertyList.Buffer);
+                return;
+            }
+
+            ns?.Send(PropertyList.Buffer);
+        }
+
+        public override void ClearProperties()
+        {
+            base.ClearProperties();
+            _oldClientPropertyList = null;
+        }
+
+        public override void InvalidateProperties()
+        {
+            if (!ObjectPropertyList.Enabled)
+            {
+                return;
+            }
+
+            base.InvalidateProperties();
+
+            if (Map != null && Map != Map.Internal && !World.Loading)
+            {
+                int? oldHash = _oldClientPropertyList?.Hash;
+
+                if (oldHash != null)
+                {
+                    _oldClientPropertyList.Reset();
+                }
+                else
+                {
+                    _oldClientPropertyList = new ObjectPropertyList(this);
+                }
+
+                InitializePropertyList(_oldClientPropertyList);
+
+                if (oldHash != _oldClientPropertyList.Hash)
+                {
+                    Delta(ItemDelta.Properties);
+                }
+            }
+            else
+            {
+                ClearProperties();
+            }
+        }
+
+        public override void OnAosSingleClick(Mobile from)
+        {
+            var ns = from?.NetState;
+
+            if (ns == null)
+            {
+                return;
+            }
+
+            var opl = ns.Version < ClientVersion.Version70120 ? OldClientPropertyList : PropertyList;
+
+            if (opl.Header > 0)
+            {
+                from.NetState.SendMessageLocalized(
+                    Serial,
+                    ItemID,
+                    MessageType.Label,
+                    0x3B2,
+                    3,
+                    opl.Header,
+                    Name,
+                    opl.HeaderArgs
+                );
+            }
+        }
+
+        public override void GetProperties(IPropertyList list)
         {
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
             {
-                base.AddNameProperty(list);
+                base.GetProperties(list);
                 return;
             }
 
@@ -263,7 +367,8 @@ namespace Server.Engines.Plants
 
             if (m_PlantStatus < PlantStatus.Seed)
             {
-                if (ShowContainerType)
+                // Clients above 7.0.12.0 use the regular PropertyList
+                if (list == PropertyList)
                 {
                     // a ~1_val~ of ~2_val~ dirt
                     list.Add(1060830, $"{container:#}\t{dirt:#}");
@@ -301,7 +406,7 @@ namespace Server.Engines.Plants
                     ? typeInfo.GetPlantLabelPlant(hueInfo)
                     : typeInfo.GetPlantLabelSeed(hueInfo);
 
-                if (ShowContainerType)
+                if (list == PropertyList)
                 {
                     list.Add(
                         plantNumber,
@@ -320,7 +425,7 @@ namespace Server.Engines.Plants
             {
                 var category = typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory;
                 var plantNumber = hueInfo.IsBright() ? 1060832 : 1060831;
-                if (ShowContainerType)
+                if (list == PropertyList)
                 {
                     list.Add(plantNumber, $"{container:#}\t{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}");
                 }
