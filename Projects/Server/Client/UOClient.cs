@@ -54,13 +54,14 @@ public static class UOClient
         {
             logger.Information(
                 CuoSettings?.ClientVersion == ServerClientVersion
-                    ? $"Automatically detected client version {ServerClientVersion} from CUO settings."
-                    : $"Automatically detected client version {ServerClientVersion}"
+                    ? "Automatically detected client version {ServerClientVersion} from CUO settings."
+                    : "Automatically detected client version {ServerClientVersion}",
+                ServerClientVersion
             );
             return;
         }
 
-        logger.Information($"Manually configured to use client version {ServerClientVersion}");
+        logger.Information("Manually configured to use client version {ServerClientVersion}", ServerClientVersion);
     }
 
     private static ClientVersion DetectCUOClient()

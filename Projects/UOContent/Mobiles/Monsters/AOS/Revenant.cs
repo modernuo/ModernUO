@@ -19,8 +19,6 @@ namespace Server.Mobiles
             m_Target = target;
             m_ExpireTime = Core.Now + duration;
 
-            SetSpeed(0.25, 0.55);
-
             SetStr(200);
             SetDex(150);
             SetInt(150);

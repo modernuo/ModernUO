@@ -23,11 +23,21 @@ namespace Server.Items
         public override int LabelNumber => 1070997; // A promotional token
         public abstract Item CreateItemFor(Mobile from);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1070998, ItemName.ToString()); // Use this to redeem<br>your ~1_PROMO~
+            if (ItemName != null)
+            {
+                if (ItemName.Number > 0)
+                {
+                    list.Add(1070998, ItemName.Number); // Use this to redeem<br>your ~1_PROMO~
+                }
+                else
+                {
+                    list.Add(1070998, ItemName.String); // Use this to redeem<br>your ~1_PROMO~
+                }
+            }
         }
 
         public override void OnDoubleClick(Mobile from)

@@ -27,7 +27,7 @@ namespace Server.Items
 
         public bool IsSigned => _from != null && _to != null;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             base.AddNameProperty(list);
 

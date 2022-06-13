@@ -43,7 +43,7 @@ namespace Server.Items
         public override string DefaultTitle =>
             $"<basefont color=#FFFFFF>Power Scroll ({((int)Value - 225 >= 0 ? "+" : "")}{(int)Value - 225} Maximum Stats):</basefont>";
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var level = ((int)Value - 230) / 5;
 
@@ -59,7 +59,8 @@ namespace Server.Items
             }
             else
             {
-                list.Add("a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
+                var diff = Value - 225;
+                list.Add($"a scroll of power ({(diff >= 0 ? "+" : "")}{diff} Maximum Stats)");
             }
         }
 
@@ -73,7 +74,8 @@ namespace Server.Items
             }
             else
             {
-                LabelTo(from, "a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
+                var diff = Value - 225;
+                LabelTo(from, $"a scroll of power ({(diff >= 0 ? "+" : "")}{diff} Maximum Stats)");
             }
         }
 

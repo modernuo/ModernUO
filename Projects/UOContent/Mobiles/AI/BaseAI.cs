@@ -7,6 +7,7 @@ using Server.Engines.Spawners;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
+using Server.Logging;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Spellweaving;
@@ -1091,7 +1092,7 @@ namespace Server.Mobiles
                         m_Mobile.ControlMaster.RevealingAction();
                         m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
                         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-                        m_Mobile.Warmode = true;
+                        m_Mobile.Warmode = false;
                         m_Mobile.Combatant = null;
                         break;
                     }
@@ -1110,8 +1111,7 @@ namespace Server.Mobiles
                         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
                         m_Mobile.Warmode = true;
                         m_Mobile.Combatant = null;
-                        var petname = $"{m_Mobile.Name}";
-                        m_Mobile.ControlMaster.SendLocalizedMessage(1049671, petname); // ~1_PETNAME~ is now guarding you.
+                        m_Mobile.ControlMaster.SendLocalizedMessage(1049671, m_Mobile.Name); // ~1_PETNAME~ is now guarding you.
                         break;
                     }
 
@@ -1367,10 +1367,6 @@ namespace Server.Mobiles
                             if (Core.AOS)
                             {
                                 m_Mobile.CurrentSpeed = 0.1;
-                            }
-                            else if (m_Mobile.CurrentSpeed == m_Mobile.ActiveSpeed && m_Mobile.ControlTarget == m_Mobile.ControlMaster)
-                            {
-                                m_Mobile.CurrentSpeed = Math.Max(SpeedInfo.MinDelay, m_Mobile.CurrentSpeed * 0.5);
                             }
                         }
                     }
@@ -1923,19 +1919,31 @@ namespace Server.Mobiles
 
         public double TransformMoveDelay(double delay)
         {
-            // Non-monsters in PVP combat (like pets) are penalized
-            if (!m_Mobile.IsMonster && m_Mobile.InActivePVPCombat() && delay <= SpeedInfo.MaxDelay)
+            // Monster is passive
+            if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(delay - m_Mobile.PassiveSpeed) < 0.0001)
             {
-                delay += 0.4;
+                delay *= 3;
             }
 
             if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
             {
-                double offset = m_Mobile.StamMax <= 0 ? 1.0 : Math.Max(0, m_Mobile.Stam) / (double)m_Mobile.StamMax;
+                int stats, statsMax;
+                if (Core.HS)
+                {
+                    stats = m_Mobile.Stam;
+                    statsMax = m_Mobile.StamMax;
+                }
+                else
+                {
+                    stats = m_Mobile.Hits;
+                    statsMax = m_Mobile.HitsMax;
+                }
+
+                var offset = statsMax <= 0 ? 1.0 : Math.Max(0, stats) / (double)statsMax;
 
                 if (offset < 1.0)
                 {
-                    delay += delay * (1.0 - offset);
+                    delay += m_Mobile.PassiveSpeed * (1.0 - offset);
                 }
             }
 
@@ -1969,7 +1977,6 @@ namespace Server.Mobiles
             m_Mobile.Direction = d;
 
             var delay = (int)(TransformMoveDelay(m_Mobile.CurrentSpeed) * 1000);
-
             NextMove += delay;
 
             if (Core.TickCount - NextMove > 0)
@@ -2708,7 +2715,7 @@ namespace Server.Mobiles
          */
         public virtual void OnCurrentSpeedChanged()
         {
-            m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.0, m_Mobile.CurrentSpeed));
+            m_Timer.Interval = TimeSpan.FromSeconds(Math.Max(0.008, m_Mobile.CurrentSpeed));
         }
 
         private class InternalEntry : ContextMenuEntry
@@ -2854,7 +2861,7 @@ namespace Server.Mobiles
                 Delete();
             }
 
-            public override void GetProperties(ObjectPropertyList list)
+            public override void GetProperties(IPropertyList list)
             {
                 base.GetProperties(list);
 

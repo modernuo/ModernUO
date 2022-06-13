@@ -113,7 +113,7 @@ namespace Server.Items
             set { }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -122,7 +122,7 @@ namespace Server.Items
                 TextDefinition.AddTo(list, m_Label);
             }
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)

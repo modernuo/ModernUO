@@ -16,8 +16,8 @@ namespace Server.Mobiles
             SetSkill(SkillName.Parry, 64.0, 80.0);
             SetSkill(SkillName.Swords, 64.0, 85.0);
 
+            SetSpeed(0.2, 0.4);
             SpeechHue = Utility.RandomDyedHue();
-
             Hue = Race.Human.RandomSkinHue();
 
             if (Female = Utility.RandomBool())

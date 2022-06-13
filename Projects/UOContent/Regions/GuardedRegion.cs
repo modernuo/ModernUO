@@ -34,7 +34,7 @@ namespace Server.Regions
 
                 if (!typeof(BaseGuard).IsAssignableFrom(m_GuardType))
                 {
-                    logger.Warning("Invalid guard type for region '{0}'", this);
+                    logger.Warning("Invalid guard type for region '{Region}'", this);
                     m_GuardType = DefaultGuardType;
                 }
             }

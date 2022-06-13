@@ -3668,8 +3668,7 @@
   {
     "category": "Mobiles.Uncategorized",
     "objects": [
-      { "type": "TownCrier" },
-      { "type": "Wanderer" }
+      { "type": "TownCrier" }
     ]
   },
   {

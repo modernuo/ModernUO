@@ -218,7 +218,7 @@ public class Key : Item
         from.Target = t;
     }
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 

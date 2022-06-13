@@ -122,14 +122,14 @@ namespace Server.Misc
                 if (boxes > 0)
                 {
                     logger.Information(
-                        "Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..",
+                        "Cleanup: Detected {Count} inaccessible items, including {BankBoxes} bank boxes, removing..",
                         items.Count,
                         boxes
                     );
                 }
                 else
                 {
-                    logger.Information("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
+                    logger.Information("Cleanup: Detected {Count} inaccessible items, removing..", items.Count);
                 }
 
                 for (var i = 0; i < items.Count; ++i)

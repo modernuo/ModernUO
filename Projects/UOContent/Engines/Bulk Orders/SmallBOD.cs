@@ -61,7 +61,7 @@ namespace Server.Engines.BulkOrders
 
         public override int LabelNumber => 1045151; // a bulk order deed
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -77,8 +77,8 @@ namespace Server.Engines.BulkOrders
                 list.Add(SmallBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
             }
 
-            list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
-            list.Add(1060658, "#{0}\t{1}", m_Number, m_AmountCur); // ~1_val~: ~2_val~
+            list.Add(1060656, AmountMax);                // amount to make: ~1_val~
+            list.Add(1060658, $"{m_Number:#}\t{m_AmountCur}"); // ~1_val~: ~2_val~
         }
 
         public override void OnDoubleClick(Mobile from)

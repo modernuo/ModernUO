@@ -65,11 +65,11 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public SecureLevel Level { get; set; }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1062925, Petals.ToString()); // Petals:  ~1_COUNT~
+            list.Add(1062925, Petals); // Petals:  ~1_COUNT~
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)

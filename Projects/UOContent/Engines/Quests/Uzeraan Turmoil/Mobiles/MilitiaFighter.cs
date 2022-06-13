@@ -11,7 +11,6 @@ namespace Server.Engines.Quests.Haven
         [Constructible]
         public MilitiaFighter() : base(AIType.AI_Melee)
         {
-            SetSpeed(0.3, 1.0);
             InitStats(40, 30, 5);
             Title = "the Militia Fighter";
 
@@ -109,7 +108,7 @@ namespace Server.Engines.Quests.Haven
         {
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (ItemID == 0x2006) // Corpse form
             {

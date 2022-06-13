@@ -403,7 +403,7 @@ namespace Server
     /// <summary>
     ///     Base class representing players, npcs, and creatures.
     /// </summary>
-    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IPropertyListObject
+    public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
     {
         // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
         private const int WarmodeCatchCount = 4;
@@ -2476,7 +2476,7 @@ namespace Server
         public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
         public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
-        public virtual void GetProperties(ObjectPropertyList list)
+        public virtual void GetProperties(IPropertyList list)
         {
             AddNameProperties(list);
         }
@@ -3413,9 +3413,9 @@ namespace Server
 
         public int GetAOSStatus(int index) => AOSStatusHandler?.Invoke(this, index) ?? 0;
 
-        public virtual void SendPropertiesTo(Mobile from)
+        public virtual void SendPropertiesTo(NetState ns)
         {
-            from.NetState?.Send(PropertyList.Buffer);
+            ns?.Send(PropertyList.Buffer);
         }
 
         public virtual void OnAosSingleClick(Mobile from)
@@ -3445,56 +3445,53 @@ namespace Server
 
         public virtual string ApplyNameSuffix(string suffix) => suffix;
 
-        public virtual void AddNameProperties(ObjectPropertyList list)
+        public virtual void AddNameProperties(IPropertyList list)
         {
-            var name = Name ?? "";
+            var name = Name ?? " ";
 
             string prefix;
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
             {
-                prefix = m_Female ? "Lady" : "Lord";
+                prefix = m_Female ? "Lady " : "Lord ";
             }
             else
             {
-                prefix = "";
+                prefix = " ";
             }
 
-            var suffix = "";
+            var title = PropertyTitle && !string.IsNullOrEmpty(Title) ? Title : "";
 
-            if (PropertyTitle && !string.IsNullOrEmpty(Title))
-            {
-                suffix = Title;
-            }
-
+            string suffix;
             var guild = m_Guild;
-
             if (guild != null && (m_Player || m_DisplayGuildTitle))
             {
-                suffix = suffix.Length > 0
-                    ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
+                suffix = title.Length > 0
+                    ? $"{title} [{Utility.FixHtml(guild.Abbreviation)}]"
                     : $"[{Utility.FixHtml(guild.Abbreviation)}]";
             }
+            else
+            {
+                suffix = " ";
+            }
 
-            suffix = ApplyNameSuffix(suffix);
-
-            list.Add(1050045, "{0} \t{1}\t {2}", prefix, name, suffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+            list.Add(1050045, $"{prefix}\t{name}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
             if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
             {
                 var type = guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length ? m_GuildTypes[(int)guild.Type] : "";
 
-                var title = GuildTitle?.Trim() ?? "";
+                var guildTitle = GuildTitle?.Trim() ?? "";
 
-                if (title.Length > 0)
+                if (guildTitle.Length > 0)
                 {
                     if (NewGuildDisplay)
                     {
-                        list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}");
                     }
                     else
                     {
-                        list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
+                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}");
                     }
                 }
                 else
@@ -3504,11 +3501,11 @@ namespace Server
             }
         }
 
-        public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildProperties(IPropertyList list, Item item)
         {
         }
 
-        public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+        public virtual void GetChildNameProperties(IPropertyList list, Item item)
         {
         }
 
@@ -5196,7 +5193,12 @@ namespace Server
 
                             if (oldAmount <= 0)
                             {
-                                logger.Error($"Item {item.GetType()} ({item.Serial}) has amount of {oldAmount}, but must be at least 1");
+                                logger.Error(
+                                    "Item {Type} ({Serial}) has amount of {OldAmount}, but must be at least 1",
+                                    item.GetType(),
+                                    item.Serial,
+                                    oldAmount
+                                );
                             }
                             else
                             {
@@ -6890,19 +6892,12 @@ namespace Server
             eable.Free();
         }
 
-        public void SendOPLPacketTo(NetState state) => SendOPLPacketTo(state, ObjectPropertyList.Enabled);
-
-        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        public virtual void SendOPLPacketTo(NetState ns)
         {
-            if (sendOplPacket)
+            if (ObjectPropertyList.Enabled)
             {
                 ns.SendOPLInfo(this);
             }
-        }
-
-        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
-        {
-            ns?.Send(opl);
         }
 
         public virtual void OnAccessLevelChanged(AccessLevel oldLevel)
@@ -7908,9 +7903,7 @@ namespace Server
                 }
                 catch (Exception ex)
                 {
-#if DEBUG
-                    Console.WriteLine("Process Delta Queue for {0} failed: {1}", mob, ex);
-#endif
+                    logger.Debug(ex, "Process Delta Queue for {Mobile} failed", mob);
                 }
             }
 

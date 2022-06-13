@@ -19,7 +19,7 @@ public static class StealableArtifacts
 
     public static void Configure()
     {
-        GenericPersistence.Register("stealable-artifacts", Serialize, Deserialize);
+        GenericPersistence.Register("StealableArtifacts", Serialize, Deserialize);
     }
 
     private static void RemoveStealableArtifacts()
@@ -426,9 +426,14 @@ public static class StealableArtifacts
     {
         private StealableArtifactsSpawner()
         {
+            Delete();
         }
 
         public StealableArtifactsSpawner(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
         {
         }
 

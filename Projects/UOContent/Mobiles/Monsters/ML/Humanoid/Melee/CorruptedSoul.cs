@@ -8,14 +8,13 @@ namespace Server.Mobiles
             Body = 0x3CA;
             Hue = 0x453;
 
-            SetSpeed(0.25, 5);
-
             SetStr(102, 115);
             SetDex(101, 115);
             SetInt(203, 215);
 
             SetHits(61, 69);
 
+            SetSpeed(0.25, 2.5);
             SetDamage(4, 40);
 
             SetDamageType(ResistanceType.Physical, 100);

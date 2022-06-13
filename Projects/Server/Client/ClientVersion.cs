@@ -39,6 +39,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
     public static readonly ClientVersion Version60142 = new("6.0.14.2");
     public static readonly ClientVersion Version7000 = new("7.0.0.0");
     public static readonly ClientVersion Version7090 = new("7.0.9.0");
+    public static readonly ClientVersion Version70120 = new("7.0.12.0"); // Plant localization change
     public static readonly ClientVersion Version70130 = new("7.0.13.0");
     public static readonly ClientVersion Version70160 = new("7.0.16.0");
     public static readonly ClientVersion Version70300 = new("7.0.30.0");
@@ -75,8 +76,8 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
             }
 
             Major = Utility.ToInt32(fmt.AsSpan()[..br1]);
-            Minor = Utility.ToInt32(fmt.Substring(br1 + 1, br2 - br1 - 1));
-            Revision = Utility.ToInt32(fmt.Substring(br2 + 1, br3 - br2 - 1));
+            Minor = Utility.ToInt32(fmt.AsSpan(br1 + 1, br2 - br1 - 1));
+            Revision = Utility.ToInt32(fmt.AsSpan(br2 + 1, br3 - br2 - 1));
 
             if (br3 < fmt.Length)
             {
@@ -89,7 +90,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                 }
                 else
                 {
-                    Patch = Utility.ToInt32(fmt.Substring(br3 + 1, fmt.Length - br3 - 1));
+                    Patch = Utility.ToInt32(fmt.AsSpan(br3 + 1, fmt.Length - br3 - 1));
                 }
             }
 
@@ -214,29 +215,22 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
     {
         using var builder = new ValueStringBuilder(stackalloc char[32]);
 
-        builder.Append(Major.ToString());
-        builder.Append('.');
-        builder.Append(Minor.ToString());
-        builder.Append('.');
-        builder.Append(Revision.ToString());
-
-        if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
+        if (Major > 5 || Minor > 0 || Revision > 6)
         {
-            if (Patch > 0)
-            {
-                builder.Append((char)('a' + (Patch - 1)));
-            }
+            builder.Append($"{Major}.{Minor}.{Revision}.{Patch}");
+        }
+        else if (Patch > 0)
+        {
+            builder.Append($"{Major}.{Minor}.{Revision}{(char)('a' + (Patch - 1))}");
         }
         else
         {
-            builder.Append('.');
-            builder.Append(Patch.ToString());
+            builder.Append($"{Major}.{Minor}.{Revision}");
         }
 
-        if (Type != ClientType.Regular)
+        if (Type == ClientType.UOTD)
         {
-            builder.Append(' ');
-            builder.Append(Type.ToString().ToLower());
+            builder.Append(" uotd");
         }
 
         return builder.ToString();

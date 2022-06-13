@@ -11,7 +11,6 @@ public class BladeSpirits : BaseCreature
     {
         Body = 574;
 
-        SetSpeed(0.5, 1.2);
         SetStr(150);
         SetDex(150);
         SetInt(100);

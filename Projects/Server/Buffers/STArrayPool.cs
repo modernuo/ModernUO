@@ -78,7 +78,7 @@ public class STArrayPool<T> : ArrayPool<T>
     {
         if (array is null)
         {
-            throw new ArgumentNullException(nameof(array));
+            return;
         }
 
         var bucketIndex = SelectBucketIndex(array.Length);
@@ -125,6 +125,11 @@ public class STArrayPool<T> : ArrayPool<T>
         for (var i = 0; i < buckets.Length; i++)
         {
             buckets[i]?.Trim(ticks, pressure, GetMaxSizeForBucket(i));
+        }
+
+        if (_cacheBuckets == null)
+        {
+            return true;
         }
 
         // Under high pressure, release all cached buckets

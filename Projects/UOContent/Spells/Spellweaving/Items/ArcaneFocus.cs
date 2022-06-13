@@ -34,11 +34,11 @@ namespace Server.Items
         public override TextDefinition InvalidTransferMessage => 1073480; // Your arcane focus disappears.
         public override bool Nontransferable => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1060485, StrengthBonus.ToString()); // strength bonus ~1_val~
+            list.Add(1060485, StrengthBonus); // strength bonus ~1_val~
         }
 
         public override void Serialize(IGenericWriter writer)

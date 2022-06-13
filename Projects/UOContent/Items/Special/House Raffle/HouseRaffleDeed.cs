@@ -85,19 +85,18 @@ namespace Server.Items
 
         public bool ValidLocation() => m_PlotLocation != Point3D.Zero && m_Facet != null && m_Facet != Map.Internal;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (ValidLocation())
             {
                 list.Add(
-                    1060658,
-                    "location\t{0}",
-                    HouseRaffleStone.FormatLocation(m_PlotLocation, m_Facet, false)
-                );                                        // ~1_val~: ~2_val~
-                list.Add(1060659, "facet\t{0}", m_Facet); // ~1_val~: ~2_val~
-                list.Add(1150486);                        // [Marked Item]
+                    1060658, // ~1_val~: ~2_val~
+                    $"{"location"}\t{HouseRaffleStone.FormatLocation(m_PlotLocation, m_Facet, false)}"
+                );
+                list.Add(1060659, $"{"facet"}\t{m_Facet}"); // ~1_val~: ~2_val~
+                list.Add(1150486);                      // [Marked Item]
             }
 
             if (IsExpired)

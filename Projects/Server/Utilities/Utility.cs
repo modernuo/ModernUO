@@ -560,12 +560,25 @@ namespace Server
                 return str;
             }
 
-            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(40960, str.Length)]);
+            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(128, str.Length)]);
             ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
             ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
             sb.ReplaceAny(invalid, replacement, 0, sb.Length);
 
             return sb.ToString();
+        }
+
+        public static void FixHtml(Span<char> chars)
+        {
+            if (chars.Length == 0)
+            {
+                return;
+            }
+
+            ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
+            ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
+
+            chars.ReplaceAny(invalid, replacement);
         }
 
         public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);
@@ -1282,96 +1295,6 @@ namespace Server
         {
             int mask = value >> 31;
             return (value + mask) ^ mask;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long Abs(this long value)
-        {
-            long mask = value >> 63;
-            return (value + mask) ^ mask;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(this uint value)
-        {
-            int digits = 1;
-            if (value >= 100000)
-            {
-                value /= 100000;
-                digits += 5;
-            }
-
-            if (value < 10)
-            {
-                // no-op
-            }
-            else if (value < 100)
-            {
-                digits++;
-            }
-            else if (value < 1000)
-            {
-                digits += 2;
-            }
-            else if (value < 10000)
-            {
-                digits += 3;
-            }
-            else
-            {
-                digits += 4;
-            }
-
-            return digits;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(this int value)
-        {
-            int absValue = Abs(value);
-
-            int digits = 1;
-            if (absValue >= 100000)
-            {
-                absValue /= 100000;
-                digits += 5;
-            }
-
-            if (absValue < 10)
-            {
-                // no-op
-            }
-            else if (absValue < 100)
-            {
-                digits++;
-            }
-            else if (absValue < 1000)
-            {
-                digits += 2;
-            }
-            else if (absValue < 10000)
-            {
-                digits += 3;
-            }
-            else
-            {
-                digits += 4;
-            }
-
-            if (value < 0)
-            {
-                digits += 1; // negative
-            }
-
-            return digits;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint DivRem(uint a, uint b, out uint result)
-        {
-            uint div = a / b;
-            result = a - div * b;
-            return div;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

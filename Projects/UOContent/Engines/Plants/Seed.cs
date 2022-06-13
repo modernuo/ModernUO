@@ -124,9 +124,41 @@ namespace Server.Engines.Plants
             return hueInfo.IsBright() ? 1113491 : 1113490; // ~1_amount~ [bright] ~2_val~ seeds
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
-            list.Add(GetLabel(out var args), args);
+            var typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
+            var hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
+
+            int title;
+
+            if (m_ShowType || typeInfo.PlantCategory == PlantCategory.Default)
+            {
+                title = hueInfo.Name;
+            }
+            else
+            {
+                title = (int)typeInfo.PlantCategory;
+            }
+
+            if (Amount == 1)
+            {
+                if (m_ShowType)
+                {
+                    list.Add(typeInfo.GetSeedLabel(hueInfo), $"{title:#}\t{typeInfo.Name:#}");
+                    return;
+                }
+
+                list.Add(hueInfo.IsBright() ? 1060839 : 1060838, $"{title:#}");
+                return;
+            }
+
+            if (m_ShowType)
+            {
+                list.Add(typeInfo.GetSeedLabelPlural(hueInfo), $"{Amount}\t{title:#}\t{typeInfo.Name:#}");
+                return;
+            }
+
+            list.Add(hueInfo.IsBright() ? 1113491 : 1113490, $"{Amount}\t{title:#}");
         }
 
         public override void OnSingleClick(Mobile from)

@@ -24,7 +24,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1074364; // Waterlogged boots
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
