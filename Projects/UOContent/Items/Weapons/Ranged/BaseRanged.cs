@@ -1,11 +1,12 @@
 using System;
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseRanged : BaseMeleeWeapon
     {
         [SerializableField(0)]

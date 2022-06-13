@@ -359,7 +359,7 @@ namespace Server.Items
             m_Instruments[from] = item;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             var oldUses = m_UsesRemaining;
             CheckReplenishUses(false);
@@ -376,7 +376,7 @@ namespace Server.Items
                 list.Add(1060636); // exceptional
             }
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
 
             if (m_ReplenishesCharges)
             {

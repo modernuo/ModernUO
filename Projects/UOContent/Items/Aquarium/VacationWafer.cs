@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class VacationWafer : Item
     {
         public const int VacationDays = 7;
@@ -12,11 +14,11 @@ namespace Server.Items
 
         public override int LabelNumber => 1074431; // An aquarium flake sphere
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
-            list.Add(1074432, VacationDays.ToString()); // Vacation days: ~1_DAYS~
+            list.AddLocalized(1074432, VacationDays); // Vacation days: ~1_DAYS~
         }
     }
 }

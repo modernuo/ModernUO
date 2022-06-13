@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Reptalon : BaseMount
     {
         [Constructible]
-        public Reptalon() : base("a reptalon", 0x114, 0x3E90, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.35)
+        public Reptalon() : base("a reptalon", 0x114, 0x3E90, AIType.AI_Melee)
         {
             BaseSoundID = 0x16A;
 

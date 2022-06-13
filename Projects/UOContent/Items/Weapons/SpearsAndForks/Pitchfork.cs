@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0xE87, 0xE88)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Pitchfork : BaseSpear
     {
         [Constructible]

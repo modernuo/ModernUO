@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0xF4D, 0xF4E)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Bardiche : BasePoleArm
     {
         [Constructible]

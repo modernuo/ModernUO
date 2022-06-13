@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
     [Flippable(0xB4F, 0xB4E, 0xB50, 0xB51)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FancyWoodenChairCushion : Item
     {
         [Constructible]
@@ -11,7 +13,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB53, 0xB52, 0xB54, 0xB55)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WoodenChairCushion : Item
     {
         [Constructible]
@@ -20,7 +22,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB57, 0xB56, 0xB59, 0xB58)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WoodenChair : Item
     {
         [Constructible]
@@ -29,7 +31,7 @@ namespace Server.Items
 
     [Furniture]
     [Flippable(0xB5B, 0xB5A, 0xB5C, 0xB5D)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BambooChair : Item
     {
         [Constructible]
@@ -38,7 +40,7 @@ namespace Server.Items
 
     [DynamicFlipping]
     [Flippable(0x1218, 0x1219, 0x121A, 0x121B)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class StoneChair : Item
     {
         [Constructible]
@@ -47,7 +49,7 @@ namespace Server.Items
 
     [DynamicFlipping]
     [Flippable(0x2DE3, 0x2DE4, 0x2DE5, 0x2DE6)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class OrnateElvenChair : Item
     {
         [Constructible]
@@ -56,7 +58,7 @@ namespace Server.Items
 
     [DynamicFlipping]
     [Flippable(0x2DEB, 0x2DEC, 0x2DED, 0x2DEE)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BigElvenChair : Item
     {
         [Constructible]
@@ -67,7 +69,7 @@ namespace Server.Items
 
     [DynamicFlipping]
     [Flippable(0x2DF5, 0x2DF6)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ElvenReadingChair : Item
     {
         [Constructible]

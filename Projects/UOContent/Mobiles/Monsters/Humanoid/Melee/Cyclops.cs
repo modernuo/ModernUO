@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Cyclops : BaseCreature
     {
         [Constructible]
-        public Cyclops() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Cyclops() : base(AIType.AI_Melee)
         {
             Body = 75;
             BaseSoundID = 604;

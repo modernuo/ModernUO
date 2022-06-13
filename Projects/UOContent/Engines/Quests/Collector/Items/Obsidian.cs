@@ -141,7 +141,7 @@ namespace Server.Engines.Quests.Collector
 
         public static string RandomName(Mobile from) => m_Names.RandomElement() ?? from.Name;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (m_Quantity < m_Partial)
             {

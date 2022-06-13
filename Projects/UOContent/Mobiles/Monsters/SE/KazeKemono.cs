@@ -7,12 +7,10 @@ namespace Server.Mobiles
     {
         private static readonly Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new();
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_ChlorophylBlastTable =
-            new();
+        private static readonly Dictionary<Mobile, ExpireTimer> m_ChlorophylBlastTable = new();
 
         [Constructible]
-        public KazeKemono()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public KazeKemono() : base(AIType.AI_Mage)
         {
             Body = 196;
             BaseSoundID = 655;

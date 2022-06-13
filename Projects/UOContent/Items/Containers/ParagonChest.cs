@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
 [Flippable]
-[Serializable(0, false)]
+[SerializationGenerator(0, false)]
 public partial class ParagonChest : LockableContainer
 {
     private static readonly int[] _itemIDs =
@@ -33,7 +35,7 @@ public partial class ParagonChest : LockableContainer
         LabelTo(from, 1063449, _name);
     }
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 

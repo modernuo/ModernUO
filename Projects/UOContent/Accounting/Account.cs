@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Xml;
+using ModernUO.Serialization;
 using Server.Accounting.Security;
 using Server.Misc;
 using Server.Mobiles;
@@ -10,7 +12,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    [Serializable(4)]
+    [SerializationGenerator(4)]
     public partial class Account : IAccount, IComparable<Account>, ISerializable
     {
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
@@ -55,7 +57,7 @@ namespace Server.Accounting
         public int _totalPlat;
 
         [SerializableField(8, "private", "private")]
-        private Mobile[] _mobiles;
+        private Mobile[] _rawMobiles;
 
         private List<AccountComment> _comments;
 
@@ -104,9 +106,9 @@ namespace Server.Accounting
         {
             get
             {
-                for (var i = 0; i < _mobiles.Length; i++)
+                for (var i = 0; i < _rawMobiles.Length; i++)
                 {
-                    if (_mobiles[i] is PlayerMobile m && m.NetState != null)
+                    if (_rawMobiles[i] is PlayerMobile m && m.NetState != null)
                     {
                         return _totalGameTime + (Core.Now - m.SessionStart);
                     }
@@ -138,7 +140,7 @@ namespace Server.Accounting
             _lastLogin = Core.Now;
             _totalGameTime = TimeSpan.Zero;
 
-            _mobiles = new Mobile[7];
+            _rawMobiles = new Mobile[7];
 
             _ipRestrictions = Array.Empty<string>();
             _loginIPs = Array.Empty<IPAddress>();
@@ -186,26 +188,26 @@ namespace Server.Accounting
             _totalGold = Utility.GetXMLInt32(Utility.GetText(node["totalGold"], "0"), 0);
             _totalPlat = Utility.GetXMLInt32(Utility.GetText(node["totalPlat"], "0"), 0);
 
-            _mobiles = LoadMobiles(node);
+            _rawMobiles = LoadMobiles(node);
             _comments = LoadComments(node);
             _tags = LoadTags(node);
             _loginIPs = LoadAddressList(node);
             _ipRestrictions = LoadAccessCheck(node);
 
-            for (var i = 0; i < _mobiles.Length; ++i)
+            for (var i = 0; i < _rawMobiles.Length; ++i)
             {
-                if (_mobiles[i] != null)
+                if (_rawMobiles[i] != null)
                 {
-                    _mobiles[i].Account = this;
+                    _rawMobiles[i].Account = this;
                 }
             }
 
             var totalGameTime = Utility.GetXMLTimeSpan(Utility.GetText(node["totalGameTime"], null), TimeSpan.Zero);
             if (totalGameTime == TimeSpan.Zero)
             {
-                for (var i = 0; i < _mobiles.Length; i++)
+                for (var i = 0; i < _rawMobiles.Length; i++)
                 {
-                    if (_mobiles[i] is PlayerMobile m)
+                    if (_rawMobiles[i] is PlayerMobile m)
                     {
                         totalGameTime += m.GameTime;
                     }
@@ -331,19 +333,19 @@ namespace Server.Accounting
                 _tags = null;
             }
 
-            for (var i = 0; i < _mobiles.Length; ++i)
+            for (var i = 0; i < _rawMobiles.Length; ++i)
             {
-                if (_mobiles[i] != null)
+                if (_rawMobiles[i] != null)
                 {
-                    _mobiles[i].Account = this;
+                    _rawMobiles[i].Account = this;
                 }
             }
 
             if (_totalGameTime == TimeSpan.Zero)
             {
-                for (var i = 0; i < _mobiles.Length; i++)
+                for (var i = 0; i < _rawMobiles.Length; i++)
                 {
-                    if (_mobiles[i] is PlayerMobile m)
+                    if (_rawMobiles[i] is PlayerMobile m)
                     {
                         _totalGameTime += m.GameTime;
                     }
@@ -380,7 +382,7 @@ namespace Server.Accounting
                 m.Delete();
 
                 m.Account = null;
-                _mobiles[i] = null;
+                _rawMobiles[i] = null;
             }
 
             if (_loginIPs.Length != 0 && AccountHandler.IPTable.ContainsKey(_loginIPs[0]))
@@ -452,7 +454,7 @@ namespace Server.Accounting
         /// <summary>
         ///     Gets the maximum amount of characters that this account can hold.
         /// </summary>
-        public int Length => _mobiles.Length;
+        public int Length => _rawMobiles.Length;
 
         /// <summary>
         ///     Gets or sets the character at a specified index for this account. Out of bound index values are handled; null returned
@@ -462,9 +464,9 @@ namespace Server.Accounting
         {
             get
             {
-                if (index >= 0 && index < _mobiles.Length)
+                if (index >= 0 && index < _rawMobiles.Length)
                 {
-                    var m = _mobiles[index];
+                    var m = _rawMobiles[index];
 
                     if (m?.Deleted != true)
                     {
@@ -474,7 +476,7 @@ namespace Server.Accounting
                     // This is the only place that clears a mobile for garbage collection
                     // outside of an entire account deletion.
                     m.Account = null;
-                    _mobiles[index] = null;
+                    _rawMobiles[index] = null;
                     this.MarkDirty();
                 }
 
@@ -482,19 +484,19 @@ namespace Server.Accounting
             }
             set
             {
-                if (index >= 0 && index < _mobiles.Length)
+                if (index >= 0 && index < _rawMobiles.Length)
                 {
-                    if (_mobiles[index] != null)
+                    if (_rawMobiles[index] != null)
                     {
-                        _mobiles[index].Account = null;
+                        _rawMobiles[index].Account = null;
                     }
 
-                    _mobiles[index] = value;
+                    _rawMobiles[index] = value;
                     this.MarkDirty();
 
-                    if (_mobiles[index] != null)
+                    if (_rawMobiles[index] != null)
                     {
-                        _mobiles[index].Account = this;
+                        _rawMobiles[index].Account = this;
                     }
                 }
             }
@@ -820,9 +822,9 @@ namespace Server.Accounting
         {
             Young = false;
 
-            for (var i = 0; i < _mobiles.Length; i++)
+            for (var i = 0; i < _rawMobiles.Length; i++)
             {
-                if (_mobiles[i] is PlayerMobile { Young: true } m)
+                if (_rawMobiles[i] is PlayerMobile { Young: true } m)
                 {
                     m.Young = false;
 
@@ -1176,6 +1178,53 @@ namespace Server.Accounting
             protected override void OnTick()
             {
                 m_Account.CheckYoung();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Enumerator GetEnumerator() => new(_rawMobiles);
+
+        public Enumerator Mobiles
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetEnumerator();
+        }
+
+        public ref struct Enumerator
+        {
+            private readonly Mobile[] _mobiles;
+            private int _index;
+            private Mobile _current;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal Enumerator(Mobile[] mobs)
+            {
+                _mobiles = mobs;
+                _index = 0;
+                _current = default;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+                Mobile[] localList = _mobiles;
+
+                while ((uint)_index < (uint)localList.Length)
+                {
+                    _current = _mobiles[_index++];
+                    if (_current?.Deleted == false)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public Mobile Current
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _current;
             }
         }
     }

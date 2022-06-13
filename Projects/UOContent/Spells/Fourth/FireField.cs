@@ -33,28 +33,23 @@ namespace Server.Spells.Fourth
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20C);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
+
+                Effects.PlaySound(loc, Caster.Map, 0x20C);
 
                 var itemID = eastToWest ? 0x398C : 0x3996;
 
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
-                }
+                var duration = Core.AOS
+                    ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0)
+                    : TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
 
                 for (var i = -2; i <= 2; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
+                    var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
 
-                    new FireFieldItem(itemID, loc, Caster, Caster.Map, duration, i);
+                    new FireFieldItem(itemID, targetLoc, Caster, Caster.Map, duration, i);
                 }
             }
 

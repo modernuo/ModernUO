@@ -41,8 +41,9 @@ namespace Server
             var amountToRefill = Math.Min(_maxPoolCapacity, amountToGrow);
 
             var maximumHit = amountToGrow > amountToRefill ? " Maximum pool size has been reached." : "";
+            var warningMessage = $"Timer pool depleted by {{Amount}}. Refilling with {{AmountRefill}}.{maximumHit}";
 
-            logger.Warning($"Timer pool depleted by {_timerPoolDepletionAmount}. Refilling with {amountToRefill}.{maximumHit}");
+            logger.Warning(warningMessage, _timerPoolDepletionAmount, amountToRefill);
             RefillPoolAsync(amountToRefill);
             _timerPoolDepletionAmount = 0;
         }
@@ -62,7 +63,7 @@ namespace Server
             _poolHead = head;
             _poolCount += amount;
 #if DEBUG_TIMERS
-            logger.Information($"Returning to pool. ({_poolCount} / {_poolCapacity})");
+            logger.Information("Returning to pool. ({Count} / {Capacity})", _poolCount, _poolCapacity);
 #endif
         }
 
@@ -84,7 +85,7 @@ namespace Server
         internal static void RefillPool(int amount, out DelayCallTimer head, out DelayCallTimer tail)
         {
 #if DEBUG_TIMERS
-            logger.Information($"Filling pool with {amount} timers.");
+            logger.Information("Filling pool with {Amount} timers.", amount);
 #endif
 
             head = null;

@@ -258,11 +258,11 @@ namespace Server.Engines.BulkOrders
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1062344, Entries.Count.ToString()); // Deeds in book: ~1_val~
+            list.Add(1062344, Entries.Count); // Deeds in book: ~1_val~
 
             if (!string.IsNullOrEmpty(m_BookName))
             {

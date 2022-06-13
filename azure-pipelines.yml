@@ -18,7 +18,7 @@ jobs:
     displayName: 'Install .NET 6'
     inputs:
       packageType: sdk
-      version: 6.0.100
+      version: 6.0.300
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release win
     displayName: 'Build'
@@ -40,14 +40,14 @@ jobs:
       'Ubuntu 20':
         containerImage: mcr.microsoft.com/dotnet/sdk:6.0-focal
         os: ubuntu.20.04
-      'Fedora 32':
-        containerImage: fedora:32
-        os: fedora.32
-      'Fedora 33':
-        containerImage: fedora:33
-        os: fedora.33
       'Fedora 34':
         containerImage: fedora:34
+        os: fedora.34
+      'Fedora 35':
+        containerImage: fedora:35
+        os: fedora.34
+      'Fedora 36':
+        containerImage: fedora:36
         os: fedora.34
 
   displayName: Linux
@@ -62,7 +62,7 @@ jobs:
     displayName: 'Install .NET 6'
     inputs:
       packageType: sdk
-      version: 6.0.100
+      version: 6.0.300
   - task: NuGetAuthenticate@0
   - script: ./publish.cmd Release $(os)
     displayName: 'Build'

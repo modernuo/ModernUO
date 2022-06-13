@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Samurai
     public class FierceDragon : BaseCreature
     {
         [Constructible]
-        public FierceDragon() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public FierceDragon() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             Body = 103;
             BaseSoundID = 362;

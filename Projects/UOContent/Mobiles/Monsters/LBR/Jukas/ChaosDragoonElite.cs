@@ -5,11 +5,12 @@ namespace Server.Mobiles
     public class ChaosDragoonElite : BaseCreature
     {
         [Constructible]
-        public ChaosDragoonElite()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.15, 0.4)
+        public ChaosDragoonElite() : base(AIType.AI_Mage)
         {
             Body = 0x190;
             Hue = Race.Human.RandomSkinHue();
+
+            SetSpeed(0.15, 0.4);
 
             SetStr(276, 350);
             SetDex(66, 90);

@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FireworksWand : MagicWand
     {
         [SerializableField(0)]
@@ -19,11 +20,11 @@ namespace Server.Items
 
         public override int LabelNumber => 1041424; // a fireworks wand
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
-            list.Add(1060741, _charges.ToString()); // charges: ~1_val~
+            list.Add(1060741, $"{_charges}"); // charges: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)

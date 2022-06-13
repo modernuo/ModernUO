@@ -16,7 +16,8 @@ public partial class BaseArmor
         _identified = content.Identified;
         _maxHitPoints = content.MaxHitPoints ?? 0;
         _hitPoints = content.HitPoints ?? 0;
-        _crafter = content.Crafter?.RawName; // Convert from Mobile -> String via RawName
+        var crafter = content.Crafter;
+        Timer.StartTimer(() => _crafter = crafter?.RawName);
         _quality = content.Quality ?? ArmorQuality.Regular;
         _durability = content.Durability ?? ArmorDurabilityLevel.Regular;
         _rawResource = content.RawResource ?? DefaultResource;
@@ -90,7 +91,8 @@ public partial class BaseArmor
 
         if (GetSaveFlag(flags, OldSaveFlag.Crafter))
         {
-            _crafter = reader.ReadEntity<Mobile>()?.RawName;
+            var crafter = reader.ReadEntity<Mobile>();
+            Timer.StartTimer(() => _crafter = crafter?.RawName);
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.Quality))

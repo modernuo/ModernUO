@@ -278,12 +278,12 @@ namespace Server.Engines.MLQuests.Definitions
     public class Enigma : BaseCreature
     {
         [Constructible]
-        public Enigma()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Enigma() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Body = 788;
             BaseSoundID = 0x3EE;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
         }
 
@@ -616,12 +616,13 @@ namespace Server.Engines.MLQuests.Definitions
     public class Sledge : BaseCreature
     {
         [Constructible]
-        public Sledge()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Sledge() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Versatile";
             Body = 400;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new Tunic(Utility.RandomNeutralHue()));
@@ -671,12 +672,13 @@ namespace Server.Engines.MLQuests.Definitions
     public class Patricus : BaseCreature
     {
         [Constructible]
-        public Patricus()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Patricus() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Trader";
             Body = 400;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new FancyShirt(Utility.RandomNeutralHue()));
@@ -713,13 +715,14 @@ namespace Server.Engines.MLQuests.Definitions
     public class Belulah : BaseCreature
     {
         [Constructible]
-        public Belulah()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Belulah() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the scorned";
             Female = true;
             Body = 401;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

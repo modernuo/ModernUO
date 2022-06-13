@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Furniture]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GiantReplicaAcorn : Item
     {
         [Constructible]

@@ -200,6 +200,12 @@ namespace Server
                     continue;
                 }
 
+                if (entry.Length == 0)
+                {
+                    t.Delete();
+                    continue;
+                }
+
                 var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
                 if (br == null)
                 {
@@ -309,6 +315,12 @@ namespace Server
         private static void SerializeTo(this ISerializable entity, IGenericWriter writer)
         {
             var saveBuffer = entity.SaveBuffer;
+
+            // If nothing was serialized we expect the object to be deleted on deserialization
+            if (saveBuffer.Position == 0)
+            {
+                return;
+            }
 
             // Resize to the exact size
             saveBuffer.Resize((int)saveBuffer.Position);

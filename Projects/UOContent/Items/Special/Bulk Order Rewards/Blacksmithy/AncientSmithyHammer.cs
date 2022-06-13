@@ -73,13 +73,13 @@ namespace Server.Items
             m_SkillMod = null;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (m_Bonus != 0)
             {
-                list.Add(1060451, "#1042354\t{0}", m_Bonus.ToString()); // ~1_skillname~ +~2_val~
+                list.Add(1060451, $"{1042354:#}\t{m_Bonus}"); // ~1_skillname~ +~2_val~
             }
         }
 

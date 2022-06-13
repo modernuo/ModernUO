@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class ArcaneDaemon : BaseCreature
     {
         [Constructible]
-        public ArcaneDaemon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public ArcaneDaemon() : base(AIType.AI_Mage)
         {
             Body = 0x310;
             BaseSoundID = 0x47D;

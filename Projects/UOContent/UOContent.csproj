@@ -38,14 +38,15 @@
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
-        <PackageReference Include="MailKit" Version="3.1.1" />
+        <PackageReference Include="MailKit" Version="3.2.0" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
-        <PackageReference Include="Zlib.Bindings" Version="1.8.0" />
-        <PackageReference Include="Argon2.Bindings" Version="1.12.0" />
-        <PackageReference Include="Zstd.Binaries" Version="1.3.0" />
+        <PackageReference Include="Zlib.Bindings" Version="1.9.2" />
+        <PackageReference Include="Argon2.Bindings" Version="1.13.0" />
+        <PackageReference Include="Zstd.Binaries" Version="1.4.0" />
 
-        <PackageReference Include="ModernUO.SerializationGenerator" Version="1.0.4" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.0.2" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.0.5" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />

@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public Dolphin()
-            : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+            : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0x97;
             BaseSoundID = 0x8A;

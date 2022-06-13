@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Scorpion : BaseCreature
     {
         [Constructible]
-        public Scorpion() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Scorpion() : base(AIType.AI_Melee)
         {
             Body = 48;
             BaseSoundID = 397;

@@ -37,20 +37,22 @@ namespace Server
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (targeted is not IPoint3D p)
+                if (targeted is not IPoint3D ip)
                 {
                     return;
                 }
 
-                if (p is Item item)
+                Point3D p = ip switch
                 {
-                    p = item.GetWorldTop();
-                }
+                    Item item => item.GetWorldTop(),
+                    Mobile m  => m.Location,
+                    _         => new Point3D(ip)
+                };
 
                 if (m_First)
                 {
                     from.SendMessage("Target another location to complete the bounding box.");
-                    from.Target = new PickTarget(new Point3D(p), false, from.Map, m_Callback);
+                    from.Target = new PickTarget(p, false, from.Map, m_Callback);
                 }
                 else if (from.Map != m_Map)
                 {
@@ -59,7 +61,7 @@ namespace Server
                 else if (m_Map != null && m_Map != Map.Internal && m_Callback != null)
                 {
                     var start = m_Store;
-                    var end = new Point3D(p);
+                    var end = p;
 
                     Utility.FixPoints(ref start, ref end);
 

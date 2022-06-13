@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -210,13 +209,18 @@ namespace Server.SkillHandlers
 
             var range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-            var list = from.GetMobilesInRange(range)
-                .Where(
-                    m => m != from && (!Core.AOS || m.Alive) &&
-                         (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) &&
-                         check(m) && CheckDifficulty(from, m)
-                )
-                .ToList();
+            var eable = from.GetMobilesInRange(range);
+            var list = new List<Mobile>();
+            foreach (var m in eable)
+            {
+                if (m != from && (!Core.AOS || m.Alive) &&
+                    (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) &&
+                    check(m) && CheckDifficulty(from, m))
+                {
+                    list.Add(m);
+                }
+            }
+            eable.Free();
 
             if (list.Count > 0)
             {

@@ -42,7 +42,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -50,7 +50,14 @@ namespace Server.Items
 
             if (r != null)
             {
-                list.Add(1049644, r.TextDefinition.ToString()); // [~1_stuff~]
+                if (r.TextDefinition.Number > 0)
+                {
+                    list.Add(1049644, r.TextDefinition.Number); // [~1_stuff~]
+                }
+                else
+                {
+                    list.Add(1049644, r.TextDefinition.String); // [~1_stuff~]
+                }
             }
         }
 

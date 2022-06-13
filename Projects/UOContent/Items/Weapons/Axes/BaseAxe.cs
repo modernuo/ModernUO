@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Engines.Harvest;
@@ -12,7 +13,7 @@ namespace Server.Items
         bool Axe(Mobile from, BaseAxe axe);
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseAxe : BaseMeleeWeapon
     {
         [SerializableField(0)]

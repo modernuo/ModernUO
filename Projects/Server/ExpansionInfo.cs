@@ -57,17 +57,17 @@ namespace Server
     {
         None = 0x00000000,
         T2A = 0x00000001,
-        UOR = 0x00000002,
+        UOR = 0x00000002, // In later clients, the T2A/UOR flags are negative feature flags to disable body replacement of Pre-AOS graphics.
         UOTD = 0x00000004,
         LBR = 0x00000008,
         AOS = 0x00000010,
         SixthCharacterSlot = 0x00000020,
         SE = 0x00000040,
         ML = 0x00000080,
-        EigthAge = 0x00000100,
-        NinthAge = 0x00000200, /* Crystal/Shadow Custom House Tiles */
+        EighthAge = 0x00000100,
+        NinthAge = 0x00000200, // Crystal/Shadow Custom House Tiles
         TenthAge = 0x00000400,
-        IncreasedStorage = 0x00000800, /* Increased Housing/Bank Storage */
+        IncreasedStorage = 0x00000800, // Increased Housing/Bank Storage
         SeventhCharacterSlot = 0x00001000,
         RoleplayFaces = 0x00002000,
         TrialAccount = 0x00004000,
@@ -86,7 +86,7 @@ namespace Server
         ExpansionUOR = ExpansionT2A | UOR,
         ExpansionUOTD = ExpansionUOR | UOTD,
         ExpansionLBR = ExpansionUOTD | LBR,
-        ExpansionAOS = ExpansionLBR | AOS | LiveAccount,
+        ExpansionAOS = LBR | AOS | LiveAccount,
         ExpansionSE = ExpansionAOS | SE,
         ExpansionML = ExpansionSE | ML | NinthAge,
         ExpansionSA = ExpansionML | SA | Gothic | Rustic,
@@ -158,6 +158,12 @@ namespace Server
 
     public class ExpansionInfo
     {
+        public static bool ForceOldAnimations { get; private set; }
+        public static void Configure()
+        {
+            ForceOldAnimations = ServerConfiguration.GetSetting("expansion.forceOldAnimations", false);
+        }
+
         public static string GetEraFolder(string parentDirectory)
         {
             var expansion = Core.Expansion;
@@ -263,32 +269,6 @@ namespace Server
         public CharacterListFlags CharacterListFlags { get; set; }
         public ClientVersion RequiredClient { get; set; }
         public HousingFlags CustomHousingFlag { get; set; }
-
-        public static FeatureFlags GetFeatures(Expansion ex)
-        {
-            var info = GetInfo(ex);
-
-            if (info != null)
-            {
-                return info.SupportedFeatures;
-            }
-
-            return ex switch
-            {
-                Expansion.T2A  => FeatureFlags.ExpansionT2A,
-                Expansion.UOR  => FeatureFlags.ExpansionUOR,
-                Expansion.UOTD => FeatureFlags.ExpansionUOTD,
-                Expansion.LBR  => FeatureFlags.ExpansionLBR,
-                Expansion.AOS  => FeatureFlags.ExpansionAOS,
-                Expansion.SE   => FeatureFlags.ExpansionSE,
-                Expansion.ML   => FeatureFlags.ExpansionML,
-                Expansion.SA   => FeatureFlags.ExpansionSA,
-                Expansion.HS   => FeatureFlags.ExpansionHS,
-                Expansion.TOL  => FeatureFlags.ExpansionTOL,
-                Expansion.EJ   => FeatureFlags.EJ,
-                _              => FeatureFlags.ExpansionNone
-            };
-        }
 
         public static ExpansionInfo GetInfo(Expansion ex) => GetInfo((int)ex);
 

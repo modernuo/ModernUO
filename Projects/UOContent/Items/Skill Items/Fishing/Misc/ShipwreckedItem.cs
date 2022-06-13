@@ -48,10 +48,10 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
-            LabelTo(from, 1050039, $"#{LabelNumber}\t#1041645");
+            LabelTo(from, 1050039, $"{LabelNumber:#}\t{1041645:#}");
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
             list.Add(1041645); // recovered from a shipwreck

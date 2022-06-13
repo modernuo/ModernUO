@@ -654,6 +654,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x47D;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -708,8 +709,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Dimethro : BaseCreature
     {
         [Constructible]
-        public Dimethro()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Dimethro() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Wrestling Instructor";
             Body = 0x190;
@@ -719,6 +719,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -767,8 +768,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Churchill : BaseCreature
     {
         [Constructible]
-        public Churchill()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Churchill() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Mace Fighting Instructor";
             Body = 0x190;
@@ -776,6 +776,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -854,6 +855,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairHue = 0x47D;
             Female = true;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -927,8 +929,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Recaro : BaseCreature
     {
         [Constructible]
-        public Recaro()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Recaro() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Fencer Instructor";
             Body = 0x190;
@@ -938,6 +939,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1011,8 +1013,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class AldenArmstrong : BaseCreature
     {
         [Constructible]
-        public AldenArmstrong()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public AldenArmstrong() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Tactics Instructor";
             Body = 0x190;
@@ -1020,6 +1021,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x44E;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1076,8 +1078,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Jockles : BaseCreature
     {
         [Constructible]
-        public Jockles()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Jockles() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Swordsmanship Instructor";
             Body = 0x190;
@@ -1085,6 +1086,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x8A7;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1137,14 +1139,14 @@ namespace Server.Engines.MLQuests.Definitions
     public class TylAriadne : BaseCreature
     {
         [Constructible]
-        public TylAriadne()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public TylAriadne() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Parrying Instructor";
             Body = 0x190;
             Hue = 0x8374;
             HairItemID = 0;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1218,8 +1220,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Alefian : BaseCreature
     {
         [Constructible]
-        public Alefian()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Alefian() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Resisting Spells Instructor";
             Body = 0x190;
@@ -1227,6 +1228,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x457;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1274,8 +1276,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Gustar : BaseCreature
     {
         [Constructible]
-        public Gustar()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Gustar() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Meditation Instructor";
             Body = 0x190;
@@ -1283,6 +1284,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1356,8 +1358,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Jillian : BaseCreature
     {
         [Constructible]
-        public Jillian()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Jillian() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Inscription Instructor";
             Body = 0x191;
@@ -1366,6 +1367,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1413,8 +1415,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Kaelynna : BaseCreature
     {
         [Constructible]
-        public Kaelynna()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Kaelynna() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Magery Instructor";
             Body = 0x191;
@@ -1423,6 +1424,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x47D;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1470,8 +1472,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Mithneral : BaseCreature
     {
         [Constructible]
-        public Mithneral()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Mithneral() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Evaluating Intelligence Instructor";
             Body = 0x190;
@@ -1479,6 +1480,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.EvalInt, 120.0);
@@ -1540,6 +1542,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x46C;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.ArmsLore, 120.0);
@@ -1591,8 +1594,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class AndreasVesalius : BaseCreature
     {
         [Constructible]
-        public AndreasVesalius()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public AndreasVesalius() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Anatomy Instructor";
             Body = 0x190;
@@ -1602,6 +1604,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x203E;
             FacialHairHue = 0x477;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1651,8 +1654,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Avicenna : BaseCreature
     {
         [Constructible]
-        public Avicenna()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Avicenna() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Healing Instructor";
             Body = 0x190;
@@ -1660,6 +1662,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x477;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1708,8 +1711,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class SarsmeaSmythe : BaseCreature
     {
         [Constructible]
-        public SarsmeaSmythe()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public SarsmeaSmythe() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Focus Instructor";
             Body = 0x191;
@@ -1718,6 +1720,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x456;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Anatomy, 120.0);
@@ -1840,12 +1843,12 @@ namespace Server.Engines.MLQuests.Definitions
     public class Chiyo : BaseCreature
     {
         [Constructible]
-        public Chiyo()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Chiyo() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Hiding Instructor";
             Body = 0xF7;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Hiding, 120.0);
@@ -1889,8 +1892,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Jun : BaseCreature
     {
         [Constructible]
-        public Jun()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Jun() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Stealth Instructor";
             Body = 0x190;
@@ -1898,6 +1900,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Hiding, 120.0);
@@ -1949,8 +1952,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Walker : BaseCreature
     {
         [Constructible]
-        public Walker()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Walker() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Tracking Instructor";
             Body = 0x190;
@@ -1960,6 +1962,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204B;
             FacialHairHue = 0x47D;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Hiding, 120.0);
@@ -2097,6 +2100,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203D;
             HairHue = 0x457;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Magery, 120.0);
@@ -2176,6 +2180,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203C;
             HairHue = 0x455;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Magery, 120.0);
@@ -2225,8 +2230,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class JacobWaltz : BaseCreature
     {
         [Constructible]
-        public JacobWaltz()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public JacobWaltz() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Miner Instructor";
             Body = 0x190;
@@ -2236,6 +2240,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204D;
             FacialHairHue = 0x44E;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.ArmsLore, 120.0);
@@ -2296,6 +2301,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x203B;
             HairHue = 0x47B;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.ArmsLore, 120.0);

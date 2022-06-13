@@ -5,10 +5,9 @@ namespace Server.Mobiles
     public class Ninja : BaseCreature
     {
         [Constructible]
-        public Ninja() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Ninja() : base(AIType.AI_Melee, FightMode.Aggressor)
         {
             Title = "the ninja";
-
             InitStats(100, 100, 25);
 
             SetSkill(SkillName.Fencing, 64.0, 80.0);
@@ -18,8 +17,8 @@ namespace Server.Mobiles
             SetSkill(SkillName.Tactics, 64.0, 85.0);
             SetSkill(SkillName.Swords, 64.0, 85.0);
 
+            SetSpeed(0.2, 0.4);
             SpeechHue = Utility.RandomDyedHue();
-
             Hue = Race.Human.RandomSkinHue();
 
             if (Female = Utility.RandomBool())

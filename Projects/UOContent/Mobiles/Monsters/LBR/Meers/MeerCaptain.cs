@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private DateTime m_NextAbilityTime;
 
         [Constructible]
-        public MeerCaptain() : base(AIType.AI_Archer, FightMode.Evil, 10, 1, 0.2, 0.4)
+        public MeerCaptain() : base(AIType.AI_Archer, FightMode.Evil)
         {
             Body = 773;
 

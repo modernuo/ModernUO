@@ -102,11 +102,11 @@ namespace Server.Items
             };
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1060741, m_Charges.ToString()); // charges: ~1_val~
+            list.Add(1060741, m_Charges); // charges: ~1_val~
         }
 
         public override void OnSingleClick(Mobile from)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Multis;
 using Server.Network;
@@ -7,7 +8,7 @@ using Server.Utilities;
 
 namespace Server.Items
 {
-    [Serializable(4, false)]
+    [SerializationGenerator(4, false)]
     public partial class Aquarium : BaseAddonContainer
     {
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
@@ -363,18 +364,18 @@ namespace Server.Items
             }
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
             if (_vacationLeft > 0)
             {
-                list.Add(1074430, _vacationLeft.ToString()); // Vacation days left: ~1_DAYS
+                list.Add(1074430, $"{_vacationLeft}"); // Vacation days left: ~1_DAYS
             }
 
             if (_events.Count > 0)
             {
-                list.Add(1074426, _events.Count.ToString()); // ~1_NUM~ event(s) to view!
+                list.Add(1074426, $"{_events.Count}"); // ~1_NUM~ event(s) to view!
             }
 
             if (_rewardAvailable)
@@ -382,60 +383,54 @@ namespace Server.Items
                 list.Add(1074362); // A reward is available!
             }
 
-            list.Add(1074247, "{0}\t{1}", LiveCreatures, MaxLiveCreatures); // Live Creatures: ~1_NUM~ / ~2_MAX~
+            list.Add(1074247, $"{LiveCreatures}\t{MaxLiveCreatures}"); // Live Creatures: ~1_NUM~ / ~2_MAX~
 
             var dead = DeadCreatures;
 
             if (dead > 0)
             {
-                list.Add(1074248, dead.ToString()); // Dead Creatures: ~1_NUM~
+                list.Add(1074248, dead); // Dead Creatures: ~1_NUM~
             }
 
             var decorations = Items.Count - LiveCreatures - dead;
 
             if (decorations > 0)
             {
-                list.Add(1074249, decorations.ToString()); // Decorations: ~1_NUM~
+                list.Add(1074249, decorations); // Decorations: ~1_NUM~
             }
 
-            list.Add(1074250, "#{0}", FoodNumber());  // Food state: ~1_STATE~
-            list.Add(1074251, "#{0}", WaterNumber()); // Water state: ~1_STATE~
+            list.AddLocalized(1074250, FoodNumber());  // Food state: ~1_STATE~
+            list.AddLocalized(1074251, WaterNumber()); // Water state: ~1_STATE~
 
             if (_food.State == (int)FoodState.Dead)
             {
-                list.Add(1074577, "{0}\t{1}", _food.Added, _food.Improve); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074577, $"{_food.Added}\t{_food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else if (_food.State == (int)FoodState.Overfed)
             {
-                list.Add(1074577, "{0}\t{1}", _food.Added, _food.Maintain); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074577, $"{_food.Added}\t{_food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 list.Add(
                     1074253, // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
-                    "{0}\t{1}\t{2}",
-                    _food.Added,
-                    _food.Maintain,
-                    _food.Improve
+                    $"{_food.Added}\t{_food.Maintain}\t{_food.Improve}"
                 );
             }
 
             if (_water.State == (int)WaterState.Dead)
             {
-                list.Add(1074578, "{0}\t{1}", _water.Added, _water.Improve); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074578, $"{_water.Added}\t{_water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else if (_water.State == (int)WaterState.Strong)
             {
-                list.Add(1074578, "{0}\t{1}", _water.Added, _water.Maintain); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+                list.Add(1074578, $"{_water.Added}\t{_water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
             }
             else
             {
                 list.Add(
                     1074254, // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
-                    "{0}\t{1}\t{2}",
-                    _water.Added,
-                    _water.Maintain,
-                    _water.Improve
+                    $"{_water.Added}\t{_water.Maintain}\t{_water.Improve}"
                 );
             }
         }
@@ -917,12 +912,8 @@ namespace Server.Items
 
             AddItem(item);
 
-            from?.SendLocalizedMessage(
-                1073635,
-                item.LabelNumber != 0
-                    ? $"#{item.LabelNumber}"
-                    : item.Name
-            ); // You add the following decoration to your aquarium: ~1_NAME~
+            // You add the following decoration to your aquarium: ~1_NAME~
+            from?.SendLocalizedMessage(1073635, item.LabelNumber != 0 ? $"#{item.LabelNumber}" : item.Name);
 
             InvalidateProperties();
             return true;
@@ -1130,7 +1121,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AquariumEastDeed : BaseAddonContainerDeed
     {
         [Constructible]
@@ -1142,7 +1133,7 @@ namespace Server.Items
         public override int LabelNumber => 1074501; // Large Aquarium (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AquariumNorthDeed : BaseAddonContainerDeed
     {
         [Constructible]

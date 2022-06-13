@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private bool m_Stunning;
 
         [Constructible]
-        public Golem(bool summoned = false, double scalar = 1.0) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+        public Golem(bool summoned = false, double scalar = 1.0) : base(AIType.AI_Melee)
         {
             Body = 752;
 

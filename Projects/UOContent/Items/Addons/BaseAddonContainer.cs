@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Multis;
 
 namespace Server.Items
 {
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public abstract partial class BaseAddonContainer : BaseContainer, IChoppable, IAddon
     {
         [SerializableField(0, setter: "private")]
@@ -167,7 +168,7 @@ namespace Server.Items
             base.OnDelete();
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

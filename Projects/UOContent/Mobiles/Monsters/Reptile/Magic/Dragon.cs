@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Dragon : BaseCreature
     {
         [Constructible]
-        public Dragon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Dragon() : base(AIType.AI_Mage)
         {
             Body = Utility.RandomList(12, 59);
             BaseSoundID = 362;

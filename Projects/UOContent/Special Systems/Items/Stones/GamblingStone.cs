@@ -30,17 +30,17 @@ namespace Server.Items
 
         public override string DefaultName => "a gambling stone";
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add("Jackpot: {0}gp", m_GamblePot);
+            list.Add($"Jackpot: {m_GamblePot}gp");
         }
 
         public override void OnSingleClick(Mobile from)
         {
             base.OnSingleClick(from);
-            LabelTo(from, "Jackpot: {0}gp", m_GamblePot);
+            LabelTo(from, $"Jackpot: {m_GamblePot}gp");
         }
 
         public override void OnDoubleClick(Mobile from)

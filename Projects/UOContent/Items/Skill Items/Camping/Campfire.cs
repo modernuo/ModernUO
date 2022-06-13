@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -58,20 +57,26 @@ namespace Server.Items
                 switch (value)
                 {
                     case CampfireStatus.Burning:
-                        ItemID = 0xDE3;
-                        Light = LightType.Circle300;
-                        break;
+                        {
+                            ItemID = 0xDE3;
+                            Light = LightType.Circle300;
+                            break;
+                        }
 
                     case CampfireStatus.Extinguishing:
-                        ItemID = 0xDE9;
-                        Light = LightType.Circle150;
-                        break;
+                        {
+                            ItemID = 0xDE9;
+                            Light = LightType.Circle150;
+                            break;
+                        }
 
                     default:
-                        ItemID = 0xDEA;
-                        Light = LightType.ArchedWindowEast;
-                        ClearEntries();
-                        break;
+                        {
+                            ItemID = 0xDEA;
+                            Light = LightType.ArchedWindowEast;
+                            ClearEntries();
+                            break;
+                        }
                 }
             }
         }
@@ -111,8 +116,10 @@ namespace Server.Items
                 return;
             }
 
-            foreach (var entry in m_Entries.ToList())
+            for (var i = m_Entries.Count - 1; i >= 0; i--)
             {
+                var entry = m_Entries[i];
+
                 if (!entry.Valid || entry.Player.NetState == null)
                 {
                     RemoveEntry(entry);
@@ -149,10 +156,13 @@ namespace Server.Items
                 return;
             }
 
-            foreach (var entry in m_Entries.ToList())
+            foreach (var entry in m_Entries)
             {
-                RemoveEntry(entry);
+                m_Table.Remove(entry.Player);
             }
+
+            m_Entries.Clear();
+            m_Entries.TrimExcess();
         }
 
         public override void OnAfterDelete()

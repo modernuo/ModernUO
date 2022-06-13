@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -1034,13 +1035,13 @@ namespace Server
             set => SetSkill(4, value);
         }
 
-        public void GetProperties(ObjectPropertyList list)
+        public void GetProperties(IPropertyList list)
         {
             for (var i = 0; i < 5; ++i)
             {
                 if (GetValues(i, out var skill, out var bonus))
                 {
-                    list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
+                    list.Add(1060451 + i, $"{GetLabel(skill):#}\t{bonus}");
                 }
             }
         }
@@ -1295,7 +1296,7 @@ namespace Server
     }
 
     [PropertyObject]
-    [EmbeddedSerializable(0)]
+    [SerializationGenerator(0)]
     public abstract partial class BaseAttributes
     {
         [SerializableField(0, setter: "private")]
@@ -1321,9 +1322,9 @@ namespace Server
 
         public bool IsEmpty => _names == 0;
 
-        [SerializableParent]
-        private readonly Item _owner;
+        private Item _owner;
 
+        [DirtyTrackingEntity]
         public Item Owner => _owner;
 
         public int GetValue(int bitmask)
@@ -1458,7 +1459,7 @@ namespace Server
                 }
             }
 
-            if (Owner.Parent is Mobile m)
+            if (Owner?.Parent is Mobile m)
             {
                 m.CheckStatTimers();
                 m.UpdateResistances();
@@ -1474,7 +1475,7 @@ namespace Server
                 }
             }
 
-            Owner.InvalidateProperties();
+            Owner?.InvalidateProperties();
         }
 
         private int GetIndex(uint mask)

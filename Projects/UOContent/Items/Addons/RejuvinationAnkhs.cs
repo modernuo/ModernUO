@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RejuvinationAddonComponent : AddonComponent
     {
         public RejuvinationAddonComponent(int itemID) : base(itemID)
@@ -51,7 +52,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseRejuvinationAnkh : BaseAddon
     {
         private DateTime m_NextMessage;
@@ -79,7 +80,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RejuvinationAnkhWest : BaseRejuvinationAnkh
     {
         [Constructible]
@@ -90,7 +91,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RejuvinationAnkhNorth : BaseRejuvinationAnkh
     {
         [Constructible]

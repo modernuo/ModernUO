@@ -353,11 +353,11 @@ namespace Server.Engines.Spawners
             from.SendGump(new SpawnerGump(this));
         }
 
-        public virtual void GetSpawnerProperties(ObjectPropertyList list)
+        public virtual void GetSpawnerProperties(IPropertyList list)
         {
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -365,18 +365,19 @@ namespace Server.Engines.Spawners
             {
                 list.Add(1060742); // active
 
-                list.Add(1060656, m_Count.ToString()); // amount to make: ~1_val~
-                list.Add(1061169, m_HomeRange.ToString()); // range ~1_val~
-                list.Add(1050039, "walking range:\t{0}", m_WalkingRange); // ~1_NUMBER~ ~2_ITEMNAME~
-                list.Add(1053099, "group:\t{0}", m_Group); // ~1_oretype~: ~2_armortype~
-                list.Add(1060847, "team:\t{0}", m_Team); // ~1_val~ ~2_val~
-                list.Add(1063483, "delay:\t{0} to {1}", m_MinDelay, m_MaxDelay); // ~1_MATERIAL~: ~2_ITEMNAME~
+                list.Add(1060656, m_Count);                                // amount to make: ~1_val~
+                list.Add(1061169, m_HomeRange);                            // range ~1_val~
+                list.Add(1050039, $"{"walking range:"}\t{m_WalkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
+                list.Add(1053099, $"{"group:"}\t{m_Group}");                    // ~1_oretype~: ~2_armortype~
+                list.Add(1060847, $"{"team:"}\t{m_Team}");                      // ~1_val~ ~2_val~
+                list.Add(1063483, $"{"delay:"}\t{m_MinDelay} to {m_MaxDelay}"); // ~1_MATERIAL~: ~2_ITEMNAME~
 
                 GetSpawnerProperties(list);
 
                 for (var i = 0; i < 6 && i < Entries.Count; ++i)
                 {
-                    list.Add(1060658 + i, "\t{0}\t{1}", Entries[i].SpawnedName, CountSpawns(Entries[i]));
+                    var entry = Entries[i];
+                    list.Add(1060658 + i, $"\t{entry.SpawnedName}\t{CountSpawns(entry)}");
                 }
             }
             else
@@ -794,7 +795,7 @@ namespace Server.Engines.Spawners
             }
             else
             {
-                m_Timer?.Stop();
+                m_Timer.Stop();
                 m_Timer.Delay = delay;
             }
 

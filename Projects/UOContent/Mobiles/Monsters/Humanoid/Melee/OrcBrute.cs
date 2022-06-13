@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -6,7 +5,7 @@ namespace Server.Mobiles
     public class OrcBrute : BaseCreature
     {
         [Constructible]
-        public OrcBrute() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public OrcBrute() : base(AIType.AI_Melee)
         {
             Body = 189;
             BaseSoundID = 0x45A;
@@ -120,8 +119,16 @@ namespace Server.Mobiles
             }
 
             var eable = GetMobilesInRange<OrcishLord>(10);
+            var count = 0;
+            foreach (var m in eable)
+            {
+                if (++count == 10)
+                {
+                    break;
+                }
+            }
 
-            if (eable.Count() < 10)
+            if (count < 10)
             {
                 BaseCreature orc = new SpawnedOrcishLord { Team = Team };
 

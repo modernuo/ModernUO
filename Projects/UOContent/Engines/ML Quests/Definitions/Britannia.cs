@@ -108,14 +108,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Aurelia : BaseCreature
     {
         [Constructible]
-        public Aurelia()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Aurelia() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Architect's Daughter";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -162,12 +163,13 @@ namespace Server.Engines.MLQuests.Definitions
     public class SkeletonOfSzandor : BaseCreature
     {
         [Constructible]
-        public SkeletonOfSzandor()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public SkeletonOfSzandor() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Late Architect";
             Hue = 0x83F2; // TODO: Random human hue? Why???
             Body = 0x32;
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
         }
 

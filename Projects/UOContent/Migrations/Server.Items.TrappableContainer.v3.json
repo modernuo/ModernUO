@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "type": "Server.Items.TrappableContainer",
+  "properties": [
+    {
+      "name": "TrapLevel",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TrapPower",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TrapType",
+      "type": "Server.Items.TrapType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

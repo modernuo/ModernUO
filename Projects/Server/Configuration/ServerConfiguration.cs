@@ -67,6 +67,12 @@ public static class ServerConfiguration
         return Enum.TryParse(strValue, out T value) ? value : defaultValue;
     }
 
+    public static double GetSetting(string key, double defaultValue)
+    {
+        m_Settings.Settings.TryGetValue(key, out var strValue);
+        return double.TryParse(strValue, out var value) ? value : defaultValue;
+    }
+
     public static T? GetSetting<T>(string key) where T : struct, Enum
     {
         if (!m_Settings.Settings.TryGetValue(key, out var strValue))
@@ -168,6 +174,24 @@ public static class ServerConfiguration
         return value;
     }
 
+    public static double GetOrUpdateSetting(string key, double defaultValue)
+    {
+        double value;
+
+        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        {
+            value = double.TryParse(strValue, out value) ? value : defaultValue;
+        }
+        else
+        {
+            SetSetting(key, (value = defaultValue).ToString());
+        }
+
+        return value;
+    }
+
+    public static void SetSetting(string key, double value) => SetSetting(key, value.ToString());
+
     public static void SetSetting(string key, TimeSpan value) => SetSetting(key, value.ToString());
 
     public static void SetSetting(string key, int value) => SetSetting(key, value.ToString());
@@ -193,7 +217,7 @@ public static class ServerConfiguration
 
         if (File.Exists(m_FilePath))
         {
-            logger.Information($"Reading server configuration from {_relPath}...");
+            logger.Information("Reading server configuration from {Path}...", _relPath);
             m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
             if (m_Settings == null)

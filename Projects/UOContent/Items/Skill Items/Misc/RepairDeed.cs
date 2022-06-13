@@ -92,7 +92,7 @@ namespace Server.Items
             }
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(
                 1061133,
@@ -100,7 +100,7 @@ namespace Server.Items
             ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

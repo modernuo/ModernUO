@@ -46,6 +46,8 @@ namespace Server
             );
         }
 
+        public static void Unregister(string name) => _registry.RemoveWhere(entry => entry.Name == name);
+
         public static void Load(string path)
         {
             // This should probably not be parallel since Mobiles must be loaded before Items

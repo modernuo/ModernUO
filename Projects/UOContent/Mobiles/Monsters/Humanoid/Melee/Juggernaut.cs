@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private bool m_Stunning;
 
         [Constructible]
-        public Juggernaut() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6)
+        public Juggernaut() : base(AIType.AI_Melee)
         {
             Body = 768;
 

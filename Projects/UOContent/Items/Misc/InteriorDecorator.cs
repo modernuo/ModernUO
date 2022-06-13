@@ -41,7 +41,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1041280; // an interior decorator
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -320,7 +320,7 @@ namespace Server.Items
 
                 if (floorZ > int.MinValue && item.Z < floorZ + 15) // Confirmed : no height checks here
                 {
-                    item.Location = new Point3D(item.Location, item.Z + 1);
+                    item.Location = new Point3D(item.Location.X, item.Location.Y, item.Z + 1);
                 }
                 else
                 {
@@ -334,7 +334,7 @@ namespace Server.Items
 
                 if (floorZ > int.MinValue && item.Z > GetFloorZ(item))
                 {
-                    item.Location = new Point3D(item.Location, item.Z - 1);
+                    item.Location = new Point3D(item.Location.X, item.Location.Y, item.Z - 1);
                 }
                 else
                 {

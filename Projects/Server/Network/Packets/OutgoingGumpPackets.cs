@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingGumpPackets.cs                                          *
  *                                                                       *
@@ -18,6 +18,7 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using Server.Buffers;
 using Server.Collections;
 using Server.Gumps;
 using Server.Logging;
@@ -68,7 +69,7 @@ public static class OutgoingGumpPackets
 
         if (wantLength > packBuffer.Length)
         {
-            packBuffer = rentedBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
+            packBuffer = rentedBuffer = STArrayPool<byte>.Shared.Rent(wantLength);
         }
 
         var packLength = wantLength;
@@ -77,7 +78,7 @@ public static class OutgoingGumpPackets
 
         if (error != ZlibError.Okay)
         {
-            logger.Warning($"Gump compression failed {error}");
+            logger.Warning("Gump compression failed: {Error}", error);
 
             writer.Write(4);
             writer.Write(0);
@@ -90,7 +91,7 @@ public static class OutgoingGumpPackets
 
         if (rentedBuffer != null)
         {
-            ArrayPool<byte>.Shared.Return(rentedBuffer);
+            STArrayPool<byte>.Shared.Return(rentedBuffer);
         }
     }
 

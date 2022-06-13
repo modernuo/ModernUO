@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class CupidsArrow : Item
     {
         [InternString]
@@ -26,7 +27,7 @@ namespace Server.Items
 
         public bool IsSigned => _from != null && _to != null;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             base.AddNameProperty(list);
 

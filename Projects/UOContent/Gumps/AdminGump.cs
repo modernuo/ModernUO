@@ -221,7 +221,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Information_Perf:
                     {
-                        using var sb = new ValueStringBuilder();
+                        using var sb = ValueStringBuilder.Create();
 
                         ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
                         ThreadPool.GetMaxThreads(out var maxUser, out var maxIOCP);
@@ -260,16 +260,6 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
                         AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
-
-                        AddHtml(20, 275, 400, 30, Color(Center("Statics"), LabelColor32));
-
-                        AddButtonLabeled(20, 300, GetButtonID(3, 110), "Freeze (Target)");
-                        AddButtonLabeled(20, 325, GetButtonID(3, 111), "Freeze (World)");
-                        AddButtonLabeled(20, 350, GetButtonID(3, 112), "Freeze (Map)");
-
-                        AddButtonLabeled(220, 300, GetButtonID(3, 120), "Unfreeze (Target)");
-                        AddButtonLabeled(220, 325, GetButtonID(3, 121), "Unfreeze (World)");
-                        AddButtonLabeled(220, 350, GetButtonID(3, 122), "Unfreeze (Map)");
 
                         goto case AdminGumpPage.Administer;
                     }
@@ -639,7 +629,7 @@ namespace Server.Gumps
                             AddLabel(12, 140, LabelHue, "There are no accounts to display.");
                         }
 
-                        using var sb = new ValueStringBuilder();
+                        using var sb = ValueStringBuilder.Create();
 
                         for (int i = 0, index = listPage * 12;
                             i < 12 && index >= 0 && index < sharedAccounts.Count;
@@ -1179,7 +1169,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
 
-                        var sb = new ValueStringBuilder();
+                        var sb = ValueStringBuilder.Create();
 
                         if (a.Comments.Count == 0)
                         {
@@ -1218,7 +1208,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
 
-                        var sb = new ValueStringBuilder();
+                        var sb = ValueStringBuilder.Create();
 
                         if (a.Tags.Count == 0)
                         {
@@ -3064,7 +3054,7 @@ namespace Server.Gumps
 
                                     if (list.Count > 0)
                                     {
-                                        using var sb = new ValueStringBuilder();
+                                        using var sb = ValueStringBuilder.Create();
                                         sb.Append("You are about to ban ");
                                         sb.Append(list.Count);
                                         sb.Append(list.Count != 1 ? "accounts." : "account.");

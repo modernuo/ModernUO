@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Items;
@@ -76,12 +76,24 @@ namespace Server.Mobiles
                 return;
             }
 
-            var eable = GetItemsInRange(2).Where(item => item.Movable && item.Stackable);
-
-            var pickedUp = 0;
-
+            var eable = GetItemsInRange(2);
+            using var queue = PooledRefQueue<Item>.Create();
             foreach (var item in eable)
             {
+                if (item.Movable && item.Stackable)
+                {
+                    queue.Enqueue(item);
+                }
+            }
+
+            eable.Free();
+
+            var pickedUp = 3;
+
+            while (pickedUp > 0 && queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+
                 if (!pack.CheckHold(this, item, false, true))
                 {
                     return;
@@ -97,11 +109,7 @@ namespace Server.Mobiles
                 }
 
                 Drop(this, Point3D.Zero);
-
-                if (++pickedUp == 3)
-                {
-                    break;
-                }
+                pickedUp--;
             }
         }
 

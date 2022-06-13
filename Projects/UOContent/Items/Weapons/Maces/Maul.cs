@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x143B, 0x143A)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Maul : BaseBashing
     {
         [Constructible]

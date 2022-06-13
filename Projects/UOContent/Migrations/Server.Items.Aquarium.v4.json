@@ -31,7 +31,7 @@
       "type": "Server.Items.AquariumState",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {
@@ -39,7 +39,7 @@
       "type": "Server.Items.AquariumState",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {

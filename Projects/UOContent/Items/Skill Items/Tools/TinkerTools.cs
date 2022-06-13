@@ -1,9 +1,10 @@
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 
 namespace Server.Items
 {
     [Flippable(0x1EB8, 0x1EB9)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class TinkerTools : BaseTool
     {
         [Constructible]
@@ -15,7 +16,7 @@ namespace Server.Items
         public override CraftSystem CraftSystem => DefTinkering.CraftSystem;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class TinkersTools : BaseTool
     {
         [Constructible]

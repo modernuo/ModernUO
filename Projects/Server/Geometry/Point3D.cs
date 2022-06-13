@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -49,11 +50,16 @@ namespace Server
             set => m_Z = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Point3D(IPoint3D p) : this(p.X, p.Y, p.Z)
         {
         }
 
-        public Point3D(IPoint2D p, int z) : this(p.X, p.Y, z)
+        public Point3D(Point3D p) : this(p.X, p.Y, p.Z)
+        {
+        }
+
+        public Point3D(Point2D p, int z) : this(p.X, p.Y, z)
         {
         }
 
@@ -80,17 +86,17 @@ namespace Server
             var start = value.IndexOfOrdinal('(');
             var end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var x);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
 
             start = end;
             end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var y);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
 
             start = end;
             end = value.IndexOf(')', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var z);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var z);
 
             return new Point3D(x, y, z);
         }
