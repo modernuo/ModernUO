@@ -878,9 +878,9 @@ namespace Server.Multis
             DesignState.SendDetailedInfoTo(ns);
         }
 
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
-            base.SendInfoTo(ns, world, opl);
+            base.SendInfoTo(ns, world);
 
             var stateToSend = DesignContext.Find(ns?.Mobile)?.Foundation == this ? DesignState : CurrentState;
             stateToSend.SendGeneralInfoTo(ns);
