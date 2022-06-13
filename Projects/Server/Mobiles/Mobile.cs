@@ -3485,11 +3485,14 @@ namespace Server
 
                 if (guildTitle.Length > 0)
                 {
-                    list.Add(
-                        NewGuildDisplay
-                            ? $"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}"
-                            : $"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}"
-                    );
+                    if (NewGuildDisplay)
+                    {
+                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}");
+                    }
+                    else
+                    {
+                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}");
+                    }
                 }
                 else
                 {

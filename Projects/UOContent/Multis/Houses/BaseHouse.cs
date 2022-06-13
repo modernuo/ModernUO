@@ -3721,12 +3721,17 @@ namespace Server.Multis
                     ref ySouth
                 );
 
-                var location =
-                    valid ? $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}" : "unknown";
-
                 list.Add(1061112, Utility.FixHtml(houseName)); // House Name: ~1_val~
                 list.Add(1061113, owner);                      // Owner: ~1_val~
-                list.Add(1061114, location);                   // Location: ~1_val~
+                if (valid)
+                {
+                    // Location: ~1_val~
+                    list.Add(1061114, $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}");
+                }
+                else
+                {
+                    list.Add(1061114, $"{"unknown"}"); // Location: ~1_val~
+                }
             }
 
             public override void Serialize(IGenericWriter writer)

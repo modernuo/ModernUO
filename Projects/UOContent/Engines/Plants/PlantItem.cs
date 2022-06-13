@@ -263,10 +263,17 @@ namespace Server.Engines.Plants
 
             if (m_PlantStatus < PlantStatus.Seed)
             {
-                list.Add(
-                    1060830, // a ~1_val~ of ~2_val~ dirt
-                    ShowContainerType ? $"{container:#}\t{dirt:#}" : $"{dirt:#}"
-                );
+                if (ShowContainerType)
+                {
+                    // a ~1_val~ of ~2_val~ dirt
+                    list.Add(1060830, $"{container:#}\t{dirt:#}");
+                }
+                else
+                {
+                    // a ~1_val~ of ~2_val~ dirt
+                    list.Add(1060830, $"{dirt:#}");
+                }
+
                 return;
             }
 
@@ -290,24 +297,37 @@ namespace Server.Engines.Plants
 
             if (m_ShowType)
             {
-                list.Add(
-                    m_PlantStatus == PlantStatus.Plant
-                        ? typeInfo.GetPlantLabelPlant(hueInfo)
-                        : typeInfo.GetPlantLabelSeed(hueInfo),
-                    ShowContainerType
-                        ? $"{container:#}\t{dirt:#}\t{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}\t{plantStatus:#}"
-                        : $"{dirt:#}\t{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}\t{plantStatus:#}"
-                );
+                var plantNumber = m_PlantStatus == PlantStatus.Plant
+                    ? typeInfo.GetPlantLabelPlant(hueInfo)
+                    : typeInfo.GetPlantLabelSeed(hueInfo);
+
+                if (ShowContainerType)
+                {
+                    list.Add(
+                        plantNumber,
+                        $"{container:#}\t{dirt:#}\t{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}\t{plantStatus:#}"
+                    );
+                }
+                else
+                {
+                    list.Add(
+                        plantNumber,
+                        $"{dirt:#}\t{health:#}\t{hueInfo.Name:#}\t{typeInfo.Name:#}\t{plantStatus:#}"
+                    );
+                }
             }
             else
             {
                 var category = typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory;
-                list.Add(
-                    hueInfo.IsBright() ? 1060832 : 1060831,
-                    ShowContainerType
-                        ? $"{container:#}\t{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}"
-                        : $"{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}"
-                );
+                var plantNumber = hueInfo.IsBright() ? 1060832 : 1060831;
+                if (ShowContainerType)
+                {
+                    list.Add(plantNumber, $"{container:#}\t{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}");
+                }
+                else
+                {
+                    list.Add(plantNumber,$"{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}");
+                }
             }
         }
 

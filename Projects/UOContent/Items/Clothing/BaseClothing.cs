@@ -690,12 +690,14 @@ namespace Server.Items
 
             if (oreType != 0)
             {
-                list.Add(
-                    1053099, // ~1_oretype~ ~2_armortype~
-                    name != null
-                        ? $"{oreType:#}\t{name}"
-                        : $"{oreType:#}\t{LabelNumber:#}"
-                );
+                if (name != null)
+                {
+                    list.Add(1053099, $"{oreType:#}\t{name}"); // ~1_oretype~ ~2_armortype~
+                }
+                else
+                {
+                    list.Add(1053099, $"{oreType:#}\t{LabelNumber:#}"); // ~1_oretype~ ~2_armortype~
+                }
             }
             else if (name == null)
             {

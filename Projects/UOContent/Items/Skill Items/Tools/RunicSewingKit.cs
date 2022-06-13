@@ -33,8 +33,17 @@ namespace Server.Items
             }
 
             var num = CraftResources.GetLocalizationNumber(Resource);
-            // ~1_LEATHER_TYPE~ runic sewing kit
-            list.Add(1061119, num > 0 ? $"#{num}" : CraftResources.GetName(Resource));
+
+            if (num > 0)
+            {
+                // ~1_LEATHER_TYPE~ runic sewing kit
+                list.Add(1061119, $"#{num}");
+            }
+            else
+            {
+                // ~1_LEATHER_TYPE~ runic sewing kit
+                list.Add(1061119, CraftResources.GetName(Resource));
+            }
         }
 
         public override void OnSingleClick(Mobile from)

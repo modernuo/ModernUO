@@ -26,5 +26,6 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     public void Add(string text);
 
     // String Interpolation
+    public void Add([InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
     public void Add(int number, [InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
 }

@@ -133,7 +133,14 @@ namespace Server.Items
                 );
             }
 
-            list.Add(1041602, LastUserName ?? $"{1074235:#}"); // Owner: ~1_val~
+            if (LastUserName != null)
+            {
+                list.Add(1041602, LastUserName); // Owner: ~1_val~
+            }
+            else
+            {
+                list.Add(1041602, $"{1074235:#}"); // Owner: ~1_val~
+            }
         }
 
         private static bool CheckCombat(Mobile m, TimeSpan time)

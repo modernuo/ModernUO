@@ -1251,14 +1251,27 @@ namespace Server.Items
 
             if (oreType != 0)
             {
-                list.Add(
-                    _quality == ArmorQuality.Exceptional ? 1053100 : 1053099,
-                    name != null ? $"{oreType:#}\t{Name}" : $"{oreType:#}\t{LabelNumber:#}"
-                );
+                var qualityNumber = _quality == ArmorQuality.Exceptional ? 1053100 : 1053099;
+
+                if (name != null)
+                {
+                    list.Add(qualityNumber, $"{oreType:#}\t{Name}");
+                }
+                else
+                {
+                    list.Add(qualityNumber, $"{oreType:#}\t{LabelNumber:#}");
+                }
             }
             else if (_quality == ArmorQuality.Exceptional)
             {
-                list.Add(1050040, name ?? $"{LabelNumber:#}"); // exceptional ~1_ITEMNAME~
+                if (name != null)
+                {
+                    list.Add(1050040, name); // exceptional ~1_ITEMNAME~
+                }
+                else
+                {
+                    list.Add(1050040, $"{LabelNumber:#}"); // exceptional ~1_ITEMNAME~
+                }
             }
             else if (name == null)
             {

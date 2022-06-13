@@ -1,5 +1,6 @@
 using ModernUO.Serialization;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Items;
 
@@ -66,14 +67,20 @@ public partial class CommodityDeed : Item
     {
         base.GetProperties(list);
 
-        if (Commodity != null)
+        if (Commodity is ICommodity ic)
         {
-            list.Add(
-                1060658, // ~1_val~: ~2_val~
-                Commodity.Name == null
-                    ? $"{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber:#}\t{Commodity.Amount}"
-                    : $"{Commodity.Name}\t{Commodity.Amount}"
-            );
+            list.Add(1060658, $"{ic.DescriptionNumber:#}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+        }
+        else if (Commodity != null)
+        {
+            if (Commodity.Name == null)
+            {
+                list.Add(1060658, $"{Commodity.LabelNumber:#}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+            }
+            else
+            {
+                list.Add(1060658, $"{Commodity.Name}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+            }
         }
         else
         {

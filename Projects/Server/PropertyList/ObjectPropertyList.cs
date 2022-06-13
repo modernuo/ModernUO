@@ -160,13 +160,19 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void Add(string argument) => Add(GetStringNumber(), argument);
 
+    // String Interpolation
     public void Add(
         [InterpolatedStringHandlerArgument("")]
         ref IPropertyList.InterpolatedStringHandler handler
-    ) => Add(GetStringNumber(), ref handler);
+    ) => InternalAdd(GetStringNumber(), ref handler);
 
-    // String Interpolation
     public void Add(
+        int number,
+        [InterpolatedStringHandlerArgument("")]
+        ref IPropertyList.InterpolatedStringHandler handler
+    ) => InternalAdd(number, ref handler);
+
+    private void InternalAdd(
         int number,
         [InterpolatedStringHandlerArgument("")]
         ref IPropertyList.InterpolatedStringHandler handler)

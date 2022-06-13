@@ -912,12 +912,8 @@ namespace Server.Items
 
             AddItem(item);
 
-            from?.SendLocalizedMessage(
-                1073635,
-                item.LabelNumber != 0
-                    ? $"#{item.LabelNumber}"
-                    : item.Name
-            ); // You add the following decoration to your aquarium: ~1_NAME~
+            // You add the following decoration to your aquarium: ~1_NAME~
+            from?.SendLocalizedMessage(1073635, item.LabelNumber != 0 ? $"#{item.LabelNumber}" : item.Name);
 
             InvalidateProperties();
             return true;
