@@ -1,563 +1,228 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class FruitBasket : Food
 {
-    public class FruitBasket : Food
+    [Constructible]
+    public FruitBasket() : base(0x993)
     {
-        [Constructible]
-        public FruitBasket() : base(0x993)
-        {
-            Weight = 2.0;
-            FillFactor = 5;
-            Stackable = false;
-        }
-
-        public FruitBasket(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool Eat(Mobile from)
-        {
-            if (!base.Eat(from))
-            {
-                return false;
-            }
-
-            from.AddToBackpack(new Basket());
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 2.0;
+        FillFactor = 5;
+        Stackable = false;
     }
 
-    [Flippable(0x171f, 0x1720)]
-    public class Banana : Food
+    public override bool Eat(Mobile from)
     {
-        [Constructible]
-        public Banana(int amount = 1) : base(0x171f, amount)
+        if (!base.Eat(from))
         {
-            Weight = 1.0;
-            FillFactor = 1;
+            return false;
         }
 
-        public Banana(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        from.AddToBackpack(new Basket());
+        return true;
     }
+}
 
-    [Flippable(0x1721, 0x1722)]
-    public class Bananas : Food
+[Flippable(0x171f, 0x1720)]
+[SerializationGenerator(0, false)]
+public partial class Banana : Food
+{
+    [Constructible]
+    public Banana(int amount = 1) : base(0x171f, amount)
     {
-        [Constructible]
-        public Bananas(int amount = 1) : base(0x1721, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Bananas(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class SplitCoconut : Food
+[Flippable(0x1721, 0x1722)]
+[SerializationGenerator(0, false)]
+public partial class Bananas : Food
+{
+    [Constructible]
+    public Bananas(int amount = 1) : base(0x1721, amount)
     {
-        [Constructible]
-        public SplitCoconut(int amount = 1) : base(0x1725, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public SplitCoconut(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Lemon : Food
+[SerializationGenerator(0, false)]
+public partial class SplitCoconut : Food
+{
+    [Constructible]
+    public SplitCoconut(int amount = 1) : base(0x1725, amount)
     {
-        [Constructible]
-        public Lemon(int amount = 1) : base(0x1728, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Lemon(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Lemons : Food
+[SerializationGenerator(0, false)]
+public partial class Lemon : Food
+{
+    [Constructible]
+    public Lemon(int amount = 1) : base(0x1728, amount)
     {
-        [Constructible]
-        public Lemons(int amount = 1) : base(0x1729, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Lemons(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Lime : Food
+[SerializationGenerator(0, false)]
+public partial class Lemons : Food
+{
+    [Constructible]
+    public Lemons(int amount = 1) : base(0x1729, amount)
     {
-        [Constructible]
-        public Lime(int amount = 1) : base(0x172a, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Lime(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Limes : Food
+[SerializationGenerator(0, false)]
+public partial class Lime : Food
+{
+    [Constructible]
+    public Lime(int amount = 1) : base(0x172a, amount)
     {
-        [Constructible]
-        public Limes(int amount = 1) : base(0x172B, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Limes(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Coconut : Food
+[SerializationGenerator(0, false)]
+public partial class Limes : Food
+{
+    [Constructible]
+    public Limes(int amount = 1) : base(0x172B, amount)
     {
-        [Constructible]
-        public Coconut(int amount = 1) : base(0x1726, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Coconut(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class OpenCoconut : Food
+[SerializationGenerator(0, false)]
+public partial class Coconut : Food
+{
+    [Constructible]
+    public Coconut(int amount = 1) : base(0x1726, amount)
     {
-        [Constructible]
-        public OpenCoconut(int amount = 1) : base(0x1723, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public OpenCoconut(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Dates : Food
+[SerializationGenerator(0, false)]
+public partial class OpenCoconut : Food
+{
+    [Constructible]
+    public OpenCoconut(int amount = 1) : base(0x1723, amount)
     {
-        [Constructible]
-        public Dates(int amount = 1) : base(0x1727, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Dates(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Grapes : Food
+[SerializationGenerator(0, false)]
+public partial class Dates : Food
+{
+    [Constructible]
+    public Dates(int amount = 1) : base(0x1727, amount)
     {
-        [Constructible]
-        public Grapes(int amount = 1) : base(0x9D1, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Grapes(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Peach : Food
+[SerializationGenerator(0, false)]
+public partial class Grapes : Food
+{
+    [Constructible]
+    public Grapes(int amount = 1) : base(0x9D1, amount)
     {
-        [Constructible]
-        public Peach(int amount = 1) : base(0x9D2, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Peach(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Pear : Food
+[SerializationGenerator(0, false)]
+public partial class Peach : Food
+{
+    [Constructible]
+    public Peach(int amount = 1) : base(0x9D2, amount)
     {
-        [Constructible]
-        public Pear(int amount = 1) : base(0x994, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Pear(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Apple : Food
+[SerializationGenerator(0, false)]
+public partial class Pear : Food
+{
+    [Constructible]
+    public Pear(int amount = 1) : base(0x994, amount)
     {
-        [Constructible]
-        public Apple(int amount = 1) : base(0x9D0, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Apple(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class Watermelon : Food
+[SerializationGenerator(0, false)]
+public partial class Apple : Food
+{
+    [Constructible]
+    public Apple(int amount = 1) : base(0x9D0, amount)
     {
-        [Constructible]
-        public Watermelon(int amount = 1) : base(0xC5C, amount)
-        {
-            Weight = 5.0;
-            FillFactor = 5;
-        }
-
-        public Watermelon(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                if (FillFactor == 2)
-                {
-                    FillFactor = 5;
-                }
-
-                if (Weight == 2.0)
-                {
-                    Weight = 5.0;
-                }
-            }
-        }
+        Weight = 1.0;
+        FillFactor = 1;
     }
+}
 
-    public class SmallWatermelon : Food
+[SerializationGenerator(0, false)]
+public partial class Watermelon : Food
+{
+    [Constructible]
+    public Watermelon(int amount = 1) : base(0xC5C, amount)
     {
-        [Constructible]
-        public SmallWatermelon(int amount = 1) : base(0xC5D, amount)
-        {
-            Weight = 5.0;
-            FillFactor = 5;
-        }
-
-        public SmallWatermelon(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 5.0;
+        FillFactor = 5;
     }
+}
 
-    [Flippable(0xc72, 0xc73)]
-    public class Squash : Food
+[SerializationGenerator(0, false)]
+public partial class SmallWatermelon : Food
+{
+    [Constructible]
+    public SmallWatermelon(int amount = 1) : base(0xC5D, amount)
     {
-        [Constructible]
-        public Squash(int amount = 1) : base(0xc72, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
-
-        public Squash(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 5.0;
+        FillFactor = 5;
     }
+}
 
-    [Flippable(0xc79, 0xc7a)]
-    public class Cantaloupe : Food
+[Flippable(0xc72, 0xc73)]
+[SerializationGenerator(0, false)]
+public partial class Squash : Food
+{
+    [Constructible]
+    public Squash(int amount = 1) : base(0xc72, amount)
     {
-        [Constructible]
-        public Cantaloupe(int amount = 1) : base(0xc79, amount)
-        {
-            Weight = 1.0;
-            FillFactor = 1;
-        }
+        Weight = 1.0;
+        FillFactor = 1;
+    }
+}
 
-        public Cantaloupe(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+[Flippable(0xc79, 0xc7a)]
+[SerializationGenerator(0, false)]
+public partial class Cantaloupe : Food
+{
+    [Constructible]
+    public Cantaloupe(int amount = 1) : base(0xc79, amount)
+    {
+        Weight = 1.0;
+        FillFactor = 1;
     }
 }

@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "type": "Server.Items.FillableContainer",
+  "properties": [
+    {
+      "name": "RawContentType",
+      "type": "Server.Items.FillableContentType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "RespawnTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@TimerDrift"
+      ]
+    }
+  ]
+}
