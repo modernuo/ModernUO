@@ -258,7 +258,7 @@ namespace Server.Engines.Plants
         }
 
         // Overridden to support new and old client localization
-        public override void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        public override void SendOPLPacketTo(NetState ns)
         {
             if (!ObjectPropertyList.Enabled)
             {

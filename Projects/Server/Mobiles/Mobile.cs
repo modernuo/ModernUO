@@ -6892,19 +6892,12 @@ namespace Server
             eable.Free();
         }
 
-        public void SendOPLPacketTo(NetState state) => SendOPLPacketTo(state, ObjectPropertyList.Enabled);
-
-        protected virtual void SendOPLPacketTo(NetState ns, bool sendOplPacket)
+        public virtual void SendOPLPacketTo(NetState ns)
         {
-            if (sendOplPacket)
+            if (ObjectPropertyList.Enabled)
             {
                 ns.SendOPLInfo(this);
             }
-        }
-
-        public virtual void SendOPLPacketTo(NetState ns, ReadOnlySpan<byte> opl)
-        {
-            ns?.Send(opl);
         }
 
         public virtual void OnAccessLevelChanged(AccessLevel oldLevel)

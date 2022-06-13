@@ -1123,7 +1123,6 @@ namespace Server
                     Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
                     Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
                     Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                    Span<byte> opl = ObjectPropertyList.Enabled ? stackalloc byte[OutgoingEntityPackets.OPLPacketLength].InitializePacket() : null;
 
                     var eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
@@ -1141,7 +1140,7 @@ namespace Server
                                     hsWorldItem = hsWorldItem[..length];
                                 }
 
-                                SendInfoTo(state, hsWorldItem, opl);
+                                SendInfoTo(state, hsWorldItem);
                             }
                             else if (state.StygianAbyss)
                             {
@@ -1151,7 +1150,7 @@ namespace Server
                                     saWorldItem = saWorldItem[..length];
                                 }
 
-                                SendInfoTo(state, saWorldItem, opl);
+                                SendInfoTo(state, saWorldItem);
                             }
                             else
                             {
@@ -1161,7 +1160,7 @@ namespace Server
                                     oldWorldItem = oldWorldItem[..length];
                                 }
 
-                                SendInfoTo(state, oldWorldItem, opl);
+                                SendInfoTo(state, oldWorldItem);
                             }
                         }
                     }
@@ -3073,27 +3072,18 @@ namespace Server
 
         public virtual int GetUpdateRange(Mobile m) => 18;
 
-        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
+        public virtual void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
             SendWorldPacketTo(ns, world);
-            SendOPLPacketTo(ns, opl);
+            SendOPLPacketTo(ns);
         }
 
-        public virtual void SendOPLPacketTo(NetState ns, Span<byte> opl = default)
+        public virtual void SendOPLPacketTo(NetState ns)
         {
-            if (!ObjectPropertyList.Enabled)
-            {
-                return;
-            }
-
-            if (opl == null)
+            if (ObjectPropertyList.Enabled)
             {
                 ns.SendOPLInfo(this);
-                return;
             }
-
-            OutgoingEntityPackets.CreateOPLInfo(opl, this);
-            ns.Send(opl);
         }
 
         public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
