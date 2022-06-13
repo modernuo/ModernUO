@@ -40,9 +40,6 @@ jobs:
       'Ubuntu 20':
         containerImage: mcr.microsoft.com/dotnet/sdk:6.0-focal
         os: ubuntu.20.04
-      'Fedora 34':
-        containerImage: fedora:34
-        os: fedora.34
       'Fedora 35':
         containerImage: fedora:35
         os: fedora.35
