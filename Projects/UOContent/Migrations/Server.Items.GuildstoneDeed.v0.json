@@ -1,0 +1,27 @@
+{
+  "version": 0,
+  "type": "Server.Items.GuildstoneDeed",
+  "properties": [
+    {
+      "name": "GuildName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "GuildAbbrev",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Guild",
+      "type": "Server.Guilds.Guild",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
