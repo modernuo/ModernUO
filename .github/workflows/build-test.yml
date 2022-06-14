@@ -14,10 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            name: MacOS 10
           - os: macos-11
             name: MacOS 11
+          - os: macos-12
+            name: MacOS 12
 
     steps:
     - uses: actions/checkout@v2
