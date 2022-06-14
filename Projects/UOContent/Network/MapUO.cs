@@ -25,15 +25,15 @@ namespace Server.Network
     {
         private static PacketHandler[] _handlers;
 
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            _handlers = ProtocolExtensions.Register(0xF0);
+            _handlers = ProtocolExtensions<MapUOProtocolInfo>.Register(new MapUOProtocolInfo());
 
-            Register(0x00, true, QueryPartyMemberLocations);
-            Register(0x01, true, QueryGuildMemberLocations);
+            Register(0x00, true, &QueryPartyMemberLocations);
+            Register(0x01, true, &QueryGuildMemberLocations);
         }
 
-        public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
+        public static unsafe void Register(int cmd, bool ingame, delegate* managed<NetState, CircularBufferReader, int, void> onReceive) =>
             _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 
         public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
@@ -159,6 +159,11 @@ namespace Server.Network
             writer.Write(0);
             writer.WritePacketLength();
             ns.Send(writer.Span);
+        }
+
+        private struct MapUOProtocolInfo : IProtocolExtensionsInfo
+        {
+            public int PacketId => 0xF0;
         }
     }
 }

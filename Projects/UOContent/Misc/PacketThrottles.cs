@@ -12,7 +12,7 @@ namespace Server.Network
         private static readonly int[] Delays = new int[0x100];
         private const string ThrottlesConfiguration = "Configuration/throttles.json";
 
-        public static void Initialize()
+        public static unsafe void Initialize()
         {
             CommandSystem.Register("GetThrottle", AccessLevel.Administrator, GetThrottle);
             CommandSystem.Register("SetThrottle", AccessLevel.Administrator, SetThrottle);
@@ -47,7 +47,7 @@ namespace Server.Network
             {
                 if (Delays[i] > 0)
                 {
-                    IncomingPackets.RegisterThrottler(i, Throttle);
+                    IncomingPackets.RegisterThrottler(i, &Throttle);
                 }
             }
 
@@ -77,7 +77,7 @@ namespace Server.Network
 
         [Usage("SetThrottle <packetID> <timeInMilliseconds>")]
         [Description("Sets a throttle for the given packet.")]
-        public static void SetThrottle(CommandEventArgs e)
+        public static unsafe void SetThrottle(CommandEventArgs e)
         {
             if (e.Length != 2)
             {
@@ -104,7 +104,7 @@ namespace Server.Network
 
             if (oldDelay == 0 && delay > 0)
             {
-                IncomingPackets.RegisterThrottler(packetID, Throttle);
+                IncomingPackets.RegisterThrottler(packetID, &Throttle);
             }
             else if (oldDelay > 0 && delay == 0)
             {

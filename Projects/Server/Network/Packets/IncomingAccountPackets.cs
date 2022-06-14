@@ -38,21 +38,21 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x00, 104, false, CreateCharacter);
-        IncomingPackets.Register(0x5D, 73, false, PlayCharacter);
-        IncomingPackets.Register(0x80, 62, false, AccountLogin);
-        IncomingPackets.Register(0x83, 39, false, DeleteCharacter);
-        IncomingPackets.Register(0x91, 65, false, GameLogin);
-        IncomingPackets.Register(0xA0, 3, false, PlayServer);
-        IncomingPackets.Register(0xBB, 9, false, AccountID);
-        IncomingPackets.Register(0xBD, 0, false, ClientVersion);
-        IncomingPackets.Register(0xBE, 0, true, AssistVersion);
-        IncomingPackets.Register(0xCF, 0, false, AccountLogin);
-        IncomingPackets.Register(0xE1, 0, false, ClientType);
-        IncomingPackets.Register(0xEF, 21, false, LoginServerSeed);
-        IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
+        IncomingPackets.Register(0x00, 104, false, &CreateCharacter);
+        IncomingPackets.Register(0x5D, 73, false, &PlayCharacter);
+        IncomingPackets.Register(0x80, 62, false, &AccountLogin);
+        IncomingPackets.Register(0x83, 39, false, &DeleteCharacter);
+        IncomingPackets.Register(0x91, 65, false, &GameLogin);
+        IncomingPackets.Register(0xA0, 3, false, &PlayServer);
+        IncomingPackets.Register(0xBB, 9, false, &AccountID);
+        IncomingPackets.Register(0xBD, 0, false, &ClientVersion);
+        IncomingPackets.Register(0xBE, 0, true, &AssistVersion);
+        IncomingPackets.Register(0xCF, 0, false, &AccountLogin);
+        IncomingPackets.Register(0xE1, 0, false, &ClientType);
+        IncomingPackets.Register(0xEF, 21, false, &LoginServerSeed);
+        IncomingPackets.Register(0xF8, 106, false, &CreateCharacter);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
