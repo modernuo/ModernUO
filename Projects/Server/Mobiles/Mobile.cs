@@ -103,13 +103,8 @@ namespace Server
                 if (m_Owner != value)
                 {
                     m_Owner?.RemoveSkillMod(this);
-
                     m_Owner = value;
-
-                    if (m_Owner != value)
-                    {
-                        m_Owner.AddSkillMod(this);
-                    }
+                    m_Owner?.AddSkillMod(this);
                 }
             }
         }
