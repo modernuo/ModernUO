@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 
 namespace Server.Items;
@@ -17,93 +18,87 @@ public enum GemType
     Diamond
 }
 
-public abstract class BaseJewel : Item, ICraftable
+[SerializationGenerator(4, false)]
+public abstract partial class BaseJewel : Item, ICraftable
 {
-    private GemType m_GemType;
-    private int m_HitPoints;
-    private int m_MaxHitPoints;
-    private CraftResource m_Resource;
+    [EncodedInt]
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private int _maxHitPoints;
+
+    // Field 1
+    private int _hitPoints;
+
+    [SerializableField(2, "private", "private")]
+    private CraftResource _rawResource;
+
+    [SerializableField(3)]
+    [InvalidateProperties]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private GemType _gemType;
+
+    [SerializableField(4, setter: "private")]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    private AosAttributes _attributes;
+
+    [SerializableField(5, setter: "private")]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    private AosElementAttributes _resistances;
+
+    [SerializableField(6, setter: "private")]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    private AosSkillBonuses _skillBonuses;
 
     public BaseJewel(int itemID, Layer layer) : base(itemID)
     {
-        Attributes = new AosAttributes(this);
-        Resistances = new AosElementAttributes(this);
-        SkillBonuses = new AosSkillBonuses(this);
-        m_Resource = CraftResource.Iron;
-        m_GemType = GemType.None;
+        _attributes = new AosAttributes(this);
+        _resistances = new AosElementAttributes(this);
+        _skillBonuses = new AosSkillBonuses(this);
+        _rawResource = CraftResource.Iron;
+        Hue = CraftResources.GetHue(_rawResource);
+        _gemType = GemType.None;
 
         Layer = layer;
 
-        m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+        _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
     }
 
-    public BaseJewel(Serial serial) : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int MaxHitPoints
-    {
-        get => m_MaxHitPoints;
-        set
-        {
-            m_MaxHitPoints = value;
-            InvalidateProperties();
-        }
-    }
-
+    [EncodedInt]
+    [SerializableField(1)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitPoints
     {
-        get => m_HitPoints;
+        get => _hitPoints;
         set
         {
-            if (value != m_HitPoints && MaxHitPoints > 0)
+            if (value != _hitPoints && _maxHitPoints > 0)
             {
-                m_HitPoints = value;
+                _hitPoints = value;
 
-                if (m_HitPoints < 0)
+                if (_hitPoints < 0)
                 {
                     Delete();
                 }
-                else if (m_HitPoints > MaxHitPoints)
+                else if (_hitPoints > _maxHitPoints)
                 {
-                    m_HitPoints = MaxHitPoints;
+                    _hitPoints = _maxHitPoints;
                 }
 
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
     }
 
-    [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-    public AosAttributes Attributes { get; private set; }
-
-    [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-    public AosElementAttributes Resistances { get; private set; }
-
-    [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-    public AosSkillBonuses SkillBonuses { get; private set; }
-
     [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
-        get => m_Resource;
+        get => _rawResource;
         set
         {
-            m_Resource = value;
-            Hue = CraftResources.GetHue(m_Resource);
-        }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public GemType GemType
-    {
-        get => m_GemType;
-        set
-        {
-            m_GemType = value;
-            InvalidateProperties();
+            _rawResource = value;
+            Hue = CraftResources.GetHue(_rawResource);
         }
     }
 
@@ -121,12 +116,12 @@ public abstract class BaseJewel : Item, ICraftable
     {
         get
         {
-            if (m_GemType == GemType.None)
+            if (_gemType == GemType.None)
             {
                 return base.LabelNumber;
             }
 
-            return BaseGemTypeNumber + (int)m_GemType - 1;
+            return BaseGemTypeNumber + (int)_gemType - 1;
         }
     }
 
@@ -390,109 +385,60 @@ public abstract class BaseJewel : Item, ICraftable
 
         AddResistanceProperties(list);
 
-        if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
+        if (_hitPoints >= 0 && _maxHitPoints > 0)
         {
-            list.Add(1060639, $"{m_HitPoints}\t{m_MaxHitPoints}"); // durability ~1_val~ / ~2_val~
+            list.Add(1060639, $"{_hitPoints}\t{_maxHitPoints}"); // durability ~1_val~ / ~2_val~
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    private void Deserialize(IGenericReader reader, int version)
     {
-        base.Serialize(writer);
-
-        writer.Write(3); // version
-
-        writer.WriteEncodedInt(m_MaxHitPoints);
-        writer.WriteEncodedInt(m_HitPoints);
-
-        writer.WriteEncodedInt((int)m_Resource);
-        writer.WriteEncodedInt((int)m_GemType);
-
-        Attributes.Serialize(writer);
-        Resistances.Serialize(writer);
-        SkillBonuses.Serialize(writer);
+        _maxHitPoints = reader.ReadEncodedInt();
+        _hitPoints = reader.ReadEncodedInt();
+        _rawResource = (CraftResource)reader.ReadEncodedInt();
+        _gemType = (GemType)reader.ReadEncodedInt();
+        _attributes = new AosAttributes(this);
+        _attributes.Deserialize(reader);
+        _resistances = new AosElementAttributes(this);
+        _resistances.Deserialize(reader);
+        _skillBonuses = new AosSkillBonuses(this);
+        _skillBonuses.Deserialize(reader);
     }
 
-    public override void Deserialize(IGenericReader reader)
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        base.Deserialize(reader);
+        var m = Parent as Mobile;
 
-        var version = reader.ReadInt();
-
-        switch (version)
+        if (Core.AOS && m != null)
         {
-            case 3:
-                {
-                    m_MaxHitPoints = reader.ReadEncodedInt();
-                    m_HitPoints = reader.ReadEncodedInt();
-
-                    goto case 2;
-                }
-            case 2:
-                {
-                    m_Resource = (CraftResource)reader.ReadEncodedInt();
-                    m_GemType = (GemType)reader.ReadEncodedInt();
-
-                    goto case 1;
-                }
-            case 1:
-                {
-                    Attributes = new AosAttributes(this);
-                    Attributes.Deserialize(reader);
-                    Resistances = new AosElementAttributes(this);
-                    Resistances.Deserialize(reader);
-                    SkillBonuses = new AosSkillBonuses(this);
-                    SkillBonuses.Deserialize(reader);
-
-                    var m = Parent as Mobile;
-
-                    if (Core.AOS && m != null)
-                    {
-                        SkillBonuses.AddTo(m);
-                    }
-
-                    var strBonus = Attributes.BonusStr;
-                    var dexBonus = Attributes.BonusDex;
-                    var intBonus = Attributes.BonusInt;
-
-                    if (m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
-                    {
-                        var modName = Serial.ToString();
-
-                        if (strBonus != 0)
-                        {
-                            m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
-                        }
-
-                        if (dexBonus != 0)
-                        {
-                            m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
-                        }
-
-                        if (intBonus != 0)
-                        {
-                            m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
-                        }
-                    }
-
-                    m?.CheckStatTimers();
-
-                    break;
-                }
-            case 0:
-                {
-                    Attributes = new AosAttributes(this);
-                    Resistances = new AosElementAttributes(this);
-                    SkillBonuses = new AosSkillBonuses(this);
-
-                    break;
-                }
+            SkillBonuses.AddTo(m);
         }
 
-        if (version < 2)
+        var strBonus = Attributes.BonusStr;
+        var dexBonus = Attributes.BonusDex;
+        var intBonus = Attributes.BonusInt;
+
+        if (m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
         {
-            m_Resource = CraftResource.Iron;
-            m_GemType = GemType.None;
+            var modName = Serial.ToString();
+
+            if (strBonus != 0)
+            {
+                m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+            }
+
+            if (dexBonus != 0)
+            {
+                m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+            }
+
+            if (intBonus != 0)
+            {
+                m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+            }
         }
+
+        m?.CheckStatTimers();
     }
 }
