@@ -66,7 +66,7 @@ namespace Server.Gumps
             if (m != null)
             {
                 AddHtml(14, 36 + line * 20, 200, 20, Color("Mobile:", LabelColor32));
-                AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Name} (0x{m.Serial.Value:X})", LabelColor32));
+                AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Name} ({m.Serial})", LabelColor32));
 
                 AddHtml(14, 36 + line * 20, 200, 20, Color("Location:", LabelColor32));
                 AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32));

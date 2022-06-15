@@ -15,15 +15,11 @@
 
 namespace Server.Network;
 
-public delegate void OnPacketReceive(NetState state, CircularBufferReader reader, int packetLength);
-
-public delegate bool ThrottlePacketCallback(int packetId, NetState state, out bool drop);
-
-public class PacketHandler
+public unsafe class PacketHandler
 {
-    private int _length;
+    private readonly int _length;
 
-    public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    public PacketHandler(int packetID, int length, bool ingame, delegate*<NetState, CircularBufferReader, int, void> onReceive)
     {
         _length = length;
         PacketID = packetID;
@@ -35,9 +31,9 @@ public class PacketHandler
 
     public virtual int GetLength(NetState ns) => _length;
 
-    public OnPacketReceive OnReceive { get; }
+    public delegate*<NetState, CircularBufferReader, int, void> OnReceive { get; }
 
-    public ThrottlePacketCallback ThrottleCallback { get; set; }
+    public delegate*<int, NetState, out bool, bool> ThrottleCallback { get; set; }
 
     public bool Ingame { get; }
 }

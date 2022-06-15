@@ -19,12 +19,12 @@ namespace Server.Network;
 
 public static class IncomingMobilePackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x75, 35, true, RenameRequest);
-        IncomingPackets.Register(0x98, 0, true, MobileNameRequest);
-        IncomingPackets.Register(0xB8, 0, true, ProfileReq);
-        IncomingPackets.Register(0x6F, 0, true, SecureTrade);
+        IncomingPackets.Register(0x75, 35, true, &RenameRequest);
+        IncomingPackets.Register(0x98, 0, true, &MobileNameRequest);
+        IncomingPackets.Register(0xB8, 0, true, &ProfileReq);
+        IncomingPackets.Register(0x6F, 0, true, &SecureTrade);
     }
 
     public static void RenameRequest(NetState state, CircularBufferReader reader, int packetLength)

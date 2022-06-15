@@ -103,13 +103,8 @@ namespace Server
                 if (m_Owner != value)
                 {
                     m_Owner?.RemoveSkillMod(this);
-
                     m_Owner = value;
-
-                    if (m_Owner != value)
-                    {
-                        m_Owner.AddSkillMod(this);
-                    }
+                    m_Owner?.AddSkillMod(this);
                 }
             }
         }
@@ -3817,7 +3812,7 @@ namespace Server
             }
         }
 
-        public override string ToString() => $"0x{Serial.Value:X} \"{Name}\"";
+        public override string ToString() => $"{Serial} \"{Name}\"";
 
         public virtual void SendSkillMessage()
         {
@@ -5338,8 +5333,8 @@ namespace Server
             catch
             {
                 Console.WriteLine(
-                    "Warning: 0x{0:X}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
-                    oldItem.Serial.Value,
+                    "Warning: {0}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
+                    oldItem.Serial,
                     oldItem.GetType().Name
                 );
                 return null;

@@ -51,8 +51,6 @@ public abstract partial class BaseBoard : Container, ISecurable
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        base.Deserialize(reader);
-
         if (version == 1)
         {
             Level = (SecureLevel)reader.ReadInt();

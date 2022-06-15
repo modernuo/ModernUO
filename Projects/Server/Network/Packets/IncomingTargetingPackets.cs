@@ -20,9 +20,9 @@ namespace Server.Network;
 
 public static class IncomingTargetingPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x6C, 19, true, TargetResponse);
+        IncomingPackets.Register(0x6C, 19, true, &TargetResponse);
     }
 
     public static void TargetResponse(NetState state, CircularBufferReader reader, int packetLength)

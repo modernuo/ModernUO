@@ -518,21 +518,21 @@ namespace Server.Items
                 return;
             }
 
-            var modName = Serial.ToString();
+            var serial = Serial;
 
             if (strBonus != 0)
             {
-                parent.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                parent.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
             }
 
             if (dexBonus != 0)
             {
-                parent.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                parent.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
             }
 
             if (intBonus != 0)
             {
-                parent.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                parent.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
             }
         }
 
@@ -619,11 +619,11 @@ namespace Server.Items
                     SkillBonuses.Remove();
                 }
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
-                mob.RemoveStatMod($"{modName}Str");
-                mob.RemoveStatMod($"{modName}Dex");
-                mob.RemoveStatMod($"{modName}Int");
+                mob.RemoveStatMod($"{serial}Str");
+                mob.RemoveStatMod($"{serial}Dex");
+                mob.RemoveStatMod($"{serial}Int");
 
                 mob.CheckStatTimers();
             }
