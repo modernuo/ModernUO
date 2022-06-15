@@ -394,7 +394,7 @@ namespace Server.Commands.Generic
                 case 4: // Go there
                     {
                         m_From.SendGump(new InterfaceItemGump(m_From, m_Columns, m_List, m_Page, m_Item));
-                        InvokeCommand($"Go {m_Item.Serial.Value}");
+                        InvokeCommand($"Go {m_Item.Serial}");
                         break;
                     }
                 case 5: // Move to target
@@ -567,7 +567,7 @@ namespace Server.Commands.Generic
                 case 4: // Go there
                     {
                         m_From.SendGump(new InterfaceMobileGump(m_From, m_Columns, m_List, m_Page, m_Mobile));
-                        InvokeCommand($"Go {m_Mobile.Serial.Value}");
+                        InvokeCommand($"Go {m_Mobile.Serial}");
                         break;
                     }
                 case 5: // Bring them here
