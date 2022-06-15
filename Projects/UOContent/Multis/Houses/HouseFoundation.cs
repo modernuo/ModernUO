@@ -972,9 +972,9 @@ namespace Server.Multis
         public bool IsHiddenToCustomizer(Item item) =>
             item == Signpost || item == SignHanger || item == Sign || IsFixture(item);
 
-        public static void Initialize()
+        public static unsafe void Initialize()
         {
-            IncomingExtendedCommandPackets.RegisterExtended(0x1E, true, QueryDesignDetails);
+            IncomingExtendedCommandPackets.RegisterExtended(0x1E, true, &QueryDesignDetails);
 
             IncomingPackets.RegisterEncoded(0x02, true, Designer_Backup);
             IncomingPackets.RegisterEncoded(0x03, true, Designer_Restore);
