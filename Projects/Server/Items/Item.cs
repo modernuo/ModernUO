@@ -3165,10 +3165,10 @@ namespace Server
             if (item == this)
             {
                 Console.WriteLine(
-                    "Warning: Adding item to itself: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )",
-                    Serial.Value,
+                    "Warning: Adding item to itself: [0x{0} {1}].AddItem( [0x{2} {3}] )",
+                    Serial,
                     GetType().Name,
-                    item.Serial.Value,
+                    item.Serial,
                     item.GetType().Name
                 );
                 Console.WriteLine(new StackTrace());
@@ -3178,10 +3178,10 @@ namespace Server
             if (IsChildOf(item))
             {
                 Console.WriteLine(
-                    "Warning: Adding parent item to child: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )",
-                    Serial.Value,
+                    "Warning: Adding parent item to child: [0x{0} {1}].AddItem( [0x{2} {3}] )",
+                    Serial,
                     GetType().Name,
-                    item.Serial.Value,
+                    item.Serial,
                     item.GetType().Name
                 );
                 Console.WriteLine(new StackTrace());
@@ -4245,7 +4245,7 @@ namespace Server
         public virtual bool IsStandardLoot() =>
             (!Mobile.InsuranceEnabled || !Insured) && BlessedFor == null && m_LootType == LootType.Regular;
 
-        public override string ToString() => $"0x{Serial.Value:X} \"{GetType().Name}\"";
+        public override string ToString() => $"{Serial} \"{GetType().Name}\"";
 
         public virtual void OnSectorActivate()
         {
