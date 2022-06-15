@@ -135,6 +135,6 @@ namespace Server.Guilds
             return results;
         }
 
-        public override string ToString() => $"0x{Serial.Value:X} \"{Name} [{Abbreviation}]\"";
+        public override string ToString() => $"{Serial} \"{Name} [{Abbreviation}]\"";
     }
 }
