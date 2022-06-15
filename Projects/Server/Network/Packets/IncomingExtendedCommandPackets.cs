@@ -68,7 +68,7 @@ public static class IncomingExtendedCommandPackets
     }
 
     public static unsafe void RegisterExtended(int packetID, bool ingame,
-        delegate* managed<NetState, CircularBufferReader, int, void> onReceive)
+        delegate*<NetState, CircularBufferReader, int, void> onReceive)
     {
         if (packetID is >= 0 and < 0x100)
         {

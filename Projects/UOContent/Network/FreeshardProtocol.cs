@@ -25,7 +25,7 @@ namespace Server.Network
             _handlers = ProtocolExtensions<FreeshardProtocolInfo>.Register(new FreeshardProtocolInfo());
         }
 
-        public static unsafe void Register(int cmd, bool ingame, delegate* managed<NetState, CircularBufferReader, int, void> onReceive) =>
+        public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, CircularBufferReader, int, void> onReceive) =>
             _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 
         private struct FreeshardProtocolInfo : IProtocolExtensionsInfo

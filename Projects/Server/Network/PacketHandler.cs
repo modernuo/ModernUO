@@ -19,7 +19,7 @@ public unsafe class PacketHandler
 {
     private readonly int _length;
 
-    public PacketHandler(int packetID, int length, bool ingame, delegate* managed<NetState, CircularBufferReader, int, void> onReceive)
+    public PacketHandler(int packetID, int length, bool ingame, delegate*<NetState, CircularBufferReader, int, void> onReceive)
     {
         _length = length;
         PacketID = packetID;
@@ -31,9 +31,9 @@ public unsafe class PacketHandler
 
     public virtual int GetLength(NetState ns) => _length;
 
-    public delegate* managed<NetState, CircularBufferReader, int, void> OnReceive { get; }
+    public delegate*<NetState, CircularBufferReader, int, void> OnReceive { get; }
 
-    public delegate* managed<int, NetState, out bool, bool> ThrottleCallback { get; set; }
+    public delegate*<int, NetState, out bool, bool> ThrottleCallback { get; set; }
 
     public bool Ingame { get; }
 }

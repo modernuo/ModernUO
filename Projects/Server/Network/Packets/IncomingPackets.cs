@@ -25,7 +25,7 @@ public static class IncomingPackets
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void Register(int packetID, int length, bool ingame,
-        delegate* managed<NetState, CircularBufferReader, int, void> onReceive) =>
+        delegate*<NetState, CircularBufferReader, int, void> onReceive) =>
         Register(new PacketHandler(packetID, length, ingame, onReceive));
 
     public static void Register(PacketHandler packetHandler)
@@ -54,7 +54,7 @@ public static class IncomingPackets
         }
     }
 
-    public static unsafe void RegisterThrottler(int packetID, delegate* managed<int, NetState, out bool, bool> t)
+    public static unsafe void RegisterThrottler(int packetID, delegate*<int, NetState, out bool, bool> t)
     {
         var ph = GetHandler(packetID);
 

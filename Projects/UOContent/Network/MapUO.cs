@@ -33,7 +33,7 @@ namespace Server.Network
             Register(0x01, true, &QueryGuildMemberLocations);
         }
 
-        public static unsafe void Register(int cmd, bool ingame, delegate* managed<NetState, CircularBufferReader, int, void> onReceive) =>
+        public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, CircularBufferReader, int, void> onReceive) =>
             _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 
         public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, int packetLength)

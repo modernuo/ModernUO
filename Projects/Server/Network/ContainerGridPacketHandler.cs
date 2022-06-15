@@ -18,7 +18,7 @@ namespace Server.Network;
 public unsafe class ContainerGridPacketHandler : PacketHandler
 {
     public ContainerGridPacketHandler(int packetID, int length, bool ingame,
-        delegate* managed<NetState, CircularBufferReader, int, void> onReceive)
+        delegate*<NetState, CircularBufferReader, int, void> onReceive)
         : base(packetID, length, ingame, onReceive)
     {
     }
