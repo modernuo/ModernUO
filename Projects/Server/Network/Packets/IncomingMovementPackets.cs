@@ -17,9 +17,9 @@ namespace Server.Network;
 
 public static class IncomingMovementPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x02, 7, true, MovementReq);
+        IncomingPackets.Register(0x02, 7, true, &MovementReq);
         // Not used by OSI, and interferes with ClassicUO/Razor protocol extensions
         // IncomingPackets.Register(0xF0, 0, true, NewMovementReq);
         // IncomingPackets.Register(0xF1, 9, true, TimeSyncReq);

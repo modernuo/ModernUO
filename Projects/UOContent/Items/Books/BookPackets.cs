@@ -22,11 +22,11 @@ namespace Server.Items
 {
     public static class BookPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xD4, 0, true, HeaderChange);
-            IncomingPackets.Register(0x66, 0, true, ContentChange);
-            IncomingPackets.Register(0x93, 99, true, OldHeaderChange);
+            IncomingPackets.Register(0xD4, 0, true, &HeaderChange);
+            IncomingPackets.Register(0x66, 0, true, &ContentChange);
+            IncomingPackets.Register(0x93, 99, true, &OldHeaderChange);
         }
 
         public static void OldHeaderChange(NetState state, CircularBufferReader reader, int packetLength)

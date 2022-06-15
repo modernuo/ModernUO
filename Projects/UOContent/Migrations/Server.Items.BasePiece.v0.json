@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.BasePiece",
+  "properties": [
+    {
+      "name": "Board",
+      "type": "Server.Items.BaseBoard",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

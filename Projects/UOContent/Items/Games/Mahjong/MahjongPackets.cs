@@ -43,9 +43,9 @@ namespace Server.Engines.Mahjong
             return null;
         }
 
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xDA, 0, true, OnPacket);
+            IncomingPackets.Register(0xDA, 0, true, &OnPacket);
 
             RegisterSubCommand(0x6, ExitGame);
             RegisterSubCommand(0xA, GivePoints);

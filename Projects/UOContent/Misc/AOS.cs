@@ -566,21 +566,21 @@ namespace Server
 
             if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
             {
-                var modName = Owner.Serial.ToString();
+                var serial = Owner.Serial;
 
                 if (strBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -589,11 +589,11 @@ namespace Server
 
         public void RemoveStatBonuses(Mobile from)
         {
-            var modName = Owner.Serial.ToString();
+            var serial = Owner.Serial;
 
-            from.RemoveStatMod($"{modName}Str");
-            from.RemoveStatMod($"{modName}Dex");
-            from.RemoveStatMod($"{modName}Int");
+            from.RemoveStatMod($"{serial}Str");
+            from.RemoveStatMod($"{serial}Dex");
+            from.RemoveStatMod($"{serial}Int");
 
             from.CheckStatTimers();
         }

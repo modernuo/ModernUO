@@ -939,21 +939,21 @@ namespace Server.Items
             {
                 var m = from;
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -1004,11 +1004,11 @@ namespace Server.Items
                 return;
             }
 
-            var modName = Serial.ToString();
+            var serial = Serial;
 
-            m.RemoveStatMod($"{modName}Str");
-            m.RemoveStatMod($"{modName}Dex");
-            m.RemoveStatMod($"{modName}Int");
+            m.RemoveStatMod($"{serial}Str");
+            m.RemoveStatMod($"{serial}Dex");
+            m.RemoveStatMod($"{serial}Int");
 
             if (!_enableInstaHit && m.Weapon is BaseWeapon weapon)
             {
@@ -4148,21 +4148,21 @@ namespace Server.Items
 
             if (parentMobile != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
             {
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 

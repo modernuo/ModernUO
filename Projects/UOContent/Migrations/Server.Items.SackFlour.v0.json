@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.SackFlour",
+  "properties": [
+    {
+      "name": "Quantity",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
