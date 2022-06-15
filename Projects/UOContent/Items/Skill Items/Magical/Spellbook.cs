@@ -623,21 +623,21 @@ namespace Server.Items
 
                 if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
                 {
-                    var modName = Serial.ToString();
+                    var serial = Serial;
 
                     if (strBonus != 0)
                     {
-                        from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                     }
 
                     if (dexBonus != 0)
                     {
-                        from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                     }
 
                     if (intBonus != 0)
                     {
-                        from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                     }
                 }
 
@@ -651,11 +651,11 @@ namespace Server.Items
             {
                 SkillBonuses.Remove();
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
-                from.RemoveStatMod($"{modName}Str");
-                from.RemoveStatMod($"{modName}Dex");
-                from.RemoveStatMod($"{modName}Int");
+                from.RemoveStatMod($"{serial}Str");
+                from.RemoveStatMod($"{serial}Dex");
+                from.RemoveStatMod($"{serial}Int");
 
                 from.CheckStatTimers();
             }
@@ -974,21 +974,21 @@ namespace Server.Items
             {
                 if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
                 {
-                    var modName = Serial.ToString();
+                    var serial = Serial;
 
                     if (strBonus != 0)
                     {
-                        m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                        m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                     }
 
                     if (dexBonus != 0)
                     {
-                        m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                        m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                     }
 
                     if (intBonus != 0)
                     {
-                        m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                        m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                     }
                 }
 
