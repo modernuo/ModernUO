@@ -95,7 +95,7 @@ namespace Server.Items
 
             if (m_Poison != null && m_PoisonCharges > 0)
             {
-                list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+                list.Add(1062412 + m_Poison.Level, m_PoisonCharges);
             }
         }
 

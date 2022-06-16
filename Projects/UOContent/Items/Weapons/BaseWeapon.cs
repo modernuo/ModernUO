@@ -2865,7 +2865,7 @@ namespace Server.Items
 
             if (m_Poison != null && m_PoisonCharges > 0)
             {
-                list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+                list.Add(1062412 + m_Poison.Level, m_PoisonCharges);
             }
 
             if (m_Slayer != SlayerName.None)
@@ -3054,7 +3054,7 @@ namespace Server.Items
 
             if ((prop = WeaponAttributes.MageWeapon) != 0)
             {
-                list.Add(1060438, (30 - prop).ToString()); // mage weapon -~1_val~ skill
+                list.Add(1060438, 30 - prop); // mage weapon -~1_val~ skill
             }
 
             if ((prop = Attributes.BonusMana) != 0)
