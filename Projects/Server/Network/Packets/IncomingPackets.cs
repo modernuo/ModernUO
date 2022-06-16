@@ -35,7 +35,9 @@ public static class IncomingPackets
 
     public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
 
-    public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
+    public static unsafe void RegisterEncoded(
+        int packetID, bool ingame, delegate*<NetState, IEntity, EncodedReader, void> onReceive
+    )
     {
         if (packetID is >= 0 and < 0x100)
         {
