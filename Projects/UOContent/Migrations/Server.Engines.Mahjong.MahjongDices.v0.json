@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Mahjong.MahjongDices",
+  "properties": [
+    {
+      "name": "First",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Second",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
