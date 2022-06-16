@@ -2797,7 +2797,7 @@ namespace Server.Mobiles
             {
                 if (DisplayWeight)
                 {
-                    list.Add(TotalWeight == 1 ? 1072788 : 1072789, TotalWeight.ToString()); // Weight: ~1_WEIGHT~ stones
+                    list.Add(TotalWeight == 1 ? 1072788 : 1072789, TotalWeight); // Weight: ~1_WEIGHT~ stones
                 }
 
                 if (m_ControlOrder == OrderType.Guard)
