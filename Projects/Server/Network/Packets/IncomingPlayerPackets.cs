@@ -48,8 +48,8 @@ public static class IncomingPlayerPackets
         IncomingPackets.Register(0xD7, 0, true, &EncodedCommand);
         IncomingPackets.Register(0xF4, 0, false, &CrashReport);
 
-        IncomingPackets.RegisterEncoded(0x28, true, GuildGumpRequest);
-        IncomingPackets.RegisterEncoded(0x32, true, QuestGumpRequest);
+        IncomingPackets.RegisterEncoded(0x28, true, &GuildGumpRequest);
+        IncomingPackets.RegisterEncoded(0x32, true, &QuestGumpRequest);
     }
 
     public static void DeathStatusResponse(NetState state, CircularBufferReader reader, int packetLength)
@@ -593,7 +593,7 @@ public static class IncomingPlayerPackets
         EventSink.InvokeQuestGumpRequest(state.Mobile);
     }
 
-    public static void EncodedCommand(NetState state, CircularBufferReader reader, int packetLength)
+    public static unsafe void EncodedCommand(NetState state, CircularBufferReader reader, int packetLength)
     {
         var e = World.FindEntity((Serial)reader.ReadUInt32());
         int packetId = reader.ReadUInt16();
