@@ -25,11 +25,11 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)](https://access.redhat.com/downloads)
 
 #### Running the server
-[![.NET](https://img.shields.io/badge/-6.0-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-6.0.6-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%206.0%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-%206.0.6%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Supported IDEs
 &nbsp;&nbsp;&nbsp;
