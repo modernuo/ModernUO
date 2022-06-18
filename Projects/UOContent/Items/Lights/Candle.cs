@@ -7,16 +7,10 @@ namespace Server.Items
         [Constructible]
         public Candle() : base(0xA28)
         {
-            if (Burnout)
-            {
-                Duration = TimeSpan.FromMinutes(20);
-            }
-            else
-            {
-                Duration = TimeSpan.Zero;
-            }
-
+            Duration = Burnout ? TimeSpan.FromMinutes(20) : TimeSpan.Zero;
             Burning = false;
+
+            Stackable = true;
             Light = LightType.Circle150;
             Weight = 1.0;
         }

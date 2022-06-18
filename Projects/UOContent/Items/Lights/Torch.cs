@@ -8,16 +8,10 @@ namespace Server.Items
         [Constructible]
         public Torch() : base(0xF6B)
         {
-            if (Burnout)
-            {
-                Duration = TimeSpan.FromMinutes(30);
-            }
-            else
-            {
-                Duration = TimeSpan.Zero;
-            }
-
+            Duration = Burnout ? TimeSpan.FromMinutes(30) : TimeSpan.Zero;
             Burning = false;
+
+            Stackable = true;
             Light = LightType.Circle300;
             Weight = 1.0;
         }

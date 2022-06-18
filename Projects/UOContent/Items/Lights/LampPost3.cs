@@ -1,36 +1,21 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class LampPost3 : BaseLight
 {
-    public class LampPost3 : BaseLight
+    [Constructible]
+    public LampPost3() : base(0xb25)
     {
-        [Constructible]
-        public LampPost3() : base(0xb25)
-        {
-            Movable = false;
-            Duration = TimeSpan.Zero; // Never burnt out
-            Burning = false;
-            Light = LightType.Circle300;
-            Weight = 40.0;
-        }
-
-        public LampPost3(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LitItemID => 0xB24;
-        public override int UnlitItemID => 0xB25;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        Movable = false;
+        Duration = TimeSpan.Zero; // Never burnt out
+        Burning = false;
+        Light = LightType.Circle300;
+        Weight = 40.0;
     }
+
+    public override int LitItemID => 0xB24;
+    public override int UnlitItemID => 0xB25;
 }
