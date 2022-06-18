@@ -5301,12 +5301,12 @@ namespace Server
             }
         }
 
-        public static Item LiftItemDupe(Item oldItem, int amount)
+        public static T LiftItemDupe<T>(T oldItem, int amount) where T : Item
         {
-            Item item;
+            T item;
             try
             {
-                item = oldItem.GetType().CreateInstance<Item>();
+                item = oldItem.GetType().CreateInstance<T>();
             }
             catch
             {
@@ -5317,6 +5317,9 @@ namespace Server
                 );
                 return null;
             }
+
+            var oldAmount = oldItem.Amount;
+            oldItem.Amount = amount;
 
             item.Visible = oldItem.Visible;
             item.Movable = oldItem.Movable;
@@ -5329,10 +5332,9 @@ namespace Server
             item.Name = oldItem.Name;
             item.Weight = oldItem.Weight;
 
-            item.Amount = oldItem.Amount - amount;
+            item.Amount = oldAmount - amount;
             item.Map = oldItem.Map;
 
-            oldItem.Amount = amount;
             oldItem.OnAfterDuped(item);
 
             if (oldItem.Parent is Mobile parentMobile)

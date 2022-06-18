@@ -7,14 +7,7 @@ namespace Server.Items
         [Constructible]
         public Lantern() : base(0xA25)
         {
-            if (Burnout)
-            {
-                Duration = TimeSpan.FromMinutes(20);
-            }
-            else
-            {
-                Duration = TimeSpan.Zero;
-            }
+            Duration = Burnout ? TimeSpan.FromMinutes(20) : TimeSpan.Zero;
 
             Burning = false;
             Light = LightType.Circle300;
@@ -25,31 +18,9 @@ namespace Server.Items
         {
         }
 
-        public override int LitItemID
-        {
-            get
-            {
-                if (ItemID is 0xA15 or 0xA17)
-                {
-                    return ItemID;
-                }
+        public override int LitItemID => ItemID is 0xA15 or 0xA17 ? ItemID : 0xA22;
 
-                return 0xA22;
-            }
-        }
-
-        public override int UnlitItemID
-        {
-            get
-            {
-                if (ItemID == 0xA18)
-                {
-                    return ItemID;
-                }
-
-                return 0xA25;
-            }
-        }
+        public override int UnlitItemID => ItemID == 0xA18 ? ItemID : 0xA25;
 
         public override void Serialize(IGenericWriter writer)
         {

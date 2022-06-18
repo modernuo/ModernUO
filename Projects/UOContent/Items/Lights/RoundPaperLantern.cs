@@ -1,37 +1,22 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable]
+[SerializationGenerator(0, false)]
+public partial class RoundPaperLantern : BaseLight
 {
-    [Flippable]
-    public class RoundPaperLantern : BaseLight
+    [Constructible]
+    public RoundPaperLantern() : base(0x24CA)
     {
-        [Constructible]
-        public RoundPaperLantern() : base(0x24CA)
-        {
-            Movable = true;
-            Duration = TimeSpan.Zero; // Never burnt out
-            Burning = false;
-            Light = LightType.Circle150;
-            Weight = 3.0;
-        }
-
-        public RoundPaperLantern(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LitItemID => 0x24C9;
-        public override int UnlitItemID => 0x24CA;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Duration = TimeSpan.Zero; // Never burnt out
+        Burning = false;
+        Light = LightType.Circle150;
+        Weight = 3.0;
     }
+
+    public override int LitItemID => 0x24C9;
+    public override int UnlitItemID => 0x24CA;
 }
