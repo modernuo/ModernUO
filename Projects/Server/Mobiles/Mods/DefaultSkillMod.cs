@@ -15,7 +15,7 @@
 
 using ModernUO.Serialization;
 
-namespace Server.Mobiles;
+namespace Server;
 
 [SerializationGenerator(0)]
 public partial class DefaultSkillMod : SkillMod

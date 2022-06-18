@@ -1,0 +1,40 @@
+{
+  "version": 0,
+  "type": "Server.StatMod",
+  "properties": [
+    {
+      "name": "Added",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Duration",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Type",
+      "type": "Server.StatType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Offset",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

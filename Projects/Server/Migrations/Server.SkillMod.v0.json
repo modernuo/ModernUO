@@ -1,0 +1,43 @@
+{
+  "version": 0,
+  "type": "Server.SkillMod",
+  "properties": [
+    {
+      "name": "ObeyCap",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Skill",
+      "type": "Server.SkillName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Relative",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Absolute",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Value",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
