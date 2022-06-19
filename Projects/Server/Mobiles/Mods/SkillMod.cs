@@ -18,50 +18,50 @@ using ModernUO.Serialization;
 namespace Server;
 
 [SerializationGenerator(0)]
-public abstract partial class SkillMod
+public abstract partial class SkillMod : MobileMod
 {
-    private bool m_ObeyCap;
-    [DirtyTrackingEntity]
-    private Mobile m_Owner;
+    private bool _obeyCap;
 
-    private bool m_Relative;
-    private SkillName m_Skill;
-    private double m_Value;
+    private bool _relative;
+    private SkillName _skill;
+    private double _value;
 
-    protected SkillMod(Mobile owner) => m_Owner = owner;
-
-    protected SkillMod(SkillName skill, bool relative, double value, Mobile owner = null)
+    public SkillMod(Mobile owner) : base(owner)
     {
-        m_Owner = owner;
-        m_Skill = skill;
-        m_Relative = relative;
-        m_Value = value;
+    }
+
+    public SkillMod(SkillName skill, bool relative, double value, Mobile owner = null) : base(owner)
+    {
+        _skill = skill;
+        _relative = relative;
+        _value = value;
     }
 
     [SerializableField(0)]
     public bool ObeyCap
     {
-        get => m_ObeyCap;
+        get => _obeyCap;
         set
         {
-            m_ObeyCap = value;
+            _obeyCap = value;
 
-            var sk = m_Owner?.Skills[m_Skill];
+            var sk = Owner?.Skills[_skill];
             sk?.Update();
-            m_Owner?.MarkDirty();
+            MarkDirty();
         }
     }
 
-    public Mobile Owner
+    public override Mobile Owner
     {
-        get => m_Owner;
+        get => base.Owner;
         set
         {
-            if (m_Owner != value)
+            var owner = base.Owner;
+            if (owner != value)
             {
-                m_Owner?.RemoveSkillMod(this);
-                m_Owner = value;
-                m_Owner?.AddSkillMod(this);
+                owner?.RemoveSkillMod(this);
+                owner = value;
+                owner?.AddSkillMod(this);
             }
         }
     }
@@ -69,19 +69,19 @@ public abstract partial class SkillMod
     [SerializableField(1)]
     public SkillName Skill
     {
-        get => m_Skill;
+        get => _skill;
         set
         {
-            if (m_Skill != value)
+            if (_skill != value)
             {
-                var oldUpdate = m_Owner?.Skills[m_Skill];
+                var oldUpdate = Owner?.Skills[_skill];
 
-                m_Skill = value;
+                _skill = value;
 
-                var sk = m_Owner?.Skills[m_Skill];
+                var sk = Owner?.Skills[_skill];
                 sk?.Update();
                 oldUpdate?.Update();
-                m_Owner?.MarkDirty();
+                MarkDirty();
             }
         }
     }
@@ -89,16 +89,16 @@ public abstract partial class SkillMod
     [SerializableField(2)]
     public bool Relative
     {
-        get => m_Relative;
+        get => _relative;
         set
         {
-            if (m_Relative != value)
+            if (_relative != value)
             {
-                m_Relative = value;
+                _relative = value;
 
-                var sk = m_Owner?.Skills[m_Skill];
+                var sk = Owner?.Skills[_skill];
                 sk?.Update();
-                m_Owner?.MarkDirty();
+                MarkDirty();
             }
         }
     }
@@ -106,16 +106,16 @@ public abstract partial class SkillMod
     [SerializableField(3)]
     public bool Absolute
     {
-        get => !m_Relative;
+        get => !_relative;
         set
         {
-            if (m_Relative == value)
+            if (_relative == value)
             {
-                m_Relative = !value;
+                _relative = !value;
 
-                var sk = m_Owner?.Skills[m_Skill];
+                var sk = Owner?.Skills[_skill];
                 sk?.Update();
-                m_Owner?.MarkDirty();
+                MarkDirty();
             }
         }
     }
@@ -123,16 +123,16 @@ public abstract partial class SkillMod
     [SerializableField(4)]
     public double Value
     {
-        get => m_Value;
+        get => _value;
         set
         {
-            if (m_Value != value)
+            if (_value != value)
             {
-                m_Value = value;
+                _value = value;
 
-                var sk = m_Owner?.Skills[m_Skill];
+                var sk = Owner?.Skills[_skill];
                 sk?.Update();
-                m_Owner?.MarkDirty();
+                MarkDirty();
             }
         }
     }

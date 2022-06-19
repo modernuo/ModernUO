@@ -19,7 +19,7 @@ using ModernUO.Serialization;
 namespace Server;
 
 [SerializationGenerator(0)]
-public partial class StatMod
+public partial class StatMod : MobileMod
 {
     [SerializableField(0, getter: "private", setter: "private")]
     private DateTime _added;
@@ -36,7 +36,11 @@ public partial class StatMod
     [SerializableField(4, setter: "private")]
     private int _offset;
 
-    public StatMod(StatType type, string name, int offset, TimeSpan duration)
+    public StatMod(Mobile owner) : base(owner)
+    {
+    }
+
+    public StatMod(StatType type, string name, int offset, TimeSpan duration, Mobile owner = null) : base(owner)
     {
         _type = type;
         _name = name;

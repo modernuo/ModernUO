@@ -18,24 +18,25 @@ using ModernUO.Serialization;
 namespace Server;
 
 [SerializationGenerator(0)]
-public partial class ResistanceMod
+public partial class ResistanceMod : MobileMod
 {
-    [SerializableField(0)]
-    private Mobile _owner;
-
-    // Field 1
+    // Field 0
     private int _offset;
 
-    // Field 2
+    // Field 1
     private ResistanceType _type;
 
-    public ResistanceMod(ResistanceType type, int offset)
+    public ResistanceMod(Mobile owner) : base(owner)
+    {
+    }
+
+    public ResistanceMod(ResistanceType type, int offset, Mobile owner = null) : base(owner)
     {
         _type = type;
         _offset = offset;
     }
 
-    [SerializableField(1)]
+    [SerializableField(0)]
     public ResistanceType Type
     {
         get => _type;
@@ -46,11 +47,12 @@ public partial class ResistanceMod
                 _type = value;
 
                 Owner?.UpdateResistances();
+                MarkDirty();
             }
         }
     }
 
-    [SerializableField(2)]
+    [SerializableField(1)]
     public int Offset
     {
         get => _offset;
@@ -61,6 +63,7 @@ public partial class ResistanceMod
                 _offset = value;
 
                 Owner?.UpdateResistances();
+                MarkDirty();
             }
         }
     }

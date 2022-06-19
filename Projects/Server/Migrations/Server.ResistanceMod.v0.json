@@ -3,11 +3,6 @@
   "type": "Server.ResistanceMod",
   "properties": [
     {
-      "name": "Owner",
-      "type": "Server.Mobile",
-      "rule": "SerializableInterfaceMigrationRule"
-    },
-    {
       "name": "Type",
       "type": "Server.ResistanceType",
       "rule": "EnumMigrationRule"

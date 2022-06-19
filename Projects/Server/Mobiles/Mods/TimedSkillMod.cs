@@ -24,6 +24,10 @@ public partial class TimedSkillMod : SkillMod
     [SerializableField(0, setter: "private")]
     private DateTime _expire;
 
+    public TimedSkillMod(Mobile owner) : base(owner)
+    {
+    }
+
     public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
         : this(skill, relative, value, Core.Now + delay)
     {

@@ -20,11 +20,11 @@ namespace Server;
 [SerializationGenerator(0)]
 public partial class DefaultSkillMod : SkillMod
 {
-    public DefaultSkillMod(SkillName skill, bool relative, double value) : base(skill, relative, value)
+    public DefaultSkillMod(Mobile owner) : base(owner)
     {
     }
 
-    public DefaultSkillMod(Mobile owner) : base(owner)
+    public DefaultSkillMod(SkillName skill, bool relative, double value) : base(skill, relative, value)
     {
     }
 

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: EquippedSkillMod.cs                                             *
+ * File: MobileMod.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,17 +18,10 @@ using ModernUO.Serialization;
 namespace Server;
 
 [SerializationGenerator(0)]
-public partial class EquippedSkillMod : SkillMod
+public partial class MobileMod
 {
-    [SerializableField(0)]
-    private Item _item;
+    [DirtyTrackingEntity]
+    public virtual Mobile Owner { get; set; }
 
-    public EquippedSkillMod(Mobile owner) : base(owner)
-    {
-    }
-
-    public EquippedSkillMod(SkillName skill, bool relative, double value, Item item, Mobile mobile)
-        : base(skill, relative, value, mobile) => _item = item;
-
-    public override bool CheckCondition() => !_item.Deleted && Owner?.Deleted == false && _item.Parent == Owner;
+    public MobileMod(Mobile owner) => Owner = owner;
 }
