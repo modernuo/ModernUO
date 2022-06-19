@@ -32,33 +32,35 @@ Please ask for help in our discord!
 ### Object Property List API Changes
 ObjectPropertyList has been drastically optimized, which means the API has been modernized:
 
-This is longer valid:
+❌ _Not valid_
 ```cs
-list.Add(1061837, "{0}\t{1}", _curArcaneCharges, _maxArcaneCharges);
+list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges);
 ```
-instead use this:
+✅
 ```cs
 list.Add(1061837, $"{_curArcaneCharges}\t{_maxArcaneCharges}");
 ```
 
+Clilocs that use arguments:
+
+❌ _Not valid_
+```cs
+list.Add(1060659, "Level\t{1}", m_Level);
+```
+✅ - _Note the string as an argument, this is mandatory!_
+```cs
+list.Add(1060659, $"{"Level"}\t{Level}"); // ~1_val~: ~2_val~
+```
+
 Clilocs that use other clilocs as an argument:
 
-_This is no longer valid_
+❌ _Do not prepend #_
 ```cs
 list.Add(1060830, $"#{dirt.ToString()}");
 ```
-instead use this:
+✅ _Use the new custom cliloc argument formatter_
 ```cs
 list.Add(1060830, $"{dirt:#}");
-```
-
-Here is another example of what is no longer valid:
-```cs
-list.Add(1060658, "#{0}\t{1}", m_Number.ToString(), m_AmountCur.ToString());
-```
-instead use this:
-```cs
-list.Add(1060658, $"{m_Number:#}\t{m_AmountCur}");
 ```
 
 ## Core Changes
