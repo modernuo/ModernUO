@@ -27,17 +27,39 @@ Please ask for help in our discord!
   * Example: `EventSink.PlayerDeath += new PlayerDeathEventHandler(EventSink_PlayerDeath);` is now `EventSink.PlayerDeath += EventSink_PlayerDeath;`.
 * `ObjectPropertyList` is now `IPropertyList`,
   * Example: `GetProperties(ObjectPropertyList list)` is now `GetProperties(IPropertyList list)`.
-* ObjectPropertyList has been drastically optimized, which means the API has been modernized:
-  * `string.Format()` should no longer be used.
-  * `list(number, format, args)` is no longer available.
-    * `list.Add(1061837, "{0}\t{1}", _curArcaneCharges, _maxArcaneCharges);`
-    * changed to`list.Add(1061837, $"{_curArcaneCharges}\t{_maxArcaneCharges}");`
-  * Clilocs that have other clilocs as an argument also have a new API:
-    * `list.Add(1060830, $"#{dirt.ToString()}");` should not be used.
-    * Instead use this: `list.Add(1060830, $"{dirt:#}");` -- Note the `{dirt:#}` notation.
-    * `list.Add(1060658, "#{0}\t{1}", m_Number.ToString(), m_AmountCur.ToString());` is no longer valid.
-    * Instead use this: `list.Add(1060658, $"{m_Number:#}\t{m_AmountCur}");`
 * `[Constructable]` attribute is now `[Constructible]`.
+
+### Object Property List API Changes
+ObjectPropertyList has been drastically optimized, which means the API has been modernized:
+
+This is longer valid:
+```cs
+list.Add(1061837, "{0}\t{1}", _curArcaneCharges, _maxArcaneCharges);
+```
+instead use this:
+```cs
+list.Add(1061837, $"{_curArcaneCharges}\t{_maxArcaneCharges}");
+```
+
+Clilocs that use other clilocs as an argument:
+
+_This is no longer valid_
+```cs
+list.Add(1060830, $"#{dirt.ToString()}");
+```
+instead use this:
+```cs
+list.Add(1060830, $"{dirt:#}");
+```
+
+Here is another example of what is no longer valid:
+```cs
+list.Add(1060658, "#{0}\t{1}", m_Number.ToString(), m_AmountCur.ToString());
+```
+instead use this:
+```cs
+list.Add(1060658, $"{m_Number:#}\t{m_AmountCur}");
+```
 
 ## Core Changes
 * ModernUO is not inherently thread safe. Overall infrastructure improved with CPU and minimizing memory garbage in mind.
