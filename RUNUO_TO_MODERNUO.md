@@ -24,8 +24,9 @@ Please ask for help in our discord!
   * FindGump, HasGump, and CloseGump
 * Functions such as `OnAdded(object)` for both Items/Mobiles are now `OnAdded(IEntity)`.
 * Most `delegate` have been changed to `Action`.
-  * Example, `EventSink.PlayerDeath += new PlayerDeathEventHandler(EventSink_PlayerDeath);` is now `EventSink.PlayerDeath += EventSink_PlayerDeath;`.
-* `ObjectPropertyList` is now `IPropertyList`, e.g. `GetProperties(ObjectPropertyList list)` is now `GetProperties(IPropertyList list)`.
+  * Example: `EventSink.PlayerDeath += new PlayerDeathEventHandler(EventSink_PlayerDeath);` is now `EventSink.PlayerDeath += EventSink_PlayerDeath;`.
+* `ObjectPropertyList` is now `IPropertyList`,
+  * Example: `GetProperties(ObjectPropertyList list)` is now `GetProperties(IPropertyList list)`.
 * `[Constructable]` attribute is now `[Constructible]`.
 
 ## Core Changes
