@@ -36,9 +36,9 @@ Please ask for help in our discord!
 * World saves are 10x faster by saving to memory and flushing to disk in the background.
 * Improved RNG accuracy and performance by 5x using [Xoshiro256++](https://prng.di.unimi.it/)
 * Converted quite a bit of configuration to JSON with a central settings file.
-* Logging changed from Console.WriteLine to Serilog.
-* Eliminated calling `DateTime.Now` which improves performance considerably.
-* Accounts are now saved to a binary file (will eventually change to a databse) to improve performance.
+* Logging changed from Console.WriteLine to Serilog (still work in progress).
+* Eliminated calling `DateTime.Now` which had a huge performance penalty.
+* Accounts are now saved to a binary file (will eventually change to a databse) to improve world save performance by eliminating XML.
 * Strings are now built using the new interpolated string syntax, and highly performant string builders.
 
 ## New Features
@@ -46,7 +46,7 @@ Please ask for help in our discord!
 * Generic serialization that is automatically done in parallel with the world save.
   * The [faction system](https://github.com/modernuo/ModernUO/blob/7adf52ef48df7ae2b034c27e67b0c332b37fb053/Projects/UOContent/Engines/Factions/Core/FactionSystem.cs#L15) is no longer powered by a single item and instead uses generic persistence.
 * Timezone support for custom scripts that might need it.
-* Hourly/daily/weekly/monthly backups & archiving.
+* Hourly/daily/weekly/monthly backups & archiving using [Z-Standard](https://facebook.github.io/zstd).
 * Client version detection (including CUO) for easy configuration.
 * Localization (Cliloc) support.
 * Better encryption for passwords using [Argon2](https://en.wikipedia.org/wiki/Argon2).
