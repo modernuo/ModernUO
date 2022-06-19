@@ -78,7 +78,7 @@ namespace Server.Json
 
                 reader.Read();
 
-                if (key == "start" || key == "end")
+                if (key is "start" or "end")
                 {
                     if (objType > -1 && objType != 2)
                     {
@@ -140,7 +140,7 @@ namespace Server.Json
 
                 objType = 1;
                 data[i - 10] = reader.GetInt32();
-                if (i == 12 || i == 15)
+                if (i is 12 or 15)
                 {
                     hasZ = true;
                 }

@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27A3, 0x27EE)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Tessen : BaseBashing
     {
         [Constructible]

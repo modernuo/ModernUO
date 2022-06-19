@@ -44,7 +44,7 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.025)
           {
             switch ( Utility.Random( 16 ) )

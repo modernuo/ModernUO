@@ -129,7 +129,7 @@ namespace System.Buffers
 
         public Span<T> GetSpan(int index)
         {
-            if (index < 0 || index > 1)
+            if (index is < 0 or > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }

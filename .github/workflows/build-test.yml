@@ -14,19 +14,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            name: MacOS 10
           - os: macos-11
             name: MacOS 11
+          - os: macos-12
+            name: MacOS 12
 
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-    - name: Setup .NET 5
+    - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.401
+        dotnet-version: 6.0.300
     - name: Build
       run: ./publish.cmd
     - name: Test

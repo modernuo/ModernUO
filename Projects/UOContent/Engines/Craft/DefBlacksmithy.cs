@@ -28,7 +28,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Blacksmith;
 
-        public override int GumpTitleNumber => 1044002;
+        public override TextDefinition GumpTitle => 1044002;
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefBlacksmithy();
 

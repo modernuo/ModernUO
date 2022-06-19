@@ -31,7 +31,7 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            if (!(m_Addon is Item item) || item.Deleted)
+            if (m_Addon is not Item item || item.Deleted)
             {
                 return;
             }

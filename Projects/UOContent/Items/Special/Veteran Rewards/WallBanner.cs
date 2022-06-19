@@ -302,7 +302,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -503,7 +503,7 @@ namespace Server.Items
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {
-                if (m_WallBanner?.Deleted != false || info.ButtonID <= 0 || info.ButtonID >= 31)
+                if (m_WallBanner?.Deleted != false || info.ButtonID is <= 0 or >= 31)
                 {
                     return;
                 }

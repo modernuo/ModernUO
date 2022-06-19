@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private DecayTimer m_Timer;
 
         [Constructible]
-        public PlagueBeastLord() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public PlagueBeastLord() : base(AIType.AI_Melee)
         {
             Body = 775;
             BaseSoundID = 679;
@@ -156,7 +156,7 @@ namespace Server.Mobiles
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
-            if (IsAccessibleTo(from) && (dropped is PlagueBeastInnard || dropped is PlagueBeastGland))
+            if (IsAccessibleTo(from) && dropped is PlagueBeastInnard or PlagueBeastGland)
             {
                 return base.OnDragDrop(from, dropped);
             }

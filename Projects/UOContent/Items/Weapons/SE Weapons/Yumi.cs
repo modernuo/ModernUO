@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
     [Flippable(0x27A5, 0x27F0)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Yumi : BaseRanged
     {
         [Constructible]

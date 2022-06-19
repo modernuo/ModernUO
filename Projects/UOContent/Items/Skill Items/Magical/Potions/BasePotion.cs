@@ -103,7 +103,7 @@ namespace Server.Items
                         //            if (keg == null)
                         //              continue;
 
-                        if (keg.Held <= 0 || keg.Held >= 100)
+                        if (keg.Held is <= 0 or >= 100)
                         {
                             continue;
                         }

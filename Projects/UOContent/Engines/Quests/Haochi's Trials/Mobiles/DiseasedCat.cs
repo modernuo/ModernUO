@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Samurai
     public class DiseasedCat : BaseCreature
     {
         [Constructible]
-        public DiseasedCat() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public DiseasedCat() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xC9;
             Hue = Utility.RandomAnimalHue();

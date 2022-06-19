@@ -715,7 +715,7 @@ namespace Server.Guilds
 
         public void CreateAlliance_Callback(Mobile from, string text)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

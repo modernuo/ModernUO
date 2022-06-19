@@ -36,7 +36,7 @@ namespace Server.Engines.MLQuests.Gumps
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            if (!(sender.Mobile is PlayerMobile pm))
+            if (sender.Mobile is not PlayerMobile pm)
             {
                 return;
             }

@@ -430,7 +430,7 @@ namespace Server.Multis
                     {
                         door = new GenericHouseDoor(DoorFacing.NorthCW, 0x2D46, 0xEA, 0xF1, false);
                     }
-                    else if (itemID == 0x2D48 || itemID == 0x2FE2)
+                    else if (itemID is 0x2D48 or 0x2FE2)
                     {
                         door = new GenericHouseDoor(DoorFacing.SouthCCW, itemID, 0xEA, 0xF1, false);
                     }
@@ -443,7 +443,7 @@ namespace Server.Multis
 
                         door = new GenericHouseDoor(facing, 0x2D63 + 4 * type + mod * 2, 0xEA, 0xF1, false);
                     }
-                    else if (itemID == 0x2FE4 || itemID == 0x31AE)
+                    else if (itemID is 0x2FE4 or 0x31AE)
                     {
                         door = new GenericHouseDoor(DoorFacing.WestCCW, itemID, 0xEA, 0xF1, false);
                     }
@@ -453,11 +453,11 @@ namespace Server.Multis
 
                         var mod = (itemID - 0x319C) / 2 % 2;
 
-                        var specialCase = itemID == 0x31AA || itemID == 0x31A8;
+                        var specialCase = itemID is 0x31AA or 0x31A8;
 
                         DoorFacing facing;
 
-                        if (itemID == 0x31AA || itemID == 0x31A8)
+                        if (itemID is 0x31AA or 0x31A8)
                         {
                             facing = mod == 0 ? DoorFacing.NorthCW : DoorFacing.EastCW;
                         }
@@ -878,9 +878,9 @@ namespace Server.Multis
             DesignState.SendDetailedInfoTo(ns);
         }
 
-        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default, Span<byte> opl = default)
+        public override void SendInfoTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
-            base.SendInfoTo(ns, world, opl);
+            base.SendInfoTo(ns, world);
 
             var stateToSend = DesignContext.Find(ns?.Mobile)?.Foundation == this ? DesignState : CurrentState;
             stateToSend.SendGeneralInfoTo(ns);
@@ -972,25 +972,25 @@ namespace Server.Multis
         public bool IsHiddenToCustomizer(Item item) =>
             item == Signpost || item == SignHanger || item == Sign || IsFixture(item);
 
-        public static void Initialize()
+        public static unsafe void Initialize()
         {
-            IncomingExtendedCommandPackets.RegisterExtended(0x1E, true, QueryDesignDetails);
+            IncomingExtendedCommandPackets.RegisterExtended(0x1E, true, &QueryDesignDetails);
 
-            IncomingPackets.RegisterEncoded(0x02, true, Designer_Backup);
-            IncomingPackets.RegisterEncoded(0x03, true, Designer_Restore);
-            IncomingPackets.RegisterEncoded(0x04, true, Designer_Commit);
-            IncomingPackets.RegisterEncoded(0x05, true, Designer_Delete);
-            IncomingPackets.RegisterEncoded(0x06, true, Designer_Build);
-            IncomingPackets.RegisterEncoded(0x0C, true, Designer_Close);
-            IncomingPackets.RegisterEncoded(0x0D, true, Designer_Stairs);
-            IncomingPackets.RegisterEncoded(0x0E, true, Designer_Sync);
-            IncomingPackets.RegisterEncoded(0x10, true, Designer_Clear);
-            IncomingPackets.RegisterEncoded(0x12, true, Designer_Level);
+            IncomingPackets.RegisterEncoded(0x02, true, &Designer_Backup);
+            IncomingPackets.RegisterEncoded(0x03, true, &Designer_Restore);
+            IncomingPackets.RegisterEncoded(0x04, true, &Designer_Commit);
+            IncomingPackets.RegisterEncoded(0x05, true, &Designer_Delete);
+            IncomingPackets.RegisterEncoded(0x06, true, &Designer_Build);
+            IncomingPackets.RegisterEncoded(0x0C, true, &Designer_Close);
+            IncomingPackets.RegisterEncoded(0x0D, true, &Designer_Stairs);
+            IncomingPackets.RegisterEncoded(0x0E, true, &Designer_Sync);
+            IncomingPackets.RegisterEncoded(0x10, true, &Designer_Clear);
+            IncomingPackets.RegisterEncoded(0x12, true, &Designer_Level);
 
-            IncomingPackets.RegisterEncoded(0x13, true, Designer_Roof);       // Samurai Empire roof
-            IncomingPackets.RegisterEncoded(0x14, true, Designer_RoofDelete); // Samurai Empire roof
+            IncomingPackets.RegisterEncoded(0x13, true, &Designer_Roof);       // Samurai Empire roof
+            IncomingPackets.RegisterEncoded(0x14, true, &Designer_RoofDelete); // Samurai Empire roof
 
-            IncomingPackets.RegisterEncoded(0x1A, true, Designer_Revert);
+            IncomingPackets.RegisterEncoded(0x1A, true, &Designer_Revert);
 
             EventSink.Speech += EventSink_Speech;
         }
@@ -1766,7 +1766,7 @@ namespace Server.Multis
             context.Foundation.SendInfoTo(state);
         }
 
-        public static void QueryDesignDetails(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void QueryDesignDetails(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
@@ -1809,7 +1809,7 @@ namespace Server.Multis
 
             var mcl = design.Components;
 
-            if (z < -3 || z > 12 || z % 3 != 0)
+            if (z is < -3 or > 12 || z % 3 != 0)
             {
                 z = -3;
             }
@@ -2082,7 +2082,7 @@ namespace Server.Multis
             }
 
             // ML doors
-            if (itemID == 0x2D46 || itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4)
+            if (itemID is 0x2D46 or 0x2D48 or 0x2FE2 or 0x2FE4)
             {
                 return true;
             }

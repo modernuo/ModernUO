@@ -12,9 +12,9 @@ namespace Server.Engines.MLQuests.Mobiles
     {
         private InternalTimer m_Timer;
 
-        public DoneQuestCollector()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public DoneQuestCollector() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
+            SetSpeed(0.5, 2.0);
         }
 
         public DoneQuestCollector(Serial serial)

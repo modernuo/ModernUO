@@ -35,7 +35,7 @@ namespace Server.Factions
         private DateTime m_OrdersEnd;
         private Town m_Town;
 
-        public BaseFactionGuard(string title) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public BaseFactionGuard(string title) : base(AIType.AI_Melee)
         {
             Orders = new Orders(this);
             Title = title;
@@ -308,13 +308,13 @@ namespace Server.Factions
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (m_Faction != null && Map == Faction.Facet)
             {
-                list.Add(1060846, m_Faction.Definition.PropName); // Guard: ~1_val~
+                list.Add(1060846, $"{m_Faction.Definition.PropName}"); // Guard: ~1_val~
             }
         }
 

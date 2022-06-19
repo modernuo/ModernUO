@@ -225,21 +225,21 @@ namespace Server.Engines.Help
              * Use this option when another player is verbally harassing your character.
              * Verbal harassment behaviors include but are not limited to, using bad language, threats etc..
              * Before you submit a complaint be sure you understand what constitutes harassment
-             * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=40">� what is verbal harassment? -</A>
+             * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=40">- what is verbal harassment? -</A>
              * and that you have followed these steps:<BR>
              * 1. You have asked the player to stop and they have continued.<BR>
              * 2. You have tried to remove yourself from the situation.<BR>
              * 3. You have done nothing to instigate or further encourage the harassment.<BR>
              * 4. You have added the player to your ignore list.
              * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=138">- How do I ignore a player?</A><BR>
-             * 5. You have read and understand Origin�s definition of harassment.<BR>
+             * 5. You have read and understand Origin's definition of harassment.<BR>
              * 6. Your account information is up to date. (Including a current email address)<BR>
              * *If these steps have not been taken, GMs may be unable to take action against the offending player.<BR>
              * **A chat log will be review by a GM to assess the validity of this complaint.
              * Abuse of this system is a violation of the Rules of Conduct.<BR>
              * EXPLOITING<BR>
              * Use this option to report someone who may be exploiting or cheating.
-             * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=41">� What constitutes an exploit?</a>
+             * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=41">- What constitutes an exploit?</a>
              */
             AddHtmlLocalized(
                 110,
@@ -259,14 +259,14 @@ namespace Server.Engines.Help
              * Use this option when another player is harassing your character using game mechanics.
              * Physical harassment includes but is not limited to luring, Kill Stealing, and any act that causes a players death in Trammel.
              * Before you submit a complaint be sure you understand what constitutes harassment
-             * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=59"> � what is physical harassment?</A>
+             * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=59"> - what is physical harassment?</A>
              * and that you have followed these steps:<BR>
              * 1. You have asked the player to stop and they have continued.<BR>
              * 2. You have tried to remove yourself from the situation.<BR>
              * 3. You have done nothing to instigate or further encourage the harassment.<BR>
              * 4. You have added the player to your ignore list.
              * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=138"> - how do I ignore a player?</A><BR>
-             * 5. You have read and understand Origin�s definition of harassment.<BR>
+             * 5. You have read and understand Origin's definition of harassment.<BR>
              * 6. Your account information is up to date. (Including a current email address)<BR>
              * *If these steps have not been taken, GMs may be unable to take action against the offending player.<BR>
              * **This issue will be reviewed by a GM to assess the validity of this complaint.

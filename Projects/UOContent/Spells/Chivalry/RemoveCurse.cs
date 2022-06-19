@@ -9,14 +9,14 @@ namespace Server.Spells.Chivalry
 {
     public class RemoveCurseSpell : PaladinSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Remove Curse",
             "Extermo Vomica",
             -1,
             9002
         );
 
-        public RemoveCurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public RemoveCurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

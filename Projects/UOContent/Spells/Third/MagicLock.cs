@@ -1,13 +1,12 @@
 using Server.Items;
 using Server.Multis;
 using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Third
 {
     public class MagicLockSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Lock",
             "An Por",
             215,
@@ -17,7 +16,7 @@ namespace Server.Spells.Third
             Reagent.SulfurousAsh
         );
 
-        public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -25,19 +24,16 @@ namespace Server.Spells.Third
 
         public void Target(Item item)
         {
-            if (!(item is LockableContainer cont))
+            if (item is not LockableContainer cont)
             {
                 Caster.SendLocalizedMessage(501762); // Target must be an unlocked chest.
             }
             else if (BaseHouse.CheckLockedDownOrSecured(cont))
             {
-                Caster.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x22,
-                    501761
-                ); // You cannot cast this on a locked down item.
+                // You cannot cast this on a locked down item.
+                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 501761);
             }
-            else if (cont.Locked || cont.LockLevel == 0 || cont is ParagonChest)
+            else if (cont.Locked || cont.LockLevel == ILockpickable.CannotPick || cont is ParagonChest)
             {
                 Caster.SendLocalizedMessage(501762); // Target must be an unlocked chest.
             }
@@ -60,7 +56,7 @@ namespace Server.Spells.Third
                 // The chest is now locked!
                 Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501763);
 
-                cont.LockLevel = -255; // signal magic lock
+                cont.LockLevel = ILockpickable.MagicLock; // signal magic lock
                 cont.Locked = true;
             }
 
@@ -69,7 +65,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
         }
     }
 }

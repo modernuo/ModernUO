@@ -5,7 +5,7 @@ namespace Server.Spells.First
 {
     public class ReactiveArmorSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Reactive Armor",
             "Flam Sanct",
             236,
@@ -15,9 +15,9 @@ namespace Server.Spells.First
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
+        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
-        public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -53,7 +53,8 @@ namespace Server.Spells.First
                  * 15 + (Inscription/20) Physcial bonus
                  * -5 Elemental
                  * The reactive armor spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-                 * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out, even after dying�until you �turn them off� by casting them again.
+                 * Reactive Armor, Protection, and Magic Reflection will stay on even after logging out,
+                 * even after dying, until you turn them off by casting them again.
                  * (+20 physical -5 elemental at 100 Inscription)
                  */
 
@@ -61,7 +62,7 @@ namespace Server.Spells.First
                 {
                     var targ = Caster;
 
-                    if (m_Table.Remove(targ, out var mods))
+                    if (_table.Remove(targ, out var mods))
                     {
                         targ.PlaySound(0x1ED);
                         targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
@@ -90,7 +91,7 @@ namespace Server.Spells.First
                             new ResistanceMod(ResistanceType.Energy, -5)
                         };
 
-                        m_Table[targ] = mods;
+                        _table[targ] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
@@ -144,7 +145,7 @@ namespace Server.Spells.First
 
         public static void EndArmor(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mods))
+            if (!_table.Remove(m, out var mods))
             {
                 return;
             }

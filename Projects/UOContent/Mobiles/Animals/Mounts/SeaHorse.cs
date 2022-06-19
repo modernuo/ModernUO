@@ -3,17 +3,7 @@ namespace Server.Mobiles
     public class SeaHorse : BaseMount
     {
         [Constructible]
-        public SeaHorse(string name = "a sea horse") : base(
-            name,
-            0x90,
-            0x3EB3,
-            AIType.AI_Animal,
-            FightMode.Aggressor,
-            10,
-            1,
-            0.2,
-            0.4
-        )
+        public SeaHorse(string name = "a sea horse") : base(name, 0x90, 0x3EB3, AIType.AI_Animal, FightMode.Aggressor)
         {
             InitStats(Utility.Random(50, 30), Utility.Random(50, 30), 10);
             Skills.MagicResist.Base = 25.0 + Utility.RandomDouble() * 5.0;

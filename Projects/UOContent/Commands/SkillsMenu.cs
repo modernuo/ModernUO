@@ -15,7 +15,8 @@ namespace Server.Commands
             CommandSystem.Register("Skills", AccessLevel.Counselor, Skills_OnCommand);
         }
 
-        [Usage("Skills"), Description("Opens a menu where you can view or edit skills of a targeted mobile.")]
+        [Usage("Skills")]
+        [Description("Opens a menu where you can view or edit skills of a targeted mobile.")]
         private static void Skills_OnCommand(CommandEventArgs e)
         {
             e.Mobile.Target = new SkillsTarget();

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright (C) 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: InvalidGumpResponseException.cs                                 *
  *                                                                       *
@@ -15,12 +15,11 @@
 
 using System;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class InvalidGumpResponseException : Exception
 {
-    public class InvalidGumpResponseException : Exception
+    public InvalidGumpResponseException(string reason) : base(reason)
     {
-        public InvalidGumpResponseException(string reason) : base(reason)
-        {
-        }
     }
 }

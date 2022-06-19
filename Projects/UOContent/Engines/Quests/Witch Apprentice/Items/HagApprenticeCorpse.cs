@@ -39,7 +39,7 @@ namespace Server.Engines.Quests.Hag
 
         private static List<Item> GetEquipment() => new();
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add("a charred corpse");
         }

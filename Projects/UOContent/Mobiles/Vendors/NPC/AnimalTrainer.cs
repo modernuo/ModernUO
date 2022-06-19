@@ -230,7 +230,7 @@ namespace Server.Mobiles
                     SayTo( from, 1048053 ); // You can't stable that!
                   }
             */
-            else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
+            else if (pet is PackLlama or PackHorse or Beetle && pet.Backpack?.Items.Count > 0)
             {
                 SayTo(from, 1042563); // You need to unload your pet.
             }

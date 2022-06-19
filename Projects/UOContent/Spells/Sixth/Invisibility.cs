@@ -9,7 +9,7 @@ namespace Server.Spells.Sixth
 {
     public class InvisibilitySpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Invisibility",
             "An Lor Xen",
             206,
@@ -18,9 +18,9 @@ namespace Server.Spells.Sixth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
-        public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,16 +28,7 @@ namespace Server.Spells.Sixth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m is BaseVendor || m is PlayerVendor || m.AccessLevel > Caster.AccessLevel)
+            if (m is BaseVendor or PlayerVendor || m.AccessLevel > Caster.AccessLevel)
             {
                 Caster.SendLocalizedMessage(501857); // This spell won't work on that!
             }
@@ -74,7 +65,7 @@ namespace Server.Spells.Sixth
                     out var timerToken
                 );
 
-                m_Table[m] = timerToken;
+                _table[m] = timerToken;
             }
 
             FinishSequence();
@@ -96,11 +87,11 @@ namespace Server.Spells.Sixth
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
         }
 
-        public static bool HasTimer(Mobile m) => m_Table.ContainsKey(m);
+        public static bool HasTimer(Mobile m) => _table.ContainsKey(m);
 
         public static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
             }

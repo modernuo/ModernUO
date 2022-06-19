@@ -124,7 +124,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (item is Container || item is BulkOrderBook)
+            if (item is Container or BulkOrderBook)
             {
                 return true;
             }
@@ -142,7 +142,7 @@ namespace Server.Mobiles
         {
             base.GetChildContextMenuEntries(from, list, item);
 
-            if (!(RootParent is PlayerVendor pv) || pv.IsOwner(from))
+            if (RootParent is not PlayerVendor pv || pv.IsOwner(from))
             {
                 return;
             }
@@ -155,7 +155,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void GetChildNameProperties(ObjectPropertyList list, Item item)
+        public override void GetChildNameProperties(IPropertyList list, Item item)
         {
             base.GetChildNameProperties(list, item);
 
@@ -182,7 +182,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void GetChildProperties(ObjectPropertyList list, Item item)
+        public override void GetChildProperties(IPropertyList list, Item item)
         {
             base.GetChildProperties(list, item);
 
@@ -735,7 +735,7 @@ namespace Server.Mobiles
 
         public override bool IsSnoop(Mobile from) => false;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -1043,7 +1043,7 @@ namespace Server.Mobiles
 
         public static void TryToBuy(Item item, Mobile from)
         {
-            if (!(item.RootParent is PlayerVendor vendor) || !vendor.CanInteractWith(from, false))
+            if (item.RootParent is not PlayerVendor vendor || !vendor.CanInteractWith(from, false))
             {
                 return;
             }
@@ -1493,7 +1493,7 @@ namespace Server.Mobiles
                             setPrice = true;
                         }
                     }
-                    else if (item is BaseBook || item is BulkOrderBook)
+                    else if (item is BaseBook or BulkOrderBook)
                     {
                         setPrice = true;
                     }
@@ -1652,7 +1652,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public PlayerVendor Vendor { get; private set; }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

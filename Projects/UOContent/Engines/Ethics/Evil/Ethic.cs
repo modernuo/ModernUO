@@ -29,7 +29,7 @@ namespace Server.Ethics.Evil
         {
             var fac = Faction.Find(mob);
 
-            return fac is Minax || fac is Shadowlords;
+            return fac is Minax or Shadowlords;
         }
     }
 }

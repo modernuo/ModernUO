@@ -13,7 +13,7 @@ namespace Server.Items
         {
         }
 
-        public CandyCane(int itemID) : base(itemID, 1)
+        public CandyCane(int itemID) : base(itemID)
         {
             Stackable = false;
             LootType = LootType.Blessed;
@@ -118,15 +118,15 @@ namespace Server.Items
             1077396, // Noooo!
             1077397, // Please don't eat me... *whimper*
             1077405, // Not the face!
-            1077406, // Ahhhhhh! My foot�s gone!
+            1077406, // Ahhhhhh! My foot's gone!
             1077407, // Please. No! I have gingerkids!
-            1077408, // No, no! I�m really made of poison. Really.
+            1077408, // No, no! I'm really made of poison. Really.
             1077409  // Run, run as fast as you can! You can't catch me! I'm the gingerbread man!
         };
 
         [Constructible]
         public GingerBreadCookie()
-            : base(Utility.RandomBool() ? 0x2be1 : 0x2be2, 1)
+            : base(Utility.RandomBool() ? 0x2be1 : 0x2be2)
         {
             Stackable = false;
             LootType = LootType.Blessed;

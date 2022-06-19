@@ -83,7 +83,7 @@ namespace Server.Engines.VeteranRewards
 
         public static int GetRewardLevel(Mobile mob)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return 0;
             }
@@ -96,7 +96,7 @@ namespace Server.Engines.VeteranRewards
 
         public static bool HasHalfLevel(Mobile mob)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return false;
             }
@@ -115,7 +115,7 @@ namespace Server.Engines.VeteranRewards
                 return false;
             }
 
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 return false;
             }
@@ -133,7 +133,7 @@ namespace Server.Engines.VeteranRewards
 
         public static void ComputeRewardInfo(Mobile mob, out int cur, out int max, out int level)
         {
-            if (!(mob.Account is Account acct))
+            if (mob.Account is not Account acct)
             {
                 cur = max = level = 0;
                 return;
@@ -170,7 +170,7 @@ namespace Server.Engines.VeteranRewards
 
         public static bool CheckIsUsableBy(Mobile from, Item item, object[] args = null)
         {
-            var isRelaxedRules = item is DyeTub || item is MonsterStatuette;
+            var isRelaxedRules = item is DyeTub or MonsterStatuette;
 
             var type = item.GetType();
 
@@ -578,8 +578,7 @@ namespace Server.Engines.VeteranRewards
 
             ComputeRewardInfo(m, out var cur, out var max, out var level);
 
-            if (m.SkillsCap == 7000 || m.SkillsCap == 7050 || m.SkillsCap == 7100 ||
-                m.SkillsCap == 7150 || m.SkillsCap == 7200)
+            if (m.SkillsCap is 7000 or 7050 or 7100 or 7150 or 7200)
             {
                 level = Math.Clamp(level, 0, 4);
 

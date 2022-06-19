@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x1405, 0x1404)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WarFork : BaseSpear
     {
         [Constructible]

@@ -347,9 +347,7 @@ namespace Server.Commands.Generic
             {
                 var result = Properties.IncreaseValue(e.Mobile, obj, e.Arguments);
 
-                if (result == "The property has been increased." || result == "The properties have been increased." ||
-                    result == "The property has been decreased." || result == "The properties have been decreased." ||
-                    result == "The properties have been changed.")
+                if (result is "The property has been increased." or "The properties have been increased." or "The property has been decreased." or "The properties have been decreased." or "The properties have been changed.")
                 {
                     AddResponse(result);
                 }
@@ -556,21 +554,19 @@ namespace Server.Commands.Generic
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            if (!(obj is IPoint3D p))
+            if (obj is not IPoint3D ip)
             {
                 return;
             }
 
-            if (p is Item item)
+            Point3D p = ip switch
             {
-                p = item.GetWorldTop();
-            }
-            else if (p is Mobile m)
-            {
-                p = m.Location;
-            }
+                Item item => item.GetWorldTop(),
+                Mobile m  => m.Location,
+                _         => new Point3D(ip)
+            };
 
-            Add.Invoke(e.Mobile, new Point3D(p), new Point3D(p), e.Arguments);
+            Add.Invoke(e.Mobile, p, p, e.Arguments);
         }
     }
 
@@ -588,7 +584,7 @@ namespace Server.Commands.Generic
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            if (!(obj is IPoint3D p))
+            if (obj is not IPoint3D p)
             {
                 return;
             }
@@ -787,8 +783,7 @@ namespace Server.Commands.Generic
                 {
                     var result = Properties.GetValue(e.Mobile, obj, e.GetString(i));
 
-                    if (result == "Property not found." || result == "Property is write only." ||
-                        result.StartsWithOrdinal("Getting this property"))
+                    if (result is "Property not found." or "Property is write only." || result.StartsWithOrdinal("Getting this property"))
                     {
                         LogFailure(result);
                     }
@@ -1285,7 +1280,7 @@ namespace Server.Commands.Generic
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            if (!(obj is Item item))
+            if (obj is not Item item)
             {
                 return;
             }

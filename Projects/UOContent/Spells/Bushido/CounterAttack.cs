@@ -6,16 +6,16 @@ namespace Server.Spells.Bushido
 {
     public class CounterAttack : SamuraiSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "CounterAttack",
             null,
             -1,
             9002
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
-        public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+        public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 
@@ -31,17 +31,12 @@ namespace Server.Spells.Bushido
                 return false;
             }
 
-            if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield)
-            {
-                return true;
-            }
-
             if (Caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon)
             {
                 return true;
             }
 
-            if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseWeapon)
+            if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield or BaseWeapon)
             {
                 return true;
             }
@@ -71,11 +66,11 @@ namespace Server.Spells.Bushido
             FinishSequence();
         }
 
-        public static bool IsCountering(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsCountering(Mobile m) => _table.ContainsKey(m);
 
         private static bool StopCounterTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
                 return true;
@@ -97,7 +92,7 @@ namespace Server.Spells.Bushido
                 out var timerToken
             );
 
-            m_Table[m] = timerToken;
+            _table[m] = timerToken;
         }
 
         public static void StopCountering(Mobile m)

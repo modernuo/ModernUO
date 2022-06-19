@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class WitherSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Wither",
             "Kal Vas An Flam",
             203,
@@ -18,7 +18,7 @@ namespace Server.Spells.Necromancy
         );
 
         public WitherSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -98,7 +98,7 @@ namespace Server.Spells.Necromancy
 
                         var sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
 
-                        // PvP spell damage increase cap of 15% from an item�s magic property in Publish 33(SE)
+                        // PvP spell damage increase cap of 15% from an item's magic property in Publish 33(SE)
                         if (Core.SE && m.Player && Caster.Player && sdiBonus > 15)
                         {
                             sdiBonus = 15;

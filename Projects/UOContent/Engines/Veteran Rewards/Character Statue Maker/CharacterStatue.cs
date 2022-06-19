@@ -128,7 +128,7 @@ namespace Server.Mobiles
             DisplayPaperdollTo(from);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -496,7 +496,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -613,7 +613,7 @@ namespace Server.Mobiles
             BaseHouse house = null;
             var loc = new Point3D(p);
 
-            if (targeted is Item item && !item.IsLockedDown && !item.IsSecure && !(item is AddonComponent))
+            if (targeted is Item item && !item.IsLockedDown && !item.IsSecure && item is not AddonComponent)
             {
                 from.SendLocalizedMessage(1076191); // Statues can only be placed in houses.
                 return;

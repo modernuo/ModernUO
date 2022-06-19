@@ -44,7 +44,7 @@ namespace Server.Commands.Generic
                 return; // sanity check
             }
 
-            if (!(targeted is Container cont))
+            if (targeted is not Container cont)
             {
                 from.SendMessage("That is not a container.");
                 return;

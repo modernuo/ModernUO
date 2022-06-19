@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public partial class BigFish : Item, ICarvable
     {
         [InvalidateProperties]
@@ -25,7 +26,7 @@ namespace Server.Items
             ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -36,7 +37,7 @@ namespace Server.Items
                     list.Add(1070857, _fisher.Name); // Caught by ~1_fisherman~
                 }
 
-                list.Add(1070858, ((int)Weight).ToString()); // ~1_weight~ stones
+                list.Add(1070858, $"{(int)Weight}"); // ~1_weight~ stones
             }
         }
 

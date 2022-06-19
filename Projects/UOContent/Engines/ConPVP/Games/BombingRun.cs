@@ -210,7 +210,7 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            if (!(obj is IPoint3D))
+            if (obj is not IPoint3D)
             {
                 return false;
             }
@@ -1680,7 +1680,7 @@ namespace Server.Engines.ConPVP
 
         public int GetTeamID(Mobile mob)
         {
-            if (!(mob is PlayerMobile pm))
+            if (mob is not PlayerMobile pm)
             {
                 return mob is BaseCreature creature ? creature.Team - 1 : -1;
             }

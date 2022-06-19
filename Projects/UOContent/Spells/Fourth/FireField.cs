@@ -3,13 +3,12 @@ using Server.Collections;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
     public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Fire Field",
             "In Flam Grav",
             215,
@@ -20,7 +19,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,38 +27,29 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20C);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
+
+                Effects.PlaySound(loc, Caster.Map, 0x20C);
 
                 var itemID = eastToWest ? 0x398C : 0x3996;
 
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
-                }
+                var duration = Core.AOS
+                    ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0)
+                    : TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
 
                 for (var i = -2; i <= 2; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
+                    var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
 
-                    new FireFieldItem(itemID, loc, Caster, Caster.Map, duration, i);
+                    new FireFieldItem(itemID, targetLoc, Caster, Caster.Map, duration, i);
                 }
             }
 
@@ -68,7 +58,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]

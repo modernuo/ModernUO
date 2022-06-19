@@ -18,7 +18,7 @@ namespace Server.Spells.Ninjitsu
             NoSkill
         }
 
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Animal Form",
             null,
             -1,
@@ -26,12 +26,12 @@ namespace Server.Spells.Ninjitsu
         );
 
         private static readonly Dictionary<Mobile, int> m_LastAnimalForms = new();
-        private static readonly Dictionary<Mobile, AnimalFormContext> m_Table = new();
+        private static readonly Dictionary<Mobile, AnimalFormContext> _table = new();
 
         private bool m_WasMoving;
 
         public AnimalForm(Mobile caster, Item scroll)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -272,7 +272,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddContext(Mobile m, AnimalFormContext context)
         {
-            m_Table[m] = context;
+            _table[m] = context;
 
             if (context.Type == typeof(BakeKitsune) || context.Type == typeof(GreyWolf))
             {
@@ -292,7 +292,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void RemoveContext(Mobile m, AnimalFormContext context, bool resetGraphics)
         {
-            m_Table.Remove(m);
+            _table.Remove(m);
 
             if (context.SpeedBoost)
             {
@@ -324,9 +324,9 @@ namespace Server.Spells.Ninjitsu
             context.Timer.Stop();
         }
 
-        public static AnimalFormContext GetContext(Mobile m) => m_Table.TryGetValue(m, out var context) ? context : null;
+        public static AnimalFormContext GetContext(Mobile m) => _table.TryGetValue(m, out var context) ? context : null;
 
-        public static bool UnderTransformation(Mobile m) => m_Table.ContainsKey(m);
+        public static bool UnderTransformation(Mobile m) => _table.ContainsKey(m);
 
         public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
@@ -462,9 +462,9 @@ namespace Server.Spells.Ninjitsu
                         entries[i].ItemID,
                         entries[i].Hue,
                         40 - b.Width / 2 - b.X,
-                        30 - b.Height / 2 - b.Y,
-                        entries[i].Tooltip
+                        30 - b.Height / 2 - b.Y
                     );
+                    AddTooltip(entries[i].Tooltip);
                     AddHtmlLocalized(x + 84, y, 250, 60, entries[i].Name, 0x7FFF);
 
                     current++;
@@ -589,8 +589,7 @@ namespace Server.Spells.Ninjitsu
                     m_LastTarget = m_Mobile.Combatant;
                 }
 
-                if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
-                    m_Counter-- <= 0)
+                if (m_Mobile.Warmode && m_LastTarget is { Alive: true, Deleted: false } && m_Counter-- <= 0)
                 {
                     if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&
                         m_LastTarget.InRange(m_Mobile.Location, BaseCreature.DefaultRangePerception) &&

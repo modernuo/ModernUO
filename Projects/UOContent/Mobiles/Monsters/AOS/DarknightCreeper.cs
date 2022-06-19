@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class DarknightCreeper : BaseCreature
     {
         [Constructible]
-        public DarknightCreeper() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public DarknightCreeper() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("darknight creeper");
             Body = 313;

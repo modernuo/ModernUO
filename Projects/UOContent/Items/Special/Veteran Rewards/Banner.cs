@@ -74,7 +74,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -155,7 +155,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -264,7 +264,7 @@ namespace Server.Items
 
                 var m = sender.Mobile;
 
-                if (info.ButtonID < Start || info.ButtonID > End || (info.ButtonID & 0x1) != 0)
+                if (info.ButtonID is < Start or > End || (info.ButtonID & 0x1) != 0)
                 {
                     return;
                 }

@@ -102,11 +102,11 @@ namespace Server.Items
             };
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1060741, m_Charges.ToString()); // charges: ~1_val~
+            list.Add(1060741, m_Charges); // charges: ~1_val~
         }
 
         public override void OnSingleClick(Mobile from)
@@ -258,7 +258,7 @@ namespace Server.Items
                             0x59
                         ); // You may only send items from your backpack to your bank box.
                     }
-                    else if (item is BagOfSending || item is Container)
+                    else if (item is BagOfSending or Container)
                     {
                         from.NetState.SendMessage(
                             m_Bag.Serial,

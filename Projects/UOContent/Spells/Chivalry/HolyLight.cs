@@ -5,14 +5,14 @@ namespace Server.Spells.Chivalry
 {
     public class HolyLightSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Holy Light",
             "Augus Luminos",
             -1,
             9002
         );
 
-        public HolyLightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public HolyLightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

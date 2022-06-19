@@ -533,7 +533,7 @@ namespace Server.Engines.BulkOrders
 
         private static Item CreatePowerScroll(int type)
         {
-            if (type == 5 || type == 10 || type == 15 || type == 20)
+            if (type is 5 or 10 or 15 or 20)
             {
                 return new PowerScroll(SkillName.Blacksmith, 100 + type);
             }
@@ -545,7 +545,7 @@ namespace Server.Engines.BulkOrders
 
         private static Item CreateAncientHammer(int type)
         {
-            if (type == 10 || type == 15 || type == 30 || type == 60)
+            if (type is 10 or 15 or 30 or 60)
             {
                 return new AncientSmithyHammer(type);
             }
@@ -848,7 +848,7 @@ namespace Server.Engines.BulkOrders
 
         private static Item CreatePowerScroll(int type)
         {
-            if (type == 5 || type == 10 || type == 15 || type == 20)
+            if (type is 5 or 10 or 15 or 20)
             {
                 return new PowerScroll(SkillName.Tailoring, 100 + type);
             }

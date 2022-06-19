@@ -10,7 +10,7 @@ namespace Server.Mobiles
     public class Wisp : BaseCreature
     {
         [Constructible]
-        public Wisp() : base(AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Wisp() : base(AIType.AI_Mage, FightMode.Aggressor)
         {
             Body = 58;
             BaseSoundID = 466;

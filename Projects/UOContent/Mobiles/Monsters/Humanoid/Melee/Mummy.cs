@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public class Mummy : BaseCreature
     {
         [Constructible]
-        public Mummy() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+        public Mummy() : base(AIType.AI_Melee)
         {
             Body = 154;
             BaseSoundID = 471;

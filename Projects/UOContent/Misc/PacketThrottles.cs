@@ -10,9 +10,9 @@ namespace Server.Network
     {
         // Delay in milliseconds
         private static readonly int[] Delays = new int[0x100];
-        private static string ThrottlesConfiguration = "Configuration/throttles.json";
+        private const string ThrottlesConfiguration = "Configuration/throttles.json";
 
-        public static void Initialize()
+        public static unsafe void Initialize()
         {
             CommandSystem.Register("GetThrottle", AccessLevel.Administrator, GetThrottle);
             CommandSystem.Register("SetThrottle", AccessLevel.Administrator, SetThrottle);
@@ -38,8 +38,8 @@ namespace Server.Network
             }
             else
             {
-                Delays[0x03] = 5; // Speech
-                Delays[0xAD] = 5; // Speech
+                Delays[0x03] = 25; // Speech
+                Delays[0xAD] = 25; // Speech
                 Delays[0x75] = 500; // Rename request
             }
 
@@ -47,7 +47,7 @@ namespace Server.Network
             {
                 if (Delays[i] > 0)
                 {
-                    IncomingPackets.RegisterThrottler(i, Throttle);
+                    IncomingPackets.RegisterThrottler(i, &Throttle);
                 }
             }
 
@@ -66,7 +66,7 @@ namespace Server.Network
 
             int packetID = e.GetInt32(0);
 
-            if (packetID < 0 || packetID > 0x100)
+            if (packetID is < 0 or > 0x100)
             {
                 e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
                 return;
@@ -77,7 +77,7 @@ namespace Server.Network
 
         [Usage("SetThrottle <packetID> <timeInMilliseconds>")]
         [Description("Sets a throttle for the given packet.")]
-        public static void SetThrottle(CommandEventArgs e)
+        public static unsafe void SetThrottle(CommandEventArgs e)
         {
             if (e.Length != 2)
             {
@@ -88,7 +88,7 @@ namespace Server.Network
             int packetID = e.GetInt32(0);
             int delay = e.GetInt32(1);
 
-            if (packetID < 0 || packetID > 0x100)
+            if (packetID is < 0 or > 0x100)
             {
                 e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
                 return;
@@ -104,7 +104,7 @@ namespace Server.Network
 
             if (oldDelay == 0 && delay > 0)
             {
-                IncomingPackets.RegisterThrottler(packetID, Throttle);
+                IncomingPackets.RegisterThrottler(packetID, &Throttle);
             }
             else if (oldDelay > 0 && delay == 0)
             {
@@ -141,7 +141,7 @@ namespace Server.Network
                 return true;
             }
 
-            if (Core.TickCount < ns.GetPacketDelay(packetID) + Delays[packetID])
+            if (Core.TickCount < ns.GetPacketTime(packetID) + Delays[packetID])
             {
                 drop = true;
                 return false;

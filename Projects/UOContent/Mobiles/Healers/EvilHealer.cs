@@ -32,10 +32,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            return skill == SkillName.Forensics
-                   || skill == SkillName.Healing
-                   || skill == SkillName.SpiritSpeak
-                   || skill == SkillName.Swords;
+            return skill is SkillName.Forensics or SkillName.Healing or SkillName.SpiritSpeak or SkillName.Swords;
         }
 
         public override void InitSBInfo()

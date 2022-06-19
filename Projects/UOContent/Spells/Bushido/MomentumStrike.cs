@@ -1,4 +1,4 @@
-using System.Linq;
+using Server.Collections;
 
 namespace Server.Spells.Bushido
 {
@@ -21,12 +21,17 @@ namespace Server.Spells.Bushido
 
             var weapon = attacker.Weapon;
 
-            var targets = attacker.GetMobilesInRange(weapon.MaxRange)
-                .Where(m => m != defender)
-                .Where(m => m.Combatant == attacker)
-                .ToList();
+            var eable = attacker.GetMobilesInRange(weapon.MaxRange);
+            using var queue = PooledRefQueue<Mobile>.Create();
+            foreach (var m in eable)
+            {
+                if (m != defender && m.Combatant == attacker)
+                {
+                    queue.Enqueue(m);
+                }
+            }
 
-            if (targets.Count <= 0)
+            if (queue.Count <= 0)
             {
                 attacker.SendLocalizedMessage(1063123); // There are no valid targets to attack!
                 return;
@@ -37,7 +42,7 @@ namespace Server.Spells.Bushido
                 return;
             }
 
-            var target = targets.RandomElement();
+            Mobile target = queue.PeekRandom();
 
             var damageBonus = attacker.Skills.Bushido.Value / 100.0;
 
@@ -47,7 +52,7 @@ namespace Server.Spells.Bushido
             }
 
             attacker.SendLocalizedMessage(1063171); // You transfer the momentum of your weapon into another enemy!
-            target.SendLocalizedMessage(1063172);   // You were hit by the momentum of a Samurai's weapon!
+            target!.SendLocalizedMessage(1063172);   // You were hit by the momentum of a Samurai's weapon!
 
             target.FixedParticles(0x37B9, 1, 4, 0x251D, 0, 0, EffectLayer.Waist);
 

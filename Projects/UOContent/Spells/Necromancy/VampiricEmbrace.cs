@@ -5,7 +5,7 @@ namespace Server.Spells.Necromancy
 {
     public class VampiricEmbraceSpell : TransformationSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Vampiric Embrace",
             "Rel Xen An Sanct",
             203,
@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        public VampiricEmbraceSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public VampiricEmbraceSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

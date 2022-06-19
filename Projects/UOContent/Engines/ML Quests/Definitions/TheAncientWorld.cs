@@ -98,14 +98,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class LorekeeperBroolol : BaseCreature
     {
         [Constructible]
-        public LorekeeperBroolol()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public LorekeeperBroolol() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the keeper of tradition";
             Race = Race.Elf;
             Body = 0x25E;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -130,7 +131,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074200); // Thank goodness you are here, there�s no time to lose.
+            MLQuestSystem.Tell(this, pm, 1074200); // Thank goodness you are here, there's no time to lose.
         }
 
         public override void Serialize(IGenericWriter writer)

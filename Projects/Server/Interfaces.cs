@@ -22,8 +22,7 @@ namespace Server
     {
         int MaxRange { get; }
         void OnBeforeSwing(Mobile attacker, Mobile defender);
-        TimeSpan OnSwing(Mobile attacker, Mobile defender);
-        TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus);
+        TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus = 1.0);
         void GetStatusDamage(Mobile from, out int min, out int max);
     }
 

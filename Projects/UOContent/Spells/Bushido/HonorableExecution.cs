@@ -5,7 +5,7 @@ namespace Server.Spells.Bushido
 {
     public class HonorableExecution : SamuraiMove
     {
-        private static readonly Dictionary<Mobile, HonorableExecutionTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, HonorableExecutionTimer> _table = new();
 
         public override int BaseMana => 0;
         public override double RequiredSkill => 25.0;
@@ -63,20 +63,20 @@ namespace Server.Spells.Bushido
                 timer = new HonorableExecutionTimer(attacker, mods);
             }
 
-            m_Table[attacker] = timer;
+            _table[attacker] = timer;
             timer.Start();
 
             attacker.Delta(MobileDelta.WeaponDamage);
             CheckGain(attacker);
         }
 
-        public static int GetSwingBonus(Mobile target) => m_Table.TryGetValue(target, out var info) ? info.m_SwingBonus : 0;
+        public static int GetSwingBonus(Mobile target) => _table.TryGetValue(target, out var info) ? info.m_SwingBonus : 0;
 
-        public static bool IsUnderPenalty(Mobile target) => m_Table.TryGetValue(target, out var info) && info.m_Penalty;
+        public static bool IsUnderPenalty(Mobile target) => _table.TryGetValue(target, out var info) && info.m_Penalty;
 
         public static void RemovePenalty(Mobile target)
         {
-            if (m_Table.Remove(target, out var timer))
+            if (_table.Remove(target, out var timer))
             {
                 timer.Clear();
             }
@@ -98,8 +98,8 @@ namespace Server.Spells.Bushido
             }
 
             public HonorableExecutionTimer(
-                TimeSpan duration, Mobile from, int swingBonus, List<object> mods = null, bool penalty = false)
-                : base(duration)
+                TimeSpan duration, Mobile from, int swingBonus, List<object> mods = null, bool penalty = false
+            ) : base(duration)
             {
                 m_Mobile = from;
                 m_SwingBonus = swingBonus;

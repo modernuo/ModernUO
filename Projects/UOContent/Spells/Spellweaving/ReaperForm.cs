@@ -5,9 +5,9 @@ namespace Server.Spells.Spellweaving
 {
     public class ReaperFormSpell : ArcaneForm
     {
-        private static readonly SpellInfo m_Info = new("Reaper Form", "Tarisstree", -1);
+        private static readonly SpellInfo _info = new("Reaper Form", "Tarisstree", -1);
 
-        public ReaperFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ReaperFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

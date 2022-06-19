@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LoomSouthAddon : BaseAddon, ILoom
     {
         [SerializableField(0)]
@@ -16,7 +18,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new LoomSouthDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LoomSouthDeed : BaseAddonDeed
     {
         [Constructible]

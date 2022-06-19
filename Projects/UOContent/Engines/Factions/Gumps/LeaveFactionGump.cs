@@ -50,7 +50,7 @@ namespace Server.Factions
             {
                 case 1: // continue
                     {
-                        if (!(m_From.Guild is Guild guild))
+                        if (m_From.Guild is not Guild guild)
                         {
                             var pl = PlayerState.Find(m_From);
 

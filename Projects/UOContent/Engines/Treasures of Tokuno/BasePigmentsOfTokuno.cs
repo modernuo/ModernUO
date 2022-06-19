@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Stealables;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
@@ -112,7 +113,7 @@ namespace Server.Items
             set { }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -121,7 +122,7 @@ namespace Server.Items
                 TextDefinition.AddTo(list, m_Label);
             }
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -145,7 +146,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(targeted is Item i))
+            if (targeted is not Item i)
             {
                 from.SendLocalizedMessage(1070931); // You can only dye artifacts and enhanced magic items with this tub.
             }
@@ -234,7 +235,7 @@ namespace Server.Items
                    || IsInTypeList(t, DemonKnight.ArtifactRarity10)
                    || IsInTypeList(t, DemonKnight.ArtifactRarity11)
                    || IsInTypeList(t, MondainsLegacy.Artifacts)
-                   || IsInTypeList(t, StealableArtifactsSpawner.TypesOfEntires)
+                   || IsInTypeList(t, StealableArtifacts.TypesOfEntries)
                    || IsInTypeList(t, Paragon.Artifacts)
                    || IsInTypeList(t, Leviathan.Artifacts)
                    || IsInTypeList(t, TreasureMapChest.Artifacts)

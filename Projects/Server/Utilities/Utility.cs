@@ -10,7 +10,9 @@ using System.Text;
 using System.Xml;
 using Microsoft.Toolkit.HighPerformance;
 using Server.Buffers;
+using Server.Collections;
 using Server.Random;
+using Server.Text;
 
 namespace Server
 {
@@ -341,7 +343,7 @@ namespace Server
 
                 if (endOfSection || i + 1 == end)
                 {
-                    if (number < 0 || number > 255)
+                    if (number is < 0 or > 255)
                     {
                         valid = false;
                         return false;
@@ -558,12 +560,25 @@ namespace Server
                 return str;
             }
 
-            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(40960, str.Length)]);
+            using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(128, str.Length)]);
             ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
             ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
             sb.ReplaceAny(invalid, replacement, 0, sb.Length);
 
             return sb.ToString();
+        }
+
+        public static void FixHtml(Span<char> chars)
+        {
+            if (chars.Length == 0)
+            {
+                return;
+            }
+
+            ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
+            ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
+
+            chars.ReplaceAny(invalid, replacement);
         }
 
         public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);
@@ -632,207 +647,42 @@ namespace Server
             }
         }
 
-        public static void FormatBuffer(TextWriter output, Stream input, int length)
+        public static void FormatBuffer(this TextWriter op, ReadOnlySpan<byte> first, ReadOnlySpan<byte> second, int totalLength)
         {
-            output.WriteLine("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F");
-            output.WriteLine("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --");
+            op.WriteLine("        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F");
+            op.WriteLine("       -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --");
 
-            var byteIndex = 0;
-
-            var whole = length >> 4;
-            var rem = length & 0xF;
-
-            for (var i = 0; i < whole; ++i, byteIndex += 16)
+            if (totalLength <= 0)
             {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(16);
-
-                for (var j = 0; j < 16; ++j)
-                {
-                    var c = input.ReadByte();
-
-                    bytes.Append(c.ToString("X2"));
-
-                    if (j != 7)
-                    {
-                        bytes.Append(' ');
-                    }
-                    else
-                    {
-                        bytes.Append("  ");
-                    }
-
-                    if (c >= 0x20 && c < 0x7F)
-                    {
-                        chars.Append((char)c);
-                    }
-                    else
-                    {
-                        chars.Append('.');
-                    }
-                }
-
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
+                op.WriteLine("0000   ");
+                return;
             }
 
-            if (rem != 0)
+            Span<byte> lineBytes = stackalloc byte[16];
+            Span<char> lineChars = stackalloc char[47];
+            for (var i = 0; i < totalLength; i += 16)
             {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(rem);
-
-                for (var j = 0; j < 16; ++j)
+                var length = Math.Min(totalLength - i, 16);
+                if (i < first.Length)
                 {
-                    if (j < rem)
+                    var firstLength = Math.Min(length, first.Length - i);
+                    first.Slice(i, firstLength).CopyTo(lineBytes);
+
+                    if (firstLength < length)
                     {
-                        var c = input.ReadByte();
-
-                        bytes.Append(c.ToString("X2"));
-
-                        if (j != 7)
-                        {
-                            bytes.Append(' ');
-                        }
-                        else
-                        {
-                            bytes.Append("  ");
-                        }
-
-                        if (c >= 0x20 && c < 0x7F)
-                        {
-                            chars.Append((char)c);
-                        }
-                        else
-                        {
-                            chars.Append('.');
-                        }
-                    }
-                    else
-                    {
-                        bytes.Append("   ");
+                        second[..(length - first.Length - i)].CopyTo(lineBytes[(length - firstLength)..]);
                     }
                 }
-
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
-            }
-        }
-
-        public static void FormatBuffer(TextWriter output, params Memory<byte>[] mems)
-        {
-            output.WriteLine("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F");
-            output.WriteLine("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --");
-
-            var byteIndex = 0;
-
-            var length = 0;
-            for (var i = 0; i < mems.Length; i++)
-            {
-                length += mems[i].Length;
-            }
-
-            var position = 0;
-            var memIndex = 0;
-            var span = mems[memIndex].Span;
-
-            var whole = length >> 4;
-            var rem = length & 0xF;
-
-            for (var i = 0; i < whole; ++i, byteIndex += 16)
-            {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(16);
-
-                for (var j = 0; j < 16; ++j)
+                else
                 {
-                    var c = span[position++];
-                    if (position > span.Length)
-                    {
-                        span = mems[memIndex++].Span;
-                        position = 0;
-                    }
-
-                    bytes.Append(c.ToString("X2"));
-
-                    if (j != 7)
-                    {
-                        bytes.Append(' ');
-                    }
-                    else
-                    {
-                        bytes.Append("  ");
-                    }
-
-                    if (c >= 0x20 && c < 0x7F)
-                    {
-                        chars.Append((char)c);
-                    }
-                    else
-                    {
-                        chars.Append('.');
-                    }
+                    second.Slice(i - first.Length, length).CopyTo(lineBytes);
                 }
 
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
-            }
+                var charsWritten = ((ReadOnlySpan<byte>)lineBytes[..length]).ToSpacedHexString(lineChars);
 
-            if (rem != 0)
-            {
-                var bytes = new StringBuilder(49);
-                var chars = new StringBuilder(rem);
-
-                for (var j = 0; j < 16; ++j)
-                {
-                    if (j < rem)
-                    {
-                        var c = span[position++];
-                        if (position > span.Length)
-                        {
-                            span = mems[memIndex++].Span;
-                            position = 0;
-                        }
-
-                        bytes.Append(c.ToString("X2"));
-
-                        if (j != 7)
-                        {
-                            bytes.Append(' ');
-                        }
-                        else
-                        {
-                            bytes.Append("  ");
-                        }
-
-                        if (c >= 0x20 && c < 0x7F)
-                        {
-                            chars.Append((char)c);
-                        }
-                        else
-                        {
-                            chars.Append('.');
-                        }
-                    }
-                    else
-                    {
-                        bytes.Append("   ");
-                    }
-                }
-
-                output.Write(byteIndex.ToString("X4"));
-                output.Write("   ");
-                output.Write(bytes.ToString());
-                output.Write("  ");
-                output.WriteLine(chars.ToString());
+                op.Write("{0:X4}   ", i);
+                op.Write(lineChars[..charsWritten]);
+                op.WriteLine();
             }
         }
 
@@ -1083,6 +933,7 @@ namespace Server
             return total + bonus;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this IList<T> list)
         {
             var count = list.Count;
@@ -1093,6 +944,7 @@ namespace Server
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Shuffle<T>(this Span<T> list)
         {
             var count = list.Length;
@@ -1183,6 +1035,21 @@ namespace Server
         public static bool RandomBool() => RandomSources.Source.NextBool();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double RandomMinMax(double min, double max)
+        {
+            if (min > max)
+            {
+                (min, max) = (max, min);
+            }
+            else if (min == max)
+            {
+                return min;
+            }
+
+            return min + RandomSources.Source.NextDouble() * (max - min);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint RandomMinMax(uint min, uint max)
         {
             if (min > max)
@@ -1213,6 +1080,21 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long RandomMinMax(long min, long max)
+        {
+            if (min > max)
+            {
+                (min, max) = (max, min);
+            }
+            else if (min == max)
+            {
+                return min;
+            }
+
+            return min + RandomSources.Source.Next(max - min + 1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Random(int from, int count) => RandomSources.Source.Next(from, count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1226,6 +1108,15 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double RandomDouble() => RandomSources.Source.NextDouble();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point3D RandomPointIn(Rectangle2D rect, Map map)
+        {
+            var x = Random(rect.X, rect.Width);
+            var y = Random(rect.Y, rect.Height);
+
+            return new Point3D(x, y, map.GetAverageZ(x, y));
+        }
 
         /// <summary>
         ///     Random pink, blue, green, orange, red or yellow hue
@@ -1353,6 +1244,45 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Tidy<K, V>(this Dictionary<K, V> dictionary)
+        {
+            var serializable = typeof(ISerializable);
+            var serializableKey = typeof(K).IsAssignableTo(serializable);
+            var serializableValue = typeof(V).IsAssignableTo(serializable);
+
+            if (!serializableKey && !serializableValue)
+            {
+                return;
+            }
+
+            using var queue = PooledRefQueue<K>.Create();
+            foreach (var (key, value) in dictionary)
+            {
+                if (serializableKey)
+                {
+                    if (key == null || ((ISerializable)key).Deleted)
+                    {
+                        queue.Enqueue(key);
+                    }
+                }
+                else
+                {
+                    if (value == null || ((ISerializable)value).Deleted)
+                    {
+                        queue.Enqueue(key);
+                    }
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                dictionary.Remove(queue.Dequeue());
+            }
+
+            dictionary.TrimExcess();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int NumberOfSetBits(this ulong i)
         {
             i -= (i >> 1) & 0x5555555555555555UL;
@@ -1365,96 +1295,6 @@ namespace Server
         {
             int mask = value >> 31;
             return (value + mask) ^ mask;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long Abs(this long value)
-        {
-            long mask = value >> 63;
-            return (value + mask) ^ mask;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(this uint value)
-        {
-            int digits = 1;
-            if (value >= 100000)
-            {
-                value /= 100000;
-                digits += 5;
-            }
-
-            if (value < 10)
-            {
-                // no-op
-            }
-            else if (value < 100)
-            {
-                digits++;
-            }
-            else if (value < 1000)
-            {
-                digits += 2;
-            }
-            else if (value < 10000)
-            {
-                digits += 3;
-            }
-            else
-            {
-                digits += 4;
-            }
-
-            return digits;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int CountDigits(this int value)
-        {
-            int absValue = Abs(value);
-
-            int digits = 1;
-            if (absValue >= 100000)
-            {
-                absValue /= 100000;
-                digits += 5;
-            }
-
-            if (absValue < 10)
-            {
-                // no-op
-            }
-            else if (absValue < 100)
-            {
-                digits++;
-            }
-            else if (absValue < 1000)
-            {
-                digits += 2;
-            }
-            else if (absValue < 10000)
-            {
-                digits += 3;
-            }
-            else
-            {
-                digits += 4;
-            }
-
-            if (value < 0)
-            {
-                digits += 1; // negative
-            }
-
-            return digits;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint DivRem(uint a, uint b, out uint result)
-        {
-            uint div = a / b;
-            result = a - div * b;
-            return div;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1636,6 +1476,41 @@ namespace Server
             hour = date.Hour;
             min = date.Minute;
             sec = date.Second;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] Combine<T>(this IList<T> source, params IList<T>[] arrays) =>
+            source.Combine(false, arrays);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] CombinePooled<T>(this IList<T> source, params IList<T>[] arrays) =>
+            source.Combine(true, arrays);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] Combine<T>(this IList<T> source, bool pooled, params IList<T>[] arrays)
+        {
+            var totalLength = source.Count;
+            foreach (var arr in arrays)
+            {
+                totalLength += arr.Count;
+            }
+
+            if (totalLength == 0)
+            {
+                return Array.Empty<T>();
+            }
+
+            var combined = pooled ? STArrayPool<T>.Shared.Rent(totalLength) : new T[totalLength];
+
+            source.CopyTo(combined, 0);
+            var position = source.Count;
+            foreach (var arr in arrays)
+            {
+                arr.CopyTo(combined, position);
+                position += arr.Count;
+            }
+
+            return combined;
         }
     }
 }

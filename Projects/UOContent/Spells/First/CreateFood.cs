@@ -6,7 +6,7 @@ namespace Server.Spells.First
 {
     public class CreateFoodSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Create Food",
             "In Mani Ylem",
             224,
@@ -30,7 +30,7 @@ namespace Server.Spells.First
             new(typeof(Peach), "a peach")
         };
 
-        public CreateFoodSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CreateFoodSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

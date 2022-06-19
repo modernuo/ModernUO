@@ -141,7 +141,7 @@ namespace Server.Engines.Quests.Collector
 
         public static string RandomName(Mobile from) => m_Names.RandomElement() ?? from.Name;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (m_Quantity < m_Partial)
             {
@@ -255,7 +255,7 @@ namespace Server.Engines.Quests.Collector
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (m_Obsidian.Deleted || m_Obsidian.Quantity >= m_Completed || !(targeted is Item targ))
+                if (m_Obsidian.Deleted || m_Obsidian.Quantity >= m_Completed || targeted is not Item targ)
                 {
                     return;
                 }

@@ -2,13 +2,12 @@ using System;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
     public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Paralyze Field",
             "In Ex Grav",
             230,
@@ -19,7 +18,7 @@ namespace Server.Spells.Sixth
             Reagent.SpidersSilk
         );
 
-        public ParalyzeFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ParalyzeFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -27,19 +26,15 @@ namespace Server.Spells.Sixth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
-
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20B);
+                Effects.PlaySound(loc, Caster.Map, 0x20B);
 
                 var itemID = eastToWest ? 0x3967 : 0x3979;
 
@@ -47,18 +42,18 @@ namespace Server.Spells.Sixth
 
                 for (var i = -2; i <= 2; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
+                    var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
 
-                    if (!SpellHelper.AdjustField(ref loc, Caster.Map, 12, false))
+                    if (!SpellHelper.AdjustField(ref targetLoc, Caster.Map, 12, false))
                     {
                         continue;
                     }
 
-                    Item item = new InternalItem(Caster, itemID, loc, Caster.Map, duration);
+                    Item item = new InternalItem(Caster, itemID, targetLoc, Caster.Map, duration);
                     item.ProcessDelta();
 
                     Effects.SendLocationParticles(
-                        EffectItem.Create(loc, Caster.Map, EffectItem.DefaultDuration),
+                        EffectItem.Create(targetLoc, Caster.Map, EffectItem.DefaultDuration),
                         0x376A,
                         9,
                         10,
@@ -72,7 +67,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]

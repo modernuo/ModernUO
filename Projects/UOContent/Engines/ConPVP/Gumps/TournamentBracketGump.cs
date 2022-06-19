@@ -214,23 +214,20 @@ namespace Server.Engines.ConPVP
                         AddHtml(35, y, 190, 20, $"Tiebreaker: {tieText}");
                         y += 20;
 
-                        var sdText = "Off";
+                        string sdText;
 
                         if (tourney.SuddenDeath > TimeSpan.Zero)
                         {
-                            sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
-
-                            if (tourney.SuddenDeathRounds > 0)
-                            {
-                                sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
-                            }
-                            else
-                            {
-                                sdText = $"{sdText} (all rounds)";
-                            }
+                            sdText = tourney.SuddenDeathRounds > 0 ?
+                                $"Sudden Death: {(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2} (first {tourney.SuddenDeathRounds} rounds)" :
+                                $"Sudden Death: {(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2} (all rounds)";
+                        }
+                        else
+                        {
+                            sdText = "Sudden Death: Off";
                         }
 
-                        AddHtml(35, y, 240, 20, $"Sudden Death: {sdText}");
+                        AddHtml(35, y, 240, 20, sdText);
                         y += 20;
 
                         y += 8;
@@ -306,7 +303,7 @@ namespace Server.Engines.ConPVP
                     }
                 case TourneyBracketGumpType.Participant_Info:
                     {
-                        if (!(obj is TourneyParticipant part))
+                        if (obj is not TourneyParticipant part)
                         {
                             break;
                         }
@@ -380,7 +377,7 @@ namespace Server.Engines.ConPVP
                         AddLeftArrow(25, 11, ToButtonID(0, 3));
                         AddHtml(25, 35, 250, 20, Center("Participants"));
 
-                        if (!(obj is Mobile mob))
+                        if (obj is not Mobile mob)
                         {
                             break;
                         }
@@ -428,7 +425,7 @@ namespace Server.Engines.ConPVP
                         AddLeftArrow(25, 11, ToButtonID(0, 2));
                         AddHtml(25, 35, 250, 20, Center("Rounds"));
 
-                        if (!(m_Object is PyramidLevel level))
+                        if (m_Object is not PyramidLevel level)
                         {
                             break;
                         }
@@ -490,9 +487,7 @@ namespace Server.Engines.ConPVP
                                 }
                             }
                             else if (m_Tournament.EventController != null ||
-                                     m_Tournament.TourneyType == TourneyType.RandomTeam ||
-                                     m_Tournament.TourneyType == TourneyType.RedVsBlue ||
-                                     m_Tournament.TourneyType == TourneyType.Faction)
+                                     m_Tournament.TourneyType is TourneyType.RandomTeam or TourneyType.RedVsBlue or TourneyType.Faction)
                             {
                                 for (var j = 0; j < match.Participants.Count; ++j)
                                 {
@@ -572,7 +567,7 @@ namespace Server.Engines.ConPVP
                     }
                 case TourneyBracketGumpType.Match_Info:
                     {
-                        if (!(obj is TourneyMatch match))
+                        if (obj is not TourneyMatch match)
                         {
                             break;
                         }
@@ -605,9 +600,7 @@ namespace Server.Engines.ConPVP
                             }
                         }
                         else if (m_Tournament.EventController != null ||
-                                 m_Tournament.TourneyType == TourneyType.RandomTeam ||
-                                 m_Tournament.TourneyType == TourneyType.RedVsBlue ||
-                                 m_Tournament.TourneyType == TourneyType.Faction)
+                                 m_Tournament.TourneyType is TourneyType.RandomTeam or TourneyType.RedVsBlue or TourneyType.Faction)
                         {
                             for (var i = 0; i < match.Participants.Count; ++i)
                             {
@@ -840,7 +833,7 @@ namespace Server.Engines.ConPVP
                                 }
                             case 5:
                                 {
-                                    if (!(m_Object is TourneyMatch match))
+                                    if (m_Object is not TourneyMatch match)
                                     {
                                         break;
                                     }
@@ -990,7 +983,7 @@ namespace Server.Engines.ConPVP
                             break;
                         }
 
-                        if (!(m_Object is PyramidLevel level))
+                        if (m_Object is not PyramidLevel level)
                         {
                             break;
                         }

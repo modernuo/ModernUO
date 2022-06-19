@@ -5,7 +5,7 @@ namespace Server.Spells.First
 {
     public class NightSightSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Night Sight",
             "In Lor",
             236,
@@ -14,7 +14,7 @@ namespace Server.Spells.First
             Reagent.SpidersSilk
         );
 
-        public NightSightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public NightSightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

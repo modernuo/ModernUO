@@ -8,7 +8,7 @@ namespace Server.Spells.Necromancy
 {
     public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Poison Strike",
             "In Vas Nox",
             203,
@@ -17,7 +17,7 @@ namespace Server.Spells.Necromancy
         );
 
         public PoisonStrikeSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

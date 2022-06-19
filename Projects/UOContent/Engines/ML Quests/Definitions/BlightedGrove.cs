@@ -180,7 +180,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
         [Constructible]
         public Jamal()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.2, 0.4)
+            : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Fisherman";
             Body = 400;
@@ -224,7 +224,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
         [Constructible]
         public Iosep()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.2, 0.4)
+            : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Exporter";
             Body = 400;

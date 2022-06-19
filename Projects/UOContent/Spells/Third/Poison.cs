@@ -5,7 +5,7 @@ namespace Server.Spells.Third
 {
     public class PoisonSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Poison",
             "In Nox",
             203,
@@ -13,7 +13,7 @@ namespace Server.Spells.Third
             Reagent.Nightshade
         );
 
-        public PoisonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public PoisonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -21,16 +21,7 @@ namespace Server.Spells.Third
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
 
@@ -52,24 +43,13 @@ namespace Server.Spells.Third
                     {
                         if (Caster.InRange(m, 2))
                         {
-                            var total = (Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2;
-
-                            if (total >= 1000)
+                            level = ((Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2) switch
                             {
-                                level = 3;
-                            }
-                            else if (total > 850)
-                            {
-                                level = 2;
-                            }
-                            else if (total > 650)
-                            {
-                                level = 1;
-                            }
-                            else
-                            {
-                                level = 0;
-                            }
+                                >= 1000 => 3,
+                                > 850   => 2,
+                                > 650   => 1,
+                                _       => 0
+                            };
                         }
                         else
                         {

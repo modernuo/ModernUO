@@ -5,7 +5,7 @@ namespace Server.Spells.Fourth
 {
     public class CurseSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Curse",
             "Des Sanct",
             227,
@@ -15,9 +15,9 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly HashSet<Mobile> m_UnderEffect = new();
+        private static readonly HashSet<Mobile> _underEffect = new();
 
-        public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -25,16 +25,7 @@ namespace Server.Spells.Fourth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
 
@@ -46,11 +37,11 @@ namespace Server.Spells.Fourth
                 SpellHelper.AddStatCurse(Caster, m, StatType.Int);
                 SpellHelper.DisableSkillCheck = false;
 
-                if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m)
-                ) // On OSI you CAN curse yourself and get this effect.
+                // On OSI you CAN curse yourself and get this effect.
+                if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m))
                 {
                     var duration = SpellHelper.GetDuration(Caster, m);
-                    m_UnderEffect.Add(m);
+                    _underEffect.Add(m);
                     Timer.StartTimer(duration, () => RemoveEffect(m));
                     m.UpdateResistances();
                 }
@@ -80,13 +71,13 @@ namespace Server.Spells.Fourth
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static void RemoveEffect(Mobile m)
+        public static bool RemoveEffect(Mobile m)
         {
-            m_UnderEffect.Remove(m);
-
+            var effectRemoved = _underEffect.Remove(m);
             m.UpdateResistances();
+            return effectRemoved;
         }
 
-        public static bool UnderEffect(Mobile m) => m_UnderEffect.Contains(m);
+        public static bool UnderEffect(Mobile m) => _underEffect.Contains(m);
     }
 }

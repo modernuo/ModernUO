@@ -22,18 +22,18 @@ namespace Server.Items
 {
     public static class BookPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xD4, 0, true, HeaderChange);
-            IncomingPackets.Register(0x66, 0, true, ContentChange);
-            IncomingPackets.Register(0x93, 99, true, OldHeaderChange);
+            IncomingPackets.Register(0xD4, 0, true, &HeaderChange);
+            IncomingPackets.Register(0x66, 0, true, &ContentChange);
+            IncomingPackets.Register(0x93, 99, true, &OldHeaderChange);
         }
 
-        public static void OldHeaderChange(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void OldHeaderChange(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem((Serial)reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BaseBook book || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
             {
                 return;
@@ -48,11 +48,11 @@ namespace Server.Items
             book.Author = Utility.FixHtml(author);
         }
 
-        public static void HeaderChange(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void HeaderChange(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem((Serial)reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BaseBook book || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
             {
                 return;
@@ -84,11 +84,11 @@ namespace Server.Items
             book.Author = Utility.FixHtml(author);
         }
 
-        public static void ContentChange(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void ContentChange(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
-            if (!(World.FindItem((Serial)reader.ReadUInt32()) is BaseBook book) || !book.Writable ||
+            if (World.FindItem((Serial)reader.ReadUInt32()) is not BaseBook book || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
             {
                 return;
@@ -135,7 +135,7 @@ namespace Server.Items
 
         public static void SendBookContent(this NetState ns, BaseBook book)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -183,7 +183,7 @@ namespace Server.Items
 
         public static void SendBookCover(this NetState ns, Mobile from, BaseBook book)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

@@ -101,7 +101,7 @@ namespace Server.Engines.Plants
                     AddItem(127, 112, 0xC62);
                 }
 
-                if (status == PlantStatus.Stage3 || status == PlantStatus.Stage4)
+                if (status is PlantStatus.Stage3 or PlantStatus.Stage4)
                 {
                     AddItem(129, 85, 0xC7E);
                 }
@@ -134,7 +134,7 @@ namespace Server.Engines.Plants
                 var hueInfo = PlantHueInfo.GetInfo(m_Plant.PlantHue);
 
                 // The large images for these trees trigger a client crash, so use a smaller, generic tree.
-                if (m_Plant.PlantType == PlantType.CypressTwisted || m_Plant.PlantType == PlantType.CypressStraight)
+                if (m_Plant.PlantType is PlantType.CypressTwisted or PlantType.CypressStraight)
                 {
                     AddItem(130 + typeInfo.OffsetX, 96 + typeInfo.OffsetY, 0x0CCA, hueInfo.Hue);
                 }

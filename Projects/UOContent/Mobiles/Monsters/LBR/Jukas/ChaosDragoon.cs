@@ -5,10 +5,12 @@ namespace Server.Mobiles
     public class ChaosDragoon : BaseCreature
     {
         [Constructible]
-        public ChaosDragoon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4)
+        public ChaosDragoon() : base(AIType.AI_Melee)
         {
             Body = 0x190;
             Hue = Race.Human.RandomSkinHue();
+
+            SetSpeed(0.15, 0.4);
 
             SetStr(176, 225);
             SetDex(81, 95);
@@ -129,8 +131,7 @@ namespace Server.Mobiles
 
         public override void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
-            if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
-                to is LesserHiryu || to is Daemon)
+            if (to is Dragon or WhiteWyrm or SwampDragon or Drake or Nightmare or Hiryu or LesserHiryu or Daemon)
             {
                 damage *= 3;
             }

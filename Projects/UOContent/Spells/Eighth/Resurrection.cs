@@ -6,7 +6,7 @@ namespace Server.Spells.Eighth
 {
     public class ResurrectionSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Resurrection",
             "An Corp",
             245,
@@ -16,7 +16,7 @@ namespace Server.Spells.Eighth
             Reagent.Ginseng
         );
 
-        public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -24,16 +24,7 @@ namespace Server.Spells.Eighth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m == Caster)
+            if (m == Caster)
             {
                 Caster.SendLocalizedMessage(501039); // Thou can not resurrect thyself.
             }
@@ -60,9 +51,8 @@ namespace Server.Spells.Eighth
             }
             else if (m.Region?.IsPartOf("Khaldun") == true)
             {
-                Caster.SendLocalizedMessage(
-                    1010395
-                ); // The veil of death in this area is too strong and resists thy efforts to restore life.
+                // The veil of death in this area is too strong and resists thy efforts to restore life.
+                Caster.SendLocalizedMessage(1010395);
             }
             else if (CheckBSequence(m, true))
             {

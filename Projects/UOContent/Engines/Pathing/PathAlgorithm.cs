@@ -24,7 +24,7 @@ namespace Server.PathAlgorithms
             var y = yDest + 1 - ySource;
             var v = y * 3 + x;
 
-            if (v < 0 || v >= 9)
+            if (v is < 0 or >= 9)
             {
                 return Direction.North;
             }

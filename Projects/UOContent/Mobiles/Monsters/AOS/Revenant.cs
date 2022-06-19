@@ -8,14 +8,7 @@ namespace Server.Mobiles
         private readonly DateTime m_ExpireTime;
         private readonly Mobile m_Target;
 
-        public Revenant(Mobile caster, Mobile target, TimeSpan duration) : base(
-            AIType.AI_Melee,
-            FightMode.Closest,
-            10,
-            1,
-            0.18,
-            0.36
-        )
+        public Revenant(Mobile caster, Mobile target, TimeSpan duration) : base(AIType.AI_Melee)
         {
             Body = 400;
             Hue = 1;

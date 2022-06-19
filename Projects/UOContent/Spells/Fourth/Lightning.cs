@@ -4,7 +4,7 @@ namespace Server.Spells.Fourth
 {
     public class LightningSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Lightning",
             "Por Ort Grav",
             239,
@@ -13,7 +13,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        public LightningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public LightningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -23,16 +23,7 @@ namespace Server.Spells.Fourth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
 

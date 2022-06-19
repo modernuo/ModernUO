@@ -3337,7 +3337,6 @@
       { "type": "DiseasedCat" },
       { "type": "Doppleganger" },
       { "type": "Drithen" },
-      { "type": "DummyThief" },
       { "type": "Efreet" },
       { "type": "ElderAbbein" },
       { "type": "ElderAcob" },
@@ -3631,19 +3630,6 @@
     ]
   },
   {
-    "category": "Mobiles.Dummies",
-    "objects": [
-      { "type": "DummyAssassin" },
-      { "type": "DummyFence" },
-      { "type": "DummyHealer" },
-      { "type": "DummyMace" },
-      { "type": "DummyNox" },
-      { "type": "DummyStun" },
-      { "type": "DummySuper" },
-      { "type": "DummySword" }
-    ]
-  },
-  {
     "category": "Mobiles.Escortables",
     "objects": [
       { "type": "BaseEscortable" },
@@ -3682,8 +3668,7 @@
   {
     "category": "Mobiles.Uncategorized",
     "objects": [
-      { "type": "TownCrier" },
-      { "type": "Wanderer" }
+      { "type": "TownCrier" }
     ]
   },
   {

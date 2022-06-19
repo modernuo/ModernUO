@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Collections;
 using Server.Text;
 
 namespace Server
@@ -37,7 +38,7 @@ namespace Server
             _encoding = encoding ?? TextEncoding.UTF8;
         }
 
-        public BufferReader(byte[] buffer, DateTime LastSerialized) : this(buffer) => LastSerialized = LastSerialized;
+        public BufferReader(byte[] buffer, DateTime lastSerialized) : this(buffer) => LastSerialized = lastSerialized;
 
         public void Reset(byte[] newBuffer, out byte[] oldBuffer)
         {
@@ -47,7 +48,7 @@ namespace Server
         }
 
         // Compatible with BinaryReader.ReadString()
-        public DateTime LastSerialized { get; init; } = DateTime.MinValue;
+        public DateTime LastSerialized { get; init; }
 
         public string ReadString(bool intern = false)
         {
@@ -154,6 +155,21 @@ namespace Server
             _buffer.AsSpan(_position, length).CopyTo(buffer);
             _position += length;
             return length;
+        }
+
+        public BitArray ReadBitArray()
+        {
+            var bitLength = ((IGenericReader)this).ReadEncodedInt();
+            var length = BitArray.GetByteArrayLengthFromBitLength(bitLength);
+
+            if (length > _buffer.Length - _position)
+            {
+                throw new OutOfMemoryException();
+            }
+
+            var bitArray = new BitArray(_buffer.AsSpan(_position, length), bitLength);
+            _position += length;
+            return bitArray;
         }
 
         public virtual long Seek(long offset, SeekOrigin origin)

@@ -25,7 +25,7 @@ namespace Server.Engines.Quests.Necro
                 mob = creature.ControlMaster;
             }
 
-            if (!(mob is PlayerMobile pm))
+            if (mob is not PlayerMobile pm)
             {
                 return false;
             }

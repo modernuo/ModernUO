@@ -72,7 +72,7 @@ namespace Server.Items
         {
             Hue = 0x481;
 
-            if (Value == 105.0 || skill == SkillName.Blacksmith || skill == SkillName.Tailoring)
+            if (Value == 105.0 || skill is SkillName.Blacksmith or SkillName.Tailoring)
             {
                 LootType = LootType.Regular;
             }
@@ -155,12 +155,12 @@ namespace Server.Items
             do
             {
                 skillName = Skills.RandomElement();
-            } while (skillName == SkillName.Blacksmith || skillName == SkillName.Tailoring);
+            } while (skillName is SkillName.Blacksmith or SkillName.Tailoring);
 
             return new PowerScroll(skillName, 100 + Utility.RandomMinMax(min, max) * 5);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var level = (Value - 105.0) / 5.0;
 
@@ -175,7 +175,7 @@ namespace Server.Items
             }
             else
             {
-                list.Add("a power scroll of {0} ({1} Skill)", GetName(), Value);
+                list.Add($"a power scroll of {GetName()} ({Value} Skill)");
             }
         }
 
@@ -189,7 +189,7 @@ namespace Server.Items
             }
             else
             {
-                LabelTo(from, "a power scroll of {0} ({1} Skill)", GetName(), Value);
+                LabelTo(from, $"a power scroll of {GetName()} ({Value} Skill)");
             }
         }
 
@@ -312,7 +312,7 @@ namespace Server.Items
 
             var version = InheritsItem ? 0 : reader.ReadInt(); // Required for SpecialScroll insertion
 
-            if (Value == 105.0 || Skill == SkillName.Blacksmith || Skill == SkillName.Tailoring)
+            if (Value == 105.0 || Skill is SkillName.Blacksmith or SkillName.Tailoring)
             {
                 LootType = LootType.Regular;
             }

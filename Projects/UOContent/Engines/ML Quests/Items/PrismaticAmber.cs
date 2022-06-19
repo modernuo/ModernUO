@@ -13,7 +13,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1075299; // Prismatic Amber
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

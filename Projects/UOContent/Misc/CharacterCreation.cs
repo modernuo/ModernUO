@@ -138,7 +138,7 @@ namespace Server.Misc
 
             if (newChar == null)
             {
-                logger.Information("Login: {0}: Character creation failed, account full", state);
+                logger.Information("Login: {NetState}: Character creation failed, account full", state);
                 return;
             }
 
@@ -855,7 +855,7 @@ namespace Server.Misc
             {
                 Race.AllowElvesOnly     => new ElvenCompositeLongbow(),
                 Race.AllowGargoylesOnly => new SerpentstoneStaff(),
-                _                       => new GnarledStaff()
+                _                       => new Bow()
             };
 
         private static void AddSkillItems(this Mobile m, SkillName skill)

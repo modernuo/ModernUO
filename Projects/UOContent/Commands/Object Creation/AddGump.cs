@@ -92,9 +92,8 @@ namespace Server.Gumps
             CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
         }
 
-        [Usage("AddMenu [searchString]"), Description(
-             "Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively."
-         )]
+        [Usage("AddMenu [searchString]")]
+        [Description("Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively.")]
         private static void AddMenu_OnCommand(CommandEventArgs e)
         {
             var val = e.ArgString.Trim();
@@ -283,19 +282,21 @@ namespace Server.Gumps
 
             protected override void OnTarget(Mobile from, object o)
             {
-                if (o is IPoint3D p)
+                if (o is not IPoint3D ip)
                 {
-                    p = p switch
-                    {
-                        Item item => item.GetWorldTop(),
-                        Mobile m  => m.Location,
-                        _         => p
-                    };
-
-                    Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
-
-                    from.Target = new InternalTarget(m_Type, m_SearchResults, m_SearchString, m_Page);
+                    return;
                 }
+
+                Point3D p = ip switch
+                {
+                    Item item => item.GetWorldTop(),
+                    Mobile m  => m.Location,
+                    _         => new Point3D(ip)
+                };
+
+                Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
+
+                from.Target = new InternalTarget(m_Type, m_SearchResults, m_SearchString, m_Page);
             }
 
             protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)

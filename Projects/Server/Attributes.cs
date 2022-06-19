@@ -71,7 +71,7 @@ namespace Server
                 return 50;
             }
 
-            if (!(objs[0] is CallPriorityAttribute attr))
+            if (objs[0] is not CallPriorityAttribute attr)
             {
                 return 50;
             }

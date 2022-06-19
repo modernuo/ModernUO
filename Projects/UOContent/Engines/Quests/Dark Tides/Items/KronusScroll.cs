@@ -22,7 +22,7 @@ namespace Server.Engines.Quests.Necro
 
         public override int LabelNumber => 1060149; // Calling of Kronus
 
-        public override bool CanDrop(PlayerMobile player) => !(player.Quest is DarkTidesQuest);
+        public override bool CanDrop(PlayerMobile player) => player.Quest is not DarkTidesQuest;
 
         public override void OnDoubleClick(Mobile from)
         {
@@ -31,7 +31,7 @@ namespace Server.Engines.Quests.Necro
                 return;
             }
 
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return;
             }

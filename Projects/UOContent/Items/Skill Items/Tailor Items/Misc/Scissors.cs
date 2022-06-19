@@ -84,7 +84,7 @@ namespace Server.Items
                 }
                 else if (targeted is Item item && !item.Movable)
                 {
-                    if (item is IScissorable obj && (obj is PlagueBeastInnard || obj is PlagueBeastMutationCore))
+                    if (item is IScissorable obj && obj is PlagueBeastInnard or PlagueBeastMutationCore)
                     {
                         if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
                         {
@@ -107,7 +107,7 @@ namespace Server.Items
 
             protected override void OnNonlocalTarget(Mobile from, object targeted)
             {
-                if (targeted is IScissorable obj && (obj is PlagueBeastInnard || obj is PlagueBeastMutationCore))
+                if (targeted is IScissorable obj && obj is PlagueBeastInnard or PlagueBeastMutationCore)
                 {
                     if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
                     {

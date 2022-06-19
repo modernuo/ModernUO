@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x3158, 0x3159)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class MountedDreadHorn : Item
     {
         [Constructible]

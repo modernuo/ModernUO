@@ -92,14 +92,15 @@ namespace Server.Mobiles
         private MLQuest m_MLQuest;
 
         [Constructible]
-        public BaseEscortable()
-            : base(AIType.AI_Melee, FightMode.Aggressor, 22, 1, 0.2, 1.0)
+        public BaseEscortable() : base(AIType.AI_Melee, FightMode.Aggressor, 22)
         {
             InitBody();
             InitOutfit();
 
             Fame = 200;
             Karma = 4000;
+
+            SetSpeed(0.2, 1.0);
         }
 
         public BaseEscortable(Serial serial)
@@ -746,7 +747,7 @@ namespace Server.Mobiles
 
             foreach (Region r in list)
             {
-                if (r.Name != null && (r is DungeonRegion || r is TownRegion))
+                if (r.Name != null && r is DungeonRegion or TownRegion)
                 {
                     m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
                 }

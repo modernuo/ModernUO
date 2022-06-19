@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x1401, 0x1400)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Kryss : BaseSword
     {
         [Constructible]

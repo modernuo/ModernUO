@@ -114,7 +114,7 @@ namespace Server.Engines.MLQuests.Definitions
                 1075529; // Have a pickaxe? My supplier is late and I need some iron ore so I can complete a bulk order for another merchant. If you can get me some soon I'll pay you double what it's worth on the market. Just find a cave or mountainside and try to use your pickaxe there, maybe you'll strike a good vein! 5 large pieces should do it.
             RefusalMessage =
                 1075531; // Not feeling strong enough today? Its alright, I didn't need a bucket of rocks anyway.
-            InProgressMessage = 1075532; // Hmmm� we need some more Ore. Try finding a mountain or cave, and give it a whack.
+            InProgressMessage = 1075532; // Hmmm' we need some more Ore. Try finding a mountain or cave, and give it a whack.
             CompletionMessage =
                 1075533; // I see you found a good vien! Great!  This will help get this order out on time. Good work!
 
@@ -262,14 +262,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Andric : BaseCreature
     {
         [Constructible]
-        public Andric()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Andric() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the archer trainer";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -317,9 +318,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.� Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -340,14 +341,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Kashiel : BaseCreature
     {
         [Constructible]
-        public Kashiel()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Kashiel() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the archer";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -402,14 +404,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Asandos : BaseCreature
     {
         [Constructible]
-        public Asandos()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Asandos() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the chef";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -438,9 +441,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.� Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -462,14 +465,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Clairesse : BaseCreature
     {
         [Constructible]
-        public Clairesse()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Clairesse() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the servant";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -495,9 +499,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.� Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -518,14 +522,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Gervis : BaseCreature
     {
         [Constructible]
-        public Gervis()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Gervis() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the blacksmith trainer";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -562,10 +567,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213, // Hey buddy.� Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -586,14 +591,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Mugg : BaseCreature
     {
         [Constructible]
-        public Mugg()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Mugg() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the miner";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -639,14 +645,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Lowel : BaseCreature
     {
         [Constructible]
-        public Lowel()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Lowel() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the carpenter";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -674,9 +681,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.� Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -697,14 +704,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Lyle : BaseCreature
     {
         [Constructible]
-        public Lyle()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Lyle() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the mage";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -730,9 +738,9 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213
+                    1074213  // Hey buddy.  Looking for work?
                 )
-            ); // Hey buddy.� Looking for work?
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -753,14 +761,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Nibbet : BaseCreature
     {
         [Constructible]
-        public Nibbet()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Nibbet() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the tinker";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -798,14 +807,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Norton : BaseCreature
     {
         [Constructible]
-        public Norton()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Norton() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the fisher";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -832,10 +842,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213, // Hey buddy.� Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -856,14 +866,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Sadrah : BaseCreature
     {
         [Constructible]
-        public Sadrah()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Sadrah() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the courier";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -892,10 +903,10 @@ namespace Server.Engines.MLQuests.Definitions
                 pm,
                 Utility.RandomList(
                     1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-                    1074213, // Hey buddy.� Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -916,14 +927,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Hargrove : BaseCreature
     {
         [Constructible]
-        public Hargrove()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Hargrove() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Lumberjack";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -957,10 +969,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074213, // Hey buddy.� Looking for work?
-                    1074211
+                    1074213, // Hey buddy.  Looking for work?
+                    1074211  // I could use some help.
                 )
-            ); // I could use some help.
+            );
         }
 
         public override void Serialize(IGenericWriter writer)

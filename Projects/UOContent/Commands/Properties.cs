@@ -72,7 +72,7 @@ namespace Server.Commands
 
                 if (attr == null)
                 {
-                    failReason = $"Property '${propertyName}' not found.";
+                    failReason = $"Property '{propertyName}' not found.";
                     return null;
                 }
 
@@ -263,7 +263,7 @@ namespace Server.Commands
             {
                 var obj = realProps[i].GetValue(realObjs[i], null);
 
-                if (!(obj is IConvertible))
+                if (obj is not IConvertible)
                 {
                     return "Property is not IConvertable.";
                 }
@@ -331,7 +331,7 @@ namespace Server.Commands
                 return $"{p.Name} = {toString}";
             }
 
-            using var builder = new ValueStringBuilder();
+            using var builder = ValueStringBuilder.Create();
             for (var i = 0; i < chain.Length; i++)
             {
                 builder.Append(chain[i].Name);

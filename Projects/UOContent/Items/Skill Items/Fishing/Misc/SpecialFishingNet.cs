@@ -63,14 +63,14 @@ namespace Server.Items
 
         public virtual bool RequireDeepWater => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             AddNetProperties(list);
         }
 
-        protected virtual void AddNetProperties(ObjectPropertyList list)
+        protected virtual void AddNetProperties(IPropertyList list)
         {
             // as if the name wasn't enough..
             list.Add(1017410); // Special Fishing Net
@@ -133,7 +133,7 @@ namespace Server.Items
                 return;
             }
 
-            if (!(obj is IPoint3D p3D))
+            if (obj is not IPoint3D p3D)
             {
                 return;
             }
@@ -216,7 +216,7 @@ namespace Server.Items
                 Effects.SendLocationEffect(p, Map, 0x352D, 16, 4);
                 Effects.PlaySound(p, Map, 0x364);
             }
-            else if (index <= 7 || index == 14)
+            else if (index is <= 7 or 14)
             {
                 if (RequireDeepWater)
                 {
@@ -397,7 +397,7 @@ namespace Server.Items
 
         private static bool ValidateUndeepWater(Map map, object obj, ref int z)
         {
-            if (!(obj is StaticTarget))
+            if (obj is not StaticTarget)
             {
                 return false;
             }
@@ -435,7 +435,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1063451; // a fabled fishing net
 
-        protected override void AddNetProperties(ObjectPropertyList list)
+        protected override void AddNetProperties(IPropertyList list)
         {
         }
 

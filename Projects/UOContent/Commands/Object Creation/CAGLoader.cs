@@ -20,78 +20,82 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Items;
 using Server.Json;
+using Server.Logging;
 using Server.Utilities;
 
-namespace Server.Commands
+namespace Server.Commands;
+
+public static class CAGLoader
 {
-    public static class CAGLoader
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(CAGLoader));
+
+    public static CAGCategory Load()
     {
-        public static CAGCategory Load()
+        var root = new CAGCategory("Add Menu");
+        var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
+
+        var list = JsonConfig.Deserialize<List<CAGJson>>(path);
+        if (list == null)
         {
-            var root = new CAGCategory("Add Menu");
-            var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
+            throw new JsonException($"Failed to deserialize {path}.");
+        }
 
-            var list = JsonConfig.Deserialize<List<CAGJson>>(path);
-            if (list == null)
+        // Not an optimized solution
+        foreach (var cag in list)
+        {
+            var parent = root;
+            // Navigate through the dot notation categories until we find the last one
+            var categories = cag.Category.Split(".");
+            for (var i = 0; i < categories.Length; i++)
             {
-                throw new JsonException($"Failed to deserialize {path}.");
-            }
+                var category = categories[i];
 
-            // Not an optimized solution
-            foreach (var cag in list)
-            {
-                var parent = root;
-                // Navigate through the dot notation categories until we find the last one
-                var categories = cag.Category.Split(".");
-                for (var i = 0; i < categories.Length; i++)
+                // No children, so let's make one
+                if (parent.Nodes == null)
                 {
-                    var category = categories[i];
+                    var cat = new CAGCategory(category, parent);
+                    parent.Nodes = new CAGNode[] { cat };
+                    parent = cat;
+                    continue;
+                }
 
-                    // No children, so let's make one
-                    if (parent.Nodes == null)
+                var oldParent = parent;
+                for (var j = 0; j < parent.Nodes.Length; j++)
+                {
+                    var node = parent.Nodes[j];
+                    if (category == node.Title && node is CAGCategory cat)
                     {
-                        var cat = new CAGCategory(category, parent);
-                        parent.Nodes = new CAGNode[] { cat };
                         parent = cat;
-                        continue;
-                    }
-
-                    var oldParent = parent;
-                    for (var j = 0; j < parent.Nodes.Length; j++)
-                    {
-                        var node = parent.Nodes[j];
-                        if (category == node.Title && node is CAGCategory cat)
-                        {
-                            parent = cat;
-                            break;
-                        }
-                    }
-
-                    // Didn't find the child, let's add it
-                    if (oldParent == parent)
-                    {
-                        var nodes = parent.Nodes;
-                        parent.Nodes = new CAGNode[nodes.Length + 1];
-                        Array.Copy(nodes, parent.Nodes, nodes.Length);
-                        var cat = new CAGCategory(category, parent);
-                        parent.Nodes[^1] = cat;
-                        parent = cat;
+                        break;
                     }
                 }
 
-                // Set the objects associated with the child most node
-                parent.Nodes = new CAGNode[cag.Objects.Length];
-                for (var i = 0; i < cag.Objects.Length; i++)
+                // Didn't find the child, let's add it
+                if (oldParent == parent)
                 {
-                    var cagObj = cag.Objects[i];
-                    cagObj.Parent = parent;
-                    parent.Nodes[i] = cagObj;
+                    var nodes = parent.Nodes;
+                    parent.Nodes = new CAGNode[nodes.Length + 1];
+                    Array.Copy(nodes, parent.Nodes, nodes.Length);
+                    var cat = new CAGCategory(category, parent);
+                    parent.Nodes[^1] = cat;
+                    parent = cat;
+                }
+            }
 
-                    // Set ItemID and Hue
-                    if (cagObj.Hue == null || cagObj.ItemID == null)
+            // Set the objects associated with the child most node
+            var pooledList = new List<CAGNode>(cag.Objects.Length);
+            for (var i = 0; i < cag.Objects.Length; i++)
+            {
+                var cagObj = cag.Objects[i];
+                cagObj.Parent = parent;
+
+                // Set ItemID and Hue
+                if (cagObj.Hue == null || cagObj.ItemID == null)
+                {
+                    var type = cagObj.Type;
+
+                    try
                     {
-                        var type = cagObj.Type;
-
                         if (type.IsAssignableTo(typeof(Item)))
                         {
                             var item = cagObj.Type.CreateInstance<Item>();
@@ -138,19 +142,28 @@ namespace Server.Commands
                             m.Delete();
                         }
                     }
+                    catch (Exception e)
+                    {
+                        logger.Warning(e, "Failed to instantiate type {Type}.", type);
+                        continue;
+                    }
                 }
+
+                pooledList.Add(cagObj);
             }
 
-            return root;
+            parent.Nodes = pooledList.ToArray();
         }
-    }
 
-    public record CAGJson
-    {
-        [JsonPropertyName("category")]
-        public string Category { get; init; }
-
-        [JsonPropertyName("objects")]
-        public CAGObject[] Objects { get; init; }
+        return root;
     }
+}
+
+public record CAGJson
+{
+    [JsonPropertyName("category")]
+    public string Category { get; init; }
+
+    [JsonPropertyName("objects")]
+    public CAGObject[] Objects { get; init; }
 }

@@ -63,7 +63,7 @@ namespace Server.Gumps
 
                 var ourKarma = g.Karma;
                 var innocent = n == Notoriety.Innocent;
-                var criminal = n == Notoriety.Criminal || n == Notoriety.Murderer;
+                var criminal = n is Notoriety.Criminal or Notoriety.Murderer;
 
                 var fameAward = m.Fame / 200;
                 var karmaAward = 0;

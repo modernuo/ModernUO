@@ -129,8 +129,7 @@ namespace Server.Engines.Plants
         {
             var from = sender.Mobile;
 
-            if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant ||
-                m_Plant.PlantStatus == PlantStatus.BowlOfDirt)
+            if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus is >= PlantStatus.DecorativePlant or PlantStatus.BowlOfDirt)
             {
                 return;
             }

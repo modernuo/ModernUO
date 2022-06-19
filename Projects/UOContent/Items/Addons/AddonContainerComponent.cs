@@ -1,12 +1,13 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AddonContainerComponent : Item, IChoppable
     {
         [Constructible]
@@ -76,7 +77,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list) => _addon?.GetProperties(list);
+        public override void GetProperties(IPropertyList list) => _addon?.GetProperties(list);
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
             _addon?.GetContextMenuEntries(from, list);
@@ -107,7 +108,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LocalizedContainerComponent : AddonContainerComponent
     {
         [SerializableField(0, setter: "private")]

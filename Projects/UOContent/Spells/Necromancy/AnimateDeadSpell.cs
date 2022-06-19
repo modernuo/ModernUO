@@ -4,14 +4,13 @@ using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
 using Server.Items;
 using Server.Mobiles;
-using Server.Targeting;
 using Server.Utilities;
 
 namespace Server.Spells.Necromancy
 {
     public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Animate Dead",
             "Uus Corp",
             203,
@@ -108,9 +107,9 @@ namespace Server.Spells.Necromancy
             )
         };
 
-        private static readonly Dictionary<Mobile, List<Mobile>> m_Table = new();
+        private static readonly Dictionary<Mobile, List<Mobile>> _table = new();
 
-        public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -143,7 +142,7 @@ namespace Server.Spells.Necromancy
                 return;
             }
 
-            if (!(item is Corpse c))
+            if (item is not Corpse c)
             {
                 Caster.SendLocalizedMessage(1061084); // You cannot animate that.
             }
@@ -206,7 +205,7 @@ namespace Server.Spells.Necromancy
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
             Caster.SendLocalizedMessage(1061083); // Animate what corpse?
         }
 
@@ -235,7 +234,7 @@ namespace Server.Spells.Necromancy
 
         public static void Unregister(Mobile master, Mobile summoned)
         {
-            if (master == null || !m_Table.TryGetValue(master, out var list))
+            if (master == null || !_table.TryGetValue(master, out var list))
             {
                 return;
             }
@@ -244,7 +243,7 @@ namespace Server.Spells.Necromancy
 
             if (list.Count == 0)
             {
-                m_Table.Remove(master);
+                _table.Remove(master);
             }
         }
 
@@ -255,9 +254,9 @@ namespace Server.Spells.Necromancy
                 return;
             }
 
-            if (!m_Table.TryGetValue(master, out var list))
+            if (!_table.TryGetValue(master, out var list))
             {
-                m_Table[master] = list = new List<Mobile>();
+                _table[master] = list = new List<Mobile>();
             }
 
             for (var i = list.Count - 1; i >= 0; --i)

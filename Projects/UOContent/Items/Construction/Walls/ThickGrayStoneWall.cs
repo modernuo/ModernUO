@@ -6,6 +6,8 @@
  * CREATED : 10-07.2002                 *
  * **************************************/
 
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum ThickGrayStoneWallTypes
@@ -34,29 +36,12 @@ namespace Server.Items
         EastWindow2
     }
 
-    public class ThickGrayStoneWall : BaseWall
+    [SerializationGenerator(0, false)]
+    public partial class ThickGrayStoneWall : BaseWall
     {
         [Constructible]
         public ThickGrayStoneWall(ThickGrayStoneWallTypes type) : base(0x007A + (int)type)
         {
-        }
-
-        public ThickGrayStoneWall(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

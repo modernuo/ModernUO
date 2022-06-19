@@ -17,9 +17,31 @@ namespace Server.Items
 
         public override int BaseMana => 30;
 
-        // When using Wrestling, tactics isnt needed.
+        // When using Wrestling, tactics isn't needed.
         public override bool RequiresTactics(Mobile from) =>
-            !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
+            Core.AOS && from.Weapon is not BaseWeapon { Skill: SkillName.Wrestling };
+
+        public override bool CheckSkills(Mobile from)
+        {
+            if (!base.CheckSkills(from))
+            {
+                return false;
+            }
+
+            if (Core.AOS || from.Weapon is not Fists)
+            {
+                return true;
+            }
+
+            if (from.Skills[SkillName.Anatomy] is { Value: >= 80.0 })
+            {
+                return true;
+            }
+
+            from.SendLocalizedMessage(1061811); // You lack the required anatomy skill to perform that attack!
+
+            return false;
+        }
 
         public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
         {
@@ -56,8 +78,15 @@ namespace Server.Items
 
             var duration = defender.Player ? PlayerFreezeDuration : NPCFreezeDuration;
 
-            // Treat it as paralyze not as freeze, effect must be removed when damaged.
-            defender.Paralyze(duration);
+            // Pub 21: Treat it as paralyze, not as freeze, effect must be removed when damaged.
+            if (Core.AOS)
+            {
+                defender.Paralyze(duration);
+            }
+            else
+            {
+                defender.Freeze(duration);
+            }
 
             BeginImmunity(defender, duration + FreezeDelayDuration);
         }

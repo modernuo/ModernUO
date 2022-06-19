@@ -3,6 +3,7 @@ name: Updates Docs
 on:
   repository_dispatch:
     types: [docs]
+  workflow_dispatch:
 
 jobs:
   update-docs:

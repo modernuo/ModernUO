@@ -52,10 +52,10 @@ namespace Server.Misc
                     return;
                 }
 
-                var value = double.Parse(valueStr);
-
                 try
                 {
+                    var value = double.Parse(valueStr);
+
                     if (name.InsensitiveEquals("str"))
                     {
                         ChangeStrength(from, (int)value);

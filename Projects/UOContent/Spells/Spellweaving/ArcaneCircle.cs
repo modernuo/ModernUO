@@ -7,14 +7,14 @@ namespace Server.Spells.Spellweaving
 {
     public class ArcaneCircleSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Arcane Circle",
             "Myrshalee",
             -1
         );
 
         public ArcaneCircleSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -118,9 +118,7 @@ namespace Server.Spells.Spellweaving
         }
 
         public static bool IsValidTile(int itemID) =>
-            itemID == 0xFEA || itemID == 0x1216 || itemID == 0x307F || itemID == 0x1D10 || itemID == 0x1D0F ||
-            itemID == 0x1D1F ||
-            itemID == 0x1D12;
+            itemID is 0xFEA or 0x1216 or 0x307F or 0x1D10 or 0x1D0F or 0x1D1F or 0x1D12;
 
         private List<Mobile> GetArcanists()
         {

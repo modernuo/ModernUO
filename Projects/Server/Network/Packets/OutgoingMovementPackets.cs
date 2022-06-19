@@ -16,102 +16,101 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public enum SpeedControlSetting
 {
-    public enum SpeedControlSetting
+    Disable,
+    Mount,
+    Walk
+}
+
+public static class OutgoingMovementPackets
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendSpeedControl(this NetState ns, SpeedControlSetting speedControl) =>
+        ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x6, 0x00, 0x26, (byte)speedControl });
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMovePlayer(this NetState ns, Direction d) => ns?.Send(stackalloc byte[] { 0x97, (byte)d });
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMovementAck(this NetState ns, int seq, Mobile m) =>
+        ns.SendMovementAck(seq, Notoriety.Compute(m, m));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendMovementAck(this NetState ns, int seq, int noto) =>
+        ns?.Send(stackalloc byte[] { 0x22, (byte)seq, (byte)noto });
+
+    public static void SendMovementRej(this NetState ns, int seq, Mobile m)
     {
-        Disable,
-        Mount,
-        Walk
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(stackalloc byte[8]);
+        writer.Write((byte)0x21); // Packet ID
+        writer.Write((byte)seq);
+        writer.Write((short)m.X);
+        writer.Write((short)m.Y);
+        writer.Write((byte)m.Direction);
+        writer.Write((sbyte)m.Z);
+
+        ns.Send(writer.Span);
     }
 
-    public static class OutgoingMovementPackets
+    public static void SendInitialFastwalkStack(this NetState ns, uint[] keys)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendSpeedControl(this NetState ns, SpeedControlSetting speedControl) =>
-            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x6, 0x00, 0x26, (byte)speedControl });
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMovePlayer(this NetState ns, Direction d) => ns?.Send(stackalloc byte[] { 0x97, (byte)d });
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMovementAck(this NetState ns, int seq, Mobile m) =>
-            ns.SendMovementAck(seq, Notoriety.Compute(m, m));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendMovementAck(this NetState ns, int seq, int noto) =>
-            ns?.Send(stackalloc byte[] { 0x22, (byte)seq, (byte)noto });
-
-        public static void SendMovementRej(this NetState ns, int seq, Mobile m)
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[8]);
-            writer.Write((byte)0x21); // Packet ID
-            writer.Write((byte)seq);
-            writer.Write((short)m.X);
-            writer.Write((short)m.Y);
-            writer.Write((byte)m.Direction);
-            writer.Write((sbyte)m.Z);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendInitialFastwalkStack(this NetState ns, uint[] keys)
+        var writer = new SpanWriter(stackalloc byte[29]);
+        writer.Write((byte)0xBF); // Packet ID
+        writer.Write((ushort)29);
+        writer.Write((ushort)0x1); // Subpacket
+        writer.Write(keys[0]);
+        writer.Write(keys[1]);
+        writer.Write(keys[2]);
+        writer.Write(keys[3]);
+        writer.Write(keys[4]);
+        writer.Write(keys[5]);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendFastwalkStackKey(this NetState ns, uint key = 0)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[29]);
-            writer.Write((byte)0xBF); // Packet ID
-            writer.Write((ushort)29);
-            writer.Write((ushort)0x1); // Subpacket
-            writer.Write(keys[0]);
-            writer.Write(keys[1]);
-            writer.Write(keys[2]);
-            writer.Write(keys[3]);
-            writer.Write(keys[4]);
-            writer.Write(keys[5]);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendFastwalkStackKey(this NetState ns, uint key = 0)
+        var writer = new SpanWriter(stackalloc byte[9]);
+        writer.Write((byte)0xBF); // Packet ID
+        writer.Write((ushort)9);
+        writer.Write((ushort)0x2); // Subpacket
+        writer.Write(key);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendTimeSyncResponse(this NetState ns)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[9]);
-            writer.Write((byte)0xBF);  // Packet ID
-            writer.Write((ushort)9);
-            writer.Write((ushort)0x2); // Subpacket
-            writer.Write(key);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendTimeSyncResponse(this NetState ns)
-        {
-            if (ns == null)
-            {
-                return;
-            }
+        var writer = new SpanWriter(stackalloc byte[25]);
+        writer.Write((byte)0xF2); // Packet ID
 
-            var writer = new SpanWriter(stackalloc byte[25]);
-            writer.Write((byte)0xF2); // Packet ID
+        writer.Write(Core.TickCount); // ??
+        writer.Write(Core.TickCount); // ??
+        writer.Write(Core.TickCount); // ??
 
-            writer.Write(Core.TickCount); // ??
-            writer.Write(Core.TickCount); // ??
-            writer.Write(Core.TickCount); // ??
-
-            ns.Send(writer.Span);
-        }
+        ns.Send(writer.Span);
     }
 }

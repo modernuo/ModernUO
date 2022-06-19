@@ -160,7 +160,7 @@ namespace Server.Items
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {
-                if (m_Deed?.Deleted != false || info.ButtonID == 0 || info.ButtonID < 1 || info.ButtonID > 8)
+                if (m_Deed?.Deleted != false || info.ButtonID is 0 or < 1 or > 8)
                 {
                     return;
                 }

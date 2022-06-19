@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Server.Collections;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -100,27 +100,23 @@ namespace Server.Items
                 true
             );
 
-            var eable = from.Map.GetMobilesInRange(new Point3D(loc), 2);
-
             var playerVsPlayer = false;
-            var targets = eable.Where(
-                    m =>
+            var eable = from.Map.GetMobilesInRange(loc, 2);
+
+            using var targets = PooledRefQueue<Mobile>.Create();
+            foreach (var m in eable)
+            {
+                if (from != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
+                    (!Core.AOS || from.InLOS(m)))
+                {
+                    targets.Enqueue(m);
+
+                    if (m.Player)
                     {
-                        if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
-                            || Core.AOS && !from.InLOS(m))
-                        {
-                            return false;
-                        }
-
-                        if (m.Player)
-                        {
-                            playerVsPlayer = true;
-                        }
-
-                        return true;
+                        playerVsPlayer = true;
                     }
-                )
-                .ToList();
+                }
+            }
 
             eable.Free();
 
@@ -178,9 +174,9 @@ namespace Server.Items
                     damage /= targets.Count;
                 }
 
-                for (var i = 0; i < targets.Count; ++i)
+                while (targets.Count > 0)
                 {
-                    var m = targets[i];
+                    var m = targets.Dequeue();
 
                     var toDeal = damage;
 

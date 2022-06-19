@@ -102,14 +102,8 @@ namespace Server.Items
         banks = m_IlshenarBanks;
         moongates = PMList.Ilshenar;
 #else
-                from.NetState.SendMessageLocalized(
-                    Serial,
-                    ItemID,
-                    MessageType.Label,
-                    0x482,
-                    3,
-                    1061684
-                ); // The magic of the sextant fails...
+                // The magic of the sextant fails...
+                from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, 1061684);
 
                 return;
 #endif
@@ -155,43 +149,23 @@ namespace Server.Items
                 }
             }
 
-            int moonMsg;
-            if (moongateDistance == double.MaxValue)
+            int moonMsg = moongateDistance switch
             {
-                moonMsg = 1048021; // The sextant fails to find a Moongate nearby.
-            }
-            else if (moongateDistance > m_LongDistance)
-            {
-                moonMsg = 1046449 + (int)from.GetDirectionTo(closestMoongate); // A moongate is * from here
-            }
-            else if (moongateDistance > m_ShortDistance)
-            {
-                moonMsg = 1048010 + (int)from.GetDirectionTo(closestMoongate); // There is a Moongate * of here.
-            }
-            else
-            {
-                moonMsg = 1048018; // You are next to a Moongate at the moment.
-            }
+                double.MaxValue   => 1048021, // The sextant fails to find a Moongate nearby.
+                > m_LongDistance  => 1046449 + (int)from.GetDirectionTo(closestMoongate), // A moongate is * from here
+                > m_ShortDistance => 1048010 + (int)from.GetDirectionTo(closestMoongate), // There is a Moongate * of here.
+                _                 => 1048018 // You are next to a Moongate at the moment.
+            };
 
             from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, moonMsg);
 
-            int bankMsg;
-            if (bankDistance == double.MaxValue)
+            int bankMsg = bankDistance switch
             {
-                bankMsg = 1048020; // The sextant fails to find a Bank nearby.
-            }
-            else if (bankDistance > m_LongDistance)
-            {
-                bankMsg = 1046462 + (int)from.GetDirectionTo(closestBank); // A town is * from here
-            }
-            else if (bankDistance > m_ShortDistance)
-            {
-                bankMsg = 1048002 + (int)from.GetDirectionTo(closestBank); // There is a city Bank * of here.
-            }
-            else
-            {
-                bankMsg = 1048019; // You are next to a Bank at the moment.
-            }
+                double.MaxValue   => 1048020, // The sextant fails to find a Bank nearby.
+                > m_LongDistance  => 1046462 + (int)from.GetDirectionTo(closestBank), // A town is * from here
+                > m_ShortDistance => 1048002 + (int)from.GetDirectionTo(closestBank), // There is a city Bank * of here.
+                _                 => 1048019  // You are next to a Bank at the moment.
+            };
 
             from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, 0x5AA, 3, bankMsg);
         }

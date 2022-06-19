@@ -87,7 +87,7 @@ namespace Server.Items
 
         public virtual void Activate(AddonComponent c, Mobile from)
         {
-            if (c.ItemID == 0x125E || c.ItemID == 0x1269 || c.ItemID == 0x1260)
+            if (c.ItemID is 0x125E or 0x1269 or 0x1260)
             {
                 c.ItemID = 0x1269;
             }

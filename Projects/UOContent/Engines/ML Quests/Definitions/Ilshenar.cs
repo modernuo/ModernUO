@@ -127,10 +127,10 @@ namespace Server.Engines.MLQuests.Definitions
                 this,
                 pm,
                 Utility.RandomList(
-                    1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
-                    1074222
+                    1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
+                    1074222  // Could I trouble you for some assistance?
                 )
-            ); // Could I trouble you for some assistance?
+            );
         }
 
         public override void InitBody()
@@ -174,12 +174,13 @@ namespace Server.Engines.MLQuests.Definitions
     public class GrandpaCharley : BaseCreature
     {
         [Constructible]
-        public GrandpaCharley()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public GrandpaCharley() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the farmer";
             Body = 400;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             var hairHue = 0x3B2 + Utility.Random(2);
@@ -226,14 +227,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Jelrice : BaseCreature
     {
         [Constructible]
-        public Jelrice()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Jelrice() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the trader";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -254,7 +256,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074221); // Greetings!  I have a small task for you good traveler.
+            MLQuestSystem.Tell(this, pm, 1074221); // Greetings!  I have a small task for you good traveler.
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -276,14 +278,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Yorus : BaseCreature
     {
         [Constructible]
-        public Yorus()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Yorus() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the tinker";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -305,7 +308,7 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(this, pm, 1074218); // Hey!  I want to talk to you, now.
+            MLQuestSystem.Tell(this, pm, 1074218); // Hey!  I want to talk to you, now.
         }
 
         public override void Serialize(IGenericWriter writer)

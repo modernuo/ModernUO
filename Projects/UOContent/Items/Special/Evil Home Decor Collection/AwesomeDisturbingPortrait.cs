@@ -27,7 +27,7 @@ namespace Server.Items
             {
                 Clock.GetTime(Map, X, Y, out var hours, out int _);
 
-                if (hours < 4 || hours > 20)
+                if (hours is < 4 or > 20)
                 {
                     Effects.PlaySound(Location, Map, 0x569);
                 }

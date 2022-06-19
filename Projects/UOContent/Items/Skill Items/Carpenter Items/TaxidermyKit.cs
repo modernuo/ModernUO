@@ -253,7 +253,7 @@ namespace Server.Items
 
         public Item Deed => new TrophyDeed(WestID, NorthID, DeedNumber, m_AddonNumber, m_Hunter, m_AnimalWeight);
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -264,7 +264,7 @@ namespace Server.Items
                     list.Add(1070857, m_Hunter.Name); // Caught by ~1_fisherman~
                 }
 
-                list.Add(1070858, m_AnimalWeight.ToString()); // ~1_weight~ stones
+                list.Add(1070858, m_AnimalWeight); // ~1_weight~ stones
             }
         }
 
@@ -428,7 +428,7 @@ namespace Server.Items
 
         public override int LabelNumber => m_DeedNumber;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -439,7 +439,7 @@ namespace Server.Items
                     list.Add(1070857, m_Hunter.Name); // Caught by ~1_fisherman~
                 }
 
-                list.Add(1070858, m_AnimalWeight.ToString()); // ~1_weight~ stones
+                list.Add(1070858, m_AnimalWeight); // ~1_weight~ stones
             }
         }
 

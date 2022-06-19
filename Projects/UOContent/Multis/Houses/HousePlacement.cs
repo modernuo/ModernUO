@@ -58,7 +58,7 @@ namespace Server.Multis
                 return HousePlacementResult.BadRegion; // No houses in Ilshenar/T2A
             }
 
-            if (map == Map.Malas && (multiID == 0x007C || multiID == 0x007E))
+            if (map == Map.Malas && multiID is 0x007C or 0x007E)
             {
                 return HousePlacementResult.InvalidCastleKeep;
             }

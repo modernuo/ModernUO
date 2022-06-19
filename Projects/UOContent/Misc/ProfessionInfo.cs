@@ -15,19 +15,21 @@ namespace Server
                 return true;
             }
 
-            var lowerName = name.ToLowerInvariant().Replace(" ", "");
+            var lowerName = name?.ToLowerInvariant().Replace(" ", "");
 
-            foreach (var so in SkillInfo.Table)
+            if (!string.IsNullOrEmpty(lowerName))
             {
-                if (lowerName == so.ProfessionSkillName.ToLowerInvariant())
+                foreach (var so in SkillInfo.Table)
                 {
-                    skillName = (SkillName)so.SkillID;
-                    return true;
+                    if (lowerName == so.ProfessionSkillName.ToLowerInvariant())
+                    {
+                        skillName = (SkillName)so.SkillID;
+                        return true;
+                    }
                 }
             }
 
             return false;
-
         }
 
         static ProfessionInfo()
@@ -43,7 +45,7 @@ namespace Server
                 }
             };
 
-            var file = Core.FindDataFile("prof.txt");
+            var file = Core.FindDataFile("prof.txt", false);
             if (!File.Exists(file))
             {
                 var parent = Path.Combine(Core.BaseDirectory, "Data/Professions");

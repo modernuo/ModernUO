@@ -8,7 +8,7 @@ namespace Server.Spells.First
 {
     public class HealSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Heal",
             "In Mani",
             224,
@@ -18,7 +18,7 @@ namespace Server.Spells.First
             Reagent.SpidersSilk
         );
 
-        public HealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public HealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -26,16 +26,7 @@ namespace Server.Spells.First
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m.IsDeadBondedPet)
+            if (m.IsDeadBondedPet)
             {
                 Caster.SendLocalizedMessage(1060177); // You cannot heal a creature that is already dead!
             }

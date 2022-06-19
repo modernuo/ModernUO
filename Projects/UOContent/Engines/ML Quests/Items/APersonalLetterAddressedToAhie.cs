@@ -15,7 +15,7 @@ namespace Server.Items
 
         public override bool Nontransferable => true;
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
             AddQuestItemProperty(list);

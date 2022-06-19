@@ -1,13 +1,12 @@
 using System;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Third
 {
     public class WallOfStoneSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Wall of Stone",
             "In Sanct Ylem",
             227,
@@ -17,7 +16,7 @@ namespace Server.Spells.Third
             Reagent.Garlic
         );
 
-        public WallOfStoneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public WallOfStoneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -25,24 +24,22 @@ namespace Server.Spells.Third
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x1F6);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
+
+                Effects.PlaySound(loc, Caster.Map, 0x1F6);
 
                 for (var i = -1; i <= 1; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
-                    var canFit = SpellHelper.AdjustField(ref loc, Caster.Map, 22, true);
+                    var targetLoc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
+                    var canFit = SpellHelper.AdjustField(ref targetLoc, Caster.Map, 22, true);
 
                     // Effects.SendLocationParticles( EffectItem.Create( loc, Caster.Map, EffectItem.DefaultDuration ), 0x376A, 9, 10, 5025 );
 
@@ -51,7 +48,7 @@ namespace Server.Spells.Third
                         continue;
                     }
 
-                    Item item = new InternalItem(loc, Caster.Map, Caster);
+                    Item item = new InternalItem(targetLoc, Caster.Map, Caster);
 
                     Effects.SendLocationParticles(item, 0x376A, 9, 10, 5025);
 
@@ -64,7 +61,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]
@@ -154,7 +151,7 @@ namespace Server.Spells.Third
                 if (m is PlayerMobile)
                 {
                     var noto = Notoriety.Compute(m_Caster, m);
-                    if (noto == Notoriety.Enemy || noto == Notoriety.Ally)
+                    if (noto is Notoriety.Enemy or Notoriety.Ally)
                     {
                         return false;
                     }

@@ -278,8 +278,7 @@ namespace Server.Misc
             {
                 c.DisplayGuildTitle = false;
 
-                if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder == OrderType.Attack ||
-                                              c.ControlOrder == OrderType.Guard))
+                if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder is OrderType.Attack or OrderType.Guard))
                 {
                     g = (Guild)(c.Guild = c.ControlMaster.Guild);
                 }
@@ -385,7 +384,7 @@ namespace Server.Misc
                 return Notoriety.CanBeAttacked;
             }
 
-            if (!(target.Owner is PlayerMobile))
+            if (target.Owner is not PlayerMobile)
             {
                 return Notoriety.CanBeAttacked;
             }
@@ -406,8 +405,7 @@ namespace Server.Misc
         {
             var bcTarg = target as BaseCreature;
 
-            if (Core.AOS && (target.Blessed || bcTarg?.IsInvulnerable == true || target is PlayerVendor ||
-                             target is TownCrier))
+            if (Core.AOS && (target.Blessed || bcTarg?.IsInvulnerable == true || target is PlayerVendor or TownCrier))
             {
                 return Notoriety.Invulnerable;
             }
@@ -458,8 +456,8 @@ namespace Server.Misc
             }
 
             if (target.Kills >= 5 ||
-                target.Body.IsMonster && IsSummoned(bcTarg) && !(target is BaseFamiliar) && !(target is ArcaneFey) &&
-                !(target is Golem) || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
+                target.Body.IsMonster && IsSummoned(bcTarg) && target is not BaseFamiliar && target is not ArcaneFey &&
+                target is not Golem || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
             {
                 return Notoriety.Murderer;
             }
@@ -561,7 +559,7 @@ namespace Server.Misc
                 return false;
             }
 
-            return !(m is BaseCreature c) || c.Deleted || !c.Controlled || c.ControlMaster == null ||
+            return m is not BaseCreature c || c.Deleted || !c.Controlled || c.ControlMaster == null ||
                    !house.IsFriend(c.ControlMaster);
         }
 

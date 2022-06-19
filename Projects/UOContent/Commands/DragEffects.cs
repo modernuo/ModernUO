@@ -7,7 +7,8 @@ namespace Server.Commands
             CommandSystem.Register("DragEffects", AccessLevel.Developer, DragEffects_OnCommand);
         }
 
-        [Usage("DragEffects [enable=false]"), Description("Enables or disables the item drag and drop effects.")]
+        [Usage("DragEffects [enable=false]")]
+        [Description("Enables or disables the item drag and drop effects.")]
         public static void DragEffects_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 0)

@@ -4,7 +4,7 @@ namespace Server.Spells.Fifth
 {
     public class MagicReflectSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Magic Reflection",
             "In Jux Sanct",
             242,
@@ -14,9 +14,9 @@ namespace Server.Spells.Fifth
             Reagent.SpidersSilk
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new();
+        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
-        public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -52,14 +52,15 @@ namespace Server.Spells.Fifth
                  * Physical decrease = 25 - (Inscription/20).
                  * Elemental resistance = +10 (-20 physical, +10 elemental at GM Inscription)
                  * The magic reflection spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-                 * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out, even after dying�until you �turn them off� by casting them again.
+                 * Reactive Armor, Protection, and Magic Reflection will stay on even after logging out,
+                 * even after dying, until you turn them off by casting them again.
                  */
 
                 if (CheckSequence())
                 {
                     var targ = Caster;
 
-                    if (m_Table.Remove(targ, out var mods))
+                    if (_table.Remove(targ, out var mods))
                     {
                         targ.PlaySound(0x1ED);
                         targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
@@ -88,7 +89,7 @@ namespace Server.Spells.Fifth
                             new ResistanceMod(ResistanceType.Energy, otherMod)
                         };
 
-                        m_Table[targ] = mods;
+                        _table[targ] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
@@ -137,7 +138,7 @@ namespace Server.Spells.Fifth
 
         public static void EndReflect(Mobile m)
         {
-            if (!m_Table.Remove(m, out var mods))
+            if (!_table.Remove(m, out var mods))
             {
                 return;
             }

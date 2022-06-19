@@ -102,7 +102,7 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -170,7 +170,7 @@ namespace Server.Items
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {
-                if (m_Cactus?.Deleted != false || info.ButtonID < 0x1E0F || info.ButtonID > 0x1E14)
+                if (m_Cactus?.Deleted != false || info.ButtonID is < 0x1E0F or > 0x1E14)
                 {
                     return;
                 }

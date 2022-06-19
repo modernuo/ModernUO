@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.MLQuests.Items;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class BoneMachete : ElvenMachete, ITicket
     {
         [Constructible]

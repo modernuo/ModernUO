@@ -1,12 +1,11 @@
 using Server.Items;
 using Server.Misc;
-using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
     public class DispelFieldSpell : MagerySpell, ISpellTargetingItem
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Dispel Field",
             "An Grav",
             206,
@@ -17,7 +16,7 @@ namespace Server.Spells.Fifth
             Reagent.Garlic
         );
 
-        public DispelFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public DispelFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -25,19 +24,11 @@ namespace Server.Spells.Fifth
 
         public void Target(Item item)
         {
-            if (item == null)
+            if (!item.GetType().IsDefined(typeof(DispellableFieldAttribute), false))
             {
                 Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
             }
-            else if (!Caster.CanSee(item))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (!item.GetType().IsDefined(typeof(DispellableFieldAttribute), false))
-            {
-                Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
-            }
-            else if (item is Moongate moongate && !moongate.Dispellable)
+            else if (item is Moongate { Dispellable: false })
             {
                 Caster.SendLocalizedMessage(1005047); // That magic is too chaotic
             }
@@ -62,7 +53,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
         }
     }
 }

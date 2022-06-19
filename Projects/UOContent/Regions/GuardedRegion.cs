@@ -34,7 +34,7 @@ namespace Server.Regions
 
                 if (!typeof(BaseGuard).IsAssignableFrom(m_GuardType))
                 {
-                    logger.Warning("Invalid guard type for region '{0}'", this);
+                    logger.Warning("Invalid guard type for region '{Region}'", this);
                     m_GuardType = DefaultGuardType;
                 }
             }
@@ -245,7 +245,7 @@ namespace Server.Regions
 
             var noto = Notoriety.Compute(helper, helped);
 
-            if (helper != helped && (noto == Notoriety.Criminal || noto == Notoriety.Murderer))
+            if (helper != helped && noto is Notoriety.Criminal or Notoriety.Murderer)
             {
                 CheckGuardCandidate(helper);
             }
@@ -358,8 +358,8 @@ namespace Server.Regions
         }
 
         public bool IsGuardCandidate(Mobile m) =>
-            !(m is BaseGuard) && m.Alive && m.AccessLevel <= AccessLevel.Player && !m.Blessed &&
-            (!(m is BaseCreature creature) || !creature.IsInvulnerable) && !IsDisabled() &&
+            m is not BaseGuard && m.Alive && m.AccessLevel <= AccessLevel.Player && !m.Blessed &&
+            (m is not BaseCreature creature || !creature.IsInvulnerable) && !IsDisabled() &&
             (!AllowReds && m.Kills >= 5 || m.Criminal);
 
         private class GuardTimer : Timer

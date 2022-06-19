@@ -26,65 +26,20 @@ namespace Server
 
         public int Length => Arguments.Length;
 
-        public string GetString(int index)
-        {
-            if (index < 0 || index >= Arguments.Length)
-            {
-                return "";
-            }
+        public string GetString(int index) => index < 0 || index >= Arguments.Length ? "" : Arguments[index];
 
-            return Arguments[index];
-        }
+        public int GetInt32(int index) => index < 0 || index >= Arguments.Length ? 0 : Utility.ToInt32(Arguments[index]);
 
-        public int GetInt32(int index)
-        {
-            if (index < 0 || index >= Arguments.Length)
-            {
-                return 0;
-            }
+        public uint GetUInt32(int index) =>
+            index < 0 || index >= Arguments.Length ? 0 : Utility.ToUInt32(Arguments[index]);
 
-            return Utility.ToInt32(Arguments[index]);
-        }
+        public bool GetBoolean(int index) => index >= 0 && index < Arguments.Length && Utility.ToBoolean(Arguments[index]);
 
-        public uint GetUInt32(int index)
-        {
-            if (index < 0 || index >= Arguments.Length)
-            {
-                return 0;
-            }
+        public double GetDouble(int index) =>
+            index < 0 || index >= Arguments.Length ? 0.0 : Utility.ToDouble(Arguments[index]);
 
-            return Utility.ToUInt32(Arguments[index]);
-        }
-
-        public bool GetBoolean(int index)
-        {
-            if (index < 0 || index >= Arguments.Length)
-            {
-                return false;
-            }
-
-            return Utility.ToBoolean(Arguments[index]);
-        }
-
-        public double GetDouble(int index)
-        {
-            if (index < 0 || index >= Arguments.Length)
-            {
-                return 0.0;
-            }
-
-            return Utility.ToDouble(Arguments[index]);
-        }
-
-        public TimeSpan GetTimeSpan(int index)
-        {
-            if (index < 0 || index >= Arguments.Length)
-            {
-                return TimeSpan.Zero;
-            }
-
-            return Utility.ToTimeSpan(Arguments[index]);
-        }
+        public TimeSpan GetTimeSpan(int index) =>
+            index < 0 || index >= Arguments.Length ? TimeSpan.Zero : Utility.ToTimeSpan(Arguments[index]);
     }
 
     public static partial class EventSink
@@ -137,27 +92,7 @@ namespace Server
         }
     }
 
-    public record CommandInfo
-    {
-        public CommandInfo(AccessLevel accessLevel, string name, string[] aliases, string usage, string description)
-        {
-            AccessLevel = accessLevel;
-            Name = name;
-            Aliases = aliases;
-            Usage = usage;
-            Description = description;
-        }
-
-        public AccessLevel AccessLevel { get; }
-
-        public string Name { get; }
-
-        public string[] Aliases { get; }
-
-        public string Usage { get; }
-
-        public string Description { get; }
-    }
+    public record CommandInfo(AccessLevel AccessLevel, string Name, string[] Aliases, string Usage, string Description);
 
     public class CommandInfoSorter : IComparer<CommandInfo>
     {

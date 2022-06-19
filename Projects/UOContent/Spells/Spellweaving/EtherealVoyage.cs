@@ -4,14 +4,14 @@ namespace Server.Spells.Spellweaving
 {
     public class EtherealVoyageSpell : ArcaneForm
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Ethereal Voyage",
             "Orlavdra",
             -1
         );
 
         public EtherealVoyageSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

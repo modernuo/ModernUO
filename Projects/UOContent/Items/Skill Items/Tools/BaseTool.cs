@@ -114,7 +114,7 @@ namespace Server.Items
             return 100;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -127,7 +127,7 @@ namespace Server.Items
                 list.Add(1060636); // exceptional
             }
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public virtual void DisplayDurabilityTo(Mobile m)
@@ -141,14 +141,14 @@ namespace Server.Items
         {
             var check = m.FindItemOnLayer(Layer.OneHanded);
 
-            if (check is BaseTool && check != tool && !(check is AncientSmithyHammer))
+            if (check is BaseTool && check != tool && check is not AncientSmithyHammer)
             {
                 return false;
             }
 
             check = m.FindItemOnLayer(Layer.TwoHanded);
 
-            return !(check is BaseTool) || check == tool || check is AncientSmithyHammer;
+            return check is not BaseTool || check == tool || check is AncientSmithyHammer;
         }
 
         public override void OnSingleClick(Mobile from)

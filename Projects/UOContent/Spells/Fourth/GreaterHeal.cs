@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class GreaterHealSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Greater Heal",
             "In Vas Mani",
             204,
@@ -19,7 +19,7 @@ namespace Server.Spells.Fourth
             Reagent.SpidersSilk
         );
 
-        public GreaterHealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public GreaterHealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -27,16 +27,7 @@ namespace Server.Spells.Fourth
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (m is BaseCreature creature && creature.IsAnimatedDead)
+            if (m is BaseCreature creature && creature.IsAnimatedDead)
             {
                 Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
             }

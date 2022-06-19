@@ -17,7 +17,7 @@ namespace Server.Engines.Quests.Ninja
 
         public override int LabelNumber => 1063186; // A Note for Zoel
 
-        public override bool CanDrop(PlayerMobile player) => !(player.Quest is EminosUndertakingQuest);
+        public override bool CanDrop(PlayerMobile player) => player.Quest is not EminosUndertakingQuest;
 
         public override void Serialize(IGenericWriter writer)
         {

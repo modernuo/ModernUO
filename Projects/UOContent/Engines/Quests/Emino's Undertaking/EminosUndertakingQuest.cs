@@ -74,7 +74,7 @@ namespace Server.Engines.Quests.Ninja
         public override void Slice()
         {
             if (!m_SentRadarConversion &&
-                (From.Map != Map.Malas || From.X < 407 || From.X > 431 || From.Y < 801 || From.Y > 830))
+                (From.Map != Map.Malas || From.X is < 407 or > 431 || From.Y is < 801 or > 830))
             {
                 m_SentRadarConversion = true;
                 AddConversation(new RadarConversation());
@@ -99,7 +99,7 @@ namespace Server.Engines.Quests.Ninja
 
         public static bool HasLostNoteForZoel(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }
@@ -119,7 +119,7 @@ namespace Server.Engines.Quests.Ninja
 
         public static bool HasLostEminosKatana(Mobile from)
         {
-            if (!(from is PlayerMobile pm))
+            if (from is not PlayerMobile pm)
             {
                 return false;
             }

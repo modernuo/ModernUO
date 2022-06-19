@@ -8,7 +8,7 @@ namespace Server.Spells.Seventh
 {
     public class GateTravelSpell : MagerySpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Gate Travel",
             "Vas Rel Por",
             263,
@@ -20,8 +20,12 @@ namespace Server.Spells.Seventh
 
         private readonly RunebookEntry m_Entry;
 
+        public GateTravelSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+        {
+        }
+
         public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) :
-            base(caster, scroll, m_Info) => m_Entry = entry;
+            base(caster, scroll, _info) => m_Entry = entry;
 
         public override SpellCircle Circle => SpellCircle.Seventh;
 
@@ -129,7 +133,7 @@ namespace Server.Spells.Seventh
 
             foreach (var item in eable)
             {
-                if (item is Moongate || item is PublicMoongate)
+                if (item is Moongate or PublicMoongate)
                 {
                     return true;
                 }

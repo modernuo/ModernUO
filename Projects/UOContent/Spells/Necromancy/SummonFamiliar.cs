@@ -9,7 +9,7 @@ namespace Server.Spells.Necromancy
 {
     public class SummonFamiliarSpell : NecromancerSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Summon Familiar",
             "Kal Xen Bal",
             203,
@@ -19,7 +19,7 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        public SummonFamiliarSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public SummonFamiliarSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

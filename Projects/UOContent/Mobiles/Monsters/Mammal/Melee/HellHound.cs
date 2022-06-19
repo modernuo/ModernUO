@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class HellHound : BaseCreature
     {
         [Constructible]
-        public HellHound() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public HellHound() : base(AIType.AI_Melee)
         {
             Body = 98;
             BaseSoundID = 229;

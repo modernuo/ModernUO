@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseCloak : BaseClothing
     {
         public BaseCloak(int itemID, int hue = 0) : base(itemID, Layer.Cloak, hue)
@@ -11,7 +12,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(2, false)]
+    [SerializationGenerator(2, false)]
     public partial class Cloak : BaseCloak, IArcaneEquip
     {
         private int _maxArcaneCharges;
@@ -79,13 +80,13 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (IsArcane)
             {
-                list.Add(1061837, "{0}\t{1}", _curArcaneCharges, _maxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+                list.Add(1061837, $"{_curArcaneCharges}\t{_maxArcaneCharges}"); // arcane charges: ~1_val~ / ~2_val~
             }
         }
 
@@ -111,7 +112,7 @@ namespace Server.Items
     }
 
     [Flippable]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RewardCloak : BaseCloak, IRewardItem
     {
         [InvalidateProperties]
@@ -162,7 +163,7 @@ namespace Server.Items
             return false;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -188,7 +189,7 @@ namespace Server.Items
     }
 
     [Flippable(0x230A, 0x2309)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class FurCape : BaseCloak
     {
         [Constructible]

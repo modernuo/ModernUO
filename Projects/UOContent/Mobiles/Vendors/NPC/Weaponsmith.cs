@@ -92,7 +92,7 @@ namespace Server.Mobiles
             return null;
         }
 
-        public override bool IsValidBulkOrder(Item item) => item is SmallSmithBOD || item is LargeSmithBOD;
+        public override bool IsValidBulkOrder(Item item) => item is SmallSmithBOD or LargeSmithBOD;
 
         public override bool SupportsBulkOrders(Mobile from) =>
             from is PlayerMobile && Core.AOS && from.Skills.Blacksmith.Base > 0;

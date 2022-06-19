@@ -9,7 +9,7 @@ namespace Server.Mobiles
         private DateTime m_NextAbilityTime;
 
         [Constructible]
-        public MeerCaptain() : base(AIType.AI_Archer, FightMode.Evil, 10, 1, 0.2, 0.4)
+        public MeerCaptain() : base(AIType.AI_Archer, FightMode.Evil)
         {
             Body = 773;
 
@@ -124,7 +124,7 @@ namespace Server.Mobiles
 
                 foreach (var m in eable)
                 {
-                    if (!(m is MeerWarrior) || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
+                    if (m is not MeerWarrior || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
                         MortalStrike.IsWounded(m))
                     {
                         continue;

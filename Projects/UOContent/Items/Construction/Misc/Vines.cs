@@ -10,7 +10,7 @@ namespace Server.Items
         [Constructible]
         public Vines(int v) : base(0xCEB)
         {
-            if (v < 0 || v > 7)
+            if (v is < 0 or > 7)
             {
                 v = 0;
             }

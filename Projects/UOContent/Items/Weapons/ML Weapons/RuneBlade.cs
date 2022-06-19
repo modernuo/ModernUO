@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2D32, 0x2D26)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class RuneBlade : BaseSword
     {
         [Constructible]

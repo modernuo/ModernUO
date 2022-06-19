@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x13b4, 0x13b3)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Club : BaseBashing
     {
         [Constructible]

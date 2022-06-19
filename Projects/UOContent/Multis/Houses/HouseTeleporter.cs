@@ -155,9 +155,7 @@ namespace Server.Items
                     return;
                 }
 
-                var m = m_Mobile;
-
-                if (m.Location != m_Teleporter.Location || m.Map != m_Teleporter.Map)
+                if (m_Mobile.Location != m_Teleporter.Location || m_Mobile.Map != m_Teleporter.Map)
                 {
                     return;
                 }
@@ -165,11 +163,11 @@ namespace Server.Items
                 var p = target.GetWorldTop();
                 var map = target.Map;
 
-                BaseCreature.TeleportPets(m, p, map);
+                BaseCreature.TeleportPets(m_Mobile, p, map);
 
-                m.MoveToWorld(p, map);
+                m_Mobile.MoveToWorld(p, map);
 
-                if (m.Hidden && m.AccessLevel != AccessLevel.Player)
+                if (m_Mobile.Hidden && m_Mobile.AccessLevel != AccessLevel.Player)
                 {
                     return;
                 }

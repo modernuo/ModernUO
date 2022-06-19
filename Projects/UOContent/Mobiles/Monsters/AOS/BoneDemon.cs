@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class BoneDemon : BaseCreature
     {
         [Constructible]
-        public BoneDemon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public BoneDemon() : base(AIType.AI_Mage)
         {
             Body = 308;
             BaseSoundID = 0x48D;

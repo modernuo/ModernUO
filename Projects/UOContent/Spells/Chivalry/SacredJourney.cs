@@ -8,7 +8,7 @@ namespace Server.Spells.Chivalry
 {
     public class SacredJourneySpell : PaladinSpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Sacred Journey",
             "Sanctum Viatas",
             -1,
@@ -16,12 +16,15 @@ namespace Server.Spells.Chivalry
         );
 
         private readonly Runebook m_Book;
-
         private readonly RunebookEntry m_Entry;
+
+        public SacredJourneySpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+        {
+        }
 
         public SacredJourneySpell(
             Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null
-        ) : base(caster, scroll, m_Info)
+        ) : base(caster, scroll, _info)
         {
             m_Entry = entry;
             m_Book = book;

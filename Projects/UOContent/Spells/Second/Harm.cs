@@ -4,7 +4,7 @@ namespace Server.Spells.Second
 {
     public class HarmSpell : MagerySpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Harm",
             "An Mani",
             212,
@@ -13,7 +13,7 @@ namespace Server.Spells.Second
             Reagent.SpidersSilk
         );
 
-        public HarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public HarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -23,16 +23,7 @@ namespace Server.Spells.Second
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
-            if (!Caster.CanSee(m))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(m))
+            if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
 

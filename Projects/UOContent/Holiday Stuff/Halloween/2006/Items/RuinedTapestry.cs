@@ -1,6 +1,8 @@
-﻿namespace Server.Items
+﻿using ModernUO.Serialization;
+
+namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class RuinedTapestry : Item
     {
         [Constructible]

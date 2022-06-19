@@ -13,8 +13,7 @@ namespace Server.Mobiles
         private Mobile m_Rider;
 
         [Constructible]
-        public EtherealMount(int itemID, int mountID)
-            : base(itemID)
+        public EtherealMount(int itemID, int mountID) : base(itemID)
         {
             m_MountedID = mountID;
             m_RegularID = itemID;
@@ -129,7 +128,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsRewardItem { get; set; }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -389,7 +388,7 @@ namespace Server.Mobiles
 
             public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
             {
-                if (type == DisturbType.EquipRequest || type == DisturbType.UseRequest /* || type == DisturbType.Hurt*/)
+                if (type is DisturbType.EquipRequest or DisturbType.UseRequest /* || type == DisturbType.Hurt*/)
                 {
                     return false;
                 }

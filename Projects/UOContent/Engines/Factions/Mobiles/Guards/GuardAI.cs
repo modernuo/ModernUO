@@ -156,7 +156,7 @@ namespace Server.Factions
                 return false;
             }
 
-            if (m_Guard.Weapon is Item weapon && weapon.Parent == m_Guard && !(weapon is Fists))
+            if (m_Guard.Weapon is Item weapon && weapon.Parent == m_Guard && weapon is not Fists)
             {
                 pack.DropItem(weapon);
                 return true;

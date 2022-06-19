@@ -37,7 +37,7 @@ namespace Server.Items
         public PlankSide Side { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsOpen => ItemID == 0x3ED5 || ItemID == 0x3ED4 || ItemID == 0x3E84 || ItemID == 0x3E89;
+        public bool IsOpen => ItemID is 0x3ED5 or 0x3ED4 or 0x3E84 or 0x3E89;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Starboard => Side == PlankSide.Starboard;

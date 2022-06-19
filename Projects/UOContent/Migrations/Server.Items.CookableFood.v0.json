@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.CookableFood",
+  "properties": [
+    {
+      "name": "CookingLevel",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

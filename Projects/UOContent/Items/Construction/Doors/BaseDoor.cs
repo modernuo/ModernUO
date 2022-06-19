@@ -144,7 +144,7 @@ namespace Server.Items
 
         private static void Link_OnFirstTarget(Mobile from, object targeted)
         {
-            if (!(targeted is BaseDoor door))
+            if (targeted is not BaseDoor door)
             {
                 from.BeginTarget(-1, false, TargetFlags.None, Link_OnFirstTarget);
                 from.SendMessage("That is not a door. Try again.");
@@ -158,7 +158,7 @@ namespace Server.Items
 
         private static void Link_OnSecondTarget(Mobile from, object targeted, BaseDoor first)
         {
-            if (!(targeted is BaseDoor second))
+            if (targeted is not BaseDoor second)
             {
                 from.BeginTarget(-1, false, TargetFlags.None, Link_OnSecondTarget, first);
                 from.SendMessage("That is not a door. Try again.");
@@ -180,7 +180,7 @@ namespace Server.Items
 
         private static void ChainLink_OnTarget(Mobile from, object targeted, List<BaseDoor> list)
         {
-            if (!(targeted is BaseDoor door))
+            if (targeted is not BaseDoor door)
             {
                 from.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, list);
                 from.SendMessage("That is not a door. Try again.");
@@ -328,8 +328,8 @@ namespace Server.Items
             {
                 var item = items[i];
 
-                if (!(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y) &&
-                    !(item is BaseDoor))
+                if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y) &&
+                    item is not BaseDoor)
                 {
                     var id = item.ItemData;
                     var surface = id.Surface;

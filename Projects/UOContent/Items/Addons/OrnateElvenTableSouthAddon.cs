@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class OrnateElvenTableSouthAddon : BaseAddon
     {
         [Constructible]
@@ -14,7 +16,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new OrnateElvenTableSouthDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class OrnateElvenTableSouthDeed : BaseAddonDeed
     {
         [Constructible]

@@ -211,7 +211,7 @@ namespace Server.Engines.ConPVP
         {
             var x = ourLevel - theirLevel;
 
-            if (x < -6 || x > +6)
+            if (x is < -6 or > +6)
             {
                 return 0;
             }

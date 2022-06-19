@@ -107,12 +107,15 @@ namespace Server.Engines.Spawners
 
             watch.Stop();
 
-            logger.Information("Generated {0} spawners ({1:F2} seconds, {2} failures)");
-            from.SendMessage(
-                "GenerateSpawners: Generated {0} spawners ({1:F2} seconds, {2} failures)",
+            logger.Information(
+                "Generated {Count} spawners ({Duration:F2} seconds, {Failures} failures)",
                 totalGenerated,
                 watch.Elapsed.TotalSeconds,
                 totalFailures
+            );
+
+            from.SendMessage(
+                $"GenerateSpawners: Generated {totalGenerated} spawners ({watch.Elapsed.TotalSeconds:F2} seconds, {totalFailures} failures)"
             );
         }
 

@@ -28,7 +28,7 @@ namespace Server.Json
                 return new ClientVersion(reader.GetString());
             }
 
-            throw new JsonException($"Value must be a string");
+            throw new JsonException("Value must be a string");
         }
 
         public override void Write(Utf8JsonWriter writer, ClientVersion value, JsonSerializerOptions options) =>

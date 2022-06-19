@@ -6,14 +6,14 @@ namespace Server.Spells.Chivalry
 {
     public class CleanseByFireSpell : PaladinSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Cleanse By Fire",
             "Expor Flamus",
             -1,
             9002
         );
 
-        public CleanseByFireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public CleanseByFireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

@@ -70,7 +70,7 @@ namespace Server.ContextMenus
                 for (var i = 0; i < Entries.Length; ++i)
                 {
                     var number = Entries[i].Number;
-                    if (number < 3000000 || number > 3032767)
+                    if (number is < 3000000 or > 3032767)
                     {
                         return true;
                     }

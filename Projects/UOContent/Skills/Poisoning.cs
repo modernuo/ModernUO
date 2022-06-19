@@ -56,7 +56,7 @@ namespace Server.SkillHandlers
 
                     var startTimer = false;
 
-                    if (targeted is Food || targeted is FukiyaDarts || targeted is Shuriken)
+                    if (targeted is Food or FukiyaDarts or Shuriken)
                     {
                         startTimer = true;
                     }
@@ -69,7 +69,7 @@ namespace Server.SkillHandlers
                         }
                         else if (weapon.Layer == Layer.OneHanded)
                         {
-                            startTimer = weapon.Type == WeaponType.Slashing || weapon.Type == WeaponType.Piercing;
+                            startTimer = weapon.Type is WeaponType.Slashing or WeaponType.Piercing;
                         }
                     }
 

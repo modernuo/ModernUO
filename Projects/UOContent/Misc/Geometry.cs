@@ -36,12 +36,12 @@ namespace Server.Misc
 
         public static void Circle2D(Point3D loc, Map map, int radius, DoEffect_Callback effect, int angleStart, int angleEnd)
         {
-            if (angleStart < 0 || angleStart > 360)
+            if (angleStart is < 0 or > 360)
             {
                 angleStart = 0;
             }
 
-            if (angleEnd > 360 || angleEnd < 0)
+            if (angleEnd is > 360 or < 0)
             {
                 angleEnd = 360;
             }

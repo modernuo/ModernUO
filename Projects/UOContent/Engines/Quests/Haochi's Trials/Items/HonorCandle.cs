@@ -30,7 +30,7 @@ namespace Server.Engines.Quests.Samurai
 
             if (!wasBurning && Burning)
             {
-                if (!(from is PlayerMobile player))
+                if (from is not PlayerMobile player)
                 {
                     return;
                 }

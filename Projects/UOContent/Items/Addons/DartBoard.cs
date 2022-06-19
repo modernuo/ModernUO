@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoard : AddonComponent
     {
         [Constructible]
@@ -41,11 +42,11 @@ namespace Server.Items
             }
             else if (East)
             {
-                canThrow = dir == Direction.Left || dir == Direction.West || dir == Direction.Up;
+                canThrow = dir is Direction.Left or Direction.West or Direction.Up;
             }
             else
             {
-                canThrow = dir == Direction.Up || dir == Direction.North || dir == Direction.Right;
+                canThrow = dir is Direction.Up or Direction.North or Direction.Right;
             }
 
             if (canThrow)
@@ -60,7 +61,7 @@ namespace Server.Items
 
         public void Throw(Mobile from)
         {
-            if (!(from.Weapon is BaseKnife knife))
+            if (from.Weapon is not BaseKnife knife)
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500751); // Try holding a knife...
                 return;
@@ -86,7 +87,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardEastAddon : BaseAddon
     {
         public DartBoardEastAddon()
@@ -97,7 +98,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new DartBoardEastDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -110,7 +111,7 @@ namespace Server.Items
         public override int LabelNumber => 1044326; // dartboard (east)
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardSouthAddon : BaseAddon
     {
         public DartBoardSouthAddon()
@@ -121,7 +122,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new DartBoardSouthDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class DartBoardSouthDeed : BaseAddonDeed
     {
         [Constructible]

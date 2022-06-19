@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.ConPVP;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Fists : BaseMeleeWeapon
     {
         public Fists() : base(0)
@@ -157,7 +158,7 @@ namespace Server.Items
             }
         }
 
-        public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
+        public override TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus = 1.0)
         {
             if (!Core.AOS)
             {
@@ -199,7 +200,7 @@ namespace Server.Items
         {
             var item = m.FindItemOnLayer(Layer.OneHanded);
 
-            return (item == null || item is Spellbook) && m.FindItemOnLayer(Layer.TwoHanded) == null;
+            return item is null or Spellbook && m.FindItemOnLayer(Layer.TwoHanded) == null;
         }
 
         private static void EventSink_DisarmRequest(Mobile m)

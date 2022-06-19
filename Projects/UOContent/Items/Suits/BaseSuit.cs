@@ -47,7 +47,7 @@ namespace Server.Items
 
         public bool Validate()
         {
-            if (!(RootParent is Mobile mobile) || mobile.AccessLevel >= AccessLevel)
+            if (RootParent is not Mobile mobile || mobile.AccessLevel >= AccessLevel)
             {
                 return true;
             }

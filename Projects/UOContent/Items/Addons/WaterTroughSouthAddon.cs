@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WaterTroughSouthAddon : BaseAddon, IWaterSource
     {
         [Constructible]
@@ -19,7 +21,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WaterTroughSouthDeed : BaseAddonDeed
     {
         [Constructible]

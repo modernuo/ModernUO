@@ -6,7 +6,7 @@ namespace Server.Spells.Necromancy
 {
     public class MindRotSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Mind Rot",
             "Wis An Ben",
             203,
@@ -16,9 +16,9 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        private static readonly Dictionary<Mobile, MRBucket> m_Table = new();
+        private static readonly Dictionary<Mobile, MRBucket> _table = new();
 
-        public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -73,7 +73,7 @@ namespace Server.Spells.Necromancy
 
         public static void ClearMindRotScalar(Mobile m)
         {
-            if (m_Table.Remove(m, out var tmpB))
+            if (_table.Remove(m, out var tmpB))
             {
                 tmpB.m_MRExpireTimer.Stop();
                 m.SendLocalizedMessage(1060872); // Your mind feels normal again.
@@ -82,11 +82,11 @@ namespace Server.Spells.Necromancy
             BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
         }
 
-        public static bool HasMindRotScalar(Mobile m) => m_Table.ContainsKey(m);
+        public static bool HasMindRotScalar(Mobile m) => _table.ContainsKey(m);
 
         public static bool GetMindRotScalar(Mobile m, ref double scalar)
         {
-            if (m_Table.TryGetValue(m, out var tmpB))
+            if (_table.TryGetValue(m, out var tmpB))
             {
                 scalar = tmpB.m_Scalar;
                 return true;
@@ -97,10 +97,10 @@ namespace Server.Spells.Necromancy
 
         public static void SetMindRotScalar(Mobile caster, Mobile target, double scalar, TimeSpan duration)
         {
-            if (!m_Table.ContainsKey(target))
+            if (!_table.ContainsKey(target))
             {
                 var tmpB = new MRBucket(scalar, new MRExpireTimer(target, duration));
-                m_Table.Add(target, tmpB);
+                _table.Add(target, tmpB);
                 BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
                 tmpB.m_MRExpireTimer.Start();
                 target.SendLocalizedMessage(1074384);

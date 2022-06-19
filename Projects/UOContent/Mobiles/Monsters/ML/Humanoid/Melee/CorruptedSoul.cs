@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class CorruptedSoul : BaseCreature
     {
         [Constructible]
-        public CorruptedSoul() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, .1, 5)
+        public CorruptedSoul() : base(AIType.AI_Melee)
         {
             Body = 0x3CA;
             Hue = 0x453;
@@ -14,6 +14,7 @@ namespace Server.Mobiles
 
             SetHits(61, 69);
 
+            SetSpeed(0.25, 2.5);
             SetDamage(4, 40);
 
             SetDamageType(ResistanceType.Physical, 100);

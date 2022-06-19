@@ -1,9 +1,10 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
 namespace Server.Items
 {
     [Flippable(0x13B2, 0x13B1)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class JukaBow : Bow
     {
         [Constructible]
@@ -43,7 +44,7 @@ namespace Server.Items
 
         public void OnTargetGears(Mobile from, object targ)
         {
-            if (!(targ is Gears g) || !g.IsChildOf(from.Backpack))
+            if (targ is not Gears g || !g.IsChildOf(from.Backpack))
             {
                 from.SendMessage(
                     "Those are not gears."

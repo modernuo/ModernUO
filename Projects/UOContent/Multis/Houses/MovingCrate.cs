@@ -59,7 +59,7 @@ namespace Server.Multis
                     {
                         var subItem = subItems[i];
 
-                        if (!(subItem is Container) && subItem.StackWith(null, dropped, false))
+                        if (subItem is not Container && subItem.StackWith(null, dropped, false))
                         {
                             return;
                         }

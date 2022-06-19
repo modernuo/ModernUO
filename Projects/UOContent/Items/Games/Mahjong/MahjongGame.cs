@@ -1,347 +1,316 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
 
-namespace Server.Engines.Mahjong
+namespace Server.Engines.Mahjong;
+
+[SerializationGenerator(1, false)]
+public partial class MahjongGame : Item, ISecurable
 {
-    public class MahjongGame : Item, ISecurable
+    public const int MaxPlayers = 4;
+    public const int BaseScore = 30000;
+
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private SecureLevel _level;
+
+    [SerializableField(1, setter: "private")]
+    private MahjongTile[] _tiles;
+
+    [SerializableField(2, setter: "private")]
+    private MahjongDealerIndicator _dealerIndicator;
+
+    [SerializableField(3, setter: "private")]
+    private MahjongWallBreakIndicator _wallBreakIndicator;
+
+    [SerializableField(4, setter: "private")]
+    private MahjongDices _dices;
+
+    [SerializableField(5, setter: "private")]
+    private MahjongPlayers _players;
+
+    // Field 6
+    private bool _showScores;
+
+    // Field 7
+    private bool _spectatorVision;
+
+    private DateTime _lastReset;
+
+    [Constructible]
+    public MahjongGame() : base(0xFAA)
     {
-        public const int MaxPlayers = 4;
-        public const int BaseScore = 30000;
-        private DateTime m_LastReset;
+        Weight = 5.0;
 
-        private bool m_ShowScores;
-        private bool m_SpectatorVision;
+        BuildWalls();
+        _dealerIndicator =
+            new MahjongDealerIndicator(this, new Point2D(300, 300), MahjongPieceDirection.Up, MahjongWind.North);
+        _wallBreakIndicator = new MahjongWallBreakIndicator(this, new Point2D(335, 335));
+        _dices = new MahjongDices(this);
+        _players = new MahjongPlayers(this, MaxPlayers, BaseScore);
+        _lastReset = Core.Now;
+        _level = SecureLevel.CoOwners;
+    }
 
-        [Constructible]
-        public MahjongGame() : base(0xFAA)
+    [CommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(6)]
+    public bool ShowScores
+    {
+        get => _showScores;
+        set
         {
-            Weight = 5.0;
-
-            BuildWalls();
-            DealerIndicator =
-                new MahjongDealerIndicator(this, new Point2D(300, 300), MahjongPieceDirection.Up, MahjongWind.North);
-            WallBreakIndicator = new MahjongWallBreakIndicator(this, new Point2D(335, 335));
-            Dices = new MahjongDices(this);
-            Players = new MahjongPlayers(this, MaxPlayers, BaseScore);
-            m_LastReset = Core.Now;
-            Level = SecureLevel.CoOwners;
-        }
-
-        public MahjongGame(Serial serial) : base(serial)
-        {
-        }
-
-        public MahjongTile[] Tiles { get; private set; }
-
-        public MahjongDealerIndicator DealerIndicator { get; private set; }
-
-        public MahjongWallBreakIndicator WallBreakIndicator { get; private set; }
-
-        public MahjongDices Dices { get; private set; }
-
-        public MahjongPlayers Players { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool ShowScores
-        {
-            get => m_ShowScores;
-            set
-            {
-                if (m_ShowScores == value)
-                {
-                    return;
-                }
-
-                m_ShowScores = value;
-
-                if (value)
-                {
-                    Players.SendPlayersPacket(true, true);
-                }
-
-                Players.SendGeneralPacket(true, true);
-
-                Players.SendLocalizedMessage(value ? 1062777 : 1062778); // The dealer has enabled/disabled score display.
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool SpectatorVision
-        {
-            get => m_SpectatorVision;
-            set
-            {
-                if (m_SpectatorVision == value)
-                {
-                    return;
-                }
-
-                m_SpectatorVision = value;
-
-                if (Players.IsInGamePlayer(Players.DealerPosition))
-                {
-                    Players.Dealer.NetState.SendMahjongGeneralInfo(this);
-                }
-
-                Players.SendTilesPacket(false, true);
-
-                Players.SendLocalizedMessage(value ? 1062715 : 1062716); // The dealer has enabled/disabled Spectator Vision.
-
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SecureLevel Level { get; set; }
-
-        private void BuildHorizontalWall(
-            ref int index, int x, int y, int stackLevel, MahjongPieceDirection direction,
-            MahjongTileTypeGenerator typeGenerator
-        )
-        {
-            for (var i = 0; i < 17; i++)
-            {
-                var position = new Point2D(x + i * 20, y);
-                Tiles[index + i] = new MahjongTile(
-                    this,
-                    index + i,
-                    typeGenerator.Next(),
-                    position,
-                    stackLevel,
-                    direction,
-                    false
-                );
-            }
-
-            index += 17;
-        }
-
-        private void BuildVerticalWall(
-            ref int index, int x, int y, int stackLevel, MahjongPieceDirection direction,
-            MahjongTileTypeGenerator typeGenerator
-        )
-        {
-            for (var i = 0; i < 17; i++)
-            {
-                var position = new Point2D(x, y + i * 20);
-                Tiles[index + i] = new MahjongTile(
-                    this,
-                    index + i,
-                    typeGenerator.Next(),
-                    position,
-                    stackLevel,
-                    direction,
-                    false
-                );
-            }
-
-            index += 17;
-        }
-
-        private void BuildWalls()
-        {
-            Tiles = new MahjongTile[136];
-
-            var typeGenerator = new MahjongTileTypeGenerator();
-
-            var i = 0;
-
-            BuildHorizontalWall(ref i, 165, 110, 0, MahjongPieceDirection.Up, typeGenerator);
-            BuildHorizontalWall(ref i, 165, 115, 1, MahjongPieceDirection.Up, typeGenerator);
-
-            BuildVerticalWall(ref i, 530, 165, 0, MahjongPieceDirection.Left, typeGenerator);
-            BuildVerticalWall(ref i, 525, 165, 1, MahjongPieceDirection.Left, typeGenerator);
-
-            BuildHorizontalWall(ref i, 165, 530, 0, MahjongPieceDirection.Down, typeGenerator);
-            BuildHorizontalWall(ref i, 165, 525, 1, MahjongPieceDirection.Down, typeGenerator);
-
-            BuildVerticalWall(ref i, 110, 165, 0, MahjongPieceDirection.Right, typeGenerator);
-            BuildVerticalWall(ref i, 115, 165, 1, MahjongPieceDirection.Right, typeGenerator);
-        }
-
-        public override void GetProperties(ObjectPropertyList list)
-        {
-            base.GetProperties(list);
-
-            if (m_SpectatorVision)
-            {
-                list.Add(1062717); // Spectator Vision Enabled
-            }
-            else
-            {
-                list.Add(1062718); // Spectator Vision Disabled
-            }
-        }
-
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
-        {
-            base.GetContextMenuEntries(from, list);
-
-            Players.CheckPlayers();
-
-            if (from.Alive && IsAccessibleTo(from) && Players.GetInGameMobiles(true, false).Count == 0)
-            {
-                list.Add(new ResetGameEntry(this));
-            }
-
-            SetSecureLevelEntry.AddTo(from, this, list);
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            Players.CheckPlayers();
-
-            Players.Join(from);
-        }
-
-        public void ResetGame(Mobile from)
-        {
-            if (Core.Now - m_LastReset < TimeSpan.FromSeconds(5.0))
+            if (_showScores == value)
             {
                 return;
             }
 
-            m_LastReset = Core.Now;
+            _showScores = value;
 
-            if (from != null)
+            if (value)
             {
-                Players.SendLocalizedMessage(1062771, from.Name); // ~1_name~ has reset the game.
+                _players.SendPlayersPacket(true, true);
             }
 
-            Players.SendRelievePacket(true, true);
-
-            BuildWalls();
-            DealerIndicator =
-                new MahjongDealerIndicator(this, new Point2D(300, 300), MahjongPieceDirection.Up, MahjongWind.North);
-            WallBreakIndicator = new MahjongWallBreakIndicator(this, new Point2D(335, 335));
-            Players = new MahjongPlayers(this, MaxPlayers, BaseScore);
+            _players.SendGeneralPacket(true, true);
+            _players.SendLocalizedMessage(value ? 1062777 : 1062778); // The dealer has enabled/disabled score display.
+            this.MarkDirty();
         }
+    }
 
-        public void ResetWalls(Mobile from)
+    [CommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(7)]
+    public bool SpectatorVision
+    {
+        get => _spectatorVision;
+        set
         {
-            if (Core.Now - m_LastReset < TimeSpan.FromSeconds(5.0))
+            if (_spectatorVision == value)
             {
                 return;
             }
 
-            m_LastReset = Core.Now;
+            _spectatorVision = value;
 
-            BuildWalls();
-
-            Players.SendTilesPacket(true, true);
-
-            if (from != null)
+            if (_players.IsInGamePlayer(_players.DealerPosition))
             {
-                Players.SendLocalizedMessage(1062696); // The dealer rebuilds the wall.
+                _players.Dealer.NetState.SendMahjongGeneralInfo(this);
+            }
+
+            _players.SendTilesPacket(false, true);
+            _players.SendLocalizedMessage(value ? 1062715 : 1062716); // The dealer has enabled/disabled Spectator Vision.
+            InvalidateProperties();
+            this.MarkDirty();
+        }
+    }
+
+    private void BuildHorizontalWall(
+        ref int index, int x, int y, int stackLevel, MahjongPieceDirection direction,
+        MahjongTileTypeGenerator typeGenerator
+    )
+    {
+        for (var i = 0; i < 17; i++)
+        {
+            var position = new Point2D(x + i * 20, y);
+            Tiles[index + i] = new MahjongTile(
+                this,
+                index + i,
+                typeGenerator.Next(),
+                position,
+                stackLevel,
+                direction,
+                false
+            );
+        }
+
+        index += 17;
+        this.MarkDirty();
+    }
+
+    private void BuildVerticalWall(
+        ref int index, int x, int y, int stackLevel, MahjongPieceDirection direction,
+        MahjongTileTypeGenerator typeGenerator
+    )
+    {
+        for (var i = 0; i < 17; i++)
+        {
+            var position = new Point2D(x, y + i * 20);
+            Tiles[index + i] = new MahjongTile(
+                this,
+                index + i,
+                typeGenerator.Next(),
+                position,
+                stackLevel,
+                direction,
+                false
+            );
+        }
+
+        index += 17;
+        this.MarkDirty();
+    }
+
+    private void BuildWalls()
+    {
+        Tiles = new MahjongTile[136];
+
+        var typeGenerator = new MahjongTileTypeGenerator();
+
+        var i = 0;
+
+        BuildHorizontalWall(ref i, 165, 110, 0, MahjongPieceDirection.Up, typeGenerator);
+        BuildHorizontalWall(ref i, 165, 115, 1, MahjongPieceDirection.Up, typeGenerator);
+
+        BuildVerticalWall(ref i, 530, 165, 0, MahjongPieceDirection.Left, typeGenerator);
+        BuildVerticalWall(ref i, 525, 165, 1, MahjongPieceDirection.Left, typeGenerator);
+
+        BuildHorizontalWall(ref i, 165, 530, 0, MahjongPieceDirection.Down, typeGenerator);
+        BuildHorizontalWall(ref i, 165, 525, 1, MahjongPieceDirection.Down, typeGenerator);
+
+        BuildVerticalWall(ref i, 110, 165, 0, MahjongPieceDirection.Right, typeGenerator);
+        BuildVerticalWall(ref i, 115, 165, 1, MahjongPieceDirection.Right, typeGenerator);
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (_spectatorVision)
+        {
+            list.Add(1062717); // Spectator Vision Enabled
+        }
+        else
+        {
+            list.Add(1062718); // Spectator Vision Disabled
+        }
+    }
+
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+        base.GetContextMenuEntries(from, list);
+
+        _players.CheckPlayers();
+
+        if (from.Alive && IsAccessibleTo(from) && _players.GetInGameMobiles(true, false).Count == 0)
+        {
+            list.Add(new ResetGameEntry(this));
+        }
+
+        SetSecureLevelEntry.AddTo(from, this, list);
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        _players.CheckPlayers();
+        _players.Join(from);
+    }
+
+    public void ResetGame(Mobile from)
+    {
+        if (Core.Now - _lastReset < TimeSpan.FromSeconds(5.0))
+        {
+            return;
+        }
+
+        _lastReset = Core.Now;
+
+        if (from != null)
+        {
+            _players.SendLocalizedMessage(1062771, from.Name); // ~1_name~ has reset the game.
+        }
+
+        _players.SendRelievePacket(true, true);
+
+        BuildWalls();
+        DealerIndicator =
+            new MahjongDealerIndicator(this, new Point2D(300, 300), MahjongPieceDirection.Up, MahjongWind.North);
+        WallBreakIndicator = new MahjongWallBreakIndicator(this, new Point2D(335, 335));
+        Players = new MahjongPlayers(this, MaxPlayers, BaseScore);
+    }
+
+    public void ResetWalls(Mobile from)
+    {
+        if (Core.Now - _lastReset < TimeSpan.FromSeconds(5.0))
+        {
+            return;
+        }
+
+        _lastReset = Core.Now;
+
+        BuildWalls();
+
+        _players.SendTilesPacket(true, true);
+
+        if (from != null)
+        {
+            _players.SendLocalizedMessage(1062696); // The dealer rebuilds the wall.
+        }
+    }
+
+    public int GetStackLevel(MahjongPieceDim dim)
+    {
+        var level = -1;
+        foreach (var tile in _tiles)
+        {
+            if (tile.StackLevel > level && dim.IsOverlapping(tile.Dimensions))
+            {
+                level = tile.StackLevel;
             }
         }
 
-        public int GetStackLevel(MahjongPieceDim dim)
-        {
-            var level = -1;
-            foreach (var tile in Tiles)
-            {
-                if (tile.StackLevel > level && dim.IsOverlapping(tile.Dimensions))
-                {
-                    level = tile.StackLevel;
-                }
-            }
+        return level;
+    }
 
-            return level;
+    private void Deserialize(IGenericReader reader, int number)
+    {
+        _level = (SecureLevel)reader.ReadInt();
+        var length = reader.ReadInt();
+        _tiles = new MahjongTile[length];
+
+        for (var i = 0; i < length; i++)
+        {
+            var tile = _tiles[i] = new MahjongTile(this);
+            tile.Deserialize(reader);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        _dealerIndicator = new MahjongDealerIndicator(this);
+        _dealerIndicator.Deserialize(reader);
+
+        _wallBreakIndicator = new MahjongWallBreakIndicator(this);
+        _wallBreakIndicator.Deserialize(reader);
+
+        _dices = new MahjongDices(this);
+        _dices.Deserialize(reader);
+
+        _players = new MahjongPlayers(this);
+        _players.Deserialize(reader);
+
+        _showScores = reader.ReadBool();
+        _spectatorVision = reader.ReadBool();
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        _lastReset = Core.Now;
+    }
+
+    private class ResetGameEntry : ContextMenuEntry
+    {
+        private readonly MahjongGame _game;
+
+        public ResetGameEntry(MahjongGame game) : base(6162) => _game = game;
+
+        public override void OnClick()
         {
-            base.Serialize(writer);
+            var from = Owner.From;
 
-            writer.Write(1); // version
-
-            writer.Write((int)Level);
-
-            writer.Write(Tiles.Length);
-
-            for (var i = 0; i < Tiles.Length; i++)
+            if (from.CheckAlive() && !_game.Deleted && _game.IsAccessibleTo(from) &&
+                _game.Players.GetInGameMobiles(true, false).Count == 0)
             {
-                Tiles[i].Save(writer);
-            }
-
-            DealerIndicator.Save(writer);
-
-            WallBreakIndicator.Save(writer);
-
-            Dices.Save(writer);
-
-            Players.Save(writer);
-
-            writer.Write(m_ShowScores);
-            writer.Write(m_SpectatorVision);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        Level = (SecureLevel)reader.ReadInt();
-
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        if (version < 1)
-                        {
-                            Level = SecureLevel.CoOwners;
-                        }
-
-                        var length = reader.ReadInt();
-                        Tiles = new MahjongTile[length];
-
-                        for (var i = 0; i < length; i++)
-                        {
-                            Tiles[i] = new MahjongTile(this, reader);
-                        }
-
-                        DealerIndicator = new MahjongDealerIndicator(this, reader);
-
-                        WallBreakIndicator = new MahjongWallBreakIndicator(this, reader);
-
-                        Dices = new MahjongDices(this, reader);
-
-                        Players = new MahjongPlayers(this, reader);
-
-                        m_ShowScores = reader.ReadBool();
-                        m_SpectatorVision = reader.ReadBool();
-
-                        m_LastReset = Core.Now;
-
-                        break;
-                    }
-            }
-        }
-
-        private class ResetGameEntry : ContextMenuEntry
-        {
-            private readonly MahjongGame m_Game;
-
-            public ResetGameEntry(MahjongGame game) : base(6162) => m_Game = game;
-
-            public override void OnClick()
-            {
-                var from = Owner.From;
-
-                if (from.CheckAlive() && !m_Game.Deleted && m_Game.IsAccessibleTo(from) &&
-                    m_Game.Players.GetInGameMobiles(true, false).Count == 0)
-                {
-                    m_Game.ResetGame(from);
-                }
+                _game.ResetGame(from);
             }
         }
     }

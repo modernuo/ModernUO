@@ -6,7 +6,7 @@ namespace Server.Spells.Mysticism
 {
     public class SpellPlagueSpell : MysticSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Spell Plague",
             "Vas Rel Jux Ort",
             -1,
@@ -17,10 +17,10 @@ namespace Server.Spells.Mysticism
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, SpellPlagueTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, SpellPlagueTimer> _table = new();
 
         public SpellPlagueSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -41,11 +41,7 @@ namespace Server.Spells.Mysticism
 
         public void Target(Mobile targeted)
         {
-            if (!Caster.CanSee(targeted))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckHSequence(targeted))
+            if (CheckHSequence(targeted))
             {
                 SpellHelper.Turn(Caster, targeted);
 
@@ -68,13 +64,13 @@ namespace Server.Spells.Mysticism
 
                 var timer = new SpellPlagueTimer(this, targeted);
 
-                if (m_Table.TryGetValue(targeted, out var oldtimer))
+                if (_table.TryGetValue(targeted, out var oldtimer))
                 {
                     oldtimer.SetNext(timer);
                 }
                 else
                 {
-                    m_Table[targeted] = timer;
+                    _table[targeted] = timer;
                     timer.StartPlague();
                 }
             }
@@ -82,11 +78,11 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
-        public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
+        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
         public static void RemoveEffect(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var context))
+            if (_table.TryGetValue(m, out var context))
             {
                 context.EndPlague(false);
             }
@@ -94,7 +90,7 @@ namespace Server.Spells.Mysticism
 
         public static void CheckPlague(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var context))
+            if (_table.TryGetValue(m, out var context))
             {
                 context.OnDamage();
             }
@@ -187,12 +183,12 @@ namespace Server.Spells.Mysticism
             {
                 if (restart && m_Next != null)
                 {
-                    m_Table[m_Target] = m_Next;
+                    _table[m_Target] = m_Next;
                     m_Next.StartPlague();
                 }
                 else
                 {
-                    m_Table.Remove(m_Target);
+                    _table.Remove(m_Target);
                     BuffInfo.RemoveBuff(m_Target, BuffIcon.SpellPlague);
                 }
             }

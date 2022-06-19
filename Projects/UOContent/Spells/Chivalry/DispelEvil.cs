@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells.Necromancy;
@@ -8,14 +8,14 @@ namespace Server.Spells.Chivalry
 {
     public class DispelEvilSpell : PaladinSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Dispel Evil",
             "Dispiro Malas",
             -1,
             9002
         );
 
-        public DispelEvilSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public DispelEvilSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -46,11 +46,21 @@ namespace Server.Spells.Chivalry
 
                 var chiv = Caster.Skills.Chivalry.Value;
 
-                var targets = Caster.GetMobilesInRange(8)
-                    .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false));
-
-                foreach (var m in targets)
+                var eable = Caster.GetMobilesInRange(8);
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in eable)
                 {
+                    if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false))
+                    {
+                        queue.Enqueue(m);
+                    }
+                }
+                eable.Free();
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
+
                     if (m is BaseCreature bc)
                     {
                         if (bc.Summoned && !bc.IsAnimatedDead)

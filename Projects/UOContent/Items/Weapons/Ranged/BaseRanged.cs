@@ -1,11 +1,12 @@
 using System;
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseRanged : BaseMeleeWeapon
     {
         [SerializableField(0)]
@@ -37,7 +38,7 @@ namespace Server.Items
 
         public override SkillName AccuracySkill => SkillName.Archery;
 
-        public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
+        public override TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus = 1.0)
         {
             // WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 
@@ -53,7 +54,7 @@ namespace Server.Items
 
                     if (canSwing)
                     {
-                        canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
+                        canSwing = attacker.Spell is not Spell sp || !sp.IsCasting || !sp.BlocksMovement;
                     }
                 }
 

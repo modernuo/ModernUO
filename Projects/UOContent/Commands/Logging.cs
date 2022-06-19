@@ -46,7 +46,7 @@ namespace Server.Commands
             o switch
             {
                 Mobile m  => m.Account == null ? $"{m} (no account)" : $"{m} ('{m.Account.Username}')",
-                Item item => $"0x{item.Serial.Value:X} ({item.GetType().Name})",
+                Item item => $"{item.Serial} ({item.GetType().Name})",
                 _         => o
             };
 
@@ -73,7 +73,7 @@ namespace Server.Commands
 
                 var path = Core.BaseDirectory;
 
-                var name = !(from.Account is Account acct) ? from.Name : acct.Username;
+                var name = from.Account is not Account acct ? from.Name : acct.Username;
 
                 AppendPath(ref path, "Logs");
                 AppendPath(ref path, "Commands");

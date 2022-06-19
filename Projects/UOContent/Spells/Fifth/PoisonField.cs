@@ -3,13 +3,12 @@ using Server.Collections;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
     public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Poison Field",
             "In Nox Grav",
             230,
@@ -20,7 +19,7 @@ namespace Server.Spells.Fifth
             Reagent.SpidersSilk
         );
 
-        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,29 +27,24 @@ namespace Server.Spells.Fifth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
-
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20B);
+                Effects.PlaySound(loc, Caster.Map, 0x20B);
 
                 var itemID = eastToWest ? 0x3915 : 0x3922;
-
                 var duration = TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Fixed / 25);
 
                 for (var i = -2; i <= 2; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
+                    var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
 
-                    new InternalItem(itemID, loc, Caster, Caster.Map, duration, i);
+                    new InternalItem(itemID, targetLoc, Caster, Caster.Map, duration, i);
                 }
             }
 
@@ -59,7 +53,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12, false);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]

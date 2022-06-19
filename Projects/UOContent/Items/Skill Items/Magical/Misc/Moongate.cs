@@ -274,10 +274,7 @@ namespace Server.Items
         public int TitleNumber { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int MessageNumber { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string MessageString { get; set; }
+        public TextDefinition Message { get; set; }
 
         public virtual void Warning_Callback(Mobile from, bool okay)
         {
@@ -289,14 +286,14 @@ namespace Server.Items
 
         public override void BeginConfirmation(Mobile from)
         {
-            if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && (MessageNumber > 0 || MessageString != null))
+            if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && Message?.IsEmpty == false)
             {
                 from.CloseGump<WarningGump>();
                 from.SendGump(
                     new WarningGump(
                         TitleNumber,
                         TitleColor,
-                        MessageString ?? (object)MessageNumber,
+                        Message,
                         MessageColor,
                         GumpWidth,
                         GumpHeight,
@@ -314,7 +311,9 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write(1); // version
+
+            TextDefinition.Serialize(writer, Message);
 
             writer.WriteEncodedInt(GumpWidth);
             writer.WriteEncodedInt(GumpHeight);
@@ -323,9 +322,6 @@ namespace Server.Items
             writer.WriteEncodedInt(MessageColor);
 
             writer.WriteEncodedInt(TitleNumber);
-            writer.WriteEncodedInt(MessageNumber);
-
-            writer.Write(MessageString);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -336,6 +332,11 @@ namespace Server.Items
 
             switch (version)
             {
+                case 1:
+                    {
+                        Message = TextDefinition.Deserialize(reader);
+                        goto case 0;
+                    }
                 case 0:
                     {
                         GumpWidth = reader.ReadEncodedInt();
@@ -345,9 +346,13 @@ namespace Server.Items
                         MessageColor = reader.ReadEncodedInt();
 
                         TitleNumber = reader.ReadEncodedInt();
-                        MessageNumber = reader.ReadEncodedInt();
 
-                        MessageString = reader.ReadString();
+                        if (version == 0)
+                        {
+                            var number = reader.ReadEncodedInt();
+                            var message = reader.ReadString();
+                            Message = number > 0 ? number : message;
+                        }
 
                         break;
                     }
@@ -388,11 +393,11 @@ namespace Server.Items
                         40,
                         400,
                         200,
-                        1062050,
+                        1062050, // This Gate goes to Felucca... Continue to enter the gate, Cancel to stay here
                         32512,
                         false,
                         true
-                    ); // This Gate goes to Felucca... Continue to enter the gate, Cancel to stay here
+                    );
                 }
                 else
                 {
@@ -401,11 +406,11 @@ namespace Server.Items
                         40,
                         400,
                         200,
-                        1062049,
+                        1062049, // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
                         32512,
                         false,
                         true
-                    ); // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
+                    );
                 }
 
                 AddImageTiled(10, 250, 400, 20, 2624);
@@ -429,7 +434,7 @@ namespace Server.Items
                     40,
                     380,
                     60,
-                    @"Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here"
+                    "Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here"
                 );
 
                 AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL

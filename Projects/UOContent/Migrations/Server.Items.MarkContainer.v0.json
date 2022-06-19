@@ -1,0 +1,46 @@
+{
+  "version": 0,
+  "type": "Server.Items.MarkContainer",
+  "properties": [
+    {
+      "name": "RawAutoLock",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "RelockTimer",
+      "type": "Server.Items.MarkContainer.InternalTimer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@TimerDrift"
+      ]
+    },
+    {
+      "name": "TargetMap",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    },
+    {
+      "name": "Target",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

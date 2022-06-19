@@ -74,7 +74,7 @@ namespace Server.Items
 
         private static void EventSink_BandageTargetRequest(Mobile from, Item item, Mobile target)
         {
-            if (!(item is Bandage b) || b.Deleted)
+            if (item is not Bandage b || b.Deleted)
             {
                 return;
             }

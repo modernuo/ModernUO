@@ -19,16 +19,16 @@ namespace Server.Movement
     {
         // Movement implementation algorithm
         public static IMovementImpl Impl { get; set; }
-        public static int WalkFootDelay { get; set; } = 440;
-        public static int RunFootDelay { get; set; } = 220;
-        public static int WalkMountDelay { get; set; } = 220;
-        public static int RunMountDelay { get; set; } = 110;
+        public static int WalkFootDelay { get; set; } = 400;
+        public static int RunFootDelay { get; set; } = 200;
+        public static int WalkMountDelay { get; set; } = 200;
+        public static int RunMountDelay { get; set; } = 100;
 
         public static bool EnableFastwalkPrevention { get; set; } = true;
         public static AccessLevel FastwalkExemptionLevel { get; set; } = AccessLevel.Counselor;
 
         // If this is changed during runtime, then the steps array needs resizing.
-        public static int MaxSteps { get; private set; } = 4;
+        public static int MaxSteps { get; private set; } = 3;
 
         public static void Configure()
         {

@@ -177,7 +177,8 @@ namespace Server.Commands
             CommandSystem.Register("Batch", AccessLevel.Counselor, Batch_OnCommand);
         }
 
-        [Usage("Batch"), Description("Allows multiple commands to be run at the same time.")]
+        [Usage("Batch")]
+        [Description("Allows multiple commands to be run at the same time.")]
         public static void Batch_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new BatchGump(e.Mobile, new Batch()));

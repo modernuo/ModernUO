@@ -22,7 +22,7 @@ namespace Server.Ethics.Hero
 
         private void Power_OnTarget(Mobile fromMobile, object obj, Player from)
         {
-            if (!(obj is Item item))
+            if (obj is not Item item)
             {
                 from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You may not imbue that.");
                 return;
@@ -45,7 +45,7 @@ namespace Server.Ethics.Hero
                 return;
             }
 
-            var canImbue = (item is Spellbook || item is BaseClothing || item is BaseArmor || item is BaseWeapon) &&
+            var canImbue = item is Spellbook or BaseClothing or BaseArmor or BaseWeapon &&
                            item.Name == null;
 
             if (canImbue)

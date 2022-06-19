@@ -6,14 +6,14 @@ namespace Server.Spells.Spellweaving
 {
     public class SummonFeySpell : ArcaneSummon<ArcaneFey>
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Summon Fey",
             "Alalithra",
             -1
         );
 
         public SummonFeySpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 

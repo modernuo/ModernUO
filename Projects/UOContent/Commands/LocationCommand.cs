@@ -23,14 +23,14 @@ namespace Server.Commands
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            if (!(obj is IPoint3D point))
+            if (obj is not IPoint3D point)
             {
                 LogFailure("That cannot be located.");
                 return;
             }
 
             var label = $"(x:{point.X}, y:{point.Y}, z:{point.Z})";
-            if (obj is LandTarget || obj is StaticTarget)
+            if (obj is LandTarget or StaticTarget)
             {
                 List<int> graphics;
                 if (e.Arguments.Length == 0)

@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public class Yamandon : BaseCreature
     {
         [Constructible]
-        public Yamandon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Yamandon() : base(AIType.AI_Melee)
         {
             Body = 249;
 
@@ -131,7 +131,7 @@ namespace Server.Mobiles
                         continue;
                     }
 
-                    if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+                    if (m is not BaseCreature bc || !(bc.Controlled || bc.Summoned || bc.Team != Team))
                     {
                         continue;
                     }

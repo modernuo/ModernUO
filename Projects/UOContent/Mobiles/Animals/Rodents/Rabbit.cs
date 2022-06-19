@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Rabbit : BaseCreature
     {
         [Constructible]
-        public Rabbit() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Rabbit() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 205;
 

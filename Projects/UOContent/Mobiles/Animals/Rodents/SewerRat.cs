@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class SewerRat : BaseCreature
     {
         [Constructible]
-        public SewerRat() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public SewerRat() : base(AIType.AI_Melee)
         {
             Body = 238;
             BaseSoundID = 0xCC;

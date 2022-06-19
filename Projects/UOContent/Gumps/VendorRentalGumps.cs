@@ -45,7 +45,7 @@ namespace Server.Gumps
                 AddImageTiled(70, 80, 230, 2, 0x23C5);
             }
 
-            if (type == GumpType.UnlockedContract || type == GumpType.LockedContract)
+            if (type is GumpType.UnlockedContract or GumpType.LockedContract)
             {
                 AddButton(30, 96, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 2);
             }
@@ -53,7 +53,7 @@ namespace Server.Gumps
             AddHtmlLocalized(50, 95, 150, 20, 1062354, 0x1); // Contract Length
             AddHtmlLocalized(230, 95, 270, 20, duration.Name, 0x1);
 
-            if (type == GumpType.UnlockedContract || type == GumpType.LockedContract)
+            if (type is GumpType.UnlockedContract or GumpType.LockedContract)
             {
                 AddButton(30, 116, 0x15E1, 0x15E5, 1);
             }
@@ -76,7 +76,7 @@ namespace Server.Gumps
                 AddImage(49, 170, 0x61);
                 AddHtmlLocalized(60, 170, 250, 20, 1062355, 0x1); // Renew On Expiration?
 
-                if (type == GumpType.LockedContract || type == GumpType.UnlockedContract || type == GumpType.VendorLandlord)
+                if (type is GumpType.LockedContract or GumpType.UnlockedContract or GumpType.VendorLandlord)
                 {
                     AddButton(30, 192, 0x15E1, 0x15E5, 3);
                 }
@@ -113,7 +113,7 @@ namespace Server.Gumps
                 AddButton(67, 295, 0x15E1, 0x15E5, 5);
                 AddHtmlLocalized(85, 294, 270, 20, 1062358, 0x28); // Offer Contract To Someone
             }
-            else if (type == GumpType.VendorLandlord || type == GumpType.VendorRenter)
+            else if (type is GumpType.VendorLandlord or GumpType.VendorRenter)
             {
                 if (type == GumpType.VendorLandlord)
                 {
@@ -127,7 +127,7 @@ namespace Server.Gumps
                 AddLabel(120, 293, 0x64, renter != null ? renter.Name : "");
             }
 
-            if (type == GumpType.UnlockedContract || type == GumpType.LockedContract)
+            if (type is GumpType.UnlockedContract or GumpType.LockedContract)
             {
                 AddPage(2);
 
@@ -348,7 +348,7 @@ namespace Server.Gumps
                     return;
                 }
 
-                if (!(targeted is Mobile mob) || !mob.Player || !mob.Alive || mob == from)
+                if (targeted is not Mobile mob || !mob.Player || !mob.Alive || mob == from)
                 {
                     from.SendLocalizedMessage(1071984); // That is not a valid target for a rental contract!
                 }

@@ -8,7 +8,7 @@ namespace Server.Spells.Fourth
 {
     public class RecallSpell : MagerySpell, IRecallSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Recall",
             "Kal Ort Por",
             239,
@@ -22,10 +22,14 @@ namespace Server.Spells.Fourth
 
         private readonly RunebookEntry m_Entry;
 
+        public RecallSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+        {
+        }
+
         public RecallSpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) : base(
             caster,
             scroll,
-            m_Info
+            _info
         )
         {
             m_Entry = entry;

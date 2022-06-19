@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x13eb, 0x13f2)]
     public partial class RingmailGloves : BaseArmor
     {

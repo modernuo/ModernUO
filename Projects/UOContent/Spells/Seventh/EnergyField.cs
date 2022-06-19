@@ -2,13 +2,12 @@ using System;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
     public class EnergyFieldSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Energy Field",
             "In Sanct Grav",
             221,
@@ -20,7 +19,7 @@ namespace Server.Spells.Seventh
             Reagent.SulfurousAsh
         );
 
-        public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -28,51 +27,38 @@ namespace Server.Spells.Seventh
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
-
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, p);
+                var loc = new Point3D(p);
 
-                Effects.PlaySound(new Point3D(p), Caster.Map, 0x20B);
+                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
 
-                TimeSpan duration;
+                Effects.PlaySound(loc, Caster.Map, 0x20B);
 
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 7.0);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(
-                        Caster.Skills.Magery.Value * 0.28 +
-                        2.0
-                    ); // (28% of magery) + 2.0 seconds
-                }
+                TimeSpan duration = Core.AOS
+                    ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 7.0)
+                    : TimeSpan.FromSeconds(Caster.Skills.Magery.Value * 0.28 + 2.0);
 
                 var itemID = eastToWest ? 0x3946 : 0x3956;
 
                 for (var i = -2; i <= 2; ++i)
                 {
-                    var loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
-                    var canFit = SpellHelper.AdjustField(ref loc, Caster.Map, 12, false);
+                    var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
+                    var canFit = SpellHelper.AdjustField(ref targetLoc, Caster.Map, 12, false);
 
                     if (!canFit)
                     {
                         continue;
                     }
 
-                    Item item = new InternalItem(loc, Caster.Map, duration, itemID, Caster);
+                    Item item = new InternalItem(targetLoc, Caster.Map, duration, itemID, Caster);
                     item.ProcessDelta();
 
                     Effects.SendLocationParticles(
-                        EffectItem.Create(loc, Caster.Map, EffectItem.DefaultDuration),
+                        EffectItem.Create(targetLoc, Caster.Map, EffectItem.DefaultDuration),
                         0x376A,
                         9,
                         10,
@@ -86,7 +72,7 @@ namespace Server.Spells.Seventh
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         [DispellableField]
@@ -147,7 +133,7 @@ namespace Server.Spells.Seventh
 
             public override bool OnMoveOver(Mobile m)
             {
-                if (!(m is PlayerMobile))
+                if (m is not PlayerMobile)
                 {
                     return base.OnMoveOver(m);
                 }

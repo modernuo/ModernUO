@@ -17,19 +17,16 @@ namespace Server.Spells
     public abstract class Spell : ISpell
     {
         private static readonly TimeSpan NextSpellDelay = TimeSpan.FromSeconds(0.75);
-
         private static readonly TimeSpan AnimateDelay = TimeSpan.FromSeconds(1.5);
         // In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
         // Expo & Magic Arrow have enough delay and a short enough cast time to bring up
         // the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
         // of course, two MA's won't.
 
-        private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable =
-            new();
+        private static readonly Dictionary<Type, DelayedDamageContextWrapper> _contextTable = new();
 
-        private AnimTimer m_AnimTimer;
-
-        private CastTimer m_CastTimer;
+        private AnimTimer _animTimer;
+        private CastTimer _castTimer;
 
         public Spell(Mobile caster, Item scroll, SpellInfo info)
         {
@@ -60,13 +57,17 @@ namespace Server.Spells
 
         public virtual bool DelayedDamage => false;
 
-        public virtual bool DelayedDamageStacking => true;
+        public static readonly Type[] AOSNoDelayedDamageStackingSelf = Core.AOS ? Array.Empty<Type>() : null;
+
+        // Null means stacking is allowed while empty indicates no stacking with self
+        // More than zero means no stacking with self and other spells
+        public virtual Type[] DelayedDamageSpellFamilyStacking => null;
 
         public virtual bool BlockedByHorrificBeast => true;
         public virtual bool BlockedByAnimalForm => true;
         public virtual bool BlocksMovement => true;
 
-        public virtual bool CheckNextSpellTime => !(Scroll is BaseWand);
+        public virtual bool CheckNextSpellTime => Scroll is not BaseWand;
 
         public virtual int CastRecoveryBase => 6;
         public virtual int CastRecoveryFastScalar => 1;
@@ -149,22 +150,39 @@ namespace Server.Spells
 
         public void StartDelayedDamageContext(Mobile m, Timer t)
         {
-            if (DelayedDamageStacking)
+            var damageStacking = DelayedDamageSpellFamilyStacking;
+            if (damageStacking == null)
             {
                 return; // Sanity
             }
 
-            if (!m_ContextTable.TryGetValue(GetType(), out var contexts))
+            var type = GetType();
+
+            if (!_contextTable.TryGetValue(type, out var context))
             {
-                m_ContextTable[GetType()] = contexts = new DelayedDamageContextWrapper();
+                _contextTable[type] = context = new DelayedDamageContextWrapper();
+
+                for (int i = 0; i < damageStacking.Length; i++)
+                {
+                    _contextTable.Add(damageStacking[i], context);
+                }
             }
 
-            contexts.Add(m, t);
+            context.Add(m, t);
         }
+
+        public bool HasDelayedDamageContext(Mobile m) =>
+            DelayedDamageSpellFamilyStacking != null &&
+            _contextTable.TryGetValue(GetType(), out var context) && context.Contains(m);
 
         public void RemoveDelayedDamageContext(Mobile m)
         {
-            if (m_ContextTable.TryGetValue(GetType(), out var contexts))
+            if (m == null || DelayedDamageSpellFamilyStacking == null)
+            {
+                return; // Sanity
+            }
+
+            if (_contextTable.TryGetValue(GetType(), out var contexts))
             {
                 contexts.Remove(m);
             }
@@ -206,7 +224,7 @@ namespace Server.Spells
             damageBonus += intBonus;
 
             var sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
-            // PvP spell damage increase cap of 15% from an item�s magic property
+            // PvP spell damage increase cap of 15% from an item's magic property
             if (playerVsPlayer && sdiBonus > 15)
             {
                 sdiBonus = 15;
@@ -377,21 +395,20 @@ namespace Server.Spells
                 return;
             }
 
+            if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
+            {
+                return;
+            }
+
+            State = SpellState.None;
+            Caster.Spell = null;
+
             if (State == SpellState.Casting)
             {
-                if (!firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First)
-                {
-                    return;
-                }
-
-                State = SpellState.None;
-                Caster.Spell = null;
-
                 OnDisturb(type, true);
 
-                m_CastTimer?.Stop();
-
-                m_AnimTimer?.Stop();
+                _castTimer?.Stop();
+                _animTimer?.Stop();
 
                 if (Core.AOS && (Caster.Player || Caster is BehaviorMage) && type == DisturbType.Hurt)
                 {
@@ -402,14 +419,6 @@ namespace Server.Spells
             }
             else if (State == SpellState.Sequencing)
             {
-                if (!firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First)
-                {
-                    return;
-                }
-
-                State = SpellState.None;
-                Caster.Spell = null;
-
                 OnDisturb(type, false);
 
                 Target.Cancel(Caster);
@@ -450,6 +459,8 @@ namespace Server.Spells
             }
         }
 
+        private static ClientVersion _insufficientManaClientChange = new ClientVersion("7.0.65.4");
+
         public bool Cast()
         {
             StartCastTime = Core.TickCount;
@@ -464,13 +475,19 @@ namespace Server.Spells
                 return false;
             }
 
-            if (Scroll is BaseWand && Caster.Spell?.IsCasting == true)
+            var isCasting = Caster.Spell?.IsCasting == true;
+            var isWand = Scroll is BaseWand;
+
+            if (isCasting)
             {
-                Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
-            }
-            else if (Caster.Spell?.IsCasting == true)
-            {
-                Caster.SendLocalizedMessage(502642); // You are already casting a spell.
+                if (isWand)
+                {
+                    Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
+                }
+                else
+                {
+                    Caster.SendLocalizedMessage(502642); // You are already casting a spell.
+                }
             }
             else if (BlockedByHorrificBeast &&
                      TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell)) ||
@@ -478,7 +495,7 @@ namespace Server.Spells
             {
                 Caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
             }
-            else if (!(Scroll is BaseWand) && (Caster.Paralyzed || Caster.Frozen))
+            else if (!isWand && (Caster.Paralyzed || Caster.Frozen))
             {
                 Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
             }
@@ -493,76 +510,84 @@ namespace Server.Spells
             else if ((Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(Caster, this) == false)
             {
             }
-            else if (Caster.Mana >= ScaleMana(GetMana()))
-            {
-                if (Caster.Spell == null && Caster.CheckSpellCast(this) && CheckCast() &&
-                    Caster.Region.OnBeginSpellCast(Caster, this))
-                {
-                    State = SpellState.Casting;
-                    Caster.Spell = this;
-
-                    if (!(Scroll is BaseWand) && RevealOnCast)
-                    {
-                        Caster.RevealingAction();
-                    }
-
-                    SayMantra();
-
-                    var castDelay = GetCastDelay();
-
-                    if (ShowHandMovement && (Caster.Body.IsHuman || Caster.Player && Caster.Body.IsMonster))
-                    {
-                        var count = (int)Math.Ceiling(castDelay.TotalSeconds / AnimateDelay.TotalSeconds);
-
-                        if (count != 0)
-                        {
-                            m_AnimTimer = new AnimTimer(this, count);
-                            m_AnimTimer.Start();
-                        }
-
-                        if (Info.LeftHandEffect > 0)
-                        {
-                            Caster.FixedParticles(0, 10, 5, Info.LeftHandEffect, EffectLayer.LeftHand);
-                        }
-
-                        if (Info.RightHandEffect > 0)
-                        {
-                            Caster.FixedParticles(0, 10, 5, Info.RightHandEffect, EffectLayer.RightHand);
-                        }
-                    }
-
-                    if (ClearHandsOnCast)
-                    {
-                        Caster.ClearHands();
-                    }
-
-                    if (Core.ML)
-                    {
-                        WeaponAbility.ClearCurrentAbility(Caster);
-                    }
-
-                    m_CastTimer = new CastTimer(this, castDelay);
-                    // m_CastTimer.Start();
-
-                    OnBeginCast();
-
-                    if (castDelay > TimeSpan.Zero)
-                    {
-                        m_CastTimer.Start();
-                    }
-                    else
-                    {
-                        m_CastTimer.Tick();
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
             else
             {
-                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625); // Insufficient mana
+                var requiredMana = ScaleMana(GetMana());
+
+                if (Caster.Mana >= requiredMana)
+                {
+                    if (Caster.Spell == null && Caster.CheckSpellCast(this) && CheckCast() &&
+                        Caster.Region.OnBeginSpellCast(Caster, this))
+                    {
+                        State = SpellState.Casting;
+                        Caster.Spell = this;
+
+                        if (!isWand && RevealOnCast)
+                        {
+                            Caster.RevealingAction();
+                        }
+
+                        SayMantra();
+
+                        var castDelay = GetCastDelay();
+
+                        if (ShowHandMovement && (Caster.Body.IsHuman || Caster.Player && Caster.Body.IsMonster))
+                        {
+                            var count = (int)Math.Ceiling(castDelay.TotalSeconds / AnimateDelay.TotalSeconds);
+
+                            if (count != 0)
+                            {
+                                _animTimer = new AnimTimer(this, count);
+                                _animTimer.Start();
+                            }
+
+                            if (Info.LeftHandEffect > 0)
+                            {
+                                Caster.FixedParticles(0, 10, 5, Info.LeftHandEffect, EffectLayer.LeftHand);
+                            }
+
+                            if (Info.RightHandEffect > 0)
+                            {
+                                Caster.FixedParticles(0, 10, 5, Info.RightHandEffect, EffectLayer.RightHand);
+                            }
+                        }
+
+                        if (ClearHandsOnCast)
+                        {
+                            Caster.ClearHands();
+                        }
+
+                        if (Core.ML)
+                        {
+                            WeaponAbility.ClearCurrentAbility(Caster);
+                        }
+
+                        _castTimer = new CastTimer(this, castDelay);
+                        // m_CastTimer.Start();
+
+                        OnBeginCast();
+
+                        if (castDelay > TimeSpan.Zero)
+                        {
+                            _castTimer.Start();
+                        }
+                        else
+                        {
+                            _castTimer.Tick();
+                        }
+
+                        return true;
+                    }
+                }
+                else if (Caster.NetState?.Version >= _insufficientManaClientChange)
+                {
+                    // Insufficient mana. You must have at least ~1_MANA_REQUIREMENT~ Mana to use this spell.
+                    Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625, requiredMana.ToString());
+                }
+                else
+                {
+                    Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625); // Insufficient mana
+                }
             }
 
             return false;
@@ -656,11 +681,6 @@ namespace Server.Spells
             return TimeSpan.FromSeconds((double)delay / CastRecoveryPerSecond);
         }
 
-        // public virtual int CastDelayBase{ get{ return 3; } }
-        // public virtual int CastDelayFastScalar{ get{ return 1; } }
-        // public virtual int CastDelayPerSecond{ get{ return 4; } }
-        // public virtual int CastDelayMinimum{ get{ return 1; } }
-
         public virtual TimeSpan GetCastDelay()
         {
             if (Scroll is BaseWand)
@@ -674,7 +694,7 @@ namespace Server.Spells
             // Paladins with magery of 70.0 or above are subject to a faster casting cap of 2
             var fcMax = 4;
 
-            if (CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy ||
+            if (CastSkill is SkillName.Magery or SkillName.Necromancy ||
                 CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0)
             {
                 fcMax = 2;
@@ -758,12 +778,9 @@ namespace Server.Spells
 
                     Scroll.Movable = m;
                 }
-                else
+                else if (ClearHandsOnCast)
                 {
-                    if (ClearHandsOnCast)
-                    {
-                        Caster.ClearHands();
-                    }
+                    Caster.ClearHands();
                 }
 
                 var karma = ComputeKarmaAward();
@@ -799,9 +816,7 @@ namespace Server.Spells
             return false;
         }
 
-        public bool CheckBSequence(Mobile target) => CheckBSequence(target, false);
-
-        public bool CheckBSequence(Mobile target, bool allowDead)
+        public bool CheckBSequence(Mobile target, bool allowDead = false)
         {
             if (!target.Alive && !allowDead)
             {
@@ -849,10 +864,14 @@ namespace Server.Spells
                 m_Contexts.Add(m, t);
             }
 
+            public bool Contains(Mobile m) => m_Contexts.ContainsKey(m);
+
             public void Remove(Mobile m)
             {
-                m_Contexts.Remove(m);
-                // TODO: Should we stop the timer?
+                if (m_Contexts.Remove(m, out var t))
+                {
+                    t.Stop();
+                }
             }
         }
 
@@ -887,7 +906,7 @@ namespace Server.Spells
 
                 if (!Running)
                 {
-                    m_Spell.m_AnimTimer = null;
+                    m_Spell._animTimer = null;
                 }
             }
         }
@@ -911,7 +930,7 @@ namespace Server.Spells
                 if (m_Spell.State == SpellState.Casting && m_Spell.Caster.Spell == m_Spell)
                 {
                     m_Spell.State = SpellState.Sequencing;
-                    m_Spell.m_CastTimer = null;
+                    m_Spell._castTimer = null;
                     m_Spell.Caster.OnSpellCast(m_Spell);
                     m_Spell.Caster.Region?.OnSpellCast(m_Spell.Caster, m_Spell);
                     m_Spell.Caster.NextSpellTime =
@@ -926,7 +945,7 @@ namespace Server.Spells
                         m_Spell.Caster.Target?.BeginTimeout(m_Spell.Caster, 30000); // 30 seconds
                     }
 
-                    m_Spell.m_CastTimer = null;
+                    m_Spell._castTimer = null;
                 }
             }
 

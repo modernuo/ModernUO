@@ -29,7 +29,7 @@ namespace Server.Items
                 return false;
             }
 
-            if (!(dropped is Key key) || key.KeyValue == 0)
+            if (dropped is not Key key || key.KeyValue == 0)
             {
                 from.SendLocalizedMessage(501689); // Only non-blank keys can be put on a keyring.
                 return false;
@@ -80,7 +80,7 @@ namespace Server.Items
 
         public void Open(Mobile from)
         {
-            if (!(Parent is Container cont))
+            if (Parent is not Container cont)
             {
                 return;
             }

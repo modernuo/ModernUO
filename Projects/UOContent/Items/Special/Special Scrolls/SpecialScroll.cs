@@ -106,7 +106,7 @@ namespace Server.Items
                     {
                         InheritsItem = true;
 
-                        if (!(this is StatCapScroll))
+                        if (this is not StatCapScroll)
                         {
                             Skill = (SkillName)reader.ReadInt();
                         }

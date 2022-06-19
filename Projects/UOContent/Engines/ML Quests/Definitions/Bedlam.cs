@@ -69,14 +69,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Kia : BaseCreature
     {
         [Constructible]
-        public Kia()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Kia() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the student";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -113,14 +114,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Emerillo : BaseCreature
     {
         [Constructible]
-        public Emerillo()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Emerillo() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the cook";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -165,14 +167,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Nythalia : BaseCreature
     {
         [Constructible]
-        public Nythalia()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Nythalia() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the student";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

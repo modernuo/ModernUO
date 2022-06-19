@@ -180,7 +180,7 @@ namespace Server.Gumps
         {
             var list = new List<BaseHouse>();
 
-            if (!(owner.Account is Account acct))
+            if (owner.Account is not Account acct)
             {
                 list.AddRange(BaseHouse.GetHouses(owner));
             }

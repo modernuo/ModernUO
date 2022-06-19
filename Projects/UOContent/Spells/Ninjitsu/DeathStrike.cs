@@ -8,7 +8,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class DeathStrike : NinjaMove
     {
-        private static readonly Dictionary<Mobile, DeathStrikeTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, DeathStrikeTimer> _table = new();
 
         public override int BaseMana => 30;
         public override double RequiredSkill => 85.0;
@@ -51,7 +51,7 @@ namespace Server.Spells.Ninjitsu
 
             var damageBonus = 0;
 
-            if (m_Table.Remove(defender, out var timer))
+            if (_table.Remove(defender, out var timer))
             {
                 defender.SendLocalizedMessage(1063092); // Your opponent lands another Death Strike!
 
@@ -74,7 +74,7 @@ namespace Server.Spells.Ninjitsu
 
             var t = new DeathStrikeTimer(defender, attacker, damageBonus, isRanged);
 
-            m_Table[defender] = t;
+            _table[defender] = t;
 
             t.Start();
 
@@ -83,7 +83,7 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddStep(Mobile m)
         {
-            if (m_Table.TryGetValue(m, out var timer) && ++timer.Steps >= 5)
+            if (_table.TryGetValue(m, out var timer) && ++timer.Steps >= 5)
             {
                 timer.ProcessDeathStrike();
             }

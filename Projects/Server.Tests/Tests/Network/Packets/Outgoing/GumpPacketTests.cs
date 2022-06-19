@@ -24,9 +24,9 @@ namespace Server.Tests.Network
         public void TestDisplaySignGump()
         {
             Serial gumpSerial = (Serial)0x1000;
-            var gumpId = 100;
-            var unknownString = "This is an unknown string";
-            var caption = "This is a caption";
+            const int gumpId = 100;
+            const string unknownString = "This is an unknown string";
+            const string caption = "This is a caption";
 
             var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 

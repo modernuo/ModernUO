@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
@@ -80,9 +81,8 @@ namespace Server.Items
 
                 if (m_Mobile.KarmaLocked)
                 {
-                    m_Mobile.SendLocalizedMessage(
-                        1060192
-                    ); // Your karma has been locked. Your karma can no longer be raised.
+                    // Your karma has been locked. Your karma can no longer be raised.
+                    m_Mobile.SendLocalizedMessage(1060192);
                 }
                 else
                 {
@@ -112,20 +112,17 @@ namespace Server.Items
         }
     }
 
-    public class AnkhWest : Item
+    [SerializationGenerator(0, false)]
+    public partial class AnkhWest : Item
     {
-        private InternalItem m_Item;
+        [SerializableField(0, getter: "private", setter: "private")]
+        private InternalItem _item;
 
         [Constructible]
         public AnkhWest(bool bloodied = false) : base(bloodied ? 0x1D98 : 0x3)
         {
             Movable = false;
-
-            m_Item = new InternalItem(bloodied, this);
-        }
-
-        public AnkhWest(Serial serial) : base(serial)
-        {
+            _item = new InternalItem(bloodied, this);
         }
 
         public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
@@ -138,9 +135,9 @@ namespace Server.Items
             set
             {
                 base.Hue = value;
-                if (m_Item.Hue != value)
+                if (_item.Hue != value)
                 {
-                    m_Item.Hue = value;
+                    _item.Hue = value;
                 }
             }
         }
@@ -166,17 +163,17 @@ namespace Server.Items
 
         public override void OnLocationChange(Point3D oldLocation)
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Location = new Point3D(X, Y + 1, Z);
+                _item.Location = new Point3D(X, Y + 1, Z);
             }
         }
 
         public override void OnMapChange()
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Map = Map;
+                _item.Map = Map;
             }
         }
 
@@ -184,40 +181,19 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            m_Item?.Delete();
+            _item?.Delete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [SerializationGenerator(0, false)]
+        private partial class InternalItem : Item
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Item);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Item = reader.ReadEntity<InternalItem>();
-        }
-
-        private class InternalItem : Item
-        {
-            private AnkhWest m_Item;
+            [SerializableField(0)]
+            private AnkhWest _item;
 
             public InternalItem(bool bloodied, AnkhWest item) : base(bloodied ? 0x1D97 : 0x2)
             {
                 Movable = false;
-
-                m_Item = item;
-            }
-
-            public InternalItem(Serial serial) : base(serial)
-            {
+                _item = item;
             }
 
             public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
@@ -230,26 +206,26 @@ namespace Server.Items
                 set
                 {
                     base.Hue = value;
-                    if (m_Item.Hue != value)
+                    if (_item.Hue != value)
                     {
-                        m_Item.Hue = value;
+                        _item.Hue = value;
                     }
                 }
             }
 
             public override void OnLocationChange(Point3D oldLocation)
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Location = new Point3D(X, Y - 1, Z);
+                    _item.Location = new Point3D(X, Y - 1, Z);
                 }
             }
 
             public override void OnMapChange()
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Map = Map;
+                    _item.Map = Map;
                 }
             }
 
@@ -257,7 +233,7 @@ namespace Server.Items
             {
                 base.OnAfterDelete();
 
-                m_Item?.Delete();
+                _item?.Delete();
             }
 
             public override void OnMovement(Mobile m, Point3D oldLocation)
@@ -278,43 +254,22 @@ namespace Server.Items
             {
                 Ankhs.Resurrect(m, this);
             }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-
-                writer.Write(m_Item);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                m_Item = reader.ReadEntity<AnkhWest>();
-            }
         }
     }
 
     [TypeAlias("Server.Items.AnkhEast")]
-    public class AnkhNorth : Item
+    [SerializationGenerator(0, false)]
+    public partial class AnkhNorth : Item
     {
-        private InternalItem m_Item;
+        [SerializableField(0, getter: "private", setter: "private")]
+        private InternalItem _item;
 
         [Constructible]
         public AnkhNorth(bool bloodied = false) : base(bloodied ? 0x1E5D : 0x4)
         {
             Movable = false;
 
-            m_Item = new InternalItem(bloodied, this);
-        }
-
-        public AnkhNorth(Serial serial)
-            : base(serial)
-        {
+            _item = new InternalItem(bloodied, this);
         }
 
         public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
@@ -327,9 +282,9 @@ namespace Server.Items
             set
             {
                 base.Hue = value;
-                if (m_Item.Hue != value)
+                if (_item.Hue != value)
                 {
-                    m_Item.Hue = value;
+                    _item.Hue = value;
                 }
             }
         }
@@ -355,17 +310,17 @@ namespace Server.Items
 
         public override void OnLocationChange(Point3D oldLocation)
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Location = new Point3D(X + 1, Y, Z);
+                _item.Location = new Point3D(X + 1, Y, Z);
             }
         }
 
         public override void OnMapChange()
         {
-            if (m_Item != null)
+            if (_item != null)
             {
-                m_Item.Map = Map;
+                _item.Map = Map;
             }
         }
 
@@ -373,42 +328,21 @@ namespace Server.Items
         {
             base.OnAfterDelete();
 
-            m_Item?.Delete();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Item);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Item = reader.ReadEntity<InternalItem>();
+            _item?.Delete();
         }
 
         [TypeAlias("Server.Items.AnkhEast+InternalItem")]
-        private class InternalItem : Item
+        [SerializationGenerator(0, false)]
+        private partial class InternalItem : Item
         {
-            private AnkhNorth m_Item;
+            [SerializableField(0)]
+            private AnkhNorth _item;
 
             public InternalItem(bool bloodied, AnkhNorth item)
                 : base(bloodied ? 0x1E5C : 0x5)
             {
                 Movable = false;
-
-                m_Item = item;
-            }
-
-            public InternalItem(Serial serial) : base(serial)
-            {
+                _item = item;
             }
 
             public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
@@ -421,26 +355,26 @@ namespace Server.Items
                 set
                 {
                     base.Hue = value;
-                    if (m_Item.Hue != value)
+                    if (_item.Hue != value)
                     {
-                        m_Item.Hue = value;
+                        _item.Hue = value;
                     }
                 }
             }
 
             public override void OnLocationChange(Point3D oldLocation)
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Location = new Point3D(X - 1, Y, Z);
+                    _item.Location = new Point3D(X - 1, Y, Z);
                 }
             }
 
             public override void OnMapChange()
             {
-                if (m_Item != null)
+                if (_item != null)
                 {
-                    m_Item.Map = Map;
+                    _item.Map = Map;
                 }
             }
 
@@ -448,7 +382,7 @@ namespace Server.Items
             {
                 base.OnAfterDelete();
 
-                m_Item?.Delete();
+                _item?.Delete();
             }
 
             public override void OnMovement(Mobile m, Point3D oldLocation)
@@ -468,24 +402,6 @@ namespace Server.Items
             public override void OnDoubleClickDead(Mobile m)
             {
                 Ankhs.Resurrect(m, this);
-            }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-
-                writer.Write(m_Item);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                m_Item = reader.ReadEntity<AnkhNorth>();
             }
         }
     }

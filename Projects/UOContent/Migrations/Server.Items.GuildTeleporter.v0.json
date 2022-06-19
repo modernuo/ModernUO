@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.GuildTeleporter",
+  "properties": [
+    {
+      "name": "Stone",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

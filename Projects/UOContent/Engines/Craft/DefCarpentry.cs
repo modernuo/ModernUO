@@ -13,7 +13,7 @@ namespace Server.Engines.Craft
 
         public override SkillName MainSkill => SkillName.Carpentry;
 
-        public override int GumpTitleNumber => 1044004;
+        public override TextDefinition GumpTitle => 1044004;
 
         public static CraftSystem CraftSystem => m_CraftSystem ??= new DefCarpentry();
 
@@ -87,7 +87,7 @@ namespace Server.Engines.Craft
             int index;
 
             // Other Items
-            if (Core.Expansion == Expansion.AOS || Core.Expansion == Expansion.SE)
+            if (Core.Expansion is Expansion.AOS or Expansion.SE)
             {
                 index = AddCraft(typeof(Board), 1044294, 1027127, 0.0, 0.0, typeof(Log), 1044466, 1, 1044465);
                 SetUseAllRes(index, true);

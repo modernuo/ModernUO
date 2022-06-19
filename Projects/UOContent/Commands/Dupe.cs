@@ -13,7 +13,8 @@ namespace Server.Commands
             CommandSystem.Register("DupeInBag", AccessLevel.GameMaster, DupeInBag_OnCommand);
         }
 
-        [Usage("Dupe [amount]"), Description("Dupes a targeted item.")]
+        [Usage("Dupe [amount]")]
+        [Description("Dupes a targeted item.")]
         private static void Dupe_OnCommand(CommandEventArgs e)
         {
             var amount = 1;
@@ -26,7 +27,8 @@ namespace Server.Commands
             e.Mobile.SendMessage("What do you wish to dupe?");
         }
 
-        [Usage("DupeInBag <count>"), Description("Dupes an item at it's current location (count) number of times.")]
+        [Usage("DupeInBag <count>")]
+        [Description("Dupes an item at it's current location (count) number of times.")]
         private static void DupeInBag_OnCommand(CommandEventArgs e)
         {
             var amount = 1;
@@ -45,11 +47,13 @@ namespace Server.Commands
 
             for (var i = 0; i < props.Length; i++)
             {
+                var p = props[i];
                 try
                 {
-                    if (props[i].CanRead && props[i].CanWrite)
+                    // Do not set the parent since it screws up mobile/container totals and weights.
+                    if (p.CanRead && p.CanWrite && p.Name != "Parent")
                     {
-                        props[i].SetValue(dest, props[i].GetValue(src, null), null);
+                        p.SetValue(dest, p.GetValue(src, null), null);
                     }
                 }
                 catch
@@ -95,14 +99,12 @@ namespace Server.Commands
 
                 if (m_InBag)
                 {
-                    if (copy.Parent is Container cont)
+                    pack = copy.Parent switch
                     {
-                        pack = cont;
-                    }
-                    else if (copy.Parent is Mobile m)
-                    {
-                        pack = m.Backpack;
-                    }
+                        Container cont => cont,
+                        Mobile m       => m.Backpack,
+                        _              => pack
+                    };
                 }
                 else
                 {
@@ -128,7 +130,6 @@ namespace Server.Commands
                             {
                                 CopyProperties(newItem, copy);
                                 copy.OnAfterDuped(newItem);
-                                newItem.Parent = null;
 
                                 if (pack != null)
                                 {
@@ -139,7 +140,9 @@ namespace Server.Commands
                                     newItem.MoveToWorld(from.Location, from.Map);
                                 }
 
+                                newItem.UpdateTotals();
                                 newItem.InvalidateProperties();
+                                newItem.Delta(ItemDelta.Update);
 
                                 CommandLogging.WriteLine(
                                     from,

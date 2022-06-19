@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x1db9, 0x1dba)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LeatherCap : BaseArmor
     {
         [Constructible]

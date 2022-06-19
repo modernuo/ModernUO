@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
     public abstract class BaseChampion : BaseCreature
     {
-        public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) : base(aiType, mode, 18, 1, 0.1, 0.2)
+        public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) : base(aiType, mode, 18)
         {
         }
 
@@ -132,7 +132,7 @@ namespace Server.Mobiles
             {
                 var m = toGive[i];
 
-                if (!(m is PlayerMobile))
+                if (m is not PlayerMobile)
                 {
                     continue;
                 }
@@ -194,7 +194,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!(m is PlayerMobile pm))
+            if (m is not PlayerMobile pm)
             {
                 return;
             }

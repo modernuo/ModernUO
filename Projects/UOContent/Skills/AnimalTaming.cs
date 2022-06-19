@@ -33,7 +33,7 @@ namespace Server.SkillHandlers
                 m.SendLocalizedMessage(502789); // Tame which animal?
             }
 
-            return TimeSpan.FromHours(6.0);
+            return TimeSpan.FromSeconds(30);
         }
 
         public static bool CheckMastery(Mobile tamer, BaseCreature creature) =>
@@ -486,16 +486,13 @@ namespace Server.SkillHandlers
                                 if (m_Creature is GreaterDragon)
                                 {
                                     ScaleSkills(m_Creature, 0.72, 0.90); // 72% of original skills trainable to 90%
-                                    m_Creature.Skills.Magery.Base =
-                                        m_Creature.Skills.Magery
-                                            .Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
+                                    // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
+                                    m_Creature.Skills.Magery.Base = m_Creature.Skills.Magery.Cap;
                                 }
                                 else if (m_Paralyzed)
                                 {
-                                    ScaleSkills(
-                                        m_Creature,
-                                        0.86
-                                    ); // 86% of original skills if they were paralyzed during the taming
+                                    // 86% of original skills if they were paralyzed during the taming
+                                    ScaleSkills(m_Creature, 0.86);
                                 }
                                 else
                                 {

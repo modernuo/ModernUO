@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using Server.ContextMenus;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 
 namespace Server.Items
 {
     [Anvil]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AnvilComponent : AddonComponent
     {
         [Constructible]
@@ -15,7 +14,7 @@ namespace Server.Items
     }
 
     [Forge]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class ForgeComponent : AddonComponent
     {
         [Constructible]
@@ -24,7 +23,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LocalizedAddonComponent : AddonComponent
     {
         [InvalidateProperties]
@@ -38,7 +37,7 @@ namespace Server.Items
         public override int LabelNumber => _number;
     }
 
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public partial class AddonComponent : Item, IChoppable
     {
         private static readonly LightEntry[] m_Entries =
@@ -161,7 +160,7 @@ namespace Server.Items
             }
         }
 /*
-        public override void GetProperties(ObjectPropertyList list) => _addon?.GetProperties(list);
+        public override void GetProperties(IPropertyList list) => _addon?.GetProperties(list);
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
             _addon?.GetContextMenuEntries(from, list);

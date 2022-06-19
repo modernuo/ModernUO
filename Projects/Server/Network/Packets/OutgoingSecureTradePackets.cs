@@ -16,106 +16,105 @@
 using System.Buffers;
 using Server.Items;
 
-namespace Server.Network
+namespace Server.Network;
+
+public enum TradeFlag : byte
 {
-    public enum TradeFlag : byte
+    Display,
+    Close,
+    Update,
+    UpdateGold,
+    UpdateLedger
+}
+
+public static class OutgoingSecureTradePackets
+{
+    public static void SendDisplaySecureTrade(
+        this NetState ns, Mobile them, Container first, Container second, string name
+    )
     {
-        Display,
-        Close,
-        Update,
-        UpdateGold,
-        UpdateLedger
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(stackalloc byte[47]);
+        writer.Write((byte)0x6F); // Packet ID
+        writer.Write((ushort)47); // Length
+        writer.Write((byte)TradeFlag.Display);
+        writer.Write(them.Serial);
+        writer.Write(first.Serial);
+        writer.Write(second.Serial);
+        writer.Write(true);
+
+        writer.WriteAscii(name ?? "", 30);
+
+        ns.Send(writer.Span);
     }
 
-    public static class OutgoingSecureTradePackets
+    public static void SendCloseSecureTrade(this NetState ns, Container cont)
     {
-        public static void SendDisplaySecureTrade(
-            this NetState ns, Mobile them, Container first, Container second, string name
-        )
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[47]);
-            writer.Write((byte)0x6F); // Packet ID
-            writer.Write((ushort)47); // Length
-            writer.Write((byte)TradeFlag.Display);
-            writer.Write(them.Serial);
-            writer.Write(first.Serial);
-            writer.Write(second.Serial);
-            writer.Write(true);
-
-            writer.WriteAscii(name ?? "", 30);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendCloseSecureTrade(this NetState ns, Container cont)
+        var writer = new SpanWriter(stackalloc byte[17]);
+        writer.Write((byte)0x6F); // Packet ID
+        writer.Write((ushort)17); // Length
+        writer.Write((byte)TradeFlag.Close);
+        writer.Write(cont.Serial);
+        writer.Write(0);
+        writer.Write(0);
+        writer.Write(false);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendUpdateSecureTrade(this NetState ns, Container cont, bool first, bool second) =>
+        ns.SendUpdateSecureTrade(cont, TradeFlag.Update, first ? 1 : 0, second ? 1 : 0);
+
+    public static void SendUpdateSecureTrade(this NetState ns, Container cont, TradeFlag flag, int first, int second)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[17]);
-            writer.Write((byte)0x6F); // Packet ID
-            writer.Write((ushort)17); // Length
-            writer.Write((byte)TradeFlag.Close);
-            writer.Write(cont.Serial);
-            writer.Write(0);
-            writer.Write(0);
-            writer.Write(false);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendUpdateSecureTrade(this NetState ns, Container cont, bool first, bool second) =>
-            ns.SendUpdateSecureTrade(cont, TradeFlag.Update, first ? 1 : 0, second ? 1 : 0);
+        var writer = new SpanWriter(stackalloc byte[17]);
+        writer.Write((byte)0x6F); // Packet ID
+        writer.Write((ushort)17); // Length
+        writer.Write((byte)flag);
+        writer.Write(cont.Serial);
+        writer.Write(first);
+        writer.Write(second);
+        writer.Write(false);
 
-        public static void SendUpdateSecureTrade(this NetState ns, Container cont, TradeFlag flag, int first, int second)
+        ns.Send(writer.Span);
+    }
+
+    public static void SendSecureTradeEquip(this NetState ns, Item item, Mobile m)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[17]);
-            writer.Write((byte)0x6F); // Packet ID
-            writer.Write((ushort)17); // Length
-            writer.Write((byte)flag);
-            writer.Write(cont.Serial);
-            writer.Write(first);
-            writer.Write(second);
-            writer.Write(false);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendSecureTradeEquip(this NetState ns, Item item, Mobile m)
+        var writer = new SpanWriter(stackalloc byte[ns.ContainerGridLines ? 21 : 20]);
+        writer.Write((byte)0x25); // Packet ID
+        writer.Write(item.Serial);
+        writer.Write((short)item.ItemID);
+        writer.Write((byte)0);
+        writer.Write((short)item.Amount);
+        writer.Write((short)item.X);
+        writer.Write((short)item.Y);
+        if (ns.ContainerGridLines)
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[ns.ContainerGridLines ? 21 : 20]);
-            writer.Write((byte)0x25); // Packet ID
-            writer.Write(item.Serial);
-            writer.Write((short)item.ItemID);
             writer.Write((byte)0);
-            writer.Write((short)item.Amount);
-            writer.Write((short)item.X);
-            writer.Write((short)item.Y);
-            if (ns.ContainerGridLines)
-            {
-                writer.Write((byte)0);
-            }
-            writer.Write(m.Serial);
-            writer.Write((short)item.Hue);
-
-            ns.Send(writer.Span);
         }
+        writer.Write(m.Serial);
+        writer.Write((short)item.Hue);
+
+        ns.Send(writer.Span);
     }
 }

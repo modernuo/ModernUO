@@ -7,7 +7,7 @@ namespace Server.Spells.Ninjitsu
     public class SurpriseAttack : NinjaMove
     {
         private static readonly Dictionary<Mobile, SurpriseAttackInfo>
-            m_Table = new();
+            _table = new();
 
         public override int BaseMana => 20;
         public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
@@ -62,7 +62,7 @@ namespace Server.Spells.Ninjitsu
             var info = new SurpriseAttackInfo(defender, malus);
             Timer.StartTimer(TimeSpan.FromSeconds(8.0), () => EndSurprise(info), out info._timerToken);
 
-            m_Table[defender] = info;
+            _table[defender] = info;
 
             CheckGain(attacker);
         }
@@ -78,7 +78,7 @@ namespace Server.Spells.Ninjitsu
 
         public static bool GetMalus(Mobile target, ref int malus)
         {
-            if (!m_Table.TryGetValue(target, out var info))
+            if (!_table.TryGetValue(target, out var info))
             {
                 return false;
             }
@@ -89,7 +89,7 @@ namespace Server.Spells.Ninjitsu
 
         private static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var info))
+            if (_table.Remove(m, out var info))
             {
                 info._timerToken.Cancel();
             }

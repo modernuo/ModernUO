@@ -1749,7 +1749,7 @@ namespace Server.Multis
                     {
                         item.NoMoveHS = true;
 
-                        if (!(item is TillerMan || item is Hold || item is Plank))
+                        if (!(item is Server.Items.TillerMan or Server.Items.Hold or Plank))
                         {
                             item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
                         }

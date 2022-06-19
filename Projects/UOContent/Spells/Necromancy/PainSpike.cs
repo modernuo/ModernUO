@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
 {
     public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Pain Spike",
             "In Sar",
             203,
@@ -16,9 +16,9 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, InternalTimer> _table = new();
 
-        public PainSpikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public PainSpikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -56,9 +56,9 @@ namespace Server.Spells.Necromancy
 
                 var buffTime = TimeSpan.FromSeconds(10.0);
 
-                if (!m_Table.TryGetValue(m, out var timer))
+                if (!_table.TryGetValue(m, out var timer))
                 {
-                    m_Table[m] = timer = new InternalTimer(m, damage);
+                    _table[m] = timer = new InternalTimer(m, damage);
                     timer.Start();
                 }
                 else
@@ -102,7 +102,7 @@ namespace Server.Spells.Necromancy
 
             protected override void OnTick()
             {
-                m_Table.Remove(m_Mobile);
+                _table.Remove(m_Mobile);
 
                 if (m_Mobile.Alive && !m_Mobile.IsDeadBondedPet)
                 {

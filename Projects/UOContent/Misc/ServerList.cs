@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Server.Logging;
@@ -103,7 +104,7 @@ namespace Server.Misc
 
                 if (_publicAddress != null)
                 {
-                    logger.Information("Auto-detected public IP address ({0})", _publicAddress);
+                    logger.Information("Auto-detected public IP address ({IPAddress})", _publicAddress);
                 }
                 else
                 {
@@ -165,12 +166,16 @@ namespace Server.Misc
              Utility.IPMatch("169.254.*", ip) ||
              Utility.IPMatch("100.64-127.*", ip));
 
+        private const string _ipifyUrl = "https://api.ipify.org";
+
         private static IPAddress FindPublicAddress()
         {
             try
             {
-                using WebClient wc = new WebClient();
-                return IPAddress.Parse(wc.DownloadString("https://api.ipify.org"));
+                // This isn't called often so we don't need to optimize
+                using HttpClient hc = new HttpClient();
+                var ipAddress = hc.GetStringAsync(_ipifyUrl).Result;
+                return IPAddress.Parse(ipAddress);
             }
             catch
             {

@@ -5,16 +5,16 @@ namespace Server.Spells.Spellweaving
 {
     public class AttuneWeaponSpell : ArcanistSpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Attune Weapon",
             "Haeldril",
             -1
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
+        private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
         public AttuneWeaponSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, m_Info)
+            : base(caster, scroll, _info)
         {
         }
 
@@ -25,7 +25,7 @@ namespace Server.Spells.Spellweaving
 
         public override bool CheckCast()
         {
-            if (m_Table.ContainsKey(Caster))
+            if (_table.ContainsKey(Caster))
             {
                 Caster.SendLocalizedMessage(501775); // This spell is already in effect.
                 return false;
@@ -58,7 +58,7 @@ namespace Server.Spells.Spellweaving
                 var t = new ExpireTimer(Caster, duration);
                 t.Start();
 
-                m_Table[Caster] = t;
+                _table[Caster] = t;
 
                 Caster.BeginAction<AttuneWeaponSpell>();
 
@@ -94,11 +94,11 @@ namespace Server.Spells.Spellweaving
             }
         }
 
-        public static bool IsAbsorbing(Mobile m) => m_Table.ContainsKey(m);
+        public static bool IsAbsorbing(Mobile m) => _table.ContainsKey(m);
 
         public static void StopAbsorbing(Mobile m, bool message)
         {
-            if (m_Table.TryGetValue(m, out var t))
+            if (_table.TryGetValue(m, out var t))
             {
                 t.DoExpire(message);
             }
@@ -129,7 +129,7 @@ namespace Server.Spells.Spellweaving
                     m_Mobile.PlaySound(0x1F8);
                 }
 
-                m_Table.Remove(m_Mobile);
+                _table.Remove(m_Mobile);
 
                 StartTimer(TimeSpan.FromSeconds(120), m_Mobile.EndAction<AttuneWeaponSpell>);
                 BuffInfo.RemoveBuff(m_Mobile, BuffIcon.AttuneWeapon);

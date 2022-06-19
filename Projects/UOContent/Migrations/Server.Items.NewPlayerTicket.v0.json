@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.NewPlayerTicket",
+  "properties": [
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
+using Server.Engines.Stealables;
 using Server.Factions;
 using Server.Items;
 using Server.Mobiles;
@@ -79,11 +80,9 @@ namespace Server.SkillHandlers
                 var root = toSteal.RootParent;
                 var mobRoot = root as Mobile;
 
-                StealableArtifactsSpawner.StealableInstance si = null;
-                if (toSteal.Parent == null || !toSteal.Movable)
-                {
-                    si = StealableArtifactsSpawner.GetStealableInstance(toSteal);
-                }
+                StealableArtifacts.StealableInstance si = toSteal.Parent == null || !toSteal.Movable
+                    ? StealableArtifacts.GetStealableInstance(toSteal)
+                    : null;
 
                 if (!IsEmptyHanded(m_Thief))
                 {

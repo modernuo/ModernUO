@@ -53,7 +53,7 @@ namespace Server.Engines.Quests.Collector
         {
             var qs = player.Quest;
 
-            if (!(qs is CollectorQuest))
+            if (qs is not CollectorQuest)
             {
                 return;
             }
@@ -149,7 +149,7 @@ namespace Server.Engines.Quests.Collector
                 {
                     var qs = player.Quest;
 
-                    if (!(qs is CollectorQuest))
+                    if (qs is not CollectorQuest)
                     {
                         return;
                     }

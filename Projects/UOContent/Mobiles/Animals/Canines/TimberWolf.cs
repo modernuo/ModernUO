@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class TimberWolf : BaseCreature
     {
         [Constructible]
-        public TimberWolf() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public TimberWolf() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 225;
             BaseSoundID = 0xE5;

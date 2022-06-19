@@ -202,7 +202,7 @@ namespace Server.Items
             LabelTo(from, 1070880); // Winter 2004
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -233,7 +233,7 @@ namespace Server.Items
 
         public void Placement_OnTarget(Mobile from, object targeted)
         {
-            if (!(targeted is IPoint3D p))
+            if (targeted is not IPoint3D p)
             {
                 return;
             }

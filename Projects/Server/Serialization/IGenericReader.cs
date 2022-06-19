@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using System.Net;
+using Server.Collections;
 
 namespace Server
 {
@@ -115,6 +116,8 @@ namespace Server
             Read(bytes);
             return new Guid(bytes);
         }
+
+        BitArray ReadBitArray();
 
         long Seek(long offset, SeekOrigin origin);
     }

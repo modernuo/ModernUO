@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
     public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Arch Cure",
             "Vas An Nox",
             215,
@@ -18,7 +16,7 @@ namespace Server.Spells.Fourth
             Reagent.MandrakeRoot
         );
 
-        public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -29,47 +27,45 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
-            if (!Caster.CanSee(p))
-            {
-                Caster.SendLocalizedMessage(500237); // Target can not be seen.
-            }
-            else if (CheckSequence())
+            if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
 
                 SpellHelper.GetSurfaceTop(ref p);
 
-                var targets = new List<Mobile>();
-
                 var map = Caster.Map;
-                var directTarget = p as Mobile;
-                var loc = new Point3D(p);
-
                 if (map != null)
                 {
+                    using var pool = PooledRefQueue<Mobile>.Create();
+                    var directTarget = p as Mobile;
+                    var loc = new Point3D(p);
+
                     var feluccaRules = map.Rules == MapRules.FeluccaRules;
 
                     // You can target any living mobile directly, beneficial checks apply
                     if (directTarget != null && Caster.CanBeBeneficial(directTarget, false))
                     {
-                        targets.Add(directTarget);
+                        pool.Enqueue(directTarget);
                     }
 
                     var eable = map.GetMobilesInRange(loc, 2);
-                    targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
+                    foreach (var m in eable)
+                    {
+                        if (m != directTarget && AreaCanTarget(m, feluccaRules))
+                        {
+                            pool.Enqueue(m);
+                        }
+                    }
 
                     eable.Free();
-                }
 
-                Effects.PlaySound(loc, Caster.Map, 0x299);
+                    Effects.PlaySound(loc, Caster.Map, 0x299);
 
-                if (targets.Count > 0)
-                {
                     var cured = 0;
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    while (pool.Count > 0)
                     {
-                        var m = targets[i];
+                        var m = pool.Dequeue();
 
                         Caster.DoBeneficial(m);
 
@@ -104,7 +100,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
         }
 
         private bool AreaCanTarget(Mobile target, bool feluccaRules)
@@ -131,7 +127,7 @@ namespace Server.Spells.Fourth
                     return false;
                 }
 
-                if (feluccaRules && !(target is PlayerMobile))
+                if (feluccaRules && target is not PlayerMobile)
                 {
                     return false;
                 }

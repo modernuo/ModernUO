@@ -7,7 +7,7 @@ namespace Server.Mobiles
         private DrainTimer m_Timer;
 
         [Constructible]
-        public HarrowerTentacles(Mobile harrower = null) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public HarrowerTentacles(Mobile harrower = null) : base(AIType.AI_Melee)
         {
             Harrower = harrower;
             Body = 129;
@@ -151,7 +151,7 @@ namespace Server.Mobiles
                         continue;
                     }
 
-                    if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
+                    if (m is not BaseCreature bc || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
                     {
                         continue;
                     }

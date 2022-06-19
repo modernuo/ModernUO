@@ -68,13 +68,13 @@ namespace Server.Items
                 new Bola().MoveToWorld(to.Location, to.Map);
             }
 
-            if (to is ChaosDragoon || to is ChaosDragoonElite)
+            if (to is ChaosDragoon or ChaosDragoonElite)
             {
                 from.SendLocalizedMessage(1042047); // You fail to knock the rider from its mount.
             }
 
             var mt = to.Mount;
-            if (mt != null && !(to is ChaosDragoon || to is ChaosDragoonElite))
+            if (mt != null && !(to is ChaosDragoon or ChaosDragoonElite))
             {
                 mt.Rider = null;
             }

@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x26C0, 0x26CA)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Lance : BaseSword
     {
         [Constructible]

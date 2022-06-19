@@ -1,6 +1,8 @@
-﻿namespace Server.Items.Holiday
+﻿using ModernUO.Serialization;
+
+namespace Server.Items.Holiday
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class PaintedPlagueMask : BasePaintedMask
     {
         [Constructible]

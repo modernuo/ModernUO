@@ -118,7 +118,7 @@ namespace Server.Engines.Doom
             gate.GumpHeight = 280;
 
             gate.MessageColor = 0x7F00;
-            gate.MessageNumber = 1062109; // You are about to exit Dungeon Doom.  Do you wish to continue?
+            gate.Message = 1062109; // You are about to exit Dungeon Doom.  Do you wish to continue?
 
             gate.TitleColor = 0x7800;
             gate.TitleNumber = 1062108; // Please verify...

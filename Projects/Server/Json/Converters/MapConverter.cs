@@ -26,7 +26,7 @@ namespace Server.Json
             {
                 JsonTokenType.String => Map.Parse(reader.GetString()),
                 JsonTokenType.Number => Map.Maps[reader.GetInt32()],
-                _                    => throw new JsonException($"Value must be a number or string")
+                _                    => throw new JsonException("Value must be a number or string")
             };
 
         public override void Write(Utf8JsonWriter writer, Map value, JsonSerializerOptions options) =>

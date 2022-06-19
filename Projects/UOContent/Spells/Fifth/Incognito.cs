@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
 {
     public class IncognitoSpell : MagerySpell
     {
-        private static readonly SpellInfo m_Info = new(
+        private static readonly SpellInfo _info = new(
             "Incognito",
             "Kal In Ex",
             206,
@@ -19,9 +19,9 @@ namespace Server.Spells.Fifth
             Reagent.Nightshade
         );
 
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
-        public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
+        public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -112,7 +112,7 @@ namespace Server.Spells.Fifth
 
                     var length = TimeSpan.FromSeconds(timeVal);
                     Timer.StartTimer(length, () => EndIncognito(Caster), out var timerToken);
-                    m_Table[Caster] = timerToken;
+                    _table[Caster] = timerToken;
 
                     BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, length, Caster));
                 }
@@ -127,7 +127,7 @@ namespace Server.Spells.Fifth
 
         public static void StopTimer(Mobile m)
         {
-            if (m_Table.Remove(m, out var timerToken))
+            if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
             }

@@ -195,7 +195,7 @@ namespace Server.Misc
 
                             if (m != null)
                             {
-                                op.Write($" (mobile = 0x{m.Serial.Value:X} '{m.Name}')");
+                                op.Write($" (mobile = {m.Serial} '{m.Name}')");
                             }
 
                             op.WriteLine();

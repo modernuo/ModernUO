@@ -186,7 +186,7 @@ namespace Server.Engines.ConPVP
 
             if (info.IsSwitched(1))
             {
-                if (!(m_Challenged is PlayerMobile pm))
+                if (m_Challenged is not PlayerMobile pm)
                 {
                     return;
                 }

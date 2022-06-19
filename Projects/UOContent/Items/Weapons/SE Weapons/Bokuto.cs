@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x27A8, 0x27F3)]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class Bokuto : BaseSword
     {
         [Constructible]
