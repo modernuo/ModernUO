@@ -30,7 +30,7 @@ Please ask for help in our discord!
 
 ## Core Changes
 * ModernUO is not inherently thread safe. Overall infrastructure improved with CPU and minimizing memory garbage in mind.
-* Timer system overhauled to use [Timer Wheels](http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf).
+* Timer system improved drastically by using [Timer Wheels](http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf).
 * Networking is 5-10x faster by using fixed [Circular Buffers](https://en.wikipedia.org/wiki/Circular_buffer).
 * Network packets are no longer objects and write directly to the network buffer, improving performance by 10x.
 * World saves are 10x faster by saving to memory and flushing to disk in the background.
