@@ -35,7 +35,7 @@ namespace Server.Items
         public override WeaponType DefType => WeaponType.Fists;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Wrestle;
 
-        public static void Initialize()
+        public static void Configure()
         {
             Mobile.DefaultWeapon = new Fists();
 

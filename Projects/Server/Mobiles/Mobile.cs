@@ -738,7 +738,7 @@ namespace Server
 
             var weapon = Weapon;
 
-            if (!InRange(combatant, weapon.MaxRange))
+            if (weapon == null || !InRange(combatant, weapon.MaxRange))
             {
                 return;
             }
