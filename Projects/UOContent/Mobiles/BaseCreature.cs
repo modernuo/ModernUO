@@ -2275,7 +2275,7 @@ namespace Server.Mobiles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DebugSay(string text)
         {
-            // Removed the debug check to implementation layer so we can avoid string formatting and discarding
+            // Moved the debug check to implementation layer so we can avoid string formatting when we do not need it
             PublicOverheadMessage(MessageType.Regular, 41, false, text);
         }
 
