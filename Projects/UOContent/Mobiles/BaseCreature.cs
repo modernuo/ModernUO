@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
@@ -2271,20 +2272,11 @@ namespace Server.Mobiles
             base.OnAfterDelete();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DebugSay(string text)
         {
-            if (Debug)
-            {
-                PublicOverheadMessage(MessageType.Regular, 41, false, text);
-            }
-        }
-
-        public void DebugSay(string format, params object[] args)
-        {
-            if (Debug)
-            {
-                PublicOverheadMessage(MessageType.Regular, 41, false, string.Format(format, args));
-            }
+            // Removed the debug check to implementation layer so we can avoid string formatting and discarding
+            PublicOverheadMessage(MessageType.Regular, 41, false, text);
         }
 
         /*
