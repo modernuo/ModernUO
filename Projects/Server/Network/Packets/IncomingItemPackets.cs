@@ -105,6 +105,11 @@ public static class IncomingItemPackets
         {
             from.Drop(loc);
         }
+
+        if (state.IsEnhancedClient)
+        {
+            state.DropConfirmEC();
+        }
     }
 
     public static void EquipMacro(NetState state, CircularBufferReader reader, int packetLength)

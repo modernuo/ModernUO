@@ -24,8 +24,15 @@ namespace Server.Engines.Help
 
             AddBackground(0, 0, 92, 75, 0xA3C);
 
-            AddImageTiled(5, 7, 82, 61, 0xA40);
-            AddAlphaRegion(5, 7, 82, 61);
+            if (mobile?.NetState?.IsEnhancedClient == true)
+            {
+                AddBackground(5, 7, 82, 61, 9300);
+            }
+            else
+            {
+                AddImageTiled(5, 7, 82, 61, 0xA40);
+                AddAlphaRegion(5, 7, 82, 61);
+            }
 
             AddImageTiled(9, 11, 21, 53, 0xBBC);
 
@@ -230,8 +237,15 @@ namespace Server.Engines.Help
 
             if (response == null)
             {
-                AddImageTiled(0, 0, 410, 448, 0xA40);
-                AddAlphaRegion(1, 1, 408, 446);
+                if (from.NetState?.IsEnhancedClient == true)
+                {
+                    AddBackground(1, 1, 408, 446, 9300);
+                }
+                else
+                {
+                    AddImageTiled(0, 0, 410, 448, 0xA40);
+                    AddAlphaRegion(1, 1, 408, 446);
+                }
 
                 AddHtml(10, 10, 390, 20, Color(Center("Predefined Responses"), LabelColor32));
 
@@ -300,7 +314,15 @@ namespace Server.Engines.Help
             else if (canEdit)
             {
                 AddImageTiled(0, 0, 410, 250, 0xA40);
-                AddAlphaRegion(1, 1, 408, 248);
+
+                if (from.NetState?.IsEnhancedClient == true)
+                {
+                    AddBackground(1, 1, 408, 248, 9300);
+                }
+                else
+                {
+                    AddAlphaRegion(1, 1, 408, 248);
+                }
 
                 AddHtml(10, 10, 390, 20, Color(Center("Predefined Response Editor"), LabelColor32));
 
@@ -472,8 +494,15 @@ namespace Server.Engines.Help
 
             AddPage(0);
 
-            AddImageTiled(0, 0, 410, 456, 0xA40);
-            AddAlphaRegion(1, 1, 408, 454);
+            if (m.NetState?.IsEnhancedClient == true)
+            {
+                AddBackground(1, 1, 408, 454, 9300);
+            }
+            else
+            {
+                AddImageTiled(0, 0, 410, 456, 0xA40);
+                AddAlphaRegion(1, 1, 408, 454);
+            }
 
             AddPage(1);
 

@@ -92,7 +92,7 @@ public partial class NetState : IComparable<NetState>
         LoginServer_AwaitingLogin,
         LoginServer_AwaitingServerSelect,
         LoginServer_ServerSelectAck,
-
+        LoginServer_AwaitingECAck,
         GameServer_AwaitingGameServerLogin,
         GameServer_LoggedIn,
 
@@ -610,7 +610,6 @@ public partial class NetState : IComparable<NetState>
                                 else if (length >= 4)
                                 {
                                     int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
-
                                     if (seed == 0)
                                     {
                                         HandleError(0, 0);
@@ -620,8 +619,19 @@ public partial class NetState : IComparable<NetState>
                                     _seed = seed;
                                     packetLength = 4;
 
-                                    _parserState = ParserState.AwaitingNextPacket;
-                                    _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    if (packetId == 0xFF)
+                                    {
+                                        _parserState = ParserState.ProcessingPacket;
+                                        _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                        if (_parserState == ParserState.AwaitingNextPacket)
+                                        {
+                                            _protocolState = ProtocolState.LoginServer_AwaitingECAck;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                    }
                                 }
                                 else
                                 {
@@ -630,6 +640,20 @@ public partial class NetState : IComparable<NetState>
                                 break;
                             }
 
+                        case ProtocolState.LoginServer_AwaitingECAck:
+                            {
+                                if (packetId != 0xE4)
+                                {
+                                    LogInfo("Possible encrypted client detected, disconnecting...");
+                                    HandleError(packetId, packetLength);
+                                    return;
+                                }
+
+                                _parserState = ParserState.ProcessingPacket;
+                                _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
+                                break;
+                            }
                         case ProtocolState.LoginServer_AwaitingLogin:
                             {
                                 if (packetId != 0xCF && packetId != 0x80)

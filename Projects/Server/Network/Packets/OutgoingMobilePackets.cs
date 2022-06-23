@@ -38,6 +38,7 @@ public static class OutgoingMobilePackets
     public const int MobileStatusAOSLength = 88;
     public const int MobileStatusMLLength = 91;
     public const int MobileStatusHSLength = 121;
+    public const int MobileStatusECLength = 149;
 
     public static bool ExtendedStatus { get; private set; } = true;
 
@@ -101,7 +102,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[DeathAnimationPacketLength];
+        Span<byte> span = stackalloc byte[DeathAnimationPacketLength].InitializePacket();
         CreateDeathAnimation(span, killed, corpse);
         ns.Send(span);
     }
@@ -207,7 +208,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength].InitializePacket();
         CreateMobileHits(span, m, normalize);
         ns.Send(span);
     }
@@ -232,7 +233,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength].InitializePacket();
         CreateMobileMana(span, m, normalize);
         ns.Send(span);
     }
@@ -257,7 +258,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributePacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributePacketLength].InitializePacket();
         CreateMobileStam(span, m, normalize);
         ns.Send(span);
     }
@@ -282,7 +283,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAttributesPacketLength];
+        Span<byte> span = stackalloc byte[MobileAttributesPacketLength].InitializePacket();
         CreateMobileAttributes(span, m, normalize);
         ns.Send(span);
     }
@@ -351,7 +352,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileAnimationPacketLength];
+        Span<byte> span = stackalloc byte[MobileAnimationPacketLength].InitializePacket();
         CreateMobileAnimation(span, mobile, action, frameCount, repeatCount, forward, repeat, delay);
         ns.Send(span);
     }
@@ -376,7 +377,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength];
+        Span<byte> span = stackalloc byte[NewMobileAnimationPacketLength].InitializePacket();
         CreateNewMobileAnimation(span, mobile, action, frameCount, delay);
         ns.Send(span);
     }
@@ -388,12 +389,12 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> span = stackalloc byte[MobileHealthbarPacketLength];
-        CreateMobileHealthbar(span, m, healthbar);
+        Span<byte> span = stackalloc byte[MobileHealthbarPacketLength].InitializePacket();
+        CreateMobileHealthbar(span, m, healthbar, ns.IsEnhancedClient);
         ns.Send(span);
     }
 
-    public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar)
+    public static void CreateMobileHealthbar(Span<byte> buffer, Mobile m, Healthbar healthbar, bool isEnhanced)
     {
         if (buffer[0] != 0)
         {
@@ -404,27 +405,27 @@ public static class OutgoingMobilePackets
         {
             case Healthbar.Poison:
                 {
-                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0);
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Poison, m.Poison?.Level + 1 ?? 0, isEnhanced);
                     break;
                 }
             case Healthbar.Yellow:
                 {
-                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0);
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Yellow, m.Blessed || m.YellowHealthbar ? 1 : 0, isEnhanced);
                     break;
                 }
             default:
                 {
                     Console.WriteLine("Packets: Invalid Healthbar {0} in {1}", healthbar, nameof(CreateMobileHealthbar));
-                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0);
+                    CreateMobileHealthbar(buffer, m.Serial, Healthbar.Normal, 0, isEnhanced);
                     break;
                 }
         }
     }
 
-    public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level)
+    public static void CreateMobileHealthbar(Span<byte> buffer, Serial serial, Healthbar healthbar, int level, bool isEnhanced)
     {
         var writer = new SpanWriter(buffer);
-        writer.Write((byte)0x17); // Packet ID
+        writer.Write((byte)(isEnhanced ? 0x16 : 0x17)); // Packet ID
         writer.Write((ushort)12);
         writer.Write(serial);
         writer.Write((short)1); // Show bar
@@ -434,7 +435,7 @@ public static class OutgoingMobilePackets
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CreateMobileStatusCompact(Span<byte> buffer, Mobile m, bool canBeRenamed) =>
-        CreateMobileStatus(buffer, m, 0, canBeRenamed);
+        CreateMobileStatus(buffer, m, 0, canBeRenamed, false);
 
     public static void SendMobileStatusCompact(this NetState ns, Mobile m, bool canBeRenamed)
     {
@@ -443,7 +444,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
+        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength].InitializePacket();
         CreateMobileStatusCompact(buffer, m, canBeRenamed);
 
         ns.Send(buffer);
@@ -470,7 +471,7 @@ public static class OutgoingMobilePackets
         else if (ExtendedStatus && ns.ExtendedStatus)
         {
             version = 6;
-            length = MobileStatusHSLength;
+            length = ns.IsEnhancedClient ? MobileStatusECLength : MobileStatusHSLength;
         }
         else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
         {
@@ -488,12 +489,12 @@ public static class OutgoingMobilePackets
             length = MobileStatusLength;
         }
 
-        Span<byte> buffer = stackalloc byte[length];
-        CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder));
+        Span<byte> buffer = stackalloc byte[length].InitializePacket();
+        CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder), ns.IsEnhancedClient);
         ns.Send(buffer);
     }
 
-    public static void CreateMobileStatus(Span<byte> buffer, Mobile beheld, int version, bool canBeRenamed)
+    public static void CreateMobileStatus(Span<byte> buffer, Mobile beheld, int version, bool canBeRenamed, bool enhanced)
     {
         if (buffer[0] != 0)
         {
@@ -563,7 +564,8 @@ public static class OutgoingMobilePackets
 
         if (version >= 6)
         {
-            for (var i = 0; i < 15; ++i)
+            var count = enhanced ? 29 : 15;
+            for (var i = 0; i < count; ++i)
             {
                 writer.Write((short)beheld.GetAOSStatus(i));
             }

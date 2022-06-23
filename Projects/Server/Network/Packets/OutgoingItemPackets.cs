@@ -96,4 +96,12 @@ public static class OutgoingItemPackets
 
         ns.Send(buffer[..length]);
     }
+
+    /**
+      * Packet: 0x29
+      * Length: 1 byte
+      *
+      * Sends Drop Confirmation
+      */
+    public static void DropConfirmEC(this NetState ns) => ns?.Send(stackalloc byte[] { 0x29 });
 }

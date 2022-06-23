@@ -377,6 +377,11 @@ public static class OutgoingAccountPackets
                      CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
         }
 
+        if (ns.IsEnhancedClient)
+        {
+            flags |= CharacterListFlags.KR | CharacterListFlags.UO3DClientType;
+        }
+
         writer.Write((int)flags);
         if (client70130)
         {
@@ -451,6 +456,52 @@ public static class OutgoingAccountPackets
         writer.WriteLE(si.RawAddress);
         writer.Write((short)si.Address.Port);
         writer.Write(authId);
+
+        ns.Send(writer.Span);
+    }
+
+    /**
+      * Packet: 0xE3
+      * Length: 77 bytes
+      *
+      * Sends Encryption Request
+      */
+    public static void SendEncryptionReq(this NetState ns)
+    {
+        var writer = new SpanWriter(stackalloc byte[77]);
+        writer.Write((byte)0xE3); // Packet ID
+        writer.Write((ushort)77); // Length
+
+        // Base (3 encoded in BER)
+        writer.Write(3); // Length
+        writer.Write((ushort)0x0201);
+        writer.Write((byte)0x03);
+
+        // Prime
+        writer.Write(0x13); // Length
+        writer.Write(0x021100FCu);
+        writer.Write(0x2FE38193u);
+        writer.Write(0xCBAF98DDu);
+        writer.Write(0x8313D29Eu);
+        writer.Write((ushort)0xEAE4);
+        writer.Write((byte)0x13);
+
+        // Public Key
+        writer.Write(0x10); // Length
+        writer.Write(0x7813B77Bu);
+        writer.Write(0xCEA8D7BCu);
+        writer.Write(0x52DE3830u);
+        writer.Write(0xEAE91EA3u);
+
+        // Authentication flag
+        writer.Write(0x20);
+
+        // IV
+        writer.Write(0x10); // Length
+        writer.Write(0x5ACE3EE3u);
+        writer.Write(0x9792E48Au);
+        writer.Write(0xF19AD304u);
+        writer.Write(0x4103CB53u);
 
         ns.Send(writer.Span);
     }

@@ -44,7 +44,7 @@ public static class OutgoingPlayerPackets
         writer.Write((byte)0xBF); // Packet ID
         writer.Write((ushort)12);
         writer.Write((short)0x19);
-        writer.Write((byte)2);
+        writer.Write((byte)(ns.IsEnhancedClient ? 5 : 2));
         writer.Write(m.Serial);
         writer.Write((byte)0);
 

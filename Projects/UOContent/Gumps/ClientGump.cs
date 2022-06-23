@@ -44,7 +44,7 @@ namespace Server.Gumps
                 36 + line++ * 20,
                 200,
                 20,
-                Color(state.Version == null ? "(null)" : state.Version.ToString(), LabelColor32)
+                Color(state.Version?.ToString() ?? "(null)", LabelColor32)
             );
 
             AddHtml(14, 36 + line * 20, 200, 20, Color("Version:", LabelColor32));

@@ -1772,9 +1772,8 @@ namespace Server
             set
             {
                 var oldPrompt = m_Prompt;
-                var newPrompt = value;
 
-                if (oldPrompt == newPrompt)
+                if (oldPrompt == value)
                 {
                     return;
                 }
@@ -1782,13 +1781,13 @@ namespace Server
                 m_Prompt = null;
 
                 // TODO: Cancel the prompt anyway?
-                if (newPrompt != null)
+                if (value != null)
                 {
                     oldPrompt?.OnCancel(this);
+                    value.SendTo(this);
                 }
 
-                m_Prompt = newPrompt;
-                NetState.SendPrompt(newPrompt);
+                m_Prompt = value;
             }
         }
 
@@ -2888,8 +2887,12 @@ namespace Server
 
             Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
             Span<byte> statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
-            Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
-            Span<byte> hbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
+            Span<byte> ccHbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
+            Span<byte> ccHbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
+
+            byte[] ecHbpBuffer = null;
+            byte[] ecHbyBuffer = null;
+
             Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
             Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
@@ -2902,6 +2905,8 @@ namespace Server
                 {
                     continue;
                 }
+
+                var isEnhanced = state.IsEnhancedClient;
 
                 if (sendRemove)
                 {
@@ -2929,14 +2934,28 @@ namespace Server
                 {
                     if (sendHealthbarPoison)
                     {
-                        OutgoingMobilePackets.CreateMobileHealthbar(hbpBuffer, this, Healthbar.Poison);
-                        state.Send(hbpBuffer);
+                        if (isEnhanced && ecHbpBuffer == null)
+                        {
+                            ecHbpBuffer = STArrayPool<byte>.Shared.Rent(OutgoingMobilePackets.MobileHealthbarPacketLength);
+                            ecHbpBuffer.AsSpan().InitializePacket();
+                        }
+
+                        var hpBuffer = isEnhanced ? ecHbpBuffer : ccHbpBuffer;
+                        OutgoingMobilePackets.CreateMobileHealthbar(hpBuffer, this, Healthbar.Poison, isEnhanced);
+                        state.Send(hpBuffer);
                     }
 
                     if (sendHealthbarYellow)
                     {
-                        OutgoingMobilePackets.CreateMobileHealthbar(hbyBuffer, this, Healthbar.Yellow);
-                        state.Send(hbyBuffer);
+                        if (isEnhanced && ecHbyBuffer == null)
+                        {
+                            ecHbyBuffer = STArrayPool<byte>.Shared.Rent(OutgoingMobilePackets.MobileHealthbarPacketLength);
+                            ecHbyBuffer.AsSpan().InitializePacket();
+                        }
+
+                        var hpBuffer = isEnhanced ? ecHbyBuffer : ccHbyBuffer;
+                        OutgoingMobilePackets.CreateMobileHealthbar(hpBuffer, this, Healthbar.Yellow, isEnhanced);
+                        state.Send(hpBuffer);
                     }
                 }
 
@@ -3002,6 +3021,9 @@ namespace Server
 
                 SendOPLPacketTo(state);
             }
+
+            STArrayPool<byte>.Shared.Return(ecHbpBuffer);
+            STArrayPool<byte>.Shared.Return(ecHbyBuffer);
 
             eable.Free();
         }
@@ -8883,7 +8905,8 @@ namespace Server
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+            Span<byte> ccBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+            byte[] ecBuffer = null;
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
@@ -8895,8 +8918,29 @@ namespace Server
                     (noLineOfSight || state.Mobile.InLOS(this))
                 )
                 {
+                    var isEnhanced = state.IsEnhancedClient;
+
+                    if (isEnhanced && ecBuffer == null)
+                    {
+                        ecBuffer = STArrayPool<byte>.Shared.Rent(OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args));
+                        ecBuffer.AsSpan().InitializePacket();
+                    }
+
+                    Span<byte> buffer = isEnhanced ? ecBuffer : ccBuffer;
+
                     var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                        buffer, Serial, Body, type, hue, 3, number, Name, affixType, affix, args
+                        buffer,
+                        isEnhanced,
+                        Serial,
+                        Body,
+                        type,
+                        hue,
+                        3,
+                        number,
+                        Name,
+                        affixType,
+                        affix,
+                        args
                     );
 
                     if (length != buffer.Length)
@@ -8907,6 +8951,8 @@ namespace Server
                     state.Send(buffer);
                 }
             }
+
+            STArrayPool<byte>.Shared.Return(ecBuffer);
 
             eable.Free();
         }

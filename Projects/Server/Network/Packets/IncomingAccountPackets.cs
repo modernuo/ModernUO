@@ -53,6 +53,11 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xE1, 0, false, &ClientType);
         IncomingPackets.Register(0xEF, 21, false, &LoginServerSeed);
         IncomingPackets.Register(0xF8, 106, false, &CreateCharacter);
+      
+        // Enhanced Client
+        IncomingPackets.Register(0xFF, 4, false, &SeedEC);
+        IncomingPackets.Register(0xE4, 0, false, &EncryptionResponse);
+        IncomingPackets.Register(0x8D, 0, false, &CreateCharacterEC);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -67,6 +72,7 @@ public static class IncomingAccountPackets
 
         reader.Seek(2, SeekOrigin.Current);
         var flags = reader.ReadInt32();
+        // Unknown, Login Count
         reader.Seek(8, SeekOrigin.Current);
         int prof = reader.ReadByte();
         reader.Seek(15, SeekOrigin.Current);
@@ -124,7 +130,7 @@ public static class IncomingAccountPackets
         var info = state.CityInfo;
         var a = state.Account;
 
-        if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
+        if (info == null || a == null || cityIndex >= info.Length)
         {
             state.Disconnect("Invalid city selected during character creation.");
             return;
@@ -185,6 +191,135 @@ public static class IncomingAccountPackets
         }
     }
 
+    public static void CreateCharacterEC(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        int unk1 = reader.ReadInt32(); // 0xEDEDEDED
+        int charSlot = reader.ReadInt32();
+        var name = reader.ReadAscii(30);
+        reader.Seek(30, SeekOrigin.Current); // Password "Unknown"
+
+        int profession = reader.ReadByte();
+        int cityIndex = reader.ReadByte();
+        // KR Clients send ClientFlags instead of city index
+        cityIndex &= ~0x40;
+
+        int gender = reader.ReadByte();
+        int genderRace = reader.ReadByte();
+
+        var stats = new StatNameValue[]
+        {
+            new(StatType.Str, reader.ReadByte()),
+            new(StatType.Dex, reader.ReadByte()),
+            new(StatType.Int, reader.ReadByte())
+        };
+
+        int hue = reader.ReadInt16();
+        int unk5 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00
+        int unk6 = reader.ReadInt32(); // 0x00 0x00 0x00 0x00
+
+        var skills = new SkillNameValue[state.NewCharacterCreation ? 4 : 3];
+        skills[0] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        skills[1] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        skills[2] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        if (state.NewCharacterCreation)
+        {
+            skills[3] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        }
+
+        reader.Seek(25, SeekOrigin.Current);
+        reader.ReadByte(); // 0xB
+
+        int hairHue = reader.ReadInt16();
+        int hairID = reader.ReadInt16();
+
+        int unk8 = reader.ReadByte(); // 0xC
+        int unk9 = reader.ReadInt32();
+        int unk10 = reader.ReadByte(); // 0xD
+        int shirtHue = reader.ReadInt16();
+        int shirtID = reader.ReadInt16();
+        int unk13 = reader.ReadByte(); // 0xF
+        int faceColor = reader.ReadInt16();
+        int faceID = reader.ReadInt16();
+        int unk14 = reader.ReadByte(); // 0x10
+        int beardHue = reader.ReadInt16();
+        int beardID = reader.ReadInt16();
+
+        var female = gender != 0;
+
+        var race = Race.Races[genderRace - 1] ?? Race.DefaultRace; // SA client sends race packet one higher than KR, so this is neccesary
+
+        CityInfo[] info = state.CityInfo;
+        var a = state.Account;
+
+        if (info == null || a == null || cityIndex >= info.Length)
+        {
+            state.Disconnect("Invalid city selected during character creation.");
+            return;
+        }
+
+        // Check if anyone is using this account
+        for (int i = 0; i < a.Length; ++i)
+        {
+            Mobile check = a[i];
+            if (check != null && check.Map != Map.Internal)
+            {
+                state.LogInfo("Account in use");
+                state.SendPopupMessage(PMMessage.CharInWorld);
+                return;
+            }
+        }
+
+        state.Flags = (ClientFlags)0xFF;
+
+        var args = new CharacterCreatedEventArgs(
+            state,
+            a,
+            name,
+            female,
+            hue,
+            stats,
+            info[cityIndex],
+            skills,
+            shirtHue,
+            shirtHue,
+            hairID,
+            hairHue,
+            beardID,
+            beardHue,
+            profession,
+            race
+        );
+        state.SendClientVersionRequest();
+
+        state.BlockAllPackets = true;
+
+        EventSink.InvokeCharacterCreated(args);
+
+        Mobile m = args.Mobile;
+
+        if (m != null)
+        {
+            state.Mobile = m;
+            m.NetState = state;
+
+            if (state.Version != null)
+            {
+                state.BlockAllPackets = false;
+                DoLogin(state, m);
+            }
+            else
+            {
+                new LoginTimer(state, m).Start();
+            }
+        }
+        else
+        {
+            state.BlockAllPackets = false;
+            state.Disconnect("Character creation blocked.");
+        }
+    }
+
+
     public static void DeleteCharacter(NetState state, CircularBufferReader reader, int packetLength)
     {
         reader.Seek(30, SeekOrigin.Current);
@@ -230,6 +365,7 @@ public static class IncomingAccountPackets
 
         var flags = reader.ReadInt32();
 
+        // Unknown, Login Count, Unknown x 4
         reader.Seek(24, SeekOrigin.Current);
 
         var charSlot = reader.ReadInt32();
@@ -373,21 +509,21 @@ public static class IncomingAccountPackets
 
         var authID = reader.ReadInt32();
 
-        if (!m_AuthIDWindow.TryGetValue(authID, out var ap))
+        if (!m_AuthIDWindow.Remove(authID, out var ap))
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Unable to find auth id.");
         }
 
-        if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed)
+        state.Version = ap.Version;
+
+        if (state._authId != 0 && authID != state._authId ||
+            state._authId == 0 && authID != state._seed && !state.IsKRClient && !state.IsSAClient)
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Invalid auth id in game login packet.");
             return;
         }
-
-        m_AuthIDWindow.Remove(authID);
-        state.Version = ap.Version;
 
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
@@ -500,6 +636,29 @@ public static class IncomingAccountPackets
     {
         state.SendAccountLoginRejected(reason);
         state.Disconnect($"Account login rejected due to {reason}");
+    }
+
+    public static void SeedEC(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        state.SendEncryptionReq();
+    }
+
+    public static void EncryptionResponse(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        // We don't support encryption keys
+        // var length = reader.ReadInt32();
+        // Span<byte> publicKey = STArrayPool<byte>.Shared.Rent(length);
+        // reader.Read(publicKey);
+
+        /**
+         * KR client uses hardcoded values. What about EC client?
+         * Base: 3 (As in the dynamic data)
+         * Prime: 00 c7 77 96 c9 ea 6a 9e 9f 71 a7 27 19 d6 77 80 43
+         * Private Key: 00 00 00 00 00 00 00 00 02 B3 43 65 0B 45 D4 AA
+         * Public Key: 72 0E EF C3 38 13 27 5A 18 F8 AB 8A 24 68 CE 62
+         *
+         * Session Key: 26 5D E0 9A D8 C9 1F 51 8B 62 6D 16 72 4B 83 A3
+         */
     }
 
     private class LoginTimer : Timer

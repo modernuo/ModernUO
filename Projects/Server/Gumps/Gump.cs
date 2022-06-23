@@ -26,7 +26,7 @@ public class Gump
         X = x;
         Y = y;
 
-        TypeID = GetTypeID(GetType());
+        TypeID = GetTypeID();
 
         Entries = new List<GumpEntry>();
         Strings = new List<string>();
@@ -34,7 +34,7 @@ public class Gump
 
     public List<string> Strings { get; }
 
-    public int TypeID { get; }
+    public virtual int TypeID { get; }
 
     public List<GumpEntry> Entries { get; }
 
@@ -52,7 +52,7 @@ public class Gump
 
     public bool Closable { get; set; } = true;
 
-    public static int GetTypeID(Type type) => type?.FullName?.GetHashCode(StringComparison.Ordinal) ?? -1;
+    public int GetTypeID() => GetType().FullName?.GetHashCode(StringComparison.Ordinal) ?? -1;
 
     public void AddPage(int page)
     {
