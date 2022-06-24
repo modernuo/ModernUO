@@ -687,9 +687,9 @@ namespace Server
 
                     if (!Stackable && m_Amount > 1)
                     {
-                        Console.WriteLine(
-                            "Warning: 0x{0:X}: Amount changed for non-stackable item '{2}'. ({1})",
-                            Serial.Value,
+                        logger.Warning(
+                            "{Serial}: Amount changed for non-stackable item '{Name}'. ({Amount})",
+                            Serial,
                             m_Amount,
                             GetType().Name
                         );
@@ -3164,14 +3164,15 @@ namespace Server
 
             if (item == this)
             {
-                Console.WriteLine(
-                    "Warning: Adding item to itself: [0x{0} {1}].AddItem( [0x{2} {3}] )",
+                var customException = new InvalidOperationException("Adding item to itself");
+                logger.Warning(
+                    customException,
+                    "Adding item to itself: ({Serial1} {Item1}).AddItem({Serial2} {Item2})",
                     Serial,
                     GetType().Name,
                     item.Serial,
                     item.GetType().Name
                 );
-                Console.WriteLine(new StackTrace());
                 return;
             }
 
