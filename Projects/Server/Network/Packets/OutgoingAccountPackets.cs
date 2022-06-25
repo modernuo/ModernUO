@@ -356,7 +356,8 @@ public static class OutgoingAccountPackets
                 {
                     writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
                 }
-                else if (i == 2)
+
+                if (i == 2 || count == 1)
                 {
                     _md5Provider ??= MD5.Create();
                     if (_md5Provider.TryComputeHash(writer.Span, hashBuffer, out var bytesWritten) && bytesWritten == 16)
