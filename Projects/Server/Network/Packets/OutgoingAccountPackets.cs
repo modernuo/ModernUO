@@ -319,8 +319,12 @@ public static class OutgoingAccountPackets
             }
         }
 
+        // Supported values are 1, 5, 6, or 7
         var count = Math.Max(highSlot + 1, acct.Limit);
-        var total = Math.Max(count, 5);
+        if (count is not 1 and < 5)
+        {
+            count = 5;
+        }
 
         var length = (client70130 ?
             11 + (textLength * 2 + 25) * cityInfo.Length :
@@ -328,14 +332,14 @@ public static class OutgoingAccountPackets
         var writer = new SpanWriter(stackalloc byte[length]);
         writer.Write((byte)0xA9); // Packet ID
         writer.Write((ushort)length);
-        writer.Write((byte)total); // TODO: It is probably more proper to use count.
+        writer.Write((byte)count); // TODO: It is probably more proper to use count.
 
         var enforceRazor = AssistantConfiguration.Enabled &&
                            AssistantConfiguration.Settings.DisallowedFeatures != AssistantFeatures.None;
 
         Span<byte> hashBuffer = enforceRazor ? stackalloc byte[16] : null;
 
-        for (int i = 0; i < total; i++)
+        for (int i = 0; i < count; i++)
         {
             var m = acct[i];
 
