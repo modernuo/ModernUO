@@ -336,7 +336,6 @@ public static class OutgoingAccountPackets
         for (int i = 0; i < count; i++)
         {
             var m = acct[i];
-            var pos = writer.Position;
 
             if (m == null)
             {
@@ -348,10 +347,11 @@ public static class OutgoingAccountPackets
                 writer.WriteAscii(name, 30);
             }
 
-            writer.Write((byte)0);
-
             if (enforceRazor)
             {
+                writer.Write((byte)0);
+                var pos = writer.Position;
+
                 if (i == 0)
                 {
                     writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
@@ -365,8 +365,8 @@ public static class OutgoingAccountPackets
                     }
                 }
 
-                var remaining = 59 - pos;
-                Utility.RandomBytes(writer.RawBuffer.Slice(pos, remaining));
+                var remaining = 28 - pos;
+                Utility.RandomBytes(writer.RawBuffer.Slice(writer.Position, remaining));
                 writer.Seek(remaining, SeekOrigin.Current);
 
                 writer.Write((byte)0);
