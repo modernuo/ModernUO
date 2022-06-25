@@ -319,7 +319,8 @@ public static class OutgoingAccountPackets
             }
         }
 
-        var count = Math.Max(Math.Max(highSlot + 1, acct.Limit), 5);
+        var count = Math.Max(highSlot + 1, acct.Limit);
+
         var length = (client70130 ?
             11 + (textLength * 2 + 25) * cityInfo.Length :
             9 + (textLength * 2 +  1) * cityInfo.Length) + count * 60;
@@ -333,7 +334,8 @@ public static class OutgoingAccountPackets
 
         Span<byte> hashBuffer = enforceRazor ? stackalloc byte[16] : null;
 
-        for (int i = 0; i < count; i++)
+        var total = Math.Max(count, 5);
+        for (int i = 0; i < total; i++)
         {
             var m = acct[i];
 
@@ -357,7 +359,7 @@ public static class OutgoingAccountPackets
                     writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
                 }
 
-                if (i == 2 || count == 1)
+                if (count > 1 && i == 2 || count == 1 && i == 0)
                 {
                     _md5Provider ??= MD5.Create();
                     if (_md5Provider.TryComputeHash(writer.Span, hashBuffer, out var bytesWritten) && bytesWritten == 16)
