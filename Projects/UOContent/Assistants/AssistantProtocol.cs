@@ -1,6 +1,6 @@
 namespace Server.Network;
 
-public static class AssistantsProtocol
+public static class AssistantProtocol
 {
     private static PacketHandler[] _handlers;
 

@@ -25,8 +25,8 @@ public static class MapUO
 {
     public static unsafe void Configure()
     {
-        AssistantsProtocol.Register(0x00, true, &QueryPartyMemberLocations);
-        AssistantsProtocol.Register(0x01, true, &QueryGuildMemberLocations);
+        AssistantProtocol.Register(0x00, true, &QueryPartyMemberLocations);
+        AssistantProtocol.Register(0x01, true, &QueryGuildMemberLocations);
     }
 
     public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
