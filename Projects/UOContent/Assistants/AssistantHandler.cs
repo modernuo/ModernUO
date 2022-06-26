@@ -14,28 +14,20 @@ public static class AssistantHandler
 
     public static unsafe void Configure()
     {
-        Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableAssistUONegotiation", false);
-
-        EventSink.AssistantAuth += OnAssistantAuth;
+        Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableNegotiation", false);
         EventSink.Login -= OnLogin;
-        AssistantProtocol.Register(0xFF, false, &AssistUOHandshakeResponse);
+        AssistantProtocol.Register(0xFF, false, &HandshakeResponse);
     }
 
-    private static void OnAssistantAuth(AssistantAuthEventArgs e)
+    private static void FailedNegotiation(Mobile m)
     {
-        if (e.AuthOk)
-        {
-            return;
-        }
-
-        var m = e.State.Mobile;
         var isPlayer = m.AccessLevel <= AccessLevel.Player;
         var willKick = AssistantConfiguration.Settings.KickOnFailure;
         var delay = AssistantConfiguration.Settings.DisconnectDelay;
 
         if (willKick && isPlayer && delay <= TimeSpan.Zero)
         {
-            e.State.Disconnect("Failed to negotiate assistant features.");
+            m.NetState.Disconnect("Failed to negotiate assistant features.");
             return;
         }
 
@@ -60,7 +52,7 @@ public static class AssistantHandler
             _handshakes[m] = Timer.DelayCall(delay, OnForceDisconnect, m);
         }
 
-        e.State.LogInfo("Failed to negotiate assistant features.");
+        m.NetState.LogInfo("Failed to negotiate assistant features.");
     }
 
     private static void OnLogin(Mobile m)
@@ -80,7 +72,7 @@ public static class AssistantHandler
         _handshakes[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), OnTimeout, m);
     }
 
-    private static void AssistUOHandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)
+    private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)
     {
         Mobile m = state.Mobile;
 
@@ -91,8 +83,6 @@ public static class AssistantHandler
 
         t?.Stop();
         _handshakes.Remove(m);
-
-        EventSink.InvokeAssistantAuth(new AssistantAuthEventArgs(m.NetState, m.Account, true));
     }
 
     private static void OnTimeout(Mobile m)
@@ -110,7 +100,7 @@ public static class AssistantHandler
             return;
         }
 
-        EventSink.InvokeAssistantAuth(new AssistantAuthEventArgs(m.NetState, m.Account, false));
+        FailedNegotiation(m);
     }
 
     private static void OnForceDisconnect(Mobile m)
