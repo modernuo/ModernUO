@@ -17,9 +17,7 @@ using System;
 using System.IO;
 using System.Buffers;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using Server.Accounting;
-using Server.Assistants;
 
 namespace Server.Network;
 
@@ -286,8 +284,6 @@ public static class OutgoingAccountPackets
         ns.Send(writer.Span);
     }
 
-    private static MD5 _md5Provider;
-
     /**
      * Packet: 0xA9
      * Length: 1410 or more bytes
@@ -334,11 +330,6 @@ public static class OutgoingAccountPackets
         writer.Write((ushort)length);
         writer.Write((byte)count); // TODO: It is probably more proper to use count.
 
-        var enforceRazor = AssistantConfiguration.Enabled &&
-                           AssistantConfiguration.Settings.DisallowedFeatures != AssistantFeatures.None;
-
-        Span<byte> hashBuffer = enforceRazor ? stackalloc byte[16] : null;
-
         for (int i = 0; i < count; i++)
         {
             var m = acct[i];
@@ -351,35 +342,6 @@ public static class OutgoingAccountPackets
             {
                 var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
                 writer.WriteAscii(name, 30);
-            }
-
-            if (enforceRazor)
-            {
-                writer.Write((byte)0);
-                var pos = writer.Position;
-
-                if (i == 0)
-                {
-                    writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
-                }
-
-                if (count > 1 && i == 2 || count == 1 && i == 0)
-                {
-                    _md5Provider ??= MD5.Create();
-                    if (_md5Provider.TryComputeHash(writer.Span, hashBuffer, out var bytesWritten) && bytesWritten == 16)
-                    {
-                        writer.Write(hashBuffer);
-                    }
-                }
-
-                var remaining = 28 - pos;
-                Utility.RandomBytes(writer.RawBuffer.Slice(writer.Position, remaining));
-                writer.Seek(remaining, SeekOrigin.Current);
-
-                writer.Write((byte)0);
-            }
-            else
-            {
                 writer.Clear(30); // password
             }
         }

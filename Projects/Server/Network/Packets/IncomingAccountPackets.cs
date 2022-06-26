@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Server.Assistants;
 using CV = Server.ClientVersion;
 
 namespace Server.Network;
@@ -70,32 +69,9 @@ public static class IncomingAccountPackets
         var flags = reader.ReadInt32();
         reader.Seek(8, SeekOrigin.Current);
         int prof = reader.ReadByte();
+        reader.Seek(15, SeekOrigin.Current);
 
-        int genderRace;
-        if (AssistantConfiguration.Enabled && AssistantConfiguration.Settings.DisallowedFeatures != AssistantFeatures.None)
-        {
-            var razorFeatures = (AssistantFeatures)reader.ReadUInt64();
-            var key = reader.ReadUInt64();
-
-            var authOk = razorFeatures == AssistantConfiguration.Settings.DisallowedFeatures &&
-                         // Highly recommend a shard changes these here, in razor and redistribute the assistant.
-                         (key & 0xFFFFFFFFFFFFFF00ul) == 0x0911832B04178300ul;
-
-            EventSink.InvokeAssistantAuth(new AssistantAuthEventArgs(state, state.Account, authOk));
-
-            if (!state.Running)
-            {
-                return;
-            }
-
-            genderRace = (int)(key & 0xFF);
-        }
-        else
-        {
-            reader.Seek(15, SeekOrigin.Current);
-            genderRace = reader.ReadByte();
-        }
-
+        var genderRace = reader.ReadByte();
 
         var stats = new StatNameValue[]
         {
@@ -246,41 +222,9 @@ public static class IncomingAccountPackets
 
     public static void PlayCharacter(NetState state, CircularBufferReader reader, int packetLength)
     {
-        reader.Seek(4, SeekOrigin.Current); // 0xEDEDEDED
-
-        reader.Seek(30, SeekOrigin.Current); //  var name = reader.ReadAscii(30);
-
-        reader.Seek(2, SeekOrigin.Current);
-
+        reader.Seek(36, SeekOrigin.Current); // 4 = 0xEDEDEDED, 30 = Name, 2 = unknown
         var flags = reader.ReadInt32();
-
-        if (AssistantConfiguration.Enabled && AssistantConfiguration.Settings.DisallowedFeatures != AssistantFeatures.None)
-        {
-            var razorFeatures = (AssistantFeatures)reader.ReadUInt64();
-            var key1 = reader.ReadUInt64();
-            var key2 = reader.ReadUInt64();
-
-            var authOk = razorFeatures == AssistantConfiguration.Settings.DisallowedFeatures &&
-                         // Highly recommend a shard changes these here, in razor and redistribute the assistant.
-                         key1 == 0x0911832B04178305ul && key2 == 0x2485071787061988ul;
-
-            EventSink.InvokeAssistantAuth(new AssistantAuthEventArgs(state, state.Account, authOk));
-        }
-        else
-        {
-            reader.Seek(22, SeekOrigin.Current);
-
-            if (reader.ReadUInt16() == 0xDEAD)
-            {
-                EventSink.InvokeAssistantAuth(new AssistantAuthEventArgs(state, state.Account, false));
-            }
-        }
-
-        if (!state.Running)
-        {
-            return;
-        }
-
+        reader.Seek(24, SeekOrigin.Current);
         var charSlot = reader.ReadInt32();
         reader.Seek(4, SeekOrigin.Current); // var clientIP = reader.ReadInt32();
 
