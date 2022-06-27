@@ -1,0 +1,33 @@
+{
+  "warnOnFailure": true,
+  "kickOnFailure": true,
+  "disallowedFeatures": {
+    "FilterWeather": false,
+    "FilterLight": false,
+    "SmartTarget": false,
+    "RangedTarget": false,
+    "AutoOpenDoors": false,
+    "DequipOnCast": false,
+    "AutoPotionEquip": false,
+    "PoisonedChecks": false,
+    "LoopedMacros": false,
+    "UseOnceAgent": false,
+    "RestockAgent": false,
+    "SellAgent": false,
+    "BuyAgent": false,
+    "PotionHotkeys": false,
+    "RandomTargets": false,
+    "ClosestTargets": false,
+    "OverheadHealth": false,
+    "AutolootAgent": false,
+    "BoneCutterAgent": false,
+    "JScriptMacros": false,
+    "AutoRemount": false,
+    "AutoBandage": false,
+    "EnemyTargetShare": false,
+    "FilterSeason": false,
+    "SpellTargetShare": false
+  },
+  "disconnectDelay": "00:00:15",
+  "warningMessage": "The server was unable to negotiate features with your assistant. You must download and run an updated version of <A HREF=\"https://uosteam.com\">UOSteam</A> or <A HREF=\"https://github.com/markdwags/Razor/releases/latest\">Razor</A>.<BR><BR>Make sure you've checked the option <B>Negotiate features with server</B>, once you have this box checked you may log in and play normally.<BR><BR>You will be disconnected shortly."
+}
