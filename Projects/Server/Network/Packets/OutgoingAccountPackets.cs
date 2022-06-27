@@ -336,7 +336,7 @@ public static class OutgoingAccountPackets
 
             if (m == null)
             {
-                writer.Clear(30);
+                writer.Clear(60);
             }
             else
             {
