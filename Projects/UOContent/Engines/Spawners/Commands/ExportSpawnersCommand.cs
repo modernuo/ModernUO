@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Commands.Generic;
@@ -35,13 +36,14 @@ namespace Server.Engines.Spawners
             Commands = new[] { "ExportSpawners" };
             ObjectTypes = ObjectTypes.Items;
             Usage = "ExportSpawners";
-            Description = "Exports the given the spawners to the a file";
+            Description = "Exports the given spawners to the a file";
             ListOptimized = true;
         }
 
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {
-            var path = e.Arguments.Length == 0 ? null : e.Arguments[0].Trim();
+            string path = e.Arguments.Length == 0 ? string.Empty : e.Arguments[0].Trim();
+            string condition = e.Arguments.Length == 2 ? e.Arguments[1].Trim() : string.Empty;
 
             if (string.IsNullOrEmpty(path))
             {
@@ -71,9 +73,15 @@ namespace Server.Engines.Spawners
             {
                 if (list[i] is BaseSpawner spawner)
                 {
-                    var dynamicJson = DynamicJson.Create(spawner.GetType());
-                    spawner.ToJson(dynamicJson, options);
-                    spawnRecords.Add(dynamicJson);
+                    if (!string.IsNullOrEmpty(spawner.Name) && spawner.Name.StartsWith(
+                            condition,
+                            StringComparison.OrdinalIgnoreCase
+                        ))
+                    {
+                        var dynamicJson = DynamicJson.Create(spawner.GetType());
+                        spawner.ToJson(dynamicJson, options);
+                        spawnRecords.Add(dynamicJson);
+                    }
                 }
             }
 
