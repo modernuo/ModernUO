@@ -131,7 +131,7 @@ public static class AssistantHandler
 
     public static void SendAssistVersionReq(this NetState ns)
     {
-        if (ns?.CannotSendPackets() != false)
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -148,7 +148,7 @@ public static class AssistantHandler
 
     public static void SendAssistHandshake(this NetState ns)
     {
-        if (ns?.CannotSendPackets() != false)
+        if (ns.CannotSendPackets())
         {
             return;
         }
