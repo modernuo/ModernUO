@@ -220,6 +220,8 @@ public partial class NetState : IComparable<NetState>
 
     public IAccount Account { get; set; }
 
+    public string Assistant { get; set; }
+
     public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
     private void SetPacketTime(int packetID)

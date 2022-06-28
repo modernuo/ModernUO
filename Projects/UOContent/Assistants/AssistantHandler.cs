@@ -15,7 +15,10 @@ public static class AssistantHandler
     public static unsafe void Configure()
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableNegotiation", false);
+
         EventSink.Login -= OnLogin;
+
+        IncomingPackets.Register(0xBE, 0, true, &AssistVersion);
         AssistantProtocol.Register(0xFF, false, &HandshakeResponse);
     }
 
@@ -62,7 +65,8 @@ public static class AssistantHandler
             return;
         }
 
-        m.NetState.SendAssistUOHandshake();
+        m.NetState.SendAssistVersionReq();
+        m.NetState.SendAssistHandshake();
 
         if (_handshakes.TryGetValue(m, out var t))
         {
@@ -70,6 +74,24 @@ public static class AssistantHandler
         }
 
         _handshakes[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), OnTimeout, m);
+    }
+
+    public static void AssistVersion(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        // We are not supporting the old UOAssist protocol
+        // var assistVersion = reader.ReadInt32();
+        // var clientVersion = reader.ReadAscii();
+
+        // Instead we are supporting razor community edition.
+        var assistVersion = reader.ReadAscii();
+        if (assistVersion.IndexOf(' ') == -1)
+        {
+            state.Assistant = $"Razor {assistVersion}";
+        }
+        else
+        {
+            state.Assistant = assistVersion;
+        }
     }
 
     private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)
@@ -114,7 +136,24 @@ public static class AssistantHandler
         _handshakes.Remove(m);
     }
 
-    public static void SendAssistUOHandshake(this NetState ns)
+    public static void SendAssistVersionReq(this NetState ns)
+    {
+        if (ns?.CannotSendPackets() != false)
+        {
+            return;
+        }
+
+        // Razor doesn't actually check this, but it is part of the "spec"
+        var assistVersionSupported = AssistantConfiguration.Settings.SupportedRazorVersion;
+        var length = 3 + assistVersionSupported.Length;
+
+        var writer = new SpanWriter(stackalloc byte[length]);
+        writer.Write((byte)0xBE); // Packet ID
+        writer.Write((ushort)length);
+        writer.WriteAscii(assistVersionSupported);
+    }
+
+    public static void SendAssistHandshake(this NetState ns)
     {
         if (ns?.CannotSendPackets() != false)
         {

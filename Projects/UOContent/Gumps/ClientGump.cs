@@ -23,13 +23,13 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, 400, 274, 5054);
+            AddBackground(0, 0, 400, 314, 5054);
 
             AddImageTiled(10, 10, 380, 19, 0xA40);
             AddAlphaRegion(10, 10, 380, 19);
 
-            AddImageTiled(10, 32, 380, 232, 0xA40);
-            AddAlphaRegion(10, 32, 380, 232);
+            AddImageTiled(10, 32, 380, 272, 0xA40);
+            AddAlphaRegion(10, 32, 380, 272);
 
             AddHtml(10, 10, 380, 20, Color(Center("User Information"), LabelColor32));
 
@@ -44,7 +44,16 @@ namespace Server.Gumps
                 36 + line++ * 20,
                 200,
                 20,
-                Color(state.Version == null ? "(null)" : state.Version.ToString(), LabelColor32)
+                Color(state.Version?.ToString() ?? "(null)", LabelColor32)
+            );
+
+            AddHtml(14, 36 + line * 20, 200, 20, Color("Assistant:", LabelColor32));
+            AddHtml(
+                70,
+                36 + line++ * 20,
+                200,
+                20,
+                Color(state.Assistant ?? "(-none-)", LabelColor32)
             );
 
             AddHtml(14, 36 + line * 20, 200, 20, Color("Version:", LabelColor32));
@@ -71,12 +80,12 @@ namespace Server.Gumps
                 AddHtml(14, 36 + line * 20, 200, 20, Color("Location:", LabelColor32));
                 AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32));
 
-                AddButton(13, 157, 0xFAB, 0xFAD, 1);
-                AddHtml(48, 158, 200, 20, Color("Send Message", LabelColor32));
+                AddButton(13, 197, 0xFAB, 0xFAD, 1);
+                AddHtml(48, 198, 200, 20, Color("Send Message", LabelColor32));
 
-                AddImageTiled(12, 182, 376, 80, 0xA40);
-                AddImageTiled(13, 183, 374, 78, 0xBBC);
-                AddTextEntry(15, 183, 372, 78, 0x480, 0, "");
+                AddImageTiled(12, 222, 376, 80, 0xA40);
+                AddImageTiled(13, 223, 374, 78, 0xBBC);
+                AddTextEntry(15, 223, 372, 78, 0x480, 0, initialText);
 
                 AddImageTiled(245, 35, 142, 144, 5058);
 
