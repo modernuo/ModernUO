@@ -15,7 +15,10 @@ public static class AssistantHandler
     public static unsafe void Configure()
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableNegotiation", false);
-        EventSink.Login -= OnLogin;
+
+        EventSink.Login += OnLogin;
+
+        IncomingPackets.Register(0xBE, 0, false, &AssistVersion);
         AssistantProtocol.Register(0xFF, false, &HandshakeResponse);
     }
 
@@ -57,12 +60,13 @@ public static class AssistantHandler
 
     private static void OnLogin(Mobile m)
     {
-        if (m?.NetState?.Running != true || !AssistantConfiguration.Enabled)
+        if (m?.NetState?.Running != true || !Enabled)
         {
             return;
         }
 
-        m.NetState.SendAssistUOHandshake();
+        m.NetState.SendAssistVersionReq();
+        m.NetState.SendAssistHandshake();
 
         if (_handshakes.TryGetValue(m, out var t))
         {
@@ -70,6 +74,17 @@ public static class AssistantHandler
         }
 
         _handshakes[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), OnTimeout, m);
+    }
+
+    public static void AssistVersion(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        // We are not supporting the old UOAssist protocol
+        // var assistVersion = reader.ReadInt32();
+        // var clientVersion = reader.ReadAscii();
+
+        // Instead we are supporting razor community edition.
+        var assistVersion = reader.ReadAscii();
+        state.Assistant = assistVersion.Contains(' ') ? assistVersion : $"RazorCE {assistVersion}";
     }
 
     private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)
@@ -114,9 +129,19 @@ public static class AssistantHandler
         _handshakes.Remove(m);
     }
 
-    public static void SendAssistUOHandshake(this NetState ns)
+    public static void SendAssistVersionReq(this NetState ns)
     {
-        if (ns?.CannotSendPackets() != false)
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        ns.Send(stackalloc byte[] { 0xBE, 0x00, 0x03 });
+    }
+
+    public static void SendAssistHandshake(this NetState ns)
+    {
+        if (ns.CannotSendPackets())
         {
             return;
         }
@@ -126,5 +151,7 @@ public static class AssistantHandler
         writer.Write((ushort)12);
         writer.Write((byte)0xFE); // Command
         writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
+
+        ns.Send(writer.Span);
     }
 }

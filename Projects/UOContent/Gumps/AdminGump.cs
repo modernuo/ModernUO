@@ -550,7 +550,15 @@ namespace Server.Gumps
                             var v = ns.Version;
 
                             AddLabel(20, y, LabelHue, "Version:");
-                            AddLabel(200, y, LabelHue, v == null ? "(null)" : v.ToString());
+                            if (ns.Assistant != null)
+                            {
+                                AddLabel(200, y, LabelHue, $"{v.SourceString ?? "(null)"} ({ns.Assistant})");
+                            }
+                            else
+                            {
+                                AddLabel(200, y, LabelHue, v.SourceString ?? "(null)");
+                            }
+
                             y += 20;
 
                             AddLabel(20, y, LabelHue, "Location:");

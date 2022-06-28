@@ -48,7 +48,6 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xA0, 3, false, &PlayServer);
         IncomingPackets.Register(0xBB, 9, false, &AccountID);
         IncomingPackets.Register(0xBD, 0, false, &ClientVersion);
-        IncomingPackets.Register(0xBE, 0, true, &AssistVersion);
         IncomingPackets.Register(0xCF, 0, false, &AccountLogin);
         IncomingPackets.Register(0xE1, 0, false, &ClientType);
         IncomingPackets.Register(0xEF, 21, false, &LoginServerSeed);
@@ -195,12 +194,6 @@ public static class IncomingAccountPackets
 
     public static void AccountID(NetState state, CircularBufferReader reader, int packetLength)
     {
-    }
-
-    public static void AssistVersion(NetState state, CircularBufferReader reader, int packetLength)
-    {
-        var unk = reader.ReadInt32();
-        var av = reader.ReadAscii();
     }
 
     public static void ClientVersion(NetState state, CircularBufferReader reader, int packetLength)
