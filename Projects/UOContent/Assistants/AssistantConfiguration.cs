@@ -11,8 +11,6 @@ public static class AssistantConfiguration
 {
     private const string _path = "Configuration/assistants.json";
 
-    public static bool Enabled { get; private set; }
-
     public static AssistantSettings Settings { get; private set; }
 
     private const string _defaultWarningMessage = "The server was unable to negotiate features with your assistant. "
@@ -24,8 +22,6 @@ public static class AssistantConfiguration
 
     public static void Configure()
     {
-        Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableRazorNegotiation", false);
-
         var path = Path.Join(Core.BaseDirectory, _path);
 
         if (File.Exists(path))

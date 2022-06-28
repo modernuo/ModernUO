@@ -16,7 +16,7 @@ public static class AssistantHandler
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableNegotiation", false);
 
-        EventSink.Login -= OnLogin;
+        EventSink.Login += OnLogin;
 
         IncomingPackets.Register(0xBE, 0, true, &AssistVersion);
         AssistantProtocol.Register(0xFF, false, &HandshakeResponse);
@@ -60,7 +60,7 @@ public static class AssistantHandler
 
     private static void OnLogin(Mobile m)
     {
-        if (m?.NetState?.Running != true || !AssistantConfiguration.Enabled)
+        if (m?.NetState?.Running != true || !Enabled)
         {
             return;
         }
@@ -84,14 +84,7 @@ public static class AssistantHandler
 
         // Instead we are supporting razor community edition.
         var assistVersion = reader.ReadAscii();
-        if (assistVersion.IndexOf(' ') == -1)
-        {
-            state.Assistant = $"Razor {assistVersion}";
-        }
-        else
-        {
-            state.Assistant = assistVersion;
-        }
+        state.Assistant = assistVersion.Contains(' ') ? assistVersion : $"Razor {assistVersion}";
     }
 
     private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)

@@ -40,7 +40,7 @@ namespace Server.Gumps
 
             AddHtml(14, 36 + line * 20, 200, 20, Color("Client:", LabelColor32));
             AddHtml(
-                70,
+                72,
                 36 + line++ * 20,
                 200,
                 20,
@@ -49,7 +49,7 @@ namespace Server.Gumps
 
             AddHtml(14, 36 + line * 20, 200, 20, Color("Assistant:", LabelColor32));
             AddHtml(
-                70,
+                72,
                 36 + line++ * 20,
                 200,
                 20,
@@ -61,7 +61,7 @@ namespace Server.Gumps
             var info = state.ExpansionInfo;
             var expansionName = info.Name;
 
-            AddHtml(70, 36 + line++ * 20, 200, 20, Color(expansionName, LabelColor32));
+            AddHtml(72, 36 + line++ * 20, 200, 20, Color(expansionName, LabelColor32));
 
             var a = state.Account as Account;
             var m = state.Mobile;
@@ -69,16 +69,16 @@ namespace Server.Gumps
             if (from.AccessLevel >= AccessLevel.GameMaster && a != null)
             {
                 AddHtml(14, 36 + line * 20, 200, 20, Color("Account:", LabelColor32));
-                AddHtml(70, 36 + line++ * 20, 200, 20, Color(a.Username, LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Color(a.Username, LabelColor32));
             }
 
             if (m != null)
             {
                 AddHtml(14, 36 + line * 20, 200, 20, Color("Mobile:", LabelColor32));
-                AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Name} ({m.Serial})", LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Color($"{m.Name} ({m.Serial})", LabelColor32));
 
                 AddHtml(14, 36 + line * 20, 200, 20, Color("Location:", LabelColor32));
-                AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32));
 
                 AddButton(13, 197, 0xFAB, 0xFAD, 1);
                 AddHtml(48, 198, 200, 20, Color("Send Message", LabelColor32));
