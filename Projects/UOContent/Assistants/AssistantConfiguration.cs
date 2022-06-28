@@ -81,7 +81,8 @@ public record AssistantSettings
     [JsonPropertyName("kickOnFailure")]
     public bool KickOnFailure { get; set; }
 
-    [JsonPropertyName("features")]
+    [JsonPropertyName("disallowedFeatures")]
+    [JsonConverter(typeof(FlagsConverter<AssistantFeatures>))]
     public AssistantFeatures DisallowedFeatures { get; set; }
 
     [JsonPropertyName("disconnectDelay")]
