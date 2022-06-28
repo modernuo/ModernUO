@@ -18,7 +18,7 @@ public static class AssistantHandler
 
         EventSink.Login += OnLogin;
 
-        IncomingPackets.Register(0xBE, 0, true, &AssistVersion);
+        IncomingPackets.Register(0xBE, 0, false, &AssistVersion);
         AssistantProtocol.Register(0xFF, false, &HandshakeResponse);
     }
 
@@ -84,7 +84,7 @@ public static class AssistantHandler
 
         // Instead we are supporting razor community edition.
         var assistVersion = reader.ReadAscii();
-        state.Assistant = assistVersion.Contains(' ') ? assistVersion : $"Razor {assistVersion}";
+        state.Assistant = assistVersion.Contains(' ') ? assistVersion : $"RazorCE {assistVersion}";
     }
 
     private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)
@@ -136,14 +136,7 @@ public static class AssistantHandler
             return;
         }
 
-        // Razor doesn't actually check this, but it is part of the "spec"
-        var assistVersionSupported = AssistantConfiguration.Settings.SupportedRazorVersion;
-        var length = 3 + assistVersionSupported.Length;
-
-        var writer = new SpanWriter(stackalloc byte[length]);
-        writer.Write((byte)0xBE); // Packet ID
-        writer.Write((ushort)length);
-        writer.WriteAscii(assistVersionSupported);
+        ns.Send(stackalloc byte[] { 0xBE, 0x00, 0x03 });
     }
 
     public static void SendAssistHandshake(this NetState ns)
@@ -158,5 +151,7 @@ public static class AssistantHandler
         writer.Write((ushort)12);
         writer.Write((byte)0xFE); // Command
         writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
+
+        ns.Send(writer.Span);
     }
 }

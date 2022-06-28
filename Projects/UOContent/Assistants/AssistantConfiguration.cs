@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using Server.Json;
@@ -39,11 +38,6 @@ public static class AssistantConfiguration
                 WarningMessage = _defaultWarningMessage
             };
 
-            if (!DetectRazorFromCUO())
-            {
-                Settings.SupportedRazorVersion = "1.7.3.36";
-            }
-
             Save(path);
         }
     }
@@ -66,34 +60,6 @@ public static class AssistantConfiguration
         }
 
         Save();
-    }
-
-    private static bool DetectRazorFromCUO()
-    {
-        var path = Core.FindDataFile("settings.json", false);
-
-        if (File.Exists(path))
-        {
-            var settings = JsonConfig.Deserialize<UOClient.CUOSettings>(path);
-            var rootDirectory = new FileInfo(path).Directory?.FullName;
-
-            for (var i = 0; i < settings.Plugins.Length; i++)
-            {
-                var pluginPath = settings.Plugins[i];
-                var pluginFilePath = PathUtility.GetFullPath(pluginPath, rootDirectory);
-                if (File.Exists(pluginFilePath) && new FileInfo(pluginFilePath).Name.InsensitiveEquals("razor"))
-                {
-                    var assemblyVersion = AssemblyName.GetAssemblyName(pluginFilePath).Version;
-                    if (assemblyVersion != null)
-                    {
-                        Settings.SupportedRazorVersion = assemblyVersion.ToString();
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     private static void Save(string path = null)
@@ -120,7 +86,4 @@ public record AssistantSettings
 
     [JsonPropertyName("warningMessage")]
     public string WarningMessage { get; set; }
-
-    [JsonPropertyName("supportedRazorVersion")]
-    public string SupportedRazorVersion { get; set; }
 }

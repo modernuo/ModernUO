@@ -23,13 +23,13 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, 400, 314, 5054);
+            AddBackground(0, 0, 420, 314, 5054);
 
-            AddImageTiled(10, 10, 380, 19, 0xA40);
-            AddAlphaRegion(10, 10, 380, 19);
+            AddImageTiled(10, 10, 400, 19, 0xA40);
+            AddAlphaRegion(10, 10, 400, 19);
 
-            AddImageTiled(10, 32, 380, 272, 0xA40);
-            AddAlphaRegion(10, 32, 380, 272);
+            AddImageTiled(10, 32, 400, 272, 0xA40);
+            AddAlphaRegion(10, 32, 400, 272);
 
             AddHtml(10, 10, 380, 20, Color(Center("User Information"), LabelColor32));
 
@@ -87,52 +87,52 @@ namespace Server.Gumps
                 AddImageTiled(13, 223, 374, 78, 0xBBC);
                 AddTextEntry(15, 223, 372, 78, 0x480, 0, initialText);
 
-                AddImageTiled(245, 35, 142, 144, 5058);
+                AddImageTiled(265, 35, 142, 144, 5058);
 
-                AddImageTiled(246, 36, 140, 142, 0xA40);
-                AddAlphaRegion(246, 36, 140, 142);
+                AddImageTiled(266, 36, 140, 142, 0xA40);
+                AddAlphaRegion(266, 36, 140, 142);
 
                 line = 0;
 
                 if (BaseCommand.IsAccessible(from, m))
                 {
-                    AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 4);
-                    AddHtml(280, 38 + line++ * 20, 100, 20, Color("Properties", LabelColor32));
+                    AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 4);
+                    AddHtml(300, 38 + line++ * 20, 100, 20, Color("Properties", LabelColor32));
                 }
 
                 if (from != m)
                 {
-                    AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 5);
-                    AddHtml(280, 38 + line++ * 20, 100, 20, Color("Go to them", LabelColor32));
+                    AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 5);
+                    AddHtml(300, 38 + line++ * 20, 100, 20, Color("Go to them", LabelColor32));
 
-                    AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 6);
-                    AddHtml(280, 38 + line++ * 20, 100, 20, Color("Bring them here", LabelColor32));
+                    AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 6);
+                    AddHtml(300, 38 + line++ * 20, 100, 20, Color("Bring them here", LabelColor32));
                 }
 
-                AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 7);
-                AddHtml(280, 38 + line++ * 20, 100, 20, Color("Move to target", LabelColor32));
+                AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 7);
+                AddHtml(300, 38 + line++ * 20, 100, 20, Color("Move to target", LabelColor32));
 
                 if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > m.AccessLevel)
                 {
-                    AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 8);
-                    AddHtml(280, 38 + line++ * 20, 100, 20, Color("Disconnect", LabelColor32));
+                    AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 8);
+                    AddHtml(300, 38 + line++ * 20, 100, 20, Color("Disconnect", LabelColor32));
 
                     if (m.Alive)
                     {
-                        AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 9);
-                        AddHtml(280, 38 + line++ * 20, 100, 20, Color("Kill", LabelColor32));
+                        AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 9);
+                        AddHtml(300, 38 + line++ * 20, 100, 20, Color("Kill", LabelColor32));
                     }
                     else
                     {
-                        AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 10);
-                        AddHtml(280, 38 + line++ * 20, 100, 20, Color("Resurrect", LabelColor32));
+                        AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 10);
+                        AddHtml(300, 38 + line++ * 20, 100, 20, Color("Resurrect", LabelColor32));
                     }
                 }
 
                 if (from.AccessLevel >= AccessLevel.Counselor && from.AccessLevel > m.AccessLevel)
                 {
-                    AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 11);
-                    AddHtml(280, 38 + line++ * 20, 100, 20, Color("Skills browser", LabelColor32));
+                    AddButton(266, 36 + line * 20, 0xFA5, 0xFA7, 11);
+                    AddHtml(300, 38 + line++ * 20, 100, 20, Color("Skills browser", LabelColor32));
                 }
             }
         }
