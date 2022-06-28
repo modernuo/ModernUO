@@ -131,8 +131,5 @@ public static class UOClient
 
         [JsonPropertyName("ultimaonlinedirectory")]
         public string UltimaOnlineDirectory { get; set; }
-
-        [JsonPropertyName("plugins")]
-        public string[] Plugins { get; set; }
     }
 }
