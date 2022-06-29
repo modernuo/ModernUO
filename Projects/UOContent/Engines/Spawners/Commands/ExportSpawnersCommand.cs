@@ -36,7 +36,7 @@ namespace Server.Engines.Spawners
             Commands = new[] { "ExportSpawners" };
             ObjectTypes = ObjectTypes.Items;
             Usage = "ExportSpawners";
-            Description = "Exports the given spawners to the a file";
+            Description = "Exports the given spawners to a file";
             ListOptimized = true;
         }
 

@@ -33,7 +33,7 @@ namespace Server.Engines.Spawners
             Commands = new[] { "Respawn" };
             ObjectTypes = ObjectTypes.Items;
             Usage = "Respawn";
-            Description = "Respawns the given the spawners.";
+            Description = "Respawns the given spawners.";
             ListOptimized = true;
         }
 
