@@ -276,7 +276,7 @@ public static class ServerConfiguration
                 isPre60000 = ServerConfigurationPrompts.GetIsClientPre6000();
                 if (isPre60000 == true)
                 {
-                    SetSetting("maps.enablePre6000Trammel", true.ToString());
+                    SetSetting("maps.enablePre6000Trammel", true);
                 }
             }
 
