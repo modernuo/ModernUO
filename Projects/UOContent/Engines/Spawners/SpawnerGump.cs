@@ -6,23 +6,24 @@ namespace Server.Engines.Spawners
 {
     public class SpawnerGump : Gump
     {
-        private readonly BaseSpawner m_Spawner;
-        private SpawnerEntry m_Entry;
-        private int m_Page;
+        private readonly BaseSpawner _spawner;
+        private SpawnerEntry _entry;
+        private int _page;
 
         public SpawnerGump(BaseSpawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
         {
-            m_Spawner = spawner;
-            m_Entry = focusentry;
-            m_Page = page;
+            _spawner = spawner;
+            _entry = focusentry;
+            _page = page;
 
             AddPage(0);
 
-            AddBackground(0, 0, 343, 371 + (m_Entry != null ? 44 : 0), 5054);
+            AddBackground(0, 0, 346, 400 + (_entry != null ? 44 : 0), 5054);
+            AddAlphaRegion(0, 0, 346, 400 + (_entry != null ? 44 : 0));
 
-            AddHtml(71, 1, 161, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{spawner.Name}</CENTER></BASEFONT>");
+            AddHtml(71, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00><CENTER>{spawner.Name}</CENTER></BASEFONT>");
             AddHtml(245, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
-            AddHtml(282, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
+            AddHtml(279, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
 
             // AddLabel( 95, 1, 0, "Creatures List" );
 
@@ -30,17 +31,17 @@ namespace Server.Engines.Spawners
 
             for (var i = 0; i < 13; i++)
             {
-                var textindex = i * 5;
-                var entryindex = m_Page * 13 + i;
+                var textIndex = i * 5;
+                var entryIndex = _page * 13 + i;
 
                 SpawnerEntry entry = null;
 
-                if (entryindex < spawner.Entries.Count)
+                if (entryIndex < spawner.Entries.Count)
                 {
-                    entry = m_Spawner.Entries[entryindex];
+                    entry = _spawner.Entries[entryIndex];
                 }
 
-                if (entry == null || m_Entry != entry)
+                if (entry == null || _entry != entry)
                 {
                     AddButton(
                         5,
@@ -74,17 +75,18 @@ namespace Server.Engines.Spawners
 
                 var name = "";
                 var probability = "";
-                var maxcount = "";
+                var maxCount = "";
                 var flags = EntryFlags.None;
 
                 if (entry != null)
                 {
                     name = entry.SpawnedName;
                     probability = entry.SpawnedProbability.ToString();
-                    maxcount = entry.SpawnedMaxCount.ToString();
+                    maxCount = entry.SpawnedMaxCount.ToString();
                     flags = entry.Valid;
 
-                    AddLabel(315, 22 * i + 20 + offset, 0, spawner.CountSpawns(entry).ToString());
+                    //AddLabel(315, 22 * i + 20 + offset, 996, spawner.CountSpawns(entry).ToString());
+                    AddHtml(314, 22 * i + 20 + offset, 30, 15, $"<BASEFONT COLOR=#F4F4F4>{spawner.CountSpawns(entry).ToString()}</BASEFONT>");
                 }
 
                 AddTextEntry(
@@ -93,13 +95,13 @@ namespace Server.Engines.Spawners
                     156,
                     21,
                     (flags & EntryFlags.InvalidType) != 0 ? 33 : 0,
-                    textindex,
+                    textIndex,
                     name
                 );                                                                              // creature
-                AddTextEntry(239, 22 * i + 21 + offset, 30, 21, 0, textindex + 1, maxcount);    // max count
-                AddTextEntry(277, 22 * i + 21 + offset, 30, 21, 0, textindex + 2, probability); // probability
+                AddTextEntry(239, 22 * i + 21 + offset, 30, 21, 0, textIndex + 1, maxCount);    // max count
+                AddTextEntry(277, 22 * i + 21 + offset, 30, 21, 0, textIndex + 2, probability); // probability
 
-                if (entry != null && m_Entry == entry)
+                if (entry != null && _entry == entry)
                 {
                     AddLabel(5, 22 * i + 42, 0x384, "Params");
                     AddImageTiled(55, 22 * i + 42, 253, 23, 0xA40); // Parameters
@@ -115,7 +117,7 @@ namespace Server.Engines.Spawners
                         248,
                         21,
                         (flags & EntryFlags.InvalidParams) != 0 ? 33 : 0,
-                        textindex + 3,
+                        textIndex + 3,
                         entry.Parameters
                     ); // parameters
                     AddTextEntry(
@@ -124,7 +126,7 @@ namespace Server.Engines.Spawners
                         248,
                         21,
                         (flags & EntryFlags.InvalidProps) != 0 ? 33 : 0,
-                        textindex + 4,
+                        textIndex + 4,
                         entry.Properties
                     ); // properties
 
@@ -132,38 +134,54 @@ namespace Server.Engines.Spawners
                 }
             }
 
-            AddButton(5, 347 + offset, 0xFB1, 0xFB3, 0);
-            AddLabel(38, 347 + offset, 0x384, "Cancel");
-
-            AddButton(5, 325 + offset, 0xFB7, 0xFB9, GetButtonID(1, 2));
-            AddLabel(38, 325 + offset, 0x384, "Okay");
-
-            AddButton(110, 325 + offset, 0xFB4, 0xFB6, GetButtonID(1, 3));
-            AddLabel(143, 325 + offset, 0x384, "Bring to Home");
-
-            AddButton(110, 347 + offset, 0xFA8, 0xFAA, GetButtonID(1, 4));
-            AddLabel(143, 347 + offset, 0x384, "Total Respawn");
-
-            AddButton(253, 325 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5));
-            AddLabel(286, 325 + offset, 0x384, "Apply");
-
-            if (m_Page > 0)
+            if (spawner.Running)
             {
-                AddButton(276, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0));
+                AddButton(5, 312, 0x2A4E, 0x2A3A, GetButtonID(1, 6));
+                AddLabel(38, 317, 0x384, "On");
             }
             else
             {
-                AddImage(276, 308 + offset, 0x25EA);
+                AddButton(5, 312, 0x2A62, 0x2A3A, GetButtonID(1, 7));
+                AddLabel(38, 317, 0x384, "Off");
             }
 
-            if ((m_Page + 1) * 13 <= m_Spawner.Entries.Count)
+            AddButton(5, 347 + offset, 0xFAB, 0xFAD, GetButtonID(1, 2));
+            AddLabel(38, 347 + offset, 0x384, "Props");
+
+            AddButton(5, 369 + offset, 0xFAE, 0xFAF, GetButtonID(1, 8));
+            AddLabel(38, 369 + offset, 0x384, "Goto");
+
+            AddButton(90, 347 + offset, 0xFB4, 0xFB6, GetButtonID(1, 3));
+            AddLabel(123, 347 + offset, 0x384, "Bring Home");
+
+            AddButton(90, 369 + offset, 0xFA8, 0xFAA, GetButtonID(1, 4));
+            AddLabel(123, 369 + offset, 0x384, "Total Respawn");
+
+            AddButton(260, 347 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5));
+            AddLabel(293, 347 + offset, 0x384, "Apply");
+
+            AddButton(260, 369 + offset, 0xFB1, 0xFB3, 0);
+            AddLabel(293, 369 + offset, 0x384, "Cancel");
+
+            if (_page > 0)
             {
-                AddButton(293, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                AddButton(200, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0));
             }
             else
             {
-                AddImage(293, 308 + offset, 0x25E6);
+                AddImage(200, 308 + offset, 0x25EA);
             }
+
+            if ((_page + 1) * 13 <= _spawner.Entries.Count)
+            {
+                AddButton(217, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1));
+            }
+            else
+            {
+                AddImage(217, 308 + offset, 0x25E6);
+            }
+
+            AddHtml(300, 308 + offset, 30, 15, $"<BASEFONT COLOR=#4CBB17>{spawner.Count}</BASEFONT>");
         }
 
         public int GetButtonID(int type, int index) => 1 + index * 10 + type;
@@ -177,7 +195,7 @@ namespace Server.Engines.Spawners
             for (var i = 0; i < 13; i++)
             {
                 var index = i * 5;
-                var entryindex = m_Page * 13 + i;
+                var entryindex = _page * 13 + i;
 
                 var cte = info.GetTextEntry(index);
                 var mte = info.GetTextEntry(index + 1);
@@ -266,7 +284,7 @@ namespace Server.Engines.Spawners
 
         public override void OnResponse(NetState state, RelayInfo info)
         {
-            if (m_Spawner.Deleted)
+            if (_spawner.Deleted)
             {
                 return;
             }
@@ -291,42 +309,57 @@ namespace Server.Engines.Spawners
                         {
                             case 0:
                                 {
-                                    if (m_Spawner.Entries != null && m_Page > 0)
+                                    if (_spawner.Entries != null && _page > 0)
                                     {
-                                        m_Page--;
-                                        m_Entry = null;
+                                        _page--;
+                                        _entry = null;
                                     }
 
                                     break;
                                 }
                             case 1:
                                 {
-                                    if ((m_Page + 1) * 13 <= m_Spawner.Entries?.Count)
+                                    if ((_page + 1) * 13 <= _spawner.Entries?.Count)
                                     {
-                                        m_Page++;
-                                        m_Entry = null;
+                                        _page++;
+                                        _entry = null;
                                     }
 
                                     break;
                                 }
-                            case 2: // Okay
+                            case 2: // Props
                                 {
-                                    CreateArray(info, state.Mobile, m_Spawner);
-                                    return;
+                                    state.Mobile.SendGump(new PropertiesGump(state.Mobile, _spawner));
+                                    break;
                                 }
-                            case 3:
+                            case 3: // Bring Home
                                 {
-                                    m_Spawner.BringToHome();
+                                    _spawner.BringToHome();
                                     break;
                                 }
                             case 4: // Complete respawn
                                 {
-                                    m_Spawner.Respawn();
+                                    _spawner.Respawn();
                                     break;
                                 }
-                            case 5:
+                            case 5: // Apply
                                 {
-                                    CreateArray(info, state.Mobile, m_Spawner);
+                                    CreateArray(info, state.Mobile, _spawner);
+                                    break;
+                                }
+                            case 6: // On button
+                                {
+                                    _spawner.Running = false;
+                                    break;
+                                }
+                            case 7: // Off button
+                                {
+                                    _spawner.Running = true;
+                                    break;
+                                }
+                            case 8: // Goto
+                                {
+                                    state.Mobile.MoveToWorld(_spawner.Location, _spawner.Map);
                                     break;
                                 }
                         }
@@ -335,34 +368,34 @@ namespace Server.Engines.Spawners
                     }
                 case 2:
                     {
-                        var entryindex = index / 2 + m_Page * 13;
-                        var buttontype = index % 2;
+                        var entryIndex = index / 2 + _page * 13;
+                        var buttonType = index % 2;
 
-                        if (entryindex >= 0 && entryindex < m_Spawner.Entries.Count)
+                        if (entryIndex >= 0 && entryIndex < _spawner.Entries.Count)
                         {
-                            var entry = m_Spawner.Entries[entryindex];
-                            if (buttontype == 0) // Spawn creature
+                            var entry = _spawner.Entries[entryIndex];
+                            if (buttonType == 0) // Spawn creature
                             {
-                                m_Entry = m_Entry != entry ? entry : null;
+                                _entry = _entry != entry ? entry : null;
                             }
                             else // Remove creatures
                             {
-                                m_Spawner.RemoveSpawn(entryindex);
+                                _spawner.RemoveSpawn(entryIndex);
                             }
                         }
 
-                        CreateArray(info, state.Mobile, m_Spawner);
+                        CreateArray(info, state.Mobile, _spawner);
                         break;
                     }
             }
 
-            if (m_Entry != null && m_Spawner.Entries?.Contains(m_Entry) == true)
+            if (_entry != null && _spawner.Entries?.Contains(_entry) == true)
             {
-                state.Mobile.SendGump(new SpawnerGump(m_Spawner, m_Entry, m_Page));
+                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
             }
             else
             {
-                state.Mobile.SendGump(new SpawnerGump(m_Spawner, null, m_Page));
+                state.Mobile.SendGump(new SpawnerGump(_spawner, null, _page));
             }
         }
     }
