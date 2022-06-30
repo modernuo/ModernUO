@@ -21,9 +21,9 @@ namespace Server.Engines.Spawners
             AddBackground(0, 0, 346, 400 + (_entry != null ? 44 : 0), 5054);
             AddAlphaRegion(0, 0, 346, 400 + (_entry != null ? 44 : 0));
 
-            AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT>");
-            AddHtml(245, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
-            AddHtml(279, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
+            AddHtml(240, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
+            AddHtml(271, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Max</BASEFONT>");
+            AddHtml(311, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
 
             // AddLabel( 95, 1, 0, "Creatures List" );
 
@@ -67,11 +67,14 @@ namespace Server.Engines.Spawners
                 AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); // creature text box
                 AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); // creature text box
 
-                AddImageTiled(235, 22 * i + 20 + offset, 35, 23, 0xA40); // maxcount text box
-                AddImageTiled(236, 22 * i + 21 + offset, 33, 21, 0xBBC); // maxcount text box
+                AddImageTiled(235, 22 * i + 20 + offset, 35, 23, 0xA40); // count html label
+                AddImageTiled(236, 22 * i + 21 + offset, 33, 21, 0xE14); // count html label
 
-                AddImageTiled(273, 22 * i + 20 + offset, 35, 23, 0xA40); // probability text box
-                AddImageTiled(274, 22 * i + 21 + offset, 33, 21, 0xBBC); // probability text box
+                AddImageTiled(267, 22 * i + 20 + offset, 35, 23, 0xA40); // maxcount text box
+                AddImageTiled(268, 22 * i + 21 + offset, 33, 21, 0xBBC); // maxcount text box
+
+                AddImageTiled(305, 22 * i + 20 + offset, 35, 23, 0xA40); // probability text box
+                AddImageTiled(306, 22 * i + 21 + offset, 33, 21, 0xBBC); // probability text box
 
                 var name = "";
                 var probability = "";
@@ -86,7 +89,8 @@ namespace Server.Engines.Spawners
                     flags = entry.Valid;
 
                     var count = spawner.CountSpawns(entry);
-                    AddHtml(314, 22 * i + 20 + offset, 30, 15, $"<BASEFONT COLOR=#F4F4F4>{count.ToString()}</BASEFONT>");
+
+                    AddHtml(235, 22 * i + 20 + offset + 1, 35, 15, $"<BASEFONT COLOR={GetCountColor(count, entry.SpawnedMaxCount)}><div align=RIGHT>{count.ToString()}/</div></BASEFONT>");
                 }
 
                 AddTextEntry(
@@ -98,8 +102,8 @@ namespace Server.Engines.Spawners
                     textIndex,
                     name
                 );                                                                              // creature
-                AddTextEntry(239, 22 * i + 21 + offset, 30, 21, 0, textIndex + 1, maxCount);    // max count
-                AddTextEntry(277, 22 * i + 21 + offset, 30, 21, 0, textIndex + 2, probability); // probability
+                AddTextEntry(270, 22 * i + 21 + offset, 30, 21, 0, textIndex + 1, maxCount);    // max count
+                AddTextEntry(308, 22 * i + 21 + offset, 30, 21, 0, textIndex + 2, probability); // probability
 
                 if (entry != null && _entry == entry)
                 {
@@ -154,8 +158,10 @@ namespace Server.Engines.Spawners
                 totalSpawned += spawner.CountSpawns(spawnerEntry);
             }
 
-            AddHtml(237, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalSpawn}</CENTER></BASEFONT>");
-            AddHtml(280, 308 + offset, 64, 15, $"<BASEFONT COLOR=#75E6DA><div align=RIGHT>{totalSpawned}/{spawner.Count}</div></BASEFONT>");
+            AddHtml(270, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalSpawn}</CENTER></BASEFONT>");
+
+            AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
+            //AddHtml(280, 308 + offset, 64, 15, $"<BASEFONT COLOR=#75E6DA><div align=RIGHT>{totalSpawned}/{spawner.Count}</div></BASEFONT>");
 
             AddButton(5, 347 + offset, 0xFAB, 0xFAD, GetButtonID(1, 2));
             AddLabel(38, 347 + offset, 0x384, "Props");
@@ -198,6 +204,22 @@ namespace Server.Engines.Spawners
         }
 
         public int GetButtonID(int type, int index) => 1 + index * 10 + type;
+
+        private string GetCountColor(int count, int maxCount)
+        {
+            var countColor = "#F4F4F4"; // white
+
+            countColor = ((double) count / maxCount) switch
+            {
+                <= 0.25 => "#DE3163", // red
+                <= 0.50 => "#FF7F50", // orange
+                <= 0.75 => "#DFFF00", // yellow
+                <= 1    => "#00FF00", // green
+                _       => countColor
+            };
+
+            return countColor;
+        }
 
         public void CreateArray(RelayInfo info, Mobile from, BaseSpawner spawner)
         {
