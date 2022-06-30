@@ -21,7 +21,7 @@ namespace Server.Engines.Spawners
             AddBackground(0, 0, 346, 400 + (_entry != null ? 44 : 0), 5054);
             AddAlphaRegion(0, 0, 346, 400 + (_entry != null ? 44 : 0));
 
-            AddHtml(71, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00><CENTER>{spawner.Name}</CENTER></BASEFONT>");
+            AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT>");
             AddHtml(245, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
             AddHtml(279, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
 
@@ -85,8 +85,8 @@ namespace Server.Engines.Spawners
                     maxCount = entry.SpawnedMaxCount.ToString();
                     flags = entry.Valid;
 
-                    //AddLabel(315, 22 * i + 20 + offset, 996, spawner.CountSpawns(entry).ToString());
-                    AddHtml(314, 22 * i + 20 + offset, 30, 15, $"<BASEFONT COLOR=#F4F4F4>{spawner.CountSpawns(entry).ToString()}</BASEFONT>");
+                    var count = spawner.CountSpawns(entry);
+                    AddHtml(314, 22 * i + 20 + offset, 30, 15, $"<BASEFONT COLOR=#F4F4F4>{count.ToString()}</BASEFONT>");
                 }
 
                 AddTextEntry(
@@ -136,20 +136,35 @@ namespace Server.Engines.Spawners
 
             if (spawner.Running)
             {
-                AddButton(5, 312, 0x2A4E, 0x2A3A, GetButtonID(1, 6));
-                AddLabel(38, 317, 0x384, "On");
+                AddButton(5, 312 + offset, 0x2A4E, 0x2A3A, GetButtonID(1, 6));
+                AddLabel(38, 317 + offset, 0x384, "On");
             }
             else
             {
-                AddButton(5, 312, 0x2A62, 0x2A3A, GetButtonID(1, 7));
-                AddLabel(38, 317, 0x384, "Off");
+                AddButton(5, 312 + offset, 0x2A62, 0x2A3A, GetButtonID(1, 7));
+                AddLabel(38, 317 + offset, 0x384, "Off");
             }
+
+            var totalSpawned = 0;
+            var totalSpawn = 0;
+
+            foreach (SpawnerEntry spawnerEntry in _spawner.Entries)
+            {
+                totalSpawn += spawnerEntry.SpawnedMaxCount;
+                totalSpawned += spawner.CountSpawns(spawnerEntry);
+            }
+
+            AddHtml(237, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalSpawn}</CENTER></BASEFONT>");
+            AddHtml(280, 308 + offset, 64, 15, $"<BASEFONT COLOR=#75E6DA><div align=RIGHT>{totalSpawned}/{spawner.Count}</div></BASEFONT>");
 
             AddButton(5, 347 + offset, 0xFAB, 0xFAD, GetButtonID(1, 2));
             AddLabel(38, 347 + offset, 0x384, "Props");
 
             AddButton(5, 369 + offset, 0xFAE, 0xFAF, GetButtonID(1, 8));
             AddLabel(38, 369 + offset, 0x384, "Goto");
+
+            AddButton(90, 325 + offset, 0xFA2, 0xFA3, GetButtonID(1, 9));
+            AddLabel(123, 325 + offset, 0x384, "Reset");
 
             AddButton(90, 347 + offset, 0xFB4, 0xFB6, GetButtonID(1, 3));
             AddLabel(123, 347 + offset, 0x384, "Bring Home");
@@ -158,7 +173,7 @@ namespace Server.Engines.Spawners
             AddLabel(123, 369 + offset, 0x384, "Total Respawn");
 
             AddButton(260, 347 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5));
-            AddLabel(293, 347 + offset, 0x384, "Apply");
+            AddLabel(293, 347 + offset, 0x384, "Save");
 
             AddButton(260, 369 + offset, 0xFB1, 0xFB3, 0);
             AddLabel(293, 369 + offset, 0x384, "Cancel");
@@ -180,8 +195,6 @@ namespace Server.Engines.Spawners
             {
                 AddImage(217, 308 + offset, 0x25E6);
             }
-
-            AddHtml(300, 308 + offset, 30, 15, $"<BASEFONT COLOR=#4CBB17>{spawner.Count}</BASEFONT>");
         }
 
         public int GetButtonID(int type, int index) => 1 + index * 10 + type;
@@ -342,7 +355,7 @@ namespace Server.Engines.Spawners
                                     _spawner.Respawn();
                                     break;
                                 }
-                            case 5: // Apply
+                            case 5: // Save
                                 {
                                     CreateArray(info, state.Mobile, _spawner);
                                     break;
@@ -350,6 +363,7 @@ namespace Server.Engines.Spawners
                             case 6: // On button
                                 {
                                     _spawner.Running = false;
+
                                     break;
                                 }
                             case 7: // Off button
@@ -360,6 +374,11 @@ namespace Server.Engines.Spawners
                             case 8: // Goto
                                 {
                                     state.Mobile.MoveToWorld(_spawner.Location, _spawner.Map);
+                                    break;
+                                }
+                            case 9: // Reset
+                                {
+                                    _spawner.Reset();
                                     break;
                                 }
                         }

@@ -281,6 +281,12 @@ namespace Server.Engines.Spawners
             DoTimer(); // Turn off the timer!
         }
 
+        public virtual void Reset()
+        {
+            Stop();
+            RemoveSpawns();
+        }
+
         public virtual void ToJson(DynamicJson json, JsonSerializerOptions options)
         {
             json.Type = GetType().Name;
