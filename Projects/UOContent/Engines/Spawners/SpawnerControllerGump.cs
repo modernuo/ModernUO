@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Server.Collections;
 using Server.Network;
 using Server.Engines.Spawners;
 
@@ -128,29 +128,60 @@ public class SpawnerControllerGump : Gump
             return;
         }
 
-        var copyArray = World.Items.Where(_ => _.Value is BaseSpawner).Select(_ => _.Value as BaseSpawner);
+        using var queue = new PooledRefQueue<BaseSpawner>();
 
-        if (_search.Type == SpawnSearchType.Creature)
+        foreach (var item in World.Items.Values)
         {
-            _spawners = copyArray.Where(_ => _.Entries.Any(_ => _.SpawnedName?.Contains(_search.SearchPattern, StringComparison.InvariantCultureIgnoreCase) ?? false))?.ToArray();
-        }
-        else if (_search.Type == SpawnSearchType.Coords)
-        {
-            int range = -1;
-            if (int.TryParse(_search.SearchPattern, out range))
+            if (item is not BaseSpawner spawner)
             {
-                _spawners = _mobile.GetItemsInRange<BaseSpawner>(range).ToArray();
+                continue;
+            }
+
+            bool enqueue = _search.Type switch
+            {
+                SpawnSearchType.Creature => SearchSpawnerCreatures(spawner, _search.SearchPattern),
+                SpawnSearchType.Coords => int.TryParse(_search.SearchPattern, out var range) &&
+                                          _mobile.InRange(spawner.Location, range),
+                SpawnSearchType.Props => SearchSpawnerProperties(spawner, _search.SearchPattern),
+                SpawnSearchType.Name  => spawner.Name?.InsensitiveContains(_search.SearchPattern) == true,
+                _                     => false
+            };
+
+            if (enqueue)
+            {
+                queue.Enqueue(spawner);
             }
         }
-        else if (_search.Type == SpawnSearchType.Props)
-        {
-            _spawners = copyArray.Where(_ => _.Entries.Any(_ => _.Properties?.Contains(_search.SearchPattern, StringComparison.InvariantCultureIgnoreCase) ?? false))?.ToArray();
-        }
-        else if (_search.Type == SpawnSearchType.Name)
-        {
-            _spawners = copyArray.Where(_ => _.Name.Contains(_search.SearchPattern, StringComparison.InvariantCultureIgnoreCase))?.ToArray();
-        }
+
+        _spawners = queue.ToArray();
     }
+
+    private static bool SearchSpawnerCreatures(BaseSpawner spawner, string searchPattern)
+    {
+        foreach (var entry in spawner.Entries)
+        {
+            if (entry.SpawnedName?.InsensitiveContains(searchPattern) == true)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SearchSpawnerProperties(BaseSpawner spawner, string searchPattern)
+    {
+        foreach (var entry in spawner.Entries)
+        {
+            if (entry.Properties?.InsensitiveContains(searchPattern) == true)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void DrawFooter(GumpList gumpList)
     {
         if (gumpList.CanNext)
@@ -173,7 +204,7 @@ public class SpawnerControllerGump : Gump
 
         //paste ground
         AddButton(_main.Columns[0].X + 15+260, _main.Rows[2].Y, 4029, 4031, GetButtonID(1, 7));
-        AddLabelHtml(_main.Columns[0].X + 55+260, _main.Rows[2].Y + 4, _main.Columns[0].Width, 20, $"Paste copy to ground", ColorCode.Yellow, 4, false);
+        AddLabelHtml(_main.Columns[0].X + 55+260, _main.Rows[2].Y + 4, _main.Columns[0].Width, 20, "Paste copy to ground", ColorCode.Yellow, 4, false);
 
         AddLabelHtml(_main.Columns[0].X+16, _main.Rows[2].VCenter + 17, _main.Columns[0].Width, 20, $"Pages {gumpList.Page + 1}/{gumpList.TotalPages + 1}", ColorCode.White);
         AddLabelHtml(_main.Columns[0].X+20, _main.Rows[2].VCenter + 17, _main.Columns[0].Width, 20, $"Total Spawner {_spawners.Length}", ColorCode.White,4,false);
@@ -208,9 +239,9 @@ public class SpawnerControllerGump : Gump
 
             //teleport button
             AddButton(item.Cols[4].X, gumpList.Items[i].Y + vCenter-4, 0x10, 0x10, GetButtonID(5, item.Index));
-            AddButton(item.Cols[4].X+20, gumpList.Items[i].Y + vCenter-4, 0x10, 0x10, GetButtonID(5, item.Index));
+            AddButton(item.Cols[4].X + 20, gumpList.Items[i].Y + vCenter-4, 0x10, 0x10, GetButtonID(5, item.Index));
             AddImage(item.Cols[4].X, gumpList.Items[i].Y + vCenter-5, 0x638, 936);
-            AddImage(item.Cols[4].X+50, gumpList.Items[i].Y + vCenter-5, 0x638, 936);
+            AddImage(item.Cols[4].X + 50, gumpList.Items[i].Y + vCenter-5, 0x638, 936);
             AddLabelHtml(item.Cols[4].X, gumpList.Items[i].Y + vCenter, gumpList.Header.Cols[4].Width, 30, GetCoordinates(spawner.Location), ColorCode.White);
 
             //open entry button
