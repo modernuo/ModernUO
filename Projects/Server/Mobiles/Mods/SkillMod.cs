@@ -21,7 +21,6 @@ namespace Server;
 public abstract partial class SkillMod : MobileMod
 {
     private bool _obeyCap;
-
     private bool _relative;
     private SkillName _skill;
     private double _value;
@@ -60,7 +59,7 @@ public abstract partial class SkillMod : MobileMod
             if (owner != value)
             {
                 owner?.RemoveSkillMod(this);
-                owner = value;
+                base.Owner = owner = value;
                 owner?.AddSkillMod(this);
             }
         }
