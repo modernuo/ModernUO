@@ -62,7 +62,7 @@ public class SpawnerControllerGump : Gump
         AddImageTiled(0, _main.Rows[2].Y + 55, _main.Width, 6, 1756);
     }
 
-    private string GetCoordinates(Point3D p) => $"X {p.X} Y {p.Y}";
+    private static string GetCoordinates(Point3D p) => $"X {p.X} Y {p.Y}";
 
     public void DrawSearch()
     {
@@ -130,6 +130,11 @@ public class SpawnerControllerGump : Gump
 
         using var queue = new PooledRefQueue<BaseSpawner>();
 
+        if (!(_search.Type == SpawnSearchType.Coords && int.TryParse(_search.SearchPattern, out var range)))
+        {
+            range = -1;
+        }
+
         foreach (var item in World.Items.Values)
         {
             if (item is not BaseSpawner spawner)
@@ -140,11 +145,10 @@ public class SpawnerControllerGump : Gump
             bool enqueue = _search.Type switch
             {
                 SpawnSearchType.Creature => SearchSpawnerCreatures(spawner, _search.SearchPattern),
-                SpawnSearchType.Coords => int.TryParse(_search.SearchPattern, out var range) &&
-                                          _mobile.InRange(spawner.Location, range),
-                SpawnSearchType.Props => SearchSpawnerProperties(spawner, _search.SearchPattern),
-                SpawnSearchType.Name  => spawner.Name?.InsensitiveContains(_search.SearchPattern) == true,
-                _                     => false
+                SpawnSearchType.Coords   => _mobile.InRange(spawner.Location, range),
+                SpawnSearchType.Props    => SearchSpawnerProperties(spawner, _search.SearchPattern),
+                SpawnSearchType.Name     => spawner.Name?.InsensitiveContains(_search.SearchPattern) == true,
+                _                        => false
             };
 
             if (enqueue)
