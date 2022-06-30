@@ -36,7 +36,7 @@ public partial class Gump
         }
     }
 
-    private Swap Exist(List<Swap> list, int index)
+    private static Swap Exist(List<Swap> list, int index)
     {
         for (int i = 0; i < list.Count; i++)
         {
@@ -145,10 +145,10 @@ public partial class Gump
             Grid(name, width, height, createColumnsCount, createRowsCount, createColumnSize, createRowSize, x + marginX, y + marginY);
         }
 
-        return CreateGreed(name, 0, 0);
+        return GetGrid(name, 0, 0);
     }
 
-    public Grid CreateGreed(string name, int width, int height)
+    public Grid GetGrid(string name, int width, int height)
     {
         if (!_grids.TryGetValue(name, out var grid))
         {
@@ -171,7 +171,7 @@ public partial class Gump
             throw new Exception(nameof(columns));
         }
 
-        var grid = CreateGreed(name, width, height);
+        var grid = GetGrid(name, width, height);
 
         if (columnSize.Length > 0)
         {
@@ -362,13 +362,25 @@ public partial class Gump
         int width = 0,
         int height = 0,
         int pageItemCount = 0,
-        int marginX = 0, int marginY = 0, int headerHeight = 0, string colSize = "")
+        int marginX = 0,
+        int marginY = 0,
+        int headerHeight = 0,
+        string colSize = ""
+    )
     {
         if (CalculateCord(name, column, row, columnSpan, rowSpan,
-                out var x, out var y, out var Width, out var Height))
+                out var x, out var y, out var w, out var h))
         {
-            var w = width > 0 ? width : Width;
-            var h = height > 0 ? height : Height;
+            if (width <= 0)
+            {
+                width = w;
+            }
+
+            if (height <= 0)
+            {
+                height = h;
+            }
+
             int[] colWidth;
 
             if (colSize == string.Empty)
@@ -392,7 +404,7 @@ public partial class Gump
 
                 if (createColumn < buffer.Length)
                 {
-                    buffer = buffer.Take(createColumn).ToArray();
+                    Array.Resize(ref buffer, createColumn);
                 }
 
                 InitCustomSizeColumn(listName, w, createColumn, buffer, x, y);
@@ -400,7 +412,21 @@ public partial class Gump
                 _grids.Remove(listName);
             }
 
-            return new GumpList(itemsCount, createColumn, heightPerItem, page, x, y, w, h, pageItemCount, colWidth, marginX, marginY, headerHeight);
+            return new GumpList(
+                itemsCount,
+                createColumn,
+                heightPerItem,
+                page,
+                x,
+                y,
+                width,
+                height,
+                pageItemCount,
+                colWidth,
+                marginX,
+                marginY,
+                headerHeight
+            );
         }
 
         return null;
