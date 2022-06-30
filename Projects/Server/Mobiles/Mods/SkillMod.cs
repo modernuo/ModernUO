@@ -50,21 +50,6 @@ public abstract partial class SkillMod : MobileMod
         }
     }
 
-    public override Mobile Owner
-    {
-        get => base.Owner;
-        set
-        {
-            var owner = base.Owner;
-            if (owner != value)
-            {
-                owner?.RemoveSkillMod(this);
-                base.Owner = owner = value;
-                owner?.AddSkillMod(this);
-            }
-        }
-    }
-
     [SerializableField(1)]
     public SkillName Skill
     {

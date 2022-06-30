@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Buffers;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Guilds;
 using Server.Gumps;
@@ -424,7 +425,7 @@ namespace Server
 
         public object Party { get; set; }
 
-        public List<SkillMod> SkillMods { get; private set; }
+        public HashSet<SkillMod> SkillMods { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int VirtualArmorMod
@@ -3379,9 +3380,8 @@ namespace Server
         {
             ValidateSkillMods();
 
-            for (var i = 0; i < SkillMods.Count; ++i)
+            foreach (var mod in SkillMods)
             {
-                var mod = SkillMods[i];
                 var sk = Skills[mod.Skill];
                 sk?.Update();
             }
@@ -3389,18 +3389,18 @@ namespace Server
 
         public virtual void ValidateSkillMods()
         {
-            for (var i = 0; i < SkillMods.Count;)
+            using var queue = PooledRefQueue<SkillMod>.Create(8);
+            foreach (var mod in SkillMods)
             {
-                var mod = SkillMods[i];
+                if (!mod.CheckCondition())
+                {
+                    queue.Enqueue(mod);
+                }
+            }
 
-                if (mod.CheckCondition())
-                {
-                    ++i;
-                }
-                else
-                {
-                    InternalRemoveSkillMod(mod);
-                }
+            while (queue.Count > 0)
+            {
+                InternalRemoveSkillMod(queue.Dequeue());
             }
         }
 
@@ -3413,9 +3413,8 @@ namespace Server
 
             ValidateSkillMods();
 
-            if (!SkillMods.Contains(mod))
+            if (SkillMods.Add(mod))
             {
-                SkillMods.Add(mod);
                 mod.Owner = this;
 
                 var sk = Skills[mod.Skill];
@@ -3430,16 +3429,14 @@ namespace Server
                 return;
             }
 
-            ValidateSkillMods();
-
             InternalRemoveSkillMod(mod);
+            ValidateSkillMods();
         }
 
         private void InternalRemoveSkillMod(SkillMod mod)
         {
-            if (SkillMods.Contains(mod))
+            if (SkillMods.Remove(mod))
             {
-                SkillMods.Remove(mod);
                 mod.Owner = null;
 
                 var sk = Skills[mod.Skill];
@@ -6273,7 +6270,7 @@ namespace Server
                         m_IntLock = (StatLockType)reader.ReadByte();
 
                         StatMods = new List<StatMod>();
-                        SkillMods = new List<SkillMod>();
+                        SkillMods = new HashSet<SkillMod>();
 
                         if (version < 32)
                         {
@@ -7622,7 +7619,7 @@ namespace Server
             Skills = new Skills(this);
             Items = new List<Item>();
             StatMods = new List<StatMod>();
-            SkillMods = new List<SkillMod>();
+            SkillMods = new HashSet<SkillMod>();
             Map = Map.Internal;
             AutoPageNotify = true;
             Aggressors = new List<AggressorInfo>();
