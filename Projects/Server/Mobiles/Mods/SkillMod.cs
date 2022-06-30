@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 
 namespace Server;
@@ -121,10 +122,8 @@ public abstract partial class SkillMod : MobileMod
         }
     }
 
-    public void Remove()
-    {
-        Owner = null;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Remove() => Owner?.RemoveSkillMod(this);
 
     public abstract bool CheckCondition();
 }
