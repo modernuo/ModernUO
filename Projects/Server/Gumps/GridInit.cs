@@ -50,14 +50,8 @@ public class Row
 {
     public int Y { get; set; }
     public int Height { get; set; }
-    public int V_Center
-    {
-        get => Y + Height / 2;
-    }
-    public int V_End
-    {
-        get => Y + Height;
-    }
+    public int VCenter => Y + Height / 2;
+    public int VEnd => Y + Height;
 }
 
 
@@ -69,6 +63,7 @@ public class Grid
     public List<Col> Columns { get; set; } = new();
     public List<Row> Rows { get; set; } = new();
 }
+
 public class Swap
 {
     public int Index { get; set; }

@@ -53,101 +53,77 @@ public partial class Gump
     private int CalculateCustom(int column,int len, string[] sizes, out List<Swap> arraySizes)
     {
         arraySizes = new List<Swap>();
+
         var cropSize = 0;
         for (int i = 0; i < column; i++)
         {
-            if (sizes[i] != "*")
+            if (sizes[i] == "*")
             {
-                //percente
-                var percente = sizes[i].Replace("*", "");
-                if (sizes[i] != percente)
-                {
-                    var size = len / 100 * Convert.ToInt32(percente);
-                    arraySizes.Add(new Swap { Index = i, Size = size });
-                    cropSize += size;
-                }
-                else // number for example 50px
-                {
-                    var size = Convert.ToInt32(percente);
-                    arraySizes.Add(new Swap { Index = i, Size = size });
-                    cropSize += size;
-                }
+                continue;
+            }
+
+            //percent
+            var percent = sizes[i].Replace("*", "");
+
+            if (sizes[i] != percent)
+            {
+                var size = len / 100 * int.Parse(percent);
+                arraySizes.Add(new Swap { Index = i, Size = size });
+                cropSize += size;
+            }
+            else // number for example 50px
+            {
+                var size = Convert.ToInt32(percent);
+                arraySizes.Add(new Swap { Index = i, Size = size });
+                cropSize += size;
             }
         }
         return cropSize;
     }
-    private void InitCustomSizeRow(string name, int height, int row, string[] sizes, int y)
+
+    private void InitCustomSizeRow(string name, int h, int row, string[] sizes, int y)
     {
-        var cropHeight = CalculateCustom(row, height, sizes, out var arraySizes);
-        var Height = height - cropHeight;
+        var cropHeight = CalculateCustom(row, h, sizes, out var arraySizes);
+        var height = h - cropHeight;
         var factor = row - arraySizes.Count;
         for (int i = 0; i < row; i++)
         {
-            if (Exist(arraySizes, i) is Swap item)
+            var size = Exist(arraySizes, i)?.Size ?? height / factor;
+
+            if (i == 0)
             {
-                var size = item.Size;
-                if (i == 0)
-                {
-                    AddRow(name, y, size);
-                }
-                else
-                {
-                    var col = _grids[name].Rows[i - 1];
-                    AddRow(name, col.Height + col.Y + y, size);
-                }
+                AddRow(name, y, size);
             }
             else
             {
-                var size = Height / factor;
-                if (i == 0)
-                {
-                    AddRow(name, y, size);
-                }
-                else
-                {
-                    var col = _grids[name].Rows[i - 1];
-                    AddRow(name, col.Height + col.Y + y, size);
-                }
+                var col = _grids[name].Rows[i - 1];
+                AddRow(name, col.Height + col.Y + y, size);
             }
         }
     }
 
-    private void InitCustomSizeColumn(string name, int width, int height, int column, string[] sizes, int x, int y)
+    private void InitCustomSizeColumn(string name, int w, int column, string[] sizes, int x, int y)
     {
-        var cropWidth = CalculateCustom(column, width, sizes, out var arraySizes);
-        var Width = width - cropWidth;
+        var cropWidth = CalculateCustom(column, w, sizes, out var arraySizes);
+        var width = w - cropWidth;
         var factor = column - arraySizes.Count;
 
         for (int i = 0; i < column; i++)
         {
-            if (Exist(arraySizes, i) is Swap item)
+            var size = Exist(arraySizes, i)?.Size ?? width / factor;
+
+            if (i == 0)
             {
-                var size = item.Size;
-                if (i == 0)
-                {
-                    AddColumn(name, x, size);
-                }
-                else
-                {
-                    var col = _grids[name].Columns[i - 1];
-                    AddColumn(name, col.Width + col.X + x, size);
-                }
+                AddColumn(name, x, size);
             }
             else
             {
-                var size = Width / factor;
-                if (i == 0)
-                {
-                    AddColumn(name, x, size);
-                }
-                else
-                {
-                    var col = _grids[name].Columns[i - 1];
-                    AddColumn(name, col.Width + col.X + x, size);
-                }
+                var col = _grids[name].Columns[i - 1];
+                AddColumn(name, col.Width + col.X + x, size);
             }
         }
     }
+
     public Grid SubGrid(
         string name,
         string destGridName,
@@ -203,7 +179,7 @@ public partial class Gump
 
             if (buffer.Length == columns)
             {
-                InitCustomSizeColumn(name, width, height, columns, buffer, x, y);
+                InitCustomSizeColumn(name, width, columns, buffer, x, y);
             }
             else
             {
@@ -248,21 +224,22 @@ public partial class Gump
     )
     {
         x = 0; y = 0; width = 0; height = 0;
+        var grid = _grids[name];
 
-        if (column + columnSpan > _grids[name].Columns.Count)
+        if (column + columnSpan > grid.Columns.Count)
         {
-            columnSpan = _grids[name].Columns.Count;
+            columnSpan = grid.Columns.Count;
         }
 
-        if (row + rowSpan > _grids[name].Rows.Count)
+        if (row + rowSpan > grid.Rows.Count)
         {
-            rowSpan = _grids[name].Rows.Count;
+            rowSpan = grid.Rows.Count;
         }
 
         var count = columnSpan == 0 ? column + 1 : columnSpan;
         for (int i = column; i < count; i++)
         {
-            var dcol = _grids[name].Columns[i];
+            var dcol = grid.Columns[i];
             if (i == column)
             {
                 x = dcol.X;
@@ -273,7 +250,7 @@ public partial class Gump
         count = rowSpan == 0 ? row + 1 : rowSpan;
         for (int i = row; i < count; i++)
         {
-            var drow = _grids[name].Rows[i];
+            var drow = grid.Rows[i];
             if (i == row)
             {
                 y = drow.Y;
@@ -418,7 +395,7 @@ public partial class Gump
                     buffer = buffer.Take(createColumn).ToArray();
                 }
 
-                InitCustomSizeColumn(listName, w, h, createColumn, buffer, x, y);
+                InitCustomSizeColumn(listName, w, createColumn, buffer, x, y);
                 colWidth = _grids[listName].Columns.Select(_ => _.Width).ToArray();
                 _grids.Remove(listName);
             }
