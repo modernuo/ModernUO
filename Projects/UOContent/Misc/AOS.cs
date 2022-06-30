@@ -955,7 +955,7 @@ namespace Server
 
     public sealed class AosSkillBonuses : BaseAttributes
     {
-        private List<SkillMod> m_Mods;
+        private HashSet<SkillMod> m_Mods;
 
         public AosSkillBonuses(Item owner) : base(owner)
         {
@@ -1068,7 +1068,7 @@ namespace Server
                     continue;
                 }
 
-                m_Mods ??= new List<SkillMod>();
+                m_Mods ??= new HashSet<SkillMod>();
 
                 SkillMod sk = new DefaultSkillMod(skill, true, bonus);
                 sk.ObeyCap = true;
@@ -1084,10 +1084,10 @@ namespace Server
                 return;
             }
 
-            for (var i = 0; i < m_Mods.Count; ++i)
+            foreach (var mod in m_Mods)
             {
-                var m = m_Mods[i].Owner;
-                m_Mods[i].Remove();
+                var m = mod.Owner;
+                mod.Remove();
 
                 if (Core.ML)
                 {
