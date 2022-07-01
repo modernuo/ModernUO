@@ -205,21 +205,15 @@ namespace Server.Engines.Spawners
 
         public int GetButtonID(int type, int index) => 1 + index * 10 + type;
 
-        private string GetCountColor(int count, int maxCount)
-        {
-            var countColor = "#F4F4F4"; // white
-
-            countColor = ((double) count / maxCount) switch
+        private static string GetCountColor(int count, int maxCount) =>
+            ((double) count / maxCount) switch
             {
                 <= 0.25 => "#DE3163", // red
                 <= 0.50 => "#FF7F50", // orange
                 <= 0.75 => "#DFFF00", // yellow
                 <= 1    => "#00FF00", // green
-                _       => countColor
+                _       => "#F4F4F4"  // white
             };
-
-            return countColor;
-        }
 
         public void CreateArray(RelayInfo info, Mobile from, BaseSpawner spawner)
         {
