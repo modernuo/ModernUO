@@ -67,7 +67,7 @@ public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<i
             }
             else
             {
-                logger.Warning("Invalid bodyTable entry: {entry}", line);
+                logger.Warning("Invalid bodyTable entry: {Entry}", line);
             }
         }
     }

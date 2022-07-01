@@ -3178,14 +3178,15 @@ namespace Server
 
             if (IsChildOf(item))
             {
-                Console.WriteLine(
-                    "Warning: Adding parent item to child: [0x{0} {1}].AddItem( [0x{2} {3}] )",
+                var customException = new InvalidOperationException("Adding parent item to child");
+                logger.Warning(
+                    customException,
+                    "Adding parent item to child: [{Serial1} {Item1}].AddItem( [{Serial2} {Item2}] )",
                     Serial,
                     GetType().Name,
                     item.Serial,
                     item.GetType().Name
                 );
-                Console.WriteLine(new StackTrace());
                 return;
             }
 
@@ -3271,9 +3272,10 @@ namespace Server
 
             if (m_DeltaQueue.Count > 0)
             {
-                Utility.PushColor(ConsoleColor.DarkYellow);
-                Console.WriteLine("Warning: {0} items left in delta queue after processing.", m_DeltaQueue.Count);
-                Utility.PopColor();
+                logger.Warning(
+                    "{Count} items left in delta queue after processing.",
+                    m_DeltaQueue.Count
+                );
             }
         }
 

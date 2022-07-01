@@ -726,7 +726,7 @@ public partial class NetState : IComparable<NetState>
         catch (Exception ex)
         {
 #if DEBUG
-                Console.WriteLine(ex);
+            Console.WriteLine(ex);
 #endif
             TraceException(ex);
             Disconnect("Exception during HandleReceive");

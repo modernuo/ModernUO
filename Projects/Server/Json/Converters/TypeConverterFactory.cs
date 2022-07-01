@@ -17,13 +17,12 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class TypeConverterFactory : JsonConverterFactory
-    {
-        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Type);
+namespace Server.Json;
 
-        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-            new TypeConverter();
-    }
+public class TypeConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Type);
+
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+        new TypeConverter();
 }

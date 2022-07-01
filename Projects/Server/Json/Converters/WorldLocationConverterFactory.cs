@@ -17,13 +17,12 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class WorldLocationConverterFactory : JsonConverterFactory
-    {
-        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(WorldLocation);
+namespace Server.Json;
 
-        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-            new WorldLocationConverter();
-    }
+public class WorldLocationConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(WorldLocation);
+
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+        new WorldLocationConverter();
 }
