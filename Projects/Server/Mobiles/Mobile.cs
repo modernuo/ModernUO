@@ -861,7 +861,7 @@ namespace Server
             {
                 if (m_Spell != null && value != null)
                 {
-                    Console.WriteLine("Warning: Spell has been overwritten");
+                    logger.Warning("Spell has been overwritten.");
                 }
 
                 m_Spell = value;
@@ -5087,13 +5087,15 @@ namespace Server
             {
                 item = oldItem.GetType().CreateInstance<T>();
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine(
-                    "Warning: {0}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
+                logger.Warning(
+                    e,
+                    "[{Serial} {Name}]: Item must have a zero parameter constructor to be separated from a stack.",
                     oldItem.Serial,
                     oldItem.GetType().Name
                 );
+
                 return null;
             }
 
@@ -7685,9 +7687,7 @@ namespace Server
 
             if (m_DeltaQueue.Count > 0)
             {
-                Utility.PushColor(ConsoleColor.DarkYellow);
-                Console.WriteLine("Warning: {0} mobiles left in delta queue after processing.", m_DeltaQueue.Count);
-                Utility.PopColor();
+                logger.Warning("{Count} mobiles left in delta queue after processing.", m_DeltaQueue.Count);
             }
         }
 
