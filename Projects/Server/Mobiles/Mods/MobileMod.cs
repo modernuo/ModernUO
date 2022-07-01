@@ -21,7 +21,7 @@ namespace Server;
 public partial class MobileMod
 {
     [DirtyTrackingEntity]
-    public virtual Mobile Owner { get; set; }
+    public Mobile Owner { get; set; }
 
     public MobileMod(Mobile owner) => Owner = owner;
 }

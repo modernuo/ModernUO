@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Buffers;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Guilds;
 using Server.Gumps;
@@ -424,7 +425,7 @@ namespace Server
 
         public object Party { get; set; }
 
-        public List<SkillMod> SkillMods { get; private set; }
+        public HashSet<SkillMod> SkillMods { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int VirtualArmorMod
@@ -1795,7 +1796,7 @@ namespace Server
         /// <summary>
         ///     Gets a list of all <see cref="StatMod">StatMod's</see> currently active for the Mobile.
         /// </summary>
-        public List<StatMod> StatMods { get; private set; }
+        public HashSet<StatMod> StatMods { get; private set; }
 
         /// <summary>
         ///     Gets or sets the base, unmodified, strength of the Mobile. Ranges from 1 to 65000, inclusive.
@@ -3379,9 +3380,8 @@ namespace Server
         {
             ValidateSkillMods();
 
-            for (var i = 0; i < SkillMods.Count; ++i)
+            foreach (var mod in SkillMods)
             {
-                var mod = SkillMods[i];
                 var sk = Skills[mod.Skill];
                 sk?.Update();
             }
@@ -3389,18 +3389,18 @@ namespace Server
 
         public virtual void ValidateSkillMods()
         {
-            for (var i = 0; i < SkillMods.Count;)
+            using var queue = PooledRefQueue<SkillMod>.Create(8);
+            foreach (var mod in SkillMods)
             {
-                var mod = SkillMods[i];
+                if (!mod.CheckCondition())
+                {
+                    queue.Enqueue(mod);
+                }
+            }
 
-                if (mod.CheckCondition())
-                {
-                    ++i;
-                }
-                else
-                {
-                    InternalRemoveSkillMod(mod);
-                }
+            while (queue.Count > 0)
+            {
+                InternalRemoveSkillMod(queue.Dequeue());
             }
         }
 
@@ -3413,9 +3413,8 @@ namespace Server
 
             ValidateSkillMods();
 
-            if (!SkillMods.Contains(mod))
+            if (SkillMods.Add(mod))
             {
-                SkillMods.Add(mod);
                 mod.Owner = this;
 
                 var sk = Skills[mod.Skill];
@@ -3430,16 +3429,14 @@ namespace Server
                 return;
             }
 
-            ValidateSkillMods();
-
             InternalRemoveSkillMod(mod);
+            ValidateSkillMods();
         }
 
         private void InternalRemoveSkillMod(SkillMod mod)
         {
-            if (SkillMods.Contains(mod))
+            if (SkillMods.Remove(mod))
             {
-                SkillMods.Remove(mod);
                 mod.Owner = null;
 
                 var sk = Skills[mod.Skill];
@@ -6272,8 +6269,8 @@ namespace Server
                         m_DexLock = (StatLockType)reader.ReadByte();
                         m_IntLock = (StatLockType)reader.ReadByte();
 
-                        StatMods = new List<StatMod>();
-                        SkillMods = new List<SkillMod>();
+                        StatMods = new HashSet<StatMod>();
+                        SkillMods = new HashSet<SkillMod>();
 
                         if (version < 32)
                         {
@@ -7621,8 +7618,8 @@ namespace Server
             m_FollowersMax = 5;
             Skills = new Skills(this);
             Items = new List<Item>();
-            StatMods = new List<StatMod>();
-            SkillMods = new List<SkillMod>();
+            StatMods = new HashSet<StatMod>();
+            SkillMods = new HashSet<SkillMod>();
             Map = Map.Internal;
             AutoPageNotify = true;
             Aggressors = new List<AggressorInfo>();
@@ -8317,19 +8314,16 @@ namespace Server
 
         public bool RemoveStatMod(string name)
         {
-            StatMods ??= new List<StatMod>();
+            StatMods ??= new HashSet<StatMod>();
 
-            for (var i = 0; i < StatMods.Count; ++i)
+            StatMod mod = GetStatMod(name);
+
+            if (mod != null)
             {
-                var check = StatMods[i];
-
-                if (check.Name == name)
-                {
-                    StatMods.RemoveAt(i);
-                    CheckStatTimers();
-                    Delta(MobileDelta.Stat | GetStatDelta(check.Type));
-                    return true;
-                }
+                StatMods.Remove(mod);
+                CheckStatTimers();
+                Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
+                return true;
             }
 
             return false;
@@ -8337,12 +8331,10 @@ namespace Server
 
         public StatMod GetStatMod(string name)
         {
-            StatMods ??= new List<StatMod>();
+            StatMods ??= new HashSet<StatMod>();
 
-            for (var i = 0; i < StatMods.Count; ++i)
+            foreach (var check in StatMods)
             {
-                var check = StatMods[i];
-
                 if (check.Name == name)
                 {
                     return check;
@@ -8354,19 +8346,7 @@ namespace Server
 
         public void AddStatMod(StatMod mod)
         {
-            StatMods ??= new List<StatMod>();
-
-            for (var i = 0; i < StatMods.Count; ++i)
-            {
-                var check = StatMods[i];
-
-                if (check.Name == mod.Name)
-                {
-                    Delta(MobileDelta.Stat | GetStatDelta(check.Type));
-                    StatMods.RemoveAt(i);
-                    break;
-                }
-            }
+            RemoveStatMod(mod.Name);
 
             StatMods.Add(mod);
             Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
@@ -8402,23 +8382,29 @@ namespace Server
         {
             var offset = 0;
 
-            StatMods ??= new List<StatMod>();
+            StatMods ??= new HashSet<StatMod>();
 
-            for (var i = 0; i < StatMods.Count; ++i)
+            if (StatMods.Count > 0)
             {
-                var mod = StatMods[i];
-
-                if (mod.HasElapsed())
+                using var queue = PooledRefQueue<StatMod>.Create(8);
+                foreach (var mod in StatMods)
                 {
-                    StatMods.RemoveAt(i);
+                    if (mod.HasElapsed())
+                    {
+                        queue.Enqueue(mod);
+                    }
+                    else if ((mod.Type & type) != 0)
+                    {
+                        offset += mod.Offset;
+                    }
+                }
+
+                while (queue.Count > 0)
+                {
+                    var mod = queue.Dequeue();
+                    StatMods.Remove(mod);
                     Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
                     CheckStatTimers();
-
-                    --i;
-                }
-                else if ((mod.Type & type) != 0)
-                {
-                    offset += mod.Offset;
                 }
             }
 
