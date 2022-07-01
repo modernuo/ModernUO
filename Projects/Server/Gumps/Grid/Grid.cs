@@ -19,7 +19,7 @@ namespace Server.Gumps;
 
 public enum GridHues
 {
-    White = 2394,
+    White = 2049, // Change to 0x480 if you have old hues.mul
     Black = 0,
 }
 
@@ -59,20 +59,6 @@ public class Row
     public int Height { get; set; }
     public int VCenter => Y + Height / 2;
     public int VEnd => Y + Height;
-}
-
-public class StackItems
-{
-    private int _coord;
-    private int _delta;
-
-    public StackItems(int coord, int delta)
-    {
-        _coord = coord;
-        _delta = delta;
-    }
-
-    public int Calc(int index) => _coord + _delta * index;
 }
 
 public class Grid

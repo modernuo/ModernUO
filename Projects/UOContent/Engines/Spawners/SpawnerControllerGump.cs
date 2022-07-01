@@ -95,7 +95,7 @@ public class SpawnerControllerGump : GumpGrid
 
 
         AddButton(col0X + 10 + deltaX - 40, row0Y + 45, cords, cords, GetButtonID(1, 1));
-        AddLabelHtml(col0X + 40 + deltaX - 40, row0Y + 48, 150, 30, "Cords", GridColors.White, 4, false);
+        AddLabelHtml(col0X + 40 + deltaX - 40, row0Y + 48, 150, 30, "Range", GridColors.White, 4, false);
 
         AddButton(col0X + 10 + deltaX * 2 - 100, row0Y + 45, props, props, GetButtonID(1, 2));
         AddLabelHtml(col0X + 40 + deltaX * 2 - 100, row0Y + 48, 150, 30, "Creature Props", GridColors.White, 4, false);
@@ -110,19 +110,19 @@ public class SpawnerControllerGump : GumpGrid
         var type = (int)_search.Type;
         if (type == 0)
         {
-            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "search spawner by entry creature name", GridColors.White);
+            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "Search by creature name", GridColors.White);
         }
         else if (type == 1)
         {
-            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "single int - range around", GridColors.White);
+            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "Search by range (number)", GridColors.White);
         }
         else if (type == 2)
         {
-            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "search spanwer by entry property field", GridColors.White);
+            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "Search by entry property field", GridColors.White);
         }
         else if (type == 3)
         {
-            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "search spanwer by name", GridColors.White);
+            AddLabelHtml(col1X, row0VCenter + 20, search.Columns[1].Width, 30, "Search by spawner name", GridColors.White);
         }
     }
 
@@ -133,7 +133,7 @@ public class SpawnerControllerGump : GumpGrid
             return;
         }
 
-        using var queue = new PooledRefQueue<BaseSpawner>();
+        using var queue = PooledRefQueue<BaseSpawner>.Create();
 
         if (!(_search.Type == SpawnSearchType.Coords && int.TryParse(_search.SearchPattern, out var range)))
         {
@@ -217,10 +217,10 @@ public class SpawnerControllerGump : GumpGrid
 
         //paste ground
         AddButton(col0X + 15 + 260, row2Y, 4029, 4031, GetButtonID(1, 7));
-        AddLabelHtml(col0X + 55 + 260, row2Y + 4, col0Width, 20, "Paste copy to ground", GridColors.Yellow, 4, false);
+        AddLabelHtml(col0X + 55 + 260, row2Y + 4, col0Width, 20, "Paste copy to the ground", GridColors.Yellow, 4, false);
 
         AddLabelHtml(col0X + 16, _main.Rows[2].VCenter + 17, col0Width, 20, $"Pages {list.Page + 1}/{list.TotalPages + 1}", GridColors.White);
-        AddLabelHtml(col0X + 20, _main.Rows[2].VCenter + 17, col0Width, 20, $"Total Spawner {_spawners.Length}", GridColors.White, 4, false);
+        AddLabelHtml(col0X + 20, _main.Rows[2].VCenter + 17, col0Width, 20, $"Total Spawners {_spawners.Length}", GridColors.White, 4, false);
     }
 
 
@@ -233,7 +233,7 @@ public class SpawnerControllerGump : GumpGrid
 
             var spawner = _spawners[list.Items[i].Index];
             var item = list.Items[i];
-            //AddLabelHtml(item.Cols[0].X, list.Items[i].Y + 10, list.Header.Cols[0].Width, 30, "priva", ColorCode.White);
+
             AddButton(item.Cols[0].X + 15, list.Items[i].Y + 5, 4011, 4012, GetButtonID(2, item.Index));
             AddLabelHtml(item.Cols[0].X, list.Items[i].Y + 26, item.Cols[0].Width, 30, "copy", GridColors.White, 3);
 
@@ -283,7 +283,6 @@ public class SpawnerControllerGump : GumpGrid
             //end entry
 
             AddLabelHtml(item.Cols[10].X, list.Items[i].Y + vCenter, list.Header.Cols[10].Width, 30, spawner.NextSpawn.ToString(@"hh\:mm\:ss"), GridColors.White);
-
 
             AddButton(item.Cols[11].X, list.Items[i].Y + 5, 4023, 4025, GetButtonID(8, item.Index));
             AddLabelHtml(item.Cols[11].X + 4, list.Items[i].Y + 26, 55, 30, "save", GridColors.White, 3, false);
