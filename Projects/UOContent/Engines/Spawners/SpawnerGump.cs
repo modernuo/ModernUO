@@ -76,9 +76,9 @@ namespace Server.Engines.Spawners
                 AddImageTiled(305, 22 * i + 20 + offset, 35, 23, 0xA40); // probability text box
                 AddImageTiled(306, 22 * i + 21 + offset, 33, 21, 0xBBC); // probability text box
 
-                var name = "";
-                var probability = "";
-                var maxCount = "";
+                string name;
+                string probability;
+                string maxCount;
                 var flags = EntryFlags.None;
 
                 if (entry != null)
@@ -90,9 +90,16 @@ namespace Server.Engines.Spawners
 
                     var count = spawner.CountSpawns(entry);
 
-                    AddHtml(235, 22 * i + 20 + offset + 1, 35, 15, $"<BASEFONT COLOR={GetCountColor(count, entry.SpawnedMaxCount)}><div align=RIGHT>{count.ToString()}/</div></BASEFONT>");
+                    AddHtml(235, 22 * i + 20 + offset + 1, 35, 15, $"<BASEFONT COLOR={GetCountColor(count, entry.SpawnedMaxCount)}><div align=RIGHT>{count}<BASEFONT COLOR=#F4F4F4>/</BASEFONT></div></BASEFONT>");
+                }
+                else
+                {
+                    name = "";
+                    probability = "";
+                    maxCount = "";
                 }
 
+                // creature
                 AddTextEntry(
                     75,
                     22 * i + 21 + offset,
@@ -101,7 +108,7 @@ namespace Server.Engines.Spawners
                     (flags & EntryFlags.InvalidType) != 0 ? 33 : 0,
                     textIndex,
                     name
-                );                                                                              // creature
+                );
                 AddTextEntry(270, 22 * i + 21 + offset, 30, 21, 0, textIndex + 1, maxCount);    // max count
                 AddTextEntry(308, 22 * i + 21 + offset, 30, 21, 0, textIndex + 2, probability); // probability
 
@@ -150,15 +157,18 @@ namespace Server.Engines.Spawners
             }
 
             var totalSpawned = 0;
-            var totalSpawn = 0;
+            var totalSpawns = 0;
+            var totalWeight = 0;
 
             foreach (SpawnerEntry spawnerEntry in _spawner.Entries)
             {
-                totalSpawn += spawnerEntry.SpawnedMaxCount;
+                totalSpawns += spawnerEntry.SpawnedMaxCount;
                 totalSpawned += spawner.CountSpawns(spawnerEntry);
+                totalWeight += spawnerEntry.SpawnedProbability;
             }
 
-            AddHtml(270, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalSpawn}</CENTER></BASEFONT>");
+            AddHtml(270, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalSpawns}</CENTER></BASEFONT>");
+            AddHtml(308, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalWeight}</CENTER></BASEFONT>");
 
             AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
             //AddHtml(280, 308 + offset, 64, 15, $"<BASEFONT COLOR=#75E6DA><div align=RIGHT>{totalSpawned}/{spawner.Count}</div></BASEFONT>");
