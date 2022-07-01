@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Gumps
 {
@@ -10,7 +8,7 @@ namespace Server.Gumps
 
     public partial class Gump
     {
-        private Dictionary<string, Grid> Grids = new Dictionary<string, Grid>();
+        private Dictionary<string, Grid> Grids = new();
 
         private void AddColumn(string name, int x, int y, int width, int height)
         {
@@ -200,7 +198,7 @@ namespace Server.Gumps
             return Grid;
         }
 
-        public StackItems InitStack(int coord, int delta) => new StackItems(coord, delta);
+        public StackItems InitStack(int coord, int delta) => new(coord, delta);
 
         public bool CalculateCord(string name, int column, int row, int columnSpan, int rowSpan,
             out int x, out int y, out int width, out int height)
@@ -247,10 +245,10 @@ namespace Server.Gumps
         {
             public readonly int LineCount;
             public readonly int ItemsCount;
-            public readonly List<ListItem> Items = new List<ListItem>();
+            public readonly List<ListItem> Items = new();
             public readonly ListItem Header;
             public readonly int Page;
-            public readonly int TotalPages = 0;
+            public readonly int TotalPages;
             public readonly int ColHeight;
             public readonly bool CanNext;
             public readonly bool CanBack;

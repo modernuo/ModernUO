@@ -56,7 +56,7 @@ namespace Server.Gumps
             AddAlphaRegion(0, _main.Rows[1].Y + 21, _main.Width, 3);
             for (int i = 0; i < list.ColsCount - 1; i++)
             {
-                var x = list.Header.Cols[i].H_End - 8;
+                var x = list.Header.Cols[i].HEnd - 8;
                 var y = list.Header.Y + 10;
                 var height = 20;
                 AddImageTiled(x, y, 3, height, 1758);
@@ -103,15 +103,15 @@ namespace Server.Gumps
             AddLabelHtml(search.Columns[0].X + 40 + deltaX * 3 - 100, search.Rows[0].Y + 48, 150, 30, "Spawner Name", ColorCode.White, 4, false);
 
 
-            AddImageTiled(search.Columns[1].H_Center - 100, search.Rows[0].V_Center + 16, 200, 1, 9357);
-            AddTextEntry(search.Columns[1].H_Center - 100, search.Rows[0].V_Center, 200, 20, (int)Color.White, 65535, _search.SearchPatern, GetButtonID(1, 4));
-            AddButton(search.Columns[1].H_Center + 120, search.Rows[0].V_Center, 4023, 4024, GetButtonID(1, 4));
+            AddImageTiled(search.Columns[1].HCenter - 100, search.Rows[0].VCenter + 16, 200, 1, 9357);
+            AddTextEntry(search.Columns[1].HCenter - 100, search.Rows[0].VCenter, 200, 20, (int)GridColor.White, 65535, _search.SearchPatern, GetButtonID(1, 4));
+            AddButton(search.Columns[1].HCenter + 120, search.Rows[0].VCenter, 4023, 4024, GetButtonID(1, 4));
 
             var type = (int)_search.Type;
-            if (type == 0) AddLabelHtml(search.Columns[1].X, search.Rows[0].V_Center + 20, search.Columns[1].Width, 30, "search spanwer by entrty creature name", ColorCode.White, 4);
-            else if (type == 1) AddLabelHtml(search.Columns[1].X, search.Rows[0].V_Center + 20, search.Columns[1].Width, 30, "single int - range around", ColorCode.White, 4);
-            else if (type == 2) AddLabelHtml(search.Columns[1].X, search.Rows[0].V_Center + 20, search.Columns[1].Width, 30, "search spanwer by entry property field", ColorCode.White, 4);
-            else if (type == 3) AddLabelHtml(search.Columns[1].X, search.Rows[0].V_Center + 20, search.Columns[1].Width, 30, "search spanwer by name", ColorCode.White, 4);
+            if (type == 0) AddLabelHtml(search.Columns[1].X, search.Rows[0].VCenter + 20, search.Columns[1].Width, 30, "search spanwer by entrty creature name", ColorCode.White, 4);
+            else if (type == 1) AddLabelHtml(search.Columns[1].X, search.Rows[0].VCenter + 20, search.Columns[1].Width, 30, "single int - range around", ColorCode.White, 4);
+            else if (type == 2) AddLabelHtml(search.Columns[1].X, search.Rows[0].VCenter + 20, search.Columns[1].Width, 30, "search spanwer by entry property field", ColorCode.White, 4);
+            else if (type == 3) AddLabelHtml(search.Columns[1].X, search.Rows[0].VCenter + 20, search.Columns[1].Width, 30, "search spanwer by name", ColorCode.White, 4);
 
 
 
@@ -148,12 +148,12 @@ namespace Server.Gumps
         {
             if (list.CanNext)
             {
-                AddButton(_main.Columns[0].H_Center + 60, _main.Rows[2].V_Center + 16, 4005, 4006, GetButtonID(10, 0));
+                AddButton(_main.Columns[0].HCenter + 60, _main.Rows[2].VCenter + 16, 4005, 4006, GetButtonID(10, 0));
             }
 
             if (list.CanBack)
             {
-                AddButton(_main.Columns[0].H_Center + -60, _main.Rows[2].V_Center + 16, 4014, 4015, GetButtonID(11, 0));
+                AddButton(_main.Columns[0].HCenter + -60, _main.Rows[2].VCenter + 16, 4014, 4015, GetButtonID(11, 0));
             }
 
             //past to all spawners
@@ -168,8 +168,8 @@ namespace Server.Gumps
             AddButton(_main.Columns[0].X + 15 + 260, _main.Rows[2].Y, 4029, 4031, GetButtonID(1, 7));
             AddLabelHtml(_main.Columns[0].X + 55 + 260, _main.Rows[2].Y + 4, _main.Columns[0].Width, 20, $"Paste copy to ground", ColorCode.Yellow, 4, false);
 
-            AddLabelHtml(_main.Columns[0].X + 16, _main.Rows[2].V_Center + 17, _main.Columns[0].Width, 20, $"Pages {list.Page + 1}/{list.TotalPages + 1}", ColorCode.White);
-            AddLabelHtml(_main.Columns[0].X + 20, _main.Rows[2].V_Center + 17, _main.Columns[0].Width, 20, $"Total Spawner {_spawners.Length}", ColorCode.White, 4, false);
+            AddLabelHtml(_main.Columns[0].X + 16, _main.Rows[2].VCenter + 17, _main.Columns[0].Width, 20, $"Pages {list.Page + 1}/{list.TotalPages + 1}", ColorCode.White);
+            AddLabelHtml(_main.Columns[0].X + 20, _main.Rows[2].VCenter + 17, _main.Columns[0].Width, 20, $"Total Spawner {_spawners.Length}", ColorCode.White, 4, false);
         }
 
 
@@ -189,8 +189,8 @@ namespace Server.Gumps
                 AddButton(item.Cols[1].X + 2, list.Items[i].Y + 5, 4029, 4031, GetButtonID(3, item.Index));
                 AddLabelHtml(item.Cols[1].X + 3, list.Items[i].Y + 26, item.Cols[1].Width, 30, "props", ColorCode.White, 3, false);
 
-                AddButton(item.Cols[1].H_Center - 2, list.Items[i].Y + 5, 4029, 4031, GetButtonID(4, item.Index));
-                AddLabelHtml(item.Cols[1].H_Center - 3, list.Items[i].Y + 26, 55, 30, "entry", ColorCode.White, 3, false);
+                AddButton(item.Cols[1].HCenter - 2, list.Items[i].Y + 5, 4029, 4031, GetButtonID(4, item.Index));
+                AddLabelHtml(item.Cols[1].HCenter - 3, list.Items[i].Y + 26, 55, 30, "entry", ColorCode.White, 3, false);
 
                 //props
                 AddLabelHtml(item.Cols[2].X, list.Items[i].Y + vCenter + 10, list.Header.Cols[2].Width, 30, spawner.Serial.ToString(), ColorCode.White, 4);
@@ -216,20 +216,20 @@ namespace Server.Gumps
                 var entry = i * _entryCount;
 
                 AddImageTiled(item.Cols[2].X - 2, list.Items[i].Y + 18, item.Cols[2].Width, 1, 9357);
-                AddTextEntry(item.Cols[2].X, list.Items[i].Y + 2, list.Header.Cols[2].Width, 80, (int)Color.White, entry, spawner.Name, 20);
+                AddTextEntry(item.Cols[2].X, list.Items[i].Y + 2, list.Header.Cols[2].Width, 80, (int)GridColor.White, entry, spawner.Name, 20);
                 AddButton(item.Cols[2].X, list.Items[i].Y + vCenter + 9, 5837, 5838, GetButtonID(6, item.Index));
 
                 AddImageTiled(item.Cols[6].X + 8, list.Items[i].Y + 29, item.Cols[6].Width / 2, 1, 9357);
-                AddTextEntry(item.Cols[6].X + 12, list.Items[i].Y + 13, list.Header.Cols[6].Width, 80, (int)Color.White, entry + 1, spawner.WalkingRange.ToString(), 2);
+                AddTextEntry(item.Cols[6].X + 12, list.Items[i].Y + 13, list.Header.Cols[6].Width, 80, (int)GridColor.White, entry + 1, spawner.WalkingRange.ToString(), 2);
 
                 AddImageTiled(item.Cols[7].X + 8, list.Items[i].Y + 29, item.Cols[7].Width / 2, 1, 9357);
-                AddTextEntry(item.Cols[7].X + 12, list.Items[i].Y + 13, list.Header.Cols[7].Width, 80, (int)Color.White, entry + 2, spawner.HomeRange.ToString(), 2);
+                AddTextEntry(item.Cols[7].X + 12, list.Items[i].Y + 13, list.Header.Cols[7].Width, 80, (int)GridColor.White, entry + 2, spawner.HomeRange.ToString(), 2);
 
                 AddImageTiled(item.Cols[8].X + 6, list.Items[i].Y + 29, item.Cols[8].Width - 20, 1, 9357);
-                AddTextEntry(item.Cols[8].X + 8, list.Items[i].Y + 13, list.Header.Cols[8].Width, 80, (int)Color.White, entry + 3, spawner.MinDelay.ToString(), 8);
+                AddTextEntry(item.Cols[8].X + 8, list.Items[i].Y + 13, list.Header.Cols[8].Width, 80, (int)GridColor.White, entry + 3, spawner.MinDelay.ToString(), 8);
 
                 AddImageTiled(item.Cols[9].X + 6, list.Items[i].Y + 29, item.Cols[9].Width - 20, 1, 9357);
-                AddTextEntry(item.Cols[9].X + 8, list.Items[i].Y + 13, list.Header.Cols[9].Width, 80, (int)Color.White, entry + 4, spawner.MaxDelay.ToString(), 8);
+                AddTextEntry(item.Cols[9].X + 8, list.Items[i].Y + 13, list.Header.Cols[9].Width, 80, (int)GridColor.White, entry + 4, spawner.MaxDelay.ToString(), 8);
                 //end entry
 
                 AddLabelHtml(item.Cols[10].X, list.Items[i].Y + vCenter, list.Header.Cols[10].Width, 30, spawner.NextSpawn.ToString(@"hh\:mm\:ss"), ColorCode.White, 4);
