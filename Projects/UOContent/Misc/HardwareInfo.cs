@@ -87,9 +87,9 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime TimeReceived { get; private set; }
 
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xD9, 0x10C, false, OnReceive);
+            IncomingPackets.Register(0xD9, 0x10C, false, &OnReceive);
 
             CommandSystem.Register("HWInfo", AccessLevel.GameMaster, HWInfo_OnCommand);
         }

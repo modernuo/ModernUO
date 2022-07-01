@@ -31,7 +31,7 @@ namespace Server
         public FileStream DataStream { get; }
         public BinaryReader IndexReader { get; }
 
-        private static bool Pre6000ClientSupport;
+        public static bool Pre6000ClientSupport { get; private set; }
 
         public static void Configure()
         {

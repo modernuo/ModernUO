@@ -19,10 +19,10 @@ namespace Server.Network;
 
 public static class IncomingVendorPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x3B, 0, true, VendorBuyReply);
-        IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
+        IncomingPackets.Register(0x3B, 0, true, &VendorBuyReply);
+        IncomingPackets.Register(0x9F, 0, true, &VendorSellReply);
     }
 
     public static void VendorBuyReply(NetState state, CircularBufferReader reader, int packetLength)

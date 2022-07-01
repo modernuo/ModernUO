@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using Server.Network;
 using Server.Text;
+using Server.Utilities;
 
 namespace Server.Gumps;
 
-public class Gump
+public partial class Gump
 {
     private static Serial _nextSerial = (Serial)1;
 
@@ -163,6 +164,11 @@ public class Gump
     public void AddLabel(int x, int y, int hue, string text)
     {
         Add(new GumpLabel(x, y, hue, text));
+    }
+
+    public void AddLabelHtml(int x, int y, int width, int height, string text, string hue, int size = 4, bool center = true)
+    {
+        AddHtml(x, y, width, height, center ? text.Center(hue, size) : text.Color(hue, size));
     }
 
     public void AddLabelCropped(int x, int y, int width, int height, int hue, string text)

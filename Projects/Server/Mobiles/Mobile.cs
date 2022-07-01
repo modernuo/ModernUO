@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Buffers;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Guilds;
 using Server.Gumps;
@@ -26,229 +27,6 @@ namespace Server
     public delegate void PromptCallback(Mobile from, string text);
 
     public delegate void PromptStateCallback<in T>(Mobile from, string text, T state);
-
-    public class TimedSkillMod : SkillMod
-    {
-        private readonly DateTime m_Expire;
-
-        public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
-            : this(skill, relative, value, Core.Now + delay)
-        {
-        }
-
-        public TimedSkillMod(SkillName skill, bool relative, double value, DateTime expire)
-            : base(skill, relative, value) =>
-            m_Expire = expire;
-
-        public override bool CheckCondition() => Core.Now < m_Expire;
-    }
-
-    public class EquippedSkillMod : SkillMod
-    {
-        private readonly Item m_Item;
-        private readonly Mobile m_Mobile;
-
-        public EquippedSkillMod(SkillName skill, bool relative, double value, Item item, Mobile mobile)
-            : base(skill, relative, value)
-        {
-            m_Item = item;
-            m_Mobile = mobile;
-        }
-
-        public override bool CheckCondition() => !m_Item.Deleted && !m_Mobile.Deleted && m_Item.Parent == m_Mobile;
-    }
-
-    public class DefaultSkillMod : SkillMod
-    {
-        public DefaultSkillMod(SkillName skill, bool relative, double value)
-            : base(skill, relative, value)
-        {
-        }
-
-        public override bool CheckCondition() => true;
-    }
-
-    public abstract class SkillMod
-    {
-        private bool m_ObeyCap;
-        private Mobile m_Owner;
-        private bool m_Relative;
-        private SkillName m_Skill;
-        private double m_Value;
-
-        protected SkillMod(SkillName skill, bool relative, double value)
-        {
-            m_Skill = skill;
-            m_Relative = relative;
-            m_Value = value;
-        }
-
-        public bool ObeyCap
-        {
-            get => m_ObeyCap;
-            set
-            {
-                m_ObeyCap = value;
-
-                var sk = m_Owner?.Skills[m_Skill];
-                sk?.Update();
-            }
-        }
-
-        public Mobile Owner
-        {
-            get => m_Owner;
-            set
-            {
-                if (m_Owner != value)
-                {
-                    m_Owner?.RemoveSkillMod(this);
-
-                    m_Owner = value;
-
-                    if (m_Owner != value)
-                    {
-                        m_Owner.AddSkillMod(this);
-                    }
-                }
-            }
-        }
-
-        public SkillName Skill
-        {
-            get => m_Skill;
-            set
-            {
-                if (m_Skill != value)
-                {
-                    var oldUpdate = m_Owner?.Skills[m_Skill];
-
-                    m_Skill = value;
-
-                    var sk = m_Owner?.Skills[m_Skill];
-                    sk?.Update();
-                    oldUpdate?.Update();
-                }
-            }
-        }
-
-        public bool Relative
-        {
-            get => m_Relative;
-            set
-            {
-                if (m_Relative != value)
-                {
-                    m_Relative = value;
-
-                    var sk = m_Owner?.Skills[m_Skill];
-                    sk?.Update();
-                }
-            }
-        }
-
-        public bool Absolute
-        {
-            get => !m_Relative;
-            set
-            {
-                if (m_Relative == value)
-                {
-                    m_Relative = !value;
-
-                    var sk = m_Owner?.Skills[m_Skill];
-                    sk?.Update();
-                }
-            }
-        }
-
-        public double Value
-        {
-            get => m_Value;
-            set
-            {
-                if (m_Value != value)
-                {
-                    m_Value = value;
-
-                    var sk = m_Owner?.Skills[m_Skill];
-                    sk?.Update();
-                }
-            }
-        }
-
-        public void Remove()
-        {
-            Owner = null;
-        }
-
-        public abstract bool CheckCondition();
-    }
-
-    public class ResistanceMod
-    {
-        private int m_Offset;
-        private ResistanceType m_Type;
-
-        public ResistanceMod(ResistanceType type, int offset)
-        {
-            m_Type = type;
-            m_Offset = offset;
-        }
-
-        public Mobile Owner { get; set; }
-
-        public ResistanceType Type
-        {
-            get => m_Type;
-            set
-            {
-                if (m_Type != value)
-                {
-                    m_Type = value;
-
-                    Owner?.UpdateResistances();
-                }
-            }
-        }
-
-        public int Offset
-        {
-            get => m_Offset;
-            set
-            {
-                if (m_Offset != value)
-                {
-                    m_Offset = value;
-
-                    Owner?.UpdateResistances();
-                }
-            }
-        }
-    }
-
-    public class StatMod
-    {
-        private readonly DateTime m_Added;
-        private readonly TimeSpan m_Duration;
-
-        public StatMod(StatType type, string name, int offset, TimeSpan duration)
-        {
-            Type = type;
-            Name = name;
-            Offset = offset;
-            m_Duration = duration;
-            m_Added = Core.Now;
-        }
-
-        public StatType Type { get; }
-
-        public string Name { get; }
-
-        public int Offset { get; }
-
-        public bool HasElapsed() => m_Duration != TimeSpan.Zero && Core.Now - m_Added >= m_Duration;
-    }
 
     public class DamageEntry
     {
@@ -647,7 +425,7 @@ namespace Server
 
         public object Party { get; set; }
 
-        public List<SkillMod> SkillMods { get; private set; }
+        public HashSet<SkillMod> SkillMods { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int VirtualArmorMod
@@ -961,7 +739,7 @@ namespace Server
 
             var weapon = Weapon;
 
-            if (!InRange(combatant, weapon.MaxRange))
+            if (weapon == null || !InRange(combatant, weapon.MaxRange))
             {
                 return;
             }
@@ -2018,7 +1796,7 @@ namespace Server
         /// <summary>
         ///     Gets a list of all <see cref="StatMod">StatMod's</see> currently active for the Mobile.
         /// </summary>
-        public List<StatMod> StatMods { get; private set; }
+        public HashSet<StatMod> StatMods { get; private set; }
 
         /// <summary>
         ///     Gets or sets the base, unmodified, strength of the Mobile. Ranges from 1 to 65000, inclusive.
@@ -3602,9 +3380,8 @@ namespace Server
         {
             ValidateSkillMods();
 
-            for (var i = 0; i < SkillMods.Count; ++i)
+            foreach (var mod in SkillMods)
             {
-                var mod = SkillMods[i];
                 var sk = Skills[mod.Skill];
                 sk?.Update();
             }
@@ -3612,18 +3389,18 @@ namespace Server
 
         public virtual void ValidateSkillMods()
         {
-            for (var i = 0; i < SkillMods.Count;)
+            using var queue = PooledRefQueue<SkillMod>.Create(8);
+            foreach (var mod in SkillMods)
             {
-                var mod = SkillMods[i];
+                if (!mod.CheckCondition())
+                {
+                    queue.Enqueue(mod);
+                }
+            }
 
-                if (mod.CheckCondition())
-                {
-                    ++i;
-                }
-                else
-                {
-                    InternalRemoveSkillMod(mod);
-                }
+            while (queue.Count > 0)
+            {
+                InternalRemoveSkillMod(queue.Dequeue());
             }
         }
 
@@ -3636,9 +3413,8 @@ namespace Server
 
             ValidateSkillMods();
 
-            if (!SkillMods.Contains(mod))
+            if (SkillMods.Add(mod))
             {
-                SkillMods.Add(mod);
                 mod.Owner = this;
 
                 var sk = Skills[mod.Skill];
@@ -3653,16 +3429,14 @@ namespace Server
                 return;
             }
 
-            ValidateSkillMods();
-
             InternalRemoveSkillMod(mod);
+            ValidateSkillMods();
         }
 
         private void InternalRemoveSkillMod(SkillMod mod)
         {
-            if (SkillMods.Contains(mod))
+            if (SkillMods.Remove(mod))
             {
-                SkillMods.Remove(mod);
                 mod.Owner = null;
 
                 var sk = Skills[mod.Skill];
@@ -3795,7 +3569,7 @@ namespace Server
             }
         }
 
-        public override string ToString() => $"0x{Serial.Value:X} \"{Name}\"";
+        public override string ToString() => $"{Serial} \"{Name}\"";
 
         public virtual void SendSkillMessage()
         {
@@ -5306,22 +5080,25 @@ namespace Server
             }
         }
 
-        public static Item LiftItemDupe(Item oldItem, int amount)
+        public static T LiftItemDupe<T>(T oldItem, int amount) where T : Item
         {
-            Item item;
+            T item;
             try
             {
-                item = oldItem.GetType().CreateInstance<Item>();
+                item = oldItem.GetType().CreateInstance<T>();
             }
             catch
             {
                 Console.WriteLine(
-                    "Warning: 0x{0:X}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
-                    oldItem.Serial.Value,
+                    "Warning: {0}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
+                    oldItem.Serial,
                     oldItem.GetType().Name
                 );
                 return null;
             }
+
+            var oldAmount = oldItem.Amount;
+            oldItem.Amount = amount;
 
             item.Visible = oldItem.Visible;
             item.Movable = oldItem.Movable;
@@ -5334,10 +5111,9 @@ namespace Server
             item.Name = oldItem.Name;
             item.Weight = oldItem.Weight;
 
-            item.Amount = oldItem.Amount - amount;
+            item.Amount = oldAmount - amount;
             item.Map = oldItem.Map;
 
-            oldItem.Amount = amount;
             oldItem.OnAfterDuped(item);
 
             if (oldItem.Parent is Mobile parentMobile)
@@ -6493,8 +6269,8 @@ namespace Server
                         m_DexLock = (StatLockType)reader.ReadByte();
                         m_IntLock = (StatLockType)reader.ReadByte();
 
-                        StatMods = new List<StatMod>();
-                        SkillMods = new List<SkillMod>();
+                        StatMods = new HashSet<StatMod>();
+                        SkillMods = new HashSet<SkillMod>();
 
                         if (version < 32)
                         {
@@ -7842,8 +7618,8 @@ namespace Server
             m_FollowersMax = 5;
             Skills = new Skills(this);
             Items = new List<Item>();
-            StatMods = new List<StatMod>();
-            SkillMods = new List<SkillMod>();
+            StatMods = new HashSet<StatMod>();
+            SkillMods = new HashSet<SkillMod>();
             Map = Map.Internal;
             AutoPageNotify = true;
             Aggressors = new List<AggressorInfo>();
@@ -8538,19 +8314,16 @@ namespace Server
 
         public bool RemoveStatMod(string name)
         {
-            StatMods ??= new List<StatMod>();
+            StatMods ??= new HashSet<StatMod>();
 
-            for (var i = 0; i < StatMods.Count; ++i)
+            StatMod mod = GetStatMod(name);
+
+            if (mod != null)
             {
-                var check = StatMods[i];
-
-                if (check.Name == name)
-                {
-                    StatMods.RemoveAt(i);
-                    CheckStatTimers();
-                    Delta(MobileDelta.Stat | GetStatDelta(check.Type));
-                    return true;
-                }
+                StatMods.Remove(mod);
+                CheckStatTimers();
+                Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
+                return true;
             }
 
             return false;
@@ -8558,12 +8331,10 @@ namespace Server
 
         public StatMod GetStatMod(string name)
         {
-            StatMods ??= new List<StatMod>();
+            StatMods ??= new HashSet<StatMod>();
 
-            for (var i = 0; i < StatMods.Count; ++i)
+            foreach (var check in StatMods)
             {
-                var check = StatMods[i];
-
                 if (check.Name == name)
                 {
                     return check;
@@ -8575,19 +8346,7 @@ namespace Server
 
         public void AddStatMod(StatMod mod)
         {
-            StatMods ??= new List<StatMod>();
-
-            for (var i = 0; i < StatMods.Count; ++i)
-            {
-                var check = StatMods[i];
-
-                if (check.Name == mod.Name)
-                {
-                    Delta(MobileDelta.Stat | GetStatDelta(check.Type));
-                    StatMods.RemoveAt(i);
-                    break;
-                }
-            }
+            RemoveStatMod(mod.Name);
 
             StatMods.Add(mod);
             Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
@@ -8623,23 +8382,29 @@ namespace Server
         {
             var offset = 0;
 
-            StatMods ??= new List<StatMod>();
+            StatMods ??= new HashSet<StatMod>();
 
-            for (var i = 0; i < StatMods.Count; ++i)
+            if (StatMods.Count > 0)
             {
-                var mod = StatMods[i];
-
-                if (mod.HasElapsed())
+                using var queue = PooledRefQueue<StatMod>.Create(8);
+                foreach (var mod in StatMods)
                 {
-                    StatMods.RemoveAt(i);
+                    if (mod.HasElapsed())
+                    {
+                        queue.Enqueue(mod);
+                    }
+                    else if ((mod.Type & type) != 0)
+                    {
+                        offset += mod.Offset;
+                    }
+                }
+
+                while (queue.Count > 0)
+                {
+                    var mod = queue.Dequeue();
+                    StatMods.Remove(mod);
                     Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
                     CheckStatTimers();
-
-                    --i;
-                }
-                else if ((mod.Type & type) != 0)
-                {
-                    offset += mod.Offset;
                 }
             }
 

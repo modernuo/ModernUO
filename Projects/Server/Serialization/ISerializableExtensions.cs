@@ -24,7 +24,10 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MarkDirty(this ISerializable entity)
         {
-            entity.SavePosition = -1;
+            if (entity != null)
+            {
+                entity.SavePosition = -1;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -25,11 +25,11 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)](https://access.redhat.com/downloads)
 
 #### Running the server
-[![.NET](https://img.shields.io/badge/-6.0-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-6.0.6-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%206.0%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-%206.0.6%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Supported IDEs
 &nbsp;&nbsp;&nbsp;
@@ -56,7 +56,7 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
     - `linuxmint.17`, `linuxmint.18`, `linuxmint.19` - Linux Mint
     - `debian.10`, `debian.11` - Debian
     - `centos.7`, `centos.8` - CentOS
-    - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
+    - `fedora.32`, `fedora.33`, `fedora.34`, `fedora.35`, `fedora.36` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
     - If blank, the operating system running the build is used. Linux Mint 20 is not supported directly yet, so build explicitly against `ubuntu.20.04` instead.
 
@@ -69,7 +69,7 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 
 ## Thanks
 - RunUO Team & Community
-- ServUO Team & Community
+- [Voxpire](https://github.com/Voxpire), the ServUO Team & Community
 - [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 ## Troubleshooting / FAQ
@@ -79,6 +79,6 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 Thank you for supporting us! You can find out how by visiting the [sponsors](./SPONSORS.md) page.
 
 </br></br>
-<p align=center>Development Tools & Plugins provided with &hearts; by </br><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" height="64px" alt="JetBrains" title="JetBrains" /></a> 
+<p align=center>Development Tools & Plugins provided with &hearts; by </br><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" height="64px" alt="JetBrains" title="JetBrains" /></a>
 <a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
 </p>

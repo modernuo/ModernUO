@@ -76,11 +76,11 @@ namespace Server.Engines.MLQuests.Gumps
             }
         }
 
-        public static void Initialize()
+        public static unsafe void Initialize()
         {
             m_Pending = new Dictionary<NetState, RaceChangeState>();
 
-            IncomingExtendedCommandPackets.RegisterExtended(0x2A, true, RaceChangeReply);
+            IncomingExtendedCommandPackets.RegisterExtended(0x2A, true, &RaceChangeReply);
         }
 
         public static bool IsPending(NetState state) => state != null && m_Pending.ContainsKey(state);

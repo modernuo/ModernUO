@@ -22,14 +22,14 @@ namespace Server.Network
 {
     public static class UOGateway
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
             var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
 
             if (enabled)
             {
-                FreeshardProtocol.Register(0xFE, false, QueryCompactShardStats);
-                FreeshardProtocol.Register(0xFF, false, QueryExtendedShardStats);
+                FreeshardProtocol.Register(0xFE, false, &QueryCompactShardStats);
+                FreeshardProtocol.Register(0xFF, false, &QueryExtendedShardStats);
             }
         }
 

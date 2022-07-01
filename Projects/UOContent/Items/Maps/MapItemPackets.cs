@@ -20,9 +20,9 @@ namespace Server.Network
 {
     public static class MapItemPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0x56, 11, true, OnMapCommand);
+            IncomingPackets.Register(0x56, 11, true, &OnMapCommand);
         }
 
         private static void OnMapCommand(NetState state, CircularBufferReader reader, int packetLength)

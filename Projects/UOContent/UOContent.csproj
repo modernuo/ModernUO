@@ -39,7 +39,7 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="MailKit" Version="3.2.0" />
+        <PackageReference Include="MailKit" Version="3.3.0" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
         <PackageReference Include="Zlib.Bindings" Version="1.9.2" />
@@ -47,7 +47,7 @@
         <PackageReference Include="Zstd.Binaries" Version="1.4.0" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.0.2" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.0.5" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.1.4" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />

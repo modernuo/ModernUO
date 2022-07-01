@@ -448,8 +448,7 @@ namespace Server.Accounting
         ///     Gets the maximum amount of characters allowed to be created on this account. Values other than 1, 5, 6, or 7 are not
         ///     supported by the client.
         /// </summary>
-        public int Limit => Core.SA ? 7 :
-            Core.AOS ? 6 : 5;
+        public int Limit => Core.SA ? 7 : Core.AOS ? 6 : 5;
 
         /// <summary>
         ///     Gets the maximum amount of characters that this account can hold.

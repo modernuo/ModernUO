@@ -21,13 +21,13 @@ namespace Server.Network;
 
 public static class IncomingItemPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x07, 7, true, LiftReq);
-        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, DropReq));
-        IncomingPackets.Register(0x13, 10, true, EquipReq);
-        IncomingPackets.Register(0xEC, 0, false, EquipMacro);
-        IncomingPackets.Register(0xED, 0, false, UnequipMacro);
+        IncomingPackets.Register(0x07, 7, true, &LiftReq);
+        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, &DropReq));
+        IncomingPackets.Register(0x13, 10, true, &EquipReq);
+        IncomingPackets.Register(0xEC, 0, false, &EquipMacro);
+        IncomingPackets.Register(0xED, 0, false, &UnequipMacro);
     }
 
     public static void LiftReq(NetState state, CircularBufferReader reader, int packetLength)

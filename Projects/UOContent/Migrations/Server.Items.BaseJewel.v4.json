@@ -1,0 +1,56 @@
+{
+  "version": 4,
+  "type": "Server.Items.BaseJewel",
+  "properties": [
+    {
+      "name": "MaxHitPoints",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "HitPoints",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "RawResource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "GemType",
+      "type": "Server.Items.GemType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Attributes",
+      "type": "Server.AosAttributes",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "Resistances",
+      "type": "Server.AosElementAttributes",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "SkillBonuses",
+      "type": "Server.AosSkillBonuses",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    }
+  ]
+}

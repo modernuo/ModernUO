@@ -1,49 +1,39 @@
-namespace Server.Engines.Mahjong
+using ModernUO.Serialization;
+
+namespace Server.Engines.Mahjong;
+
+[SerializationGenerator(0, false)]
+public partial class MahjongWallBreakIndicator
 {
-    public class MahjongWallBreakIndicator
+    [DirtyTrackingEntity]
+    private readonly MahjongGame _game;
+
+    [SerializableField(0, setter: "private")]
+    private Point2D _position;
+
+    public MahjongWallBreakIndicator(MahjongGame game) => _game = game;
+
+    public MahjongWallBreakIndicator(MahjongGame game, Point2D position)
     {
-        public MahjongWallBreakIndicator(MahjongGame game, Point2D position)
+        _game = game;
+        _position = position;
+    }
+
+    public MahjongPieceDim Dimensions => GetDimensions(_position);
+
+    public static MahjongPieceDim GetDimensions(Point2D position) => new(position, 20, 20);
+
+    public void Move(Point2D position)
+    {
+        var dim = GetDimensions(position);
+
+        if (!dim.IsValid())
         {
-            Game = game;
-            Position = position;
+            return;
         }
 
-        public MahjongWallBreakIndicator(MahjongGame game, IGenericReader reader)
-        {
-            Game = game;
+        _position = position;
 
-            var version = reader.ReadInt();
-
-            Position = reader.ReadPoint2D();
-        }
-
-        public MahjongGame Game { get; }
-
-        public Point2D Position { get; private set; }
-
-        public MahjongPieceDim Dimensions => GetDimensions(Position);
-
-        public static MahjongPieceDim GetDimensions(Point2D position) => new(position, 20, 20);
-
-        public void Move(Point2D position)
-        {
-            var dim = GetDimensions(position);
-
-            if (!dim.IsValid())
-            {
-                return;
-            }
-
-            Position = position;
-
-            Game.Players.SendGeneralPacket(true, true);
-        }
-
-        public void Save(IGenericWriter writer)
-        {
-            writer.Write(0); // version
-
-            writer.Write(Position);
-        }
+        _game.Players.SendGeneralPacket(true, true);
     }
 }

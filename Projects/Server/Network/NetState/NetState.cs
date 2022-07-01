@@ -220,6 +220,8 @@ public partial class NetState : IComparable<NetState>
 
     public IAccount Account { get; set; }
 
+    public string Assistant { get; set; }
+
     public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
     private void SetPacketTime(int packetID)
@@ -745,7 +747,7 @@ public partial class NetState : IComparable<NetState>
      * length is the total buffer length. We might be able to use packetReader.Capacity() instead.
      * packetLength is the length of the packet that this function actually found.
      */
-    private ParserState HandlePacket(CircularBufferReader packetReader, byte packetId, out int packetLength)
+    private unsafe ParserState HandlePacket(CircularBufferReader packetReader, byte packetId, out int packetLength)
     {
         PacketHandler handler = IncomingPackets.GetHandler(packetId);
         int length = packetReader.Length;
@@ -793,7 +795,7 @@ public partial class NetState : IComparable<NetState>
             }
         }
 
-        ThrottlePacketCallback throttler = handler.ThrottleCallback;
+        var throttler = handler.ThrottleCallback;
         if (throttler != null)
         {
             if (!throttler(packetId, this, out bool drop))

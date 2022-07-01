@@ -1,6 +1,5 @@
 using ModernUO.Serialization;
 using Server.Targeting;
-using Server.Text;
 
 namespace Server.Items;
 
