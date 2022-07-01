@@ -226,7 +226,7 @@ public class SpawnerControllerGump : GumpGrid
 
     public void DrawSpawner(ListView list)
     {
-        for (int i = 0; i < list.Items.Count; i++)
+        for (int i = 0; i < list.Items.Length; i++)
         {
             const int vCenter = 15;
             const int perItem = 45;
