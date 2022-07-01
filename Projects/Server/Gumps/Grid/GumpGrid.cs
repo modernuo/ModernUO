@@ -4,9 +4,13 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public partial class Gump
+public class GumpGrid : Gump
 {
     private Dictionary<string, Grid> _grids = new();
+
+    public GumpGrid(int x, int y) : base(x, y)
+    {
+    }
 
     private void AddColumn(string name, int x, int width)
     {
@@ -335,7 +339,7 @@ public partial class Gump
     {
         public int LineCount { get; }
         public int ItemsCount { get; }
-        public List<ListItem> Items { get; } = new();
+        public ListItem[] Items { get; }
         public ListItem Header { get; }
         public int Page { get; }
         public int TotalPages { get; }
@@ -360,13 +364,13 @@ public partial class Gump
         )
         {
             ItemsCount = itemsCount;
-            var ItemsPerPageCount = pageItemCount == 0 ? (height - marginY) / heightPerItem : pageItemCount;
-            LineCount = ItemsPerPageCount;
+            var itemsPerPageCount = pageItemCount == 0 ? (height - marginY) / heightPerItem : pageItemCount;
+            LineCount = itemsPerPageCount;
 
             if (itemsCount > 0)
             {
-                TotalPages = itemsCount / ItemsPerPageCount;
-                if (itemsCount % ItemsPerPageCount == 0)
+                TotalPages = itemsCount / itemsPerPageCount;
+                if (itemsCount % itemsPerPageCount == 0)
                 {
                     TotalPages--;
                 }
@@ -376,8 +380,8 @@ public partial class Gump
             ColsCount = columns;
             ColHeight = heightPerItem;
 
-            var index = Page * ItemsPerPageCount > 0 ? Page * ItemsPerPageCount : 0;
-            var nowPageItems = index + ItemsPerPageCount;
+            var index = Page * itemsPerPageCount > 0 ? Page * itemsPerPageCount : 0;
+            var nowPageItems = index + itemsPerPageCount;
 
             if (index > 0)
             {
@@ -391,7 +395,7 @@ public partial class Gump
 
             if (nowPageItems > itemsCount)
             {
-                ItemsPerPageCount = Page > 0 ? itemsCount - Page * ItemsPerPageCount : itemsCount;
+                itemsPerPageCount = Page > 0 ? itemsCount - Page * itemsPerPageCount : itemsCount;
             }
 
             //header
@@ -412,17 +416,17 @@ public partial class Gump
                 length += ColWidth[col];
             }
 
-            for (int i = 0; i < ItemsPerPageCount; i++)
+            Items = new ListItem[itemsPerPageCount];
+
+            for (int i = 0; i < itemsPerPageCount; i++)
             {
-                var item = new ListItem
+                Items[i] = new ListItem
                 {
                     X = x,
                     Y = y + i * heightPerItem + marginY + headerHeight,
                     Index = index + i,
                     Cols = Header.Cols
                 };
-
-                Items.Add(item);
             }
         }
     }

@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 namespace Server.Gumps;
 
-public enum GridColor
+public enum GridHues
 {
     White = 2394,
     Black = 0,
 }
 
-public static class ColorCode
+public static class GridColors
 {
     public const string Gold = "#ffc959";
     public const string White = "#ffffff";
@@ -24,10 +24,10 @@ public static class ColorCode
 
 public class ListItem
 {
-    public int X;
-    public int Y;
-    public int Index;
-    public Col[] Cols;
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Index { get; set; }
+    public Col[] Cols { get; set; }
 }
 
 public class Col
@@ -43,7 +43,6 @@ public class Row
     public int Y { get; set; }
     public int Height { get; set; }
     public int VCenter => Y + Height / 2;
-
     public int VEnd => Y + Height;
 }
 
