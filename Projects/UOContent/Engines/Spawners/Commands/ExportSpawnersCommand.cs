@@ -20,82 +20,81 @@ using Server.Commands.Generic;
 using Server.Json;
 using Server.Network;
 
-namespace Server.Engines.Spawners
+namespace Server.Engines.Spawners;
+
+public class ExportSpawnersCommand : BaseCommand
 {
-    public class ExportSpawnersCommand : BaseCommand
+    public static void Initialize()
     {
-        public static void Initialize()
+        TargetCommands.Register(new ExportSpawnersCommand());
+    }
+
+    public ExportSpawnersCommand()
+    {
+        AccessLevel = AccessLevel.GameMaster;
+        Supports = CommandSupport.AllItems & ~CommandSupport.Contained;
+        Commands = new[] { "ExportSpawners" };
+        ObjectTypes = ObjectTypes.Items;
+        Usage = "ExportSpawners";
+        Description = "Exports the given spawners to a file";
+        ListOptimized = true;
+    }
+
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
+    {
+        string path = e.Arguments.Length == 0 ? string.Empty : e.Arguments[0].Trim();
+        string condition = e.Arguments.Length == 2 ? e.Arguments[1].Trim() : string.Empty;
+
+        if (string.IsNullOrEmpty(path))
         {
-            TargetCommands.Register(new ExportSpawnersCommand());
+            path = Path.Combine(Core.BaseDirectory, $"Data/Spawns/{Utility.GetTimeStamp()}.json");
         }
-
-        public ExportSpawnersCommand()
+        else
         {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.AllItems & ~CommandSupport.Contained;
-            Commands = new[] { "ExportSpawners" };
-            ObjectTypes = ObjectTypes.Items;
-            Usage = "ExportSpawners";
-            Description = "Exports the given spawners to a file";
-            ListOptimized = true;
-        }
-
-        public override void ExecuteList(CommandEventArgs e, List<object> list)
-        {
-            string path = e.Arguments.Length == 0 ? string.Empty : e.Arguments[0].Trim();
-            string condition = e.Arguments.Length == 2 ? e.Arguments[1].Trim() : string.Empty;
-
-            if (string.IsNullOrEmpty(path))
+            var directory = Path.GetDirectoryName(Path.GetFullPath(path!))!;
+            if (!Path.IsPathRooted(path))
             {
-                path = Path.Combine(Core.BaseDirectory, $"Data/Spawns/{Utility.GetTimeStamp()}.json");
+                path = Path.Combine(Core.BaseDirectory, path);
+                PathUtility.EnsureDirectory(directory);
             }
-            else
+            else if (!Directory.Exists(directory))
             {
-                var directory = Path.GetDirectoryName(Path.GetFullPath(path!))!;
-                if (!Path.IsPathRooted(path))
-                {
-                    path = Path.Combine(Core.BaseDirectory, path);
-                    PathUtility.EnsureDirectory(directory);
-                }
-                else if (!Directory.Exists(directory))
-                {
-                    LogFailure("Directory doesn't exist.");
-                    return;
-                }
-            }
-
-            NetState.FlushAll();
-
-            var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
-
-            var spawnRecords = new List<DynamicJson>(list.Count);
-            for (var i = 0; i < list.Count; i++)
-            {
-                if (list[i] is BaseSpawner spawner)
-                {
-                    if (!string.IsNullOrEmpty(spawner.Name) && spawner.Name.StartsWith(
-                            condition,
-                            StringComparison.OrdinalIgnoreCase
-                        ))
-                    {
-                        var dynamicJson = DynamicJson.Create(spawner.GetType());
-                        spawner.ToJson(dynamicJson, options);
-                        spawnRecords.Add(dynamicJson);
-                    }
-                }
-            }
-
-            if (spawnRecords.Count == 0)
-            {
-                LogFailure("No matching spawners found.");
+                LogFailure("Directory doesn't exist.");
                 return;
             }
-
-            e.Mobile.SendMessage("Exporting spawners...");
-
-            JsonConfig.Serialize(path, spawnRecords, options);
-
-            e.Mobile.SendMessage($"Spawners exported to {path}");
         }
+
+        NetState.FlushAll();
+
+        var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
+
+        var spawnRecords = new List<DynamicJson>(list.Count);
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (list[i] is BaseSpawner spawner)
+            {
+                if (!string.IsNullOrEmpty(spawner.Name) && spawner.Name.StartsWith(
+                        condition,
+                        StringComparison.OrdinalIgnoreCase
+                    ))
+                {
+                    var dynamicJson = DynamicJson.Create(spawner.GetType());
+                    spawner.ToJson(dynamicJson, options);
+                    spawnRecords.Add(dynamicJson);
+                }
+            }
+        }
+
+        if (spawnRecords.Count == 0)
+        {
+            LogFailure("No matching spawners found.");
+            return;
+        }
+
+        e.Mobile.SendMessage("Exporting spawners...");
+
+        JsonConfig.Serialize(path, spawnRecords, options);
+
+        e.Mobile.SendMessage($"Spawners exported to {path}");
     }
 }
