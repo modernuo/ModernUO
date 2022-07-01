@@ -46,4 +46,7 @@
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Assistants" />
+    </ItemGroup>
 </Project>

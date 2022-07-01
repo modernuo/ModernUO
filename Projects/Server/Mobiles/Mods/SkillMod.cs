@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 
 namespace Server;
@@ -21,7 +22,6 @@ namespace Server;
 public abstract partial class SkillMod : MobileMod
 {
     private bool _obeyCap;
-
     private bool _relative;
     private SkillName _skill;
     private double _value;
@@ -48,21 +48,6 @@ public abstract partial class SkillMod : MobileMod
             var sk = Owner?.Skills[_skill];
             sk?.Update();
             MarkDirty();
-        }
-    }
-
-    public override Mobile Owner
-    {
-        get => base.Owner;
-        set
-        {
-            var owner = base.Owner;
-            if (owner != value)
-            {
-                owner?.RemoveSkillMod(this);
-                owner = value;
-                owner?.AddSkillMod(this);
-            }
         }
     }
 
@@ -137,10 +122,8 @@ public abstract partial class SkillMod : MobileMod
         }
     }
 
-    public void Remove()
-    {
-        Owner = null;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Remove() => Owner?.RemoveSkillMod(this);
 
     public abstract bool CheckCondition();
 }

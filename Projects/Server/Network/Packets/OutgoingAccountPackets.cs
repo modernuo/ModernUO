@@ -54,12 +54,12 @@ public enum DeleteResultType
 public static class OutgoingAccountPackets
 {
     /**
-         * Packet: 0x81
-         * Length: Up to 425 bytes
-         *
-         * Displays the list of characters during the login process.
-         * Note: Currently Unused
-         */
+     * Packet: 0x81
+     * Length: Up to 425 bytes
+     *
+     * Displays the list of characters during the login process.
+     * Note: Currently Unused
+     */
     public static void SendChangeCharacter(this NetState ns, IAccount a)
     {
         if (ns == null || a == null)
@@ -103,40 +103,40 @@ public static class OutgoingAccountPackets
     }
 
     /**
-         * Packet: 0xBD
-         * Length: 3 bytes
-         *
-         * Sends a requests for the client version
-         */
+     * Packet: 0xBD
+     * Length: 3 bytes
+     *
+     * Sends a requests for the client version
+     */
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SendClientVersionRequest(this NetState ns) => ns?.Send(stackalloc byte[] { 0xBD, 0x00, 0x03 });
 
     /**
-         * Packet: 0x85
-         * Length: 2 bytes
-         *
-         * Sends the result of a deletion request
-         */
+     * Packet: 0x85
+     * Length: 2 bytes
+     *
+     * Sends the result of a deletion request
+     */
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SendCharacterDeleteResult(this NetState ns, DeleteResultType res) =>
         ns?.Send(stackalloc byte[] { 0x85, (byte)res });
 
     /**
-         * Packet: 0x53
-         * Length: 2 bytes
-         *
-         * Sends a PopupMessage with a predetermined message
-         */
+     * Packet: 0x53
+     * Length: 2 bytes
+     *
+     * Sends a PopupMessage with a predetermined message
+     */
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SendPopupMessage(this NetState ns, PMMessage msg) =>
         ns?.Send(stackalloc byte[] { 0x53, (byte)msg });
 
     /**
-         * Packet: 0xB9
-         * Length: 3 or 5 bytes
-         *
-         * Sends support features based on the client version
-         */
+     * Packet: 0xB9
+     * Length: 3 or 5 bytes
+     *
+     * Sends support features based on the client version
+     */
     public static void SendSupportedFeature(this NetState ns)
     {
         if (ns.CannotSendPackets())
@@ -182,11 +182,11 @@ public static class OutgoingAccountPackets
     }
 
     /**
-         * Packet: 0x1B
-         * Length: 37 bytes
-         *
-         * Sends login confirmation
-         */
+     * Packet: 0x1B
+     * Length: 37 bytes
+     *
+     * Sends login confirmation
+     */
     public static void SendLoginConfirmation(this NetState ns, Mobile m)
     {
         if (ns.CannotSendPackets())
@@ -223,22 +223,22 @@ public static class OutgoingAccountPackets
     }
 
     /**
-         * Packet: 0x55
-         * Length: 1 byte
-         *
-         * Sends login completion
-         */
+     * Packet: 0x55
+     * Length: 1 byte
+     *
+     * Sends login completion
+     */
     public static void SendLoginComplete(this NetState ns)
     {
         ns?.Send(stackalloc byte[] { 0x55 });
     }
 
     /**
-         * Packet: 0x86
-         * Length: Up to 424 bytes
-         *
-         * Sends updated character list
-         */
+     * Packet: 0x86
+     * Length: Up to 424 bytes
+     *
+     * Sends updated character list
+     */
     public static void SendCharacterListUpdate(this NetState ns, IAccount a)
     {
         if (ns == null || a == null)
@@ -285,11 +285,11 @@ public static class OutgoingAccountPackets
     }
 
     /**
-         * Packet: 0xA9
-         * Length: 1410 or more bytes
-         *
-         * Sends list of characters and starting cities.
-         */
+     * Packet: 0xA9
+     * Length: 1410 or more bytes
+     *
+     * Sends list of characters and starting cities.
+     */
     public static void SendCharacterList(this NetState ns)
     {
         var acct = ns?.Account;
@@ -315,14 +315,20 @@ public static class OutgoingAccountPackets
             }
         }
 
-        var count = Math.Max(Math.Max(highSlot + 1, acct.Limit), 5);
+        // Supported values are 1, 5, 6, or 7
+        var count = Math.Max(highSlot + 1, acct.Limit);
+        if (count is not 1 and < 5)
+        {
+            count = 5;
+        }
+
         var length = (client70130 ?
             11 + (textLength * 2 + 25) * cityInfo.Length :
             9 + (textLength * 2 +  1) * cityInfo.Length) + count * 60;
         var writer = new SpanWriter(stackalloc byte[length]);
         writer.Write((byte)0xA9); // Packet ID
         writer.Write((ushort)length);
-        writer.Write((byte)count);
+        writer.Write((byte)count); // TODO: It is probably more proper to use count.
 
         for (int i = 0; i < count; i++)
         {
@@ -387,21 +393,21 @@ public static class OutgoingAccountPackets
     }
 
     /**
-         * Packet: 0x82
-         * Length: 2 bytes
-         *
-         * Sends a reason for rejecting the login
-         */
+     * Packet: 0x82
+     * Length: 2 bytes
+     *
+     * Sends a reason for rejecting the login
+     */
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SendAccountLoginRejected(this NetState ns, ALRReason reason) =>
         ns?.Send(stackalloc byte[] { 0x82, (byte)reason });
 
     /**
-         * Packet: 0xA8
-         * Length: 6 + 40 bytes per server listing
-         *
-         * Sends login acknowledge with server listing
-         */
+     * Packet: 0xA8
+     * Length: 6 + 40 bytes per server listing
+     *
+     * Sends login acknowledge with server listing
+     */
     public static void SendAccountLoginAck(this NetState ns)
     {
         if (ns.CannotSendPackets())
@@ -433,11 +439,11 @@ public static class OutgoingAccountPackets
     }
 
     /**
-         * Packet: 0x8C
-         * Length: 11 bytes
-         *
-         * Sends acknowledge play server
-         */
+     * Packet: 0x8C
+     * Length: 11 bytes
+     *
+     * Sends acknowledge play server
+     */
     public static void SendPlayServerAck(this NetState ns, ServerInfo si, int authId)
     {
         if (ns.CannotSendPackets())

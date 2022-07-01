@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Utilities;
 
@@ -25,6 +26,8 @@ namespace Server.Engines.Craft
 
     public class CraftItem
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(CraftItem));
+
         private static readonly Dictionary<Type, int> _itemIds = new();
 
         private static readonly int[] m_HeatSources =
@@ -174,8 +177,8 @@ namespace Server.Engines.Craft
         {
             if (Recipe != null)
             {
-                Console.WriteLine(
-                    "Warning: Attempted add of recipe #{0} to the crafting of {1} in CraftSystem {2}.",
+                logger.Warning(
+                    "Attempted add of recipe #{Id} to the crafting of {ItemTypeName} in CraftSystem {CraftSystem}.",
                     id,
                     ItemType.Name,
                     system
@@ -190,16 +193,7 @@ namespace Server.Engines.Craft
         {
             var number = ItemIDOf(type);
 
-            if (number >= 0x4000)
-            {
-                number += 1078872;
-            }
-            else
-            {
-                number += 1020000;
-            }
-
-            return number;
+            return number + (number >= 0x4000 ? 1078872 : 1020000);
         }
 
         public static int ItemIDOf(Type type)

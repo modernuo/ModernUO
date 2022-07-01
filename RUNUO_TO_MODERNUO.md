@@ -13,7 +13,7 @@ Please ask for help in our discord!
 | IDEs         | [VS](https://visualstudio.microsoft.com/downloads/), [VSCode](https://code.visualstudio.com/download) | VS 2022+ or [Rider 2022+](https://www.jetbrains.com/rider/) |
 
 ## Code API Changes
-* **ModernUO can source generator [serialization/deserialization](https://github.com/modernuo/SerializationGenerator#basic-usage) automatically.**
+* **ModernUO can use source generators to [serialization/deserialization](https://github.com/modernuo/SerializationGenerator#basic-usage) automatically.**
   * This is the biggest change to the API! While intimidating and different, it unlocks the ability for ModernUO to only serialize _data that has changed_.
   * We estimate a world save with 10mill objects on a busy server will take less than 1 second.
   * This feature is _optional and will remain optional indefinitely_.
@@ -88,16 +88,21 @@ list.Add(1060830, $"{dirt:#}");
 * Packet throttling that is configurable per packet and per connection.
 * Enable packet logging per connection.
 * Owner accounts can be protected from being locked out. The first account created is automatically added to this list.
+* Use optional arguments from constructors for Add command.
+* Captures Razor version and displays it in client gump
+* Spawners can be exported/imported using commands and use a GUID for replacement.
 
 ## Major Feature Changes
 * By default, world saves are now every 5th minute of a real world hour.
   * E.g. 5:00, 5:05, 5:10, regardless of when the server is booted.
+* Some items have their constructor arguments rearranged.
 
 ## Removed Features
 * Reporting
 * Remote Admin
 * My RunUO
 * Event Log
+* DocsGen command
 
 ## New Development Features & Changes
 * Added a shared list/queue for temporary processing such as accumulating players to damage/kill.
