@@ -301,13 +301,13 @@ public class SpawnerControllerGump : GumpGrid
         AddLabelHtml(list.Header.Cols[1].X, list.Header.Y + 10, list.Header.Cols[1].Width, 30, "Paste", GridColors.Gold);
         AddLabelHtml(list.Header.Cols[2].X, list.Header.Y + 10, list.Header.Cols[2].Width, 30, "Name/Serial", GridColors.Gold);
         AddLabelHtml(list.Header.Cols[3].X, list.Header.Y + 10, list.Header.Cols[3].Width, 30, "Map", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[4].X, list.Header.Y + 10, list.Header.Cols[4].Width, 30, "Coords", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[5].X, list.Header.Y + 10, list.Header.Cols[5].Width, 30, "Entry", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[6].X, list.Header.Y + 10, list.Header.Cols[6].Width, 30, "Walk", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[7].X, list.Header.Y + 10, list.Header.Cols[7].Width, 30, "Home", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[8].X, list.Header.Y + 10, list.Header.Cols[8].Width, 30, "Min Delay", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[9].X, list.Header.Y + 10, list.Header.Cols[9].Width, 30, "Max Delay", GridColors.Gold);
-        AddLabelHtml(list.Header.Cols[10].X, list.Header.Y + 10, list.Header.Cols[10].Width, 30, "Next Spawn", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[4].X - 4, list.Header.Y + 10, list.Header.Cols[4].Width, 30, "Coords", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[5].X - 4, list.Header.Y + 10, list.Header.Cols[5].Width, 30, "Entry", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[6].X - 4, list.Header.Y + 10, list.Header.Cols[6].Width, 30, "Walk", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[7].X - 4, list.Header.Y + 10, list.Header.Cols[7].Width, 30, "Home", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[8].X - 4, list.Header.Y + 10, list.Header.Cols[8].Width, 30, "Min Delay", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[9].X - 4, list.Header.Y + 10, list.Header.Cols[9].Width, 30, "Max Delay", GridColors.Gold);
+        AddLabelHtml(list.Header.Cols[10].X - 4, list.Header.Y + 10, list.Header.Cols[10].Width, 30, "Next Spawn", GridColors.Gold);
         AddLabelHtml(list.Header.Cols[11].X, list.Header.Y + 10, list.Header.Cols[11].Width, 30, "Actions", GridColors.Gold);
     }
 
