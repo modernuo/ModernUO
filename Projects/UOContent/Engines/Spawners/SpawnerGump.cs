@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Gumps;
 using Server.Network;
 
@@ -229,7 +230,7 @@ namespace Server.Engines.Spawners
         {
             var ocount = spawner.Entries.Count;
 
-            var rementries = new List<SpawnerEntry>();
+            using var queue = PooledRefQueue<SpawnerEntry>.Create();
 
             for (var i = 0; i < 13; i++)
             {
@@ -306,13 +307,13 @@ namespace Server.Engines.Spawners
                 }
                 else if (entryindex < ocount && spawner.Entries[entryindex] != null)
                 {
-                    rementries.Add(spawner.Entries[entryindex]);
+                    queue.Enqueue(spawner.Entries[entryindex]);
                 }
             }
 
-            for (var i = 0; i < rementries.Count; i++)
+            while (queue.Count > 0)
             {
-                spawner.RemoveEntry(rementries[i]);
+                spawner.RemoveEntry(queue.Dequeue());
             }
 
             if (ocount == 0 && spawner.Entries.Count > 0)
@@ -341,7 +342,9 @@ namespace Server.Engines.Spawners
             switch (type)
             {
                 case 0: // Cancel
-                    return;
+                    {
+                        return;
+                    }
                 case 1:
                     {
                         switch (index)
