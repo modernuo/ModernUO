@@ -50,9 +50,6 @@ public class SpawnerControllerGump : GumpGrid
 
     public void DrawBorder(ListView list)
     {
-        AddBackground(0, 0, _main.Width, _main.Height, 5054);
-        AddBlackAlpha(0, 0, _main.Width, _main.Height);
-
         var row1Y = _main.Rows[1].Y;
         AddImageTiled(0, row1Y, _main.Width, 3, 9357);
         AddAlphaRegion(0, row1Y, _main.Width, 3);
@@ -324,6 +321,10 @@ public class SpawnerControllerGump : GumpGrid
     public SpawnerControllerGump(Mobile mobile, int page = 0, BaseSpawner copy = null, SpawnSearch search = null) : base(20, 30)
     {
         _main = Grid("main", 1000, 800, 1, 3, rowSize: "10* * 100");
+
+        AddBackground(0, 0, 1000, 800, 5054);
+        AddBlackAlpha(0, 0, 1000, 800);
+
         _mobile = mobile;
         _page = page;
         _copy = copy;
