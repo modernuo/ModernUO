@@ -361,7 +361,8 @@ namespace Server.Mobiles
 
         public TownCrierEntry GetRandomEntry()
         {
-            for (var i = (Entries?.Count ?? 0) - 1; i >= 0; --i)
+            var count = Entries?.Count ?? 0;
+            for (var i = count - 1; i >= 0; --i)
             {
                 if (i >= Entries!.Count)
                 {
@@ -377,12 +378,12 @@ namespace Server.Mobiles
             }
 
             var entry = GlobalTownCrierEntryList.Instance.GetRandomEntry();
-            if (entry == null || Entries?.Count > 0 && Utility.RandomBool())
+            if (count > 0 && entry != null && Utility.RandomBool())
             {
-                entry = Entries.RandomElement();
+                return entry;
             }
 
-            return entry;
+            return Entries.RandomElement();
         }
 
         public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
