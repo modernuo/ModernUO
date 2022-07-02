@@ -262,11 +262,9 @@ public class SpawnerControllerGump : GumpGrid
             AddLabelHtml(item.Cols[3].X, list.Items[i].Y + vCenter, list.Header.Cols[3].Width, 30, spawner.Map.ToString(), GridColors.White);
 
             //teleport button
-            AddButton(item.Cols[4].X, list.Items[i].Y + vCenter, 2062, 2062, GetButtonID(5, item.Index));
-            AddButton(item.Cols[4].X + 10, list.Items[i].Y + vCenter, 2062, 2062, GetButtonID(5, item.Index));
-            AddImage(item.Cols[4].X, list.Items[i].Y + vCenter, 2062, 936);
-            AddImage(item.Cols[4].X + 10, list.Items[i].Y + vCenter, 2062, 936);
-            AddLabelHtml(item.Cols[4].X, list.Items[i].Y + vCenter, list.Header.Cols[4].Width, 30, ExtractCoords(spawner.Location), GridColors.White);
+            AddButton(item.Cols[4].X - 5, list.Items[i].Y + vCenter, 2062, 2062, GetButtonID(5, item.Index));
+            AddImage(item.Cols[4].X - 5, list.Items[i].Y + vCenter, 2062, 936);
+            AddLabelHtml(item.Cols[4].X-7, list.Items[i].Y + vCenter, list.Header.Cols[4].Width, 30, ExtractCoords(spawner.Location), GridColors.White);
 
             //open entry button
             AddButton(item.Cols[5].X + 6, list.Items[i].Y + vCenter - 4, 0x2635, 0x2635, GetButtonID(7, item.Index));
