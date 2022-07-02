@@ -25,7 +25,7 @@ public class DefInscription : CraftSystem
     private int _circle, _mana;
     private int _index;
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefInscription();
     }
