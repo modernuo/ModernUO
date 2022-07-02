@@ -7,7 +7,7 @@ public class DefAlchemy : CraftSystem
 {
     private static readonly Type typeofPotion = typeof(BasePotion);
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefAlchemy();
     }

@@ -13,7 +13,7 @@ public class DefTailoring : CraftSystem
         typeof(BrocadeSquareGozaMatEastDeed), typeof(BrocadeSquareGozaMatSouthDeed)
     };
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefTailoring();
     }
