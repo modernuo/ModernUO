@@ -54,7 +54,7 @@ public abstract partial class BaseThrown : BaseRanged
         if (WeaponAbility.GetCurrentAbility(attacker) is not MysticArc)
         {
             var location = new WorldLocation(defender.Location, attacker.Map);
-            Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => ThrowBack(attacker, defender, location));
+            Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => Return(attacker, defender, location));
         }
 
         base.OnHit(attacker, defender, damageBonus);
@@ -65,13 +65,13 @@ public abstract partial class BaseThrown : BaseRanged
         if (WeaponAbility.GetCurrentAbility(attacker) is not MysticArc)
         {
             var location = new WorldLocation(defender.Location, attacker.Map);
-            Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => ThrowBack(attacker, defender, location));
+            Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => Return(attacker, defender, location));
         }
 
         base.OnMiss(attacker, defender);
     }
 
-    public virtual void ThrowBack(Mobile thrower, Mobile target, WorldLocation worldLocation)
+    public virtual void Return(Mobile thrower, Mobile target, WorldLocation worldLocation)
     {
         if (thrower == null)
         {
