@@ -23,7 +23,7 @@ public static class Utility
 
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
-    private static readonly SkillName[] m_AllSkills =
+    private static SkillName[] _allSkills =
     {
         SkillName.Alchemy,
         SkillName.Anatomy,
@@ -79,7 +79,10 @@ public static class Utility
         SkillName.Chivalry,
         SkillName.Bushido,
         SkillName.Ninjitsu,
-        SkillName.Spellweaving
+        SkillName.Spellweaving,
+        // SkillName.Mysticism,
+        // SkillName.Imbuing,
+        SkillName.Throwing
     };
 
     private static readonly SkillName[] m_CombatSkills =
@@ -622,11 +625,7 @@ public static class Utility
         array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
 
     public static SkillName RandomSkill() =>
-        m_AllSkills[Random(
-            m_AllSkills.Length - (Core.ML ? 0 :
-                Core.SE ? 1 :
-                Core.AOS ? 3 : 6)
-        )];
+        _allSkills[Random(_allSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
 
     public static SkillName RandomCombatSkill() => m_CombatSkills.RandomElement();
 
