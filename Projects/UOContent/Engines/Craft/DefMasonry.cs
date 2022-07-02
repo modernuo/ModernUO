@@ -6,7 +6,7 @@ namespace Server.Engines.Craft;
 
 public class DefMasonry : CraftSystem
 {
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefMasonry();
     }

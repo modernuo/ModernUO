@@ -8,7 +8,7 @@ public class DefBlacksmithy : CraftSystem
     private static readonly Type typeofAnvil = typeof(AnvilAttribute);
     private static readonly Type typeofForge = typeof(ForgeAttribute);
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefBlacksmithy();
     }

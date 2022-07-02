@@ -21,7 +21,7 @@ public class DefTinkering : CraftSystem
         typeof(HeatingStand)
     };
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefTinkering();
     }
