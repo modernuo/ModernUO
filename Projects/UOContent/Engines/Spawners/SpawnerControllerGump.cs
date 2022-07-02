@@ -42,15 +42,22 @@ public class SpawnerControllerGump : GumpGrid
         e.Mobile.SendGump(new SpawnerControllerGump(e.Mobile));
     }
 
+    public void AddBlackAlpha(int x, int y, int width, int height)
+    {
+        AddImageTiled(x, y, width, height, 2624);
+        AddAlphaRegion(x, y, width, height);
+    }
+
     public void DrawBorder(ListView list)
     {
-        AddBackground(0, 0, _main.Width, _main.Height, 1755);
+        AddBackground(0, 0, _main.Width, _main.Height, 5054);
+        AddBlackAlpha(0, 0, _main.Width, _main.Height);
 
         var row1Y = _main.Rows[1].Y;
-        AddImageTiled(0, row1Y, _main.Width, 3, 1756);
+        AddImageTiled(0, row1Y, _main.Width, 3, 9357);
         AddAlphaRegion(0, row1Y, _main.Width, 3);
 
-        AddImageTiled(0, row1Y + 21, _main.Width, 3, 1756);
+        AddImageTiled(0, row1Y + 21, _main.Width, 3, 9357);
         AddAlphaRegion(0, row1Y + 21, _main.Width, 3);
 
         for (int i = 0; i < list.ColsCount - 1; i++)
@@ -58,12 +65,14 @@ public class SpawnerControllerGump : GumpGrid
             var x = list.Header.Cols[i].HEnd - 8;
             var y = list.Header.Y + 10;
             var height = 20;
-            AddImageTiled(x, y, 3, height, 1758);
+            AddImageTiled(x, y, 3, height, 9355);
             AddAlphaRegion(x, y, 3, height);
         }
 
-        AddImageTiled(0, _main.Rows[2].Y - 11, _main.Width, 6, 1756);
-        AddImageTiled(0, _main.Rows[2].Y + 55, _main.Width, 6, 1756);
+        AddImageTiled(0, _main.Rows[2].Y - 11, _main.Width, 6, 9357);
+        AddAlphaRegion(0, _main.Rows[2].Y - 11, _main.Width, 6);
+        AddImageTiled(0, _main.Rows[2].Y + 55, _main.Width, 6, 9357);
+        AddAlphaRegion(0, _main.Rows[2].Y + 55, _main.Width, 6);
     }
 
     private static string ExtractCoords(Point3D cord) => $"X {cord.X} Y {cord.Y}";
@@ -82,8 +91,11 @@ public class SpawnerControllerGump : GumpGrid
         AddLabelHtml(col0X, row0Y + 8, col1X, 30, "Search type", GridColors.Gold);
         AddLabelHtml(col1X, row0Y + 8, col1X, 30, "Search Match", GridColors.Gold);
 
-        AddImageTiled(0, row0Y + 30, _main.Width, 3, 1756);
-        AddImageTiled(col1X, row0Y, 3, search.Height, 1758);
+        AddImageTiled(0, row0Y + 30, _main.Width, 3, 9357);
+        AddAlphaRegion(0, row0Y + 30, _main.Width, 3);
+
+        AddImageTiled(col1X, row0Y, 3, search.Height, 9355);
+        AddAlphaRegion(col1X, row0Y, 3, search.Height);
 
         var creature = _search.Type == SpawnSearchType.Creature ? 9021 : 9020;
         var cords = _search.Type == SpawnSearchType.Coords ? 9021 : 9020;
@@ -290,7 +302,7 @@ public class SpawnerControllerGump : GumpGrid
             AddButton(item.Cols[11].X + perItem, list.Items[i].Y + 5, 4017, 4018, GetButtonID(9, item.Index));
             AddLabelHtml(item.Cols[11].X + perItem, list.Items[i].Y + 26, 55, 30, "delete", GridColors.White, 3, false);
 
-            AddImageTiled(0, list.Items[i].Y + list.ColHeight, _main.Width, 1, 1756);
+            AddImageTiled(0, list.Items[i].Y + list.ColHeight, _main.Width, 1, 9357);
             AddAlphaRegion(0, list.Items[i].Y + list.ColHeight, _main.Width, 1);
         }
     }
