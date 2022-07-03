@@ -51,10 +51,9 @@ public ref struct ValueStringBuilder
     public ValueStringBuilder(int initialCapacity, bool mt = false)
     {
         _mt = mt;
-        _arrayToReturnToPool = null;
-        _chars = _arrayToReturnToPool;
         _length = 0;
-        _arrayToReturnToPool = ArrayPool.Rent(initialCapacity);
+        _arrayToReturnToPool = (_mt ? ArrayPool<char>.Shared : STArrayPool<char>.Shared).Rent(initialCapacity);
+        _chars = _arrayToReturnToPool;
     }
 
     public int Length => _length;
