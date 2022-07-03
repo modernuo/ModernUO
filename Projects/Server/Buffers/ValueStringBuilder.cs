@@ -52,9 +52,10 @@ public ref struct ValueStringBuilder
     {
         _mt = mt;
         _arrayToReturnToPool = null;
-        _chars = _arrayToReturnToPool;
+        _chars = null;
         _length = 0;
         _arrayToReturnToPool = ArrayPool.Rent(initialCapacity);
+        _chars = _arrayToReturnToPool;
     }
 
     public int Length => _length;
