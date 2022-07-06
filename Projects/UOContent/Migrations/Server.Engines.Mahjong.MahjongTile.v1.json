@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "type": "Server.Engines.Mahjong.MahjongTile",
+  "properties": [
+    {
+      "name": "Number",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Value",
+      "type": "Server.Engines.Mahjong.MahjongTileType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Position",
+      "type": "Server.Point2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point2D"
+      ]
+    },
+    {
+      "name": "StackLevel",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Direction",
+      "type": "Server.Engines.Mahjong.MahjongPieceDirection",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Flipped",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

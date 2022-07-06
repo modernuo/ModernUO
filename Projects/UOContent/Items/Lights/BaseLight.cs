@@ -1,233 +1,213 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(1, false)]
+public abstract partial class BaseLight : Item
 {
-    public abstract class BaseLight : Item
+    public static readonly bool Burnout = false;
+
+    [SerializableField(0)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private bool _burntOut;
+
+    // Field 1
+    private bool _burning;
+
+    // Field 2
+    private TimeSpan _duration = TimeSpan.Zero;
+
+    [SerializableField(3)]
+    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    private bool _protected;
+
+    [TimerDrift]
+    [SerializableField(4, getter: "private", setter: "private")]
+    private Timer _burnTimer;
+
+    [DeserializeTimerField(4)]
+    private void DeserializeTimer(TimeSpan delay)
     {
-        public static readonly bool Burnout = false;
-        private bool m_Burning;
-        private TimeSpan m_Duration = TimeSpan.Zero;
-        private DateTime m_End;
-        private Timer m_Timer;
-
-        [Constructible]
-        public BaseLight(int itemID) : base(itemID)
+        if (_burning && _duration != TimeSpan.Zero)
         {
+            DoTimer(delay);
         }
+    }
 
-        public BaseLight(Serial serial) : base(serial)
+    [Constructible]
+    public BaseLight(int itemID) : base(itemID)
+    {
+    }
+
+    public abstract int LitItemID { get; }
+
+    public virtual int UnlitItemID => 0;
+    public virtual int BurntOutItemID => 0;
+
+    public virtual int LitSound => 0x47;
+    public virtual int UnlitSound => 0x3be;
+    public virtual int BurntOutSound => 0x4b8;
+
+    [SerializableField(1)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Burning
+    {
+        get => _burning;
+        set
         {
-        }
-
-        public abstract int LitItemID { get; }
-
-        public virtual int UnlitItemID => 0;
-        public virtual int BurntOutItemID => 0;
-
-        public virtual int LitSound => 0x47;
-        public virtual int UnlitSound => 0x3be;
-        public virtual int BurntOutSound => 0x4b8;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Burning
-        {
-            get => m_Burning;
-            set
+            if (_burning != value)
             {
-                if (m_Burning != value)
-                {
-                    m_Burning = true;
-                    DoTimer(m_Duration);
-                }
+                _burning = true;
+                DoTimer(_duration);
+                this.MarkDirty();
             }
         }
+    }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool BurntOut { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Protected { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan Duration
+    [SerializableField(2)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TimeSpan Duration
+    {
+        get => _duration != TimeSpan.Zero && _burning && _burnTimer != null ? _burnTimer.Next - Core.Now : _duration;
+        set
         {
-            get => m_Duration != TimeSpan.Zero && m_Burning ? m_End - Core.Now : m_Duration;
-            set => m_Duration = value;
+            _duration = value;
+            this.MarkDirty();
+        }
+    }
+
+    public virtual void PlayLitSound()
+    {
+        if (LitSound != 0)
+        {
+            var loc = GetWorldLocation();
+            Effects.PlaySound(loc, Map, LitSound);
+        }
+    }
+
+    public virtual void PlayUnlitSound()
+    {
+        var sound = UnlitSound;
+
+        if (BurntOut && BurntOutSound != 0)
+        {
+            sound = BurntOutSound;
         }
 
-        public virtual void PlayLitSound()
+        if (sound != 0)
         {
-            if (LitSound != 0)
-            {
-                var loc = GetWorldLocation();
-                Effects.PlaySound(loc, Map, LitSound);
-            }
+            var loc = GetWorldLocation();
+            Effects.PlaySound(loc, Map, sound);
+        }
+    }
+
+    public virtual void Ignite()
+    {
+        if (!BurntOut)
+        {
+            PlayLitSound();
+
+            _burning = true;
+            ItemID = LitItemID;
+            DoTimer(_duration);
+        }
+    }
+
+    public virtual void Douse()
+    {
+        _burning = false;
+
+        ItemID = BurntOut && BurntOutItemID != 0 ? BurntOutItemID : UnlitItemID;
+
+        if (BurntOut)
+        {
+            _duration = TimeSpan.Zero;
+        }
+        else if (_duration != TimeSpan.Zero)
+        {
+            _duration = _burnTimer.Next - Core.Now;
         }
 
-        public virtual void PlayUnlitSound()
+        _burnTimer?.Stop();
+        this.MarkDirty();
+
+        PlayUnlitSound();
+    }
+
+    public virtual void Burn()
+    {
+        BurntOut = true;
+        Douse();
+    }
+
+    private void DoTimer(TimeSpan delay)
+    {
+        _duration = delay;
+        _burnTimer?.Stop();
+        this.MarkDirty();
+
+        if (delay == TimeSpan.Zero)
         {
-            var sound = UnlitSound;
-
-            if (BurntOut && BurntOutSound != 0)
-            {
-                sound = BurntOutSound;
-            }
-
-            if (sound != 0)
-            {
-                var loc = GetWorldLocation();
-                Effects.PlaySound(loc, Map, sound);
-            }
+            return;
         }
 
-        public virtual void Ignite()
-        {
-            if (!BurntOut)
-            {
-                PlayLitSound();
+        _burnTimer = new InternalTimer(this, delay);
+        _burnTimer.Start();
+        this.MarkDirty();
+    }
 
-                m_Burning = true;
-                ItemID = LitItemID;
-                DoTimer(m_Duration);
-            }
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (_burntOut)
+        {
+            return;
         }
 
-        public virtual void Douse()
+        if (_protected && from.AccessLevel == AccessLevel.Player)
         {
-            m_Burning = false;
-
-            if (BurntOut && BurntOutItemID != 0)
-            {
-                ItemID = BurntOutItemID;
-            }
-            else
-            {
-                ItemID = UnlitItemID;
-            }
-
-            if (BurntOut)
-            {
-                m_Duration = TimeSpan.Zero;
-            }
-            else if (m_Duration != TimeSpan.Zero)
-            {
-                m_Duration = m_End - Core.Now;
-            }
-
-            m_Timer?.Stop();
-
-            PlayUnlitSound();
+            return;
         }
 
-        public virtual void Burn()
+        if (!from.InRange(GetWorldLocation(), 2))
         {
-            BurntOut = true;
+            return;
+        }
+
+        if (!_burning)
+        {
+            Ignite();
+        }
+        else if (UnlitItemID != 0)
+        {
             Douse();
         }
+    }
 
-        private void DoTimer(TimeSpan delay)
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _burntOut = reader.ReadBool();
+        _burning = reader.ReadBool();
+        _duration = reader.ReadTimeSpan();
+        _protected = reader.ReadBool();
+
+        if (_burning && _duration != TimeSpan.Zero)
         {
-            m_Duration = delay;
-
-            m_Timer?.Stop();
-
-            if (delay == TimeSpan.Zero)
-            {
-                return;
-            }
-
-            m_End = Core.Now + delay;
-
-            m_Timer = new InternalTimer(this, delay);
-            m_Timer.Start();
+            DoTimer(reader.ReadDeltaTime() - Core.Now);
         }
+    }
 
-        public override void OnDoubleClick(Mobile from)
+    private class InternalTimer : Timer
+    {
+        private readonly BaseLight m_Light;
+
+        public InternalTimer(BaseLight light, TimeSpan delay) : base(delay) => m_Light = light;
+
+        protected override void OnTick()
         {
-            if (BurntOut)
+            if (m_Light?.Deleted == false)
             {
-                return;
-            }
-
-            if (Protected && from.AccessLevel == AccessLevel.Player)
-            {
-                return;
-            }
-
-            if (!from.InRange(GetWorldLocation(), 2))
-            {
-                return;
-            }
-
-            if (m_Burning)
-            {
-                if (UnlitItemID != 0)
-                {
-                    Douse();
-                }
-            }
-            else
-            {
-                Ignite();
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-            writer.Write(BurntOut);
-            writer.Write(m_Burning);
-            writer.Write(m_Duration);
-            writer.Write(Protected);
-
-            if (m_Burning && m_Duration != TimeSpan.Zero)
-            {
-                writer.WriteDeltaTime(m_End);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        BurntOut = reader.ReadBool();
-                        m_Burning = reader.ReadBool();
-                        m_Duration = reader.ReadTimeSpan();
-                        Protected = reader.ReadBool();
-
-                        if (m_Burning && m_Duration != TimeSpan.Zero)
-                        {
-                            DoTimer(reader.ReadDeltaTime() - Core.Now);
-                        }
-
-                        break;
-                    }
-            }
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly BaseLight m_Light;
-
-            public InternalTimer(BaseLight light, TimeSpan delay) : base(delay)
-            {
-                m_Light = light;
-            }
-
-            protected override void OnTick()
-            {
-                if (m_Light?.Deleted == false)
-                {
-                    m_Light.Burn();
-                }
+                m_Light.Burn();
             }
         }
     }

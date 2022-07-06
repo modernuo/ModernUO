@@ -220,6 +220,8 @@ public partial class NetState : IComparable<NetState>
 
     public IAccount Account { get; set; }
 
+    public string Assistant { get; set; }
+
     public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
     private void SetPacketTime(int packetID)
@@ -724,7 +726,7 @@ public partial class NetState : IComparable<NetState>
         catch (Exception ex)
         {
 #if DEBUG
-                Console.WriteLine(ex);
+            Console.WriteLine(ex);
 #endif
             TraceException(ex);
             Disconnect("Exception during HandleReceive");

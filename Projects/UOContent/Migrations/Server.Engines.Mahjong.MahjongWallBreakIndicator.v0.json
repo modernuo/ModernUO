@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Mahjong.MahjongWallBreakIndicator",
+  "properties": [
+    {
+      "name": "Position",
+      "type": "Server.Point2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point2D"
+      ]
+    }
+  ]
+}

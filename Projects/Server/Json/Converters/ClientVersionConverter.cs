@@ -17,21 +17,20 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class ClientVersionConverter : JsonConverter<ClientVersion>
-    {
-        public override ClientVersion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType == JsonTokenType.String)
-            {
-                return new ClientVersion(reader.GetString());
-            }
+namespace Server.Json;
 
-            throw new JsonException("Value must be a string");
+public class ClientVersionConverter : JsonConverter<ClientVersion>
+{
+    public override ClientVersion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            return new ClientVersion(reader.GetString());
         }
 
-        public override void Write(Utf8JsonWriter writer, ClientVersion value, JsonSerializerOptions options) =>
-            writer.WriteStringValue(value.ToString());
+        throw new JsonException("Value must be a string");
     }
+
+    public override void Write(Utf8JsonWriter writer, ClientVersion value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.ToString());
 }

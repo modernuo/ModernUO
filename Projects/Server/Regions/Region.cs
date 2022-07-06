@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Server.Json;
+using Server.Logging;
 using Server.Network;
 using Server.Targeting;
 
@@ -82,10 +83,11 @@ namespace Server
 
     public class Region : IComparable<Region>
     {
-        public static readonly int DefaultPriority = 50;
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Region));
 
-        public static readonly int MinZ = sbyte.MinValue;
-        public static readonly int MaxZ = sbyte.MaxValue + 1;
+        public const int DefaultPriority = 50;
+        public const int MinZ = sbyte.MinValue;
+        public const int MaxZ = sbyte.MaxValue + 1;
 
         public Region(string name, Map map, int priority, params Rectangle2D[] area) : this(
             name,
@@ -156,7 +158,7 @@ namespace Server
 
             if (Area.Length == 0)
             {
-                Console.WriteLine("Empty area for region '{0}'", this);
+                logger.Debug("Empty area for region '{Region}'", this);
             }
 
             if (json.GetProperty("go", options, out Point3D go))
@@ -368,7 +370,7 @@ namespace Server
 
             if (Children.Count > 0)
             {
-                Console.WriteLine("Warning: Unregistering region '{0}' with children", this);
+                logger.Warning("Unregistering region '{Region}' with children", this);
             }
 
             if (Parent != null)

@@ -976,21 +976,21 @@ namespace Server.Multis
         {
             IncomingExtendedCommandPackets.RegisterExtended(0x1E, true, &QueryDesignDetails);
 
-            IncomingPackets.RegisterEncoded(0x02, true, Designer_Backup);
-            IncomingPackets.RegisterEncoded(0x03, true, Designer_Restore);
-            IncomingPackets.RegisterEncoded(0x04, true, Designer_Commit);
-            IncomingPackets.RegisterEncoded(0x05, true, Designer_Delete);
-            IncomingPackets.RegisterEncoded(0x06, true, Designer_Build);
-            IncomingPackets.RegisterEncoded(0x0C, true, Designer_Close);
-            IncomingPackets.RegisterEncoded(0x0D, true, Designer_Stairs);
-            IncomingPackets.RegisterEncoded(0x0E, true, Designer_Sync);
-            IncomingPackets.RegisterEncoded(0x10, true, Designer_Clear);
-            IncomingPackets.RegisterEncoded(0x12, true, Designer_Level);
+            IncomingPackets.RegisterEncoded(0x02, true, &Designer_Backup);
+            IncomingPackets.RegisterEncoded(0x03, true, &Designer_Restore);
+            IncomingPackets.RegisterEncoded(0x04, true, &Designer_Commit);
+            IncomingPackets.RegisterEncoded(0x05, true, &Designer_Delete);
+            IncomingPackets.RegisterEncoded(0x06, true, &Designer_Build);
+            IncomingPackets.RegisterEncoded(0x0C, true, &Designer_Close);
+            IncomingPackets.RegisterEncoded(0x0D, true, &Designer_Stairs);
+            IncomingPackets.RegisterEncoded(0x0E, true, &Designer_Sync);
+            IncomingPackets.RegisterEncoded(0x10, true, &Designer_Clear);
+            IncomingPackets.RegisterEncoded(0x12, true, &Designer_Level);
 
-            IncomingPackets.RegisterEncoded(0x13, true, Designer_Roof);       // Samurai Empire roof
-            IncomingPackets.RegisterEncoded(0x14, true, Designer_RoofDelete); // Samurai Empire roof
+            IncomingPackets.RegisterEncoded(0x13, true, &Designer_Roof);       // Samurai Empire roof
+            IncomingPackets.RegisterEncoded(0x14, true, &Designer_RoofDelete); // Samurai Empire roof
 
-            IncomingPackets.RegisterEncoded(0x1A, true, Designer_Revert);
+            IncomingPackets.RegisterEncoded(0x1A, true, &Designer_Revert);
 
             EventSink.Speech += EventSink_Speech;
         }

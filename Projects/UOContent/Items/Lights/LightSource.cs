@@ -1,28 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class LightSource : Item
 {
-    public class LightSource : Item
+    [Constructible]
+    public LightSource() : base(0x1647)
     {
-        [Constructible]
-        public LightSource() : base(0x1647)
-        {
-            Layer = Layer.TwoHanded;
-            Movable = false;
-        }
-
-        public LightSource(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        Layer = Layer.TwoHanded;
+        Movable = false;
     }
 }

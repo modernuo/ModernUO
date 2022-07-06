@@ -55,105 +55,97 @@ namespace Server.Items
 
         private void CheckPreAOSMoves(Mobile attacker, Mobile defender)
         {
+            if (!attacker.CanBeginAction<Fists>())
+            {
+                return;
+            }
+
             if (attacker.StunReady)
             {
-                if (attacker.CanBeginAction<Fists>())
+                if (attacker.Skills.Anatomy.Value < 80.0 || attacker.Skills.Wrestling.Value < 80.0)
                 {
-                    if (attacker.Skills.Anatomy.Value >= 80.0 &&
-                        attacker.Skills.Wrestling.Value >= 80.0)
-                    {
-                        if (attacker.Stam >= 15)
-                        {
-                            attacker.Stam -= 15;
+                    attacker.SendLocalizedMessage(1004008); // You are not skilled enough to stun your opponent.
+                    attacker.StunReady = false;
+                    return;
+                }
 
-                            if (CheckMove(attacker, SkillName.Anatomy))
-                            {
-                                StartMoveDelay(attacker);
+                if (attacker.Stam < 15)
+                {
+                    attacker.SendLocalizedMessage(1004009); // You are too fatigued to attempt anything.
+                    return;
+                }
 
-                                attacker.StunReady = false;
+                attacker.Stam -= 15;
 
-                                attacker.SendLocalizedMessage(1004013); // You successfully stun your opponent!
-                                defender.SendLocalizedMessage(1004014); // You have been stunned!
+                if (CheckMove(attacker, SkillName.Anatomy))
+                {
+                    StartMoveDelay(attacker);
 
-                                defender.Freeze(TimeSpan.FromSeconds(4.0));
-                            }
-                            else
-                            {
-                                attacker.SendLocalizedMessage(1004010); // You failed in your attempt to stun.
-                                defender.SendLocalizedMessage(1004011); // Your opponent tried to stun you and failed.
-                            }
-                        }
-                        else
-                        {
-                            attacker.SendLocalizedMessage(1004009); // You are too fatigued to attempt anything.
-                        }
-                    }
-                    else
-                    {
-                        attacker.SendLocalizedMessage(1004008); // You are not skilled enough to stun your opponent.
-                        attacker.StunReady = false;
-                    }
+                    attacker.StunReady = false;
+
+                    attacker.SendLocalizedMessage(1004013); // You successfully stun your opponent!
+                    defender.SendLocalizedMessage(1004014); // You have been stunned!
+
+                    defender.Freeze(TimeSpan.FromSeconds(4.0));
+                }
+                else
+                {
+                    attacker.SendLocalizedMessage(1004010); // You failed in your attempt to stun.
+                    defender.SendLocalizedMessage(1004011); // Your opponent tried to stun you and failed.
                 }
             }
             else if (attacker.DisarmReady)
             {
-                if (attacker.CanBeginAction<Fists>())
+                if (!defender.Player && !defender.Body.IsHuman)
                 {
-                    if (defender.Player || defender.Body.IsHuman)
-                    {
-                        if (attacker.Skills.ArmsLore.Value >= 80.0 &&
-                            attacker.Skills.Wrestling.Value >= 80.0)
-                        {
-                            if (attacker.Stam >= 15)
-                            {
-                                var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
+                    attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
+                    return;
+                }
 
-                                if (toDisarm?.Movable == false)
-                                {
-                                    toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
-                                }
+                if (attacker.Skills.ArmsLore.Value < 80.0 || attacker.Skills.Wrestling.Value < 80.0)
+                {
+                    attacker.SendLocalizedMessage(1004002); // You are not skilled enough to disarm your opponent.
+                    attacker.DisarmReady = false;
+                    return;
+                }
 
-                                var pack = defender.Backpack;
+                if (attacker.Stam < 15)
+                {
+                    attacker.SendLocalizedMessage(1004003); // You are too fatigued to attempt anything.
+                    return;
+                }
 
-                                if (pack == null || toDisarm?.Movable == false)
-                                {
-                                    attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
-                                }
-                                else if (CheckMove(attacker, SkillName.ArmsLore))
-                                {
-                                    StartMoveDelay(attacker);
+                var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-                                    attacker.Stam -= 15;
-                                    attacker.DisarmReady = false;
+                if (toDisarm?.Movable == false)
+                {
+                    toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
+                }
 
-                                    attacker.SendLocalizedMessage(1004006); // You successfully disarm your opponent!
-                                    defender.SendLocalizedMessage(1004007); // You have been disarmed!
+                var pack = defender.Backpack;
 
-                                    pack.DropItem(toDisarm);
-                                }
-                                else
-                                {
-                                    attacker.Stam -= 15;
+                if (pack == null || toDisarm?.Movable == false)
+                {
+                    attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
+                }
+                else if (CheckMove(attacker, SkillName.ArmsLore))
+                {
+                    StartMoveDelay(attacker);
 
-                                    attacker.SendLocalizedMessage(1004004); // You failed in your attempt to disarm.
-                                    defender.SendLocalizedMessage(1004005); // Your opponent tried to disarm you but failed.
-                                }
-                            }
-                            else
-                            {
-                                attacker.SendLocalizedMessage(1004003); // You are too fatigued to attempt anything.
-                            }
-                        }
-                        else
-                        {
-                            attacker.SendLocalizedMessage(1004002); // You are not skilled enough to disarm your opponent.
-                            attacker.DisarmReady = false;
-                        }
-                    }
-                    else
-                    {
-                        attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
-                    }
+                    attacker.Stam -= 15;
+                    attacker.DisarmReady = false;
+
+                    attacker.SendLocalizedMessage(1004006); // You successfully disarm your opponent!
+                    defender.SendLocalizedMessage(1004007); // You have been disarmed!
+
+                    pack.DropItem(toDisarm);
+                }
+                else
+                {
+                    attacker.Stam -= 15;
+
+                    attacker.SendLocalizedMessage(1004004); // You failed in your attempt to disarm.
+                    defender.SendLocalizedMessage(1004005); // Your opponent tried to disarm you but failed.
                 }
             }
         }
@@ -238,12 +230,7 @@ namespace Server.Items
 
         private static void EventSink_StunRequest(Mobile m)
         {
-            if (Core.AOS)
-            {
-                return;
-            }
-
-            if (!DuelContext.AllowSpecialAbility(m, "Stun", true))
+            if (Core.AOS || !DuelContext.AllowSpecialAbility(m, "Stun", true))
             {
                 return;
             }

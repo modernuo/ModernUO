@@ -136,7 +136,6 @@ namespace Server
 
             if (Lock is < SkillLock.Up or > SkillLock.Locked)
             {
-                Console.WriteLine("Bad skill lock -> {0}.{1}", owner.Owner, Lock);
                 Lock = SkillLock.Up;
             }
         }
@@ -276,29 +275,29 @@ namespace Server
 
                 double bonusObey = 0.0, bonusNotObey = 0.0;
 
-                for (var i = 0; i < mods.Count; ++i)
+                foreach (var mod in mods)
                 {
-                    var mod = mods[i];
-
-                    if (mod.Skill == (SkillName)Info.SkillID)
+                    if (mod.Skill != (SkillName)Info.SkillID)
                     {
-                        if (mod.Relative)
+                        continue;
+                    }
+
+                    if (mod.Relative)
+                    {
+                        if (mod.ObeyCap)
                         {
-                            if (mod.ObeyCap)
-                            {
-                                bonusObey += mod.Value;
-                            }
-                            else
-                            {
-                                bonusNotObey += mod.Value;
-                            }
+                            bonusObey += mod.Value;
                         }
                         else
                         {
-                            bonusObey = 0.0;
-                            bonusNotObey = 0.0;
-                            value = mod.Value;
+                            bonusNotObey += mod.Value;
                         }
+                    }
+                    else
+                    {
+                        bonusObey = 0.0;
+                        bonusNotObey = 0.0;
+                        value = mod.Value;
                     }
                 }
 
