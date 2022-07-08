@@ -138,15 +138,7 @@ namespace Server.Spells.Chivalry
                             sendEffect = true;
                         }
 
-                        sendEffect = sendEffect ||
-                                     EvilOmenSpell.TryEndEffect(m) ||
-                                     StrangleSpell.RemoveCurse(m) ||
-                                     CorpseSkinSpell.RemoveCurse(m) ||
-                                     CurseSpell.RemoveEffect(m) ||
-                                     MortalStrike.EndWound(m) ||
-                                     MindRotSpell.ClearMindRotScalar(m) ||
-                                     BloodOathSpell.RemoveCurse(m) ||
-                                     SpellPlagueSpell.RemoveEffect(m);
+                        sendEffect = RemoveCurseEffects(m) || sendEffect;
 
                         // TODO: Move these into their respective end effect methods
                         BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);
@@ -176,6 +168,20 @@ namespace Server.Spells.Chivalry
             }
 
             FinishSequence();
+        }
+
+        private bool RemoveCurseEffects(Mobile m)
+        {
+            int curseEffectsRemoved = 0;
+            if (EvilOmenSpell.TryEndEffect(m)) curseEffectsRemoved++;
+            if (StrangleSpell.RemoveCurse(m)) curseEffectsRemoved++;
+            if (CorpseSkinSpell.RemoveCurse(m)) curseEffectsRemoved++;
+            if (CurseSpell.RemoveEffect(m)) curseEffectsRemoved++;
+            if (MortalStrike.EndWound(m)) curseEffectsRemoved++;
+            if (MindRotSpell.ClearMindRotScalar(m)) curseEffectsRemoved++;
+            if (BloodOathSpell.RemoveCurse(m)) curseEffectsRemoved++;
+            if (SpellPlagueSpell.RemoveEffect(m)) curseEffectsRemoved++;
+            return curseEffectsRemoved > 0;
         }
     }
 }
