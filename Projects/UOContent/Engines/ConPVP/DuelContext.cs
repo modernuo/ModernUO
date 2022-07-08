@@ -1817,12 +1817,18 @@ namespace Server.Engines.ConPVP
 
         public static void Debuff(Mobile mob)
         {
-            mob.RemoveStatMod("[Magic] Str Offset");
-            mob.RemoveStatMod("[Magic] Dex Offset");
-            mob.RemoveStatMod("[Magic] Int Offset");
+            mob.RemoveStatMod("[Magic] Str Buff");
+            mob.RemoveStatMod("[Magic] Dex Buff");
+            mob.RemoveStatMod("[Magic] Int Buff");
+            mob.RemoveStatMod("[Magic] Str Curse");
+            mob.RemoveStatMod("[Magic] Dex Curse");
+            mob.RemoveStatMod("[Magic] Int Curse");
             mob.RemoveStatMod("Concussion");
             mob.RemoveStatMod("blood-rose");
             mob.RemoveStatMod("clarity-potion");
+            mob.RemoveStatMod("RoseOfTrinsicPetal");
+            mob.RemoveStatMod("Holy Bless");
+            mob.RemoveStatMod("Holy Curse");
 
             OrangePetals.RemoveContext(mob);
 
