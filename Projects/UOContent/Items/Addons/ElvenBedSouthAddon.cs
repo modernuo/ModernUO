@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ElvenBedSouthAddon : BaseAddon
     {
         [Constructible]
@@ -13,7 +15,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new ElvenBedSouthDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ElvenBedSouthDeed : BaseAddonDeed
     {
         [Constructible]

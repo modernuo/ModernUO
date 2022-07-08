@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Goat : BaseCreature
     {
         [Constructible]
-        public Goat() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Goat() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 0xD1;
             BaseSoundID = 0x99;

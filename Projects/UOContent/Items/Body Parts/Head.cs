@@ -1,3 +1,5 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum HeadType
@@ -7,13 +9,15 @@ namespace Server.Items
         Tournament
     }
 
-    [Serializable(1, false)]
+    [SerializationGenerator(1, false)]
     public partial class Head : Item
     {
+        [InvalidateProperties]
         [SerializableField(0)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private string _playerName;
 
+        [InvalidateProperties]
         [SerializableField(1)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private HeadType _headType;

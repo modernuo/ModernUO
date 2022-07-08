@@ -17,16 +17,16 @@ namespace Server.Accounting
             Enabled = ServerConfiguration.GetOrUpdateSetting("accountAttackLimiter.enable", true);
         }
 
-        public static void Initialize()
+        public static unsafe void Initialize()
         {
             if (!Enabled)
             {
                 return;
             }
 
-            IncomingPackets.RegisterThrottler(0x80, Throttle);
-            IncomingPackets.RegisterThrottler(0x91, Throttle);
-            IncomingPackets.RegisterThrottler(0xCF, Throttle);
+            IncomingPackets.RegisterThrottler(0x80, &Throttle);
+            IncomingPackets.RegisterThrottler(0x91, &Throttle);
+            IncomingPackets.RegisterThrottler(0xCF, &Throttle);
         }
 
         public static bool Throttle(int packetId, NetState ns, out bool drop)

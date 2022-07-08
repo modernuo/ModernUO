@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
@@ -111,7 +112,7 @@ namespace Server.Items
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AnkhWest : Item
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -183,7 +184,7 @@ namespace Server.Items
             _item?.Delete();
         }
 
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0)]
@@ -257,7 +258,7 @@ namespace Server.Items
     }
 
     [TypeAlias("Server.Items.AnkhEast")]
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AnkhNorth : Item
     {
         [SerializableField(0, getter: "private", setter: "private")]
@@ -331,7 +332,7 @@ namespace Server.Items
         }
 
         [TypeAlias("Server.Items.AnkhEast+InternalItem")]
-        [Serializable(0, false)]
+        [SerializationGenerator(0, false)]
         private partial class InternalItem : Item
         {
             [SerializableField(0)]

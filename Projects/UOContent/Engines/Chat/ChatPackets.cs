@@ -21,13 +21,13 @@ namespace Server.Engines.Chat
 {
     public static class ChatPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xB5, 0x40, true, OpenChatWindowRequest);
-            IncomingPackets.Register(0xB3, 0, true, ChatAction);
+            IncomingPackets.Register(0xB5, 0x40, true, &OpenChatWindowRequest);
+            IncomingPackets.Register(0xB3, 0, true, &ChatAction);
         }
 
-        public static void OpenChatWindowRequest(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void OpenChatWindowRequest(NetState state, CircularBufferReader reader, int packetLength)
         {
             var from = state.Mobile;
 
@@ -48,7 +48,7 @@ namespace Server.Engines.Chat
             ChatUser.AddChatUser(from, chatName);
         }
 
-        public static void ChatAction(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void ChatAction(NetState state, CircularBufferReader reader, int packetLength)
         {
             if (!ChatSystem.Enabled)
             {
@@ -73,7 +73,7 @@ namespace Server.Engines.Chat
 
                 if (handler == null)
                 {
-                    state.LogInfo("Unknown chat action 0x{0:X}: {1}", actionID, param);
+                    state.LogInfo($"Unknown chat action 0x{actionID:X}: {param}");
                     return;
                 }
 
@@ -103,7 +103,7 @@ namespace Server.Engines.Chat
 
         public static void SendChatMessage(this NetState ns, string lang, int number, string param1, string param2)
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

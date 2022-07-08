@@ -11,7 +11,7 @@ namespace Server.Tests.Network
     {
         private async void DelayedExecute(Action action)
         {
-            await Task.Delay(5);
+            await Task.Delay(1);
 
             action();
         }
@@ -130,8 +130,12 @@ namespace Server.Tests.Network
                     continue;
                 }
 
-                result.CopyFrom(new[] { expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value,
-                    expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value, expected_value });
+                result.CopyFrom(new[] {
+                    expected_value, expected_value, expected_value, expected_value,
+                    expected_value, expected_value, expected_value, expected_value,
+                    expected_value, expected_value, expected_value, expected_value,
+                    expected_value, expected_value, expected_value, expected_value
+                });
 
                 writer.Advance(16);
                 count += 16;

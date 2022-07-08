@@ -6,6 +6,8 @@
  * CREATED : 10-07.2002                 *
  * **************************************/
 
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public enum WhiteStoneWallTypes
@@ -47,7 +49,7 @@ namespace Server.Items
         EastWallVVShort
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class WhiteStoneWall : BaseWall
     {
         [Constructible]

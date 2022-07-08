@@ -5,10 +5,12 @@ namespace Server.Mobiles
     public class ChaosDragoon : BaseCreature
     {
         [Constructible]
-        public ChaosDragoon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4)
+        public ChaosDragoon() : base(AIType.AI_Melee)
         {
             Body = 0x190;
             Hue = Race.Human.RandomSkinHue();
+
+            SetSpeed(0.15, 0.4);
 
             SetStr(176, 225);
             SetDex(81, 95);

@@ -87,9 +87,9 @@ namespace Server
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime TimeReceived { get; private set; }
 
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xD9, 0x10C, false, OnReceive);
+            IncomingPackets.Register(0xD9, 0x10C, false, &OnReceive);
 
             CommandSystem.Register("HWInfo", AccessLevel.GameMaster, HWInfo_OnCommand);
         }
@@ -141,7 +141,7 @@ namespace Server
             }
         }
 
-        public static void OnReceive(NetState state, CircularBufferReader reader, ref int packetLength)
+        public static void OnReceive(NetState state, CircularBufferReader reader, int packetLength)
         {
             reader.ReadByte(); // 1: <4.0.1a, 2>=4.0.1a
 

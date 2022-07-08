@@ -1,9 +1,10 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.ConPVP;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseSpear : BaseMeleeWeapon
     {
         public BaseSpear(int itemID) : base(itemID)

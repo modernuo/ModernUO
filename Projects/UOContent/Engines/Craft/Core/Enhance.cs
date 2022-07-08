@@ -22,7 +22,7 @@ namespace Server.Engines.Craft
     {
         public static EnhanceResult Invoke(
             Mobile from, CraftSystem craftSystem, BaseTool tool, Item item,
-            CraftResource resource, Type resType, ref object resMessage
+            CraftResource resource, Type resType, ref TextDefinition resMessage
         )
         {
             if (item == null)
@@ -410,7 +410,7 @@ namespace Server.Engines.Craft
             {
                 if (targeted is Item item)
                 {
-                    object message = null;
+                    TextDefinition message = null;
                     var res = Enhance.Invoke(
                         from,
                         m_CraftSystem,

@@ -44,7 +44,8 @@ namespace Server.Items
             new PsychicAttack(),
             new SerpentArrow(),
             new ForceOfNature(),
-            new Disrobe()
+            new InfusedThrow(),
+            new MysticArc(),
         };
 
         public static readonly WeaponAbility ArmorIgnore = Abilities[1];
@@ -79,7 +80,8 @@ namespace Server.Items
         public static readonly WeaponAbility SerpentArrow = Abilities[28];
         public static readonly WeaponAbility ForceOfNature = Abilities[29];
 
-        public static readonly WeaponAbility Disrobe = Abilities[30];
+        public static readonly WeaponAbility InfusedThrow = Abilities[30];
+        public static readonly WeaponAbility MysticArc = Abilities[31];
 
         private static readonly Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable =
             new();

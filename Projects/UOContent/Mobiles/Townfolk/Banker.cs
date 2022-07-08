@@ -360,10 +360,8 @@ namespace Server.Mobiles
                                 }
                                 else
                                 {
-                                    Say(
-                                        1042759,
-                                        GetBalance(e.Mobile).ToString("#,0")
-                                    ); // Thy current bank balance is ~1_AMOUNT~ gold.
+                                    // Thy current bank balance is ~1_AMOUNT~ gold.
+                                    Say(1042759, $"{GetBalance(e.Mobile):N0}");
                                 }
 
                                 break;

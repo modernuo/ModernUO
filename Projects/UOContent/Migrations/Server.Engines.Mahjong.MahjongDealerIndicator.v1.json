@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "type": "Server.Engines.Mahjong.MahjongDealerIndicator",
+  "properties": [
+    {
+      "name": "Position",
+      "type": "Server.Point2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point2D"
+      ]
+    },
+    {
+      "name": "Direction",
+      "type": "Server.Engines.Mahjong.MahjongPieceDirection",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Wind",
+      "type": "Server.Engines.Mahjong.MahjongWind",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

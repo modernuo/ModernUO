@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class CaptainBlackheartsFishingPole : FishingPole
     {
         [Constructible]
@@ -10,7 +12,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1074571; // Captain Blackheart's Fishing Pole
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

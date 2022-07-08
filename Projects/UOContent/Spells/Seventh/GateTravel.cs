@@ -20,6 +20,10 @@ namespace Server.Spells.Seventh
 
         private readonly RunebookEntry m_Entry;
 
+        public GateTravelSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+        {
+        }
+
         public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) :
             base(caster, scroll, _info) => m_Entry = entry;
 

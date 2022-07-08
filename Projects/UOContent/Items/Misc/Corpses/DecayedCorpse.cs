@@ -43,7 +43,7 @@ namespace Server.Items
         // Do not display (x items, y stones)
         public override bool CheckContentDisplay(Mobile from) => false;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(1046414, Name); // the remains of ~1_NAME~
         }

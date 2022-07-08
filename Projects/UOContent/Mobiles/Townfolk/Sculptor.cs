@@ -5,11 +5,11 @@ namespace Server.Mobiles
     public class Sculptor : BaseCreature
     {
         [Constructible]
-        public Sculptor()
-            : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+        public Sculptor() : base(AIType.AI_Animal, FightMode.None)
         {
             InitStats(31, 41, 51);
 
+            SetSpeed(0.2, 0.4);
             SpeechHue = Utility.RandomDyedHue();
             Title = "the sculptor";
             Hue = Race.Human.RandomSkinHue();

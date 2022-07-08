@@ -96,7 +96,7 @@ namespace Server.Compression
 
             new FileInfo(destinationArchiveFileName).EnsureDirectory();
 
-            using var builder = new ValueStringBuilder();
+            using var builder = ValueStringBuilder.Create();
             var i = 0;
             foreach (var path in paths)
             {

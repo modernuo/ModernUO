@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.TimedSkillMod",
+  "properties": [
+    {
+      "name": "Expire",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

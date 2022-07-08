@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SummonedDaemon : BaseCreature
     {
         [Constructible]
-        public SummonedDaemon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public SummonedDaemon() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("daemon");
             Body = Core.AOS ? 10 : 9;

@@ -1,95 +1,86 @@
-namespace Server.Engines.Mahjong
+using ModernUO.Serialization;
+
+namespace Server.Engines.Mahjong;
+
+[SerializationGenerator(1, false)]
+public partial class MahjongTile
 {
-    public class MahjongTile
+    [DirtyTrackingEntity]
+    private readonly MahjongGame _game;
+
+    [SerializableField(0, setter: "private")]
+    private int _number;
+
+    [SerializableField(1, setter: "private")]
+    private MahjongTileType _value;
+
+    [SerializableField(2, setter: "private")]
+    private Point2D _position;
+
+    [SerializableField(3, setter: "private")]
+    private int _stackLevel;
+
+    [SerializableField(4, setter: "private")]
+    private MahjongPieceDirection _direction;
+
+    [SerializableField(5, setter: "private")]
+    private bool _flipped;
+
+    public MahjongTile(MahjongGame game) => _game = game;
+
+    public MahjongTile(
+        MahjongGame game, int number, MahjongTileType value, Point2D position, int stackLevel,
+        MahjongPieceDirection direction, bool flipped
+    )
     {
-        protected Point2D m_Position;
+        _game = game;
+        _number = number;
+        _value = value;
+        _position = position;
+        _stackLevel = stackLevel;
+        _direction = direction;
+        _flipped = flipped;
+    }
 
-        public MahjongTile(
-            MahjongGame game, int number, MahjongTileType value, Point2D position, int stackLevel,
-            MahjongPieceDirection direction, bool flipped
-        )
+    public MahjongGame Game => _game;
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _number = reader.ReadInt();
+        _value = (MahjongTileType)reader.ReadInt();
+        _position = reader.ReadPoint2D();
+        _stackLevel = reader.ReadInt();
+        _direction = (MahjongPieceDirection)reader.ReadInt();
+        _flipped = reader.ReadBool();
+    }
+
+    public MahjongPieceDim Dimensions => GetDimensions(_position, _direction);
+
+    public bool IsMovable => _game.GetStackLevel(Dimensions) <= _stackLevel;
+
+    public static MahjongPieceDim GetDimensions(Point2D position, MahjongPieceDirection direction) =>
+        direction is MahjongPieceDirection.Up or MahjongPieceDirection.Down
+            ? new MahjongPieceDim(position, 20, 30)
+            : new MahjongPieceDim(position, 30, 20);
+
+    public void Move(Point2D position, MahjongPieceDirection direction, bool flip, int validHandArea)
+    {
+        var dim = GetDimensions(position, direction);
+        var curHandArea = Dimensions.GetHandArea();
+        var newHandArea = dim.GetHandArea();
+
+        if (!IsMovable || !dim.IsValid() || validHandArea >= 0 &&
+            (curHandArea >= 0 && curHandArea != validHandArea || newHandArea >= 0 && newHandArea != validHandArea))
         {
-            Game = game;
-            Number = number;
-            Value = value;
-            m_Position = position;
-            StackLevel = stackLevel;
-            Direction = direction;
-            Flipped = flipped;
+            return;
         }
 
-        public MahjongTile(MahjongGame game, IGenericReader reader)
-        {
-            Game = game;
+        Position = position;
+        Direction = direction;
+        StackLevel = -1; // Avoid self interference
+        StackLevel = _game.GetStackLevel(dim) + 1;
+        Flipped = flip;
 
-            var version = reader.ReadInt();
-
-            Number = reader.ReadInt();
-            Value = (MahjongTileType)reader.ReadInt();
-            m_Position = reader.ReadPoint2D();
-            StackLevel = reader.ReadInt();
-            Direction = (MahjongPieceDirection)reader.ReadInt();
-            Flipped = reader.ReadBool();
-        }
-
-        public MahjongGame Game { get; }
-
-        public int Number { get; }
-
-        public MahjongTileType Value { get; }
-
-        public Point2D Position => m_Position;
-        public int StackLevel { get; private set; }
-
-        public MahjongPieceDirection Direction { get; private set; }
-
-        public bool Flipped { get; private set; }
-
-        public MahjongPieceDim Dimensions => GetDimensions(m_Position, Direction);
-
-        public bool IsMovable => Game.GetStackLevel(Dimensions) <= StackLevel;
-
-        public static MahjongPieceDim GetDimensions(Point2D position, MahjongPieceDirection direction)
-        {
-            if (direction is MahjongPieceDirection.Up or MahjongPieceDirection.Down)
-            {
-                return new MahjongPieceDim(position, 20, 30);
-            }
-
-            return new MahjongPieceDim(position, 30, 20);
-        }
-
-        public void Move(Point2D position, MahjongPieceDirection direction, bool flip, int validHandArea)
-        {
-            var dim = GetDimensions(position, direction);
-            var curHandArea = Dimensions.GetHandArea();
-            var newHandArea = dim.GetHandArea();
-
-            if (!IsMovable || !dim.IsValid() || validHandArea >= 0 &&
-                (curHandArea >= 0 && curHandArea != validHandArea || newHandArea >= 0 && newHandArea != validHandArea))
-            {
-                return;
-            }
-
-            m_Position = position;
-            Direction = direction;
-            StackLevel = -1; // Avoid self interference
-            StackLevel = Game.GetStackLevel(dim) + 1;
-            Flipped = flip;
-
-            Game.Players.SendTilePacket(this, true, true);
-        }
-
-        public void Save(IGenericWriter writer)
-        {
-            writer.Write(0); // version
-
-            writer.Write(Number);
-            writer.Write((int)Value);
-            writer.Write(m_Position);
-            writer.Write(StackLevel);
-            writer.Write((int)Direction);
-            writer.Write(Flipped);
-        }
+        _game.Players.SendTilePacket(this, true, true);
     }
 }

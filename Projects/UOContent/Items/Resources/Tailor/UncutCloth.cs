@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0x1765, 0x1767)]
     public partial class UncutCloth : Item, IScissorable, IDyable, ICommodity
     {

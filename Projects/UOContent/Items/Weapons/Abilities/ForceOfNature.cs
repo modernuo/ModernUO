@@ -103,7 +103,7 @@ namespace Server.Items
                 {
                     int damage = Utility.RandomMinMax(15, 35);
 
-                    AOS.Damage(From, From, damage, false, 0, 0, 0, 0, 0, 0, 100, false, false, false);
+                    AOS.Damage(From, From, damage, false, 0, 0, 0, 0, 0, 0, 100);
                 }
             }
         }

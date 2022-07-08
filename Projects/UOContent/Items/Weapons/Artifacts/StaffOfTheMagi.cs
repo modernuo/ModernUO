@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
-    public partial  class StaffOfTheMagi : BlackStaff
+    [SerializationGenerator(0, false)]
+    public partial class StaffOfTheMagi : BlackStaff
     {
         [Constructible]
         public StaffOfTheMagi()

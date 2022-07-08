@@ -4,7 +4,7 @@ namespace Server.Mobiles
     {
         [Constructible]
         public UnfrozenMummy()
-            : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.4, 0.8)
+            : base(AIType.AI_Mage)
         {
             Body = 0x9B;
             Hue = 0x480;
@@ -46,10 +46,10 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.6)
             c.DropItem( new BrokenCrystals() );
-    
+
           if (Utility.RandomDouble() < 0.1)
             c.DropItem( new ParrotItem() );
         }

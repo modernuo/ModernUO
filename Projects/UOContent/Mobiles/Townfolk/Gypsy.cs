@@ -5,17 +5,15 @@ namespace Server.Mobiles
     public class Gypsy : BaseCreature
     {
         [Constructible]
-        public Gypsy()
-            : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+        public Gypsy() : base(AIType.AI_Animal, FightMode.None)
         {
             InitStats(31, 41, 51);
-
-            SpeechHue = Utility.RandomDyedHue();
-
             SetSkill(SkillName.Cooking, 65, 88);
             SetSkill(SkillName.Snooping, 65, 88);
             SetSkill(SkillName.Stealing, 65, 88);
 
+            SetSpeed(0.2, 0.4);
+            SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();
 
             if (Female = Utility.RandomBool())

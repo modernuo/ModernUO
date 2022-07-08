@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class GozaMatEastAddon : BaseAddon
     {
         [Constructible]
@@ -16,7 +18,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class GozaMatEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -28,7 +30,7 @@ namespace Server.Items
         public override int LabelNumber => 1030404; // goza (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class GozaMatSouthAddon : BaseAddon
     {
         [Constructible]
@@ -44,7 +46,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class GozaMatSouthDeed : BaseAddonDeed
     {
         [Constructible]
@@ -56,7 +58,7 @@ namespace Server.Items
         public override int LabelNumber => 1030405; // goza (south)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SquareGozaMatEastAddon : BaseAddon
     {
         [Constructible]
@@ -72,7 +74,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SquareGozaMatEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -84,7 +86,7 @@ namespace Server.Items
         public override int LabelNumber => 1030407; // square goza (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SquareGozaMatSouthAddon : BaseAddon
     {
         [Constructible]
@@ -99,7 +101,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class SquareGozaMatSouthDeed : BaseAddonDeed
     {
         [Constructible]
@@ -111,7 +113,7 @@ namespace Server.Items
         public override int LabelNumber => 1030406; // square goza (south)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeGozaMatEastAddon : BaseAddon
     {
         [Constructible]
@@ -127,7 +129,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeGozaMatEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -139,7 +141,7 @@ namespace Server.Items
         public override int LabelNumber => 1030408; // brocade goza (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeGozaMatSouthAddon : BaseAddon
     {
         [Constructible]
@@ -155,7 +157,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeGozaMatSouthDeed : BaseAddonDeed
     {
         [Constructible]
@@ -167,7 +169,7 @@ namespace Server.Items
         public override int LabelNumber => 1030409; // brocade goza (south)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeSquareGozaMatEastAddon : BaseAddon
     {
         [Constructible]
@@ -182,7 +184,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeSquareGozaMatEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -194,7 +196,7 @@ namespace Server.Items
         public override int LabelNumber => 1030411; // brocade square goza (east)
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeSquareGozaMatSouthAddon : BaseAddon
     {
         [Constructible]
@@ -209,7 +211,7 @@ namespace Server.Items
         public override bool RetainDeedHue => true;
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class BrocadeSquareGozaMatSouthDeed : BaseAddonDeed
     {
         [Constructible]

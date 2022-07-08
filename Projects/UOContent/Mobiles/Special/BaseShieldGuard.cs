@@ -5,13 +5,13 @@ namespace Server.Mobiles
 {
     public abstract class BaseShieldGuard : BaseCreature
     {
-        public BaseShieldGuard() : base(AIType.AI_Melee, FightMode.Aggressor, 14, 1, 0.8, 1.6)
+        public BaseShieldGuard() : base(AIType.AI_Melee, FightMode.Aggressor, 14)
         {
             InitStats(1000, 1000, 1000);
             Title = "the guard";
 
+            SetSpeed(0.5, 2.0);
             SpeechHue = Utility.RandomDyedHue();
-
             Hue = Race.Human.RandomSkinHue();
 
             if (Female = Utility.RandomBool())

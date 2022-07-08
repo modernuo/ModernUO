@@ -1320,7 +1320,7 @@ namespace Server.Factions
             var context = new SkillLossContext();
             m_SkillLoss[mob] = context;
 
-            var mods = context.m_Mods = new List<SkillMod>();
+            var mods = context.m_Mods = new HashSet<SkillMod>();
 
             for (var i = 0; i < mob.Skills.Length; ++i)
             {
@@ -1352,11 +1352,12 @@ namespace Server.Factions
 
             var mods = context.m_Mods;
 
-            for (var i = 0; i < mods.Count; ++i)
+            foreach (var mod in mods)
             {
-                mob.RemoveSkillMod(mods[i]);
+                mod.Remove();
             }
 
+            context.m_Mods = null;
             context._timerToken.Cancel();
 
             return true;
@@ -1376,7 +1377,7 @@ namespace Server.Factions
 
         private class SkillLossContext
         {
-            public List<SkillMod> m_Mods;
+            public HashSet<SkillMod> m_Mods;
             public TimerExecutionToken _timerToken;
         }
     }

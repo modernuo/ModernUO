@@ -1,6 +1,8 @@
-﻿namespace Server.Items
+﻿using ModernUO.Serialization;
+
+namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class TwilightLantern : Lantern
     {
         [Constructible]
@@ -10,7 +12,7 @@
 
         public override bool AllowEquippedCast(Mobile from) => true;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

@@ -1,3 +1,5 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     public interface ILoom
@@ -5,7 +7,7 @@ namespace Server.Items
         int Phase { get; set; }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LoomEastAddon : BaseAddon, ILoom
     {
         [SerializableField(0)]
@@ -21,7 +23,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new LoomEastDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LoomEastDeed : BaseAddonDeed
     {
         [Constructible]

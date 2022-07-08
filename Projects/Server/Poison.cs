@@ -76,35 +76,5 @@ namespace Server
 
             return null;
         }
-
-        public static void Serialize(Poison p, IGenericWriter writer)
-        {
-            if (p == null)
-            {
-                writer.Write((byte)0);
-            }
-            else
-            {
-                writer.Write((byte)1);
-                writer.Write((byte)p.Level);
-            }
-        }
-
-        public static Poison Deserialize(IGenericReader reader)
-        {
-            switch (reader.ReadByte())
-            {
-                case 1: return GetPoison(reader.ReadByte());
-                case 2:
-                    // no longer used, safe to remove?
-                    reader.ReadInt();
-                    reader.ReadDouble();
-                    reader.ReadInt();
-                    reader.ReadTimeSpan();
-                    break;
-            }
-
-            return null;
-        }
     }
 }

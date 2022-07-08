@@ -145,22 +145,22 @@ namespace Server
             var start = value.IndexOfOrdinal('(');
             var end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var x);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
 
             start = end;
             end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var y);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
 
             start = end;
             end = value.IndexOf(',', start + 1);
 
-            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var z);
+            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var z);
 
             start = end;
             end = value.IndexOf(')', start + 1);
 
-            var map = Map.Parse(value.Substring(start + 1, end - (start + 1)).Trim());
+            var map = Map.Parse(value.AsSpan(start + 1, end - (start + 1)).Trim());
 
             return new WorldLocation(x, y, z, map);
         }

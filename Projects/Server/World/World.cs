@@ -284,11 +284,11 @@ namespace Server
 
             watch.Stop();
 
-            logger.Information(string.Format("World loaded ({1} items, {2} mobiles) ({0:F2} seconds)",
+            logger.Information("World loaded ({ItemCount} items, {MobileCount} mobiles) ({Duration:F2} seconds)",
                 watch.Elapsed.TotalSeconds,
                 Items.Count,
                 Mobiles.Count
-            ));
+            );
 
             WorldState = WorldState.Running;
         }
@@ -304,7 +304,7 @@ namespace Server
             {
                 if (_pendingAdd.ContainsKey(entity.Serial))
                 {
-                    logger.Warning("Entity {0} was both pending both deletion and addition after save", entity);
+                    logger.Warning("Entity {Entity} was both pending both deletion and addition after save", entity);
                 }
 
                 RemoveEntity(entity);
@@ -402,7 +402,7 @@ namespace Server
 
                 watch.Stop();
 
-                logger.Information("Writing world save snapshot done ({0:F2} seconds)", watch.Elapsed.TotalSeconds);
+                logger.Information("Writing world save snapshot done ({Duration:F2} seconds)", watch.Elapsed.TotalSeconds);
             }
             catch (Exception ex)
             {
@@ -431,7 +431,7 @@ namespace Server
 
             m_DiskWriteHandle.Set();
 
-            Timer.StartTimer(FinishWorldSave);
+            Core.LoopContext.Post(FinishWorldSave);
         }
 
         private static void ProcessDecay()
@@ -505,7 +505,7 @@ namespace Server
             if (exception == null)
             {
                 var duration = watch.Elapsed.TotalSeconds;
-                logger.Information("World save completed ({0:F2} seconds)", duration);
+                logger.Information("World save completed ({Duration:F2} seconds)", duration);
 
                 // Only broadcast if it took at least 150ms
                 if (duration >= 0.15)
@@ -657,99 +657,5 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
-
-        public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
-        {
-            Serial serial = reader.ReadSerial();
-            var typeT = typeof(T);
-
-            T entity;
-
-            // Add to this list when creating new serializable types
-            if (typeof(BaseGuild).IsAssignableFrom(typeT))
-            {
-                entity = FindGuild(serial) as T;
-                // If we check for `entity.Deleted` here during deserialization then all guilds are deleted because
-                // Deleted -> Disbanded -> No leader, which is the case before deserialization.
-                // TODO: Use a deleted flag instead, and actively check for dibanded guilds properly.
-            }
-            else
-            {
-                entity = FindEntity<IEntity>(serial) as T;
-                if (entity?.Deleted == false)
-                {
-                    return entity;
-                }
-            }
-
-            return entity?.Created <= reader.LastSerialized ? entity : null;
-        }
-
-        public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable
-        {
-            var count = reader.ReadInt();
-
-            var list = new List<T>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                var entity = reader.ReadEntity<T>();
-                if (entity != null)
-                {
-                    list.Add(entity);
-                }
-            }
-
-            return list;
-        }
-
-        public static HashSet<T> ReadEntitySet<T>(this IGenericReader reader) where T : class, ISerializable
-        {
-            var count = reader.ReadInt();
-
-            var set = new HashSet<T>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                var entity = reader.ReadEntity<T>();
-                if (entity != null)
-                {
-                    set.Add(entity);
-                }
-            }
-
-            return set;
-        }
-
-        public static void Write(this IGenericWriter writer, ISerializable value)
-        {
-            writer.Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
-        }
-
-        public static void Write<T>(this IGenericWriter writer, ICollection<T> coll) where T : class, ISerializable
-        {
-            writer.Write(coll.Count);
-            foreach (var entry in coll)
-            {
-                writer.Write(entry);
-            }
-        }
-
-        public static void Write<T>(
-            this IGenericWriter writer, ICollection<T> coll, Action<IGenericWriter, T> action
-        ) where T : class, ISerializable
-        {
-            if (coll == null)
-            {
-                writer.Write(0);
-                return;
-            }
-
-            writer.Write(coll.Count);
-            foreach (var entry in coll)
-            {
-                action(writer, entry);
-            }
-        }
     }
 }

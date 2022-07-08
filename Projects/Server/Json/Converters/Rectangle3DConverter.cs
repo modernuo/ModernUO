@@ -17,168 +17,167 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
+namespace Server.Json;
+
+public class Rectangle3DConverter : JsonConverter<Rectangle3D>
 {
-    public class Rectangle3DConverter : JsonConverter<Rectangle3D>
+    private Rectangle3D DeserializeArray(ref Utf8JsonReader reader)
     {
-        private Rectangle3D DeserializeArray(ref Utf8JsonReader reader)
+        Span<int> data = stackalloc int[6];
+        var count = 0;
+
+        while (true)
         {
-            Span<int> data = stackalloc int[6];
-            var count = 0;
-
-            while (true)
+            reader.Read();
+            if (reader.TokenType == JsonTokenType.EndArray)
             {
-                reader.Read();
-                if (reader.TokenType == JsonTokenType.EndArray)
-                {
-                    break;
-                }
-
-                if (reader.TokenType == JsonTokenType.Number)
-                {
-                    if (count < 6)
-                    {
-                        data[count] = reader.GetInt32();
-                    }
-
-                    count++;
-                }
+                break;
             }
 
-            if (count > 6)
+            if (reader.TokenType == JsonTokenType.Number)
             {
-                throw new JsonException("Rectangle3D must be an array of x, y, z, h, w, d");
-            }
+                if (count < 6)
+                {
+                    data[count] = reader.GetInt32();
+                }
 
-            return new Rectangle3D(data[0], data[1], data[2], data[3], data[4], data[5]);
+                count++;
+            }
         }
 
-        private Rectangle3D DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
+        if (count > 6)
         {
-            Span<int> data = stackalloc int[6];
+            throw new JsonException("Rectangle3D must be an array of x, y, z, h, w, d");
+        }
 
-            // 0 - xyzwhd, 1 - x1y1z1x2y2z2, 2 - start/end
-            var objType = -1;
-            var hasZ = false;
+        return new Rectangle3D(data[0], data[1], data[2], data[3], data[4], data[5]);
+    }
 
-            while (true)
+    private Rectangle3D DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    {
+        Span<int> data = stackalloc int[6];
+
+        // 0 - xyzwhd, 1 - x1y1z1x2y2z2, 2 - start/end
+        var objType = -1;
+        var hasZ = false;
+
+        while (true)
+        {
+            reader.Read();
+            if (reader.TokenType == JsonTokenType.EndObject)
             {
-                reader.Read();
-                if (reader.TokenType == JsonTokenType.EndObject)
-                {
-                    break;
-                }
+                break;
+            }
 
-                if (reader.TokenType != JsonTokenType.PropertyName)
-                {
-                    throw new JsonException("Invalid json structure for Rectangle3D object");
-                }
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException("Invalid json structure for Rectangle3D object");
+            }
 
-                var key = reader.GetString();
+            var key = reader.GetString();
 
-                reader.Read();
+            reader.Read();
 
-                if (key is "start" or "end")
-                {
-                    if (objType > -1 && objType != 2)
-                    {
-                        throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
-                    }
-
-                    objType = 2;
-
-                    var point3D = reader.ToObject<Point3D>(options);
-                    var offset = key == "end" ? 3 : 0;
-                    data[0 + offset] = point3D.X;
-                    data[1 + offset] = point3D.Y;
-                    // We can't do implicit z-level. Abandon using Point3D deserialization?
-                    data[2 + offset] = point3D.Z;
-                    continue;
-                }
-
-                var i = key switch
-                {
-                    "x"      => 0,
-                    "y"      => 1,
-                    "z"      => 2,
-                    "w"      => 3,
-                    "width"  => 3,
-                    "h"      => 4,
-                    "height" => 4,
-                    "d"      => 5,
-                    "depth"  => 5,
-                    "x1"     => 10,
-                    "y1"     => 11,
-                    "z1"     => 12,
-                    "x2"     => 13,
-                    "y2"     => 14,
-                    "z2"     => 15,
-                    _        => throw new JsonException($"Invalid property {key} for Rectangle3D")
-                };
-
-                if (i < 10)
-                {
-                    if (objType > -1 && objType != 0)
-                    {
-                        throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
-                    }
-
-                    objType = 0;
-                    data[i] = reader.GetInt32();
-                    if (i == 2)
-                    {
-                        hasZ = true;
-                    }
-
-                    continue;
-                }
-
-                if (objType > -1 && objType != 1)
+            if (key is "start" or "end")
+            {
+                if (objType > -1 && objType != 2)
                 {
                     throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
                 }
 
-                objType = 1;
-                data[i - 10] = reader.GetInt32();
-                if (i is 12 or 15)
+                objType = 2;
+
+                var point3D = reader.ToObject<Point3D>(options);
+                var offset = key == "end" ? 3 : 0;
+                data[0 + offset] = point3D.X;
+                data[1 + offset] = point3D.Y;
+                // We can't do implicit z-level. Abandon using Point3D deserialization?
+                data[2 + offset] = point3D.Z;
+                continue;
+            }
+
+            var i = key switch
+            {
+                "x"      => 0,
+                "y"      => 1,
+                "z"      => 2,
+                "w"      => 3,
+                "width"  => 3,
+                "h"      => 4,
+                "height" => 4,
+                "d"      => 5,
+                "depth"  => 5,
+                "x1"     => 10,
+                "y1"     => 11,
+                "z1"     => 12,
+                "x2"     => 13,
+                "y2"     => 14,
+                "z2"     => 15,
+                _        => throw new JsonException($"Invalid property {key} for Rectangle3D")
+            };
+
+            if (i < 10)
+            {
+                if (objType > -1 && objType != 0)
+                {
+                    throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
+                }
+
+                objType = 0;
+                data[i] = reader.GetInt32();
+                if (i == 2)
                 {
                     hasZ = true;
                 }
+
+                continue;
             }
 
-            if (!hasZ)
+            if (objType > -1 && objType != 1)
             {
-                // Bottom to top?
-                data[2] = -128;
-                data[5] = 127;
+                throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
             }
 
-            return objType == 0
-                ? new Rectangle3D(data[0], data[1], data[2], data[3], data[4], data[5])
-                : new Rectangle3D(
-                    new Point3D(data[0], data[1], data[2]),
-                    new Point3D(data[3], data[4], data[5])
-                );
+            objType = 1;
+            data[i - 10] = reader.GetInt32();
+            if (i is 12 or 15)
+            {
+                hasZ = true;
+            }
         }
 
-        public override Rectangle3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-            reader.TokenType switch
-            {
-                JsonTokenType.StartArray  => DeserializeArray(ref reader),
-                JsonTokenType.StartObject => DeserializeObj(ref reader, options),
-                _                         => throw new JsonException("Invalid Json for Point3D")
-            };
-
-        public override void Write(Utf8JsonWriter writer, Rectangle3D value, JsonSerializerOptions options)
+        if (!hasZ)
         {
-            writer.WriteStartArray();
-            writer.WriteNumberValue(value.Start.X);
-            writer.WriteNumberValue(value.Start.Y);
-            writer.WriteNumberValue(value.Start.Z);
-            writer.WriteNumberValue(value.Width);
-            writer.WriteNumberValue(value.Height);
-            writer.WriteNumberValue(value.Depth);
-            writer.WriteEndArray();
+            // Bottom to top?
+            data[2] = -128;
+            data[5] = 127;
         }
+
+        return objType == 0
+            ? new Rectangle3D(data[0], data[1], data[2], data[3], data[4], data[5])
+            : new Rectangle3D(
+                new Point3D(data[0], data[1], data[2]),
+                new Point3D(data[3], data[4], data[5])
+            );
+    }
+
+    public override Rectangle3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.TokenType switch
+        {
+            JsonTokenType.StartArray  => DeserializeArray(ref reader),
+            JsonTokenType.StartObject => DeserializeObj(ref reader, options),
+            _                         => throw new JsonException("Invalid Json for Point3D")
+        };
+
+    public override void Write(Utf8JsonWriter writer, Rectangle3D value, JsonSerializerOptions options)
+    {
+        writer.WriteStartArray();
+        writer.WriteNumberValue(value.Start.X);
+        writer.WriteNumberValue(value.Start.Y);
+        writer.WriteNumberValue(value.Start.Z);
+        writer.WriteNumberValue(value.Width);
+        writer.WriteNumberValue(value.Height);
+        writer.WriteNumberValue(value.Depth);
+        writer.WriteEndArray();
     }
 }

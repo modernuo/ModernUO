@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Ethics;
 using Server.Guilds;
@@ -3227,16 +3228,21 @@ namespace Server.Multis
 
         private void FixLockdowns_Sandbox()
         {
-            var conts = LockDowns?.Where(item => item is Container).ToList();
-
-            if (conts == null)
+            if (LockDowns?.Count > 0)
             {
-                return;
-            }
+                using var queue = PooledRefQueue<Item>.Create();
+                foreach (var item in LockDowns)
+                {
+                    if (item is Container)
+                    {
+                        queue.Enqueue(item);
+                    }
+                }
 
-            foreach (var cont in conts)
-            {
-                SetLockdown(cont, true, true);
+                while (queue.Count > 0)
+                {
+                    SetLockdown(queue.Dequeue(), true, true);
+                }
             }
         }
 
@@ -3694,7 +3700,7 @@ namespace Server.Multis
 
             public override string DefaultName => "a house transfer contract";
 
-            public override void GetProperties(ObjectPropertyList list)
+            public override void GetProperties(IPropertyList list)
             {
                 base.GetProperties(list);
 
@@ -3715,12 +3721,17 @@ namespace Server.Multis
                     ref ySouth
                 );
 
-                var location =
-                    valid ? $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}" : "unknown";
-
                 list.Add(1061112, Utility.FixHtml(houseName)); // House Name: ~1_val~
                 list.Add(1061113, owner);                      // Owner: ~1_val~
-                list.Add(1061114, location);                   // Location: ~1_val~
+                if (valid)
+                {
+                    // Location: ~1_val~
+                    list.Add(1061114, $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}");
+                }
+                else
+                {
+                    list.Add(1061114, "unknown"); // Location: ~1_val~
+                }
             }
 
             public override void Serialize(IGenericWriter writer)

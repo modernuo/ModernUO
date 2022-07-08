@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2B72, 0x3169)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class VultureHelm : BaseArmor
     {
         [Constructible]

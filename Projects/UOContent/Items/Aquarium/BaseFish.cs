@@ -1,8 +1,9 @@
 using System;
+using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseFish : Item
     {
         private static readonly TimeSpan DeathDelay = TimeSpan.FromMinutes(5);
@@ -59,7 +60,7 @@ namespace Server.Items
             return Dead ? 1073623 : 1073622; // A [dead/live] aquarium creature
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

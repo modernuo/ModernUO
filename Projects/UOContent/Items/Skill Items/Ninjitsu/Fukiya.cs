@@ -87,15 +87,15 @@ namespace Server.Items
             from.MovingEffect(to, 0x2804, 5, 0, false, false);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
 
             if (m_Poison != null && m_PoisonCharges > 0)
             {
-                list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+                list.Add(1062412 + m_Poison.Level, m_PoisonCharges);
             }
         }
 
@@ -123,7 +123,7 @@ namespace Server.Items
 
             writer.Write(m_UsesRemaining);
 
-            Poison.Serialize(m_Poison, writer);
+            writer.Write(m_Poison);
             writer.Write(m_PoisonCharges);
         }
 
@@ -139,7 +139,7 @@ namespace Server.Items
                     {
                         m_UsesRemaining = reader.ReadInt();
 
-                        m_Poison = Poison.Deserialize(reader);
+                        m_Poison = reader.ReadPoison();
                         m_PoisonCharges = reader.ReadInt();
 
                         break;

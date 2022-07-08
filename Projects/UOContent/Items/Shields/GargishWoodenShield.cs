@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x4200, 0x4207)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GargishWoodenShield : BaseShield
     {
         [Constructible]

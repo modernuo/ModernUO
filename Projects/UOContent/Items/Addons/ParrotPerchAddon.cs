@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ParrotPerchAddon : BaseAddon
     {
         [Constructible]
@@ -12,7 +14,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new ParrotPerchDeed();
     }
 
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ParrotPerchDeed : BaseAddonDeed
     {
         [Constructible]

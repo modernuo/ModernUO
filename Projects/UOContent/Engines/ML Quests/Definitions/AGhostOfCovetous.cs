@@ -96,8 +96,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Ben : BaseCreature
     {
         [Constructible]
-        public Ben()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Ben() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Apprentice Necromancer";
             Body = 0x190;
@@ -107,6 +106,7 @@ namespace Server.Engines.MLQuests.Definitions
             FacialHairItemID = 0x204C;
             FacialHairHue = 0x463;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new Backpack());
@@ -142,13 +142,13 @@ namespace Server.Engines.MLQuests.Definitions
     public class Frederic : BaseCreature
     {
         [Constructible]
-        public Frederic()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Frederic() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Body = 0x1A;
             Hue = 0x455;
             Frozen = true;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
         }
 
@@ -178,14 +178,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Leon : BaseCreature
     {
         [Constructible]
-        public Leon()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Leon() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Alchemist";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -221,8 +222,7 @@ namespace Server.Engines.MLQuests.Definitions
     public class Andros : BaseCreature
     {
         [Constructible]
-        public Andros()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Andros() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Blacksmith";
             Body = 0x190;
@@ -232,6 +232,7 @@ namespace Server.Engines.MLQuests.Definitions
             HairItemID = 0x2049;
             HairHue = 0x45E;
 
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new Backpack());

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class KaburJournal : RedBook
     {
         public static readonly BookContent Content = new(
@@ -214,7 +216,7 @@ namespace Server.Items
 
         public override BookContent DefaultContent => Content;
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add("Khabur's Journal");
         }

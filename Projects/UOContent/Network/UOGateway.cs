@@ -22,20 +22,20 @@ namespace Server.Network
 {
     public static class UOGateway
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
             var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
 
             if (enabled)
             {
-                FreeshardProtocol.Register(0xFE, false, QueryCompactShardStats);
-                FreeshardProtocol.Register(0xFF, false, QueryExtendedShardStats);
+                FreeshardProtocol.Register(0xFE, false, &QueryCompactShardStats);
+                FreeshardProtocol.Register(0xFF, false, &QueryExtendedShardStats);
             }
         }
 
-        public static void QueryCompactShardStats(NetState ns, CircularBufferReader reader, ref int packetLength)
+        public static void QueryCompactShardStats(NetState state, CircularBufferReader reader, int packetLength)
         {
-            ns.SendCompactShardStats(
+            state.SendCompactShardStats(
                 (uint)(Core.TickCount / 1000),
                 TcpServer.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
@@ -44,10 +44,10 @@ namespace Server.Network
             );
         }
 
-        public static void QueryExtendedShardStats(NetState ns, CircularBufferReader reader, ref int packetLength)
+        public static void QueryExtendedShardStats(NetState state, CircularBufferReader reader, int packetLength)
         {
             const long ticksInHour = 1000 * 60 * 60;
-            ns.SendExtendedShardStats(
+            state.SendExtendedShardStats(
                 ServerList.ServerName,
                 (int)(Core.TickCount / ticksInHour),
                 TcpServer.Instances.Count - 1, // Shame if you modify this!
@@ -61,7 +61,7 @@ namespace Server.Network
             this NetState ns, uint age, int clients, int items, int mobiles, long mem
         )
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }
@@ -82,7 +82,7 @@ namespace Server.Network
             this NetState ns, string name, int age, int clients, int items, int mobiles, int mem
         )
         {
-            if (ns == null)
+            if (ns.CannotSendPackets())
             {
                 return;
             }

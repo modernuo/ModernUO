@@ -217,7 +217,7 @@ namespace Server.Items
             InvalidateProperties();
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -232,23 +232,27 @@ namespace Server.Items
 
                 if (m_TargetMap == Map.Tokuno)
                 {
-                    list.Add(House != null ? 1063260 : 1063259, RuneFormat, desc); // ~1_val~ (Tokuno Islands)[(House)]
+                    list.Add(House != null ? 1063260 : 1063259, $"a recall rune for {desc}"); // ~1_val~ (Tokuno Islands)[(House)]
                 }
                 else if (m_TargetMap == Map.Malas)
                 {
-                    list.Add(House != null ? 1062454 : 1060804, RuneFormat, desc); // ~1_val~ (Malas)[(House)]
+                    list.Add(House != null ? 1062454 : 1060804, $"a recall rune for {desc}"); // ~1_val~ (Malas)[(House)]
                 }
                 else if (m_TargetMap == Map.Felucca)
                 {
-                    list.Add(House != null ? 1062452 : 1060805, RuneFormat, desc); // ~1_val~ (Felucca)[(House)]
+                    list.Add(House != null ? 1062452 : 1060805, $"a recall rune for {desc}"); // ~1_val~ (Felucca)[(House)]
                 }
                 else if (m_TargetMap == Map.Trammel)
                 {
-                    list.Add(House != null ? 1062453 : 1060806, RuneFormat, desc); // ~1_val~ (Trammel)[(House)]
+                    list.Add(House != null ? 1062453 : 1060806, $"a recall rune for {desc}"); // ~1_val~ (Trammel)[(House)]
+                }
+                else if (House != null)
+                {
+                    list.Add($"a recall rune for {desc} ({m_TargetMap})(House)");
                 }
                 else
                 {
-                    list.Add(House != null ? "{0} ({1})(House)" : "{0} ({1})", string.Format(RuneFormat, desc), m_TargetMap);
+                    list.Add($"a recall rune for {desc} ({m_TargetMap})");
                 }
             }
         }
@@ -263,33 +267,33 @@ namespace Server.Items
                 {
                     LabelTo(
                         from,
-                        House != null ? 1063260 : 1063259,
+                        House != null ? 1063260 : 1063259, // ~1_val~ (Tokuno Islands)[(House)]
                         string.Format(RuneFormat, desc)
-                    ); // ~1_val~ (Tokuno Islands)[(House)]
+                    );
                 }
                 else if (m_TargetMap == Map.Malas)
                 {
                     LabelTo(
                         from,
-                        House != null ? 1062454 : 1060804,
+                        House != null ? 1062454 : 1060804, // ~1_val~ (Malas)[(House)]
                         string.Format(RuneFormat, desc)
-                    ); // ~1_val~ (Malas)[(House)]
+                    );
                 }
                 else if (m_TargetMap == Map.Felucca)
                 {
                     LabelTo(
                         from,
-                        House != null ? 1062452 : 1060805,
+                        House != null ? 1062452 : 1060805, // ~1_val~ (Felucca)[(House)]
                         string.Format(RuneFormat, desc)
-                    ); // ~1_val~ (Felucca)[(House)]
+                    );
                 }
                 else if (m_TargetMap == Map.Trammel)
                 {
                     LabelTo(
                         from,
-                        House != null ? 1062453 : 1060806,
+                        House != null ? 1062453 : 1060806, // ~1_val~ (Trammel)[(House)]
                         string.Format(RuneFormat, desc)
-                    ); // ~1_val~ (Trammel)[(House)]
+                    );
                 }
                 else
                 {

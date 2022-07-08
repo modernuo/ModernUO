@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class AquariumFishNet : SpecialFishingNet
     {
         [Constructible]
@@ -13,7 +15,7 @@ namespace Server.Items
 
         public override bool RequireDeepWater => false;
 
-        protected override void AddNetProperties(ObjectPropertyList list)
+        protected override void AddNetProperties(IPropertyList list)
         {
         }
 

@@ -4,7 +4,7 @@ namespace Server.Mobiles
     public class GreyWolf : BaseCreature
     {
         [Constructible]
-        public GreyWolf() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public GreyWolf() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = Utility.RandomList(25, 27);
             BaseSoundID = 0xE5;

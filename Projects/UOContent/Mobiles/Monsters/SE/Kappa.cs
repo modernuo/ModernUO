@@ -10,7 +10,7 @@ namespace Server.Mobiles
         private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
 
         [Constructible]
-        public Kappa() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Kappa() : base(AIType.AI_Melee)
         {
             Body = 240;
 

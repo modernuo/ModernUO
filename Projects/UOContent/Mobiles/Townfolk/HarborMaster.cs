@@ -5,13 +5,12 @@ namespace Server.Mobiles
     public class HarborMaster : BaseCreature
     {
         [Constructible]
-        public HarborMaster()
-            : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+        public HarborMaster() : base(AIType.AI_Animal, FightMode.None)
         {
             InitStats(31, 41, 51);
-
             SetSkill(SkillName.Mining, 36, 68);
 
+            SetSpeed(0.2, 0.4);
             SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();
             Blessed = true;

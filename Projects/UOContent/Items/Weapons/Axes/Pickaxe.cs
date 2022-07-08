@@ -1,8 +1,9 @@
+using ModernUO.Serialization;
 using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     [Flippable(0xE86, 0xE85)]
     public partial class Pickaxe : BaseAxe, IUsesRemaining
     {

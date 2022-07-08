@@ -462,9 +462,9 @@ namespace Server.Spells.Ninjitsu
                         entries[i].ItemID,
                         entries[i].Hue,
                         40 - b.Width / 2 - b.X,
-                        30 - b.Height / 2 - b.Y,
-                        entries[i].Tooltip
+                        30 - b.Height / 2 - b.Y
                     );
+                    AddTooltip(entries[i].Tooltip);
                     AddHtmlLocalized(x + 84, y, 250, 60, entries[i].Name, 0x7FFF);
 
                     current++;
@@ -589,8 +589,7 @@ namespace Server.Spells.Ninjitsu
                     m_LastTarget = m_Mobile.Combatant;
                 }
 
-                if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
-                    m_Counter-- <= 0)
+                if (m_Mobile.Warmode && m_LastTarget is { Alive: true, Deleted: false } && m_Counter-- <= 0)
                 {
                     if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&
                         m_LastTarget.InRange(m_Mobile.Location, BaseCreature.DefaultRangePerception) &&

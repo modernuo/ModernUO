@@ -4,7 +4,6 @@
     "ClientVersion": null,
     "ClientFlags": null,
     "FeatureFlags": {
-      "None": true,
       "T2A": false,
       "UOR": false,
       "UOTD": false,
@@ -13,7 +12,7 @@
       "SixthCharacterSlot": false,
       "SE": false,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -31,7 +30,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": true,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -50,7 +48,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": true,
       "AOS": false,
       "SE": false,
       "ML": false,
@@ -70,7 +67,6 @@
     "ClientVersion": null,
     "ClientFlags": "Felucca",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": false,
       "UOTD": false,
@@ -79,7 +75,7 @@
       "SixthCharacterSlot": false,
       "SE": false,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -97,7 +93,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -116,7 +111,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": true,
       "AOS": false,
       "SE": false,
       "ML": false,
@@ -136,7 +130,6 @@
     "ClientVersion": null,
     "ClientFlags": "Trammel",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -145,7 +138,7 @@
       "SixthCharacterSlot": false,
       "SE": false,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -163,7 +156,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -182,7 +174,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": true,
       "AOS": false,
       "SE": false,
       "ML": false,
@@ -202,7 +193,6 @@
     "ClientVersion": null,
     "ClientFlags": "Ilshenar",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
       "UOTD": true,
@@ -211,7 +201,7 @@
       "SixthCharacterSlot": false,
       "SE": false,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -229,7 +219,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -248,7 +237,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": true,
       "AOS": false,
       "SE": false,
       "ML": false,
@@ -268,7 +256,6 @@
     "ClientVersion": null,
     "ClientFlags": "Ilshenar",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
       "UOTD": true,
@@ -277,7 +264,7 @@
       "SixthCharacterSlot": false,
       "SE": false,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -295,7 +282,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -314,7 +300,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": true,
       "AOS": false,
       "SE": false,
       "ML": false,
@@ -334,16 +319,15 @@
     "ClientVersion": null,
     "ClientFlags": "Malas",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": false,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -361,7 +345,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -380,7 +363,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": false,
       "ML": false,
@@ -400,16 +382,15 @@
     "ClientVersion": null,
     "ClientFlags": "Tokuno",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": true,
       "ML": false,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": false,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -427,7 +408,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -446,7 +426,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": true,
       "ML": false,
@@ -466,16 +445,15 @@
     "ClientVersion": "5.0.0a",
     "ClientFlags": null,
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": true,
       "ML": true,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": true,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -493,7 +471,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -512,7 +489,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": true,
       "ML": true,
@@ -532,16 +508,15 @@
     "ClientVersion": null,
     "ClientFlags": "TerMur",
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": true,
       "ML": true,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": true,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -559,7 +534,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -578,7 +552,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": true,
       "ML": true,
@@ -598,16 +571,15 @@
     "ClientVersion": "7.0.9.0",
     "ClientFlags": null,
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": true,
       "ML": true,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": true,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -625,7 +597,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -644,7 +615,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": true,
       "ML": true,
@@ -664,16 +634,15 @@
     "ClientVersion": "7.0.45.65",
     "ClientFlags": null,
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": true,
       "ML": true,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": true,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -691,7 +660,6 @@
       "EJ": false
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -710,7 +678,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": true,
       "ML": true,
@@ -730,16 +697,15 @@
     "ClientVersion": "7.0.61.0",
     "ClientFlags": null,
     "FeatureFlags": {
-      "None": false,
       "T2A": true,
       "UOR": true,
-      "UOTD": true,
+      "UOTD": false,
       "LBR": true,
       "AOS": true,
       "SixthCharacterSlot": false,
       "SE": true,
       "ML": true,
-      "EigthAge": false,
+      "EighthAge": false,
       "NinthAge": true,
       "TenthAge": false,
       "IncreasedStorage": false,
@@ -757,7 +723,6 @@
       "EJ": true
     },
     "CharacterListFlags": {
-      "None": false,
       "Unk1": false,
       "OverwriteConfigButton": false,
       "OneCharacterSlot": false,
@@ -776,7 +741,6 @@
       "NewFeluccaAreas": false
     },
     "HousingFlags": {
-      "None": false,
       "AOS": true,
       "SE": true,
       "ML": true,

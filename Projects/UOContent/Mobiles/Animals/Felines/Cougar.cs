@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class Cougar : BaseCreature
     {
         [Constructible]
-        public Cougar() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+        public Cougar() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
             Body = 63;
             BaseSoundID = 0x73;

@@ -9,7 +9,7 @@ edit_uri: edit/main/docs/
 repo_name: modernuo/modernuo
 repo_url: https://github.com/modernuo/modernuo
 site_description: The Ultima Online Server Emulator for the modern era!
-copyright: Copyright 2019-2020 ModernUO Development Team
+copyright: Copyright 2019-2022 ModernUO Development Team
 theme:
   name: material
   favicon: branding/favicon.png
@@ -72,3 +72,6 @@ nav:
   - 'Get Started':
     - 'installation.md'
     - 'building-server.md'
+  - 'Scripting guide':
+      - 'scripting-guide/timers.md'
+      - 'scripting-guide/serialization.md'

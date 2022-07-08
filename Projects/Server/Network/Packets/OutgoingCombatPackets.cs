@@ -16,42 +16,41 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class OutgoingCombatPackets
 {
-    public static class OutgoingCombatPackets
+    public static void SendSwing(this NetState ns, Serial attacker, Serial defender)
     {
-        public static void SendSwing(this NetState ns, Serial attacker, Serial defender)
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[10]);
-            writer.Write((byte)0x2F); // Packet ID
-            writer.Write((byte)0);
-            writer.Write(attacker);
-            writer.Write(defender);
-
-            ns.Send(writer.Span);
+            return;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void SendSetWarMode(this NetState ns, bool warmode) =>
-            ns?.Send(stackalloc byte[] { 0x72, *(byte*)&warmode, 0x00, 0x32, 0x00 });
+        var writer = new SpanWriter(stackalloc byte[10]);
+        writer.Write((byte)0x2F); // Packet ID
+        writer.Write((byte)0);
+        writer.Write(attacker);
+        writer.Write(defender);
 
-        public static void SendChangeCombatant(this NetState ns, Serial combatant)
+        ns.Send(writer.Span);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void SendSetWarMode(this NetState ns, bool warmode) =>
+        ns?.Send(stackalloc byte[] { 0x72, *(byte*)&warmode, 0x00, 0x32, 0x00 });
+
+    public static void SendChangeCombatant(this NetState ns, Serial combatant)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns == null)
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[5]);
-            writer.Write((byte)0xAA); // Packet ID
-            writer.Write(combatant);
-
-            ns.Send(writer.Span);
+            return;
         }
+
+        var writer = new SpanWriter(stackalloc byte[5]);
+        writer.Write((byte)0xAA); // Packet ID
+        writer.Write(combatant);
+
+        ns.Send(writer.Span);
     }
 }

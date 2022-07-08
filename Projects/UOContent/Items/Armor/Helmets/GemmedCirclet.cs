@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x2B70, 0x3167)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GemmedCirclet : BaseArmor
     {
         [Constructible]

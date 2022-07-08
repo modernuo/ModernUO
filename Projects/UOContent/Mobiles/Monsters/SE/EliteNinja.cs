@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class EliteNinja : BaseCreature
     {
         [Constructible]
-        public EliteNinja() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public EliteNinja() : base(AIType.AI_Melee)
         {
             SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();
@@ -16,7 +16,7 @@ namespace Server.Mobiles
             SetHits(251, 350);
 
             SetStr(126, 225);
-            SetDex(81, 95);
+            SetDex(175, 275);
             SetInt(151, 165);
 
             SetDamage(12, 20);

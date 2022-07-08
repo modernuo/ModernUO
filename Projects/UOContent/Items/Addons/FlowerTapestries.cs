@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LightFlowerTapestryEastAddon : BaseAddon
     {
         [Constructible]
@@ -13,7 +15,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new LightFlowerTapestryEastDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LightFlowerTapestryEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -25,7 +27,7 @@ namespace Server.Items
         public override int LabelNumber => 1049393; // a flower tapestry deed facing east
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LightFlowerTapestrySouthAddon : BaseAddon
     {
         [Constructible]
@@ -38,7 +40,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new LightFlowerTapestrySouthDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class LightFlowerTapestrySouthDeed : BaseAddonDeed
     {
         [Constructible]
@@ -50,7 +52,7 @@ namespace Server.Items
         public override int LabelNumber => 1049394; // a flower tapestry deed facing south
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DarkFlowerTapestryEastAddon : BaseAddon
     {
         [Constructible]
@@ -63,7 +65,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new DarkFlowerTapestryEastDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DarkFlowerTapestryEastDeed : BaseAddonDeed
     {
         [Constructible]
@@ -75,7 +77,7 @@ namespace Server.Items
         public override int LabelNumber => 1049395; // a dark flower tapestry deed facing east
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DarkFlowerTapestrySouthAddon : BaseAddon
     {
         [Constructible]
@@ -88,7 +90,7 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new DarkFlowerTapestrySouthDeed();
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class DarkFlowerTapestrySouthDeed : BaseAddonDeed
     {
         [Constructible]

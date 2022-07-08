@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class GrimmochDrummel : BaseCreature
     {
         [Constructible]
-        public GrimmochDrummel() : base(AIType.AI_Archer, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public GrimmochDrummel() : base(AIType.AI_Archer)
         {
             Title = "the Cursed";
 

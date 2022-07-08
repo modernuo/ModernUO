@@ -195,14 +195,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Aernya : BaseCreature
     {
         [Constructible]
-        public Aernya()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Aernya() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Mistress of Admissions";
             Race = Race.Human;
             Body = 0x191;
             Female = true;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -241,14 +242,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Gorrow : BaseCreature
     {
         [Constructible]
-        public Gorrow()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Gorrow() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Mayor";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new Backpack());
@@ -298,14 +300,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class MasterGnosos : BaseCreature
     {
         [Constructible]
-        public MasterGnosos()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public MasterGnosos() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the necromancer";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = 0x83E8;
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             HairItemID = 0x2049;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
@@ -22,7 +23,7 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [Serializable(6, false)]
+    [SerializationGenerator(7, false)]
     public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, "private", "private")]
@@ -93,7 +94,7 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializableField(8)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
-        private Mobile _crafter;
+        private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeCrafter() => _crafter != null;
@@ -193,7 +194,7 @@ namespace Server.Items
 
             if (makersMark)
             {
-                Crafter = from;
+                Crafter = from.RawName;
             }
 
             if (DefaultResource != CraftResource.None)
@@ -270,25 +271,33 @@ namespace Server.Items
 
             var item = system.CraftItems.SearchFor(GetType());
 
-            if (item?.Resources.Count == 1 && item.Resources[0].Amount >= 2)
+            if (item?.Resources.Count == 1)
             {
-                try
+                var resource = item.Resources[0];
+                if (resource.Amount >= 2)
                 {
-                    var info = CraftResources.GetInfo(_rawResource);
+                    try
+                    {
+                        var info = CraftResources.GetInfo(_rawResource);
 
-                    var resourceType = info.ResourceTypes?[0] ?? item.Resources[0].ItemType;
+                        Type resourceType = null;
+                        if (info?.ResourceTypes.Length > 0)
+                        {
+                            resourceType = info.ResourceTypes[0];
+                        }
 
-                    var res = resourceType.CreateInstance<Item>();
+                        var res = (resourceType ?? resource.ItemType).CreateInstance<Item>();
 
-                    ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
+                        ScissorHelper(from, res, PlayerConstructed ? resource.Amount / 2 : 1);
 
-                    res.LootType = LootType.Regular;
+                        res.LootType = LootType.Regular;
 
-                    return true;
-                }
-                catch
-                {
-                    // ignored
+                        return true;
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
 
@@ -509,21 +518,21 @@ namespace Server.Items
                 return;
             }
 
-            var modName = Serial.ToString();
+            var serial = Serial;
 
             if (strBonus != 0)
             {
-                parent.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                parent.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
             }
 
             if (dexBonus != 0)
             {
-                parent.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                parent.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
             }
 
             if (intBonus != 0)
             {
-                parent.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                parent.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
             }
         }
 
@@ -610,11 +619,11 @@ namespace Server.Items
                     SkillBonuses.Remove();
                 }
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
-                mob.RemoveStatMod($"{modName}Str");
-                mob.RemoveStatMod($"{modName}Dex");
-                mob.RemoveStatMod($"{modName}Int");
+                mob.RemoveStatMod($"{serial}Str");
+                mob.RemoveStatMod($"{serial}Dex");
+                mob.RemoveStatMod($"{serial}Int");
 
                 mob.CheckStatTimers();
             }
@@ -653,9 +662,7 @@ namespace Server.Items
             };
         }
 
-        private string GetNameString() => Name ?? $"#{LabelNumber}";
-
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var oreType = _rawResource switch
             {
@@ -679,27 +686,36 @@ namespace Server.Items
                 _                           => 0
             };
 
+            var name = Name;
+
             if (oreType != 0)
             {
-                list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
+                if (name != null)
+                {
+                    list.Add(1053099, $"{oreType:#}\t{name}"); // ~1_oretype~ ~2_armortype~
+                }
+                else
+                {
+                    list.Add(1053099, $"{oreType:#}\t{LabelNumber:#}"); // ~1_oretype~ ~2_armortype~
+                }
             }
-            else if (Name == null)
+            else if (name == null)
             {
                 list.Add(LabelNumber);
             }
             else
             {
-                list.Add(Name);
+                list.Add(name);
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (_crafter != null)
             {
-                list.Add(1050043, _crafter.Name); // crafted by ~1_NAME~
+                list.Add(1050043, _crafter); // crafted by ~1_NAME~
             }
 
             if (_factionState != null)
@@ -728,72 +744,72 @@ namespace Server.Items
 
             if ((prop = ArtifactRarity) > 0)
             {
-                list.Add(1061078, prop.ToString()); // artifact rarity ~1_val~
+                list.Add(1061078, prop); // artifact rarity ~1_val~
             }
 
             if ((prop = Attributes.WeaponDamage) != 0)
             {
-                list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
+                list.Add(1060401, prop); // damage increase ~1_val~%
             }
 
             if ((prop = Attributes.DefendChance) != 0)
             {
-                list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
+                list.Add(1060408, prop); // defense chance increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusDex) != 0)
             {
-                list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
+                list.Add(1060409, prop); // dexterity bonus ~1_val~
             }
 
             if ((prop = Attributes.EnhancePotions) != 0)
             {
-                list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
+                list.Add(1060411, prop); // enhance potions ~1_val~%
             }
 
             if ((prop = Attributes.CastRecovery) != 0)
             {
-                list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
+                list.Add(1060412, prop); // faster cast recovery ~1_val~
             }
 
             if ((prop = Attributes.CastSpeed) != 0)
             {
-                list.Add(1060413, prop.ToString()); // faster casting ~1_val~
+                list.Add(1060413, prop); // faster casting ~1_val~
             }
 
             if ((prop = Attributes.AttackChance) != 0)
             {
-                list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
+                list.Add(1060415, prop); // hit chance increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusHits) != 0)
             {
-                list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
+                list.Add(1060431, prop); // hit point increase ~1_val~
             }
 
             if ((prop = Attributes.BonusInt) != 0)
             {
-                list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
+                list.Add(1060432, prop); // intelligence bonus ~1_val~
             }
 
             if ((prop = Attributes.LowerManaCost) != 0)
             {
-                list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
+                list.Add(1060433, prop); // lower mana cost ~1_val~%
             }
 
             if ((prop = Attributes.LowerRegCost) != 0)
             {
-                list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
+                list.Add(1060434, prop); // lower reagent cost ~1_val~%
             }
 
             if ((prop = ClothingAttributes.LowerStatReq) != 0)
             {
-                list.Add(1060435, prop.ToString()); // lower requirements ~1_val~%
+                list.Add(1060435, prop); // lower requirements ~1_val~%
             }
 
             if ((prop = Attributes.Luck) != 0)
             {
-                list.Add(1060436, prop.ToString()); // luck ~1_val~
+                list.Add(1060436, prop); // luck ~1_val~
             }
 
             if (ClothingAttributes.MageArmor != 0)
@@ -803,12 +819,12 @@ namespace Server.Items
 
             if ((prop = Attributes.BonusMana) != 0)
             {
-                list.Add(1060439, prop.ToString()); // mana increase ~1_val~
+                list.Add(1060439, prop); // mana increase ~1_val~
             }
 
             if ((prop = Attributes.RegenMana) != 0)
             {
-                list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
+                list.Add(1060440, prop); // mana regeneration ~1_val~
             }
 
             if (Attributes.NightSight != 0)
@@ -818,22 +834,22 @@ namespace Server.Items
 
             if ((prop = Attributes.ReflectPhysical) != 0)
             {
-                list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
+                list.Add(1060442, prop); // reflect physical damage ~1_val~%
             }
 
             if ((prop = Attributes.RegenStam) != 0)
             {
-                list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
+                list.Add(1060443, prop); // stamina regeneration ~1_val~
             }
 
             if ((prop = Attributes.RegenHits) != 0)
             {
-                list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
+                list.Add(1060444, prop); // hit point regeneration ~1_val~
             }
 
             if ((prop = ClothingAttributes.SelfRepair) != 0)
             {
-                list.Add(1060450, prop.ToString()); // self repair ~1_val~
+                list.Add(1060450, prop); // self repair ~1_val~
             }
 
             if (Attributes.SpellChanneling != 0)
@@ -843,44 +859,44 @@ namespace Server.Items
 
             if ((prop = Attributes.SpellDamage) != 0)
             {
-                list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
+                list.Add(1060483, prop); // spell damage increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusStam) != 0)
             {
-                list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
+                list.Add(1060484, prop); // stamina increase ~1_val~
             }
 
             if ((prop = Attributes.BonusStr) != 0)
             {
-                list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
+                list.Add(1060485, prop); // strength bonus ~1_val~
             }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
             {
-                list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
+                list.Add(1060486, prop); // swing speed increase ~1_val~%
             }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
             {
-                list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
+                list.Add(1075210, prop); // Increased Karma Loss ~1val~%
             }
 
             AddResistanceProperties(list);
 
             if ((prop = ClothingAttributes.DurabilityBonus) > 0)
             {
-                list.Add(1060410, prop.ToString()); // durability ~1_val~%
+                list.Add(1060410, prop); // durability ~1_val~%
             }
 
             if ((prop = ComputeStatReq(StatType.Str)) > 0)
             {
-                list.Add(1061170, prop.ToString()); // strength requirement ~1_val~
+                list.Add(1061170, prop); // strength requirement ~1_val~
             }
 
             if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
-                list.Add(1060639, "{0}\t{1}", _hitPoints, _maxHitPoints); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, $"{_hitPoints}\t{_maxHitPoints}"); // durability ~1_val~ / ~2_val~
             }
         }
 
@@ -907,7 +923,7 @@ namespace Server.Items
                 return;
             }
 
-            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter?.RawName, false, attrs);
+            from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -963,83 +979,6 @@ namespace Server.Items
         }
 
         private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            var flags = (OldSaveFlag)reader.ReadEncodedInt();
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resource))
-            {
-                _rawResource = (CraftResource)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _rawResource = DefaultResource;
-            }
-
-            Attributes = new AosAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Attributes))
-            {
-                Attributes.Deserialize(reader);
-            }
-
-            ClothingAttributes = new AosArmorAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.ClothingAttributes))
-            {
-                ClothingAttributes.Deserialize(reader);
-            }
-
-            SkillBonuses = new AosSkillBonuses(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.SkillBonuses))
-            {
-                SkillBonuses.Deserialize(reader);
-            }
-
-            Resistances = new AosElementAttributes(this);
-
-            if (GetSaveFlag(flags, OldSaveFlag.Resistances))
-            {
-                Resistances.Deserialize(reader);
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.MaxHitPoints))
-            {
-                _maxHitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.HitPoints))
-            {
-                _hitPoints = reader.ReadEncodedInt();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Crafter))
-            {
-                _crafter = reader.ReadEntity<Mobile>();
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.Quality))
-            {
-                _quality = (ClothingQuality)reader.ReadEncodedInt();
-            }
-            else
-            {
-                _quality = ClothingQuality.Regular;
-            }
-
-            if (GetSaveFlag(flags, OldSaveFlag.StrReq))
-            {
-                _strReq = reader.ReadEncodedInt();
-            }
-            else
-            {
-                _strReq = -1;
-            }
-
-            PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
-        }
 
         [AfterDeserialization]
         private void AfterDeserialization()

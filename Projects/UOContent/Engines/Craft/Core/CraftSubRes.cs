@@ -4,7 +4,7 @@ namespace Server.Engines.Craft
 {
     public class CraftSubRes
     {
-        public CraftSubRes(Type type, TextDefinition name, double reqSkill, object message) : this(
+        public CraftSubRes(Type type, TextDefinition name, double reqSkill, TextDefinition message) : this(
             type,
             name,
             reqSkill,
@@ -14,11 +14,10 @@ namespace Server.Engines.Craft
         {
         }
 
-        public CraftSubRes(Type type, TextDefinition name, double reqSkill, int genericNameNumber, object message)
+        public CraftSubRes(Type type, TextDefinition name, double reqSkill, int genericNameNumber, TextDefinition message)
         {
             ItemType = type;
-            NameNumber = name;
-            NameString = name;
+            Name = name;
             RequiredSkill = reqSkill;
             GenericNameNumber = genericNameNumber;
             Message = message;
@@ -26,13 +25,11 @@ namespace Server.Engines.Craft
 
         public Type ItemType { get; }
 
-        public string NameString { get; }
-
-        public int NameNumber { get; }
+        public TextDefinition Name { get; }
 
         public int GenericNameNumber { get; }
 
-        public object Message { get; }
+        public TextDefinition Message { get; }
 
         public double RequiredSkill { get; }
     }

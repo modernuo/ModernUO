@@ -511,16 +511,16 @@ namespace Server.Gumps
                 {
                     if (serial.IsItem)
                     {
-                        return $"(I) 0x{serial.Value:X}";
+                        return $"(I) {serial}";
                     }
 
                     if (serial.IsMobile)
                     {
-                        return $"(M) 0x{serial.Value:X}";
+                        return $"(M) {serial}";
                     }
                 }
 
-                return $"(?) 0x{serial.Value:X}";
+                return $"(?) {serial}";
             }
 
             if (o is byte or sbyte or short or ushort or int or uint or long or ulong)
@@ -530,12 +530,12 @@ namespace Server.Gumps
 
             if (o is Mobile mobile)
             {
-                return $"(M) 0x{mobile.Serial.Value:X} \"{mobile.Name}\"";
+                return $"(M) {mobile.Serial} \"{mobile.Name}\"";
             }
 
             if (o is Item item)
             {
-                return $"(I) 0x{item.Serial.Value:X}";
+                return $"(I) {item.Serial}";
             }
 
             if (o is Type type)

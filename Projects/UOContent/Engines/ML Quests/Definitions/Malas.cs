@@ -27,14 +27,15 @@ namespace Server.Engines.MLQuests.Definitions
     public class Drithen : BaseCreature
     {
         [Constructible]
-        public Drithen()
-            : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
+        public Drithen() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Fierce";
             Race = Race.Human;
             Body = 0x190;
             Female = false;
             Hue = Race.RandomSkinHue();
+
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             AddItem(new Backpack());

@@ -1,6 +1,8 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseReagent : Item
     {
         public BaseReagent(int itemID, int amount = 1) : base(itemID)

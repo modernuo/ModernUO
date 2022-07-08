@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class Ravager : BaseCreature
     {
         [Constructible]
-        public Ravager() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        public Ravager() : base(AIType.AI_Melee)
         {
             Body = 314;
             BaseSoundID = 357;

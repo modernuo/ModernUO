@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ModernUO.Serialization;
 using Server.Events.Halloween;
 using Server.Items;
 using Server.Mobiles;
@@ -232,7 +233,7 @@ namespace Server.Engines.Events
         }
     }
 
-    [Serializable(0, false)]
+    [SerializationGenerator(0, false)]
     public partial class NaughtyTwin : BaseCreature
     {
         private static readonly Point3D[] Felucca_Locations =
@@ -275,8 +276,7 @@ namespace Server.Engines.Events
 
         private readonly Mobile m_From;
 
-        public NaughtyTwin(Mobile from)
-            : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
+        public NaughtyTwin(Mobile from) : base(AIType.AI_Melee, FightMode.None)
         {
             if (TrickOrTreat.CheckMobile(from))
             {

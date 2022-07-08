@@ -1,7 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items
 {
     [Flippable(0x905, 0x4070)]
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class GlassStaff : BaseStaff
     {
         [Constructible]

@@ -15,7 +15,7 @@ namespace Server.Collections;
 
 // A vector of bits.  Use this to store bits efficiently, without having to do bit
 // shifting yourself.
-[System.Serializable]
+[Serializable]
 public sealed class BitArray : ICollection, ICloneable
 {
     private int[] m_array; // Do not rename (binary serialization)
@@ -63,7 +63,7 @@ public sealed class BitArray : ICollection, ICloneable
     **
     ** Exceptions: ArgumentException if bytes == null.
     =========================================================================*/
-    public BitArray(byte[] bytes)
+    public BitArray(ReadOnlySpan<byte> bytes, int length = -1)
     {
         if (bytes == null)
         {
@@ -79,7 +79,7 @@ public sealed class BitArray : ICollection, ICloneable
         }
 
         m_array = new int[GetInt32ArrayLengthFromByteLength(bytes.Length)];
-        m_length = bytes.Length * BitsPerByte;
+        m_length = length == -1 ? bytes.Length * BitsPerByte : length;
 
         uint totalCount = (uint)bytes.Length / 4;
 
@@ -96,16 +96,22 @@ public sealed class BitArray : ICollection, ICloneable
         switch (byteSpan.Length)
         {
             case 3:
-                last = byteSpan[2] << 16;
-                goto case 2;
+                {
+                    last = byteSpan[2] << 16;
+                    goto case 2;
+                }
             // fall through
             case 2:
-                last |= byteSpan[1] << 8;
-                goto case 1;
+                {
+                    last |= byteSpan[1] << 8;
+                    goto case 1;
+                }
             // fall through
             case 1:
-                m_array[totalCount] = last | byteSpan[0];
-                break;
+                {
+                    m_array[totalCount] = last | byteSpan[0];
+                    break;
+                }
         }
 
         _version = 0;
@@ -119,63 +125,7 @@ public sealed class BitArray : ICollection, ICloneable
     **
     ** Exceptions: ArgumentException if bytes == null.
     =========================================================================*/
-    public BitArray(ReadOnlySpan<byte> bytes)
-    {
-        if (bytes == null)
-        {
-            throw new ArgumentNullException(nameof(bytes));
-        }
-
-        // this value is chosen to prevent overflow when computing m_length.
-        // m_length is of type int32 and is exposed as a property, so
-        // type of m_length can't be changed to accommodate.
-        if (bytes.Length > int.MaxValue / BitsPerByte)
-        {
-            throw new ArgumentException(string.Format(CollectionThrowStrings.Argument_ArrayTooLarge, BitsPerByte), nameof(bytes));
-        }
-
-        m_array = new int[GetInt32ArrayLengthFromByteLength(bytes.Length)];
-        m_length = bytes.Length * BitsPerByte;
-
-        uint totalCount = (uint)bytes.Length / 4;
-
-        ReadOnlySpan<byte> byteSpan = bytes;
-        for (int i = 0; i < totalCount; i++)
-        {
-            m_array[i] = BinaryPrimitives.ReadInt32LittleEndian(byteSpan);
-            byteSpan = byteSpan[4..];
-        }
-
-        Debug.Assert(byteSpan.Length >= 0 && byteSpan.Length < 4);
-
-        int last = 0;
-        switch (byteSpan.Length)
-        {
-            case 3:
-                last = byteSpan[2] << 16;
-                goto case 2;
-            // fall through
-            case 2:
-                last |= byteSpan[1] << 8;
-                goto case 1;
-            // fall through
-            case 1:
-                m_array[totalCount] = last | byteSpan[0];
-                break;
-        }
-
-        _version = 0;
-    }
-
-    /*=========================================================================
-    ** Allocates space to hold the bit values in bytes. bytes[0] represents
-    ** bits 0 - 7, bytes[1] represents bits 8 - 15, etc. The LSB of each byte
-    ** represents the lowest index value; bytes[0] & 1 represents bit 0,
-    ** bytes[0] & 2 represents bit 1, bytes[0] & 4 represents bit 2, etc.
-    **
-    ** Exceptions: ArgumentException if bytes == null.
-    =========================================================================*/
-    public BitArray(BinaryReader reader, int length)
+    public BitArray(BinaryReader reader, int bitLength)
     {
         if (reader == null)
         {
@@ -185,13 +135,15 @@ public sealed class BitArray : ICollection, ICloneable
         // this value is chosen to prevent overflow when computing m_length.
         // m_length is of type int32 and is exposed as a property, so
         // type of m_length can't be changed to accommodate.
-        if (length > int.MaxValue / BitsPerByte)
+        if (bitLength > int.MaxValue / BitsPerByte)
         {
             throw new ArgumentException(string.Format(CollectionThrowStrings.Argument_ArrayTooLarge, BitsPerByte), nameof(reader));
         }
 
+        var length = GetByteArrayLengthFromBitLength(bitLength);
+
         m_array = new int[GetInt32ArrayLengthFromByteLength(length)];
-        m_length = length * BitsPerByte;
+        m_length = length;
 
         uint totalCount = (uint)length / 4;
 
@@ -207,16 +159,22 @@ public sealed class BitArray : ICollection, ICloneable
         switch (length)
         {
             case 3:
-                last = reader.ReadInt16();
-                goto case 2;
+                {
+                    last = reader.ReadInt16();
+                    goto case 2;
+                }
             // fall through
             case 2:
-                last |= reader.ReadByte();
-                goto case 1;
+                {
+                    last |= reader.ReadByte();
+                    goto case 1;
+                }
             // fall through
             case 1:
-                m_array[totalCount] = last | reader.ReadByte();
-                break;
+                {
+                    m_array[totalCount] = last | reader.ReadByte();
+                    break;
+                }
         }
 
         _version = 0;
@@ -499,14 +457,38 @@ public sealed class BitArray : ICollection, ICloneable
         // Unroll loop for count less than Vector256 size.
         switch (count)
         {
-            case 7: thisArray[6] &= valueArray[6]; goto case 6;
-            case 6: thisArray[5] &= valueArray[5]; goto case 5;
-            case 5: thisArray[4] &= valueArray[4]; goto case 4;
-            case 4: thisArray[3] &= valueArray[3]; goto case 3;
-            case 3: thisArray[2] &= valueArray[2]; goto case 2;
-            case 2: thisArray[1] &= valueArray[1]; goto case 1;
-            case 1: thisArray[0] &= valueArray[0]; goto Done;
-            case 0: goto Done;
+            case 7:
+                {
+                    thisArray[6] &= valueArray[6]; goto case 6;
+                }
+            case 6:
+                {
+                    thisArray[5] &= valueArray[5]; goto case 5;
+                }
+            case 5:
+                {
+                    thisArray[4] &= valueArray[4]; goto case 4;
+                }
+            case 4:
+                {
+                    thisArray[3] &= valueArray[3]; goto case 3;
+                }
+            case 3:
+                {
+                    thisArray[2] &= valueArray[2]; goto case 2;
+                }
+            case 2:
+                {
+                    thisArray[1] &= valueArray[1]; goto case 1;
+                }
+            case 1:
+                {
+                    thisArray[0] &= valueArray[0]; goto Done;
+                }
+            case 0:
+                {
+                    goto Done;
+                }
         }
 
         uint i = 0;
@@ -597,14 +579,38 @@ public sealed class BitArray : ICollection, ICloneable
         // Unroll loop for count less than Vector256 size.
         switch (count)
         {
-            case 7: thisArray[6] |= valueArray[6]; goto case 6;
-            case 6: thisArray[5] |= valueArray[5]; goto case 5;
-            case 5: thisArray[4] |= valueArray[4]; goto case 4;
-            case 4: thisArray[3] |= valueArray[3]; goto case 3;
-            case 3: thisArray[2] |= valueArray[2]; goto case 2;
-            case 2: thisArray[1] |= valueArray[1]; goto case 1;
-            case 1: thisArray[0] |= valueArray[0]; goto Done;
-            case 0: goto Done;
+            case 7:
+                {
+                    thisArray[6] |= valueArray[6]; goto case 6;
+                }
+            case 6:
+                {
+                    thisArray[5] |= valueArray[5]; goto case 5;
+                }
+            case 5:
+                {
+                    thisArray[4] |= valueArray[4]; goto case 4;
+                }
+            case 4:
+                {
+                    thisArray[3] |= valueArray[3]; goto case 3;
+                }
+            case 3:
+                {
+                    thisArray[2] |= valueArray[2]; goto case 2;
+                }
+            case 2:
+                {
+                    thisArray[1] |= valueArray[1]; goto case 1;
+                }
+            case 1:
+                {
+                    thisArray[0] |= valueArray[0]; goto Done;
+                }
+            case 0:
+                {
+                    goto Done;
+                }
         }
 
         uint i = 0;
@@ -695,14 +701,38 @@ public sealed class BitArray : ICollection, ICloneable
         // Unroll loop for count less than Vector256 size.
         switch (count)
         {
-            case 7: thisArray[6] ^= valueArray[6]; goto case 6;
-            case 6: thisArray[5] ^= valueArray[5]; goto case 5;
-            case 5: thisArray[4] ^= valueArray[4]; goto case 4;
-            case 4: thisArray[3] ^= valueArray[3]; goto case 3;
-            case 3: thisArray[2] ^= valueArray[2]; goto case 2;
-            case 2: thisArray[1] ^= valueArray[1]; goto case 1;
-            case 1: thisArray[0] ^= valueArray[0]; goto Done;
-            case 0: goto Done;
+            case 7:
+                {
+                    thisArray[6] ^= valueArray[6]; goto case 6;
+                }
+            case 6:
+                {
+                    thisArray[5] ^= valueArray[5]; goto case 5;
+                }
+            case 5:
+                {
+                    thisArray[4] ^= valueArray[4]; goto case 4;
+                }
+            case 4:
+                {
+                    thisArray[3] ^= valueArray[3]; goto case 3;
+                }
+            case 3:
+                {
+                    thisArray[2] ^= valueArray[2]; goto case 2;
+                }
+            case 2:
+                {
+                    thisArray[1] ^= valueArray[1]; goto case 1;
+                }
+            case 1:
+                {
+                    thisArray[0] ^= valueArray[0]; goto Done;
+                }
+            case 0:
+                {
+                    goto Done;
+                }
         }
 
         uint i = 0;
@@ -781,14 +811,38 @@ public sealed class BitArray : ICollection, ICloneable
         // Unroll loop for count less than Vector256 size.
         switch (count)
         {
-            case 7: thisArray[6] = ~thisArray[6]; goto case 6;
-            case 6: thisArray[5] = ~thisArray[5]; goto case 5;
-            case 5: thisArray[4] = ~thisArray[4]; goto case 4;
-            case 4: thisArray[3] = ~thisArray[3]; goto case 3;
-            case 3: thisArray[2] = ~thisArray[2]; goto case 2;
-            case 2: thisArray[1] = ~thisArray[1]; goto case 1;
-            case 1: thisArray[0] = ~thisArray[0]; goto Done;
-            case 0: goto Done;
+            case 7:
+                {
+                    thisArray[6] = ~thisArray[6]; goto case 6;
+                }
+            case 6:
+                {
+                    thisArray[5] = ~thisArray[5]; goto case 5;
+                }
+            case 5:
+                {
+                    thisArray[4] = ~thisArray[4]; goto case 4;
+                }
+            case 4:
+                {
+                    thisArray[3] = ~thisArray[3]; goto case 3;
+                }
+            case 3:
+                {
+                    thisArray[2] = ~thisArray[2]; goto case 2;
+                }
+            case 2:
+                {
+                    thisArray[1] = ~thisArray[1]; goto case 1;
+                }
+            case 1:
+                {
+                    thisArray[0] = ~thisArray[0]; goto Done;
+                }
+            case 0:
+                {
+                    goto Done;
+                }
         }
 
         uint i = 0;
@@ -964,10 +1018,7 @@ public sealed class BitArray : ICollection, ICloneable
 
     public int Length
     {
-        get
-        {
-            return m_length;
-        }
+        get => m_length;
         set
         {
             if (value < 0)
@@ -1035,16 +1086,22 @@ public sealed class BitArray : ICollection, ICloneable
         switch (remainder)
         {
             case 3:
-                span[2] = (byte)(m_array[quotient] >> 16);
-                goto case 2;
+                {
+                    span[2] = (byte)(m_array[quotient] >> 16);
+                    goto case 2;
+                }
             // fall through
             case 2:
-                span[1] = (byte)(m_array[quotient] >> 8);
-                goto case 1;
+                {
+                    span[1] = (byte)(m_array[quotient] >> 8);
+                    goto case 1;
+                }
             // fall through
             case 1:
-                span[0] = (byte)m_array[quotient];
-                break;
+                {
+                    span[0] = (byte)m_array[quotient];
+                    break;
+                }
         }
     }
 
@@ -1082,54 +1139,6 @@ public sealed class BitArray : ICollection, ICloneable
 
                 // the last int needs to be masked
                 intArray[index + last] = m_array[last] & unchecked((1 << extraBits) - 1);
-            }
-        }
-        else if (array is byte[] byteArray)
-        {
-            int arrayLength = GetByteArrayLengthFromBitLength(m_length);
-            if (array.Length - index < arrayLength)
-            {
-                throw new ArgumentException(CollectionThrowStrings.Argument_InvalidOffLen);
-            }
-
-            // equivalent to m_length % BitsPerByte, since BitsPerByte is a power of 2
-            uint extraBits = (uint)m_length & (BitsPerByte - 1);
-            if (extraBits > 0)
-            {
-                // last byte is not aligned, we will directly copy one less byte
-                arrayLength -= 1;
-            }
-
-            Span<byte> span = byteArray.AsSpan(index);
-
-            int quotient = Div4Rem(arrayLength, out int remainder);
-            for (int i = 0; i < quotient; i++)
-            {
-                BinaryPrimitives.WriteInt32LittleEndian(span, m_array[i]);
-                span = span[4..];
-            }
-
-            if (extraBits > 0)
-            {
-                Debug.Assert(span.Length > 0);
-                Debug.Assert(m_array.Length > quotient);
-                // mask the final byte
-                span[remainder] = (byte)((m_array[quotient] >> (remainder * 8)) & ((1 << (int)extraBits) - 1));
-            }
-
-            switch (remainder)
-            {
-                case 3:
-                    span[2] = (byte)(m_array[quotient] >> 16);
-                    goto case 2;
-                // fall through
-                case 2:
-                    span[1] = (byte)(m_array[quotient] >> 8);
-                    goto case 1;
-                // fall through
-                case 1:
-                    span[0] = (byte)m_array[quotient];
-                    break;
             }
         }
         else if (array is bool[] boolArray)
