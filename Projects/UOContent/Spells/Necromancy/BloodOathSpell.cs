@@ -101,11 +101,11 @@ namespace Server.Spells.Necromancy
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static bool RemoveCurse(Mobile caster)
+        public static bool RemoveCurse(Mobile target)
         {
-            if (_table.Remove(caster, out var timer))
+            if (_table.Remove(target, out var timer))
             {
-                var target = timer.Target;
+                var caster = timer.Caster;
                 if (m_OathTable.Remove(caster))
                 {
                     caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
@@ -113,7 +113,7 @@ namespace Server.Spells.Necromancy
 
                 if (m_OathTable.Remove(target))
                 {
-                    caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
+                    target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
                 }
 
                 timer.Stop();
@@ -132,26 +132,27 @@ namespace Server.Spells.Necromancy
 
         private class ExpireTimer : Timer
         {
-            private Mobile _caster;
+            private Mobile _target;
             private DateTime _end;
-            public Mobile Target { get; }
+
+            public Mobile Caster { get; }
 
             public ExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(
                 TimeSpan.FromSeconds(1.0),
                 TimeSpan.FromSeconds(1.0)
             )
             {
-                _caster = caster;
-                Target = target;
+                Caster = caster;
+                _target = target;
                 _end = Core.Now + delay;
             }
 
             protected override void OnTick()
             {
-                if (_caster.Deleted || Target.Deleted || !_caster.Alive || !Target.Alive ||
+                if (Caster.Deleted || _target.Deleted || !Caster.Alive || !_target.Alive ||
                     Core.Now >= _end)
                 {
-                    RemoveCurse(_caster);
+                    RemoveCurse(_target);
                 }
             }
         }
