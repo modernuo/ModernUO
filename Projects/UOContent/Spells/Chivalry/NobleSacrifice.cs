@@ -138,14 +138,14 @@ namespace Server.Spells.Chivalry
                             sendEffect = true;
                         }
 
-                        sendEffect = EvilOmenSpell.TryEndEffect(m)) || sendEffect;
-                        sendEffect = StrangleSpell.RemoveCurse(m)) || sendEffect;
-                        sendEffect = CorpseSkinSpell.RemoveCurse(m)) || sendEffect;
-                        sendEffect = CurseSpell.RemoveEffect(m)) || sendEffect;
-                        sendEffect = MortalStrike.EndWound(m)) || sendEffect;
-                        sendEffect = MindRotSpell.ClearMindRotScalar(m)) || sendEffect;
-                        sendEffect = BloodOathSpell.RemoveCurse(m)) || sendEffect;
-                        sendEffect = SpellPlagueSpell.RemoveEffect(m)) || sendEffect;
+                        sendEffect = EvilOmenSpell.TryEndEffect(m) || sendEffect;
+                        sendEffect = StrangleSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = CorpseSkinSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = CurseSpell.RemoveEffect(m) || sendEffect;
+                        sendEffect = MortalStrike.EndWound(m) || sendEffect;
+                        sendEffect = MindRotSpell.ClearMindRotScalar(m) || sendEffect;
+                        sendEffect = BloodOathSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = SpellPlagueSpell.RemoveEffect(m) || sendEffect;
 
                         // TODO: Move these into their respective end effect methods
                         BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);
