@@ -100,6 +100,14 @@ namespace Server.Multis
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        public bool IgnoreWater { get; set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool Flies { get; set; }
+
+        public bool Flying { get; set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
         public Hold Hold { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -300,7 +308,11 @@ namespace Server.Multis
         {
             base.Serialize(writer);
 
-            writer.Write(3);
+            writer.Write(4);
+
+            writer.Write(IgnoreWater);
+            writer.Write(Flies);
+            writer.Write(Flying);
 
             writer.Write(MapItem);
             writer.Write(NextNavPoint);
@@ -328,6 +340,14 @@ namespace Server.Multis
 
             switch (version)
             {
+                case 4:
+                    {
+                        IgnoreWater = reader.ReadBool();
+                        Flies = reader.ReadBool();
+                        Flying = reader.ReadBool();
+
+                        goto case 3;
+                    }
                 case 3:
                     {
                         MapItem = (MapItem)reader.ReadEntity<Item>();
@@ -1115,6 +1135,9 @@ namespace Server.Multis
 
             if (CanCommand(from) && Contains(from))
             {
+                // for when ascent/descent smoothing is figured out
+                // if(e.Speech.Contains("fly")) Flying = true;
+                // if(e.Speech.Contains("land")) Flying = false;
                 for (var i = 0; i < e.Keywords.Length; ++i)
                 {
                     var keyword = e.Keywords[i];
@@ -1377,60 +1400,62 @@ namespace Server.Multis
             return true;
         }
 
-        public bool CanFit(Point3D p, Map map, int itemID)
+        public bool CanFit(Point3D p, Map map, int itemID, MultiComponentList newComponents = null)
         {
             if (map == null || map == Map.Internal || Deleted || CheckDecay())
             {
                 return false;
             }
 
-            var newComponents = MultiData.GetComponents(itemID);
+            newComponents = newComponents??MultiData.GetComponents(itemID);
 
-            for (var x = 0; x < newComponents.Width; ++x)
-            {
-                for (var y = 0; y < newComponents.Height; ++y)
+            if(!IgnoreWater) {
+                for (var x = 0; x < newComponents.Width; ++x)
                 {
-                    var tx = p.X + newComponents.Min.X + x;
-                    var ty = p.Y + newComponents.Min.Y + y;
-
-                    if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
+                    for (var y = 0; y < newComponents.Height; ++y)
                     {
-                        continue;
-                    }
+                        var tx = p.X + newComponents.Min.X + x;
+                        var ty = p.Y + newComponents.Min.Y + y;
 
-                    var landTile = map.Tiles.GetLandTile(tx, ty);
-                    var tiles = map.Tiles.GetStaticTiles(tx, ty, true);
-
-                    var hasWater = landTile.Z == p.Z &&
-                                   (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311);
-
-                    // int z = p.Z;
-
-                    // int landZ = 0, landAvg = 0, landTop = 0;
-
-                    // map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
-
-                    // if (!landTile.Ignored && top > landZ && landTop > z)
-                    // return false;
-
-                    for (var i = 0; i < tiles.Length; ++i)
-                    {
-                        var tile = tiles[i];
-                        var isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
-
-                        if (tile.Z == p.Z && isWater)
+                        if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
                         {
-                            hasWater = true;
+                            continue;
                         }
-                        else if (tile.Z >= p.Z && !isWater)
+
+                        var landTile = map.Tiles.GetLandTile(tx, ty);
+                        var tiles = map.Tiles.GetStaticTiles(tx, ty, true);
+
+                        var hasWater = landTile.Z == p.Z &&
+                                    (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311);
+
+                        // int z = p.Z;
+
+                        // int landZ = 0, landAvg = 0, landTop = 0;
+
+                        // map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
+
+                        // if (!landTile.Ignored && top > landZ && landTop > z)
+                        // return false;
+
+                        for (var i = 0; i < tiles.Length; ++i)
+                        {
+                            var tile = tiles[i];
+                            var isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
+
+                            if (tile.Z == p.Z && isWater)
+                            {
+                                hasWater = true;
+                            }
+                            else if (tile.Z >= p.Z && !isWater)
+                            {
+                                return false;
+                            }
+                        }
+
+                        if (!hasWater)
                         {
                             return false;
                         }
-                    }
-
-                    if (!hasWater)
-                    {
-                        return false;
                     }
                 }
             }
@@ -1635,6 +1660,9 @@ namespace Server.Multis
         {
             var map = Map;
 
+            MultiComponentList newComponents = null;
+            
+
             if (map == null || Deleted || CheckDecay())
             {
                 return false;
@@ -1650,13 +1678,37 @@ namespace Server.Multis
                 return false;
             }
 
+            var verticalMove = false;
+            if(IgnoreWater) {
+                newComponents = MultiData.GetComponents(ItemID);
+                var highZ = 0;
+                for (var x = 0; x < newComponents.Width; ++x)
+                {
+                    for (var y = 0; y < newComponents.Height; ++y)
+                    {
+                        var tx = newComponents.Min.X + x;
+                        var ty = newComponents.Min.Y + y;
+                        var mz = map.Tiles.GetLandTile(tx, ty).Z;
+                        if(highZ < mz) highZ = mz;
+                    }
+                }
+                //very jerky ascent/descent, will try to improve later
+                // if(Flies && Flying) highZ = Math.Min(Z+5,highZ+50);
+                // else if(Z > highZ) highZ = Math.Max(highZ,Z-5);
+                if(Flies) highZ+=50;
+                if(highZ != Z) {
+                    Z = highZ;
+                    verticalMove = true;
+                }
+            }
+
             int rx = 0, ry = 0;
             var d = (Direction)(((int)m_Facing + (int)dir) & 0x7);
             Movement.Movement.Offset(d, ref rx, ref ry);
 
             for (var i = 1; i <= speed; ++i)
             {
-                if (!CanFit(new Point3D(X + i * rx, Y + i * ry, Z), Map, ItemID))
+                if (!CanFit(new Point3D(X + i * rx, Y + i * ry, Z), Map, ItemID, newComponents))
                 {
                     if (i == 1)
                     {
@@ -1673,8 +1725,8 @@ namespace Server.Multis
                 }
             }
 
-            var xOffset = speed * rx;
-            var yOffset = speed * ry;
+            var xOffset = verticalMove ? 0 : speed * rx;
+            var yOffset = verticalMove ? 0 : speed * ry;
 
             var newX = X + xOffset;
             var newY = Y + yOffset;
@@ -1707,7 +1759,7 @@ namespace Server.Multis
 
                     for (var j = 1; j <= speed; ++j)
                     {
-                        if (!CanFit(new Point3D(newX + j * rx, newY + j * ry, Z), Map, ItemID))
+                        if (!CanFit(new Point3D(newX + j * rx, newY + j * ry, Z), Map, ItemID, newComponents))
                         {
                             if (message)
                             {
@@ -1725,7 +1777,7 @@ namespace Server.Multis
 
             if (!NewBoatMovement || xOffset.Abs() > 1 || yOffset.Abs() > 1)
             {
-                Teleport(xOffset, yOffset, 0);
+                Teleport(xOffset, yOffset, IgnoreWater?Z:0);
             }
             else
             {
@@ -1757,7 +1809,7 @@ namespace Server.Multis
                     else if (e is Mobile m)
                     {
                         m.NoMoveHS = true;
-                        m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z);
+                        m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, IgnoreWater?Z:m.Z);
                     }
                 }
 
