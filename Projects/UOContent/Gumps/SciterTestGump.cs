@@ -58,7 +58,7 @@ public class SciterTestGump : Gump
                 }
             case 2:
                 {
-                    TryToAddItem(from, Convert.ToInt32(info.TextEntries[0].Text));
+                    TryToAddItem(from, Utility.ToInt32(info.TextEntries[0].Text));
                     break;
                 }
         }
