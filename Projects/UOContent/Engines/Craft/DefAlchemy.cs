@@ -7,7 +7,7 @@ public class DefAlchemy : CraftSystem
 {
     private static readonly Type typeofPotion = typeof(BasePotion);
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefAlchemy();
     }
@@ -84,10 +84,8 @@ public class DefAlchemy : CraftSystem
 
     public override void InitCraftList()
     {
-        int index;
-
         // Refresh Potion
-        index = AddCraft(typeof(RefreshPotion), 1044530, 1044538, -25, 25.0, typeof(BlackPearl), 1044353, 1, 1044361);
+        var index = AddCraft(typeof(RefreshPotion), 1044530, 1044538, -25, 25.0, typeof(BlackPearl), 1044353, 1, 1044361);
         AddRes(index, typeof(Bottle), 1044529, 1, 500315);
         index = AddCraft(
             typeof(TotalRefreshPotion),

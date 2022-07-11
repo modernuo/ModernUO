@@ -139,7 +139,7 @@ namespace Server.Engines.Craft
             }
         }
 
-        private TextDefinition RequiredExpansionMessage(Expansion expansion)
+        private static TextDefinition RequiredExpansionMessage(Expansion expansion)
         {
             return expansion switch
             {
@@ -153,7 +153,7 @@ namespace Server.Engines.Craft
         {
             var type = m_CraftItem.ItemType;
 
-            AddItem(20, 50, CraftItem.ItemIDOf(type), m_CraftItem.ItemHue);
+            AddItem(20, 50, m_CraftItem.NameNumber, m_CraftItem.ItemHue);
 
             if (m_CraftItem.IsMarkable(type))
             {

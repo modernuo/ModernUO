@@ -8,7 +8,7 @@ public class DefBlacksmithy : CraftSystem
     private static readonly Type typeofAnvil = typeof(AnvilAttribute);
     private static readonly Type typeofForge = typeof(ForgeAttribute);
 
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefBlacksmithy();
     }
@@ -23,7 +23,7 @@ public class DefBlacksmithy : CraftSystem
 
     public static CraftSystem CraftSystem { get; private set; }
 
-    public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
+    public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFortyFive;
 
     public override double GetChanceAtMin(CraftItem item) => 0.0;
 

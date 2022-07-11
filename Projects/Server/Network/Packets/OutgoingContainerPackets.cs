@@ -16,11 +16,14 @@
 using System;
 using System.Buffers;
 using System.IO;
+using Server.Logging;
 
 namespace Server.Network;
 
 public static class OutgoingContainerPackets
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(OutgoingContainerPackets));
+
     public static void SendDisplaySpellbook(this NetState ns, Serial book) => ns.SendDisplayContainer(book, -1);
 
     public static void SendSpellbookContent(this NetState ns, Serial book, int graphic, int offset, ulong content)
@@ -136,7 +139,12 @@ public static class OutgoingContainerPackets
         }
         else
         {
-            Console.WriteLine("Warning: ContainerContentUpdate on item with !(parent is Item)");
+            logger.Warning(
+                "ContainerContentUpdate on Item {Type} ({Serial}) where parent is not an Item",
+                item.GetType().Name,
+                item.Serial
+            );
+
             parentSerial = Serial.Zero;
         }
 

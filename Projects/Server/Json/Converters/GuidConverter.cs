@@ -17,21 +17,20 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class GuidConverter : JsonConverter<Guid>
-    {
-        public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (Guid.TryParse(reader.GetString()!, out var guid))
-            {
-                return guid;
-            }
+namespace Server.Json;
 
-            throw new JsonException("Guid must be in the correct format");
+public class GuidConverter : JsonConverter<Guid>
+{
+    public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (Guid.TryParse(reader.GetString()!, out var guid))
+        {
+            return guid;
         }
 
-        public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
-            => writer.WriteStringValue(value.ToString());
+        throw new JsonException("Guid must be in the correct format");
     }
+
+    public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
+        => writer.WriteStringValue(value.ToString());
 }

@@ -171,8 +171,6 @@ public static class MultiData
             bin.BaseStream.Seek(lookup, SeekOrigin.Begin);
             _components[i] = new MultiComponentList(bin, length, postHSMulFormat);
         }
-
-        idxReader.Close();
     }
 }
 
@@ -358,17 +356,6 @@ public sealed class MultiComponentList
         var tiles = new TileList[Width][];
         Tiles = new StaticTile[Width][][];
 
-        for (var x = 0; x < Width; ++x)
-        {
-            tiles[x] = new TileList[Height];
-            Tiles[x] = new StaticTile[Height][];
-
-            for (var y = 0; y < Height; ++y)
-            {
-                tiles[x][y] = new TileList();
-            }
-        }
-
         for (var i = 0; i < allTiles.Length; ++i)
         {
             if (i == 0 || allTiles[i].Flags != 0)
@@ -376,15 +363,21 @@ public sealed class MultiComponentList
                 var xOffset = allTiles[i].OffsetX + Center.m_X;
                 var yOffset = allTiles[i].OffsetY + Center.m_Y;
 
+                tiles[xOffset] ??= new TileList[Height];
+                Tiles[xOffset] ??= new StaticTile[Height][];
+
+                tiles[xOffset][yOffset] ??= new TileList();
                 tiles[xOffset][yOffset].Add(allTiles[i].ItemId, (sbyte)allTiles[i].OffsetZ);
             }
         }
 
         for (var x = 0; x < Width; ++x)
         {
+            Tiles[x] ??= new StaticTile[Height][];
             for (var y = 0; y < Height; ++y)
             {
-                Tiles[x][y] = tiles[x][y].ToArray();
+                var tileList = tiles[x]?[y];
+                Tiles[x][y] = tileList?.ToArray() ?? Array.Empty<StaticTile>();
             }
         }
     }

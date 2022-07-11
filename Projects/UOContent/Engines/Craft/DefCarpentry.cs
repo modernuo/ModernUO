@@ -5,7 +5,7 @@ namespace Server.Engines.Craft;
 
 public class DefCarpentry : CraftSystem
 {
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefCarpentry();
     }

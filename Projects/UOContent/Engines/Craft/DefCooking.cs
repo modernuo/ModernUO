@@ -5,7 +5,7 @@ namespace Server.Engines.Craft;
 
 public class DefCooking : CraftSystem
 {
-    public static void Configure()
+    public static void Initialize()
     {
         CraftSystem = new DefCooking();
     }
@@ -20,7 +20,7 @@ public class DefCooking : CraftSystem
 
     public static CraftSystem CraftSystem { get; private set; }
 
-    public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
+    public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFortyFive;
 
     public override double GetChanceAtMin(CraftItem item) => 0.0;
 

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Server.Gumps;
+using Server.Items;
 using Server.Mobiles;
+using Server.Spells.Fourth;
+using Server.Spells.Mysticism;
 using Server.Spells.Necromancy;
 
 namespace Server.Spells.Chivalry
@@ -83,7 +86,7 @@ namespace Server.Spells.Chivalry
                     }
                     else
                     {
-                        var sendEffect = false;
+                        bool sendEffect = false;
 
                         if (m.Poisoned && m.CurePoison(Caster))
                         {
@@ -108,26 +111,24 @@ namespace Server.Spells.Chivalry
                             sendEffect = true;
                         }
 
-                        StatMod mod;
-
-                        mod = m.GetStatMod("[Magic] Str Offset");
+                        var mod = m.GetStatMod("[Magic] Str Curse");
                         if (mod?.Offset < 0)
                         {
-                            m.RemoveStatMod("[Magic] Str Offset");
+                            m.RemoveStatMod("[Magic] Str Curse");
                             sendEffect = true;
                         }
 
-                        mod = m.GetStatMod("[Magic] Dex Offset");
+                        mod = m.GetStatMod("[Magic] Dex Curse");
                         if (mod?.Offset < 0)
                         {
-                            m.RemoveStatMod("[Magic] Dex Offset");
+                            m.RemoveStatMod("[Magic] Dex Curse");
                             sendEffect = true;
                         }
 
-                        mod = m.GetStatMod("[Magic] Int Offset");
+                        mod = m.GetStatMod("[Magic] Int Curse");
                         if (mod?.Offset < 0)
                         {
-                            m.RemoveStatMod("[Magic] Int Offset");
+                            m.RemoveStatMod("[Magic] Int Curse");
                             sendEffect = true;
                         }
 
@@ -137,22 +138,24 @@ namespace Server.Spells.Chivalry
                             sendEffect = true;
                         }
 
-                        if (EvilOmenSpell.TryEndEffect(m))
-                        {
-                            sendEffect = true;
-                        }
+                        sendEffect = EvilOmenSpell.TryEndEffect(m) || sendEffect;
+                        sendEffect = StrangleSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = CorpseSkinSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = CurseSpell.RemoveEffect(m) || sendEffect;
+                        sendEffect = MortalStrike.EndWound(m) || sendEffect;
+                        sendEffect = MindRotSpell.ClearMindRotScalar(m) || sendEffect;
+                        sendEffect = BloodOathSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = SpellPlagueSpell.RemoveEffect(m) || sendEffect;
 
-                        if (StrangleSpell.RemoveCurse(m))
-                        {
-                            sendEffect = true;
-                        }
-
-                        if (CorpseSkinSpell.RemoveCurse(m))
-                        {
-                            sendEffect = true;
-                        }
-
-                        // TODO: Should this remove blood oath? Pain spike?
+                        // TODO: Move these into their respective end effect methods
+                        BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);
+                        BuffInfo.RemoveBuff(m, BuffIcon.FeebleMind);
+                        BuffInfo.RemoveBuff(m, BuffIcon.Weaken);
+                        BuffInfo.RemoveBuff(m, BuffIcon.Curse);
+                        BuffInfo.RemoveBuff(m, BuffIcon.MassCurse);
+                        BuffInfo.RemoveBuff(m, BuffIcon.MortalStrike);
+                        BuffInfo.RemoveBuff(m, BuffIcon.Strangle);
+                        BuffInfo.RemoveBuff(m, BuffIcon.EvilOmen);
 
                         if (sendEffect)
                         {

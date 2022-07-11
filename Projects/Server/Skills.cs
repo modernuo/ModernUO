@@ -136,7 +136,6 @@ namespace Server
 
             if (Lock is < SkillLock.Up or > SkillLock.Locked)
             {
-                Console.WriteLine("Bad skill lock -> {0}.{1}", owner.Owner, Lock);
                 Lock = SkillLock.Up;
             }
         }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
@@ -687,9 +686,9 @@ namespace Server
 
                     if (!Stackable && m_Amount > 1)
                     {
-                        Console.WriteLine(
-                            "Warning: 0x{0:X}: Amount changed for non-stackable item '{2}'. ({1})",
-                            Serial.Value,
+                        logger.Warning(
+                            "{Serial}: Amount changed for non-stackable item '{Name}'. ({Amount})",
+                            Serial,
                             m_Amount,
                             GetType().Name
                         );
@@ -3164,27 +3163,29 @@ namespace Server
 
             if (item == this)
             {
-                Console.WriteLine(
-                    "Warning: Adding item to itself: [0x{0} {1}].AddItem( [0x{2} {3}] )",
+                var customException = new InvalidOperationException("Adding item to itself");
+                logger.Warning(
+                    customException,
+                    "Adding item to itself: ({Serial1} {Item1}).AddItem({Serial2} {Item2})",
                     Serial,
                     GetType().Name,
                     item.Serial,
                     item.GetType().Name
                 );
-                Console.WriteLine(new StackTrace());
                 return;
             }
 
             if (IsChildOf(item))
             {
-                Console.WriteLine(
-                    "Warning: Adding parent item to child: [0x{0} {1}].AddItem( [0x{2} {3}] )",
+                var customException = new InvalidOperationException("Adding parent item to child");
+                logger.Warning(
+                    customException,
+                    "Adding parent item to child: [{Serial1} {Item1}].AddItem( [{Serial2} {Item2}] )",
                     Serial,
                     GetType().Name,
                     item.Serial,
                     item.GetType().Name
                 );
-                Console.WriteLine(new StackTrace());
                 return;
             }
 
@@ -3270,9 +3271,10 @@ namespace Server
 
             if (m_DeltaQueue.Count > 0)
             {
-                Utility.PushColor(ConsoleColor.DarkYellow);
-                Console.WriteLine("Warning: {0} items left in delta queue after processing.", m_DeltaQueue.Count);
-                Utility.PopColor();
+                logger.Warning(
+                    "{Count} items left in delta queue after processing.",
+                    m_DeltaQueue.Count
+                );
             }
         }
 

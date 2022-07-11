@@ -80,12 +80,16 @@ namespace Server.Spells.Mysticism
 
         public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
-        public static void RemoveEffect(Mobile m)
+        public static bool RemoveEffect(Mobile m)
         {
-            if (_table.TryGetValue(m, out var context))
+            if (_table.Remove(m, out var context))
             {
-                context.EndPlague(false);
+                context.Stop();
+                BuffInfo.RemoveBuff(m, BuffIcon.SpellPlague);
+                return true;
             }
+
+            return false;
         }
 
         public static void CheckPlague(Mobile m)
@@ -179,9 +183,9 @@ namespace Server.Spells.Mysticism
                 }
             }
 
-            public void EndPlague(bool restart = true)
+            public void EndPlague()
             {
-                if (restart && m_Next != null)
+                if (m_Next != null)
                 {
                     _table[m_Target] = m_Next;
                     m_Next.StartPlague();
@@ -191,6 +195,8 @@ namespace Server.Spells.Mysticism
                     _table.Remove(m_Target);
                     BuffInfo.RemoveBuff(m_Target, BuffIcon.SpellPlague);
                 }
+
+                Stop();
             }
         }
 

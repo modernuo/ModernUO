@@ -209,17 +209,8 @@ namespace Server.Factions
             return true;
         }
 
-        public int GetStatMod(Mobile mob, StatType type)
-        {
-            var mod = mob.GetStatMod($"[Magic] {type} Offset");
-
-            if (mod == null)
-            {
-                return 0;
-            }
-
-            return mod.Offset;
-        }
+        public static int GetStatMod(Mobile mob, StatType type) =>
+            mob.GetStatMod($"[Magic] {type} Curse")?.Offset ?? 0;
 
         public Spell RandomOffenseSpell()
         {
