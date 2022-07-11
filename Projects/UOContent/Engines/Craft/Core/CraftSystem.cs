@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Server.Items;
 
 namespace Server.Engines.Craft
@@ -8,7 +9,7 @@ namespace Server.Engines.Craft
     {
         ChanceMinusSixty,
         FiftyPercentChanceMinusTenPercent,
-        ChanceMinusSixtyToFourtyFive
+        ChanceMinusSixtyToFortyFive
     }
 
     public abstract class CraftSystem
@@ -126,20 +127,17 @@ namespace Server.Engines.Craft
         public int AddCraft(
             Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
             Type typeRes, TextDefinition nameRes, int amount
-        ) =>
-            AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, "");
+        ) => AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, "");
 
         public int AddCraft(
             Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
             Type typeRes, TextDefinition nameRes, int amount, TextDefinition message
-        ) =>
-            AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message);
+        ) => AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message);
 
         public int AddCraft(
             Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill,
             double maxSkill, Type typeRes, TextDefinition nameRes, int amount
-        ) =>
-            AddCraft(typeItem, group, name, skillToMake, minSkill, maxSkill, typeRes, nameRes, amount, "");
+        ) => AddCraft(typeItem, group, name, skillToMake, minSkill, maxSkill, typeRes, nameRes, amount, "");
 
         public int AddCraft(
             Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill,

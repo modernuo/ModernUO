@@ -54,18 +54,15 @@ public class DefInscription : CraftSystem
             return 1044263; // The tool must be on your person to use.
         }
 
-        if (typeItem != null)
+        var scroll = typeItem?.CreateEntityInstance<SpellScroll>();
+
+        if (scroll != null)
         {
-            var scroll = typeItem.CreateEntityInstance<SpellScroll>();
+            var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
 
-            if (scroll != null)
-            {
-                var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
+            scroll.Delete();
 
-                scroll.Delete();
-
-                return hasSpell ? 0 : 1042404; // null : You don't have that spell!
-            }
+            return hasSpell ? 0 : 1042404; // null : You don't have that spell!
         }
 
         return 0;
@@ -211,14 +208,14 @@ public class DefInscription : CraftSystem
             minSkill,
             minSkill + 1.0, // Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
             regs[0],
-            CraftItem.LabelNumber(regs[0]),
+            null,
             1,
             501627
         );
 
         for (var i = 1; i < regs.Length; ++i)
         {
-            AddRes(index, regs[i], CraftItem.LabelNumber(regs[0]), 1, 501627);
+            AddRes(index, regs[i], 1, 501627);
         }
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
@@ -234,14 +231,14 @@ public class DefInscription : CraftSystem
             minSkill,
             maxSkill,
             regs[0],
-            CraftItem.LabelNumber(regs[0]),
+            null,
             1,
             501627
         );
 
         for (var i = 1; i < regs.Length; ++i)
         {
-            AddRes(index, regs[i], CraftItem.LabelNumber(regs[i]), 1, 501627);
+            AddRes(index, regs[i], 1, 501627);
         }
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);

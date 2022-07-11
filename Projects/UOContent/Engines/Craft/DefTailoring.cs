@@ -28,7 +28,7 @@ public class DefTailoring : CraftSystem
 
     public static CraftSystem CraftSystem { get; private set; }
 
-    public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
+    public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFortyFive;
 
     public override double GetChanceAtMin(CraftItem item) => 0.5;
 
