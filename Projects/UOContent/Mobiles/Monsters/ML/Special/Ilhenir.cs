@@ -322,6 +322,7 @@ namespace Server.Mobiles
 
         public override void OnAfterDelete()
         {
+            base.OnAfterDelete();
             _timerToken.Cancel();
         }
 
