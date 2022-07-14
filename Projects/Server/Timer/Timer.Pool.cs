@@ -119,7 +119,8 @@ public partial class Timer
             {
                 RefillPool(amountToRefill, out var head, out var tail);
                 return (head, tail);
-            }
+            },
+            Core.ClosingTokenSource.Token
         );
 
         ReturnToPool(amountToRefill, headTimer, tailTimer);
