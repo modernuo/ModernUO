@@ -46,7 +46,7 @@ public partial class Timer
         var warningMessage = $"Timer pool depleted by {{Amount}}. Refilling with {{AmountRefill}}.{maximumHit}";
 
         logger.Warning(warningMessage, _timerPoolDepletionAmount, amountToRefill);
-        RefillPool(amountToRefill);
+        RefillPoolAsync(amountToRefill);
         _timerPoolDepletionAmount = 0;
     }
 
@@ -107,7 +107,7 @@ public partial class Timer
         }
     }
 
-    internal static async void RefillPool(int amountToRefill)
+    internal static async void RefillPoolAsync(int amountToRefill)
     {
         if (Interlocked.CompareExchange(ref _isRefilling, 0, 1) == 1)
         {
