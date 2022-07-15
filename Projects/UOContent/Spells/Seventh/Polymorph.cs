@@ -142,41 +142,44 @@ namespace Server.Spells.Seventh
 
             if (CheckSequence())
             {
-                if (caster.BeginAction<PolymorphSpell>())
-                {
-                    if (m_NewBody != 0)
-                    {
-                        if (!((Body)m_NewBody).IsHuman)
-                        {
-                            var mt = caster.Mount;
-
-                            if (mt != null)
-                            {
-                                mt.Rider = null;
-                            }
-                        }
-
-                        caster.BodyMod = m_NewBody;
-
-                        caster.HueMod = m_NewBody is 400 or 401 ? caster.Race.RandomSkinHue() : 0;
-
-                        BaseArmor.ValidateMobile(caster);
-                        BaseClothing.ValidateMobile(caster);
-
-                        if (!Core.ML)
-                        {
-                            StopTimer(caster);
-
-                            var duration = Math.Max((int)caster.Skills.Magery.Value, 120);
-
-                            Timer.StartTimer(TimeSpan.FromSeconds(duration), () => EndPolymorph(caster), out var timerToken);
-                            _table[caster] = timerToken;
-                        }
-                    }
-                }
-                else
+                if (!caster.BeginAction<PolymorphSpell>())
                 {
                     caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                    return;
+                }
+
+                if (m_NewBody != 0)
+                {
+                    if (!((Body)m_NewBody).IsHuman)
+                    {
+                        var mt = caster.Mount;
+
+                        if (mt != null)
+                        {
+                            mt.Rider = null;
+                        }
+                    }
+
+                    caster.BodyMod = m_NewBody;
+
+                    caster.HueMod = m_NewBody is 400 or 401 ? caster.Race.RandomSkinHue() : 0;
+
+                    BaseArmor.ValidateMobile(caster);
+                    BaseClothing.ValidateMobile(caster);
+
+                    if (!Core.ML)
+                    {
+                        StopTimer(caster);
+
+                        var duration = Core.Expansion switch
+                        {
+                            Expansion.None => TimeSpan.FromSeconds(6 * caster.Skills.Magery.Value / 5.0),
+                            _              => TimeSpan.FromSeconds(Math.Max(caster.Skills.Magery.Value, 120))
+                        };
+
+                        Timer.StartTimer(duration, () => EndPolymorph(caster), out var timerToken);
+                        _table[caster] = timerToken;
+                    }
                 }
             }
 
