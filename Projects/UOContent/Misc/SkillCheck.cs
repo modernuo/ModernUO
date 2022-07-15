@@ -282,7 +282,7 @@ public static class SkillCheck
 
             var skills = from.Skills;
 
-            if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble())
+            if (from.Player && skills.Total / (double)skills.Cap >= Utility.RandomDouble())
             {
                 for (var i = 0; i < skills.Length; ++i)
                 {

@@ -61,7 +61,7 @@ namespace Server.Items
             }
             else
             {
-                _table.Add(attacker, new List<ForceArrowInfo>() { info });
+                _table.Add(attacker, new List<ForceArrowInfo> { info });
             }
 
             BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));

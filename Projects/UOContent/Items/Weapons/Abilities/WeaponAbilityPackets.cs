@@ -11,7 +11,7 @@ namespace Server.Items
             IncomingPackets.RegisterEncoded(0x19, true, &SetAbility);
         }
 
-        public static unsafe void SetAbility(NetState state, IEntity e, EncodedReader reader)
+        public static void SetAbility(NetState state, IEntity e, EncodedReader reader)
         {
             var m = state.Mobile;
             var index = reader.ReadInt32();

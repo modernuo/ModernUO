@@ -76,22 +76,17 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18)
-            ) // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+            // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+            if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18))
             {
                 attacker.BoltEffect(0);
                 // 35~100 damage, unresistable, by the Ki-rin.
-                attacker.Damage(
-                    Utility.RandomMinMax(35, 100),
-                    this,
-                    false
-                ); // Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.  If changed to player, without the extra bool it'd be an infinite loop
+                // Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.
+                // If changed to player, without the extra bool it'd be an infinite loop
+                attacker.Damage(Utility.RandomMinMax(35, 100), this, false);
 
-                Rider.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    1042534
-                ); // Your mount calls down the forces of nature on your opponent.
+                // Your mount calls down the forces of nature on your opponent.
+                Rider.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1042534);
                 Rider.FixedParticles(0, 0, 0, 0x13A7, EffectLayer.Waist);
                 Rider.PlaySound(0xA9); // Ki-rin's whinny.
                 return true;

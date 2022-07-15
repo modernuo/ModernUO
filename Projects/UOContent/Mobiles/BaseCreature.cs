@@ -1881,7 +1881,7 @@ namespace Server.Mobiles
                 if (_summoned)
                 {
                     SummonEnd = reader.ReadDeltaTime();
-                    new UnsummonTimer(m_ControlMaster, this, SummonEnd - Core.Now).Start();
+                    new UnsummonTimer(this, SummonEnd - Core.Now).Start();
                 }
 
                 ControlSlots = reader.ReadInt();
@@ -3443,7 +3443,7 @@ namespace Server.Mobiles
                 }
             }
 
-            new UnsummonTimer(caster, creature, duration).Start();
+            new UnsummonTimer(creature, duration).Start();
             creature.SummonEnd = Core.Now + duration;
 
             creature.MoveToWorld(p, caster.Map);

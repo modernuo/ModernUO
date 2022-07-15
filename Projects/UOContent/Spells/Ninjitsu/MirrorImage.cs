@@ -170,7 +170,7 @@ namespace Server.Mobiles
 
             var duration = TimeSpan.FromSeconds(30 + caster.Skills.Ninjitsu.Fixed / 40);
 
-            new UnsummonTimer(caster, this, duration).Start();
+            new UnsummonTimer(this, duration).Start();
             SummonEnd = Core.Now + duration;
 
             MirrorImage.AddClone(m_Caster);
