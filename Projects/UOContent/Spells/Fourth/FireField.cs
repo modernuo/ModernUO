@@ -41,9 +41,12 @@ namespace Server.Spells.Fourth
 
                 var itemID = eastToWest ? 0x398C : 0x3996;
 
-                var duration = Core.AOS
-                    ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0)
-                    : TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
+                var duration = Core.Expansion switch
+                {
+                    Expansion.None  => TimeSpan.FromSeconds(20),
+                    < Expansion.LBR => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
+                    _               => TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5)
+                };
 
                 for (var i = -2; i <= 2; ++i)
                 {
