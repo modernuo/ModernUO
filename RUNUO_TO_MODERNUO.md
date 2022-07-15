@@ -97,6 +97,10 @@ list.Add(1060830, $"{dirt:#}");
   * E.g. 5:00, 5:05, 5:10, regardless of when the server is booted.
 * Some items have their constructor arguments rearranged.
 
+## Changes to UO Mechanics
+* Min/max skill requirements for magery adjusted to be accurate to OSI
+* Buffs/Curses now apply appropriately
+
 ## Removed Features
 * Reporting
 * Remote Admin
