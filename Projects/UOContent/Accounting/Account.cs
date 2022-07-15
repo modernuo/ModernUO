@@ -635,6 +635,11 @@ namespace Server.Accounting
         /// <param name="name">Tag name to remove.</param>
         public void RemoveTag(string name)
         {
+            if (_tags == null)
+            {
+                return;
+            }
+
             for (var i = _tags.Count - 1; i >= 0; --i)
             {
                 if (i >= _tags.Count)
@@ -646,7 +651,7 @@ namespace Server.Accounting
 
                 if (tag.Name == name)
                 {
-                    _tags?.RemoveAt(i);
+                    _tags.RemoveAt(i);
                     this.MarkDirty();
                 }
             }

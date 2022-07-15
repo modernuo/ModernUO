@@ -135,6 +135,7 @@ namespace Server.Mobiles
             }
         }
 
+        // ReSharper disable once RedundantOverriddenMember
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
