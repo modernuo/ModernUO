@@ -16,8 +16,7 @@ namespace Server.Spells.Mysticism
             Reagent.MandrakeRoot
         );
 
-        public HailStormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public HailStormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

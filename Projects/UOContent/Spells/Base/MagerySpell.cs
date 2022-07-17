@@ -7,7 +7,7 @@ namespace Server.Spells
     {
         private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
-        /* 
+        /*
          * Starts at Circle -2 to account for scrolls
          * Mana requirements formula: (14 * (circle - 1)) + 2 = 50% probability
          * Add or subtract 20 for max or min limits

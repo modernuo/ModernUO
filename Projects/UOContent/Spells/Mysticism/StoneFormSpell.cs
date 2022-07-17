@@ -21,8 +21,7 @@ namespace Server.Spells.Mysticism
 
         private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
-        public StoneFormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public StoneFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

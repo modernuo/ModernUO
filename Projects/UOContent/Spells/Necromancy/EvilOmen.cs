@@ -18,8 +18,7 @@ namespace Server.Spells.Necromancy
 
         private static readonly Dictionary<Mobile, DefaultSkillMod> _table = new();
 
-        public EvilOmenSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public EvilOmenSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -83,14 +82,13 @@ namespace Server.Spells.Necromancy
 
         public static bool EndEffect(Mobile m)
         {
-            if (!_table.Remove(m, out var mod))
+            if (_table.Remove(m, out var mod))
             {
-                return false;
+                mod.Remove();
+                return true;
             }
 
-            mod?.Remove();
-
-            return true;
+            return false;
         }
     }
 }

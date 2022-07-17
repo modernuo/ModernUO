@@ -209,6 +209,11 @@ namespace Server
                 }
             }
 
+            if (totalDamage <= 0)
+            {
+                return 0;
+            }
+
             m.Damage(totalDamage, from);
             return totalDamage;
         }

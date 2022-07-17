@@ -133,6 +133,8 @@ namespace Server.Spells.Ninjitsu
                     {
                         damage /= 2;
                     }
+
+                    _target.Damage(damage, _attacker); // Damage is direct.
                 }
                 else
                 {
@@ -141,14 +143,7 @@ namespace Server.Spells.Ninjitsu
 
                     var maxDamage = Steps >= 5 ? 62 : 22;
                     damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + _damageBonus;
-                }
 
-                if (Core.ML)
-                {
-                    _target.Damage(damage, _attacker); // Damage is direct.
-                }
-                else
-                {
                     // Damage is physical.
                     AOS.Damage(
                         _target,
