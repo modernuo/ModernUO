@@ -69,8 +69,8 @@ namespace Server.Spells.Mysticism
                     eable.Free();
                 }
 
-                var primarySkill = Caster.Skills[CastSkill].Value;
-                var secondarySkill = Caster.Skills[DamageSkill].Value;
+                var primarySkill = GetBaseSkill(Caster);
+                var secondarySkill = GetDamageSkill(Caster);
 
                 var toHeal = ((int)((primarySkill + secondarySkill) / 4.0) + Utility.RandomMinMax(-3, 3)) / pool.Count;
 
@@ -145,11 +145,9 @@ namespace Server.Spells.Mysticism
         {
             var curseLevel = 0;
 
-            // End sleep spell
-
-             if (SleepSpell.EndSleep(m))
-             {
-                 curseLevel += 2;
+            if (SleepSpell.EndSleep(m))
+            {
+                curseLevel += 2;
             }
 
             if (EvilOmenSpell.EndEffect(m))
@@ -216,7 +214,6 @@ namespace Server.Spells.Mysticism
             BuffInfo.RemoveBuff(m, BuffIcon.Curse);
             BuffInfo.RemoveBuff(m, BuffIcon.MassCurse);
             BuffInfo.RemoveBuff(m, BuffIcon.MortalStrike);
-            BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
             BuffInfo.RemoveBuff(m, BuffIcon.CorpseSkin);
             BuffInfo.RemoveBuff(m, BuffIcon.Strangle);
             BuffInfo.RemoveBuff(m, BuffIcon.EvilOmen);
