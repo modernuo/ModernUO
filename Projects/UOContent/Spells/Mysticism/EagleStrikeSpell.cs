@@ -26,8 +26,6 @@ namespace Server.Spells.Mysticism
         {
             if (CheckHSequence(m))
             {
-                /* Conjures a magical eagle that assaults the Target with its talons, dealing energy damage. */
-
                 SpellHelper.Turn(Caster, m);
 
                 if (Core.SA && HasDelayedDamageContext(m))
@@ -42,6 +40,7 @@ namespace Server.Spells.Mysticism
                 {
                     Timer.StartTimer(TimeSpan.FromSeconds(0.5), () =>
                     {
+                        /* Conjures a magical eagle that assaults the Target with its talons, dealing energy damage. */
                         source.MovingEffect(m, 0x407A, 8, 1, false, true, 0, 0);
                         source.PlaySound(0x2EE);
                     });

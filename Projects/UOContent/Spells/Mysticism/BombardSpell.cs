@@ -57,14 +57,28 @@ namespace Server.Spells.Mysticism
 
                 SpellHelper.Damage(this, m, GetNewAosDamage(40, 1, 5, m), 100, 0, 0, 0, 0);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(1.2), () =>
+                Timer.StartTimer(TimeSpan.FromSeconds(1.2), () =>
                 {
-                    if (!CheckResisted(m))
+                    if (CheckResisted(m))
                     {
-                        int secs = Math.Max(0, (int)(GetDamageSkill(Caster) / 10 - GetResistSkill(m) / 10));
+                        return;
+                    }
 
+                    var damageSkill = GetDamageSkill(Caster);
+                    var resist = GetResistSkill(m);
+
+                    int secs = Math.Max(0, (int)(damageSkill / 10 - resist / 10));
+
+                    if (secs > 0)
+                    {
                         m.Paralyze(TimeSpan.FromSeconds(secs));
-                        // TODO: Knockback
+                    }
+
+                    // Up to 12% chance by checking mysticism + imbuing/focus against resist
+                    var knockBackChance = (GetBaseSkill(Caster) + damageSkill - resist) / 20;
+                    if (knockBackChance > 0 && Utility.RandomDouble() < knockBackChance)
+                    {
+                        m.Move(Caster.GetDirectionTo(m));
                     }
                 });
             }

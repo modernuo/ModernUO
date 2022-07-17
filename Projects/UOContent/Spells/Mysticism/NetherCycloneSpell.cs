@@ -70,7 +70,7 @@ namespace Server.Spells.Mysticism
                     }
 
                     var damage = GetNewAosDamage(51, 1, 5, pvp);
-                    var reduction = (GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 1200.0;
+                    var reduction = (GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 1200.0;
 
                     while (pool.Count > 0)
                     {
