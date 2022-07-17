@@ -26,6 +26,7 @@ namespace Server.SkillHandlers
             else
             {
                 m.Target = new InternalTarget();
+
                 m.SendLocalizedMessage(502368); // Which trap will you attempt to disarm?
             }
 

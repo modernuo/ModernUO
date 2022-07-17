@@ -253,7 +253,8 @@ namespace Server.Spells.Ninjitsu
                 m.AddSkillMod(stealingMod);
             }
 
-            Timer timer = new AnimalFormTimer(m, bodyMod, hueMod).Start();
+            Timer timer = new AnimalFormTimer(m, bodyMod, hueMod);
+            timer.Start();
 
             AddContext(m, new AnimalFormContext(timer, mod, entry.SpeedBoost, entry.Type, stealingMod));
             m.CheckStatTimers();

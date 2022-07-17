@@ -7,7 +7,7 @@ namespace Server
 {
     public class BuffInfo
     {
-        private readonly TimerExecutionToken _timerToken;
+        private TimerExecutionToken _timerToken;
 
         public BuffInfo(BuffIcon iconID, int titleCliloc)
             : this(iconID, titleCliloc, titleCliloc + 1)
