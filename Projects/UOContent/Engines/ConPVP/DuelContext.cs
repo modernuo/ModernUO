@@ -134,16 +134,12 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            string title = null;
-
-            if (move is NinjaMove)
+            string title = move switch
             {
-                title = "Bushido";
-            }
-            else if (move is SamuraiMove)
-            {
-                title = "Ninjitsu";
-            }
+                NinjaMove   => "Bushido",
+                SamuraiMove => "Ninjitsu",
+                _           => null
+            };
 
             if (title == null || name == null || Ruleset.GetOption(title, name))
             {

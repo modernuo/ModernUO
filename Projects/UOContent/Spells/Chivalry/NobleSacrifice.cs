@@ -138,7 +138,7 @@ namespace Server.Spells.Chivalry
                             sendEffect = true;
                         }
 
-                        sendEffect = EvilOmenSpell.TryEndEffect(m) || sendEffect;
+                        sendEffect = EvilOmenSpell.EndEffect(m) || sendEffect;
                         sendEffect = StrangleSpell.RemoveCurse(m) || sendEffect;
                         sendEffect = CorpseSkinSpell.RemoveCurse(m) || sendEffect;
                         sendEffect = CurseSpell.RemoveEffect(m) || sendEffect;

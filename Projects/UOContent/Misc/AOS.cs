@@ -164,23 +164,20 @@ namespace Server
                 }
             }
 
-            if (from?.Player != true && m.Player && m.Mount is SwampDragon pet)
+            if (from?.Player != true && m.Player && m.Mount is SwampDragon { HasBarding: true } pet)
             {
-                if (pet.HasBarding)
+                var percent = pet.BardingExceptional ? 20 : 10;
+                var absorbed = Scale(totalDamage, percent);
+
+                totalDamage -= absorbed;
+                pet.BardingHP -= absorbed;
+
+                if (pet.BardingHP < 0)
                 {
-                    var percent = pet.BardingExceptional ? 20 : 10;
-                    var absorbed = Scale(totalDamage, percent);
+                    pet.HasBarding = false;
+                    pet.BardingHP = 0;
 
-                    totalDamage -= absorbed;
-                    pet.BardingHP -= absorbed;
-
-                    if (pet.BardingHP < 0)
-                    {
-                        pet.HasBarding = false;
-                        pet.BardingHP = 0;
-
-                        m.SendLocalizedMessage(1053031); // Your dragon's barding has been destroyed!
-                    }
+                    m.SendLocalizedMessage(1053031); // Your dragon's barding has been destroyed!
                 }
             }
 

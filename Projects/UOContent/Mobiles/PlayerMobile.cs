@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Engines.ConPVP;
@@ -2716,19 +2717,19 @@ namespace Server.Mobiles
 
             if (m_BuffTable != null)
             {
-                var list = new List<BuffInfo>();
+                using var queue = PooledRefQueue<BuffInfo>.Create();
 
                 foreach (var buff in m_BuffTable.Values)
                 {
                     if (!buff.RetainThroughDeath)
                     {
-                        list.Add(buff);
+                        queue.Enqueue(buff);
                     }
                 }
 
-                for (var i = 0; i < list.Count; i++)
+                while (queue.Count > 0)
                 {
-                    RemoveBuff(list[i]);
+                    RemoveBuff(queue.Dequeue());
                 }
             }
         }
@@ -2838,7 +2839,7 @@ namespace Server.Mobiles
 
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
-            if (EvilOmenSpell.TryEndEffect(this))
+            if (EvilOmenSpell.EndEffect(this))
             {
                 amount = (int)(amount * 1.25);
             }
@@ -4132,7 +4133,7 @@ namespace Server.Mobiles
                 return ApplyPoisonResult.Immune;
             }
 
-            if (EvilOmenSpell.TryEndEffect(this))
+            if (EvilOmenSpell.EndEffect(this))
             {
                 poison = PoisonImpl.IncreaseLevel(poison);
             }

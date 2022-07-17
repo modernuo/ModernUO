@@ -10,7 +10,7 @@ namespace Server.Spells.Ninjitsu
 {
     public class MirrorImage : NinjaSpell
     {
-        private static readonly Dictionary<Mobile, int> m_CloneCount = new();
+        private static readonly Dictionary<Mobile, int> _cloneCount = new();
 
         private static readonly SpellInfo _info = new(
             "Mirror Image",
@@ -30,7 +30,7 @@ namespace Server.Spells.Ninjitsu
 
         public override bool BlockedByAnimalForm => false;
 
-        public static bool HasClone(Mobile m) => m_CloneCount.ContainsKey(m);
+        public static bool HasClone(Mobile m) => _cloneCount.ContainsKey(m);
 
         public static void AddClone(Mobile m)
         {
@@ -39,23 +39,23 @@ namespace Server.Spells.Ninjitsu
                 return;
             }
 
-            m_CloneCount[m] = 1 + (m_CloneCount.TryGetValue(m, out var count) ? count : 0);
+            _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
         }
 
         public static void RemoveClone(Mobile m)
         {
-            if (m == null || !m_CloneCount.TryGetValue(m, out var count))
+            if (m == null || !_cloneCount.TryGetValue(m, out var count))
             {
                 return;
             }
 
             if (count <= 1)
             {
-                m_CloneCount.Remove(m);
+                _cloneCount.Remove(m);
             }
             else
             {
-                m_CloneCount[m]--;
+                _cloneCount[m]--;
             }
         }
 

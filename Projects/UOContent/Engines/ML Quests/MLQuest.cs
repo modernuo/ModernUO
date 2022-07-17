@@ -153,11 +153,9 @@ namespace Server.Engines.MLQuests
                         {
                             if (message)
                             {
-                                MLQuestSystem.Tell(
-                                    quester,
-                                    pm,
-                                    1075575
-                                ); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
+                                // I'm sorry, but I don't have anything else for you right now.
+                                // Could you check back with me in a few minutes?
+                                MLQuestSystem.Tell(quester, pm, 1075575);
                             }
 
                             return false;

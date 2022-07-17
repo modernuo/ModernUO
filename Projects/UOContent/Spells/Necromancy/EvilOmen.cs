@@ -66,7 +66,7 @@ namespace Server.Spells.Necromancy
 
                 var duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 12 + 1.0);
 
-                Timer.StartTimer(duration, () => TryEndEffect(m));
+                Timer.StartTimer(duration, () => EndEffect(m));
 
                 HarmfulSpell(m);
 
@@ -81,7 +81,7 @@ namespace Server.Spells.Necromancy
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static bool TryEndEffect(Mobile m)
+        public static bool EndEffect(Mobile m)
         {
             if (!_table.Remove(m, out var mod))
             {

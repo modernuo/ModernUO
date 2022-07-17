@@ -15,10 +15,8 @@ namespace Server.Engines.Plants
             {
                 if (!m_Plant.IsUsableBy(from))
                 {
-                    m_Plant.LabelTo(
-                        from,
-                        1061856
-                    ); // You must have the item in your backpack or locked down in order to use it.
+                    // You must have the item in your backpack or locked down in order to use it.
+                    m_Plant.LabelTo(from, 1061856);
                 }
                 else if (!m_Plant.IsCrossable)
                 {
@@ -40,10 +38,8 @@ namespace Server.Engines.Plants
                     }
                     else if (!targ.IsUsableBy(from))
                     {
-                        targ.LabelTo(
-                            from,
-                            1061856
-                        ); // You must have the item in your backpack or locked down in order to use it.
+                        // You must have the item in your backpack or locked down in order to use it.
+                        targ.LabelTo(from, 1061856);
                     }
                     else if (!targ.IsCrossable)
                     {

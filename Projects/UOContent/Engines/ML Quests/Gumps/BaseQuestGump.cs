@@ -145,15 +145,17 @@ namespace Server.Engines.MLQuests.Gumps
                 140,
                 312,
                 16,
-                quest.IsChainTriggered || quest.NextQuest != null ? 1075024 : 1072202,
+                quest.IsChainTriggered || quest.NextQuest != null ? 1075024 : 1072202, // Description [(quest chain)]
                 0x2710
-            ); // Description [(quest chain)]
+            );
+
             TextDefinition.AddHtmlText(this, 98, 156, 312, 240, quest.Description, false, true, 0x15F90, 0xBDE784);
         }
 
         public void AddObjectives(MLQuest quest)
         {
             AddHtmlLocalized(98, 140, 312, 16, 1049073, 0x2710); // Objective:
+            // All of the following / Only one of the following
             AddHtmlLocalized(
                 98,
                 156,
@@ -161,7 +163,7 @@ namespace Server.Engines.MLQuests.Gumps
                 16,
                 quest.ObjectiveType == ObjectiveType.All ? 1072208 : 1072209,
                 0x2710
-            ); // All of the following / Only one of the following
+            );
 
             var y = 172;
 
@@ -186,6 +188,7 @@ namespace Server.Engines.MLQuests.Gumps
             var quest = instance.Quest;
 
             AddHtmlLocalized(98, 140, 312, 16, 1049073, 0x2710); // Objective:
+            // All of the following / Only one of the following
             AddHtmlLocalized(
                 98,
                 156,
@@ -193,7 +196,7 @@ namespace Server.Engines.MLQuests.Gumps
                 16,
                 quest.ObjectiveType == ObjectiveType.All ? 1072208 : 1072209,
                 0x2710
-            ); // All of the following / Only one of the following
+            );
 
             var y = 172;
 
