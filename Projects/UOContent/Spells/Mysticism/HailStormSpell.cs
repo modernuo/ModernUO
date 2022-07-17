@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Server.Spells.Mysticism
 {
@@ -20,10 +19,8 @@ namespace Server.Spells.Mysticism
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
-
-        public override double RequiredSkill => 70.0;
-        public override int RequiredMana => 40;
+        public override SpellCircle Circle => SpellCircle.Seventh;
+        public override int GetMana() => 50;
 
         public void Target(IPoint3D p)
         {

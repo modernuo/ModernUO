@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Server.Factions;
 using Server.Spells.Fifth;
 using Server.Spells.Ninjitsu;
@@ -25,10 +24,7 @@ namespace Server.Spells.Mysticism
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
-
-        public override double RequiredSkill => 33.0;
-        public override int RequiredMana => 11;
+        public override SpellCircle Circle => SpellCircle.Fourth;
 
         public static void Initialize()
         {

@@ -12,7 +12,6 @@ namespace Server.Spells
          * Mana requirements formula: (14 * (circle - 1)) + 2 = 50% probability
          * Add or subtract 20 for max or min limits
          */
-
         private static readonly double[] _requiredSkill = Core.ML ?
             new[] { -46.0, -32.0, -18.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
             new[] { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };

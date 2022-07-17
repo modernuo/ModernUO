@@ -45,7 +45,7 @@ namespace Server.Spells.Ninjitsu
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
                 // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
-                Caster.SendLocalizedMessage(1063013, $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t ");
+                Caster.SendLocalizedMessage(1063013, $"{RequiredSkill:F1}\t{CastSkill}\t ");
                 return false;
             }
 
