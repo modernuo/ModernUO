@@ -118,13 +118,16 @@ namespace Server.Spells.Mysticism
                     Caster.PlaySound(0x65A);
                     Caster.Delta(MobileDelta.Resistances);
 
+                    var damageBonus = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 12.0);
+                    var resistCap = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 48.0);
+
                     BuffInfo.AddBuff(
                         Caster,
                         new BuffInfo(
                             BuffIcon.StoneForm,
                             1080145,
                             1080146,
-                            $"-10\t-2\t{offset}\t{GetResistCapBonus(Caster)}\t{GetDIBonus(Caster)}",
+                            $"-10\t-2\t{offset}\t{resistCap}\t{damageBonus}",
                             false
                         )
                     );
@@ -133,10 +136,6 @@ namespace Server.Spells.Mysticism
 
             FinishSequence();
         }
-
-        public int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 12.0);
-
-        public int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 48.0);
 
         public static void RemoveEffects(Mobile m)
         {
