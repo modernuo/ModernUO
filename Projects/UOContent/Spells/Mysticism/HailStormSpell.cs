@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Server.Collections;
 
 namespace Server.Spells.Mysticism
 {
@@ -24,62 +24,49 @@ namespace Server.Spells.Mysticism
 
         public void Target(IPoint3D p)
         {
-            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            var loc = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
+
+            if (SpellHelper.CheckTown(loc, Caster) && CheckSequence())
             {
-                /* Summons a storm of hailstones that strikes all Targets
-                 * within a radius around the Target's Location, dealing
-                 * cold damage.
+                /* Summons a storm of hailstones that strikes all Targets within a radius around the Target's Location,
+                 * dealing cold damage.
                  */
 
                 SpellHelper.Turn(Caster, p);
 
-                if (p is Item item)
-                {
-                    p = item.GetWorldLocation();
-                }
-
-                var targets = new List<Mobile>();
-
                 var map = Caster.Map;
-
-                var pvp = false;
 
                 if (map != null)
                 {
-                    var loc = new Point3D(p);
+                    using var pool = PooledRefQueue<Mobile>.Create();
+                    var pvp = false;
 
                     PlayEffect(loc, Caster.Map);
 
                     foreach (var m in map.GetMobilesInRange(loc, 2))
                     {
-                        if (m == Caster)
+                        if (m == Caster || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false)
+                            || !Caster.CanSee(m) || !Caster.InLOS(m))
                         {
                             continue;
                         }
 
-                        if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && Caster.CanSee(m))
+                        pool.Enqueue(m);
+
+                        if (m.Player)
                         {
-                            if (!Caster.InLOS(m))
-                            {
-                                continue;
-                            }
-
-                            targets.Add(m);
-
-                            if (m.Player)
-                            {
-                                pvp = true;
-                            }
+                            pvp = true;
                         }
                     }
-                }
 
-                double damage = GetNewAosDamage(51, 1, 5, pvp);
+                    double damage = GetNewAosDamage(51, 1, 5, pvp);
 
-                foreach (var m in targets)
-                {
-                    Caster.DoHarmful(m);
-                    SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
+                    while (pool.Count > 0)
+                    {
+                        var m = pool.Dequeue();
+                        Caster.DoHarmful(m);
+                        SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
+                    }
                 }
             }
 
@@ -104,7 +91,9 @@ namespace Server.Spells.Mysticism
 
         private static void PlaySingleEffect(Point3D p, Map map, int a, int b, int c, int d)
         {
-            int x = p.X, y = p.Y, z = p.Z + 18;
+            var x = p.X;
+            var y = p.Y;
+            var z = p.Z + 18;
 
             SendEffectPacket(p, map, new Point3D(x + a, y + c, z), new Point3D(x + a, y + c, z));
             SendEffectPacket(p, map, new Point3D(x + b, y + c, z), new Point3D(x + b, y + c, z));

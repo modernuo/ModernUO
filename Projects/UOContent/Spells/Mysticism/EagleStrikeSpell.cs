@@ -24,20 +24,27 @@ namespace Server.Spells.Mysticism
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
             if (CheckHSequence(m))
             {
-                /* Conjures a magical eagle that assaults the Target with
-                 * its talons, dealing energy damage.
-                 */
-
                 SpellHelper.Turn(Caster, m);
 
-                SpellHelper.CheckReflect(2, Caster, ref m);
+                if (Core.SA && HasDelayedDamageContext(m))
+                {
+                    DoHurtFizzle();
+                    return;
+                }
+
+                var source = Caster;
+
+                if (SpellHelper.CheckReflect(2, ref source, ref m))
+                {
+                    Timer.StartTimer(TimeSpan.FromSeconds(0.5), () =>
+                    {
+                        /* Conjures a magical eagle that assaults the Target with its talons, dealing energy damage. */
+                        source.MovingEffect(m, 0x407A, 8, 1, false, true, 0, 0);
+                        source.PlaySound(0x2EE);
+                    });
+                }
 
                 Caster.MovingParticles(m, 0x407A, 7, 0, false, true, 0, 0, 0xBBE, 0xFA6, 0xFFFF, 0);
                 Caster.PlaySound(0x2EE);
