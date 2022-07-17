@@ -48,11 +48,12 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            if ((_arrows > 0 || _bolts > 0) && from.InRange(GetWorldLocation(), 1))
+            var inRange = from.InRange(GetWorldLocation(), 1);
+            if ((_arrows > 0 || _bolts > 0) && inRange)
             {
                 Gather(from);
             }
-            else
+            else if (from.Weapon is not BaseThrown || inRange)
             {
                 Fire(from);
             }

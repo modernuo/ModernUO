@@ -62,17 +62,24 @@ public partial class CommodityDeed : Item
         base.OnDelete();
     }
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 
-        if (Commodity != null)
+        if (Commodity is ICommodity ic)
         {
-            var args = Commodity.Name == null
-                ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
-                : $"{Commodity.Name}\t{Commodity.Amount}";
-
-            list.Add(1060658, args); // ~1_val~: ~2_val~
+            list.Add(1060658, $"{ic.DescriptionNumber:#}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+        }
+        else if (Commodity != null)
+        {
+            if (Commodity.Name == null)
+            {
+                list.Add(1060658, $"{Commodity.LabelNumber:#}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+            }
+            else
+            {
+                list.Add(1060658, $"{Commodity.Name}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+            }
         }
         else
         {
@@ -86,11 +93,13 @@ public partial class CommodityDeed : Item
 
         if (Commodity != null)
         {
-            var args = Commodity.Name == null
-                ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
-                : $"{Commodity.Name}\t{Commodity.Amount}";
-
-            LabelTo(from, 1060658, args); // ~1_val~: ~2_val~
+            LabelTo(
+                from,
+                1060658, // ~1_val~: ~2_val~
+                Commodity.Name == null
+                    ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
+                    : $"{Commodity.Name}\t{Commodity.Amount}"
+            );
         }
     }
 

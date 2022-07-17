@@ -5,7 +5,6 @@ namespace Server.Mobiles
         [Constructible]
         public SkeletalMount(string name = null) : base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
         {
-            SetSpeed(0.55, 1.1);
             SetStr(91, 100);
             SetDex(46, 55);
             SetInt(46, 60);

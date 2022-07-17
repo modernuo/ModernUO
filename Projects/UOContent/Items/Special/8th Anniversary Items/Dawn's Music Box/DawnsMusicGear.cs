@@ -32,7 +32,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public MusicName Music { get; set; }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var info = DawnsMusicBox.GetInfo(Music);
 

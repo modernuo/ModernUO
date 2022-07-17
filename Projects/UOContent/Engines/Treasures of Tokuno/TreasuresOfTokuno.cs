@@ -326,8 +326,7 @@ namespace Server.Gumps
             i.ItemID,
             i.Hue,
             i.Name is not { Length: > 0 } ? i.LabelNumber : i.Name
-        ) =>
-            Item = i;
+        ) => Item = i;
 
         public Item Item { get; set; }
     }
@@ -336,10 +335,9 @@ namespace Server.Gumps
     {
         private readonly Mobile m_Collector;
 
-        public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) : base(
-            1071012, // Click a minor artifact to give it to Ihara Soko.
-            buttons
-        ) => m_Collector = collector;
+        // Click a minor artifact to give it to Ihara Soko.
+        public ToTTurnInGump(Mobile collector, List<ImageTileButtonInfo> buttons)
+            : base(1071012, buttons) => m_Collector = collector;
 
         public static List<ImageTileButtonInfo> FindRedeemableItems(Mobile m)
         {

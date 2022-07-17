@@ -64,7 +64,7 @@ namespace Server.Spells.Necromancy
 
         private class ExpireTimer : Timer
         {
-            private readonly BaseWeapon _weapon;
+            private BaseWeapon _weapon;
 
             public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay) => _weapon = weapon;
 

@@ -21,6 +21,8 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ModernUO.SerializationGenerator.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
@@ -35,13 +37,16 @@
     </Target>
     <ItemGroup>
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
-        <PackageReference Include="PollGroup" Version="1.1.0" />
-        <PackageReference Include="Zlib.Bindings" Version="1.8.0" />
+        <PackageReference Include="PollGroup" Version="1.2.1" />
+        <PackageReference Include="Zlib.Bindings" Version="1.9.2" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.0.2" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.0.4" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.1.4" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Assistants" />
     </ItemGroup>
 </Project>

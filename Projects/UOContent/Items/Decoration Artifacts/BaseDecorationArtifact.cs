@@ -11,11 +11,11 @@ public abstract partial class BaseDecorationArtifact : Item
 
     public override bool ForceShowProperties => true;
 
-    public override void GetProperties(ObjectPropertyList list)
+    public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 
-        list.Add(1061078, ArtifactRarity.ToString()); // artifact rarity ~1_val~
+        list.Add(1061078, ArtifactRarity); // artifact rarity ~1_val~
     }
 }
 
@@ -28,10 +28,10 @@ public abstract partial class BaseDecorationContainerArtifact : BaseContainer
 
     public override bool ForceShowProperties => true;
 
-    public override void AddNameProperties(ObjectPropertyList list)
+    public override void AddNameProperties(IPropertyList list)
     {
         base.AddNameProperties(list);
 
-        list.Add(1061078, ArtifactRarity.ToString()); // artifact rarity ~1_val~
+        list.Add(1061078, ArtifactRarity); // artifact rarity ~1_val~
     }
 }

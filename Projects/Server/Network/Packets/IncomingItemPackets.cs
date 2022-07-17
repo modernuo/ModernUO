@@ -21,13 +21,13 @@ namespace Server.Network;
 
 public static class IncomingItemPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x07, 7, true, LiftReq);
-        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, DropReq));
-        IncomingPackets.Register(0x13, 10, true, EquipReq);
-        IncomingPackets.Register(0xEC, 0, false, EquipMacro);
-        IncomingPackets.Register(0xED, 0, false, UnequipMacro);
+        IncomingPackets.Register(0x07, 7, true, &LiftReq);
+        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, &DropReq));
+        IncomingPackets.Register(0x13, 10, true, &EquipReq);
+        IncomingPackets.Register(0xEC, 0, false, &EquipMacro);
+        IncomingPackets.Register(0xED, 0, false, &UnequipMacro);
     }
 
     public static void LiftReq(NetState state, CircularBufferReader reader, int packetLength)
@@ -76,44 +76,6 @@ public static class IncomingItemPackets
             reader.ReadByte(); // Grid Location?
         }
 
-        Serial dest = (Serial)reader.ReadUInt32();
-
-        var loc = new Point3D(x, y, z);
-
-        var from = state.Mobile;
-
-        if (dest.IsMobile)
-        {
-            from.Drop(World.FindMobile(dest), loc);
-        }
-        else if (dest.IsItem)
-        {
-            var item = World.FindItem(dest);
-
-            if (item is BaseMulti multi && multi.AllowsRelativeDrop)
-            {
-                loc.m_X += multi.X;
-                loc.m_Y += multi.Y;
-                from.Drop(loc);
-            }
-            else
-            {
-                from.Drop(item, loc);
-            }
-        }
-        else
-        {
-            from.Drop(loc);
-        }
-    }
-
-    public static void DropReq6017(NetState state, CircularBufferReader reader, int packetLength)
-    {
-        reader.ReadInt32(); // serial, ignored
-        int x = reader.ReadInt16();
-        int y = reader.ReadInt16();
-        int z = reader.ReadSByte();
-        reader.ReadByte(); // Grid Location?
         Serial dest = (Serial)reader.ReadUInt32();
 
         var loc = new Point3D(x, y, z);

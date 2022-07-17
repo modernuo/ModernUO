@@ -12,8 +12,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        public SummonFiendSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public SummonFiendSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -26,10 +25,8 @@ namespace Server.Spells.Spellweaving
 
         public override bool CheckSequence()
         {
-            var caster = Caster;
-
             // This is done after casting completes
-            if (caster is PlayerMobile mobile)
+            if (Caster is PlayerMobile mobile)
             {
                 var context = MLQuestSystem.GetContext(mobile);
 

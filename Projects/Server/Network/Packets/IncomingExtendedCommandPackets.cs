@@ -34,29 +34,29 @@ public static class IncomingExtendedCommandPackets
         125, 126, 127, 128
     };
 
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0xBF, 0, true, ExtendedCommand);
+        IncomingPackets.Register(0xBF, 0, true, &ExtendedCommand);
 
-        RegisterExtended(0x05, false, ScreenSize);
-        RegisterExtended(0x06, true, PartyMessage);
-        RegisterExtended(0x09, true, DisarmRequest);
-        RegisterExtended(0x0A, true, StunRequest);
-        RegisterExtended(0x0B, false, Language);
-        RegisterExtended(0x0C, true, CloseStatus);
-        RegisterExtended(0x0E, true, Animate);
-        RegisterExtended(0x0F, false, Empty); // What's this?
-        RegisterExtended(0x10, true, QueryProperties);
-        RegisterExtended(0x13, true, ContextMenuRequest);
-        RegisterExtended(0x15, true, ContextMenuResponse);
-        RegisterExtended(0x1A, true, StatLockChange);
-        RegisterExtended(0x1C, true, CastSpell);
-        RegisterExtended(0x24, false, UnhandledBF);
-        RegisterExtended(0x2C, true, BandageTarget);
-        RegisterExtended(0x2D, true, TargetedSpell);
-        RegisterExtended(0x2E, true, TargetedSkillUse);
-        RegisterExtended(0x30, true, TargetByResourceMacro);
-        RegisterExtended(0x32, true, ToggleFlying);
+        RegisterExtended(0x05, false, &ScreenSize);
+        RegisterExtended(0x06, true, &PartyMessage);
+        RegisterExtended(0x09, true, &DisarmRequest);
+        RegisterExtended(0x0A, true, &StunRequest);
+        RegisterExtended(0x0B, false, &Language);
+        RegisterExtended(0x0C, true, &CloseStatus);
+        RegisterExtended(0x0E, true, &Animate);
+        RegisterExtended(0x0F, false, &Empty); // What's this?
+        RegisterExtended(0x10, true, &QueryProperties);
+        RegisterExtended(0x13, true, &ContextMenuRequest);
+        RegisterExtended(0x15, true, &ContextMenuResponse);
+        RegisterExtended(0x1A, true, &StatLockChange);
+        RegisterExtended(0x1C, true, &CastSpell);
+        RegisterExtended(0x24, false, &UnhandledBF);
+        RegisterExtended(0x2C, true, &BandageTarget);
+        RegisterExtended(0x2D, true, &TargetedSpell);
+        RegisterExtended(0x2E, true, &TargetedSkillUse);
+        RegisterExtended(0x30, true, &TargetByResourceMacro);
+        RegisterExtended(0x32, true, &ToggleFlying);
     }
 
     private static void UnhandledBF(NetState state, CircularBufferReader reader, int packetLength)
@@ -67,7 +67,8 @@ public static class IncomingExtendedCommandPackets
     {
     }
 
-    public static void RegisterExtended(int packetID, bool ingame, OnPacketReceive onReceive)
+    public static unsafe void RegisterExtended(int packetID, bool ingame,
+        delegate*<NetState, CircularBufferReader, int, void> onReceive)
     {
         if (packetID is >= 0 and < 0x100)
         {
@@ -86,7 +87,7 @@ public static class IncomingExtendedCommandPackets
         }
     }
 
-    public static void ExtendedCommand(NetState state, CircularBufferReader reader, int packetLength)
+    public static unsafe void ExtendedCommand(NetState state, CircularBufferReader reader, int packetLength)
     {
         int packetId = reader.ReadUInt16();
 
@@ -103,8 +104,7 @@ public static class IncomingExtendedCommandPackets
             if (state.Mobile == null)
             {
                 state.LogInfo(
-                    "Sent in-game packet (0xBFx{0:X2}) before having been attached to a mobile",
-                    packetId
+                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
                 );
             }
 
@@ -331,7 +331,7 @@ public static class IncomingExtendedCommandPackets
 
             if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
             {
-                m.SendPropertiesTo(from);
+                m.SendPropertiesTo(state);
             }
         }
         else if (s.IsItem)
@@ -341,7 +341,7 @@ public static class IncomingExtendedCommandPackets
             if (item?.Deleted == false && from.CanSee(item) &&
                 Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
             {
-                item.SendPropertiesTo(from);
+                item.SendPropertiesTo(state);
             }
         }
     }

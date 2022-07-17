@@ -100,9 +100,10 @@ namespace Server.Spells.Necromancy
             if (!_table.ContainsKey(target))
             {
                 var timer = new MRExpireTimer(target, scalar, duration);
-                _table.Add(target, timer);
-                BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
                 timer.Start();
+                _table[target] = timer;
+
+                BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
                 target.SendLocalizedMessage(1074384);
             }
         }
@@ -110,9 +111,9 @@ namespace Server.Spells.Necromancy
 
     public class MRExpireTimer : Timer
     {
-        private readonly DateTime _end;
-        private readonly Mobile _target;
-        public readonly double _double;
+        private DateTime _end;
+        private Mobile _target;
+        public double _double;
 
         public MRExpireTimer(Mobile target, double scalar, TimeSpan delay) : base(
             TimeSpan.FromSeconds(1.0),

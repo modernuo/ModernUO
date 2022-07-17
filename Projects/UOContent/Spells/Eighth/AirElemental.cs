@@ -42,7 +42,12 @@ namespace Server.Spells.Eighth
         {
             if (CheckSequence())
             {
-                var duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
+                var duration = Core.Expansion switch
+                {
+                    Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
+                    // T2A -> Current
+                    _ => TimeSpan.FromSeconds(4 * Math.Min(5, Caster.Skills.Magery.Value)),
+                };
 
                 if (Core.AOS)
                 {

@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.ResistanceMod",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.ResistanceType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Offset",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

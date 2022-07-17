@@ -564,35 +564,37 @@ namespace Server.Items
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
-            if (dropped is SpellScroll scroll && scroll.Amount == 1)
+            if (dropped is not SpellScroll { Amount: 1 } scroll)
             {
-                var type = GetTypeForSpell(scroll.SpellID);
+                return false;
+            }
 
-                if (type != SpellbookType)
-                {
-                    return false;
-                }
+            var type = GetTypeForSpell(scroll.SpellID);
 
-                if (HasSpell(scroll.SpellID))
-                {
-                    from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
-                    return false;
-                }
+            if (type != SpellbookType)
+            {
+                return false;
+            }
 
-                var val = scroll.SpellID - BookOffset;
+            if (HasSpell(scroll.SpellID))
+            {
+                from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
+                return false;
+            }
 
-                if (val >= 0 && val < BookCount)
-                {
-                    m_Content |= (ulong)1 << val;
-                    ++SpellCount;
+            var val = scroll.SpellID - BookOffset;
 
-                    InvalidateProperties();
+            if (val >= 0 && val < BookCount)
+            {
+                m_Content |= (ulong)1 << val;
+                ++SpellCount;
 
-                    scroll.Delete();
+                InvalidateProperties();
 
-                    from.SendSound(0x249, GetWorldLocation());
-                    return true;
-                }
+                scroll.Delete();
+
+                from.SendSound(0x249, GetWorldLocation());
+                return true;
             }
 
             return false;
@@ -621,21 +623,21 @@ namespace Server.Items
 
                 if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
                 {
-                    var modName = Serial.ToString();
+                    var serial = Serial;
 
                     if (strBonus != 0)
                     {
-                        from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                     }
 
                     if (dexBonus != 0)
                     {
-                        from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                     }
 
                     if (intBonus != 0)
                     {
-                        from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                        from.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                     }
                 }
 
@@ -649,11 +651,11 @@ namespace Server.Items
             {
                 SkillBonuses.Remove();
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
-                from.RemoveStatMod($"{modName}Str");
-                from.RemoveStatMod($"{modName}Dex");
-                from.RemoveStatMod($"{modName}Int");
+                from.RemoveStatMod($"{serial}Str");
+                from.RemoveStatMod($"{serial}Dex");
+                from.RemoveStatMod($"{serial}Int");
 
                 from.CheckStatTimers();
             }
@@ -693,7 +695,7 @@ namespace Server.Items
             to.NetState.SendSpellbookContent(Serial, ItemID, BookOffset + 1, m_Content);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -736,72 +738,72 @@ namespace Server.Items
 
             if ((prop = Attributes.WeaponDamage) != 0)
             {
-                list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
+                list.Add(1060401, prop); // damage increase ~1_val~%
             }
 
             if ((prop = Attributes.DefendChance) != 0)
             {
-                list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
+                list.Add(1060408, prop); // defense chance increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusDex) != 0)
             {
-                list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
+                list.Add(1060409, prop); // dexterity bonus ~1_val~
             }
 
             if ((prop = Attributes.EnhancePotions) != 0)
             {
-                list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
+                list.Add(1060411, prop); // enhance potions ~1_val~%
             }
 
             if ((prop = Attributes.CastRecovery) != 0)
             {
-                list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
+                list.Add(1060412, prop); // faster cast recovery ~1_val~
             }
 
             if ((prop = Attributes.CastSpeed) != 0)
             {
-                list.Add(1060413, prop.ToString()); // faster casting ~1_val~
+                list.Add(1060413, prop); // faster casting ~1_val~
             }
 
             if ((prop = Attributes.AttackChance) != 0)
             {
-                list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
+                list.Add(1060415, prop); // hit chance increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusHits) != 0)
             {
-                list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
+                list.Add(1060431, prop); // hit point increase ~1_val~
             }
 
             if ((prop = Attributes.BonusInt) != 0)
             {
-                list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
+                list.Add(1060432, prop); // intelligence bonus ~1_val~
             }
 
             if ((prop = Attributes.LowerManaCost) != 0)
             {
-                list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
+                list.Add(1060433, prop); // lower mana cost ~1_val~%
             }
 
             if ((prop = Attributes.LowerRegCost) != 0)
             {
-                list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
+                list.Add(1060434, prop); // lower reagent cost ~1_val~%
             }
 
             if ((prop = Attributes.Luck) != 0)
             {
-                list.Add(1060436, prop.ToString()); // luck ~1_val~
+                list.Add(1060436, prop); // luck ~1_val~
             }
 
             if ((prop = Attributes.BonusMana) != 0)
             {
-                list.Add(1060439, prop.ToString()); // mana increase ~1_val~
+                list.Add(1060439, prop); // mana increase ~1_val~
             }
 
             if ((prop = Attributes.RegenMana) != 0)
             {
-                list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
+                list.Add(1060440, prop); // mana regeneration ~1_val~
             }
 
             if (Attributes.NightSight != 0)
@@ -811,17 +813,17 @@ namespace Server.Items
 
             if ((prop = Attributes.ReflectPhysical) != 0)
             {
-                list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
+                list.Add(1060442, prop); // reflect physical damage ~1_val~%
             }
 
             if ((prop = Attributes.RegenStam) != 0)
             {
-                list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
+                list.Add(1060443, prop); // stamina regeneration ~1_val~
             }
 
             if ((prop = Attributes.RegenHits) != 0)
             {
-                list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
+                list.Add(1060444, prop); // hit point regeneration ~1_val~
             }
 
             if (Attributes.SpellChanneling != 0)
@@ -831,30 +833,30 @@ namespace Server.Items
 
             if ((prop = Attributes.SpellDamage) != 0)
             {
-                list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
+                list.Add(1060483, prop); // spell damage increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusStam) != 0)
             {
-                list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
+                list.Add(1060484, prop); // stamina increase ~1_val~
             }
 
             if ((prop = Attributes.BonusStr) != 0)
             {
-                list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
+                list.Add(1060485, prop); // strength bonus ~1_val~
             }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
             {
-                list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
+                list.Add(1060486, prop); // swing speed increase ~1_val~%
             }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
             {
-                list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
+                list.Add(1075210, prop); // Increased Karma Loss ~1val~%
             }
 
-            list.Add(1042886, SpellCount.ToString()); // ~1_NUMBERS_OF_SPELLS~ Spells
+            list.Add(1042886, SpellCount); // ~1_NUMBERS_OF_SPELLS~ Spells
         }
 
         public override void OnSingleClick(Mobile from)
@@ -972,21 +974,21 @@ namespace Server.Items
             {
                 if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
                 {
-                    var modName = Serial.ToString();
+                    var serial = Serial;
 
                     if (strBonus != 0)
                     {
-                        m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                        m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                     }
 
                     if (dexBonus != 0)
                     {
-                        m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                        m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                     }
 
                     if (intBonus != 0)
                     {
-                        m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                        m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                     }
                 }
 

@@ -17,9 +17,9 @@ namespace Server.Network;
 
 public static class IncomingHousePackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0xFB, 2, false, ShowPublicHouseContent);
+        IncomingPackets.Register(0xFB, 2, false, &ShowPublicHouseContent);
     }
 
     public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, int packetLength)

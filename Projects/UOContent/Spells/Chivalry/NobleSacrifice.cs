@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
 using Server.Collections;
 using Server.Gumps;
+using Server.Items;
 using Server.Mobiles;
+using Server.Spells.Fourth;
+using Server.Spells.Mysticism;
 using Server.Spells.Necromancy;
 
 namespace Server.Spells.Chivalry
@@ -34,7 +38,7 @@ namespace Server.Spells.Chivalry
                 var eable = Caster.GetMobilesInRange(3);
                 using var pool = PooledRefQueue<Mobile>.Create();
 
-                foreach (var m in eable) // TODO: Validate range
+                foreach (var m in eable)
                 {
                     if (m is not BaseCreature { IsAnimatedDead: true } && Caster != m && m.InLOS(Caster) &&
                         Caster.CanBeBeneficial(m, false, true) && m is not Golem)
@@ -42,7 +46,7 @@ namespace Server.Spells.Chivalry
                         pool.Enqueue(m);
                     }
                 }
-                
+
                 eable.Free();
 
                 Caster.PlaySound(0x244);
@@ -58,7 +62,7 @@ namespace Server.Spells.Chivalry
                 var sacrifice = false;
 
                 // TODO: Is there really a resurrection chance?
-                var resChance = 0.1 + 0.9 * Caster.Karma / 10000.0d;
+                var resChance = 0.1 + 0.9 * Caster.Karma / 10000;
 
                 while (pool.Count > 0)
                 {
@@ -68,9 +72,8 @@ namespace Server.Spells.Chivalry
                     {
                         if (m.Region?.IsPartOf("Khaldun") == true)
                         {
-                            Caster.SendLocalizedMessage(
-                                1010395
-                            ); // The veil of death in this area is too strong and resists thy efforts to restore life.
+                            // The veil of death in this area is too strong and resists thy efforts to restore life.
+                            Caster.SendLocalizedMessage(1010395);
                         }
                         else if (resChance > Utility.RandomDouble())
                         {
@@ -79,85 +82,85 @@ namespace Server.Spells.Chivalry
                             m.SendGump(new ResurrectGump(m, Caster));
                             sacrifice = true;
                         }
-
-                        continue;
                     }
-
-                    var sendEffect = false;
-
-                    if (m.Poisoned && m.CurePoison(Caster))
+                    else
                     {
-                        Caster.DoBeneficial(m);
+                        bool sendEffect = false;
 
-                        if (Caster != m)
+                        if (m.Poisoned && m.CurePoison(Caster))
                         {
-                            Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
+                            Caster.DoBeneficial(m);
+
+                            if (Caster != m)
+                            {
+                                Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
+                            }
+
+                            m.SendLocalizedMessage(1010059); // You have been cured of all poisons.
+                            sendEffect = true;
+                            sacrifice = true;
                         }
 
-                        m.SendLocalizedMessage(1010059); // You have been cured of all poisons.
-                        sendEffect = true;
-                        sacrifice = true;
-                    }
+                        if (m.Hits < m.HitsMax)
+                        {
+                            var toHeal = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
 
-                    if (m.Hits < m.HitsMax)
-                    {
-                        var toHeal = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
+                            Caster.DoBeneficial(m);
+                            m.Heal(toHeal, Caster);
+                            sendEffect = true;
+                        }
 
-                        Caster.DoBeneficial(m);
-                        m.Heal(toHeal, Caster);
-                        sendEffect = true;
-                    }
+                        var mod = m.GetStatMod("[Magic] Str Curse");
+                        if (mod?.Offset < 0)
+                        {
+                            m.RemoveStatMod("[Magic] Str Curse");
+                            sendEffect = true;
+                        }
 
-                    StatMod mod;
+                        mod = m.GetStatMod("[Magic] Dex Curse");
+                        if (mod?.Offset < 0)
+                        {
+                            m.RemoveStatMod("[Magic] Dex Curse");
+                            sendEffect = true;
+                        }
 
-                    mod = m.GetStatMod("[Magic] Str Offset");
-                    if (mod?.Offset < 0)
-                    {
-                        m.RemoveStatMod("[Magic] Str Offset");
-                        sendEffect = true;
-                    }
+                        mod = m.GetStatMod("[Magic] Int Curse");
+                        if (mod?.Offset < 0)
+                        {
+                            m.RemoveStatMod("[Magic] Int Curse");
+                            sendEffect = true;
+                        }
 
-                    mod = m.GetStatMod("[Magic] Dex Offset");
-                    if (mod?.Offset < 0)
-                    {
-                        m.RemoveStatMod("[Magic] Dex Offset");
-                        sendEffect = true;
-                    }
+                        if (m.Paralyzed)
+                        {
+                            m.Paralyzed = false;
+                            sendEffect = true;
+                        }
 
-                    mod = m.GetStatMod("[Magic] Int Offset");
-                    if (mod?.Offset < 0)
-                    {
-                        m.RemoveStatMod("[Magic] Int Offset");
-                        sendEffect = true;
-                    }
+                        sendEffect = EvilOmenSpell.EndEffect(m) || sendEffect;
+                        sendEffect = StrangleSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = CorpseSkinSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = CurseSpell.RemoveEffect(m) || sendEffect;
+                        sendEffect = MortalStrike.EndWound(m) || sendEffect;
+                        sendEffect = MindRotSpell.ClearMindRotScalar(m) || sendEffect;
+                        sendEffect = BloodOathSpell.RemoveCurse(m) || sendEffect;
+                        sendEffect = SpellPlagueSpell.RemoveEffect(m) || sendEffect;
 
-                    if (m.Paralyzed)
-                    {
-                        m.Paralyzed = false;
-                        sendEffect = true;
-                    }
+                        // TODO: Move these into their respective end effect methods
+                        BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);
+                        BuffInfo.RemoveBuff(m, BuffIcon.FeebleMind);
+                        BuffInfo.RemoveBuff(m, BuffIcon.Weaken);
+                        BuffInfo.RemoveBuff(m, BuffIcon.Curse);
+                        BuffInfo.RemoveBuff(m, BuffIcon.MassCurse);
+                        BuffInfo.RemoveBuff(m, BuffIcon.MortalStrike);
+                        BuffInfo.RemoveBuff(m, BuffIcon.Strangle);
+                        BuffInfo.RemoveBuff(m, BuffIcon.EvilOmen);
 
-                    if (EvilOmenSpell.EndEffect(m))
-                    {
-                        sendEffect = true;
-                    }
-
-                    if (StrangleSpell.RemoveCurse(m))
-                    {
-                        sendEffect = true;
-                    }
-
-                    if (CorpseSkinSpell.RemoveCurse(m))
-                    {
-                        sendEffect = true;
-                    }
-
-                    // TODO: Should this remove blood oath? Pain spike?
-
-                    if (sendEffect)
-                    {
-                        m.FixedParticles(0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head);
-                        sacrifice = true;
+                        if (sendEffect)
+                        {
+                            m.FixedParticles(0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head);
+                            sacrifice = true;
+                        }
                     }
                 }
 

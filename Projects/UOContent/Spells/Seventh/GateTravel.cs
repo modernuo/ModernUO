@@ -69,8 +69,8 @@ namespace Server.Spells.Seventh
             {
                 Caster.SendLocalizedMessage(501942); // That location is blocked.
             }
-            else if (Core.SE && (GateExistsAt(map, loc) || GateExistsAt(Caster.Map, Caster.Location))
-            ) // SE restricted stacking gates
+            // SE restricted stacking gates
+            else if (Core.SE && (GateExistsAt(map, loc) || GateExistsAt(Caster.Map, Caster.Location)))
             {
                 Caster.SendLocalizedMessage(1071242); // There is already a gate there.
             }
@@ -127,7 +127,7 @@ namespace Server.Spells.Seventh
             return SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom);
         }
 
-        private bool GateExistsAt(Map map, Point3D loc)
+        private static bool GateExistsAt(Map map, Point3D loc)
         {
             var eable = map.GetItemsInRange(loc, 0);
 
@@ -182,7 +182,7 @@ namespace Server.Spells.Seventh
             {
                 private readonly Item m_Item;
 
-                public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
+                public InternalTimer(Item item) : base(TimeSpan.FromSeconds(Core.T2A ? 30.0 : 10.0))
                 {
                     m_Item = item;
                 }

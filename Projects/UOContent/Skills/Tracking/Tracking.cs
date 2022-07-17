@@ -12,9 +12,9 @@ namespace Server.SkillHandlers
     {
         private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new();
 
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingExtendedCommandPackets.RegisterExtended(0x07, true, QuestArrow);
+            IncomingExtendedCommandPackets.RegisterExtended(0x07, true, &QuestArrow);
             SkillInfo.Table[(int)SkillName.Tracking].Callback = OnUse;
         }
 

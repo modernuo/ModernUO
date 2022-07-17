@@ -12,7 +12,7 @@ namespace Server.Items
 
         public override int LabelNumber => 1073526; // butcher's war cleaver
 
-        public override void AppendChildNameProperties(ObjectPropertyList list)
+        public override void AppendChildNameProperties(IPropertyList list)
         {
             base.AppendChildNameProperties(list);
 

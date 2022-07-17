@@ -72,16 +72,11 @@ namespace Server.Spells.Fifth
 
                     // creature.ControlSlots = 2;
 
-                    TimeSpan duration;
-
-                    if (Core.AOS)
+                    var duration = Core.Expansion switch
                     {
-                        duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
-                    }
-                    else
-                    {
-                        duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
-                    }
+                        Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
+                        _ => TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0)
+                    };
 
                     SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
                 }

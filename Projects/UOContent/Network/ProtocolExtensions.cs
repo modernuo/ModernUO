@@ -15,40 +15,48 @@
 
 namespace Server.Network
 {
-    public static class ProtocolExtensions
+    public interface IProtocolExtensionsInfo
     {
-        public static PacketHandler[] Register(byte packetId)
+        public int PacketId { get; }
+    }
+
+    public static class ProtocolExtensions<T> where T : struct, IProtocolExtensionsInfo
+    {
+        private static readonly PacketHandler[] packetHandlers = new PacketHandler[0x100];
+        private static int packetId;
+
+        public static unsafe PacketHandler[] Register(T info)
         {
-            var packetHandlers = new PacketHandler[0x100];
+            packetId = info.PacketId;
+            IncomingPackets.Register(packetId, 0, false, &DecodeBundledPacket);
 
-            void DecodeBundledPacket(NetState state, CircularBufferReader reader, int packetLength)
+            return packetHandlers;
+        }
+
+        private static unsafe void DecodeBundledPacket(NetState state, CircularBufferReader reader, int packetLength)
+        {
+            int cmd = reader.ReadByte();
+
+            PacketHandler ph = packetHandlers[cmd];
+
+            if (ph == null)
             {
-                int cmd = reader.ReadByte();
-
-                PacketHandler ph = packetHandlers[cmd];
-
-                if (ph == null)
-                {
-                    return;
-                }
-
-                if (ph.Ingame && state.Mobile == null)
-                {
-                    state.LogInfo("Sent in-game packet (0x{0:X2}x{1:X2}) before having been attached to a mobile", packetId, cmd);
-                    state.Disconnect("Sent in-game packet before being attached to a mobile.");
-                }
-                else if (ph.Ingame && state.Mobile.Deleted)
-                {
-                    state.Disconnect(string.Empty);
-                }
-                else
-                {
-                    ph.OnReceive(state, reader, packetLength);
-                }
+                return;
             }
 
-            IncomingPackets.Register(packetId, 0, false, DecodeBundledPacket);
-            return packetHandlers;
+            if (ph.Ingame && state.Mobile == null)
+            {
+                state.LogInfo($"Sent in-game packet (0x{packetId:X2}x{cmd:X2}) before having been attached to a mobile");
+                state.Disconnect("Sent in-game packet before being attached to a mobile.");
+            }
+            else if (ph.Ingame && state.Mobile.Deleted)
+            {
+                state.Disconnect(string.Empty);
+            }
+            else
+            {
+                ph.OnReceive(state, reader, packetLength);
+            }
         }
     }
 }

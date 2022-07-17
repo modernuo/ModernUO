@@ -26,7 +26,7 @@ namespace Server.Spells.Spellweaving
         {
             if (!IsValidLocation(Caster.Location, Caster.Map))
             {
-                // You must be standing on an arcane circle, pentagram or abbatoir to use this spell.
+                // You must be standing on an arcane circle, pentagram or abattoir to use this spell.
                 Caster.SendLocalizedMessage(1072705);
                 return false;
             }

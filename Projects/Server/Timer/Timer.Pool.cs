@@ -15,121 +15,116 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace Server
+namespace Server;
+
+public partial class Timer
 {
-    public partial class Timer
+    private const int _timerPoolDepletionThreshold = 128; // Maximum timers allocated in a single tick before we force adjust
+    private static int _timerPoolDepletionAmount;         // Amount the pool has been depleted by
+    private static int _maxPoolCapacity;
+    private static int _poolCapacity;
+    private static int _poolCount;
+    private static DelayCallTimer _poolHead;
+    private static int _isRefilling;
+
+    public static void CheckTimerPool()
     {
-        private const int _timerPoolDepletionThreshold = 128; // Maximum timers allocated in a single tick before we force adjust
-        private static int _timerPoolDepletionAmount;         // Amount the pool has been depleted by
-        private static int _maxPoolCapacity;
-        private static int _poolCapacity;
-        private static int _poolCount;
-        private static DelayCallTimer _poolHead;
-
-        public static void CheckTimerPool()
+        // Anything less than this threshold and we are ok with the number of allocations.
+        if (_timerPoolDepletionAmount < _timerPoolDepletionThreshold)
         {
-            // Anything less than this threshold and we are ok with the number of allocations.
-            if (_timerPoolDepletionAmount < _timerPoolDepletionThreshold)
-            {
-                _timerPoolDepletionAmount = 0;
-                return;
-            }
-
-            var growthFactor = Math.DivRem(_timerPoolDepletionAmount, _poolCapacity, out var rem);
-            var amountToGrow = _poolCapacity * (growthFactor + (rem > 0 ? 1 : 0));
-            var amountToRefill = Math.Min(_maxPoolCapacity, amountToGrow);
-
-            var maximumHit = amountToGrow > amountToRefill ? " Maximum pool size has been reached." : "";
-
-            logger.Warning($"Timer pool depleted by {_timerPoolDepletionAmount}. Refilling with {amountToRefill}.{maximumHit}");
-            RefillPoolAsync(amountToRefill);
             _timerPoolDepletionAmount = 0;
+            return;
         }
 
-        public static void ConfigureTimerPool()
-        {
-            _poolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.initialPoolCapacity", 1024);
-            _maxPoolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolCapacity", _poolCapacity * 16);
+        var growthFactor = Math.DivRem(_timerPoolDepletionAmount, _poolCapacity, out var rem);
+        var amountToGrow = _poolCapacity * (growthFactor + (rem > 0 ? 1 : 0));
+        var amountToRefill = Math.Min(_maxPoolCapacity, amountToGrow);
 
-            RefillPool(_poolCapacity, out var head, out var tail);
-            ReturnToPool(_poolCapacity, head, tail);
-        }
+        var maximumHit = amountToGrow > amountToRefill ? " Maximum pool size has been reached." : "";
+        var warningMessage = $"Timer pool depleted by {{Amount}}. Refilling with {{AmountRefill}}.{maximumHit}";
 
-        private static void ReturnToPool(int amount, DelayCallTimer head, DelayCallTimer tail)
-        {
-            tail.Attach(_poolHead);
-            _poolHead = head;
-            _poolCount += amount;
+        logger.Warning(warningMessage, _timerPoolDepletionAmount, amountToRefill);
+        RefillPoolAsync(amountToRefill);
+        _timerPoolDepletionAmount = 0;
+    }
+
+    public static void ConfigureTimerPool()
+    {
+        _poolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.initialPoolCapacity", 1024);
+        _maxPoolCapacity = ServerConfiguration.GetOrUpdateSetting("timer.maxPoolCapacity", _poolCapacity * 16);
+
+        RefillPool(_poolCapacity, out var head, out var tail);
+        ReturnToPool(_poolCapacity, head, tail);
+    }
+
+    private static void ReturnToPool(int amount, DelayCallTimer head, DelayCallTimer tail)
+    {
+        tail.Attach(_poolHead);
+        _poolHead = head;
+        _poolCount += amount;
 #if DEBUG_TIMERS
-            logger.Information($"Returning to pool. ({_poolCount} / {_poolCapacity})");
+        logger.Information("Returning to pool. ({Count} / {Capacity})", _poolCount, _poolCapacity);
 #endif
+    }
+
+    private static DelayCallTimer GetFromPool()
+    {
+        if (_poolHead == null)
+        {
+            return null;
         }
 
-        private static DelayCallTimer GetFromPool()
+        var timer = _poolHead;
+        _poolHead = _poolHead._nextTimer as DelayCallTimer;
+        timer.Detach();
+        _poolCount--;
+
+        return timer;
+    }
+
+    internal static void RefillPool(int amount, out DelayCallTimer head, out DelayCallTimer tail)
+    {
+#if DEBUG_TIMERS
+        logger.Information("Filling pool with {Amount} timers.", amount);
+#endif
+
+        head = null;
+        tail = null;
+
+        for (var i = 0; i < amount; i++)
         {
-            if (_poolHead == null)
+            var timer = new DelayCallTimer(TimeSpan.Zero, TimeSpan.Zero, 0, null);
+            timer.Attach(head);
+
+            if (i == 0)
             {
-                return null;
+                tail = timer;
             }
 
-            var timer = _poolHead;
-            _poolHead = _poolHead._nextTimer as DelayCallTimer;
-            timer.Detach();
-            _poolCount--;
+            head = timer;
+        }
+    }
 
-            return timer;
+    internal static async void RefillPoolAsync(int amountToRefill)
+    {
+        if (Interlocked.CompareExchange(ref _isRefilling, 0, 1) == 1)
+        {
+            return;
         }
 
-        internal static void RefillPool(int amount, out DelayCallTimer head, out DelayCallTimer tail)
-        {
-#if DEBUG_TIMERS
-            logger.Information($"Filling pool with {amount} timers.");
-#endif
-
-            head = null;
-            tail = null;
-
-            for (var i = 0; i < amount; i++)
+        var (headTimer, tailTimer) = await Task.Run(
+            () =>
             {
-                var timer = new DelayCallTimer(TimeSpan.Zero, TimeSpan.Zero, 0, null);
-                timer.Attach(head);
+                RefillPool(amountToRefill, out var head, out var tail);
+                return (head, tail);
+            },
+            Core.ClosingTokenSource.Token
+        );
 
-                if (i == 0)
-                {
-                    tail = timer;
-                }
-
-                head = timer;
-            }
-        }
-
-        internal static void RefillPoolAsync(int amountToRefill)
-        {
-            ThreadPool.UnsafeQueueUserWorkItem(
-                static amount =>
-                {
-                    RefillPool(amount, out var head, out var tail);
-
-                    // Run this on the core thread
-                    Core.LoopContext.Post(
-                        state =>
-                        {
-                            if (state == null)
-                            {
-                                return;
-                            }
-
-                            var (listHead, listTail) = ((DelayCallTimer, DelayCallTimer))state;
-                            ReturnToPool(amount, listHead, listTail);
-                            _poolCapacity = amount;
-                        },
-                        (head, tail)
-                    );
-                },
-                amountToRefill,
-                false
-            );
-        }
+        ReturnToPool(amountToRefill, headTimer, tailTimer);
+        _poolCapacity = amountToRefill;
+        _isRefilling = 0;
     }
 }

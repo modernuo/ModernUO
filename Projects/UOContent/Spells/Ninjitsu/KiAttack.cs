@@ -105,7 +105,7 @@ namespace Server.Spells.Ninjitsu
 
         private class KiAttackTimer : Timer
         {
-            public readonly Mobile _mobile;
+            public Mobile _mobile;
             public Point3D _location;
 
             public KiAttackTimer(Mobile m) : base(TimeSpan.FromSeconds(2.0))

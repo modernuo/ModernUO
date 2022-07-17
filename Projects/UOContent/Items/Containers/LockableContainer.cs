@@ -214,7 +214,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
         base.OnSnoop(from);
     }
 
-    public override void AddNameProperties(ObjectPropertyList list)
+    public override void AddNameProperties(IPropertyList list)
     {
         base.AddNameProperties(list);
 

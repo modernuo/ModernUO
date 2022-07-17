@@ -22,10 +22,15 @@ namespace Server.Network
         [CallPriority(10)]
         public static void Configure()
         {
-            _handlers = ProtocolExtensions.Register(0xF1);
+            _handlers = ProtocolExtensions<FreeshardProtocolInfo>.Register(new FreeshardProtocolInfo());
         }
 
-        public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
+        public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, CircularBufferReader, int, void> onReceive) =>
             _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
+
+        private struct FreeshardProtocolInfo : IProtocolExtensionsInfo
+        {
+            public int PacketId => 0xF1;
+        }
     }
 }

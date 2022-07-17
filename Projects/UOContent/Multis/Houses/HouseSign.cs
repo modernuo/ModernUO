@@ -52,12 +52,12 @@ namespace Server.Multis
             }
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             list.Add(1061638); // A House Sign
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -83,7 +83,7 @@ namespace Server.Multis
                         level = DecayLevel.IDOC;
                     }
 
-                    list.Add(1062028, $"#{1043009 + (int)level}"); // Condition: This structure is ...
+                    list.AddLocalized(1062028, 1043009 + (int)level); // Condition: This structure is ...
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace Server.Multis
             if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
                 Owner.DecayLevel != DecayLevel.DemolitionPending)
             {
-                var canClaim = Owner?.CoOwners.Count > 0 && Owner.IsCoOwner(m) || Owner.IsFriend(m);
+                var canClaim = Owner.IsCoOwner(m) || Owner.IsFriend(m);
 
                 if (canClaim && !BaseHouse.HasAccountHouse(m))
                 {

@@ -67,7 +67,6 @@ namespace Server.Items
             {
                 m.YellowHealthbar = false;
                 m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.
-
                 return true;
             }
 

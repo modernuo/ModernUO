@@ -30,8 +30,7 @@ namespace Server.Spells.Ninjitsu
 
         private bool m_WasMoving;
 
-        public AnimalForm(Mobile caster, Item scroll)
-            : base(caster, scroll, _info)
+        public AnimalForm(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 
@@ -135,10 +134,8 @@ namespace Server.Spells.Ninjitsu
                 var mana = ScaleMana(RequiredMana);
                 if (mana > Caster.Mana)
                 {
-                    Caster.SendLocalizedMessage(
-                        1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
-                        mana.ToString()
-                    );
+                    // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                    Caster.SendLocalizedMessage(1060174, mana.ToString());
                 }
                 else if (context != null)
                 {
@@ -167,17 +164,14 @@ namespace Server.Spells.Ninjitsu
                         }
                     }
                 }
+                else if (Morph(Caster, GetLastAnimalForm(Caster)) == MorphResult.Fail)
+                {
+                    DoFizzle();
+                }
                 else
                 {
-                    if (Morph(Caster, GetLastAnimalForm(Caster)) == MorphResult.Fail)
-                    {
-                        DoFizzle();
-                    }
-                    else
-                    {
-                        Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
-                        Caster.Mana -= mana;
-                    }
+                    Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
+                    Caster.Mana -= mana;
                 }
             }
 
@@ -199,11 +193,8 @@ namespace Server.Spells.Ninjitsu
 
             if (m.Skills.Ninjitsu.Value < entry.ReqSkill)
             {
-                var args = $"{entry.ReqSkill:F1}\t{SkillName.Ninjitsu}\t ";
-                m.SendLocalizedMessage(
-                    1063013, // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
-                    args
-                );
+                // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                m.SendLocalizedMessage(1063013, $"{entry.ReqSkill:F1}\t{SkillName.Ninjitsu}\t ");
                 return MorphResult.NoSkill;
             }
 
@@ -484,10 +475,8 @@ namespace Server.Spells.Ninjitsu
 
                 if (mana > m_Caster.Mana)
                 {
-                    m_Caster.SendLocalizedMessage(
-                        1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
-                        mana.ToString()
-                    );
+                    // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                    m_Caster.SendLocalizedMessage(1060174, mana.ToString());
                 }
                 else if (m_Caster is PlayerMobile mobile && mobile.MountBlockReason != BlockMountType.None)
                 {
@@ -538,9 +527,9 @@ namespace Server.Spells.Ninjitsu
 
     public class AnimalFormTimer : Timer
     {
-        private readonly int _body;
-        private readonly int _hue;
-        private readonly Mobile _mobile;
+        private int _body;
+        private int _hue;
+        private Mobile _mobile;
         private int _counter;
         private Mobile _lastTarget;
 
@@ -588,8 +577,7 @@ namespace Server.Spells.Ninjitsu
                     _lastTarget = _mobile.Combatant;
                 }
 
-                if (_mobile.Warmode && _lastTarget is { Alive: true, Deleted: false } &&
-                    _counter-- <= 0)
+                if (_mobile.Warmode && _lastTarget is { Alive: true, Deleted: false } && _counter-- <= 0)
                 {
                     if (_mobile.CanBeHarmful(_lastTarget) && _lastTarget.Map == _mobile.Map &&
                         _lastTarget.InRange(_mobile.Location, BaseCreature.DefaultRangePerception) &&

@@ -3,7 +3,7 @@ using ModernUO.Serialization;
 namespace Server.Items
 {
     [SerializationGenerator(0, false)]
-    public partial  class StaffOfTheMagi : BlackStaff
+    public partial class StaffOfTheMagi : BlackStaff
     {
         [Constructible]
         public StaffOfTheMagi()

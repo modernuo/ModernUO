@@ -94,13 +94,13 @@ namespace Server.Mobiles
         [Constructible]
         public BaseEscortable() : base(AIType.AI_Melee, FightMode.Aggressor, 22)
         {
-            SetSpeed(0.3, 1.0);
-
             InitBody();
             InitOutfit();
 
             Fame = 200;
             Karma = 4000;
+
+            SetSpeed(0.2, 1.0);
         }
 
         public BaseEscortable(Serial serial)

@@ -1,35 +1,20 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class CandelabraStand : BaseLight
 {
-    public class CandelabraStand : BaseLight
+    [Constructible]
+    public CandelabraStand() : base(0xA29)
     {
-        [Constructible]
-        public CandelabraStand() : base(0xA29)
-        {
-            Duration = TimeSpan.Zero; // Never burnt out
-            Burning = false;
-            Light = LightType.Circle225;
-            Weight = 20.0;
-        }
-
-        public CandelabraStand(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LitItemID => 0xB26;
-        public override int UnlitItemID => 0xA29;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        Duration = TimeSpan.Zero; // Never burnt out
+        Burning = false;
+        Light = LightType.Circle225;
+        Weight = 20.0;
     }
+
+    public override int LitItemID => 0xB26;
+    public override int UnlitItemID => 0xA29;
 }

@@ -60,7 +60,7 @@ namespace Server.Items
             return Dead ? 1073623 : 1073622; // A [dead/live] aquarium creature
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

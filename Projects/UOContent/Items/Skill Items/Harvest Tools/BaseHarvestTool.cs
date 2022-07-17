@@ -109,7 +109,7 @@ namespace Server.Items
             return 100;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -122,7 +122,7 @@ namespace Server.Items
                 list.Add(1060636); // exceptional
             }
 
-            list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
+            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 
         public virtual void DisplayDurabilityTo(Mobile m)

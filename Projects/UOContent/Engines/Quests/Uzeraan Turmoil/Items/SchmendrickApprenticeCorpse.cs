@@ -70,7 +70,7 @@ namespace Server.Engines.Quests.Haven
             return new FacialHairInfo(Race.Human.RandomFacialHair(false), m_HairHue);
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             if (ItemID == 0x2006) // Corpse form
             {

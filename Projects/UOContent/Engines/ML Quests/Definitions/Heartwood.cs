@@ -1708,7 +1708,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "acid elementals",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1734,7 +1734,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "plague spawns",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
             Objectives.Add(
                 new KillObjective(
                     3,
@@ -1742,7 +1742,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "plague beasts",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
             Objectives.Add(
                 new KillObjective(
                     1,
@@ -1750,7 +1750,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "plague beast lord",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
-            ); // The Palace of Paroxysmus
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -2012,7 +2012,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2079,7 +2079,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2147,7 +2147,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2213,7 +2213,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2280,7 +2280,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2346,7 +2346,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2410,7 +2410,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2482,7 +2482,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2546,7 +2546,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2624,7 +2624,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2684,7 +2684,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2748,7 +2748,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2810,7 +2810,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2887,7 +2887,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -2971,7 +2971,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3039,7 +3039,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3072,14 +3072,9 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                Utility.RandomList(
-                    1074209, // Hey, could you help me out with something?
-                    1074184
-                )
-            ); // Come here, I have work for you.
+            // Hey, could you help me out with something?
+            // Come here, I have work for you.
+            MLQuestSystem.Tell(this, pm, Utility.RandomBool() ? 1074209 : 1074184);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3109,7 +3104,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3172,7 +3167,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3242,7 +3237,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3306,7 +3301,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3332,14 +3327,9 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                Utility.RandomList(
-                    1074186, // Come here, I have a task.
-                    1074209
-                )
-            ); // Hey, could you help me out with something?
+            // Come here, I have a task.
+            // Hey, could you help me out with something?
+            MLQuestSystem.Tell(this, pm, Utility.RandomBool() ? 1074209 : 1074186);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3369,7 +3359,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3419,7 +3409,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3492,7 +3482,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3555,7 +3545,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3588,14 +3578,9 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                Utility.RandomList(
-                    1074187, // Want a job?
-                    1074209
-                )
-            ); // Hey, could you help me out with something?
+            // Hey, could you help me out with something?
+            // Want a job?
+            MLQuestSystem.Tell(this, pm, Utility.RandomBool() ? 1074209 : 1074187);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3625,7 +3610,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3653,14 +3638,9 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                Utility.RandomList(
-                    1074187, // Want a job?
-                    1074185
-                )
-            ); // Hey you! Want to help me out?
+            // Hey you! Want to help me out?
+            // Want a job?
+            MLQuestSystem.Tell(this, pm, Utility.RandomBool() ? 1074185 : 1074187);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -3690,7 +3670,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3754,7 +3734,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3817,7 +3797,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3881,7 +3861,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3943,7 +3923,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -3988,7 +3968,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4046,7 +4026,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4090,7 +4070,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4139,7 +4119,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4185,7 +4165,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4231,7 +4211,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4275,7 +4255,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4319,7 +4299,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4364,7 +4344,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4415,7 +4395,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4459,7 +4439,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4512,7 +4492,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4569,7 +4549,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4621,7 +4601,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4686,7 +4666,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4742,7 +4722,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4797,7 +4777,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -4853,7 +4833,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

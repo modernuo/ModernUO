@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System.Buffers.Binary;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -275,21 +274,52 @@ public ref struct SpanWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteAscii(char chr) => Write((byte)chr);
 
-    public void WriteString<T>(string value, Encoding encoding, int fixedLength = -1) where T : struct, IEquatable<T>
+    public void WriteAscii(
+        ref RawInterpolatedStringHandler handler)
     {
-        int sizeT = Unsafe.SizeOf<T>();
+        Write(handler.Text, Encoding.ASCII);
+        handler.Clear();
+    }
 
-        if (sizeT > 2)
+    public void WriteAscii(
+        IFormatProvider? formatProvider,
+        [InterpolatedStringHandlerArgument("formatProvider")]
+        ref RawInterpolatedStringHandler handler)
+    {
+        Write(handler.Text, Encoding.ASCII);
+        handler.Clear();
+    }
+
+    public void Write(
+        Encoding encoding,
+        ref RawInterpolatedStringHandler handler)
+    {
+        Write(handler.Text, encoding);
+        handler.Clear();
+    }
+
+    public void Write(
+        Encoding encoding,
+        IFormatProvider? formatProvider,
+        [InterpolatedStringHandlerArgument("formatProvider")]
+        ref RawInterpolatedStringHandler handler)
+    {
+        Write(handler.Text, encoding);
+        handler.Clear();
+    }
+
+    public void Write(ReadOnlySpan<char> value, Encoding encoding, int fixedLength = -1)
+    {
+        var charLength = Math.Min(fixedLength > -1 ? fixedLength : value.Length, value.Length);
+        var src = value[..charLength];
+
+        var byteLength = encoding.GetByteLengthForEncoding();
+        var byteCount = encoding.GetByteCount(src);
+        if (fixedLength > src.Length)
         {
-            throw new InvalidConstraintException("WriteString only accepts byte, sbyte, char, short, and ushort as a constraint");
+            byteCount += (fixedLength - src.Length) * byteLength;
         }
 
-        value ??= string.Empty;
-
-        var charLength = Math.Min(fixedLength > -1 ? fixedLength : value.Length, value.Length);
-        var src = value.AsSpan(0, charLength);
-
-        var byteCount = fixedLength > -1 ? fixedLength * sizeT : encoding.GetByteCount(value);
         if (byteCount == 0)
         {
             return;
@@ -302,7 +332,7 @@ public ref struct SpanWriter
 
         if (fixedLength > -1)
         {
-            var extra = fixedLength * sizeT - bytesWritten;
+            var extra = fixedLength * byteLength - bytesWritten;
             if (extra > 0)
             {
                 Clear(extra);
@@ -311,53 +341,53 @@ public ref struct SpanWriter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteLittleUni(string value) => WriteString<char>(value, TextEncoding.UnicodeLE);
+    public void WriteLittleUni(string value) => Write(value, TextEncoding.UnicodeLE);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteLittleUniNull(string value)
     {
-        WriteString<char>(value, TextEncoding.UnicodeLE);
+        Write(value, TextEncoding.UnicodeLE);
         Write((ushort)0);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteLittleUni(string value, int fixedLength) => WriteString<char>(value, TextEncoding.UnicodeLE, fixedLength);
+    public void WriteLittleUni(string value, int fixedLength) => Write(value, TextEncoding.UnicodeLE, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBigUni(string value) => WriteString<char>(value, TextEncoding.Unicode);
+    public void WriteBigUni(string value) => Write(value, TextEncoding.Unicode);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBigUniNull(string value)
     {
-        WriteString<char>(value, TextEncoding.Unicode);
+        Write(value, TextEncoding.Unicode);
         Write((ushort)0); // '\0'
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBigUni(string value, int fixedLength) => WriteString<char>(value, TextEncoding.Unicode, fixedLength);
+    public void WriteBigUni(string value, int fixedLength) => Write(value, TextEncoding.Unicode, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteUTF8(string value) => WriteString<byte>(value, TextEncoding.UTF8);
+    public void WriteUTF8(string value) => Write(value, TextEncoding.UTF8);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteUTF8Null(string value)
     {
-        WriteString<byte>(value, TextEncoding.UTF8);
+        Write(value, TextEncoding.UTF8);
         Write((byte)0); // '\0'
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteAscii(string value) => WriteString<byte>(value, Encoding.ASCII);
+    public void WriteAscii(string value) => Write(value, Encoding.ASCII);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteAsciiNull(string value)
     {
-        WriteString<byte>(value, Encoding.ASCII);
+        Write(value, Encoding.ASCII);
         Write((byte)0); // '\0'
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteAscii(string value, int fixedLength) => WriteString<byte>(value, Encoding.ASCII, fixedLength);
+    public void WriteAscii(string value, int fixedLength) => Write(value, Encoding.ASCII, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear(int count)

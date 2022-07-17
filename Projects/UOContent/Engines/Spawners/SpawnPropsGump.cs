@@ -96,7 +96,7 @@ namespace Server.Gumps
                     }
                 case 3: // Apply
                     {
-                        using var propsBuilder = new ValueStringBuilder(64);
+                        using var propsBuilder = ValueStringBuilder.Create();
                         bool first = true;
                         foreach (var attr in MobileAttributes)
                         {

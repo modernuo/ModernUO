@@ -74,6 +74,9 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
+        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
+
+
         public static bool RemoveEffect(Mobile m)
         {
             if (_table.Remove(m, out var timer))
@@ -189,8 +192,11 @@ namespace Server.Spells.Mysticism
                 }
                 else
                 {
-                    RemoveEffect(_target);
+                    _table.Remove(_target);
+                    BuffInfo.RemoveBuff(_target, BuffIcon.SpellPlague);
                 }
+
+                Stop();
             }
 
             protected override void OnTick()

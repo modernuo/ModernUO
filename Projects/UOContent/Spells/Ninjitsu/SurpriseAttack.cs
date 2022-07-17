@@ -58,9 +58,10 @@ namespace Server.Spells.Ninjitsu
 
             var malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 
-            var t = new SurpriseAttackTimer(defender, malus);
-            _table[defender] = t;
-            t.Start();
+            var timer = new SurpriseAttackTimer(defender, malus);
+            timer.Start();
+
+            _table[defender] = timer;
 
             CheckGain(attacker);
         }
@@ -81,33 +82,39 @@ namespace Server.Spells.Ninjitsu
                 return false;
             }
 
-            malus = info._malus;
+            malus = info.Malus;
             return true;
         }
 
         private static void StopTimer(Mobile m)
         {
-            if (_table.Remove(m, out var t))
+            if (_table.Remove(m, out var timer))
             {
-                t.Stop();
+                timer.Stop();
             }
+        }
+
+        private static void EndSurprise(SurpriseAttackTimer info)
+        {
+            StopTimer(info.Target);
+            info.Target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
         }
 
         private class SurpriseAttackTimer : Timer
         {
-            public readonly int _malus;
-            public readonly Mobile _target;
+            public int Malus;
+            public Mobile Target;
 
             public SurpriseAttackTimer(Mobile target, int effect) : base(TimeSpan.FromSeconds(8.0))
             {
-                _target = target;
-                _malus = effect;
+                Target = target;
+                Malus = effect;
             }
 
             protected override void OnTick()
             {
-                StopTimer(_target);
-                _target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
+                StopTimer(Target);
+                Target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
             }
         }
     }

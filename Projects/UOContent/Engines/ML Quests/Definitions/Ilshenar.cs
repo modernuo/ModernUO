@@ -25,7 +25,7 @@ namespace Server.Engines.MLQuests.Definitions
         // OSI sends this instead, but it doesn't make sense for an escortable
         // public override void OnComplete( MLQuestInstance instance )
         // {
-        // instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
+        //     instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
         // }
     }
 
@@ -180,7 +180,7 @@ namespace Server.Engines.MLQuests.Definitions
             Body = 400;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             var hairHue = 0x3B2 + Utility.Random(2);
@@ -235,7 +235,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = true;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);
@@ -286,7 +286,7 @@ namespace Server.Engines.MLQuests.Definitions
             Female = false;
             Hue = Race.RandomSkinHue();
 
-            SetSpeed(0.5, 2);
+            SetSpeed(0.5, 2.0);
             InitStats(100, 100, 25);
 
             Utility.AssignRandomHair(this);

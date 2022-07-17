@@ -38,21 +38,20 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x00, 104, false, CreateCharacter);
-        IncomingPackets.Register(0x5D, 73, false, PlayCharacter);
-        IncomingPackets.Register(0x80, 62, false, AccountLogin);
-        IncomingPackets.Register(0x83, 39, false, DeleteCharacter);
-        IncomingPackets.Register(0x91, 65, false, GameLogin);
-        IncomingPackets.Register(0xA0, 3, false, PlayServer);
-        IncomingPackets.Register(0xBB, 9, false, AccountID);
-        IncomingPackets.Register(0xBD, 0, false, ClientVersion);
-        IncomingPackets.Register(0xBE, 0, true, AssistVersion);
-        IncomingPackets.Register(0xCF, 0, false, AccountLogin);
-        IncomingPackets.Register(0xE1, 0, false, ClientType);
-        IncomingPackets.Register(0xEF, 21, false, LoginServerSeed);
-        IncomingPackets.Register(0xF8, 106, false, CreateCharacter);
+        IncomingPackets.Register(0x00, 104, false, &CreateCharacter);
+        IncomingPackets.Register(0x5D, 73, false, &PlayCharacter);
+        IncomingPackets.Register(0x80, 62, false, &AccountLogin);
+        IncomingPackets.Register(0x83, 39, false, &DeleteCharacter);
+        IncomingPackets.Register(0x91, 65, false, &GameLogin);
+        IncomingPackets.Register(0xA0, 3, false, &PlayServer);
+        IncomingPackets.Register(0xBB, 9, false, &AccountID);
+        IncomingPackets.Register(0xBD, 0, false, &ClientVersion);
+        IncomingPackets.Register(0xCF, 0, false, &AccountLogin);
+        IncomingPackets.Register(0xE1, 0, false, &ClientType);
+        IncomingPackets.Register(0xEF, 21, false, &LoginServerSeed);
+        IncomingPackets.Register(0xF8, 106, false, &CreateCharacter);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -71,7 +70,7 @@ public static class IncomingAccountPackets
         int prof = reader.ReadByte();
         reader.Seek(15, SeekOrigin.Current);
 
-        int genderRace = reader.ReadByte();
+        var genderRace = reader.ReadByte();
 
         var stats = new StatNameValue[]
         {
@@ -124,7 +123,7 @@ public static class IncomingAccountPackets
         var info = state.CityInfo;
         var a = state.Account;
 
-        if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
+        if (info == null || a == null || cityIndex >= info.Length)
         {
             state.Disconnect("Invalid city selected during character creation.");
             return;
@@ -197,12 +196,6 @@ public static class IncomingAccountPackets
     {
     }
 
-    public static void AssistVersion(NetState state, CircularBufferReader reader, int packetLength)
-    {
-        var unk = reader.ReadInt32();
-        var av = reader.ReadAscii();
-    }
-
     public static void ClientVersion(NetState state, CircularBufferReader reader, int packetLength)
     {
         var version = state.Version = new CV(reader.ReadAscii());
@@ -222,16 +215,9 @@ public static class IncomingAccountPackets
 
     public static void PlayCharacter(NetState state, CircularBufferReader reader, int packetLength)
     {
-        reader.Seek(4, SeekOrigin.Current); // 0xEDEDEDED
-
-        reader.Seek(30, SeekOrigin.Current); //  var name = reader.ReadAscii(30);
-
-        reader.Seek(2, SeekOrigin.Current);
-
+        reader.Seek(36, SeekOrigin.Current); // 4 = 0xEDEDEDED, 30 = Name, 2 = unknown
         var flags = reader.ReadInt32();
-
         reader.Seek(24, SeekOrigin.Current);
-
         var charSlot = reader.ReadInt32();
         reader.Seek(4, SeekOrigin.Current); // var clientIP = reader.ReadInt32();
 

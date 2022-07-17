@@ -46,7 +46,7 @@ namespace Server.Ethics.Evil
                 ++enemyCount;
             }
 
-            using var sb = new ValueStringBuilder();
+            using var sb = ValueStringBuilder.Create();
 
             sb.Append("You sense ");
             sb.Append(enemyCount == 0 ? "no" : enemyCount.ToString());

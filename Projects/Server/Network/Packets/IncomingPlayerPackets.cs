@@ -23,33 +23,33 @@ namespace Server.Network;
 
 public static class IncomingPlayerPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x01, 5, false, Disconnect);
-        IncomingPackets.Register(0x05, 5, true, AttackReq);
-        IncomingPackets.Register(0x12, 0, true, TextCommand);
-        IncomingPackets.Register(0x22, 3, true, Resynchronize);
-        IncomingPackets.Register(0x2C, 2, true, DeathStatusResponse);
-        IncomingPackets.Register(0x34, 10, true, MobileQuery);
-        IncomingPackets.Register(0x3A, 0, true, ChangeSkillLock);
-        IncomingPackets.Register(0x72, 5, true, SetWarMode);
-        IncomingPackets.Register(0x73, 2, false, PingReq);
-        IncomingPackets.Register(0x7D, 13, true, MenuResponse);
-        IncomingPackets.Register(0x95, 9, true, HuePickerResponse);
-        IncomingPackets.Register(0x9A, 0, true, AsciiPromptResponse);
-        IncomingPackets.Register(0x9B, 258, true, HelpRequest);
-        IncomingPackets.Register(0xA4, 149, false, SystemInfo);
-        IncomingPackets.Register(0xA7, 4, true, RequestScrollWindow);
-        IncomingPackets.Register(0xB1, 0, true, DisplayGumpResponse);
-        IncomingPackets.Register(0xC2, 0, true, UnicodePromptResponse);
-        IncomingPackets.Register(0xC8, 2, true, SetUpdateRange);
-        IncomingPackets.Register(0xD0, 0, true, ConfigurationFile);
-        IncomingPackets.Register(0xD1, 2, true, LogoutReq);
-        IncomingPackets.Register(0xD7, 0, true, EncodedCommand);
-        IncomingPackets.Register(0xF4, 0, false, CrashReport);
+        IncomingPackets.Register(0x01, 5, false, &Disconnect);
+        IncomingPackets.Register(0x05, 5, true, &AttackReq);
+        IncomingPackets.Register(0x12, 0, true, &TextCommand);
+        IncomingPackets.Register(0x22, 3, true, &Resynchronize);
+        IncomingPackets.Register(0x2C, 2, true, &DeathStatusResponse);
+        IncomingPackets.Register(0x34, 10, true, &MobileQuery);
+        IncomingPackets.Register(0x3A, 0, true, &ChangeSkillLock);
+        IncomingPackets.Register(0x72, 5, true, &SetWarMode);
+        IncomingPackets.Register(0x73, 2, false, &PingReq);
+        IncomingPackets.Register(0x7D, 13, true, &MenuResponse);
+        IncomingPackets.Register(0x95, 9, true, &HuePickerResponse);
+        IncomingPackets.Register(0x9A, 0, true, &AsciiPromptResponse);
+        IncomingPackets.Register(0x9B, 258, true, &HelpRequest);
+        IncomingPackets.Register(0xA4, 149, false, &SystemInfo);
+        IncomingPackets.Register(0xA7, 4, true, &RequestScrollWindow);
+        IncomingPackets.Register(0xB1, 0, true, &DisplayGumpResponse);
+        IncomingPackets.Register(0xC2, 0, true, &UnicodePromptResponse);
+        IncomingPackets.Register(0xC8, 2, true, &SetUpdateRange);
+        IncomingPackets.Register(0xD0, 0, true, &ConfigurationFile);
+        IncomingPackets.Register(0xD1, 2, true, &LogoutReq);
+        IncomingPackets.Register(0xD7, 0, true, &EncodedCommand);
+        IncomingPackets.Register(0xF4, 0, false, &CrashReport);
 
-        IncomingPackets.RegisterEncoded(0x28, true, GuildGumpRequest);
-        IncomingPackets.RegisterEncoded(0x32, true, QuestGumpRequest);
+        IncomingPackets.RegisterEncoded(0x28, true, &GuildGumpRequest);
+        IncomingPackets.RegisterEncoded(0x32, true, &QuestGumpRequest);
     }
 
     public static void DeathStatusResponse(NetState state, CircularBufferReader reader, int packetLength)
@@ -202,7 +202,7 @@ public static class IncomingPlayerPackets
                 }
             default:
                 {
-                    state.LogInfo("Unknown text-command type 0x{0:X2}: {1}", state, type, command);
+                    state.LogInfo($"Unknown text-command type 0x{state:X2}: {type} ({command})");
                     break;
                 }
         }
@@ -593,7 +593,7 @@ public static class IncomingPlayerPackets
         EventSink.InvokeQuestGumpRequest(state.Mobile);
     }
 
-    public static void EncodedCommand(NetState state, CircularBufferReader reader, int packetLength)
+    public static unsafe void EncodedCommand(NetState state, CircularBufferReader reader, int packetLength)
     {
         var e = World.FindEntity((Serial)reader.ReadUInt32());
         int packetId = reader.ReadUInt16();

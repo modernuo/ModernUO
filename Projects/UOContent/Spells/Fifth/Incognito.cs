@@ -108,13 +108,12 @@ namespace Server.Spells.Fifth
 
                     StopTimer(Caster);
 
-                    var timeVal = Math.Min(6 * Caster.Skills.Magery.Fixed / 50 + 1, 144);
+                    var duration = TimeSpan.FromSeconds(Math.Min(6 * Caster.Skills.Magery.Value / 5.0, 144));
 
-                    var length = TimeSpan.FromSeconds(timeVal);
-                    Timer.StartTimer(length, () => EndIncognito(Caster), out var timerToken);
+                    Timer.StartTimer(duration, () => EndIncognito(Caster), out var timerToken);
                     _table[Caster] = timerToken;
 
-                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, length, Caster));
+                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, duration, Caster));
                 }
                 else
                 {

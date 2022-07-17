@@ -71,7 +71,7 @@ namespace Server.Engines.MLQuests.Items
             return false;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -179,7 +179,7 @@ namespace Server.Engines.MLQuests.Items
             return true;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 

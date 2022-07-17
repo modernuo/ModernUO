@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.EquippedSkillMod",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

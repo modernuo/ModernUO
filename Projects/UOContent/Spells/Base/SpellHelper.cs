@@ -303,7 +303,7 @@ namespace Server.Spells
         public static bool AddStatBonus(Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration)
         {
             var offset = bonus;
-            var name = $"[Magic] {type} Offset";
+            var name = $"[Magic] {type} Buff";
 
             var mod = target.GetStatMod(name);
 
@@ -353,9 +353,8 @@ namespace Server.Spells
         }
 
         public static TimeSpan GetDuration(Mobile caster, Mobile target) =>
-            Core.AOS
-                ? TimeSpan.FromSeconds(6 * caster.Skills.EvalInt.Fixed / 50 + 1)
-                : TimeSpan.FromSeconds(caster.Skills.Magery.Value * 1.2);
+            // TODO: Is this accurate for Curse? Sources say it is magery. Should confirm at least for newest era.
+            TimeSpan.FromSeconds(6 * (Core.AOS ? caster.Skills.EvalInt.Value : caster.Skills.Magery.Value) / 5.0);
 
         public static double GetOffsetScalar(Mobile caster, Mobile target, bool curse)
         {

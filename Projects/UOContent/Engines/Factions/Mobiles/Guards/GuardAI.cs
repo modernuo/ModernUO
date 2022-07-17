@@ -209,17 +209,8 @@ namespace Server.Factions
             return true;
         }
 
-        public int GetStatMod(Mobile mob, StatType type)
-        {
-            var mod = mob.GetStatMod($"[Magic] {type} Offset");
-
-            if (mod == null)
-            {
-                return 0;
-            }
-
-            return mod.Offset;
-        }
+        public static int GetStatMod(Mobile mob, StatType type) =>
+            mob.GetStatMod($"[Magic] {type} Curse")?.Offset ?? 0;
 
         public Spell RandomOffenseSpell()
         {
@@ -411,13 +402,13 @@ namespace Server.Factions
             {
                 if (m_Mobile.Debug)
                 {
-                    m_Mobile.DebugSay("My move is blocked, so I am going to attack {0}", m_Mobile.FocusMob.Name);
+                    m_Mobile.DebugSay($"My move is blocked, so I am going to attack {m_Mobile.FocusMob.Name}");
                 }
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
             }
-            else
+            else if (m_Mobile.Debug)
             {
                 m_Mobile.DebugSay("I am stuck");
             }
@@ -815,16 +806,13 @@ namespace Server.Factions
 
                     if (type != null && m_Guard.Target == null && UseItemByType(type))
                     {
-                        if (spell is GreaterHealSpell)
-                        {
-                            if (m_Guard.Hits + 30 > m_Guard.HitsMax && m_Guard.Hits + 10 < m_Guard.HitsMax)
-                            {
-                                spell = new HealSpell(m_Guard);
-                            }
-                        }
-                        else
+                        if (spell is not GreaterHealSpell)
                         {
                             spell = null;
+                        }
+                        else if (m_Guard.Hits + 30 > m_Guard.HitsMax && m_Guard.Hits + 10 < m_Guard.HitsMax)
+                        {
+                            spell = new HealSpell(m_Guard);
                         }
                     }
                 }

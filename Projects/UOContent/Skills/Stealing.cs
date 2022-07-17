@@ -154,9 +154,8 @@ namespace Server.SkillHandlers
                         }
                         else if (pl.IsLeaving)
                         {
-                            m_Thief.SendLocalizedMessage(
-                                1005589
-                            ); // You are currently quitting a faction and cannot steal the town sigil
+                            // You are currently quitting a faction and cannot steal the town sigil
+                            m_Thief.SendLocalizedMessage(1005589);
                         }
                         else if (sig.IsBeingCorrupted && sig.LastMonolith.Faction == faction)
                         {
@@ -170,15 +169,13 @@ namespace Server.SkillHandlers
                         {
                             if (Sigil.ExistsOn(m_Thief))
                             {
-                                m_Thief.SendLocalizedMessage(
-                                    1010258
-                                ); // The sigil has gone back to its home location because you already have a sigil.
+                                // The sigil has gone back to its home location because you already have a sigil.
+                                m_Thief.SendLocalizedMessage(1010258);
                             }
-                            else if (m_Thief?.Backpack.CheckHold(m_Thief, sig, false, true) != true)
+                            else if (m_Thief.Backpack?.CheckHold(m_Thief, sig, false, true) != true)
                             {
-                                m_Thief.SendLocalizedMessage(
-                                    1010259
-                                ); // The sigil has gone home because your backpack is full
+                                // The sigil has gone home because your backpack is full
+                                m_Thief.SendLocalizedMessage(1010259);
                             }
                             else
                             {
@@ -226,11 +223,8 @@ namespace Server.SkillHandlers
                 }
                 else if (si != null && m_Thief.Skills.Stealing.Value < 100.0)
                 {
-                    m_Thief.SendLocalizedMessage(
-                        1060025,
-                        "",
-                        0x66D
-                    ); // You're not skilled enough to attempt the theft of this item.
+                    // You're not skilled enough to attempt the theft of this item.
+                    m_Thief.SendLocalizedMessage(1060025, "", 0x66D);
                 }
                 else if (toSteal.Parent is Mobile)
                 {

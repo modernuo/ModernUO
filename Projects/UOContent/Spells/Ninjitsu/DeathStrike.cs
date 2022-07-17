@@ -32,9 +32,9 @@ namespace Server.Spells.Ninjitsu
             // TODO: should be defined onHit method, what if the player hit and remove the weapon before process? ;)
             var isRanged = attacker.Weapon is BaseRanged;
 
-            // This formula is an approximation from OSI data.  TODO: find correct formula
-            double chance = ninjitsu switch
+            var chance = ninjitsu switch
             {
+                // This formula is an approximation from OSI data.  TODO: find correct formula
                 < 100 => 30 + (ninjitsu - 85) * 2.2,
                 _     => 63 + (ninjitsu - 100) * 1.1
             };
@@ -87,13 +87,13 @@ namespace Server.Spells.Ninjitsu
 
         private class DeathStrikeTimer : Timer
         {
-            private readonly Mobile _attacker;
-            private readonly int _damageBonus;
-            private readonly bool _isRanged;
-            private readonly Mobile _target;
+            private Mobile _attacker;
+            private int _damageBonus;
+            private bool _isRanged;
+            private Mobile _target;
             public int Steps { get; set; }
 
-            public DeathStrikeTimer(Mobile target, Mobile attacker, int damageBonus, bool isRanged)
+            internal DeathStrikeTimer(Mobile target, Mobile attacker, int damageBonus, bool isRanged)
                 : base(TimeSpan.FromSeconds(5.0))
             {
                 _target = target;
@@ -110,15 +110,15 @@ namespace Server.Spells.Ninjitsu
 
             public void ProcessDeathStrike()
             {
+                int damage;
+
                 var ninjitsu = _attacker.Skills.Ninjitsu.Value;
                 var stalkingBonus = Tracking.GetStalkingBonus(_attacker, _target);
 
                 if (Core.ML)
                 {
-                    var scalar = Math.Min(1, (_attacker.Skills.Hiding.Value +
-                                              _attacker.Skills.Stealth.Value) / 220);
+                    var scalar = Math.Min(1, (_attacker.Skills.Hiding.Value + _attacker.Skills.Stealth.Value) / 220);
 
-                    int damage;
                     // New formula doesn't apply DamageBonus anymore, caps must be, directly, 60/30.
                     if (Steps >= 5)
                     {
@@ -142,7 +142,7 @@ namespace Server.Spells.Ninjitsu
                     var baseDamage = ninjitsu / divisor * 10;
 
                     var maxDamage = Steps >= 5 ? 62 : 22;
-                    var damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + _damageBonus;
+                    damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + _damageBonus;
 
                     // Damage is physical.
                     AOS.Damage(
@@ -161,10 +161,9 @@ namespace Server.Spells.Ninjitsu
                         false,
                         true
                     );
-
-                    Stop();
-                    _table.Remove(_target);
                 }
+
+                Stop();
             }
         }
     }

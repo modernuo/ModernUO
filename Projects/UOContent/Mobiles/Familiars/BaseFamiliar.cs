@@ -10,7 +10,7 @@ namespace Server.Mobiles
 
         public BaseFamiliar() : base(AIType.AI_Melee)
         {
-            SetSpeed(0.1, 0.1);
+            SetSpeed(0.1, 0.11);
         }
 
         public BaseFamiliar(Serial serial) : base(serial)

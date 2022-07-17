@@ -11,8 +11,6 @@ namespace Server.Mobiles
 
             Hue = 0x8FD;
 
-            SetSpeed(0.1,  0.6);
-
             SetStr(255, 847);
             SetDex(145, 428);
             SetInt(26, 380);

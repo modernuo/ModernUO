@@ -46,17 +46,23 @@ namespace Server.Spells.Chivalry
                 switch (weapon.Skill)
                 {
                     case SkillName.Macing:
-                        itemID = 0xFB4;
-                        soundID = 0x232;
-                        break;
+                        {
+                            itemID = 0xFB4;
+                            soundID = 0x232;
+                            break;
+                        }
                     case SkillName.Archery:
-                        itemID = 0x13B1;
-                        soundID = 0x145;
-                        break;
+                        {
+                            itemID = 0x13B1;
+                            soundID = 0x145;
+                            break;
+                        }
                     default:
-                        itemID = 0xF5F;
-                        soundID = 0x56;
-                        break;
+                        {
+                            itemID = 0xF5F;
+                            soundID = 0x56;
+                            break;
+                        }
                 }
 
                 Caster.PlaySound(0x20C);
@@ -101,18 +107,15 @@ namespace Server.Spells.Chivalry
 
         private class ExpireTimer : Timer
         {
-            private readonly BaseWeapon m_Weapon;
+            private BaseWeapon _weapon;
 
-            public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay)
-            {
-                m_Weapon = weapon;
-            }
+            public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay) => _weapon = weapon;
 
             protected override void OnTick()
             {
-                m_Weapon.Consecrated = false;
-                Effects.PlaySound(m_Weapon.GetWorldLocation(), m_Weapon.Map, 0x1F8);
-                _table.Remove(m_Weapon);
+                _weapon.Consecrated = false;
+                Effects.PlaySound(_weapon.GetWorldLocation(), _weapon.Map, 0x1F8);
+                _table.Remove(_weapon);
             }
         }
     }

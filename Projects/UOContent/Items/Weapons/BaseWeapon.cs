@@ -939,21 +939,21 @@ namespace Server.Items
             {
                 var m = from;
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -1004,11 +1004,11 @@ namespace Server.Items
                 return;
             }
 
-            var modName = Serial.ToString();
+            var serial = Serial;
 
-            m.RemoveStatMod($"{modName}Str");
-            m.RemoveStatMod($"{modName}Dex");
-            m.RemoveStatMod($"{modName}Int");
+            m.RemoveStatMod($"{serial}Str");
+            m.RemoveStatMod($"{serial}Dex");
+            m.RemoveStatMod($"{serial}Int");
 
             if (!_enableInstaHit && m.Weapon is BaseWeapon weapon)
             {
@@ -2715,8 +2715,6 @@ namespace Server.Items
             from.Animate(action, 7, 1, true, false, 0);
         }
 
-        private string GetNameString() => Name ?? $"#{LabelNumber}";
-
         public int GetElementalDamageHue()
         {
             GetDamageTypes(null, out _, out var fire, out var cold, out var pois, out var nrgy, out _, out _);
@@ -2751,7 +2749,7 @@ namespace Server.Items
             return hue;
         }
 
-        public override void AddNameProperty(ObjectPropertyList list)
+        public override void AddNameProperty(IPropertyList list)
         {
             var oreType = m_Resource switch
             {
@@ -2775,17 +2773,26 @@ namespace Server.Items
                 _                           => 0
             };
 
+            var name = Name;
+
             if (oreType != 0)
             {
-                list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
+                if (name != null)
+                {
+                    list.Add(1053099, $"{oreType:#}\t{name}"); // ~1_oretype~ ~2_armortype~
+                }
+                else
+                {
+                    list.Add(1053099, $"{oreType:#}\t{LabelNumber:#}"); // ~1_oretype~ ~2_armortype~
+                }
             }
-            else if (Name == null)
+            else if (name == null)
             {
                 list.Add(LabelNumber);
             }
             else
             {
-                list.Add(Name);
+                list.Add(name);
             }
 
             /*
@@ -2814,7 +2821,7 @@ namespace Server.Items
 
         public virtual int GetLuckBonus() => CraftResources.GetInfo(m_Resource)?.AttributeInfo?.WeaponLuck ?? 0;
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -2847,17 +2854,17 @@ namespace Server.Items
 
             if (ArtifactRarity > 0)
             {
-                list.Add(1061078, ArtifactRarity.ToString()); // artifact rarity ~1_val~
+                list.Add(1061078, ArtifactRarity); // artifact rarity ~1_val~
             }
 
             if (this is IUsesRemaining usesRemaining && usesRemaining.ShowUsesRemaining)
             {
-                list.Add(1060584, usesRemaining.UsesRemaining.ToString()); // uses remaining: ~1_val~
+                list.Add(1060584, usesRemaining.UsesRemaining); // uses remaining: ~1_val~
             }
 
             if (m_Poison != null && m_PoisonCharges > 0)
             {
-                list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+                list.Add(1062412 + m_Poison.Level, m_PoisonCharges);
             }
 
             if (m_Slayer != SlayerName.None)
@@ -2896,107 +2903,107 @@ namespace Server.Items
 
             if ((prop = GetDamageBonus() + Attributes.WeaponDamage) != 0)
             {
-                list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
+                list.Add(1060401, prop); // damage increase ~1_val~%
             }
 
             if ((prop = Attributes.DefendChance) != 0)
             {
-                list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
+                list.Add(1060408, prop); // defense chance increase ~1_val~%
             }
 
             if ((prop = Attributes.EnhancePotions) != 0)
             {
-                list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
+                list.Add(1060411, prop); // enhance potions ~1_val~%
             }
 
             if ((prop = Attributes.CastRecovery) != 0)
             {
-                list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
+                list.Add(1060412, prop); // faster cast recovery ~1_val~
             }
 
             if ((prop = Attributes.CastSpeed) != 0)
             {
-                list.Add(1060413, prop.ToString()); // faster casting ~1_val~
+                list.Add(1060413, prop); // faster casting ~1_val~
             }
 
             if ((prop = GetHitChanceBonus() + Attributes.AttackChance) != 0)
             {
-                list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
+                list.Add(1060415, prop); // hit chance increase ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitColdArea) != 0)
             {
-                list.Add(1060416, prop.ToString()); // hit cold area ~1_val~%
+                list.Add(1060416, prop); // hit cold area ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitDispel) != 0)
             {
-                list.Add(1060417, prop.ToString()); // hit dispel ~1_val~%
+                list.Add(1060417, prop); // hit dispel ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitEnergyArea) != 0)
             {
-                list.Add(1060418, prop.ToString()); // hit energy area ~1_val~%
+                list.Add(1060418, prop); // hit energy area ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitFireArea) != 0)
             {
-                list.Add(1060419, prop.ToString()); // hit fire area ~1_val~%
+                list.Add(1060419, prop); // hit fire area ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitFireball) != 0)
             {
-                list.Add(1060420, prop.ToString()); // hit fireball ~1_val~%
+                list.Add(1060420, prop); // hit fireball ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitHarm) != 0)
             {
-                list.Add(1060421, prop.ToString()); // hit harm ~1_val~%
+                list.Add(1060421, prop); // hit harm ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitLeechHits) != 0)
             {
-                list.Add(1060422, prop.ToString()); // hit life leech ~1_val~%
+                list.Add(1060422, prop); // hit life leech ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitLightning) != 0)
             {
-                list.Add(1060423, prop.ToString()); // hit lightning ~1_val~%
+                list.Add(1060423, prop); // hit lightning ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitLowerAttack) != 0)
             {
-                list.Add(1060424, prop.ToString()); // hit lower attack ~1_val~%
+                list.Add(1060424, prop); // hit lower attack ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitLowerDefend) != 0)
             {
-                list.Add(1060425, prop.ToString()); // hit lower defense ~1_val~%
+                list.Add(1060425, prop); // hit lower defense ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitMagicArrow) != 0)
             {
-                list.Add(1060426, prop.ToString()); // hit magic arrow ~1_val~%
+                list.Add(1060426, prop); // hit magic arrow ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitLeechMana) != 0)
             {
-                list.Add(1060427, prop.ToString()); // hit mana leech ~1_val~%
+                list.Add(1060427, prop); // hit mana leech ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitPhysicalArea) != 0)
             {
-                list.Add(1060428, prop.ToString()); // hit physical area ~1_val~%
+                list.Add(1060428, prop); // hit physical area ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitPoisonArea) != 0)
             {
-                list.Add(1060429, prop.ToString()); // hit poison area ~1_val~%
+                list.Add(1060429, prop); // hit poison area ~1_val~%
             }
 
             if ((prop = WeaponAttributes.HitLeechStam) != 0)
             {
-                list.Add(1060430, prop.ToString()); // hit stamina leech ~1_val~%
+                list.Add(1060430, prop); // hit stamina leech ~1_val~%
             }
 
             if (ImmolatingWeaponSpell.IsImmolating(this))
@@ -3006,57 +3013,57 @@ namespace Server.Items
 
             if (Core.ML && (ranged?.Velocity ?? 0) != 0)
             {
-                list.Add(1072793, prop.ToString()); // Velocity ~1_val~%
+                list.Add(1072793, prop); // Velocity ~1_val~%
             }
 
             if ((prop = Attributes.BonusDex) != 0)
             {
-                list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
+                list.Add(1060409, prop); // dexterity bonus ~1_val~
             }
 
             if ((prop = Attributes.BonusHits) != 0)
             {
-                list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
+                list.Add(1060431, prop); // hit point increase ~1_val~
             }
 
             if ((prop = Attributes.BonusInt) != 0)
             {
-                list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
+                list.Add(1060432, prop); // intelligence bonus ~1_val~
             }
 
             if ((prop = Attributes.LowerManaCost) != 0)
             {
-                list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
+                list.Add(1060433, prop); // lower mana cost ~1_val~%
             }
 
             if ((prop = Attributes.LowerRegCost) != 0)
             {
-                list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
+                list.Add(1060434, prop); // lower reagent cost ~1_val~%
             }
 
             if ((prop = GetLowerStatReq()) != 0)
             {
-                list.Add(1060435, prop.ToString()); // lower requirements ~1_val~%
+                list.Add(1060435, prop); // lower requirements ~1_val~%
             }
 
             if ((prop = GetLuckBonus() + Attributes.Luck) != 0)
             {
-                list.Add(1060436, prop.ToString()); // luck ~1_val~
+                list.Add(1060436, prop); // luck ~1_val~
             }
 
             if ((prop = WeaponAttributes.MageWeapon) != 0)
             {
-                list.Add(1060438, (30 - prop).ToString()); // mage weapon -~1_val~ skill
+                list.Add(1060438, 30 - prop); // mage weapon -~1_val~ skill
             }
 
             if ((prop = Attributes.BonusMana) != 0)
             {
-                list.Add(1060439, prop.ToString()); // mana increase ~1_val~
+                list.Add(1060439, prop); // mana increase ~1_val~
             }
 
             if ((prop = Attributes.RegenMana) != 0)
             {
-                list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
+                list.Add(1060440, prop); // mana regeneration ~1_val~
             }
 
             if (Attributes.NightSight != 0)
@@ -3066,22 +3073,22 @@ namespace Server.Items
 
             if ((prop = Attributes.ReflectPhysical) != 0)
             {
-                list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
+                list.Add(1060442, prop); // reflect physical damage ~1_val~%
             }
 
             if ((prop = Attributes.RegenStam) != 0)
             {
-                list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
+                list.Add(1060443, prop); // stamina regeneration ~1_val~
             }
 
             if ((prop = Attributes.RegenHits) != 0)
             {
-                list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
+                list.Add(1060444, prop); // hit point regeneration ~1_val~
             }
 
             if ((prop = WeaponAttributes.SelfRepair) != 0)
             {
-                list.Add(1060450, prop.ToString()); // self repair ~1_val~
+                list.Add(1060450, prop); // self repair ~1_val~
             }
 
             if (Attributes.SpellChanneling != 0)
@@ -3091,27 +3098,27 @@ namespace Server.Items
 
             if ((prop = Attributes.SpellDamage) != 0)
             {
-                list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
+                list.Add(1060483, prop); // spell damage increase ~1_val~%
             }
 
             if ((prop = Attributes.BonusStam) != 0)
             {
-                list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
+                list.Add(1060484, prop); // stamina increase ~1_val~
             }
 
             if ((prop = Attributes.BonusStr) != 0)
             {
-                list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
+                list.Add(1060485, prop); // strength bonus ~1_val~
             }
 
             if ((prop = Attributes.WeaponSpeed) != 0)
             {
-                list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
+                list.Add(1060486, prop); // swing speed increase ~1_val~%
             }
 
             if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
             {
-                list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
+                list.Add(1075210, prop); // Increased Karma Loss ~1val~%
             }
 
             GetDamageTypes(
@@ -3127,40 +3134,40 @@ namespace Server.Items
 
             if (phys != 0)
             {
-                list.Add(1060403, phys.ToString()); // physical damage ~1_val~%
+                list.Add(1060403, phys); // physical damage ~1_val~%
             }
 
             if (fire != 0)
             {
-                list.Add(1060405, fire.ToString()); // fire damage ~1_val~%
+                list.Add(1060405, fire); // fire damage ~1_val~%
             }
 
             if (cold != 0)
             {
-                list.Add(1060404, cold.ToString()); // cold damage ~1_val~%
+                list.Add(1060404, cold); // cold damage ~1_val~%
             }
 
             if (pois != 0)
             {
-                list.Add(1060406, pois.ToString()); // poison damage ~1_val~%
+                list.Add(1060406, pois); // poison damage ~1_val~%
             }
 
             if (nrgy != 0)
             {
-                list.Add(1060407, nrgy.ToString()); // energy damage ~1_val
+                list.Add(1060407, nrgy); // energy damage ~1_val
             }
 
             if (Core.ML && chaos != 0)
             {
-                list.Add(1072846, chaos.ToString()); // chaos damage ~1_val~%
+                list.Add(1072846, chaos); // chaos damage ~1_val~%
             }
 
             if (Core.ML && direct != 0)
             {
-                list.Add(1079978, direct.ToString()); // Direct Damage: ~1_PERCENT~%
+                list.Add(1079978, direct); // Direct Damage: ~1_PERCENT~%
             }
 
-            list.Add(1061168, "{0}\t{1}", MinDamage.ToString(), MaxDamage.ToString()); // weapon damage ~1_val~ - ~2_val~
+            list.Add(1061168, $"{MinDamage}\t{MaxDamage}"); // weapon damage ~1_val~ - ~2_val~
 
             if (Core.ML)
             {
@@ -3168,19 +3175,19 @@ namespace Server.Items
             }
             else
             {
-                list.Add(1061167, Speed.ToString());
+                list.Add(1061167, $"{Speed}");
             }
 
             if (MaxRange > 1)
             {
-                list.Add(1061169, MaxRange.ToString()); // range ~1_val~
+                list.Add(1061169, MaxRange); // range ~1_val~
             }
 
             var strReq = AOS.Scale(StrRequirement, 100 - GetLowerStatReq());
 
             if (strReq > 0)
             {
-                list.Add(1061170, strReq.ToString()); // strength requirement ~1_val~
+                list.Add(1061170, strReq); // strength requirement ~1_val~
             }
 
             if (Layer == Layer.TwoHanded)
@@ -3221,7 +3228,7 @@ namespace Server.Items
 
             if (m_Hits >= 0 && m_MaxHits > 0)
             {
-                list.Add(1060639, "{0}\t{1}", m_Hits, m_MaxHits); // durability ~1_val~ / ~2_val~
+                list.Add(1060639, $"{m_Hits}\t{m_MaxHits}"); // durability ~1_val~ / ~2_val~
             }
         }
 
@@ -4140,21 +4147,21 @@ namespace Server.Items
 
             if (parentMobile != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
             {
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 

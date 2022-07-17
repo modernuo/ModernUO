@@ -20,7 +20,7 @@ namespace Server.Items
 
         public override bool Dye(Mobile from, DyeTub sender) => false;
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
@@ -121,11 +121,11 @@ namespace Server.Items
             return false;
         }
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 
-            list.Add(1075217, m_Charges.ToString()); // ~1_val~ charges remaining
+            list.Add(1075217, m_Charges); // ~1_val~ charges remaining
         }
 
         public override void OnDelete()

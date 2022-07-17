@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Utilities;
 
@@ -25,6 +26,8 @@ namespace Server.Engines.Craft
 
     public class CraftItem
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(CraftItem));
+
         private static readonly Dictionary<Type, int> _itemIds = new();
 
         private static readonly int[] m_HeatSources =
@@ -174,8 +177,8 @@ namespace Server.Engines.Craft
         {
             if (Recipe != null)
             {
-                Console.WriteLine(
-                    "Warning: Attempted add of recipe #{0} to the crafting of {1} in CraftSystem {2}.",
+                logger.Warning(
+                    "Attempted add of recipe #{Id} to the crafting of {ItemTypeName} in CraftSystem {CraftSystem}.",
                     id,
                     ItemType.Name,
                     system
@@ -190,16 +193,7 @@ namespace Server.Engines.Craft
         {
             var number = ItemIDOf(type);
 
-            if (number >= 0x4000)
-            {
-                number += 1078872;
-            }
-            else
-            {
-                number += 1020000;
-            }
-
-            return number;
+            return number + (number >= 0x4000 ? 1078872 : 1020000);
         }
 
         public static int ItemIDOf(Type type)
@@ -262,10 +256,9 @@ namespace Server.Engines.Craft
             return itemId;
         }
 
-        public void AddRes(Type type, TextDefinition name, int amount)
-        {
-            AddRes(type, name, amount, "");
-        }
+        public void AddRes(Type type, int amount, TextDefinition message) => AddRes(type, null, amount, message);
+
+        public void AddRes(Type type, TextDefinition name, int amount) => AddRes(type, name, amount, "");
 
         public void AddRes(Type type, TextDefinition name, int amount, TextDefinition message)
         {
@@ -281,17 +274,11 @@ namespace Server.Engines.Craft
 
         public bool ConsumeAttributes(Mobile from, ref TextDefinition message, bool consume)
         {
-            bool consumMana;
-            bool consumHits;
-            bool consumStam;
-
             if (Hits > 0 && from.Hits < Hits)
             {
                 message = "You lack the required hit points to make that.";
                 return false;
             }
-
-            consumHits = consume;
 
             if (Mana > 0 && from.Mana < Mana)
             {
@@ -299,28 +286,16 @@ namespace Server.Engines.Craft
                 return false;
             }
 
-            consumMana = consume;
-
             if (Stam > 0 && from.Stam < Stam)
             {
                 message = "You lack the required stamina to make that.";
                 return false;
             }
 
-            consumStam = consume;
-
-            if (consumMana)
+            if (consume)
             {
                 from.Mana -= Mana;
-            }
-
-            if (consumHits)
-            {
                 from.Hits -= Hits;
-            }
-
-            if (consumStam)
-            {
                 from.Stam -= Stam;
             }
 
@@ -825,7 +800,7 @@ namespace Server.Engines.Craft
             chance = system.ECA switch
             {
                 CraftECA.FiftyPercentChanceMinusTenPercent => chance * 0.5 - 0.1,
-                CraftECA.ChanceMinusSixtyToFourtyFive => chance - Math.Clamp(
+                CraftECA.ChanceMinusSixtyToFortyFive => chance - Math.Clamp(
                     0.60 - (from.Skills[system.MainSkill].Value - 95.0) * 0.03,
                     0.45,
                     0.60

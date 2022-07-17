@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
@@ -2718,19 +2717,19 @@ namespace Server.Mobiles
 
             if (m_BuffTable != null)
             {
-                using var pool = new PooledRefQueue<BuffInfo>();
+                using var queue = PooledRefQueue<BuffInfo>.Create();
 
                 foreach (var buff in m_BuffTable.Values)
                 {
                     if (!buff.RetainThroughDeath)
                     {
-                        pool.Enqueue(buff);
+                        queue.Enqueue(buff);
                     }
                 }
 
-                while (pool.Count > 0)
+                while (queue.Count > 0)
                 {
-                    RemoveBuff(pool.Dequeue());
+                    RemoveBuff(queue.Dequeue());
                 }
             }
         }
@@ -3512,7 +3511,7 @@ namespace Server.Mobiles
             DisguiseTimers.RemoveTimer(this);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -3526,38 +3525,33 @@ namespace Server.Mobiles
 
                     if (faction.Commander == this)
                     {
-                        list.Add(1042733, faction.Definition.PropName); // Commanding Lord of the ~1_FACTION_NAME~
+                        // Commanding Lord of the ~1_FACTION_NAME~
+                        list.Add(1042733, $"{faction.Definition.PropName}");
                     }
                     else if (pl.Sheriff != null)
                     {
                         list.Add(
-                            1042734,
-                            "{0}\t{1}",
-                            pl.Sheriff.Definition.FriendlyName,
-                            faction.Definition.PropName
-                        ); // The Sheriff of  ~1_CITY~, ~2_FACTION_NAME~
+                            1042734, // The Sheriff of  ~1_CITY~, ~2_FACTION_NAME~
+                            $"{pl.Sheriff.Definition.FriendlyName}\t{faction.Definition.PropName}"
+                        );
                     }
                     else if (pl.Finance != null)
                     {
                         list.Add(
-                            1042735,
-                            "{0}\t{1}",
-                            pl.Finance.Definition.FriendlyName,
-                            faction.Definition.PropName
-                        ); // The Finance Minister of ~1_CITY~, ~2_FACTION_NAME~
+                            1042735, // The Finance Minister of ~1_CITY~, ~2_FACTION_NAME~
+                            $"{pl.Finance.Definition.FriendlyName}\t{faction.Definition.PropName}"
+                        );
                     }
                     else if (pl.MerchantTitle != MerchantTitle.None)
                     {
                         list.Add(
-                            1060776,
-                            "{0}\t{1}",
-                            MerchantTitles.GetInfo(pl.MerchantTitle).Title,
-                            faction.Definition.PropName
-                        ); // ~1_val~, ~2_val~
+                            1060776, // ~1_val~, ~2_val~
+                            $"{MerchantTitles.GetInfo(pl.MerchantTitle).Title}\t{faction.Definition.PropName}"
+                        );
                     }
                     else
                     {
-                        list.Add(1060776, "{0}\t{1}", pl.Rank.Title, faction.Definition.PropName); // ~1_val~, ~2_val~
+                        list.Add(1060776, $"{pl.Rank.Title}\t{faction.Definition.PropName}"); // ~1_val~, ~2_val~
                     }
                 }
             }
@@ -4566,11 +4560,6 @@ namespace Server.Mobiles
                     info.SendAddBuffPacket(NetState, Serial);
                 }
             }
-        }
-
-        public void HasBuff(BuffIcon icon)
-        {
-
         }
 
         public void AddBuff(BuffInfo b)

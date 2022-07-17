@@ -141,7 +141,7 @@ namespace Server.Items
             box.Tracks.AddRange(Tracks);
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
@@ -169,17 +169,17 @@ namespace Server.Items
 
             if (commonSongs > 0)
             {
-                list.Add(1075234, commonSongs.ToString()); // ~1_NUMBER~ Common Tracks
+                list.Add(1075234, commonSongs); // ~1_NUMBER~ Common Tracks
             }
 
             if (uncommonSongs > 0)
             {
-                list.Add(1075235, uncommonSongs.ToString()); // ~1_NUMBER~ Uncommon Tracks
+                list.Add(1075235, uncommonSongs); // ~1_NUMBER~ Uncommon Tracks
             }
 
             if (rareSongs > 0)
             {
-                list.Add(1075236, rareSongs.ToString()); // ~1_NUMBER~ Rare Tracks
+                list.Add(1075236, rareSongs); // ~1_NUMBER~ Rare Tracks
             }
         }
 

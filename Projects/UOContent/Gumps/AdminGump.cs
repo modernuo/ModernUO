@@ -221,7 +221,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Information_Perf:
                     {
-                        using var sb = new ValueStringBuilder();
+                        using var sb = ValueStringBuilder.Create();
 
                         ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
                         ThreadPool.GetMaxThreads(out var maxUser, out var maxIOCP);
@@ -550,7 +550,15 @@ namespace Server.Gumps
                             var v = ns.Version;
 
                             AddLabel(20, y, LabelHue, "Version:");
-                            AddLabel(200, y, LabelHue, v == null ? "(null)" : v.ToString());
+                            if (ns.Assistant != null)
+                            {
+                                AddLabel(200, y, LabelHue, $"{v.SourceString ?? "(null)"} ({ns.Assistant})");
+                            }
+                            else
+                            {
+                                AddLabel(200, y, LabelHue, v.SourceString ?? "(null)");
+                            }
+
                             y += 20;
 
                             AddLabel(20, y, LabelHue, "Location:");
@@ -629,7 +637,7 @@ namespace Server.Gumps
                             AddLabel(12, 140, LabelHue, "There are no accounts to display.");
                         }
 
-                        using var sb = new ValueStringBuilder();
+                        using var sb = ValueStringBuilder.Create();
 
                         for (int i = 0, index = listPage * 12;
                             i < 12 && index >= 0 && index < sharedAccounts.Count;
@@ -1169,7 +1177,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
 
-                        var sb = new ValueStringBuilder();
+                        var sb = ValueStringBuilder.Create();
 
                         if (a.Comments.Count == 0)
                         {
@@ -1208,7 +1216,7 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
 
-                        var sb = new ValueStringBuilder();
+                        var sb = ValueStringBuilder.Create();
 
                         if (a.Tags.Count == 0)
                         {
@@ -1321,9 +1329,7 @@ namespace Server.Gumps
 
                                 var loginList = acct.LoginIPs;
 
-                                var contains = false;
-
-                                for (var i = 0; !contains && i < loginList.Length; ++i)
+                                for (var i = 0; i < loginList.Length; ++i)
                                 {
                                     if (firewallEntry.IsBlocked(loginList[i]))
                                     {
@@ -2645,7 +2651,7 @@ namespace Server.Gumps
                                 {
                                     index -= 2;
 
-                                    if (m_List != null && index >= 0 && index < m_List.Count)
+                                    if (index < m_List?.Count)
                                     {
                                         if (m_List[index] is not NetState ns)
                                         {
@@ -3054,7 +3060,7 @@ namespace Server.Gumps
 
                                     if (list.Count > 0)
                                     {
-                                        using var sb = new ValueStringBuilder();
+                                        using var sb = ValueStringBuilder.Create();
                                         sb.Append("You are about to ban ");
                                         sb.Append(list.Count);
                                         sb.Append(list.Count != 1 ? "accounts." : "account.");

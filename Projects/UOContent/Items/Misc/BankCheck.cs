@@ -68,10 +68,17 @@ namespace Server.Items
             }
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
-            list.Add(1060738, Core.ML ? $"{m_Worth:N0}" : m_Worth.ToString()); // value: ~1_val~)
+            if (Core.ML)
+            {
+                list.Add(1060738, $"{m_Worth:N0}"); // value: ~1_val~
+            }
+            else
+            {
+                list.Add(1060738, m_Worth); // value: ~1_val~
+            }
         }
 
         public override void OnAdded(IEntity parent)

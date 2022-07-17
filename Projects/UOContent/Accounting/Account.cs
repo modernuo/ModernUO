@@ -448,8 +448,7 @@ namespace Server.Accounting
         ///     Gets the maximum amount of characters allowed to be created on this account. Values other than 1, 5, 6, or 7 are not
         ///     supported by the client.
         /// </summary>
-        public int Limit => Core.SA ? 7 :
-            Core.AOS ? 6 : 5;
+        public int Limit => Core.SA ? 7 : Core.AOS ? 6 : 5;
 
         /// <summary>
         ///     Gets the maximum amount of characters that this account can hold.
@@ -636,6 +635,11 @@ namespace Server.Accounting
         /// <param name="name">Tag name to remove.</param>
         public void RemoveTag(string name)
         {
+            if (_tags == null)
+            {
+                return;
+            }
+
             for (var i = _tags.Count - 1; i >= 0; --i)
             {
                 if (i >= _tags.Count)
@@ -647,7 +651,7 @@ namespace Server.Accounting
 
                 if (tag.Name == name)
                 {
-                    _tags?.RemoveAt(i);
+                    _tags.RemoveAt(i);
                     this.MarkDirty();
                 }
             }

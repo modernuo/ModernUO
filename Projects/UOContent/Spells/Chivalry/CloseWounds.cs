@@ -72,10 +72,8 @@ namespace Server.Spells.Chivalry
 
                 SpellHelper.Heal(toHeal, m, Caster, false);
 
-                m.SendLocalizedMessage(
-                    1060203,
-                    toHeal.ToString()
-                ); // You have had ~1_HEALED_AMOUNT~ hit points of damage healed.
+                // You have had ~1_HEALED_AMOUNT~ hit points of damage healed.
+                m.SendLocalizedMessage(1060203, toHeal.ToString());
 
                 m.PlaySound(0x202);
                 m.FixedParticles(0x376A, 1, 62, 9923, 3, 3, EffectLayer.Waist);

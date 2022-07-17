@@ -17,14 +17,6 @@ namespace Server.Spells.Necromancy
 
         private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
-        private static readonly ResistanceMod[] _mods =
-        {
-            new(ResistanceType.Fire, -15),
-            new(ResistanceType.Poison, -15),
-            new(ResistanceType.Cold, +10),
-            new(ResistanceType.Physical, +10)
-        };
-
         public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
@@ -77,16 +69,24 @@ namespace Server.Spells.Necromancy
 
                 var duration = TimeSpan.FromSeconds((ss - mr) / 2.5 + 40.0);
 
-                timer = new ExpireTimer(m, duration);
+                ResistanceMod[] mods =
+                {
+                    new(ResistanceType.Fire, -15),
+                    new(ResistanceType.Poison, -15),
+                    new(ResistanceType.Cold, +10),
+                    new(ResistanceType.Physical, +10)
+                };
+
+                timer = new ExpireTimer(m, mods, duration);
                 timer.Start();
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration, m));
 
                 _table[m] = timer;
 
-                for (var i = 0; i < _mods.Length; ++i)
+                for (var i = 0; i < mods.Length; ++i)
                 {
-                    m.AddResistanceMod(_mods[i]);
+                    m.AddResistanceMod(mods[i]);
                 }
 
                 HarmfulSpell(m);
@@ -114,28 +114,30 @@ namespace Server.Spells.Necromancy
 
         private class ExpireTimer : Timer
         {
-            private readonly Mobile m_Mobile;
+            private Mobile _mobile;
+            private ResistanceMod[] _mods;
 
-            public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
+            public ExpireTimer(Mobile m, ResistanceMod[] mods, TimeSpan delay) : base(delay)
             {
-                m_Mobile = m;
+                _mobile = m;
+                _mods = mods;
             }
 
             public void DoExpire()
             {
                 for (var i = 0; i < _mods.Length; ++i)
                 {
-                    m_Mobile.RemoveResistanceMod(_mods[i]);
+                    _mobile.RemoveResistanceMod(_mods[i]);
                 }
 
                 Stop();
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.CorpseSkin);
-                _table.Remove(m_Mobile);
+                BuffInfo.RemoveBuff(_mobile, BuffIcon.CorpseSkin);
+                _table.Remove(_mobile);
             }
 
             protected override void OnTick()
             {
-                m_Mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
+                _mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
                 DoExpire();
             }
         }

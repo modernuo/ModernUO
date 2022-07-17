@@ -215,11 +215,11 @@ namespace Server.Multis
             {
                 if (value.Count > 2)
                 {
-                    logger.Warning("More than 2 teleporters detected for {0:X}!", key);
+                    logger.Warning("More than 2 teleporters detected for {ItemId:X}!", key);
                 }
                 else if (value.Count <= 1)
                 {
-                    logger.Warning("1 or less teleporters detected for {0:X}!", key);
+                    logger.Warning("1 or less teleporters detected for {ItemId:X}!", key);
 
                     continue;
                 }

@@ -19,12 +19,12 @@ public static class IncomingEntityPackets
 {
     public static bool SingleClickProps { get; set; }
 
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x06, 5, true, UseReq);
-        IncomingPackets.Register(0x09, 5, true, LookReq);
-        IncomingPackets.Register(0xB6, 9, true, ObjectHelpRequest);
-        IncomingPackets.Register(0xD6, 0, true, BatchQueryProperties);
+        IncomingPackets.Register(0x06, 5, true, &UseReq);
+        IncomingPackets.Register(0x09, 5, true, &LookReq);
+        IncomingPackets.Register(0xB6, 9, true, &ObjectHelpRequest);
+        IncomingPackets.Register(0xD6, 0, true, &BatchQueryProperties);
     }
 
     public static void ObjectHelpRequest(NetState state, CircularBufferReader reader, int packetLength)
@@ -175,7 +175,7 @@ public static class IncomingEntityPackets
 
                 if (m != null && from.CanSee(m) && Utility.InUpdateRange(from.Location, m.Location))
                 {
-                    m.SendPropertiesTo(from);
+                    m.SendPropertiesTo(state);
                 }
             }
             else if (s.IsItem)
@@ -185,7 +185,7 @@ public static class IncomingEntityPackets
                 if (item?.Deleted == false && from.CanSee(item) &&
                     Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
                 {
-                    item.SendPropertiesTo(from);
+                    item.SendPropertiesTo(state);
                 }
             }
         }

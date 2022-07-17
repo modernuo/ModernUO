@@ -46,29 +46,34 @@ namespace Server.Spells.Necromancy
                     var cbc = Caster as BaseCreature;
                     var isMonster = cbc?.Controlled == false && !cbc.Summoned;
 
-                    foreach (var m in Caster.GetMobilesInRange(Core.ML ? 4 : 5))
+                    var eable = Caster.GetMobilesInRange(Core.ML ? 4 : 5);
+                    foreach (var m in eable)
                     {
-                        if (Caster != m && Caster.InLOS(m) && (isMonster || SpellHelper.ValidIndirectTarget(Caster, m)) &&
-                            Caster.CanBeHarmful(m, false))
+                        if (Caster == m || !Caster.InLOS(m) || (!isMonster && !SpellHelper.ValidIndirectTarget(Caster, m)) ||
+                            !Caster.CanBeHarmful(m, false))
                         {
-                            if (isMonster)
+                            continue;
+                        }
+
+                        if (isMonster)
+                        {
+                            if (m is BaseCreature bc)
                             {
-                                if (m is BaseCreature bc)
-                                {
-                                    if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else if (!m.Player)
+                                if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
                                 {
                                     continue;
                                 }
                             }
-
-                            pool.Enqueue(m);
+                            else if (!m.Player)
+                            {
+                                continue;
+                            }
                         }
+
+                        pool.Enqueue(m);
                     }
+
+                    eable.Free();
 
                     Effects.PlaySound(Caster.Location, map, 0x1FB);
                     Effects.PlaySound(Caster.Location, map, 0x10B);

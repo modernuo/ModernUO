@@ -46,7 +46,7 @@ namespace Server.Commands
             o switch
             {
                 Mobile m  => m.Account == null ? $"{m} (no account)" : $"{m} ('{m.Account.Username}')",
-                Item item => $"0x{item.Serial.Value:X} ({item.GetType().Name})",
+                Item item => $"{item.Serial} ({item.GetType().Name})",
                 _         => o
             };
 

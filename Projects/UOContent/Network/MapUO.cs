@@ -19,146 +19,138 @@ using System.IO;
 using Server.Engines.PartySystem;
 using Server.Guilds;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class MapUO
 {
-    public static class MapUO
+    public static unsafe void Configure()
     {
-        private static PacketHandler[] _handlers;
+        AssistantProtocol.Register(0x00, true, &QueryPartyMemberLocations);
+        AssistantProtocol.Register(0x01, true, &QueryGuildMemberLocations);
+    }
 
-        public static void Configure()
+    public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        Mobile from = state.Mobile;
+
+        state.SendGuildMemberLocations(from, from.Guild as Guild, reader.ReadBoolean());
+    }
+
+    public static void QueryPartyMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
+    {
+        Mobile from = state.Mobile;
+        var party = Party.Get(from);
+
+        if (party != null)
         {
-            _handlers = ProtocolExtensions.Register(0xF0);
+            state.SendPartyMemberLocations(from, party);
+        }
+    }
 
-            Register(0x00, true, QueryPartyMemberLocations);
-            Register(0x01, true, QueryGuildMemberLocations);
+    public static void SendGuildMemberLocations(this NetState ns, Mobile from, Guild guild, bool sendLocations)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
         }
 
-        public static void Register(int cmd, bool ingame, OnPacketReceive onReceive) =>
-            _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
+        var count = guild?.Members.Count ?? 0;
+        var maxLength = 9 + (count > 1 ? (count - 1) * (sendLocations ? 10 : 4) : 0);
+        var writer = new SpanWriter(stackalloc byte[maxLength]);
+        writer.Write((byte)0xF0); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
+        writer.Write((byte)0x02); // Command
+        writer.Write(count > 0 && sendLocations);
 
-        public static void QueryGuildMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
+        bool sendPacket = false;
+        for (var i = 0; i < count; i++)
         {
-            Mobile from = state.Mobile;
+            var m = guild!.Members[i];
 
-            state.SendGuildMemberLocations(from, from.Guild as Guild, reader.ReadBoolean());
+            if (m?.NetState == null || m == from)
+            {
+                continue;
+            }
+
+            if (sendLocations && Utility.InUpdateRange(from.Location, m.Location) && from.CanSee(m))
+            {
+                continue;
+            }
+
+            sendPacket = true;
+            writer.Write(m.Serial);
+
+            if (sendLocations)
+            {
+                writer.Write((short)m.X);
+                writer.Write((short)m.Y);
+                writer.Write((byte)(m.Map?.MapID ?? 0));
+
+                if (m.Alive)
+                {
+                    writer.Write((byte)(m.Hits * 100 / Math.Max(m.HitsMax, 1)));
+                }
+                else
+                {
+                    writer.Write((byte)0);
+                }
+            }
         }
 
-        public static void QueryPartyMemberLocations(NetState state, CircularBufferReader reader, int packetLength)
+        if (!sendPacket)
         {
-            Mobile from = state.Mobile;
-            var party = Party.Get(from);
-
-            if (party != null)
-            {
-                state.SendPartyMemberLocations(from, party);
-            }
+            return;
         }
 
-        public static void SendGuildMemberLocations(this NetState ns, Mobile from, Guild guild, bool sendLocations)
+        writer.Write(0);
+        writer.WritePacketLength();
+        ns.Send(writer.Span);
+    }
+
+    public static void SendPartyMemberLocations(this NetState ns, Mobile from, Party party)
+    {
+        if (ns.CannotSendPackets())
         {
-            if (ns.CannotSendPackets())
-            {
-                return;
-            }
-
-            var count = guild?.Members.Count ?? 0;
-            var maxLength = 9 + (count > 1 ? (count - 1) * (sendLocations ? 10 : 4) : 0);
-            var writer = new SpanWriter(stackalloc byte[maxLength]);
-            writer.Write((byte)0xF0); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-            writer.Write((byte)0x02); // Command
-            writer.Write(count > 0 && sendLocations);
-
-            bool sendPacket = false;
-            for (var i = 0; i < count; i++)
-            {
-                var m = guild!.Members[i];
-
-                if (m?.NetState == null || m == from)
-                {
-                    continue;
-                }
-
-                if (sendLocations && Utility.InUpdateRange(from.Location, m.Location) && from.CanSee(m))
-                {
-                    continue;
-                }
-
-                sendPacket = true;
-                writer.Write(m.Serial);
-
-                if (sendLocations)
-                {
-                    writer.Write((short)m.X);
-                    writer.Write((short)m.Y);
-                    writer.Write((byte)(m.Map?.MapID ?? 0));
-
-                    if (m.Alive)
-                    {
-                        writer.Write((byte)(m.Hits * 100 / Math.Max(m.HitsMax, 1)));
-                    }
-                    else
-                    {
-                        writer.Write((byte)0);
-                    }
-                }
-            }
-
-            if (!sendPacket)
-            {
-                return;
-            }
-
-            writer.Write(0);
-            writer.WritePacketLength();
-            ns.Send(writer.Span);
+            return;
         }
 
-        public static void SendPartyMemberLocations(this NetState ns, Mobile from, Party party)
+        var count = party?.Members.Count ?? 0;
+        var maxLength = 9 + (count > 1 ? (count - 1) * 9 : 0);
+        var writer = new SpanWriter(stackalloc byte[maxLength]);
+        writer.Write((byte)0xF0); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
+        writer.Write((byte)0x01); // Command
+
+        bool sendPacket = false;
+        for (var i = 0; i < count; i++)
         {
-            if (ns.CannotSendPackets())
+            var pmi = party!.Members[i];
+            Mobile mob = pmi?.Mobile;
+
+            if (mob?.NetState == null || mob == from)
             {
-                return;
+                continue;
             }
 
-            var count = party?.Members.Count ?? 0;
-            var maxLength = 9 + (count > 1 ? (count - 1) * 9 : 0);
-            var writer = new SpanWriter(stackalloc byte[maxLength]);
-            writer.Write((byte)0xF0); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-            writer.Write((byte)0x01); // Command
-
-            bool sendPacket = false;
-            for (var i = 0; i < count; i++)
+            if (Utility.InUpdateRange(from.Location, mob.Location) && from.CanSee(mob))
             {
-                var pmi = party!.Members[i];
-                Mobile mob = pmi?.Mobile;
-
-                if (mob?.NetState == null || mob == from)
-                {
-                    continue;
-                }
-
-                if (Utility.InUpdateRange(from.Location, mob.Location) && from.CanSee(mob))
-                {
-                    continue;
-                }
-
-                sendPacket = true;
-                writer.Write(mob.Serial);
-                writer.Write((short)mob.X);
-                writer.Write((short)mob.Y);
-                writer.Write((byte)(mob.Map?.MapID ?? 0));
+                continue;
             }
 
-            if (!sendPacket)
-            {
-                return;
-            }
-
-            writer.Write(0);
-            writer.WritePacketLength();
-            ns.Send(writer.Span);
+            sendPacket = true;
+            writer.Write(mob.Serial);
+            writer.Write((short)mob.X);
+            writer.Write((short)mob.Y);
+            writer.Write((byte)(mob.Map?.MapID ?? 0));
         }
+
+        if (!sendPacket)
+        {
+            return;
+        }
+
+        writer.Write(0);
+        writer.WritePacketLength();
+        ns.Send(writer.Span);
     }
 }

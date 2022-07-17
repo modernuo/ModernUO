@@ -196,13 +196,13 @@ namespace Server.Items
             m_SkillMod = null;
         }
 
-        public override void GetProperties(ObjectPropertyList list)
+        public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
             if (m_Bonus != 0)
             {
-                list.Add(1062005, m_Bonus.ToString()); // mining bonus +~1_val~
+                list.Add(1062005, m_Bonus); // mining bonus +~1_val~
             }
         }
 

@@ -17,7 +17,7 @@ namespace Server.Mobiles
 
         public override bool CanBeDamaged() => false;
 
-        public override void AddNameProperties(ObjectPropertyList list)
+        public override void AddNameProperties(IPropertyList list)
         {
             base.AddNameProperties(list);
 

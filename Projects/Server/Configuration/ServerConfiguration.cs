@@ -217,7 +217,7 @@ public static class ServerConfiguration
 
         if (File.Exists(m_FilePath))
         {
-            logger.Information($"Reading server configuration from {_relPath}...");
+            logger.Information("Reading server configuration from {Path}...", _relPath);
             m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
             if (m_Settings == null)
@@ -276,7 +276,7 @@ public static class ServerConfiguration
                 isPre60000 = ServerConfigurationPrompts.GetIsClientPre6000();
                 if (isPre60000 == true)
                 {
-                    SetSetting("maps.enablePre6000Trammel", true.ToString());
+                    SetSetting("maps.enablePre6000Trammel", true);
                 }
             }
 

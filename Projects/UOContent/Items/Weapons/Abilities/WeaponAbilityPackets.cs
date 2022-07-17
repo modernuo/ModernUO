@@ -6,9 +6,9 @@ namespace Server.Items
 {
     public static class WeaponAbilityPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.RegisterEncoded(0x19, true, SetAbility);
+            IncomingPackets.RegisterEncoded(0x19, true, &SetAbility);
         }
 
         public static void SetAbility(NetState state, IEntity e, EncodedReader reader)

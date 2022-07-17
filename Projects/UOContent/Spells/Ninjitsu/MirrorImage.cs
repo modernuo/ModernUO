@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -69,9 +70,8 @@ namespace Server.Spells.Ninjitsu
 
             if (Caster.Followers + 1 > Caster.FollowersMax)
             {
-                Caster.SendLocalizedMessage(
-                    1063133
-                ); // You cannot summon a mirror image because you have too many followers.
+                // You cannot summon a mirror image because you have too many followers.
+                Caster.SendLocalizedMessage(1063133);
                 return false;
             }
 
@@ -123,14 +123,14 @@ namespace Server.Spells.Ninjitsu
 
 namespace Server.Mobiles
 {
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class Clone : BaseCreature
     {
+        [SerializableField(0)]
         private Mobile _caster;
 
         public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None)
         {
-            SetSpeed(0.3, 1.0);
             _caster = caster;
 
             Body = caster.Body;
@@ -171,7 +171,7 @@ namespace Server.Mobiles
 
             var duration = TimeSpan.FromSeconds(30 + caster.Skills.Ninjitsu.Fixed / 40);
 
-            new UnsummonTimer(caster, this, duration).Start();
+            new UnsummonTimer(this, duration).Start();
             SummonEnd = Core.Now + duration;
 
             MirrorImage.AddClone(_caster);
@@ -186,12 +186,14 @@ namespace Server.Mobiles
 
         public override bool IsHumanInTown() => false;
 
-        private Item CloneItem(Item item) =>
-            new(item.ItemID)
-            {
-                Hue = item.Hue,
-                Layer = item.Layer
-            };
+        private Item CloneItem(Item item)
+        {
+            var newItem = new Item(item.ItemID);
+            newItem.Hue = item.Hue;
+            newItem.Layer = item.Layer;
+
+            return newItem;
+        }
 
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
@@ -223,7 +225,10 @@ namespace Server.Mobiles
             MirrorImage.AddClone(_caster);
         }
     }
+}
 
+namespace Server.Mobiles
+{
     public class CloneAI : BaseAI
     {
         public CloneAI(Clone m) : base(m) => m.CurrentSpeed = m.ActiveSpeed;

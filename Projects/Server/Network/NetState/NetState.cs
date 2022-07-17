@@ -15,7 +15,6 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -51,9 +50,9 @@ public partial class NetState : IComparable<NetState>
 
     private static GCHandle[] _polledStates = new GCHandle[2048];
     private static readonly IPollGroup _pollGroup = PollGroup.Create();
-    private static readonly Queue<NetState> FlushPending = new(2048);
-    private static readonly Queue<NetState> FlushedPartials = new(2048);
-    private static readonly ConcurrentQueue<NetState> Disposed = new();
+    private static readonly Queue<NetState> _flushPending = new(2048);
+    private static readonly Queue<NetState> _flushedPartials = new(256);
+    private static readonly Queue<NetState> _disposed = new(256);
 
     public static NetStateCreatedCallback CreatedCallback { get; set; }
 
@@ -74,6 +73,8 @@ public partial class NetState : IComparable<NetState>
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     internal GCHandle _handle;
     private bool _packetLogging;
+
+    public GCHandle Handle => _handle;
 
     internal enum ParserState
     {
@@ -219,6 +220,8 @@ public partial class NetState : IComparable<NetState>
 
     public IAccount Account { get; set; }
 
+    public string Assistant { get; set; }
+
     public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
     private void SetPacketTime(int packetID)
@@ -342,13 +345,7 @@ public partial class NetState : IComparable<NetState>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void LogInfo(string text)
     {
-        logger.Information("Client: {0}: {1}", this, text);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void LogInfo(string format, params object[] args)
-    {
-        LogInfo(string.Format(format, args));
+        logger.Information("Client: {NetState}: {Message}", this, text);
     }
 
     public void AddMenu(IMenu menu)
@@ -508,7 +505,7 @@ public partial class NetState : IComparable<NetState>
 
             if (!_flushQueued)
             {
-                FlushPending.Enqueue(this);
+                _flushPending.Enqueue(this);
                 _flushQueued = true;
             }
 
@@ -516,9 +513,6 @@ public partial class NetState : IComparable<NetState>
         }
         catch (Exception ex)
         {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
             TraceException(ex);
             Disconnect("Exception while sending.");
         }
@@ -732,7 +726,7 @@ public partial class NetState : IComparable<NetState>
         catch (Exception ex)
         {
 #if DEBUG
-                Console.WriteLine(ex);
+            Console.WriteLine(ex);
 #endif
             TraceException(ex);
             Disconnect("Exception during HandleReceive");
@@ -753,7 +747,7 @@ public partial class NetState : IComparable<NetState>
      * length is the total buffer length. We might be able to use packetReader.Capacity() instead.
      * packetLength is the length of the packet that this function actually found.
      */
-    private ParserState HandlePacket(CircularBufferReader packetReader, byte packetId, out int packetLength)
+    private unsafe ParserState HandlePacket(CircularBufferReader packetReader, byte packetId, out int packetLength)
     {
         PacketHandler handler = IncomingPackets.GetHandler(packetId);
         int length = packetReader.Length;
@@ -801,7 +795,7 @@ public partial class NetState : IComparable<NetState>
             }
         }
 
-        ThrottlePacketCallback throttler = handler.ThrottleCallback;
+        var throttler = handler.ThrottleCallback;
         if (throttler != null)
         {
             if (!throttler(packetId, this, out bool drop))
@@ -861,18 +855,14 @@ public partial class NetState : IComparable<NetState>
         }
         catch (SocketException ex)
         {
-            // Socket exceptions are generally ok, just spammy
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
-
-            Disconnect(string.Empty);
+            if (ex.SocketErrorCode != SocketError.WouldBlock)
+            {
+                logger.Debug(ex, "Disconnected due to a socket exception");
+                Disconnect(string.Empty);
+            }
         }
         catch (Exception ex)
         {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
             Disconnect($"Disconnected with error: {ex}");
             TraceException(ex);
         }
@@ -910,19 +900,15 @@ public partial class NetState : IComparable<NetState>
         }
         catch (SocketException ex)
         {
-#if DEBUG
-                if (ex.ErrorCode != 54 && ex.ErrorCode != 89 && ex.ErrorCode != 995)
-                {
-                    Console.WriteLine(ex);
-                }
-#endif
+            if (ex.ErrorCode is not 54 and not 89 and not 995)
+            {
+                logger.Debug(ex, "Disconnected due to a socket exception");
+            }
+
             Disconnect(string.Empty);
         }
         catch (Exception ex)
         {
-#if DEBUG
-                Console.WriteLine(ex);
-#endif
             Disconnect($"Disconnected with error: {ex}");
             TraceException(ex);
         }
@@ -941,15 +927,15 @@ public partial class NetState : IComparable<NetState>
 
     public static void FlushAll()
     {
-        while (FlushPending.Count != 0)
+        while (_flushPending.Count != 0)
         {
-            FlushPending.Dequeue()?.Flush();
+            _flushPending.Dequeue()?.Flush();
         }
     }
 
     public static void Slice()
     {
-        int count = _pollGroup.Poll(ref _polledStates);
+        int count = _pollGroup.Poll(_polledStates);
 
         if (count > 0)
         {
@@ -960,24 +946,34 @@ public partial class NetState : IComparable<NetState>
             }
         }
 
-        while (FlushPending.TryDequeue(out var ns))
+        while (_flushPending.TryDequeue(out var ns))
         {
             if (!ns.Flush())
             {
                 // Incomplete data, so we need to requeue
-                FlushedPartials.Enqueue(ns);
+                _flushedPartials.Enqueue(ns);
             }
         }
 
-        var hasDisposes = !Disposed.IsEmpty;
-        while (Disposed.TryDequeue(out var ns))
+        var hasDisposes = false;
+        while (_disposed.TryDequeue(out var ns))
         {
+            hasDisposes = true;
             ns.Dispose();
+        }
+
+        // If they weren't disconnected, requeue them
+        while (_flushedPartials.TryDequeue(out var ns))
+        {
+            if (ns.Running)
+            {
+                _flushPending.Enqueue(ns);
+            }
         }
 
         if (hasDisposes)
         {
-            _pollGroup.Poll(ref _polledStates);
+            _pollGroup.Poll(_polledStates.Length);
         }
     }
 
@@ -1036,20 +1032,19 @@ public partial class NetState : IComparable<NetState>
 
         _running = false;
 
-        try
-        {
-            if (_disconnectReason != string.Empty)
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
             {
-                throw new Exception("Attempted to disconnect a netstate twice.");
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine("Attempting to disconnect a netstate from an invalid thread!");
+                Console.WriteLine(new StackTrace());
+                Utility.PopColor();
+                return;
             }
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
-        }
+#endif
 
         _disconnectReason = reason;
-        Disposed.Enqueue(this);
+        _disposed.Enqueue(this);
     }
 
     public static void TraceDisconnect(string reason, string ip)
@@ -1099,7 +1094,7 @@ public partial class NetState : IComparable<NetState>
         TcpServer.Instances.Remove(this);
         try
         {
-            _pollGroup.Remove(Connection);
+            _pollGroup.Remove(Connection, _handle);
         }
         catch (Exception ex)
         {
@@ -1128,13 +1123,6 @@ public partial class NetState : IComparable<NetState>
 
         var count = TcpServer.Instances.Count;
 
-        if (a != null)
-        {
-            LogInfo("Disconnected. [{0} Online] [{1}]", count, a);
-        }
-        else
-        {
-            LogInfo("Disconnected. [{0} Online]", count);
-        }
+        LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
     }
 }
