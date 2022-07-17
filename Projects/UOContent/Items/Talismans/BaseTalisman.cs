@@ -1258,7 +1258,7 @@ namespace Server.Items
 
                         target.Paralyzed = false;
 
-                        EvilOmenSpell.TryEndEffect(target);
+                        EvilOmenSpell.EndEffect(target);
                         StrangleSpell.RemoveCurse(target);
                         CorpseSkinSpell.RemoveCurse(target);
                         CurseSpell.RemoveEffect(target);

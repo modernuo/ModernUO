@@ -19,6 +19,11 @@ namespace Server.Spells
         protected override bool CanTarget(Mobile from, StaticTarget staticTarget, ref Point3D loc, ref Map map) => false;
         protected override bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map) => false;
 
+        protected override void OnCantSeeTarget(Mobile from, object o)
+        {
+            from.SendLocalizedMessage(500237); // Target can not be seen.
+        }
+
         protected override void OnTarget(Mobile from, object o)
         {
             _spell.Target(o as Item);

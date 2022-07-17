@@ -99,29 +99,29 @@ namespace Server.Spells.Ninjitsu
                 return 0;
             }
 
-            var xDelta = t.m_Location.X - from.X;
-            var yDelta = t.m_Location.Y - from.Y;
+            var xDelta = t._location.X - from.X;
+            var yDelta = t._location.Y - from.Y;
 
             return Math.Min(Math.Sqrt(xDelta * xDelta + yDelta * yDelta), 20.0);
         }
 
         private class KiAttackTimer : Timer
         {
-            public readonly Mobile m_Mobile;
-            public Point3D m_Location;
+            public Mobile _mobile;
+            public Point3D _location;
 
             public KiAttackTimer(Mobile m) : base(TimeSpan.FromSeconds(2.0))
             {
-                m_Mobile = m;
-                m_Location = m.Location;
+                _mobile = m;
+                _location = m.Location;
             }
 
             protected override void OnTick()
             {
-                ClearCurrentMove(m_Mobile);
-                m_Mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
+                ClearCurrentMove(_mobile);
+                _mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
 
-                _table.Remove(m_Mobile);
+                _table.Remove(_mobile);
             }
         }
     }

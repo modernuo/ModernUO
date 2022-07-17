@@ -3058,16 +3058,21 @@ namespace Server
 
         public virtual void UpdateResistances()
         {
-            Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
-
             var delta = false;
 
-            for (var i = 0; i < Resistances.Length; ++i)
+            if (Resistances == null)
             {
-                if (Resistances[i] != int.MinValue)
+                Resistances = new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+            }
+            else
+            {
+                for (var i = 0; i < Resistances.Length; ++i)
                 {
-                    Resistances[i] = int.MinValue;
-                    delta = true;
+                    if (Resistances[i] != int.MinValue)
+                    {
+                        Resistances[i] = int.MinValue;
+                        delta = true;
+                    }
                 }
             }
 
@@ -3079,11 +3084,9 @@ namespace Server
 
         public virtual int GetResistance(ResistanceType type)
         {
-            Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
-
             var v = (int)type;
 
-            if (v < 0 || v >= Resistances.Length)
+            if (Resistances == null || Resistances.Length == 0 || v < 0 || v >= Resistances.Length)
             {
                 return 0;
             }

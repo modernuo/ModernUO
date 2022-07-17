@@ -151,7 +151,7 @@ namespace Server.Misc
 
             pm.ToTTotalMonsterFame += (int)(bc.Fame * (1 + Math.Sqrt(pm.Luck) / 100));
 
-            // This is the Exponential regression with only 2 data points.
+            // This is the Exponential regression with only 2 datapoints.
             // A log. func would also work, but it didn't make as much sense.
             // This function isn't OSI exact being that I don't know OSI's func they used ;p
             var x = pm.ToTTotalMonsterFame;
@@ -263,9 +263,7 @@ namespace Server.Mobiles
         {
             if (m.Alive && m is PlayerMobile pm)
             {
-                var range = 3;
-
-                if (pm.Alive && (Z - pm.Z).Abs() < 16 && InRange(m, range) && !InRange(oldLocation, range))
+                if (pm.Alive && (Z - pm.Z).Abs() < 16 && InRange(m, 3) && !InRange(oldLocation, 3))
                 {
                     if (pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward)
                     {
@@ -327,9 +325,8 @@ namespace Server.Gumps
         public ItemTileButtonInfo(Item i) : base(
             i.ItemID,
             i.Hue,
-            i.Name == null || i.Name.Length <= 0 ? i.LabelNumber : i.Name
-        ) =>
-            Item = i;
+            i.Name is not { Length: > 0 } ? i.LabelNumber : i.Name
+        ) => Item = i;
 
         public Item Item { get; set; }
     }
@@ -619,7 +616,7 @@ namespace Server.Gumps
                 // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
                 m_Collector.SayTo(pm, 1071013);
             }
-            // This and above case should ALWAYS be FALSE with this gump, jsut a sanity check
+            // This and above case should ALWAYS be FALSE with this gump, just a sanity check
             else if (pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward)
             {
                 m_Collector.SayTo(

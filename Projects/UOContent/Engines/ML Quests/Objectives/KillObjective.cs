@@ -108,10 +108,8 @@ namespace Server.Engines.MLQuests.Objectives
                     }
                     else
                     {
-                        pm.SendLocalizedMessage(
-                            1075051,
-                            (desired - Slain).ToString()
-                        ); // You have killed a quest creature. ~1_val~ more left.
+                        // You have killed a quest creature. ~1_val~ more left.
+                        pm.SendLocalizedMessage(1075051, (desired - Slain).ToString());
                     }
 
                     return true;

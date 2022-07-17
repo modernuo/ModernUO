@@ -336,10 +336,9 @@ namespace Server.Engines.Plants
                         if (bev == null)
                         {
                             from.Target = new PlantPourTarget(m_Plant);
-                            from.SendLocalizedMessage(
-                                1060808,
-                                $"#{m_Plant.GetLocalizedPlantStatus()}"
-                            ); // Target the container you wish to use to water the ~1_val~.
+
+                            // Target the container you wish to use to water the ~1_val~.
+                            from.SendLocalizedMessage(1060808, $"#{m_Plant.GetLocalizedPlantStatus()}");
                         }
                         else
                         {
@@ -406,10 +405,9 @@ namespace Server.Engines.Plants
                     from.SendLocalizedMessage(1061884); // You don't have any strong potions of that type in your pack.
 
                     from.Target = new PlantPourTarget(m_Plant);
-                    from.SendLocalizedMessage(
-                        1060808,
-                        $"#{m_Plant.GetLocalizedPlantStatus()}"
-                    ); // Target the container you wish to use to water the ~1_val~.
+
+                    // Target the container you wish to use to water the ~1_val~.
+                    from.SendLocalizedMessage(1060808, $"#{m_Plant.GetLocalizedPlantStatus()}");
 
                     return;
                 }
