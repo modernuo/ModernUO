@@ -46,7 +46,7 @@ namespace Server.Spells.Bushido
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
                 // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
-                Caster.SendLocalizedMessage(1063013, $"{RequiredSkill:0.#}\t{CastSkill.ToString()}\t ");
+                Caster.SendLocalizedMessage(1063013, $"{RequiredSkill:0.#}\t{CastSkill}\t ");
                 return false;
             }
 

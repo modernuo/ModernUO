@@ -20,10 +20,7 @@ namespace Server.Spells.Mysticism
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
-
-        public override double RequiredSkill => 33.0;
-        public override int RequiredMana => 11;
+        public override SpellCircle Circle => SpellCircle.Fourth;
 
         public void Target(IPoint3D p)
         {
