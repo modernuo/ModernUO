@@ -134,9 +134,9 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
-        public static int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 12.0);
+        public int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 12.0);
 
-        public static int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 48.0);
+        public int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 48.0);
 
         public static void RemoveEffects(Mobile m)
         {
