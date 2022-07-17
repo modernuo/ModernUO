@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -16,8 +16,7 @@ namespace Server.Spells.Necromancy
             Reagent.NoxCrystal
         );
 
-        public PoisonStrikeSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public PoisonStrikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -30,11 +29,6 @@ namespace Server.Spells.Necromancy
 
         public void Target(Mobile m)
         {
-            if (m == null)
-            {
-                return;
-            }
-
             if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
@@ -48,39 +42,39 @@ namespace Server.Spells.Necromancy
                 // Check magic resist for skill, but do not use return value
                 // reports from OSI:  Necro spells don't give Resist gain
 
-                Effects.SendLocationParticles(
-                    EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration),
-                    0x36B0,
-                    1,
-                    14,
-                    63,
-                    7,
-                    9915,
-                    0
-                );
-                Effects.PlaySound(m.Location, m.Map, 0x229);
-
-                var damage = Utility.RandomMinMax(Core.ML ? 32 : 36, 40) * ((300 + GetDamageSkill(Caster) * 9) / 1000);
-
-                var sdiBonus = (double)AosAttributes.GetValue(Caster, AosAttribute.SpellDamage) / 100;
-                var pvmDamage = damage * (1 + sdiBonus);
-
-                if (Core.ML && sdiBonus > 0.15)
-                {
-                    sdiBonus = 0.15;
-                }
-
-                var pvpDamage = damage * (1 + sdiBonus);
-
                 var map = m.Map;
 
                 if (map != null)
                 {
-                    var targets = new List<Mobile>();
+                    Effects.SendLocationParticles(
+                        EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration),
+                        0x36B0,
+                        1,
+                        14,
+                        63,
+                        7,
+                        9915,
+                        0
+                    );
+                    Effects.PlaySound(m.Location, m.Map, 0x229);
+
+                    var damage = Utility.RandomMinMax(Core.ML ? 32 : 36, 40) * ((300 + GetDamageSkill(Caster) * 9) / 1000);
+
+                    var sdiBonus = (double)AosAttributes.GetValue(Caster, AosAttribute.SpellDamage) / 100;
+                    var pvmDamage = damage * (1 + sdiBonus);
+
+                    if (Core.ML && sdiBonus > 0.15)
+                    {
+                        sdiBonus = 0.15;
+                    }
+
+                    var pvpDamage = damage * (1 + sdiBonus);
+
+                    using var pool = PooledRefQueue<Mobile>.Create();
 
                     if (Caster.CanBeHarmful(m, false))
                     {
-                        targets.Add(m);
+                        pool.Enqueue(m);
                     }
 
                     var eable = m.GetMobilesInRange(2);
@@ -92,15 +86,15 @@ namespace Server.Spells.Necromancy
                             SpellHelper.ValidIndirectTarget(Caster, targ) &&
                             Caster.CanBeHarmful(targ, false))
                         {
-                            targets.Add(targ);
+                            pool.Enqueue(targ);
                         }
                     }
 
                     eable.Free();
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    while (pool.Count > 0)
                     {
-                        var targ = targets[i];
+                        var targ = pool.Dequeue();
                         int num;
 
                         if (targ.InRange(m.Location, 0))

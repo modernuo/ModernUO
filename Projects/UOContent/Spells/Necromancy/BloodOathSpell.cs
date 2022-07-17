@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        private static readonly Dictionary<Mobile, Mobile> m_OathTable = new();
+        private static readonly Dictionary<Mobile, Mobile> _oathTable = new();
         private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
         public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
@@ -38,11 +38,11 @@ namespace Server.Spells.Necromancy
             {
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }
-            else if (m_OathTable.ContainsKey(Caster))
+            else if (_oathTable.ContainsKey(Caster))
             {
                 Caster.SendLocalizedMessage(1061607); // You are already bonded in a Blood Oath.
             }
-            else if (m_OathTable.ContainsKey(m))
+            else if (_oathTable.ContainsKey(m))
             {
                 if (m.Player)
                 {
@@ -67,8 +67,8 @@ namespace Server.Spells.Necromancy
 
                 RemoveCurse(m);
 
-                m_OathTable[Caster] = Caster;
-                m_OathTable[m] = Caster;
+                _oathTable[Caster] = Caster;
+                _oathTable[m] = Caster;
 
                 m.Spell?.OnCasterHurt();
 
@@ -106,12 +106,12 @@ namespace Server.Spells.Necromancy
             if (_table.Remove(target, out var timer))
             {
                 var caster = timer.Caster;
-                if (m_OathTable.Remove(caster))
+                if (_oathTable.Remove(caster))
                 {
                     caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
                 }
 
-                if (m_OathTable.Remove(target))
+                if (_oathTable.Remove(target))
                 {
                     target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
                 }
@@ -128,7 +128,7 @@ namespace Server.Spells.Necromancy
         }
 
         public static Mobile GetBloodOath(Mobile m) =>
-            m == null || m_OathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
+            m == null || _oathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
 
         private class ExpireTimer : Timer
         {

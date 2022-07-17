@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 
@@ -42,34 +43,39 @@ namespace Server.Spells.Necromancy
 
                 if (map != null)
                 {
-                    var targets = new List<Mobile>();
+                    using var pool = PooledRefQueue<Mobile>.Create();
 
                     var cbc = Caster as BaseCreature;
                     var isMonster = cbc?.Controlled == false && !cbc.Summoned;
 
-                    foreach (var m in Caster.GetMobilesInRange(Core.ML ? 4 : 5))
+                    var eable = Caster.GetMobilesInRange(Core.ML ? 4 : 5);
+                    foreach (var m in eable)
                     {
-                        if (Caster != m && Caster.InLOS(m) && (isMonster || SpellHelper.ValidIndirectTarget(Caster, m)) &&
-                            Caster.CanBeHarmful(m, false))
+                        if (Caster == m || !Caster.InLOS(m) || (!isMonster && !SpellHelper.ValidIndirectTarget(Caster, m)) ||
+                            !Caster.CanBeHarmful(m, false))
                         {
-                            if (isMonster)
+                            continue;
+                        }
+
+                        if (isMonster)
+                        {
+                            if (m is BaseCreature bc)
                             {
-                                if (m is BaseCreature bc)
-                                {
-                                    if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else if (!m.Player)
+                                if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
                                 {
                                     continue;
                                 }
                             }
-
-                            targets.Add(m);
+                            else if (!m.Player)
+                            {
+                                continue;
+                            }
                         }
+
+                        pool.Enqueue(m);
                     }
+
+                    eable.Free();
 
                     Effects.PlaySound(Caster.Location, map, 0x1FB);
                     Effects.PlaySound(Caster.Location, map, 0x10B);
@@ -84,9 +90,9 @@ namespace Server.Spells.Necromancy
                         0
                     );
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    while (pool.Count > 0)
                     {
-                        var m = targets[i];
+                        var m = pool.Dequeue();
 
                         Caster.DoHarmful(m);
                         m.FixedParticles(0x374A, 1, 15, 9502, 97, 3, (EffectLayer)255);

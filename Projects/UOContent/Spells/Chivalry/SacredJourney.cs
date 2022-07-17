@@ -54,7 +54,7 @@ namespace Server.Spells.Chivalry
             else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.RecallTo))
             {
             }
-            else if (map == Map.Felucca && Caster is PlayerMobile mobile && mobile.Young)
+            else if (map == Map.Felucca && Caster is PlayerMobile { Young: true } mobile)
             {
                 mobile.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
             }

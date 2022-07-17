@@ -45,7 +45,7 @@ namespace Server.Spells.Necromancy
 
         public override void RemoveEffect(Mobile m)
         {
-            if (m is PlayerMobile mobile && mobile.AccessLevel == AccessLevel.Player)
+            if (m is PlayerMobile { AccessLevel: AccessLevel.Player } mobile)
             {
                 mobile.IgnoreMobiles = false;
             }

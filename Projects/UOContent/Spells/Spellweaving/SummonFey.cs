@@ -12,8 +12,7 @@ namespace Server.Spells.Spellweaving
             -1
         );
 
-        public SummonFeySpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public SummonFeySpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -26,18 +25,15 @@ namespace Server.Spells.Spellweaving
 
         public override bool CheckSequence()
         {
-            var caster = Caster;
-
             // This is done after casting completes
-            if (caster is PlayerMobile mobile)
+            if (Caster is PlayerMobile mobile)
             {
                 var context = MLQuestSystem.GetContext(mobile);
 
                 if (context?.SummonFey != true)
                 {
-                    mobile.SendLocalizedMessage(
-                        1074563
-                    ); // You haven't forged a friendship with the fey and are unable to summon their aid.
+                    // You haven't forged a friendship with the fey and are unable to summon their aid.
+                    mobile.SendLocalizedMessage(1074563);
                     return false;
                 }
             }
