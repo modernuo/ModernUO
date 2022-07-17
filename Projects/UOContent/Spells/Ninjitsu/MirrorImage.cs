@@ -35,29 +35,21 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddClone(Mobile m)
         {
-            if (m == null)
+            if (m != null)
             {
-                return;
+                _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
             }
-
-            _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
         }
 
         public static void RemoveClone(Mobile m)
         {
-            if (m == null || !_cloneCount.TryGetValue(m, out var count))
+            _cloneCount.Remove(m, out var count);
+            if (m == null || count <= 0)
             {
                 return;
             }
 
-            if (count <= 1)
-            {
-                _cloneCount.Remove(m);
-            }
-            else
-            {
-                _cloneCount[m]--;
-            }
+            _cloneCount[m] = count - 1;
         }
 
         public override bool CheckCast()

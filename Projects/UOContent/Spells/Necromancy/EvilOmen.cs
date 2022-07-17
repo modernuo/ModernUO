@@ -84,7 +84,7 @@ namespace Server.Spells.Necromancy
         {
             if (_table.Remove(m, out var mod))
             {
-                mod?.Remove();
+                mod.Remove();
                 return true;
             }
 
