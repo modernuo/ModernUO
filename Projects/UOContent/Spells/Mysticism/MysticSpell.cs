@@ -5,8 +5,8 @@ namespace Server.Spells.Mysticism
 {
     public abstract class MysticSpell : Spell
     {
-        private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
-        private static readonly double[] _requiredSkill = { 0.0, 8.0, 20.0, 33.0, 45.0, 58.0, 70.0, 83.0 };
+        private static int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
+        private static double[] _requiredSkill = { 0.0, 8.0, 20.0, 33.0, 45.0, 58.0, 70.0, 83.0 };
 
         public MysticSpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
         {
@@ -75,10 +75,8 @@ namespace Server.Spells.Mysticism
 
             if (Caster.Skills[CastSkill].Value < requiredSkill)
             {
-                Caster.SendLocalizedMessage(
-                    1063013, // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
-                    $"{requiredSkill:F1}\t{CastSkill.ToString()}\t "
-                );
+                // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                Caster.SendLocalizedMessage(1063013, $"{requiredSkill:F1}\t{CastSkill}\t ");
                 return false;
             }
 
