@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -34,29 +35,21 @@ namespace Server.Spells.Ninjitsu
 
         public static void AddClone(Mobile m)
         {
-            if (m == null)
+            if (m != null)
             {
-                return;
+                _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
             }
-
-            _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
         }
 
         public static void RemoveClone(Mobile m)
         {
-            if (m == null || !_cloneCount.TryGetValue(m, out var count))
+            _cloneCount.Remove(m, out var count);
+            if (m == null || count <= 0)
             {
                 return;
             }
 
-            if (count <= 1)
-            {
-                _cloneCount.Remove(m);
-            }
-            else
-            {
-                _cloneCount[m]--;
-            }
+            _cloneCount[m] = count - 1;
         }
 
         public override bool CheckCast()
@@ -122,13 +115,15 @@ namespace Server.Spells.Ninjitsu
 
 namespace Server.Mobiles
 {
-    public class Clone : BaseCreature
+    [SerializationGenerator(0)]
+    public partial class Clone : BaseCreature
     {
-        private Mobile m_Caster;
+        [SerializableField(0)]
+        private Mobile _caster;
 
         public Clone(Mobile caster) : base(AIType.AI_Melee, FightMode.None)
         {
-            m_Caster = caster;
+            _caster = caster;
 
             Body = caster.Body;
 
@@ -171,11 +166,7 @@ namespace Server.Mobiles
             new UnsummonTimer(this, duration).Start();
             SummonEnd = Core.Now + duration;
 
-            MirrorImage.AddClone(m_Caster);
-        }
-
-        public Clone(Serial serial) : base(serial)
-        {
+            MirrorImage.AddClone(_caster);
         }
 
         protected override BaseAI ForcedAI => new CloneAI(this);
@@ -216,28 +207,14 @@ namespace Server.Mobiles
 
         public override void OnAfterDelete()
         {
-            MirrorImage.RemoveClone(m_Caster);
+            MirrorImage.RemoveClone(_caster);
             base.OnAfterDelete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_Caster);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Caster = reader.ReadEntity<Mobile>();
-
-            MirrorImage.AddClone(m_Caster);
+            MirrorImage.AddClone(_caster);
         }
     }
 }

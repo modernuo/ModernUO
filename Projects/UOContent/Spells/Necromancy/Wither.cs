@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
@@ -18,8 +17,7 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        public WitherSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public WitherSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

@@ -19,8 +19,7 @@ namespace Server.Spells.Mysticism
 
         private static readonly Dictionary<Mobile, SpellPlagueTimer> _table = new();
 
-        public SpellPlagueSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public SpellPlagueSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 

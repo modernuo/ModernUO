@@ -53,7 +53,6 @@ namespace Server.Spells.Ninjitsu
             /*
              * Pub40 changed pvp damage max to 55%
              */
-
             return 1.0 + GetBonus(attacker) / (Core.ML && attacker.Player && defender.Player ? 40 : 10);
         }
 
