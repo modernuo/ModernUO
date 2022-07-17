@@ -69,9 +69,8 @@ namespace Server.Spells.Ninjitsu
 
             if (Caster.Followers + 1 > Caster.FollowersMax)
             {
-                Caster.SendLocalizedMessage(
-                    1063133
-                ); // You cannot summon a mirror image because you have too many followers.
+                // You cannot summon a mirror image because you have too many followers.
+                Caster.SendLocalizedMessage(1063133);
                 return false;
             }
 
@@ -101,9 +100,8 @@ namespace Server.Spells.Ninjitsu
             }
             else if (Caster.Followers + 1 > Caster.FollowersMax)
             {
-                Caster.SendLocalizedMessage(
-                    1063133
-                ); // You cannot summon a mirror image because you have too many followers.
+                // You cannot summon a mirror image because you have too many followers.
+                Caster.SendLocalizedMessage(1063133);
             }
             else if (TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell)))
             {

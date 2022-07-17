@@ -30,8 +30,7 @@ namespace Server.Spells.Ninjitsu
 
         private bool m_WasMoving;
 
-        public AnimalForm(Mobile caster, Item scroll)
-            : base(caster, scroll, _info)
+        public AnimalForm(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
         }
 
@@ -477,10 +476,8 @@ namespace Server.Spells.Ninjitsu
 
                 if (mana > m_Caster.Mana)
                 {
-                    m_Caster.SendLocalizedMessage(
-                        1060174, // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
-                        mana.ToString()
-                    );
+                    // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                    m_Caster.SendLocalizedMessage(1060174, mana.ToString());
                 }
                 else if (m_Caster is PlayerMobile mobile && mobile.MountBlockReason != BlockMountType.None)
                 {

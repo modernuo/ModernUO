@@ -114,30 +114,30 @@ namespace Server.Spells.Necromancy
 
         private class ExpireTimer : Timer
         {
-            private readonly Mobile m_Mobile;
-            private readonly ResistanceMod[] m_Mods;
+            private Mobile _mobile;
+            private ResistanceMod[] _mods;
 
             public ExpireTimer(Mobile m, ResistanceMod[] mods, TimeSpan delay) : base(delay)
             {
-                m_Mobile = m;
-                m_Mods = mods;
+                _mobile = m;
+                _mods = mods;
             }
 
             public void DoExpire()
             {
-                for (var i = 0; i < m_Mods.Length; ++i)
+                for (var i = 0; i < _mods.Length; ++i)
                 {
-                    m_Mobile.RemoveResistanceMod(m_Mods[i]);
+                    _mobile.RemoveResistanceMod(_mods[i]);
                 }
 
                 Stop();
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.CorpseSkin);
-                _table.Remove(m_Mobile);
+                BuffInfo.RemoveBuff(_mobile, BuffIcon.CorpseSkin);
+                _table.Remove(_mobile);
             }
 
             protected override void OnTick()
             {
-                m_Mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
+                _mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
                 DoExpire();
             }
         }

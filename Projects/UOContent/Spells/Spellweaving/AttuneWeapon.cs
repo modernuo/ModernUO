@@ -83,10 +83,8 @@ namespace Server.Spells.Spellweaving
             damage -= absorbed;
             defender.MeleeDamageAbsorb -= absorbed;
 
-            defender.SendLocalizedMessage(
-                1075127,
-                $"{absorbed}\t{defender.MeleeDamageAbsorb}"
-            ); // ~1_damage~ point(s) of damage have been absorbed. A total of ~2_remaining~ point(s) of shielding remain.
+            // ~1_damage~ point(s) of damage have been absorbed. A total of ~2_remaining~ point(s) of shielding remain.
+            defender.SendLocalizedMessage(1075127, $"{absorbed}\t{defender.MeleeDamageAbsorb}");
 
             if (defender.MeleeDamageAbsorb <= 0)
             {

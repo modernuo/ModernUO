@@ -60,13 +60,7 @@ namespace Server.Spells.Spellweaving
 
                     BuffInfo.AddBuff(
                         m,
-                        new BuffInfo(
-                            BuffIcon.EssenceOfWind,
-                            1075802,
-                            duration,
-                            m,
-                            $"{fcMalus.ToString()}\t{ssiMalus.ToString()}"
-                        )
+                        new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m, $"{fcMalus}\t{ssiMalus}")
                     );
                 }
 
@@ -82,19 +76,19 @@ namespace Server.Spells.Spellweaving
 
         public static bool IsDebuffed(Mobile m) => _table.ContainsKey(m);
 
-        public static void StopDebuffing(Mobile m, bool message)
+        public static void StopDebuffing(Mobile m)
         {
             if (_table.TryGetValue(m, out var timer))
             {
-                timer.DoExpire(message);
+                timer.DoExpire();
             }
         }
 
         private class EssenceOfWindTimer : Timer
         {
-            private readonly Mobile _defender;
-            internal readonly int _fcMalus;
-            internal readonly int _ssiMalus;
+            private Mobile _defender;
+            internal int _fcMalus;
+            internal int _ssiMalus;
 
             internal EssenceOfWindTimer(Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration) : base(duration)
             {
@@ -108,7 +102,7 @@ namespace Server.Spells.Spellweaving
                 DoExpire();
             }
 
-            internal void DoExpire(bool message = true)
+            internal void DoExpire()
             {
                 Stop();
                 _table.Remove(_defender);

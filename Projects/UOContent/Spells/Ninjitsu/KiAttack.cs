@@ -64,6 +64,8 @@ namespace Server.Spells.Ninjitsu
                 return;
             }
 
+            ClearCurrentMove(attacker);
+
             if (GetBonus(attacker) == 0.0)
             {
                 attacker.SendLocalizedMessage(1063101); // You were too close to your target to cause any additional damage.
@@ -73,15 +75,12 @@ namespace Server.Spells.Ninjitsu
                 attacker.FixedParticles(0x37BE, 1, 5, 0x26BD, 0x0, 0x1, EffectLayer.Waist);
                 attacker.PlaySound(0x510);
 
-                attacker.SendLocalizedMessage(
-                    1063100
-                ); // Your quick flight to your target causes extra damage as you strike!
+                // Your quick flight to your target causes extra damage as you strike!
+                attacker.SendLocalizedMessage(1063100);
                 defender.FixedParticles(0x37BE, 1, 5, 0x26BD, 0, 0x1, EffectLayer.Waist);
 
                 CheckGain(attacker);
             }
-
-            ClearCurrentMove(attacker);
         }
 
         public override void OnClearMove(Mobile from)

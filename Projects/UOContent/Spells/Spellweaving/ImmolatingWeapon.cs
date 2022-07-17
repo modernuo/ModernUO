@@ -14,8 +14,7 @@ namespace Server.Spells.Spellweaving
 
         private static readonly Dictionary<BaseWeapon, ImmolatingWeaponTimer> _table = new();
 
-        public ImmolatingWeaponSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public ImmolatingWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -97,9 +96,9 @@ namespace Server.Spells.Spellweaving
 
         private class ImmolatingWeaponTimer : Timer
         {
-            public readonly Mobile _caster;
-            public readonly int _damage;
-            public readonly BaseWeapon _weapon;
+            public Mobile _caster;
+            public int _damage;
+            public BaseWeapon _weapon;
 
             public ImmolatingWeaponTimer(TimeSpan duration, int damage, Mobile caster, BaseWeapon weapon) : base(duration)
             {

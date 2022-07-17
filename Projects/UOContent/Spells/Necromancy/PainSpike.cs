@@ -90,26 +90,26 @@ namespace Server.Spells.Necromancy
 
         private class InternalTimer : Timer
         {
-            private readonly Mobile m_Mobile;
-            private readonly int m_ToRestore;
+            private Mobile _mobile;
+            private int _toRestore;
 
             public InternalTimer(Mobile m, double toRestore) : base(TimeSpan.FromSeconds(10.0))
             {
 
-                m_Mobile = m;
-                m_ToRestore = (int)toRestore;
+                _mobile = m;
+                _toRestore = (int)toRestore;
             }
 
             protected override void OnTick()
             {
-                _table.Remove(m_Mobile);
+                _table.Remove(_mobile);
 
-                if (m_Mobile.Alive && !m_Mobile.IsDeadBondedPet)
+                if (_mobile.Alive && !_mobile.IsDeadBondedPet)
                 {
-                    m_Mobile.Hits += m_ToRestore;
+                    _mobile.Hits += _toRestore;
                 }
 
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.PainSpike);
+                BuffInfo.RemoveBuff(_mobile, BuffIcon.PainSpike);
             }
         }
     }

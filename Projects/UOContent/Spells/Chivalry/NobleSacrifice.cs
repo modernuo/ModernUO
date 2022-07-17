@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -34,20 +35,19 @@ namespace Server.Spells.Chivalry
         {
             if (CheckSequence())
             {
-                var targets = new List<Mobile>();
+                var eable = Caster.GetMobilesInRange(3);
+                using var pool = PooledRefQueue<Mobile>.Create();
 
-                foreach (var m in Caster.GetMobilesInRange(3)) // TODO: Validate range
+                foreach (var m in eable)
                 {
-                    if (m is BaseCreature creature && creature.IsAnimatedDead)
+                    if (m is not BaseCreature { IsAnimatedDead: true } && Caster != m && m.InLOS(Caster) &&
+                        Caster.CanBeBeneficial(m, false, true) && m is not Golem)
                     {
-                        continue;
-                    }
-
-                    if (Caster != m && m.InLOS(Caster) && Caster.CanBeBeneficial(m, false, true) && m is not Golem)
-                    {
-                        targets.Add(m);
+                        pool.Enqueue(m);
                     }
                 }
+
+                eable.Free();
 
                 Caster.PlaySound(0x244);
                 Caster.FixedParticles(0x3709, 1, 30, 9965, 5, 7, EffectLayer.Waist);
@@ -62,19 +62,18 @@ namespace Server.Spells.Chivalry
                 var sacrifice = false;
 
                 // TODO: Is there really a resurrection chance?
-                var resChance = 0.1 + 0.9 * Caster.Karma / 10000.0d;
+                var resChance = 0.1 + 0.9 * Caster.Karma / 10000;
 
-                for (var i = 0; i < targets.Count; ++i)
+                while (pool.Count > 0)
                 {
-                    var m = targets[i];
+                    var m = pool.Dequeue();
 
                     if (!m.Alive)
                     {
                         if (m.Region?.IsPartOf("Khaldun") == true)
                         {
-                            Caster.SendLocalizedMessage(
-                                1010395
-                            ); // The veil of death in this area is too strong and resists thy efforts to restore life.
+                            // The veil of death in this area is too strong and resists thy efforts to restore life.
+                            Caster.SendLocalizedMessage(1010395);
                         }
                         else if (resChance > Utility.RandomDouble())
                         {
