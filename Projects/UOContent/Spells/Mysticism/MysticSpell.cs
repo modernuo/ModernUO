@@ -97,8 +97,6 @@ namespace Server.Spells.Mysticism
 
         public static double GetBaseSkill(Mobile m) => m.Skills.Mysticism.Value;
 
-        public static double GetBoostSkill(Mobile m) => Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
-
         public virtual bool CheckResisted(Mobile target)
         {
             var n = GetResistPercent(target);

@@ -97,7 +97,7 @@ namespace Server.Spells.Mysticism
                     Caster.BodyMod = 0x2C1;
                     Caster.HueMod = 0;
 
-                    var offset = (int)((GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 24.0);
+                    var offset = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 24.0);
 
                     ResistanceMod[] mods =
                     {
@@ -134,9 +134,9 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
-        public static int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 12.0);
+        public static int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 12.0);
 
-        public static int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 48.0);
+        public static int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetDamageSkill(m)) / 48.0);
 
         public static void RemoveEffects(Mobile m)
         {
