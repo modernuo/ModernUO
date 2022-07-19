@@ -44,7 +44,7 @@ public class GraspingClaw : MonsterAbility
          */
         var effect = -(target.PhysicalResistance * 15 / 100);
 
-        var mod = new ResistanceMod(ResistanceType.Physical, effect);
+        var mod = new ResistanceMod(ResistanceType.Physical, "GraspingClaw", effect);
 
         target.FixedEffect(0x37B9, 10, 5);
         target.AddResistanceMod(mod);

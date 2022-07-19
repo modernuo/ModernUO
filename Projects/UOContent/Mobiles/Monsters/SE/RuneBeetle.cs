@@ -110,7 +110,7 @@ namespace Server.Mobiles
              * End ASCII: "The corruption of your armor has worn off"
              */
 
-            if (m_Table.TryGetValue(defender, out var timer))
+            if (m_Table.Remove(defender, out var timer))
             {
                 timer.DoExpire();
                 defender.SendLocalizedMessage(1070845); // The creature continues to corrupt your armor!
@@ -120,42 +120,59 @@ namespace Server.Mobiles
                 defender.SendLocalizedMessage(1070846); // The creature magically corrupts your armor!
             }
 
-            var mods = new List<ResistanceMod>();
-
             if (Core.ML)
             {
                 if (defender.PhysicalResistance > 0)
                 {
-                    mods.Add(new ResistanceMod(ResistanceType.Physical, -(defender.PhysicalResistance / 2)));
+                    defender.AddResistanceMod(
+                        new ResistanceMod(
+                            ResistanceType.Physical,
+                            "RuneCorruption",
+                            -(defender.PhysicalResistance / 2)
+                        )
+                    );
                 }
 
                 if (defender.FireResistance > 0)
                 {
-                    mods.Add(new ResistanceMod(ResistanceType.Fire, -(defender.FireResistance / 2)));
+                    defender.AddResistanceMod(new ResistanceMod(ResistanceType.Fire, "RuneCorruption", -(defender.FireResistance / 2)));
                 }
 
                 if (defender.ColdResistance > 0)
                 {
-                    mods.Add(new ResistanceMod(ResistanceType.Cold, -(defender.ColdResistance / 2)));
+                    defender.AddResistanceMod(new ResistanceMod(ResistanceType.Cold, "RuneCorruption", -(defender.ColdResistance / 2)));
                 }
 
                 if (defender.PoisonResistance > 0)
                 {
-                    mods.Add(new ResistanceMod(ResistanceType.Poison, -(defender.PoisonResistance / 2)));
+                    defender.AddResistanceMod(
+                        new ResistanceMod(
+                            ResistanceType.Poison,
+                            "RuneCorruption",
+                            -(defender.PoisonResistance / 2)
+                        )
+                    );
                 }
 
                 if (defender.EnergyResistance > 0)
                 {
-                    mods.Add(new ResistanceMod(ResistanceType.Energy, -(defender.EnergyResistance / 2)));
+                    defender.AddResistanceMod(
+                        new ResistanceMod(
+                            ResistanceType.Energy,
+                            "RuneCorruption",
+                            -(defender.EnergyResistance / 2)
+                        )
+                    );
                 }
             }
             else
             {
                 if (defender.PhysicalResistance > 0)
                 {
-                    mods.Add(
+                    defender.AddResistanceMod(
                         new ResistanceMod(
                             ResistanceType.Physical,
+                            "RuneCorruption",
                             defender.PhysicalResistance > 70 ? -70 : -defender.PhysicalResistance
                         )
                     );
@@ -163,9 +180,10 @@ namespace Server.Mobiles
 
                 if (defender.FireResistance > 0)
                 {
-                    mods.Add(
+                    defender.AddResistanceMod(
                         new ResistanceMod(
                             ResistanceType.Fire,
+                            "RuneCorruption",
                             defender.FireResistance > 70 ? -70 : -defender.FireResistance
                         )
                     );
@@ -173,9 +191,10 @@ namespace Server.Mobiles
 
                 if (defender.ColdResistance > 0)
                 {
-                    mods.Add(
+                    defender.AddResistanceMod(
                         new ResistanceMod(
                             ResistanceType.Cold,
+                            "RuneCorruption",
                             defender.ColdResistance > 70 ? -70 : -defender.ColdResistance
                         )
                     );
@@ -183,9 +202,10 @@ namespace Server.Mobiles
 
                 if (defender.PoisonResistance > 0)
                 {
-                    mods.Add(
+                    defender.AddResistanceMod(
                         new ResistanceMod(
                             ResistanceType.Poison,
+                            "RuneCorruption",
                             defender.PoisonResistance > 70 ? -70 : -defender.PoisonResistance
                         )
                     );
@@ -193,23 +213,19 @@ namespace Server.Mobiles
 
                 if (defender.EnergyResistance > 0)
                 {
-                    mods.Add(
+                    defender.AddResistanceMod(
                         new ResistanceMod(
                             ResistanceType.Energy,
+                            "RuneCorruption",
                             defender.EnergyResistance > 70 ? -70 : -defender.EnergyResistance
                         )
                     );
                 }
             }
 
-            for (var i = 0; i < mods.Count; ++i)
-            {
-                defender.AddResistanceMod(mods[i]);
-            }
-
             defender.FixedEffect(0x37B9, 10, 5);
 
-            timer = new ExpireTimer(defender, mods, TimeSpan.FromSeconds(5.0));
+            timer = new ExpireTimer(defender, TimeSpan.FromSeconds(5.0));
             timer.Start();
             m_Table[defender] = timer;
         }
@@ -229,11 +245,12 @@ namespace Server.Mobiles
             {
                 for (var i = 0; i < Skills.Length; ++i)
                 {
-                    Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
+                    var skill = Skills[i];
+                    skill.Cap = Math.Max(100.0, skill.Cap * 0.9);
 
-                    if (Skills[i].Base > Skills[i].Cap)
+                    if (skill.Base > skill.Cap)
                     {
-                        Skills[i].Base = Skills[i].Cap;
+                        skill.Base = skill.Cap;
                     }
                 }
             }
@@ -242,29 +259,20 @@ namespace Server.Mobiles
         private class ExpireTimer : Timer
         {
             private readonly Mobile m_Mobile;
-            private readonly List<ResistanceMod> m_Mods;
 
-            public ExpireTimer(Mobile m, List<ResistanceMod> mods, TimeSpan delay) : base(delay)
-            {
-                m_Mobile = m;
-                m_Mods = mods;
-            }
+            public ExpireTimer(Mobile m, TimeSpan delay) : base(delay) => m_Mobile = m;
 
             public void DoExpire()
             {
-                for (var i = 0; i < m_Mods.Count; ++i)
-                {
-                    m_Mobile.RemoveResistanceMod(m_Mods[i]);
-                }
-
+                m_Mobile.RemoveResistanceMod("RuneCorruption");
                 Stop();
-                m_Table.Remove(m_Mobile);
             }
 
             protected override void OnTick()
             {
                 m_Mobile.SendMessage("The corruption of your armor has worn off");
                 DoExpire();
+                m_Table.Remove(m_Mobile);
             }
         }
     }

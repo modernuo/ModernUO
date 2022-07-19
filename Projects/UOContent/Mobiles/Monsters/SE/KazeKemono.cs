@@ -72,21 +72,20 @@ namespace Server.Mobiles
                  * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(1048 779, 6)" ToLocation: "(1048 779, 6)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
                  */
 
-                if (m_FlurryOfTwigsTable.TryGetValue(defender, out var timer))
+                if (m_FlurryOfTwigsTable.Remove(defender, out var timer))
                 {
                     timer.DoExpire();
                     defender.SendLocalizedMessage(1070851); // The creature lands another blow in your weakened state.
                 }
                 else
                 {
-                    defender.SendLocalizedMessage(
-                        1070850
-                    ); // The creature's flurry of twigs has made you more susceptible to physical attacks!
+                    // The creature's flurry of twigs has made you more susceptible to physical attacks!
+                    defender.SendLocalizedMessage(1070850);
                 }
 
                 var effect = -(defender.PhysicalResistance * 15 / 100);
 
-                var mod = new ResistanceMod(ResistanceType.Physical, effect);
+                var mod = new ResistanceMod(ResistanceType.Physical, "PhysicalResistFlurryOfTwigs", effect);
 
                 defender.FixedEffect(0x37B9, 10, 5);
                 defender.AddResistanceMod(mod);
@@ -99,7 +98,7 @@ namespace Server.Mobiles
 
             if (Utility.RandomDouble() < 0.05)
             {
-                /* Chlorophyl Blast
+                /* Chlorophyll Blast
                  * Start cliloc: 1070827
                  * Effect: Energy resistance -50% for 10 seconds
                  * End cliloc: 1070829
@@ -113,14 +112,13 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    defender.SendLocalizedMessage(
-                        1070827
-                    ); // The creature's attack has made you more susceptible to energy attacks!
+                    // The creature's attack has made you more susceptible to energy attacks!
+                    defender.SendLocalizedMessage(1070827);
                 }
 
                 var effect = -(defender.EnergyResistance / 2);
 
-                var mod = new ResistanceMod(ResistanceType.Energy, effect);
+                var mod = new ResistanceMod(ResistanceType.Energy, "EnergyResistChlorophyllBlast", effect);
 
                 defender.FixedEffect(0x37B9, 10, 5);
                 defender.AddResistanceMod(mod);
@@ -161,7 +159,6 @@ namespace Server.Mobiles
             {
                 m_Mobile.RemoveResistanceMod(m_Mod);
                 Stop();
-                m_Table.Remove(m_Mobile);
             }
 
             protected override void OnTick()
@@ -176,6 +173,7 @@ namespace Server.Mobiles
                 }
 
                 DoExpire();
+                m_Table.Remove(m_Mobile);
             }
         }
     }

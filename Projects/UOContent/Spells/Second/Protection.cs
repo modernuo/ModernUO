@@ -79,8 +79,8 @@ namespace Server.Spells.Second
 
                 var physLoss = -15 + (int)(caster.Skills.Inscribe.Value / 20);
                 var resistLoss = -35 + (int)(caster.Skills.Inscribe.Value / 20);
-                var physMod = new ResistanceMod(ResistanceType.Physical, physLoss);
-                var resistMod = new DefaultSkillMod(SkillName.MagicResist, true, resistLoss);
+                var physMod = new ResistanceMod(ResistanceType.Physical, "PhysicalResistProtectionSpell", physLoss);
+                var resistMod = new DefaultSkillMod(SkillName.MagicResist, "MagicResistProtectionSpell", true, resistLoss);
 
                 _table[target] = Tuple.Create(physMod, resistMod);
                 Registry[target] = 1000; // 100.0% protection from disruption

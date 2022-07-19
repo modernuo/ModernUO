@@ -126,7 +126,7 @@ namespace Server.Mobiles
                 {
                     var s = target.Skills[i];
 
-                    target.AddSkillMod(new TimedSkillMod(s.SkillName, true, s.Base * -0.28, delay));
+                    target.AddSkillMod(new TimedSkillMod(s.SkillName, $"{s.Name}Satyr", true, s.Base * -0.28, delay));
                 }
 
                 var count = (int)Math.Round(delay.TotalSeconds / 1.25);

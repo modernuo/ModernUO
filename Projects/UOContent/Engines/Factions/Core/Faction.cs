@@ -1329,7 +1329,12 @@ namespace Server.Factions
 
                 if (baseValue > 0)
                 {
-                    SkillMod mod = new DefaultSkillMod(sk.SkillName, true, -(baseValue * SkillLossFactor));
+                    SkillMod mod = new DefaultSkillMod(
+                        sk.SkillName,
+                        $"{sk.Name}FactionSkillLoss",
+                        true,
+                        -(baseValue * SkillLossFactor)
+                    );
 
                     mods.Add(mod);
                     mob.AddSkillMod(mod);

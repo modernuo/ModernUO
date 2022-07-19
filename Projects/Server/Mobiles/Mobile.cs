@@ -331,6 +331,9 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     private IWeapon m_Weapon;
 
     private bool m_YellowHealthbar;
+    private List<StatMod> _statMods;
+    private List<ResistanceMod> _resistanceMods;
+    private List<SkillMod> _skillMods;
 
     public Mobile()
     {
@@ -402,8 +405,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     [CommandProperty(AccessLevel.Counselor)]
     public virtual int EnergyResistance => GetResistance(ResistanceType.Energy);
 
-    public List<ResistanceMod> ResistanceMods { get; set; }
-
     public static int MaxPlayerResistance { get; set; } = 70;
 
     public virtual bool NewGuildDisplay => false;
@@ -415,7 +416,9 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
     public object Party { get; set; }
 
-    public HashSet<SkillMod> SkillMods { get; private set; }
+    public List<SkillMod> SkillMods => _skillMods;
+    public List<StatMod> StatMods => _statMods;
+    public List<ResistanceMod> ResistanceMods => _resistanceMods;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int VirtualArmorMod
@@ -1784,11 +1787,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     }
 
     /// <summary>
-    ///     Gets a list of all <see cref="StatMod">StatMod's</see> currently active for the Mobile.
-    /// </summary>
-    public HashSet<StatMod> StatMods { get; private set; }
-
-    /// <summary>
     ///     Gets or sets the base, unmodified, strength of the Mobile. Ranges from 1 to 65000, inclusive.
     ///     <seealso cref="Str" />
     ///     <seealso cref="StatMod" />
@@ -1839,7 +1837,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         get => Math.Clamp(m_Str + GetStatOffset(StatType.Str), 1, 65000);
         set
         {
-            if (StatMods.Count == 0)
+            if (_statMods.Count == 0)
             {
                 RawStr = value;
             }
@@ -1897,7 +1895,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         get => Math.Clamp(m_Dex + GetStatOffset(StatType.Dex), 0, 65000);
         set
         {
-            if (StatMods.Count == 0)
+            if (_statMods.Count == 0)
             {
                 RawDex = value;
             }
@@ -1955,7 +1953,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         get => Math.Clamp(m_Int + GetStatOffset(StatType.Int), 0, 65000);
         set
         {
-            if (StatMods.Count == 0)
+            if (_statMods.Count == 0)
             {
                 RawInt = value;
             }
@@ -3090,24 +3088,74 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         return res;
     }
 
-    public virtual void AddResistanceMod(ResistanceMod toAdd)
+    public virtual void AddResistanceMod(ResistanceMod mod)
     {
-        ResistanceMods ??= new List<ResistanceMod>();
+        if (mod == null)
+        {
+            return;
+        }
 
-        ResistanceMods.Add(toAdd);
+        _resistanceMods ??= new List<ResistanceMod>();
+        _resistanceMods.Add(mod);
+
         UpdateResistances();
     }
 
-    public virtual void RemoveResistanceMod(ResistanceMod toRemove)
+    public virtual ResistanceMod GetResistanceMod(string name)
     {
-        if (ResistanceMods != null)
+        if (_resistanceMods == null || name == null)
         {
-            ResistanceMods.Remove(toRemove);
+            return null;
+        }
 
-            if (ResistanceMods.Count == 0)
+        for (var i = 0; i < _resistanceMods.Count; i++)
+        {
+            var mod = _resistanceMods[i];
+            if (mod.Name == name)
             {
-                ResistanceMods = null;
+                return mod;
             }
+        }
+
+        return null;
+    }
+
+    public virtual void RemoveResistanceMod(string name)
+    {
+        if (_resistanceMods == null || name == null)
+        {
+            return;
+        }
+
+        for (var i = _resistanceMods.Count - 1; i >= 0; i--)
+        {
+            var mod = _resistanceMods[i];
+            if (mod.Name == name)
+            {
+                _resistanceMods.RemoveAt(i);
+            }
+        }
+
+        if (_resistanceMods.Count == 0)
+        {
+            _resistanceMods = null;
+        }
+
+        UpdateResistances();
+    }
+
+    public virtual void RemoveResistanceMod(ResistanceMod mod)
+    {
+        if (_resistanceMods == null)
+        {
+            return;
+        }
+
+        _resistanceMods.Remove(mod);
+
+        if (_resistanceMods.Count == 0)
+        {
+            _resistanceMods = null;
         }
 
         UpdateResistances();
@@ -3128,9 +3176,9 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         Resistances[3] += BasePoisonResistance;
         Resistances[4] += BaseEnergyResistance;
 
-        for (var i = 0; i < ResistanceMods?.Count; ++i)
+        for (var i = 0; i < _resistanceMods.Count; i++)
         {
-            var mod = ResistanceMods[i];
+            var mod = _resistanceMods[i];
             var v = (int)mod.Type;
 
             if (v >= 0 && v < Resistances.Length)
@@ -3362,32 +3410,25 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     {
     }
 
-    public virtual void UpdateSkillMods()
-    {
-        ValidateSkillMods();
-
-        foreach (var mod in SkillMods)
-        {
-            var sk = Skills[mod.Skill];
-            sk?.Update();
-        }
-    }
-
     public virtual void ValidateSkillMods()
     {
-        using var queue = PooledRefQueue<SkillMod>.Create(8);
-        foreach (var mod in SkillMods)
+        if (_skillMods == null)
         {
+            return;
+        }
+
+        for (var i = _skillMods.Count - 1; i >= 0; i--)
+        {
+            var mod = _skillMods[i];
+
             if (!mod.CheckCondition())
             {
-                queue.Enqueue(mod);
+                _skillMods.RemoveAt(i);
+                mod.Owner = null;
+                Skills[mod.Skill]?.Update();
             }
         }
 
-        while (queue.Count > 0)
-        {
-            InternalRemoveSkillMod(queue.Dequeue());
-        }
     }
 
     public virtual void AddSkillMod(SkillMod mod)
@@ -3398,35 +3439,77 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         }
 
         ValidateSkillMods();
+        _skillMods ??= new List<SkillMod>();
+        _skillMods.Add(mod);
+        mod.Owner = this;
+        Skills[mod.Skill]?.Update();
+    }
 
-        if (SkillMods.Add(mod))
+    public virtual SkillMod GetSkillMod(string name)
+    {
+        if (_skillMods == null || name == null)
         {
-            mod.Owner = this;
+            return null;
+        }
 
-            var sk = Skills[mod.Skill];
-            sk?.Update();
+        ValidateSkillMods();
+
+        for (var i = 0; i < _skillMods.Count; i++)
+        {
+            var mod = _skillMods[i];
+            if (mod.Name == name)
+            {
+                return mod;
+            }
+        }
+
+        return null;
+    }
+
+    public virtual void RemoveSkillMod(string name)
+    {
+        if (_skillMods == null || name == null)
+        {
+            return;
+        }
+
+        for (var i = _skillMods.Count - 1; i >= 0; i--)
+        {
+            var mod = _skillMods[i];
+            if (mod.Name == name)
+            {
+                mod.Owner = null;
+                Skills[mod.Skill]?.Update();
+                _skillMods.RemoveAt(i);
+            }
+        }
+
+        ValidateSkillMods();
+
+        if (_skillMods.Count == 0)
+        {
+            _skillMods = null;
         }
     }
 
     public virtual void RemoveSkillMod(SkillMod mod)
     {
-        if (mod == null)
+        if (_skillMods == null || mod == null)
         {
             return;
         }
 
-        InternalRemoveSkillMod(mod);
-        ValidateSkillMods();
-    }
-
-    private void InternalRemoveSkillMod(SkillMod mod)
-    {
-        if (SkillMods.Remove(mod))
+        if (_skillMods.Remove(mod))
         {
             mod.Owner = null;
+            Skills[mod.Skill]?.Update();
+        }
 
-            var sk = Skills[mod.Skill];
-            sk?.Update();
+        ValidateSkillMods();
+
+        if (_skillMods.Count == 0)
+        {
+            _skillMods = null;
         }
     }
 
@@ -6259,8 +6342,8 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
                     m_DexLock = (StatLockType)reader.ReadByte();
                     m_IntLock = (StatLockType)reader.ReadByte();
 
-                    StatMods = new HashSet<StatMod>();
-                    SkillMods = new HashSet<SkillMod>();
+                    _statMods = new List<StatMod>();
+                    _skillMods = new List<SkillMod>();
 
                     if (version < 32)
                     {
@@ -7608,8 +7691,8 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         m_FollowersMax = 5;
         Skills = new Skills(this);
         Items = new List<Item>();
-        StatMods = new HashSet<StatMod>();
-        SkillMods = new HashSet<SkillMod>();
+        _statMods = new List<StatMod>();
+        _skillMods = new List<SkillMod>();
         Map = Map.Internal;
         AutoPageNotify = true;
         Aggressors = new List<AggressorInfo>();
@@ -8293,43 +8376,58 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         return false;
     }
 
-    public bool RemoveStatMod(string name)
+    public virtual void RemoveStatMod(string name)
     {
-        StatMods ??= new HashSet<StatMod>();
-
-        StatMod mod = GetStatMod(name);
-
-        if (mod != null)
+        if (_statMods == null || name == null)
         {
-            StatMods.Remove(mod);
-            CheckStatTimers();
-            Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
-            return true;
+            return;
         }
 
-        return false;
+        for (var i = _statMods.Count - 1; i >= 0; i--)
+        {
+            var mod = _statMods[i];
+            if (mod.Name == name)
+            {
+                _statMods.RemoveAt(i);
+                CheckStatTimers();
+                Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
+            }
+        }
+
+
+        if (_statMods.Count == 0)
+        {
+            _statMods = null;
+        }
     }
 
-    public StatMod GetStatMod(string name)
+    public virtual StatMod GetStatMod(string name)
     {
-        StatMods ??= new HashSet<StatMod>();
-
-        foreach (var check in StatMods)
+        if (_statMods == null || name == null)
         {
-            if (check.Name == name)
+            return null;
+        }
+
+        for (var i = 0; i < _statMods.Count; i++)
+        {
+            var mod = _statMods[i];
+            if (mod.Name == name)
             {
-                return check;
+                return mod;
             }
         }
 
         return null;
     }
 
-    public void AddStatMod(StatMod mod)
+    public virtual void AddStatMod(StatMod mod)
     {
-        RemoveStatMod(mod.Name);
+        if (mod == null)
+        {
+            return;
+        }
 
-        StatMods.Add(mod);
+        _statMods.Add(mod);
         Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
         CheckStatTimers();
     }
@@ -8361,32 +8459,35 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     /// </summary>
     public int GetStatOffset(StatType type)
     {
+        _statMods ??= new List<StatMod>();
+
+        if (_statMods.Count <= 0)
+        {
+            return 0;
+        }
+
         var offset = 0;
 
-        StatMods ??= new HashSet<StatMod>();
-
-        if (StatMods.Count > 0)
+        using var queue = PooledRefQueue<StatMod>.Create(8);
+        for (var i = 0; i < _statMods.Count; i++)
         {
-            using var queue = PooledRefQueue<StatMod>.Create(8);
-            foreach (var mod in StatMods)
+            var mod = _statMods[i];
+            if (mod.HasElapsed())
             {
-                if (mod.HasElapsed())
-                {
-                    queue.Enqueue(mod);
-                }
-                else if ((mod.Type & type) != 0)
-                {
-                    offset += mod.Offset;
-                }
+                queue.Enqueue(mod);
             }
+            else if ((mod.Type & type) != 0)
+            {
+                offset += mod.Offset;
+            }
+        }
 
-            while (queue.Count > 0)
-            {
-                var mod = queue.Dequeue();
-                StatMods.Remove(mod);
-                Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
-                CheckStatTimers();
-            }
+        while (queue.Count > 0)
+        {
+            var mod = queue.Dequeue();
+            _statMods.Remove(mod);
+            Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
+            CheckStatTimers();
         }
 
         return offset;

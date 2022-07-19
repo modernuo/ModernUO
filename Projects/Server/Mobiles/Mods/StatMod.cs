@@ -31,19 +31,15 @@ public partial class StatMod : MobileMod
     private StatType _type;
 
     [SerializableField(3, setter: "private")]
-    private string _name;
-
-    [SerializableField(4, setter: "private")]
     private int _offset;
 
     public StatMod(Mobile owner) : base(owner)
     {
     }
 
-    public StatMod(StatType type, string name, int offset, TimeSpan duration, Mobile owner = null) : base(owner)
+    public StatMod(StatType type, string name, int offset, TimeSpan duration, Mobile owner = null) : base(owner, name)
     {
         _type = type;
-        _name = name;
         _offset = offset;
         _duration = duration;
         _added = Core.Now;

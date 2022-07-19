@@ -590,21 +590,20 @@ namespace Server
 
             if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
             {
-                var serial = Owner.Serial;
-
+                var hashCode = GetHashCode();
                 if (strBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Str, $"{hashCode}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Dex, $"{hashCode}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Int, $"{hashCode}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -1094,7 +1093,7 @@ namespace Server
 
                 m_Mods ??= new HashSet<SkillMod>();
 
-                SkillMod sk = new DefaultSkillMod(skill, true, bonus);
+                SkillMod sk = new DefaultSkillMod(skill, $"{GetHashCode()}{skill}", true, bonus);
                 sk.ObeyCap = true;
                 m.AddSkillMod(sk);
                 m_Mods.Add(sk);
@@ -1346,10 +1345,10 @@ namespace Server
 
         public bool IsEmpty => _names == 0;
 
-        private Item _owner;
+        private IEntity _owner;
 
         [DirtyTrackingEntity]
-        public Item Owner => _owner;
+        public IEntity Owner => _owner;
 
         public int GetValue(int bitmask)
         {
@@ -1483,23 +1482,30 @@ namespace Server
                 }
             }
 
-            if (Owner?.Parent is Mobile m)
+            if (Owner is Item item)
             {
-                m.CheckStatTimers();
-                m.UpdateResistances();
-                m.Delta(
-                    MobileDelta.Stat | MobileDelta.WeaponDamage | MobileDelta.Hits | MobileDelta.Stam |
-                    MobileDelta.Mana
-                );
-
-                if (this is AosSkillBonuses)
+                if (item.Parent is Mobile m)
                 {
-                    ((AosSkillBonuses)this).Remove();
-                    ((AosSkillBonuses)this).AddTo(m);
-                }
-            }
+                    m.CheckStatTimers();
+                    m.UpdateResistances();
+                    m.Delta(
+                        MobileDelta.Stat | MobileDelta.WeaponDamage | MobileDelta.Hits | MobileDelta.Stam |
+                        MobileDelta.Mana
+                    );
 
-            Owner?.InvalidateProperties();
+                    if (this is AosSkillBonuses skillBonuses)
+                    {
+                        skillBonuses.Remove();
+                        skillBonuses.AddTo(m);
+                    }
+                }
+
+                item.InvalidateProperties();
+            }
+            else if (Owner is Mobile mob)
+            {
+                mob.InvalidateProperties();
+            }
         }
 
         private int GetIndex(uint mask)
