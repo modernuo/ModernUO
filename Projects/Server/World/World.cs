@@ -285,9 +285,9 @@ namespace Server
             watch.Stop();
 
             logger.Information("World loaded ({ItemCount} items, {MobileCount} mobiles) ({Duration:F2} seconds)",
-                watch.Elapsed.TotalSeconds,
                 Items.Count,
-                Mobiles.Count
+                Mobiles.Count,
+                watch.Elapsed.TotalSeconds
             );
 
             WorldState = WorldState.Running;
