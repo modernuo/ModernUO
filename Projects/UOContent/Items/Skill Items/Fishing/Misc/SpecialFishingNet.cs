@@ -185,7 +185,7 @@ namespace Server.Items
                     TimeSpan.FromSeconds(1.0),
                     TimeSpan.FromSeconds(1.25),
                     14,
-                    () => DoEffect(from, p, index++)
+                    () => DoEffect(from, p, ++index)
                 );
 
                 from.SendLocalizedMessage(
