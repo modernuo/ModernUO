@@ -1964,7 +1964,7 @@ namespace Server.Items
             }
 
             // Stratics says 50% chance, seems more like 4%..
-            if (m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental |Utility.RandomDouble() < .04)
+            if (m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental || Utility.RandomDouble() < .04)
             {
                 if (MaxRange <= 1 && defender is Slime or AcidElemental)
                 {
