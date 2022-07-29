@@ -752,15 +752,10 @@ namespace Server.Items
             var halfar = ArmorRating / 2.0;
             var absorbed = (int)(halfar + halfar * Utility.RandomDouble());
 
-            // Don't go below zero
-            damageTaken = Math.Min(absorbed, damageTaken);
+            damageTaken = Math.Max(0, damageTaken - absorbed);
 
-            if (absorbed < 2)
-            {
-                absorbed = 2;
-            }
-
-            if (Utility.Random(100) < 25) // 25% chance to lower durability
+            // 25% chance to lower durability
+            if (Utility.Random(4) == 0)
             {
                 if (Core.AOS && ArmorAttributes.SelfRepair > Utility.Random(10))
                 {
@@ -768,16 +763,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    int wear;
-
-                    if (weapon.Type == WeaponType.Bashing)
-                    {
-                        wear = absorbed / 2;
-                    }
-                    else
-                    {
-                        wear = Utility.Random(2);
-                    }
+                    var wear = weapon.Type == WeaponType.Bashing ? Math.Max(1, absorbed / 2) : Utility.Random(2);
 
                     if (wear > 0 && _maxHitPoints > 0)
                     {
@@ -800,11 +786,8 @@ namespace Server.Items
 
                                 if (Parent is Mobile mobile)
                                 {
-                                    mobile.LocalOverheadMessage(
-                                        MessageType.Regular,
-                                        0x3B2,
-                                        1061121
-                                    ); // Your equipment is severely damaged.
+                                    // Your equipment is severely damaged.
+                                    mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
                                 }
                             }
                             else

@@ -1963,10 +1963,11 @@ namespace Server.Items
                 }
             }
 
+            var isAcidMonster = m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental;
             // Stratics says 50% chance, seems more like 4%..
-            if (m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental |Utility.RandomDouble() < .04)
+            if (isAcidMonster || Utility.RandomDouble() < 0.04)
             {
-                if (MaxRange <= 1 && defender is Slime or AcidElemental)
+                if (isAcidMonster)
                 {
                     attacker.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500263); // *Acid blood scars your weapon!*
                 }
