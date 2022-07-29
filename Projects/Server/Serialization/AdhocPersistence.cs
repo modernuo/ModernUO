@@ -58,9 +58,14 @@ public static class AdhocPersistence
     {
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         var file = new FileInfo(fullPath);
-        var fileLength = file.Length;
 
-        if (!file.Exists || fileLength == 0)
+        if (!file.Exists)
+        {
+            return;
+        }
+
+        var fileLength = file.Length;
+        if (fileLength == 0)
         {
             return;
         }
