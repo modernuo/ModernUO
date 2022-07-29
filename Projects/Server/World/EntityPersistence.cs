@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -177,12 +178,13 @@ namespace Server
 
             string dataPath = Path.Combine(path, indexType, $"{indexType}.bin");
 
-            if (!File.Exists(dataPath))
+            if (!File.Exists(dataPath) || new FileInfo(dataPath).Length == 0)
             {
                 return;
             }
 
-            using FileStream bin = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var mmf = MemoryMappedFile.CreateFromFile(dataPath, FileMode.Open);
+            using var stream = mmf.CreateViewStream();
             BufferReader br = null;
 
             var deleteAllFailures = false;
@@ -192,7 +194,7 @@ namespace Server
                 T t = entry.Entity;
 
                 var position = entry.Position;
-                bin.Seek(position, SeekOrigin.Begin);
+                stream.Seek(position, SeekOrigin.Begin);
 
                 // Skip this entry
                 if (t == null)
@@ -216,7 +218,7 @@ namespace Server
                     br.Reset(buffer, out _);
                 }
 
-                bin.Read(buffer.AsSpan());
+                stream.Read(buffer.AsSpan());
                 string error;
 
                 try
