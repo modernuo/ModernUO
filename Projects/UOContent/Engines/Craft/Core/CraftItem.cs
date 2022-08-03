@@ -881,7 +881,7 @@ namespace Server.Engines.Craft
                 chance += talisman.SuccessBonus / 100.0;
             }
 
-            if (allRequiredSkills && valMainSkill >= maxMainSkill)
+            if (allRequiredSkills && valMainSkill == maxMainSkill)
             {
                 chance = 1.0;
             }
