@@ -909,7 +909,7 @@ namespace Server.Engines.Craft
 
             var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
 
-            if (!allRequiredSkills || chance < 0.0)
+            if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
                 from.SendGump(
