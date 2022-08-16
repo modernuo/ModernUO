@@ -16,69 +16,37 @@
 using System;
 using System.IO;
 
-namespace Server
+namespace Server;
+
+public static class GenericPersistence
 {
-    public static class GenericPersistence
+    public static void Register(
+        string name,
+        Action<IGenericWriter> serializer,
+        Action<IGenericReader> deserializer,
+        int priority = Persistence.DefaultPriority
+    )
     {
-        public static void Register(
-            string name,
-            Action<IGenericWriter> serializer,
-            Action<IGenericReader> deserializer,
-            int priority = Persistence.DefaultPriority
-        )
+        BufferWriter saveBuffer = null;
+
+        void Serialize()
         {
-            BufferWriter saveBuffer = null;
+            saveBuffer ??= new BufferWriter(true);
+            saveBuffer.Seek(0, SeekOrigin.Begin);
 
-            void Serialize()
-            {
-                saveBuffer ??= new BufferWriter(true);
-                saveBuffer.Seek(0, SeekOrigin.Begin);
-
-                serializer(saveBuffer);
-            }
-
-            void WriterSnapshot(string savePath)
-            {
-                var path = Path.Combine(savePath, name);
-
-                PathUtility.EnsureDirectory(path);
-
-                string binPath = Path.Combine(path, $"{name}.bin");
-                using var bin = new BinaryFileWriter(binPath, true);
-
-                saveBuffer!.Resize((int)saveBuffer.Position);
-                bin.Write(saveBuffer.Buffer);
-            }
-
-            void Deserialize(string savePath)
-            {
-                var path = Path.Combine(savePath, name);
-
-                PathUtility.EnsureDirectory(path);
-
-                string binPath = Path.Combine(path, $"{name}.bin");
-
-                if (!File.Exists(binPath))
-                {
-                    return;
-                }
-
-                try
-                {
-                    using FileStream fs = new FileStream(binPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    using var br = new BinaryFileReader(fs);
-                    deserializer(br);
-                }
-                catch (Exception e)
-                {
-                    Utility.PushColor(ConsoleColor.Red);
-                    Console.WriteLine($"***** Bad deserialize of {name} *****");
-                    Console.WriteLine(e.ToString());
-                    Utility.PopColor();
-                }
-            }
-
-            Persistence.Register(name, Serialize, WriterSnapshot, Deserialize, priority);
+            serializer(saveBuffer);
         }
+
+        void WriterSnapshot(string savePath)
+        {
+            string binPath = Path.Combine(savePath, name, $"{name}.bin");
+            var buffer = saveBuffer!.Buffer.AsSpan(0, (int)saveBuffer.Position);
+            AdhocPersistence.WriteSnapshot(binPath, buffer);
+        }
+
+        void Deserialize(string savePath) =>
+            AdhocPersistence.Deserialize(Path.Combine(savePath, name, $"{name}.bin"), deserializer);
+
+        Persistence.Register(name, Serialize, WriterSnapshot, Deserialize, priority);
     }
 }
