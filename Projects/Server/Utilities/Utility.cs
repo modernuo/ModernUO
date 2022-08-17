@@ -625,7 +625,7 @@ public static class Utility
         array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
 
     public static SkillName RandomSkill() =>
-        _allSkills[Random(_allSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
+        _allSkills[Random(_allSkills.Length - (Core.ML ? 0 : Core.SE ? 2 : Core.AOS ? 4 : 7))];
 
     public static SkillName RandomCombatSkill() => m_CombatSkills.RandomElement();
 
