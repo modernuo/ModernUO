@@ -395,38 +395,31 @@ namespace Server.Spells
                 return;
             }
 
-            if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
+            if (State == SpellState.None || !firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
             {
                 return;
             }
 
+            var wasCasting = IsCasting; // Copy SpellState before resetting it to none
             State = SpellState.None;
             Caster.Spell = null;
 
-            if (State == SpellState.Casting)
-            {
-                OnDisturb(type, true);
+            OnDisturb(type, wasCasting);
 
+            if (wasCasting)
+            {
                 _castTimer?.Stop();
                 _animTimer?.Stop();
-
-                if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
-                {
-                    DoHurtFizzle();
-                }
-
                 Caster.NextSpellTime = Core.TickCount + (int)GetDisturbRecovery().TotalMilliseconds;
             }
-            else if (State == SpellState.Sequencing)
+            else
             {
-                OnDisturb(type, false);
-
                 Target.Cancel(Caster);
+            }
 
-                if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
-                {
-                    DoHurtFizzle();
-                }
+            if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
+            {
+                DoHurtFizzle();
             }
         }
 
