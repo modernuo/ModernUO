@@ -400,11 +400,11 @@ namespace Server.Spells
                 return;
             }
 
-            State = SpellState.None;
-            Caster.Spell = null;
-
             if (State == SpellState.Casting)
             {
+                State = SpellState.None;
+                Caster.Spell = null;
+
                 OnDisturb(type, true);
 
                 _castTimer?.Stop();
@@ -419,6 +419,9 @@ namespace Server.Spells
             }
             else if (State == SpellState.Sequencing)
             {
+                State = SpellState.None;
+                Caster.Spell = null;
+
                 OnDisturb(type, false);
 
                 Target.Cancel(Caster);
