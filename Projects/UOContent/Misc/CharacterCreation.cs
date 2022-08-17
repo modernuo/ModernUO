@@ -357,7 +357,7 @@ public static class CharacterCreation
         {
             var (name, value) = skills[i];
             var notValid = value is < 0 or > 50 || !_allowedStartingSkills.Contains(name) ||
-                           !Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry ||
+                           !Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus ||
                            !Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido ||
                            Core.SA && (raceFlag == Race.AllowGargoylesOnly && name == SkillName.Archery ||
                                        raceFlag != Race.AllowGargoylesOnly && name == SkillName.Throwing) ||
