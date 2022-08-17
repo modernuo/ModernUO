@@ -400,36 +400,29 @@ namespace Server.Spells
                 return;
             }
 
-            if (State == SpellState.Casting)
+            if (State == SpellState.None)
+                return;
+
+            var wasCasting = IsCasting; //need to take a copy SpellState will be reset to none
+            State = SpellState.None;
+            Caster.Spell = null;
+
+            OnDisturb(type, wasCasting);
+
+            if (wasCasting)
             {
-                State = SpellState.None;
-                Caster.Spell = null;
-
-                OnDisturb(type, true);
-
                 _castTimer?.Stop();
                 _animTimer?.Stop();
-
-                if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
-                {
-                    DoHurtFizzle();
-                }
-
                 Caster.NextSpellTime = Core.TickCount + (int)GetDisturbRecovery().TotalMilliseconds;
             }
-            else if (State == SpellState.Sequencing)
+            else
             {
-                State = SpellState.None;
-                Caster.Spell = null;
-
-                OnDisturb(type, false);
-
                 Target.Cancel(Caster);
+            }
 
-                if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
-                {
-                    DoHurtFizzle();
-                }
+            if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
+            {
+                DoHurtFizzle();
             }
         }
 
