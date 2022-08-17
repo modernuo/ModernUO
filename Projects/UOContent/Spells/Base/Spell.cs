@@ -395,15 +395,12 @@ namespace Server.Spells
                 return;
             }
 
-            if (!firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
+            if (State == SpellState.None || !firstCircle && !Core.AOS && (this as MagerySpell)?.Circle == SpellCircle.First)
             {
                 return;
             }
 
-            if (State == SpellState.None)
-                return;
-
-            var wasCasting = IsCasting; //need to take a copy SpellState will be reset to none
+            var wasCasting = IsCasting; // Copy SpellState before resetting it to none
             State = SpellState.None;
             Caster.Spell = null;
 
