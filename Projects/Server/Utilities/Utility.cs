@@ -80,6 +80,7 @@ public static class Utility
         SkillName.Bushido,
         SkillName.Ninjitsu,
         SkillName.Spellweaving,
+        // TODO: Update RandomSkill once these are implemented!
         // SkillName.Mysticism,
         // SkillName.Imbuing,
         SkillName.Throwing
@@ -626,13 +627,14 @@ public static class Utility
 
     public static SkillName RandomSkill()
     {
+        // TODO: Add 2 to each entry for Mysticism and Imbuing, once they are uncommented on _allSkills.
         var offset = Core.Expansion switch
         {
             >= Expansion.SA => 0,
-            Expansion.ML    => 3,
-            Expansion.SE    => 4,
-            Expansion.AOS   => 6,
-            _               => 9
+            Expansion.ML    => 1,
+            Expansion.SE    => 2,
+            Expansion.AOS   => 4,
+            _               => 7
         };
 
         return _allSkills[Random(_allSkills.Length - offset)];
