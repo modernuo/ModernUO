@@ -7,12 +7,16 @@ namespace Server.Items
     [SerializationGenerator(0, false)]
     public partial class SHTeleComponent : AddonComponent
     {
-        private bool _active;
-        private SHTeleComponent _teleDest;
-
         [SerializableField(2)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private Point3D _teleOffset;
+
+        //The extra custom processing done in the property setters causes deserialisation to fail.
+        //These hidden private members will auto generate properties with no processing which we can point to.
+        [SerializableField(0, getter: "private", setter: "private")]
+        private bool _rawActive;
+        [SerializableField(1, getter: "private", setter: "private")]
+        private SHTeleComponent _rawTeleDest;
 
         [Constructible]
         public SHTeleComponent(int itemID = 0x1775) : this(itemID, new Point3D(0, 0, 0))
@@ -25,22 +29,17 @@ namespace Server.Items
             Movable = false;
             Hue = 1;
 
-            _active = true;
+            _rawActive = true;
             TeleOffset = offset;
         }
 
-        [SerializableField(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Active
         {
-            get => _active;
+            get => RawActive;
             set
             {
-                if (value != _active)
-                {
-                    _active = value;
-                    this.MarkDirty();
-                }
+                RawActive = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -49,18 +48,13 @@ namespace Server.Items
             }
         }
 
-        [SerializableField(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public SHTeleComponent TeleDest
         {
-            get => _teleDest;
+            get => RawTeleDest;
             set
             {
-                if (value != _teleDest)
-                {
-                    _teleDest = value;
-                    this.MarkDirty();
-                }
+                RawTeleDest = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -80,15 +74,15 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile m)
         {
-            if (!_active || _teleDest?.Deleted != false || _teleDest.Map == Map.Internal)
+            if (!_rawActive || _rawTeleDest?.Deleted != false || _rawTeleDest.Map == Map.Internal)
             {
                 return;
             }
 
             if (m.InRange(this, 3))
             {
-                var map = _teleDest.Map;
-                var p = _teleDest.TelePoint;
+                var map = _rawTeleDest.Map;
+                var p = _rawTeleDest.TelePoint;
 
                 BaseCreature.TeleportPets(m, p, map);
 
