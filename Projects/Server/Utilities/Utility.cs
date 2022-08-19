@@ -80,6 +80,7 @@ public static class Utility
         SkillName.Bushido,
         SkillName.Ninjitsu,
         SkillName.Spellweaving,
+        // TODO: Update RandomSkill once these are implemented!
         // SkillName.Mysticism,
         // SkillName.Imbuing,
         SkillName.Throwing
@@ -624,8 +625,20 @@ public static class Utility
     public static object GetArrayCap(Array array, int index, object emptyValue = null) =>
         array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
 
-    public static SkillName RandomSkill() =>
-        _allSkills[Random(_allSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
+    public static SkillName RandomSkill()
+    {
+        // TODO: Add 2 to each entry for Mysticism and Imbuing, once they are uncommented on _allSkills.
+        var offset = Core.Expansion switch
+        {
+            >= Expansion.SA => 0,
+            Expansion.ML    => 1,
+            Expansion.SE    => 2,
+            Expansion.AOS   => 4,
+            _               => 7
+        };
+
+        return _allSkills[Random(_allSkills.Length - offset)];
+    }
 
     public static SkillName RandomCombatSkill() => m_CombatSkills.RandomElement();
 
