@@ -2590,6 +2590,8 @@ public abstract class BaseAI
 
         Mobile newFocusMob = null;
         var val = double.MinValue;
+        Mobile enemySummonMob = null;
+        var enemySummonVal = double.MinValue;
 
         var eable = map.GetMobilesInRange(m_Mobile.Location, iRange);
 
@@ -2720,8 +2722,14 @@ public abstract class BaseAI
             }
 
             var theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
-
-            if (theirVal > val && m_Mobile.InLOS(m))
+            //The summon is targeted when nothing else around. Otherwise this monster enters idle mode, 
+            //which players can abuse by casting EVs offscreen and this monster wont fight back
+            if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
+            {
+                enemySummonMob = m;
+                enemySummonVal = theirVal;
+            }
+            else if (theirVal > val && m_Mobile.InLOS(m))
             {
                 newFocusMob = m;
                 val = theirVal;
@@ -2730,7 +2738,7 @@ public abstract class BaseAI
 
         eable.Free();
 
-        m_Mobile.FocusMob = newFocusMob;
+        m_Mobile.FocusMob = newFocusMob ?? enemySummonMob;
         return m_Mobile.FocusMob != null;
     }
 
