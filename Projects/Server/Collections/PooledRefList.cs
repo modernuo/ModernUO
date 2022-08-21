@@ -1116,7 +1116,7 @@ public ref struct PooledRefList<T>
                 {
                     ThrowEnumerationNotStartedOrEnded();
                 }
-                return Current;
+                return _current;
             }
         }
 
