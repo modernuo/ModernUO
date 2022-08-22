@@ -866,7 +866,7 @@ namespace Server.Items
                 if (m_Count > 1 && m_Dirt1 == null)
                 {
                     m_Dirt1 = new TreasureChestDirt();
-                    m_Dirt1.MoveToWorld(m_Location, m_Map);
+                    Dirt1.MoveToWorld(new Point3D(m_Location.X + 1, m_Location.Y, m_Location.Z), m_Map);
 
                     m_Dirt2 = new TreasureChestDirt();
                     m_Dirt2.MoveToWorld(new Point3D(m_Location.X, m_Location.Y - 1, m_Location.Z), m_Map);
