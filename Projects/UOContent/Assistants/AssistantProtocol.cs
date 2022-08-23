@@ -4,6 +4,7 @@ public static class AssistantProtocol
 {
     private static PacketHandler[] _handlers;
 
+    [CallPriority(10)]
     public static void Configure()
     {
         _handlers = ProtocolExtensions<AssistantsProtocolInfo>.Register(new AssistantsProtocolInfo());
