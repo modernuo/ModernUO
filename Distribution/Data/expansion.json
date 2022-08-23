@@ -381,7 +381,7 @@
       "TOL": false,
       "EJ": false
     },
-    "MobileStatusVersion": 4
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Samurai Empire",
@@ -445,7 +445,7 @@
       "TOL": false,
       "EJ": false
     },
-    "MobileStatusVersion": 4
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Mondain's Legacy",
@@ -509,7 +509,7 @@
       "TOL": false,
       "EJ": false
     },
-    "MobileStatusVersion": 5
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Stygian Abyss",
@@ -573,7 +573,7 @@
       "TOL": false,
       "EJ": false
     },
-    "MobileStatusVersion": 5
+    "MobileStatusVersion": 6
   },
   {
     "Name": "High Seas",
