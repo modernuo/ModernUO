@@ -129,6 +129,7 @@ namespace Server.Engines.Craft
 
             GroupNameNumber = groupName;
             NameNumber = name;
+            GraphicItemId = ItemIDOf(type);
 
             RequiredBeverage = BeverageType.Water;
         }
@@ -168,6 +169,8 @@ namespace Server.Engines.Craft
         public string NameString { get; }
 
         public int NameNumber { get; }
+
+        public int GraphicItemId { get; }
 
         public List<CraftRes> Resources { get; }
 
