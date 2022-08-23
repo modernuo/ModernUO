@@ -145,10 +145,10 @@ namespace Server.Spells.Mysticism
         {
             var curseLevel = 0;
 
-            // if (SleepSpell.EndSleep(m))
-            // {
-            //     curseLevel += 2;
-            // }
+            if (SleepSpell.EndSleep(m))
+            {
+                curseLevel += 2;
+            }
 
             if (EvilOmenSpell.EndEffect(m))
             {

@@ -1,4 +1,4 @@
-﻿using Server.Collections;
+using Server.Collections;
 
 namespace Server.Spells.Mysticism
 {
