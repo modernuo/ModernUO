@@ -705,9 +705,8 @@ namespace Server.Items
                     {
                         if (from.Location.X == x && from.Location.Y == y)
                         {
-                            from.SendLocalizedMessage(
-                                503030
-                            ); // The chest can't be dug up because you are standing on top of it.
+                            // The chest can't be dug up because you are standing on top of it.
+                            from.SendLocalizedMessage(503030);
                         }
                         else if (map != null)
                         {
@@ -715,9 +714,8 @@ namespace Server.Items
 
                             if (!map.CanFit(x, y, z, 16, true))
                             {
-                                from.SendLocalizedMessage(
-                                    503021
-                                ); // You have found the treasure chest but something is keeping it from being dug up.
+                                // You have found the treasure chest but something is keeping it from being dug up.
+                                from.SendLocalizedMessage(503021);
                             }
                             else if (from.BeginAction<TreasureMap>())
                             {
@@ -811,12 +809,8 @@ namespace Server.Items
                 m_From.EndAction<TreasureMap>();
 
                 m_Chest?.Delete();
-
-                if (m_Dirt1 != null)
-                {
-                    m_Dirt1.Delete();
-                    m_Dirt2.Delete();
-                }
+                m_Dirt1?.Delete();
+                m_Dirt2?.Delete();
             }
 
             protected override void OnTick()
@@ -830,14 +824,13 @@ namespace Server.Items
 
                 if (m_LastMoveTime != m_From.LastMoveTime)
                 {
-                    m_From.SendLocalizedMessage(
-                        503023
-                    ); // You cannot move around while digging up treasure. You will need to start digging anew.
+                    // You cannot move around while digging up treasure. You will need to start digging anew.
+                    m_From.SendLocalizedMessage(503023);
                     Terminate();
                     return;
                 }
 
-                var z = m_Chest != null ? m_Chest.Z + m_Chest.ItemData.Height : int.MinValue;
+                var z = m_Chest?.Z + m_Chest?.ItemData.Height ?? int.MinValue;
                 var height = 16;
 
                 if (z > m_Location.Z)
@@ -851,9 +844,8 @@ namespace Server.Items
 
                 if (!m_Map.CanFit(m_Location.X, m_Location.Y, z, height, true, true, false))
                 {
-                    m_From.SendLocalizedMessage(
-                        503024
-                    ); // You stop digging because something is directly on top of the treasure chest.
+                    // You stop digging because something is directly on top of the treasure chest.
+                    m_From.SendLocalizedMessage(503024);
                     Terminate();
                     return;
                 }
@@ -866,7 +858,7 @@ namespace Server.Items
                 if (m_Count > 1 && m_Dirt1 == null)
                 {
                     m_Dirt1 = new TreasureChestDirt();
-                    Dirt1.MoveToWorld(new Point3D(m_Location.X + 1, m_Location.Y, m_Location.Z), m_Map);
+                    m_Dirt1.MoveToWorld(m_Location, m_Map);
 
                     m_Dirt2 = new TreasureChestDirt();
                     m_Dirt2.MoveToWorld(new Point3D(m_Location.X, m_Location.Y - 1, m_Location.Z), m_Map);
