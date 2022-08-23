@@ -354,9 +354,8 @@ namespace Server.Items
             */
             else if (m_Decoder != from && !HasRequiredSkill(from))
             {
-                from.SendLocalizedMessage(
-                    503031
-                ); // You did not decode this map and have no clue where to look for the treasure.
+                // You did not decode this map and have no clue where to look for the treasure.
+                from.SendLocalizedMessage(503031);
             }
             else if (!from.CanBeginAction<TreasureMap>())
             {
@@ -486,17 +485,14 @@ namespace Server.Items
             }
             else if (m_Decoder != from && !HasRequiredSkill(from))
             {
-                from.SendLocalizedMessage(
-                    503031
-                ); // You did not decode this map and have no clue where to look for the treasure.
+                // You did not decode this map and have no clue where to look for the treasure.
+                from.SendLocalizedMessage(503031);
                 return;
             }
             else
             {
-                SendLocalizedMessageTo(
-                    from,
-                    503017
-                ); // The treasure is marked by the red pin. Grab a shovel and go dig it up!
+                // The treasure is marked by the red pin. Grab a shovel and go dig it up!
+                SendLocalizedMessageTo(from, 503017);
             }
 
             from.PlaySound(0x249);
@@ -654,9 +650,8 @@ namespace Server.Items
                 */
                 else if (m_Map.m_Decoder != from && !m_Map.HasRequiredSkill(from))
                 {
-                    from.SendLocalizedMessage(
-                        503031
-                    ); // You did not decode this map and have no clue where to look for the treasure.
+                    // You did not decode this map and have no clue where to look for the treasure.
+                    from.SendLocalizedMessage(503031);
                 }
                 else if (!from.CanBeginAction<TreasureMap>())
                 {
@@ -676,25 +671,15 @@ namespace Server.Items
 
                     var targ3D = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
 
-                    int maxRange;
                     var skillValue = from.Skills.Mining.Value;
 
-                    if (skillValue >= 100.0)
+                    var maxRange = skillValue switch
                     {
-                        maxRange = 4;
-                    }
-                    else if (skillValue >= 81.0)
-                    {
-                        maxRange = 3;
-                    }
-                    else if (skillValue >= 51.0)
-                    {
-                        maxRange = 2;
-                    }
-                    else
-                    {
-                        maxRange = 1;
-                    }
+                        >= 100.0 => 4,
+                        >= 81.0  => 3,
+                        >= 51.0  => 2,
+                        _        => 1
+                    };
 
                     var loc = m_Map.ChestLocation;
                     int x = loc.X, y = loc.Y;
@@ -705,9 +690,8 @@ namespace Server.Items
                     {
                         if (from.Location.X == x && from.Location.Y == y)
                         {
-                            from.SendLocalizedMessage(
-                                503030
-                            ); // The chest can't be dug up because you are standing on top of it.
+                            // The chest can't be dug up because you are standing on top of it.
+                            from.SendLocalizedMessage(503030);
                         }
                         else if (map != null)
                         {
@@ -715,9 +699,8 @@ namespace Server.Items
 
                             if (!map.CanFit(x, y, z, 16, true))
                             {
-                                from.SendLocalizedMessage(
-                                    503021
-                                ); // You have found the treasure chest but something is keeping it from being dug up.
+                                // You have found the treasure chest but something is keeping it from being dug up.
+                                from.SendLocalizedMessage(503021);
                             }
                             else if (from.BeginAction<TreasureMap>())
                             {
@@ -811,12 +794,8 @@ namespace Server.Items
                 m_From.EndAction<TreasureMap>();
 
                 m_Chest?.Delete();
-
-                if (m_Dirt1 != null)
-                {
-                    m_Dirt1.Delete();
-                    m_Dirt2.Delete();
-                }
+                m_Dirt1?.Delete();
+                m_Dirt2?.Delete();
             }
 
             protected override void OnTick()
@@ -830,14 +809,13 @@ namespace Server.Items
 
                 if (m_LastMoveTime != m_From.LastMoveTime)
                 {
-                    m_From.SendLocalizedMessage(
-                        503023
-                    ); // You cannot move around while digging up treasure. You will need to start digging anew.
+                    // You cannot move around while digging up treasure. You will need to start digging anew.
+                    m_From.SendLocalizedMessage(503023);
                     Terminate();
                     return;
                 }
 
-                var z = m_Chest != null ? m_Chest.Z + m_Chest.ItemData.Height : int.MinValue;
+                var z = m_Chest?.Z + m_Chest?.ItemData.Height ?? int.MinValue;
                 var height = 16;
 
                 if (z > m_Location.Z)
@@ -851,9 +829,8 @@ namespace Server.Items
 
                 if (!m_Map.CanFit(m_Location.X, m_Location.Y, z, height, true, true, false))
                 {
-                    m_From.SendLocalizedMessage(
-                        503024
-                    ); // You stop digging because something is directly on top of the treasure chest.
+                    // You stop digging because something is directly on top of the treasure chest.
+                    m_From.SendLocalizedMessage(503024);
                     Terminate();
                     return;
                 }
