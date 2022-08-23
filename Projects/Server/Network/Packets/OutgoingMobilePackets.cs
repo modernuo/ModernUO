@@ -39,13 +39,6 @@ public static class OutgoingMobilePackets
     public const int MobileStatusMLLength = 91;
     public const int MobileStatusHSLength = 121;
 
-    public static bool ExtendedStatus { get; private set; } = true;
-
-    public static void Configure()
-    {
-        ExtendedStatus = ServerConfiguration.GetSetting("client.showExtendedStatus", true);
-    }
-
     public static void CreateBondedStatus(Span<byte> buffer, Serial serial, bool bonded)
     {
         if (buffer[0] != 0)
@@ -467,25 +460,31 @@ public static class OutgoingMobilePackets
             version = 0;
             length = MobileStatusCompactLength;
         }
-        else if (ExtendedStatus && ns.ExtendedStatus)
-        {
-            version = 6;
-            length = MobileStatusHSLength;
-        }
-        else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
-        {
-            version = 5;
-            length = MobileStatusMLLength;
-        }
-        else if (Core.AOS)
-        {
-            version = 4;
-            length = MobileStatusAOSLength;
-        }
         else
         {
-            version = 3;
-            length = MobileStatusLength;
+            var maxVersion = ExpansionInfo.CoreExpansion.MobileStatusVersion;
+            var nsExpansion = (Expansion)ns.ExpansionInfo.ID;
+
+            if (maxVersion >= 6 && nsExpansion >= Expansion.HS && ns.ExtendedStatus)
+            {
+                version = 6;
+                length = MobileStatusHSLength;
+            }
+            else if (maxVersion >= 5 && nsExpansion >= Expansion.ML)
+            {
+                version = 5;
+                length = MobileStatusMLLength;
+            }
+            else if (maxVersion >= 4 && nsExpansion >= Expansion.AOS)
+            {
+                version = 4;
+                length = MobileStatusAOSLength;
+            }
+            else
+            {
+                version = 3;
+                length = MobileStatusLength;
+            }
         }
 
         Span<byte> buffer = stackalloc byte[length];
