@@ -232,11 +232,23 @@ namespace Server.Tests.Network
         }
 
         [Theory]
-        [InlineData(ProtocolChanges.Version70610)]
-        [InlineData(ProtocolChanges.Version400a)]
-        [InlineData(ProtocolChanges.Version502b)]
-        public void TestMobileStatusExtendedSelf(ProtocolChanges changes)
+        [InlineData(ProtocolChanges.Version70610, "7.0.61.0", ClientFlags.TerMur, Expansion.HS, 6)]
+        [InlineData(ProtocolChanges.Version400a, "4.0.0a", ClientFlags.Malas, Expansion.AOS, 4)]
+        [InlineData(ProtocolChanges.Version502b, "5.0.2b", ClientFlags.Malas, Expansion.ML, 5)]
+        public void TestMobileStatusExtendedSelf(
+            ProtocolChanges changes,
+            string version,
+            ClientFlags clientFlags,
+            Expansion expansion,
+            int mobileStatusVersion
+        )
         {
+            var expansionInfo = ExpansionInfo.GetInfo(Core.Expansion);
+            var oldExpansion = Core.Expansion;
+            var oldVersion = expansionInfo.MobileStatusVersion;
+            Core.Expansion = expansion;
+            ExpansionInfo.GetInfo(Core.Expansion).MobileStatusVersion = mobileStatusVersion;
+
             var m = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
             m.DefaultMobileInit();
             m.Str = 50;
@@ -248,12 +260,16 @@ namespace Server.Tests.Network
 
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
+            ns.Version = new ClientVersion(version);
+            ns.Flags = clientFlags;
 
             var expected = new MobileStatusExtended(m, ns).Compile();
             ns.SendMobileStatus(m, m);
 
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            Core.Expansion = oldExpansion;
+            expansionInfo.MobileStatusVersion = oldVersion;
         }
 
         [Theory]

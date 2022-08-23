@@ -562,6 +562,8 @@ public static class OutgoingMobilePackets
 
         if (version >= 6)
         {
+            // TODO: Once the new statuses are added, the length should be capped by expansion.
+            // This will allow newer clients to see AOS stats, but not newer ones.
             for (var i = 0; i < 15; ++i)
             {
                 writer.Write((short)beheld.GetAOSStatus(i));
