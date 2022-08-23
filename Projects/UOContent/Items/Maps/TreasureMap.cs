@@ -354,9 +354,8 @@ namespace Server.Items
             */
             else if (m_Decoder != from && !HasRequiredSkill(from))
             {
-                from.SendLocalizedMessage(
-                    503031
-                ); // You did not decode this map and have no clue where to look for the treasure.
+                // You did not decode this map and have no clue where to look for the treasure.
+                from.SendLocalizedMessage(503031);
             }
             else if (!from.CanBeginAction<TreasureMap>())
             {
@@ -486,17 +485,14 @@ namespace Server.Items
             }
             else if (m_Decoder != from && !HasRequiredSkill(from))
             {
-                from.SendLocalizedMessage(
-                    503031
-                ); // You did not decode this map and have no clue where to look for the treasure.
+                // You did not decode this map and have no clue where to look for the treasure.
+                from.SendLocalizedMessage(503031);
                 return;
             }
             else
             {
-                SendLocalizedMessageTo(
-                    from,
-                    503017
-                ); // The treasure is marked by the red pin. Grab a shovel and go dig it up!
+                // The treasure is marked by the red pin. Grab a shovel and go dig it up!
+                SendLocalizedMessageTo(from, 503017);
             }
 
             from.PlaySound(0x249);
@@ -654,9 +650,8 @@ namespace Server.Items
                 */
                 else if (m_Map.m_Decoder != from && !m_Map.HasRequiredSkill(from))
                 {
-                    from.SendLocalizedMessage(
-                        503031
-                    ); // You did not decode this map and have no clue where to look for the treasure.
+                    // You did not decode this map and have no clue where to look for the treasure.
+                    from.SendLocalizedMessage(503031);
                 }
                 else if (!from.CanBeginAction<TreasureMap>())
                 {
@@ -676,25 +671,15 @@ namespace Server.Items
 
                     var targ3D = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
 
-                    int maxRange;
                     var skillValue = from.Skills.Mining.Value;
 
-                    if (skillValue >= 100.0)
+                    var maxRange = skillValue switch
                     {
-                        maxRange = 4;
-                    }
-                    else if (skillValue >= 81.0)
-                    {
-                        maxRange = 3;
-                    }
-                    else if (skillValue >= 51.0)
-                    {
-                        maxRange = 2;
-                    }
-                    else
-                    {
-                        maxRange = 1;
-                    }
+                        >= 100.0 => 4,
+                        >= 81.0  => 3,
+                        >= 51.0  => 2,
+                        _        => 1
+                    };
 
                     var loc = m_Map.ChestLocation;
                     int x = loc.X, y = loc.Y;
