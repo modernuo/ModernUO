@@ -3228,8 +3228,6 @@ namespace Server
 
         public virtual void AddNameProperties(IPropertyList list)
         {
-            var name = Name ?? " ";
-
             string prefix;
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
@@ -3241,22 +3239,19 @@ namespace Server
                 prefix = " ";
             }
 
-            var title = PropertyTitle && !string.IsNullOrEmpty(Title) ? Title : "";
-
-            string suffix;
             var guild = m_Guild;
-            if (guild != null && (m_Player || m_DisplayGuildTitle))
-            {
-                suffix = title.Length > 0
-                    ? $"{title} [{Utility.FixHtml(guild.Abbreviation)}]"
-                    : $"[{Utility.FixHtml(guild.Abbreviation)}]";
-            }
-            else
-            {
-                suffix = " ";
-            }
+            var hasTitle = PropertyTitle && !string.IsNullOrEmpty(Title);
+            var hasGuild = guild != null && (m_Player || m_DisplayGuildTitle);
 
-            list.Add(1050045, $"{prefix}\t{name}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+            string suffix = hasTitle switch
+            {
+                true when hasGuild  => $" {Title} [{Utility.FixHtmlFormattable(guild.Abbreviation)}]",
+                true                => $" {Title}",
+                false when hasGuild => $" [{Utility.FixHtmlFormattable(guild.Abbreviation)}]",
+                _                   => " "
+            };
+
+            list.Add(1050045, $"{prefix}\t{Name ?? " "}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
             if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
             {
@@ -3268,11 +3263,11 @@ namespace Server
                 {
                     if (NewGuildDisplay)
                     {
-                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}");
+                        list.Add($"{Utility.FixHtmlFormattable(guildTitle)}, {Utility.FixHtmlFormattable(guild.Name)}");
                     }
                     else
                     {
-                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}");
+                        list.Add($"{Utility.FixHtmlFormattable(guildTitle)}, {Utility.FixHtmlFormattable(guild.Name)} Guild{type}");
                     }
                 }
                 else
@@ -7850,14 +7845,7 @@ namespace Server
                 prefix = m_Female ? "Lady" : "Lord";
             }
 
-            var suffix = "";
-
-            if (ClickTitle && !string.IsNullOrEmpty(Title))
-            {
-                suffix = Title;
-            }
-
-            suffix = ApplyNameSuffix(suffix);
+            var suffix = ApplyNameSuffix(ClickTitle && !string.IsNullOrEmpty(Title) ? Title : "");
 
             string val;
 
