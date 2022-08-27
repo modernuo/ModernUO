@@ -3241,19 +3241,13 @@ namespace Server
                 prefix = " ";
             }
 
-            var title = PropertyTitle && !string.IsNullOrEmpty(Title) ? Title : "";
-
-            string suffix;
+            var suffix = PropertyTitle && !string.IsNullOrEmpty(Title) ? $" {Title}" : " ";
             var guild = m_Guild;
             if (guild != null && (m_Player || m_DisplayGuildTitle))
             {
-                suffix = title.Length > 0
-                    ? $"{title} [{Utility.FixHtml(guild.Abbreviation)}]"
-                    : $"[{Utility.FixHtml(guild.Abbreviation)}]";
-            }
-            else
-            {
-                suffix = " ";
+                suffix = !string.IsNullOrWhiteSpace(suffix)
+                    ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
+                    : $" [{Utility.FixHtml(guild.Abbreviation)}]";
             }
 
             list.Add(1050045, $"{prefix}\t{name}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
