@@ -3228,8 +3228,6 @@ namespace Server
 
         public virtual void AddNameProperties(IPropertyList list)
         {
-            var name = Name ?? " ";
-
             string prefix;
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
@@ -3253,7 +3251,7 @@ namespace Server
                 _                   => " "
             };
 
-            list.Add(1050045, $"{prefix}\t{name}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+            list.Add(1050045, $"{prefix}\t{Name ?? " "}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
             if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
             {
