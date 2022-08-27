@@ -3248,7 +3248,7 @@ namespace Server
             string suffix = hasTitle switch
             {
                 true when hasGuild  => $" {Title} [{Utility.FixHtmlFormattable(guild.Abbreviation)}]",
-                true                => Title,
+                true                => $" {Title}",
                 false when hasGuild => $" [{Utility.FixHtmlFormattable(guild.Abbreviation)}]",
                 _                   => " "
             };
