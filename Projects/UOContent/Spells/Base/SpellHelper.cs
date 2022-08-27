@@ -196,7 +196,7 @@ namespace Server.Spells
                     from.Direction = from.GetDirectionTo(item.GetWorldLocation());
                 }
             }
-            else if (from.Equals(target))
+            else if (!from.Equals(target))
             {
                 from.Direction = from.GetDirectionTo(target);
             }
