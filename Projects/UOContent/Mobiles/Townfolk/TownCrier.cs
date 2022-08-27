@@ -383,7 +383,7 @@ namespace Server.Mobiles
                 return entry;
             }
 
-            return Entries.RandomElement();
+            return Entries?.RandomElement();
         }
 
         public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
