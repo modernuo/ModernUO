@@ -567,12 +567,11 @@ public static class Utility
             return str;
         }
 
-        using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(128, str.Length)]);
-        ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
-        ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
-        sb.ReplaceAny(invalid, replacement, 0, sb.Length);
+        var chars = str.ToPooledArray();
+        var span = chars.AsSpan(0, str.Length);
+        FixHtml(span);
 
-        return sb.ToString();
+        return span.ToString();
     }
 
     public static void FixHtml(Span<char> chars)
@@ -586,6 +585,20 @@ public static class Utility
         ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
 
         chars.ReplaceAny(invalid, replacement);
+    }
+
+    public static PooledArraySpanFormattable FixHtmlFormattable(string str)
+    {
+        var chars = str.ToPooledArray();
+        var span = chars.AsSpan(0, str.Length);
+        var formattable = new PooledArraySpanFormattable(chars, str.Length);
+
+        if (!string.IsNullOrEmpty(str))
+        {
+            FixHtml(span);
+        }
+
+        return formattable;
     }
 
     public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);

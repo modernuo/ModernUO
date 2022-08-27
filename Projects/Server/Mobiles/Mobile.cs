@@ -3241,14 +3241,17 @@ namespace Server
                 prefix = " ";
             }
 
-            var suffix = PropertyTitle && !string.IsNullOrEmpty(Title) ? $" {Title}" : " ";
             var guild = m_Guild;
-            if (guild != null && (m_Player || m_DisplayGuildTitle))
+            var hasTitle = PropertyTitle && !string.IsNullOrEmpty(Title);
+            var hasGuild = guild != null && (m_Player || m_DisplayGuildTitle);
+
+            string suffix = hasTitle switch
             {
-                suffix = !string.IsNullOrWhiteSpace(suffix)
-                    ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
-                    : $" [{Utility.FixHtml(guild.Abbreviation)}]";
-            }
+                true when hasGuild  => $"{Title} [{Utility.FixHtmlFormattable(guild.Abbreviation)}]",
+                true                => Title,
+                false when hasGuild => $" [{Utility.FixHtmlFormattable(guild.Abbreviation)}]",
+                _                   => " "
+            };
 
             list.Add(1050045, $"{prefix}\t{name}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
@@ -3262,11 +3265,11 @@ namespace Server
                 {
                     if (NewGuildDisplay)
                     {
-                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)}");
+                        list.Add($"{Utility.FixHtmlFormattable(guildTitle)}, {Utility.FixHtmlFormattable(guild.Name)}");
                     }
                     else
                     {
-                        list.Add($"{Utility.FixHtml(guildTitle)}, {Utility.FixHtml(guild.Name)} Guild{type}");
+                        list.Add($"{Utility.FixHtmlFormattable(guildTitle)}, {Utility.FixHtmlFormattable(guild.Name)} Guild{type}");
                     }
                 }
                 else
@@ -7844,14 +7847,7 @@ namespace Server
                 prefix = m_Female ? "Lady" : "Lord";
             }
 
-            var suffix = "";
-
-            if (ClickTitle && !string.IsNullOrEmpty(Title))
-            {
-                suffix = Title;
-            }
-
-            suffix = ApplyNameSuffix(suffix);
+            var suffix = ApplyNameSuffix(ClickTitle && !string.IsNullOrEmpty(Title) ? Title : "");
 
             string val;
 
