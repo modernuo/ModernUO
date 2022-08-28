@@ -70,7 +70,7 @@ namespace Server.Spells.Necromancy
             }
 
             // Calculations for the buff bar
-            var spiritlevel = Math.Min(4, Caster.Skills.SpiritSpeak.Value / 10);
+            var spiritlevel = Math.Max(4, Caster.Skills.SpiritSpeak.Value / 10);
 
             const int minDamage = 4;
             var maxDamage = ((int)spiritlevel + 1) * 3;
