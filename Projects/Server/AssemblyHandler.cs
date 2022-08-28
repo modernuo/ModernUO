@@ -32,13 +32,12 @@ namespace Server
         internal static Assembly AssemblyResolver(object sender, ResolveEventArgs args)
         {
             var assemblyName = new AssemblyName(args.Name);
-            var assemblyFile = $"{assemblyName.Name}.dll";
             var assembly = LoadAssemblyByAssemblyName(assemblyName);
             if (assembly == null)
             {
                 throw new FileNotFoundException(
                     $"Could not load file or assembly {assemblyName}. The system cannot find the file specified. Review the assemblyDirectories field in {ServerConfiguration.ConfigurationFilePath}",
-                    assemblyFile
+                    $"{assemblyName.Name}.dll"
                 );
             }
 
@@ -111,7 +110,7 @@ namespace Server
                 if (assembly == null)
                 {
                     throw new FileNotFoundException(
-                        $"Cannot find assembly. Review the assemblyDirectories field in {ServerConfiguration.ConfigurationFilePath}",
+                        $"Could not load file or assembly {assemblyFile}. The system cannot find the file specified. Review the assemblyDirectories field in {ServerConfiguration.ConfigurationFilePath}",
                         assemblyFile
                     );
                 }
