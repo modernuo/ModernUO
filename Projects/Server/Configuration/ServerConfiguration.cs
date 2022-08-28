@@ -37,6 +37,8 @@ public static class ServerConfiguration
 
     public static List<IPEndPoint> Listeners => m_Settings.Listeners;
 
+    public static string ConfigurationFilePath => _relPath;
+
     public static ClientVersion GetSetting(string key, ClientVersion defaultValue) =>
         m_Settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
 
