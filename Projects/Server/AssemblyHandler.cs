@@ -32,8 +32,8 @@ namespace Server
         internal static Assembly AssemblyResolver(object sender, ResolveEventArgs args)
         {
             var assemblyName = new AssemblyName(args.Name);
-            var assemblyFile = $"{assemblyName}.dll";
-            var assembly = LoadAssemblyByAssemblyName(args.Name, assemblyFile);
+            var assemblyFile = $"{assemblyName.Name}.dll";
+            var assembly = LoadAssemblyByAssemblyName(assemblyName);
             if (assembly == null)
             {
                 throw new FileNotFoundException(
@@ -54,18 +54,26 @@ namespace Server
             }
         }
 
-        public static Assembly LoadAssemblyByAssemblyName(string fullAssemblyName, string assemblyFile)
+        public static Assembly LoadAssemblyByAssemblyName(AssemblyName assemblyName)
         {
+            if (assemblyName?.Name == null)
+            {
+                return null;
+            }
+
+            var fullName = assemblyName.FullName;
+            var fileName = $"{assemblyName.Name}.dll";
+
             EnsureAssemblyDirectories();
             var assemblyDirectories = ServerConfiguration.AssemblyDirectories;
 
             foreach (var assemblyDir in assemblyDirectories)
             {
-                var assemblyPath = Path.Combine(assemblyDir, assemblyFile);
+                var assemblyPath = PathUtility.GetFullPath(Path.Combine(assemblyDir, fileName), Core.BaseDirectory);
                 if (File.Exists(assemblyPath))
                 {
                     var assemblyNameCheck = AssemblyName.GetAssemblyName(assemblyPath);
-                    if (assemblyNameCheck.FullName == fullAssemblyName)
+                    if (assemblyNameCheck.FullName == fullName)
                     {
                         return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
                     }
