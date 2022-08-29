@@ -1031,12 +1031,16 @@ namespace Server.Spells
         public static void DoLeech(int damageGiven, Mobile from, Mobile target)
         {
             if (target == null)
+            {
                 return;
+            }
 
             var context = TransformationSpellHelper.GetContext(from);
 
             if (context == null) /* cleanup */
+            {
                 return;
+            }
 
             if (context.Type == typeof(WraithFormSpell))
             {

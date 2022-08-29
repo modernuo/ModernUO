@@ -29,7 +29,7 @@ namespace Server.Spells.Necromancy
 
         public override bool DelayedDamage => false;
 
-        public static bool IsMobilePainSpiked(Mobile m) => _table.ContainsKey(m);
+        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
         public void Target(Mobile m)
         {

@@ -2840,9 +2840,9 @@ namespace Server.Mobiles
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
             if (EvilOmenSpell.EndEffect(this)
-                && !PainSpikeSpell.IsMobilePainSpiked(this))
+                && !PainSpikeSpell.UnderEffect(this))
             {
-                    amount = (int)(amount * 1.25);
+                amount = (int)(amount * 1.25);
             }
 
             /* Per EA's UO Herald Pub48 (ML):
