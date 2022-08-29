@@ -1039,18 +1039,15 @@ namespace Server.Spells
                 return;
 
             if (context.Type == typeof(WraithFormSpell))
+            {
                 WraithFormSpell.DoWraithLeech(from, target, damageGiven);
+            }
             else if (context.Type == typeof(VampiricEmbraceSpell))
             {
-                var lifeLeech = AOS.Scale(damageGiven, 20);
-                if (lifeLeech > target.Hits)
-                    lifeLeech = target.Hits;
-                from.Hits += lifeLeech;
+                from.Hits += Math.Min(target.Hits, AOS.Scale(damageGiven, 20));
                 from.PlaySound(0x44D);
             }
         }
-
-
         public static void Heal(int amount, Mobile target, Mobile from, bool message = true)
         {
             // TODO: All Healing *spells* go through ArcaneEmpowerment

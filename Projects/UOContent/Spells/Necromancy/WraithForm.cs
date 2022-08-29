@@ -35,9 +35,7 @@ namespace Server.Spells.Necromancy
         public static void DoWraithLeech(Mobile wraith, Mobile defender, int damageGiven)
         {
             var wraithLeech = 5 + (int)(15 * wraith.Skills.SpiritSpeak.Value / 100); // Wraith form gives 5-20% mana leech
-            var manaLeech = AOS.Scale(damageGiven, wraithLeech);
-            if (defender.Mana < manaLeech)
-                manaLeech = defender.Mana;
+            var manaLeech = Math.Min(defender.Mana, AOS.Scale(damageGiven, wraithLeech));
 
             if (manaLeech != 0)
             {
