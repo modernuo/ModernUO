@@ -2839,19 +2839,21 @@ namespace Server.Mobiles
 
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
-            if (EvilOmenSpell.EndEffect(this))
+            if (EvilOmenSpell.EndEffect(this)
+                && !PainSpikeSpell.IsMobilePainSpiked(this))
             {
-                amount = (int)(amount * 1.25);
+                    amount = (int)(amount * 1.25);
             }
 
             /* Per EA's UO Herald Pub48 (ML):
              * ((resist spellsx10)/20 + 10=percentage of damage resisted)
              */
 
-            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
+            var isBloodOathed = from != null && BloodOathSpell.GetBloodOath(from) == this;
+            var bloodOathDmgToCaster = (int)(amount * 1.1);
+            if (isBloodOathed
+                && Hits - bloodOathDmgToCaster >= 0) //If CASTER going to die then dont reflect damage back to the DEALER
             {
-                amount = (int)(amount * 1.1);
-
                 if (amount > 35 && from is PlayerMobile) /* capped @ 35, seems no expansion */
                 {
                     amount = 35;
@@ -2863,7 +2865,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    from.Damage(amount, this);
+                    from.Damage(amount, this); //Reflect damage to the DEALER
                 }
             }
 
@@ -2880,7 +2882,10 @@ namespace Server.Mobiles
                 }
             }
 
-            base.Damage(amount, from, informMount);
+            if (isBloodOathed)
+                base.Damage(bloodOathDmgToCaster, from, informMount); //10% more damage to the CASTER
+            else
+                base.Damage(amount, from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)

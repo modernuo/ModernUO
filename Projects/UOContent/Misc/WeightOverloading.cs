@@ -76,12 +76,12 @@ namespace Server.Misc
                 --from.Stam;
             }
 
-            if (from.Stam == 0)
-            {
-                from.SendLocalizedMessage(500110); // You are too fatigued to move.
-                e.Blocked = true;
-                return;
-            }
+            //if (from.Stam == 0)
+            //{
+            //    from.SendLocalizedMessage(500110); // You are too fatigued to move.
+            //    e.Blocked = true;
+            //    return;
+            //}
 
             if (from is PlayerMobile pm)
             {

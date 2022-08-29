@@ -62,7 +62,7 @@ namespace Server.Spells
 
     public static class SpellHelper
     {
-        private static readonly TimeSpan AosDamageDelay = TimeSpan.FromSeconds(1.0);
+        private static readonly TimeSpan AosDamageDelay = TimeSpan.FromSeconds(1.25);
         private static readonly TimeSpan OldDamageDelay = TimeSpan.FromSeconds(0.5);
 
         private static readonly TimeSpan CombatHeatDelay = TimeSpan.FromSeconds(30.0);
@@ -1014,11 +1014,6 @@ namespace Server.Spells
 
                 var damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);
 
-                if (from != null) // sanity check
-                {
-                    DoLeech(damageGiven, from, target);
-                }
-
                 WeightOverloading.DFA = DFAlgorithm.Standard;
             }
             else
@@ -1036,35 +1031,25 @@ namespace Server.Spells
         public static void DoLeech(int damageGiven, Mobile from, Mobile target)
         {
             if (target == null)
-            {
                 return;
-            }
 
             var context = TransformationSpellHelper.GetContext(from);
 
             if (context == null) /* cleanup */
-            {
                 return;
-            }
 
             if (context.Type == typeof(WraithFormSpell))
-            {
-                var wraithLeech =
-                    5 + (int)(15 * from.Skills.SpiritSpeak.Value / 100); // Wraith form gives 5-20% mana leech
-                var manaLeech = AOS.Scale(damageGiven, wraithLeech);
-
-                if (manaLeech != 0)
-                {
-                    from.Mana += manaLeech;
-                    from.PlaySound(0x44D);
-                }
-            }
+                WraithFormSpell.DoWraithLeech(from, target, damageGiven);
             else if (context.Type == typeof(VampiricEmbraceSpell))
             {
-                from.Hits += AOS.Scale(damageGiven, 20);
+                var lifeLeech = AOS.Scale(damageGiven, 20);
+                if (lifeLeech > target.Hits)
+                    lifeLeech = target.Hits;
+                from.Hits += lifeLeech;
                 from.PlaySound(0x44D);
             }
         }
+
 
         public static void Heal(int amount, Mobile target, Mobile from, bool message = true)
         {
@@ -1158,11 +1143,6 @@ namespace Server.Spells
                 WeightOverloading.DFA = m_DFA;
 
                 var damageGiven = AOS.Damage(m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy, m_Chaos);
-
-                if (m_From != null) // sanity check
-                {
-                    DoLeech(damageGiven, m_From, m_Target);
-                }
 
                 WeightOverloading.DFA = DFAlgorithm.Standard;
 
