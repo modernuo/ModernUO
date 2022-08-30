@@ -2861,9 +2861,6 @@ namespace Server.Mobiles
 
             if (hasBloodOath)
             {
-                var amountBeforeBloodOath = amount;
-                amount = (int)(amount * (damageBonus + (Core.HS ? 0.2 : 0.1)));
-
                 // If the blood oath caster will die then do not reflect damage back to the attacker
                 if (Hits - amount >= 0)
                 {
@@ -2871,15 +2868,13 @@ namespace Server.Mobiles
                         ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100 : 0;
 
                     // Reflect damage to the attacker
-                    from.Damage((int)(amountBeforeBloodOath * damageBonus * (1.0 - resistReflectedDamage)), this);
+                    from.Damage((int)(amount * damageBonus * (1.0 - resistReflectedDamage)), this);
+
+                    damageBonus += Core.HS ? 0.2 : 0.1;
                 }
             }
-            else
-            {
-                amount = (int)(amount * damageBonus);
-            }
 
-            base.Damage(amount, from, informMount);
+            base.Damage((int)(amount * damageBonus), from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)
