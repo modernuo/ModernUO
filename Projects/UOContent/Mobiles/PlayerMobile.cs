@@ -2859,26 +2859,24 @@ namespace Server.Mobiles
                 hasBloodOath = BloodOathSpell.GetBloodOath(from) == this;
             }
 
-            amount = (int)(amount * damageBonus);
-
-            // If the blood oath caster will die then do not reflect damage back to the attacker
-            if (hasBloodOath && Hits - amount >= 0)
+            if (hasBloodOath)
             {
-                /* Per EA's UO Herald Pub-48 (ML):
-                 * resist spells x 10 / 20 + 10 = percentage of damage resisted
-                 */
-                var reflectedDamage = Core.ML
-                    ? (int)(amount * (1 - (from.Skills.MagicResist.Value * 0.5 + 10) / 100))
-                    : amount;
+                var amountBeforeBloodOath = amount;
+                amount = (int)(amount * (damageBonus + (Core.HS ? 0.2 : 0.1)));
 
-                /* capped @ 35, seems no expansion */
-                if (reflectedDamage > 35 && from is PlayerMobile)
+                // If the blood oath caster will die then do not reflect damage back to the attacker
+                if (Hits - amount >= 0)
                 {
-                    reflectedDamage = 35;
-                }
+                    var resistReflectedDamage = Core.ML && !Core.HS && !from.Player
+                        ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100 : 0;
 
-                // Reflect damage to the attacker
-                from.Damage(reflectedDamage, this);
+                    // Reflect damage to the attacker
+                    from.Damage((int)(amountBeforeBloodOath * damageBonus * (1.0 - resistReflectedDamage)), this);
+                }
+            }
+            else
+            {
+                amount = (int)(amount * damageBonus);
             }
 
             base.Damage(amount, from, informMount);
