@@ -2856,19 +2856,23 @@ namespace Server.Mobiles
                     damageBonus -= talisman.Protection.Amount / 100.0;
                 }
 
-                hasBloodOath = BloodOathSpell.GetBloodOath(from) == this;
+                if (BloodOathSpell.GetBloodOath(from) == this)
+                {
+                    hasBloodOath = true;
+                    damageBonus += 0.2;
+                }
             }
 
             // If the blood oath caster will die then do not reflect damage back to the attacker
-            if (hasBloodOath && Hits - amount >= 0)
+            if (hasBloodOath && Hits - amount * damageBonus >= 0)
             {
-                var resistReflectedDamage = Core.ML && !Core.HS && !from.Player
-                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100 : 0;
+                //In some expansions resisting spells reduces reflect dmg from monster blood oath
+                var resistReflectedDamage = !from.Player && (Core.ML || Core.SA)
+                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100 
+                    : 0;
 
                 // Reflect damage to the attacker
-                from.Damage((int)(amount * damageBonus * (1.0 - resistReflectedDamage)), this);
-
-                damageBonus += Core.HS ? 0.2 : 0.1;
+                from.Damage((int)(amount * (1.0 - resistReflectedDamage)), this);
             }
 
             base.Damage((int)(amount * damageBonus), from, informMount);
