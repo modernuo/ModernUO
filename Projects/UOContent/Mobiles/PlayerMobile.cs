@@ -2839,53 +2839,43 @@ namespace Server.Mobiles
 
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
-            if (EvilOmenSpell.EndEffect(this)
-                && !PainSpikeSpell.UnderEffect(this))
+            if (EvilOmenSpell.EndEffect(this) && !PainSpikeSpell.UnderEffect(this))
             {
                 amount = (int)(amount * 1.25);
             }
 
-            /* Per EA's UO Herald Pub48 (ML):
-             * ((resist spellsx10)/20 + 10=percentage of damage resisted)
-             */
-
-            var isBloodOathed = from != null && BloodOathSpell.GetBloodOath(from) == this;
-            var bloodOathDmgToCaster = (int)(amount * 1.1);
-            if (isBloodOathed
-                && Hits - bloodOathDmgToCaster >= 0) //If CASTER going to die then dont reflect damage back to the DEALER
+            if (from != null && Talisman is BaseTalisman talisman &&
+                talisman.Protection?.Type?.IsInstanceOfType(from) == true)
             {
-                if (amount > 35 && from is PlayerMobile) /* capped @ 35, seems no expansion */
-                {
-                    amount = 35;
-                }
-
-                if (Core.ML)
-                {
-                    from.Damage((int)(amount * (1 - (from.Skills.MagicResist.Value * .5 + 10) / 100)), this);
-                }
-                else
-                {
-                    from.Damage(amount, this); //Reflect damage to the DEALER
-                }
+                amount = (int)(amount * (1.0 - talisman.Protection.Amount / 100.0));
             }
 
-            if (from != null && Talisman is BaseTalisman talisman)
+            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
             {
-                if (talisman.Protection != null && talisman.Protection.Type != null)
-                {
-                    var type = talisman.Protection.Type;
+                amount = (int)(amount * 1.1);
 
-                    if (type.IsInstanceOfType(from))
+                /* capped @ 35, seems no expansion */
+                var reflectedDamage = from is PlayerMobile ? Math.Min(35, amount) : amount;
+
+                // If the blood oath caster will die then do not reflect damage back to the attacker
+                if (Hits - amount >= 0)
+                {
+                    // Reflect damage to the attacker
+                    if (Core.ML)
                     {
-                        amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
+                        /* Per EA's UO Herald Pub-48 (ML):
+                         * resist spells x 10 / 20 + 10 = percentage of damage resisted
+                         */
+                        from.Damage((int)(reflectedDamage * (1 - (from.Skills.MagicResist.Value * 0.5 + 10) / 100)), this);
+                    }
+                    else
+                    {
+                        from.Damage(reflectedDamage, this);
                     }
                 }
             }
 
-            if (isBloodOathed)
-                base.Damage(bloodOathDmgToCaster, from, informMount); //10% more damage to the CASTER
-            else
-                base.Damage(amount, from, informMount);
+            base.Damage(amount, from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)

@@ -83,7 +83,6 @@ namespace Server.Misc
                 return;
             }
 
-
             if (from is PlayerMobile pm)
             {
                 var amt = pm.Mounted ? 48 : 16;
