@@ -2839,40 +2839,46 @@ namespace Server.Mobiles
 
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
+            var damageBonus = 1.0;
+
             if (EvilOmenSpell.EndEffect(this) && !PainSpikeSpell.UnderEffect(this))
             {
-                amount = (int)(amount * 1.25);
+                damageBonus += 0.25;
             }
 
-            if (from != null && Talisman is BaseTalisman talisman &&
-                talisman.Protection?.Type?.IsInstanceOfType(from) == true)
+            var hasBloodOath = false;
+
+            if (from != null)
             {
-                amount = (int)(amount * (1.0 - talisman.Protection.Amount / 100.0));
+                if (Talisman is BaseTalisman talisman &&
+                    talisman.Protection?.Type?.IsInstanceOfType(from) == true)
+                {
+                    damageBonus -= talisman.Protection.Amount / 100.0;
+                }
+
+                hasBloodOath = BloodOathSpell.GetBloodOath(from) == this;
             }
 
-            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
+            amount = (int)(amount * damageBonus);
+
+            // If the blood oath caster will die then do not reflect damage back to the attacker
+            if (hasBloodOath && Hits - amount >= 0)
             {
-                amount = (int)(amount * 1.1);
+                /* Per EA's UO Herald Pub-48 (ML):
+                 * resist spells x 10 / 20 + 10 = percentage of damage resisted
+                 */
+                var reflectedDamage = Core.ML
+                    ? (int)(amount * (1 - (from.Skills.MagicResist.Value * 0.5 + 10) / 100))
+                    : amount;
 
                 /* capped @ 35, seems no expansion */
-                var reflectedDamage = from is PlayerMobile ? Math.Min(35, amount) : amount;
-
-                // If the blood oath caster will die then do not reflect damage back to the attacker
-                if (Hits - amount >= 0)
+                if (reflectedDamage > 35 && from is PlayerMobile)
                 {
-                    // Reflect damage to the attacker
-                    if (Core.ML)
-                    {
-                        /* Per EA's UO Herald Pub-48 (ML):
-                         * resist spells x 10 / 20 + 10 = percentage of damage resisted
-                         */
-                        from.Damage((int)(reflectedDamage * (1 - (from.Skills.MagicResist.Value * 0.5 + 10) / 100)), this);
-                    }
-                    else
-                    {
-                        from.Damage(reflectedDamage, this);
-                    }
+                    reflectedDamage = 35;
                 }
+
+                // Reflect damage to the attacker
+                from.Damage(reflectedDamage, this);
             }
 
             base.Damage(amount, from, informMount);
