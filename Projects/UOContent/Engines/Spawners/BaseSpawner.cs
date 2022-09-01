@@ -98,7 +98,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
         foreach (var entry in entries)
         {
-            AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false);
+            AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false, entry.Properties, entry.Parameters);
         }
     }
 
@@ -326,9 +326,10 @@ public abstract class BaseSpawner : Item, ISpawner
         }
     }
 
-    public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true)
+    public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true,
+        string properties="", string parameters="")
     {
-        var entry = new SpawnerEntry(creaturename, probability, amount);
+        var entry = new SpawnerEntry(creaturename, probability, amount, properties, parameters);
         Entries.Add(entry);
         if (dotimer)
         {

@@ -8,11 +8,13 @@ namespace Server.Engines.Spawners
     {
         public SpawnerEntry() => Spawned = new List<ISpawnable>();
 
-        public SpawnerEntry(string name, int probability, int maxcount) : this()
+        public SpawnerEntry(string name, int probability, int maxcount, string properties="", string parameters="") : this()
         {
             SpawnedName = name;
             SpawnedProbability = probability;
             SpawnedMaxCount = maxcount;
+            Properties = properties;
+            Parameters = parameters;
         }
 
         public SpawnerEntry(BaseSpawner parent, IGenericReader reader)
