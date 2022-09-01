@@ -2866,8 +2866,8 @@ namespace Server.Mobiles
             // If the blood oath caster will die then do not reflect damage back to the attacker
             if (hasBloodOath && Hits - amount * damageBonus >= 0)
             {
-                //In some expansions resisting spells reduces reflect dmg from monster blood oath
-                var resistReflectedDamage = !from.Player && (Core.ML || Core.SA)
+                // In some expansions resisting spells reduces reflect dmg from monster blood oath
+                var resistReflectedDamage = !from.Player && Core.ML && !Core.HS
                     ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100 
                     : 0;
 
