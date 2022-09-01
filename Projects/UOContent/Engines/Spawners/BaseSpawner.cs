@@ -328,8 +328,14 @@ public abstract class BaseSpawner : Item, ISpawner
         }
     }
 
-    public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true,
-        string properties="", string parameters="")
+    public SpawnerEntry AddEntry(
+        string creaturename,
+        int probability = 100,
+        int amount = 1,
+        bool dotimer = true,
+        string properties = null,
+        string parameters = null
+    )
     {
         var entry = new SpawnerEntry(creaturename, probability, amount, properties, parameters);
         Entries.Add(entry);
