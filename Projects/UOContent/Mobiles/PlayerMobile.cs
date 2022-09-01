@@ -2856,6 +2856,7 @@ namespace Server.Mobiles
                     damageBonus -= talisman.Protection.Amount / 100.0;
                 }
 
+                // Is the attacker attacking the blood oath caster?
                 if (BloodOathSpell.GetBloodOath(from) == this)
                 {
                     hasBloodOath = true;
@@ -2863,19 +2864,19 @@ namespace Server.Mobiles
                 }
             }
 
-            // If the blood oath caster will die then do not reflect damage back to the attacker
-            if (hasBloodOath && Hits - amount * damageBonus >= 0)
+            base.Damage((int)(amount * damageBonus), from, informMount);
+
+            // If the blood oath caster will die then damage is not reflected back to the attacker
+            if (hasBloodOath && Alive && !Deleted && !IsDeadBondedPet)
             {
                 // In some expansions resisting spells reduces reflect dmg from monster blood oath
                 var resistReflectedDamage = !from.Player && Core.ML && !Core.HS
-                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100 
+                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100
                     : 0;
 
                 // Reflect damage to the attacker
                 from.Damage((int)(amount * (1.0 - resistReflectedDamage)), this);
             }
-
-            base.Damage((int)(amount * damageBonus), from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)
