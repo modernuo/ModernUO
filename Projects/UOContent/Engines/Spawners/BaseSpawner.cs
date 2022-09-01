@@ -320,7 +320,9 @@ public abstract class BaseSpawner : Item, ISpawner
                     Entries[i].SpawnedName,
                     Entries[i].SpawnedProbability,
                     Entries[i].SpawnedMaxCount,
-                    false
+                    false,
+                    Entries[i].Properties,
+                    Entries[i].Parameters
                 );
             }
         }
