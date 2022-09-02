@@ -1079,9 +1079,8 @@ public abstract class BaseAI
 
     public virtual bool DoActionBackoff() => true;
 
-    public virtual bool Obey()
-    {
-        return !m_Mobile.Deleted && m_Mobile.ControlOrder switch
+    public virtual bool Obey() =>
+        !m_Mobile.Deleted && m_Mobile.ControlOrder switch
         {
             OrderType.None     => DoOrderNone(),
             OrderType.Come     => DoOrderCome(),
@@ -1098,7 +1097,6 @@ public abstract class BaseAI
             OrderType.Transfer => DoOrderTransfer(),
             _                  => false
         };
-    }
 
     public virtual void OnCurrentOrderChanged()
     {
@@ -3214,11 +3212,10 @@ public abstract class BaseAI
                 // Not exactly OSI style, approximation.
                 var delay = Math.Min(15000 / m_Owner.m_Mobile.Int, 60);
 
-                var min = delay * (9 / 10); // 13s at 1000 int, 33s at 400 int, 54s at <250 int
-                var max = delay * (10 / 9); // 16s at 1000 int, 41s at 400 int, 66s at <250 int
+                var min = delay * 900; // 13s at 1000 int, 33s at 400 int, 54s at <250 int
+                var max = delay * 1100; // 16s at 1000 int, 41s at 400 int, 66s at <250 int
 
-                m_Owner.m_NextDetectHidden = Core.TickCount +
-                                             (int)TimeSpan.FromSeconds(Utility.RandomMinMax(min, max)).TotalMilliseconds;
+                m_Owner.m_NextDetectHidden = Core.TickCount + Utility.RandomMinMax(min, max);
             }
         }
     }
