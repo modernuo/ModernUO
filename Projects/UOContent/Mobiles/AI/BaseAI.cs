@@ -1079,26 +1079,24 @@ public abstract class BaseAI
 
     public virtual bool DoActionBackoff() => true;
 
-    public virtual bool Obey()
-    {
-        return !m_Mobile.Deleted && m_Mobile.ControlOrder switch
+    public virtual bool Obey() =>
+        !m_Mobile.Deleted && m_Mobile.ControlOrder switch
         {
-            OrderType.None => DoOrderNone(),
-            OrderType.Come => DoOrderCome(),
-            OrderType.Drop => DoOrderDrop(),
-            OrderType.Friend => DoOrderFriend(),
+            OrderType.None     => DoOrderNone(),
+            OrderType.Come     => DoOrderCome(),
+            OrderType.Drop     => DoOrderDrop(),
+            OrderType.Friend   => DoOrderFriend(),
             OrderType.Unfriend => DoOrderUnfriend(),
-            OrderType.Guard => DoOrderGuard(),
-            OrderType.Attack => DoOrderAttack(),
-            OrderType.Patrol => DoOrderPatrol(),
-            OrderType.Release => DoOrderRelease(),
-            OrderType.Stay => DoOrderStay(),
-            OrderType.Stop => DoOrderStop(),
-            OrderType.Follow => DoOrderFollow(),
+            OrderType.Guard    => DoOrderGuard(),
+            OrderType.Attack   => DoOrderAttack(),
+            OrderType.Patrol   => DoOrderPatrol(),
+            OrderType.Release  => DoOrderRelease(),
+            OrderType.Stay     => DoOrderStay(),
+            OrderType.Stop     => DoOrderStop(),
+            OrderType.Follow   => DoOrderFollow(),
             OrderType.Transfer => DoOrderTransfer(),
-            _ => false
+            _                  => false
         };
-    }
 
     public virtual void OnCurrentOrderChanged()
     {
