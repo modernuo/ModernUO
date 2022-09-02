@@ -81,7 +81,7 @@ namespace Server.Spells.Necromancy
             var hitDelay = 5;
             var length = hitDelay;
 
-            while (count > 1)
+            while (count >= 1)
             {
                 --count;
                 if (hitDelay > 1)
@@ -149,7 +149,7 @@ namespace Server.Spells.Necromancy
                 _hitDelay = 5;
                 _nextHit = Core.Now + TimeSpan.FromSeconds(_hitDelay);
 
-                _maxCount = _count = Math.Min(4, (int)spiritLevel);
+                _maxCount = _count = Math.Max(4, (int)spiritLevel);
             }
 
             protected override void OnTick()
