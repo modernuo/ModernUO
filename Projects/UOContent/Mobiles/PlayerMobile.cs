@@ -2839,48 +2839,44 @@ namespace Server.Mobiles
 
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
-            if (EvilOmenSpell.EndEffect(this))
+            var damageBonus = 1.0;
+
+            if (EvilOmenSpell.EndEffect(this) && !PainSpikeSpell.UnderEffect(this))
             {
-                amount = (int)(amount * 1.25);
+                damageBonus += 0.25;
             }
 
-            /* Per EA's UO Herald Pub48 (ML):
-             * ((resist spellsx10)/20 + 10=percentage of damage resisted)
-             */
+            var hasBloodOath = false;
 
-            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
+            if (from != null)
             {
-                amount = (int)(amount * 1.1);
-
-                if (amount > 35 && from is PlayerMobile) /* capped @ 35, seems no expansion */
+                if (Talisman is BaseTalisman talisman &&
+                    talisman.Protection?.Type?.IsInstanceOfType(from) == true)
                 {
-                    amount = 35;
+                    damageBonus -= talisman.Protection.Amount / 100.0;
                 }
 
-                if (Core.ML)
+                // Is the attacker attacking the blood oath caster?
+                if (BloodOathSpell.GetBloodOath(from) == this)
                 {
-                    from.Damage((int)(amount * (1 - (from.Skills.MagicResist.Value * .5 + 10) / 100)), this);
-                }
-                else
-                {
-                    from.Damage(amount, this);
+                    hasBloodOath = true;
+                    damageBonus += 0.2;
                 }
             }
 
-            if (from != null && Talisman is BaseTalisman talisman)
+            base.Damage((int)(amount * damageBonus), from, informMount);
+
+            // If the blood oath caster will die then damage is not reflected back to the attacker
+            if (hasBloodOath && Alive && !Deleted && !IsDeadBondedPet)
             {
-                if (talisman.Protection != null && talisman.Protection.Type != null)
-                {
-                    var type = talisman.Protection.Type;
+                // In some expansions resisting spells reduces reflect dmg from monster blood oath
+                var resistReflectedDamage = !from.Player && Core.ML && !Core.HS
+                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100
+                    : 0;
 
-                    if (type.IsInstanceOfType(from))
-                    {
-                        amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
-                    }
-                }
+                // Reflect damage to the attacker
+                from.Damage((int)(amount * (1.0 - resistReflectedDamage)), this);
             }
-
-            base.Damage(amount, from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)
