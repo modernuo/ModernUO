@@ -78,9 +78,6 @@ namespace Server.Items
         [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
 
-        // Field 6
-        private int _hitPoints;
-
         [SerializableField(7)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private bool _playerConstructed;
@@ -306,7 +303,7 @@ namespace Server.Items
         public virtual bool CanFortify => true;
 
         [EncodedInt]
-        [SerializableProperty(6, useField: nameof(_hitPoints))]
+        [SerializableProperty(6)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {

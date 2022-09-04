@@ -56,11 +56,9 @@ namespace Server.Accounting
         [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
         public int _totalPlat;
 
-        private List<AccountComment> _comments;
-
         private Mobile[] _mobiles;
 
-        [SerializableProperty(9, useField: nameof(_comments))]
+        [SerializableProperty(9)]
         public List<AccountComment> Comments
         {
             get => _comments ??= new List<AccountComment>();
@@ -71,9 +69,7 @@ namespace Server.Accounting
             }
         }
 
-        private List<AccountTag> _tags;
-
-        [SerializableProperty(10, useField: nameof(_tags))]
+        [SerializableProperty(10)]
         public List<AccountTag> Tags
         {
             get => _tags ??= new List<AccountTag>();
@@ -94,13 +90,11 @@ namespace Server.Accounting
         [SerializableField(12)]
         private string[] _ipRestrictions;
 
-        private TimeSpan _totalGameTime;
-
         /// <summary>
         ///     Gets the total game time of this account, also considering the game time of characters
         ///     that have been deleted.
         /// </summary>
-        [SerializableProperty(13, useField: nameof(_totalGameTime))]
+        [SerializableProperty(13)]
         public TimeSpan TotalGameTime
         {
             get

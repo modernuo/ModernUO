@@ -27,9 +27,6 @@ public abstract partial class BaseJewel : Item, ICraftable
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
     private int _maxHitPoints;
 
-    // Field 1
-    private int _hitPoints;
-
     [SerializableField(3)]
     [InvalidateProperties]
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -62,7 +59,7 @@ public abstract partial class BaseJewel : Item, ICraftable
     }
 
     [EncodedInt]
-    [SerializableProperty(1, useField: nameof(_hitPoints))]
+    [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitPoints
     {
