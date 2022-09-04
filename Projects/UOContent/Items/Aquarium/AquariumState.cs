@@ -28,11 +28,9 @@ namespace Server.Items
         [DirtyTrackingEntity]
         private Aquarium _aquarium;
 
-        private int _state;
-
         public AquariumState(Aquarium parent) => _aquarium = parent;
 
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int State
         {

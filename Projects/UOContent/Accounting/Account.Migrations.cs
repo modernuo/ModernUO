@@ -18,7 +18,7 @@ namespace Server.Accounting
             _lastLogin = content.LastLogin;
             _totalGold = content.TotalGold;
             _totalPlat = content.TotalPlat;
-            _rawMobiles = content.Mobiles;
+            _mobiles = content.Mobiles;
             _comments = content.Comments;
             _tags = content.Tags;
             _loginIPs = content.LoginIPs;
@@ -47,10 +47,10 @@ namespace Server.Accounting
             _totalPlat = reader.ReadInt();
 
             var length = reader.ReadInt();
-            _rawMobiles = new Mobile[length];
+            _mobiles = new Mobile[length];
             for (int i = 0; i < length; i++)
             {
-                _rawMobiles[i] = reader.ReadEntity<Mobile>();
+                _mobiles[i] = reader.ReadEntity<Mobile>();
             }
 
             length = reader.ReadInt();

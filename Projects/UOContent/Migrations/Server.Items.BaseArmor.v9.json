@@ -120,7 +120,7 @@
       "rule": "EnumMigrationRule"
     },
     {
-      "name": "RawResource",
+      "name": "Resource",
       "type": "Server.Items.CraftResource",
       "usesSaveFlag": true,
       "rule": "EnumMigrationRule"

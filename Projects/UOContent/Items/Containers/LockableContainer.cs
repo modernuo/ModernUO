@@ -12,7 +12,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
 
     public override bool TrapOnOpen => !_trapOnLockpick;
 
-    public override bool DisplaysContent => !_rawLocked;
+    public override bool DisplaysContent => !_locked;
 
     public int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
@@ -72,18 +72,16 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
     private int _lockLevel;
 
-    [SerializableField(6, getter: "private", setter: "private")]
-    private bool _rawLocked;
-
+    [SerializableProperty(6)]
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool Locked
     {
-        get => _rawLocked;
+        get => _locked;
         set
         {
-            _rawLocked = value;
+            _locked = value;
 
-            if (_rawLocked)
+            if (_locked)
             {
                 Picker = null;
             }
@@ -104,11 +102,11 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
         }
     }
 
-    public override bool CheckContentDisplay(Mobile from) => !_rawLocked && base.CheckContentDisplay(from);
+    public override bool CheckContentDisplay(Mobile from) => !_locked && base.CheckContentDisplay(from);
 
     public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
     {
-        if (from.AccessLevel < AccessLevel.GameMaster && _rawLocked)
+        if (from.AccessLevel < AccessLevel.GameMaster && _locked)
         {
             from.SendLocalizedMessage(501747); // It appears to be locked.
             return false;
@@ -119,7 +117,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
 
     public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
     {
-        if (from.AccessLevel < AccessLevel.GameMaster && _rawLocked)
+        if (from.AccessLevel < AccessLevel.GameMaster && _locked)
         {
             from.SendLocalizedMessage(501747); // It appears to be locked.
             return false;
@@ -130,7 +128,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
 
     public override bool CheckLift(Mobile from, Item item, ref LRReason reject) =>
         base.CheckLift(from, item, ref reject) &&
-        (item == this || from.AccessLevel >= AccessLevel.GameMaster || !_rawLocked);
+        (item == this || from.AccessLevel >= AccessLevel.GameMaster || !_locked);
 
     public override bool CheckItemUse(Mobile from, Item item)
     {
@@ -139,7 +137,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
             return false;
         }
 
-        if (item != this && from.AccessLevel < AccessLevel.GameMaster && _rawLocked)
+        if (item != this && from.AccessLevel < AccessLevel.GameMaster && _locked)
         {
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             return false;
@@ -150,7 +148,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
 
     public virtual bool CheckLocked(Mobile from)
     {
-        if (!_rawLocked)
+        if (!_locked)
         {
             return false;
         }

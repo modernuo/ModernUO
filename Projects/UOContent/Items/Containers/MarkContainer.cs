@@ -6,9 +6,6 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class MarkContainer : LockableContainer
 {
-    [SerializableField(0, getter: "private", setter: "private")]
-    private bool _rawAutoLock;
-
     [TimerDrift]
     [SerializableField(1, getter: "private", setter: "private")]
     private InternalTimer _relockTimer;
@@ -16,7 +13,7 @@ public partial class MarkContainer : LockableContainer
     [DeserializeTimerField(1)]
     private void DeserializeRelockTimer(TimeSpan delay)
     {
-        if (!Locked && _rawAutoLock)
+        if (!Locked && _autoLock)
         {
             _relockTimer = new InternalTimer(this, delay);
         }
@@ -44,7 +41,7 @@ public partial class MarkContainer : LockableContainer
             Hue = 1102;
         }
 
-        _rawAutoLock = locked;
+        _autoLock = locked;
         Locked = locked;
 
         if (locked)
@@ -53,15 +50,16 @@ public partial class MarkContainer : LockableContainer
         }
     }
 
+    [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]
     public bool AutoLock
     {
-        get => _rawAutoLock;
+        get => _autoLock;
         set
         {
-            _rawAutoLock = value;
+            _autoLock = value;
 
-            if (!_rawAutoLock)
+            if (!_autoLock)
             {
                 StopTimer();
             }
@@ -93,7 +91,7 @@ public partial class MarkContainer : LockableContainer
         {
             base.Locked = value;
 
-            if (_rawAutoLock)
+            if (_autoLock)
             {
                 StopTimer();
 

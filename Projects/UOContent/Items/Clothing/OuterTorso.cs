@@ -309,14 +309,11 @@ namespace Server.Items
     [SerializationGenerator(2, false)]
     public partial class Robe : BaseOuterTorso, IArcaneEquip
     {
-        private int _curArcaneCharges;
-        private int _maxArcaneCharges;
-
         [Constructible]
         public Robe(int hue = 0) : base(0x1F03, hue) => Weight = 3.0;
 
         [EncodedInt]
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurArcaneCharges
         {
@@ -331,7 +328,7 @@ namespace Server.Items
         }
 
         [EncodedInt]
-        [SerializableField(1)]
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxArcaneCharges
         {

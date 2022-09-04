@@ -40,8 +40,8 @@
         <PackageReference Include="PollGroup" Version="1.2.1" />
         <PackageReference Include="Zlib.Bindings" Version="1.9.2" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.0.2" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.1.4" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.2.0" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.2.2" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
