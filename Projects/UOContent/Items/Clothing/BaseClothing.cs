@@ -26,11 +26,8 @@ namespace Server.Items
     [SerializationGenerator(7, false)]
     public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
-        [SerializableField(0, "private", "private")]
-        private CraftResource _rawResource;
-
         [SerializableFieldSaveFlag(0)]
-        private bool ShouldSerializeResource() => _rawResource != DefaultResource;
+        private bool ShouldSerializeResource() => _resource != DefaultResource;
 
         [SerializableField(1, setter: "private")]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
@@ -117,7 +114,7 @@ namespace Server.Items
             Layer = layer;
             Hue = hue;
 
-            _rawResource = DefaultResource;
+            _resource = DefaultResource;
 
             _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
@@ -127,20 +124,21 @@ namespace Server.Items
             Resistances = new AosElementAttributes(this);
         }
 
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => _rawResource;
+            get => _resource;
             set
             {
-                RawResource = value;
-                Hue = CraftResources.GetHue(_rawResource);
+                _resource = value;
+                Hue = CraftResources.GetHue(_resource);
                 InvalidateProperties();
                 this.MarkDirty();
             }
         }
 
-        [SerializableField(10)]
+        [SerializableProperty(10, useField: nameof(_strReq))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
         {
@@ -278,7 +276,7 @@ namespace Server.Items
                 {
                     try
                     {
-                        var info = CraftResources.GetInfo(_rawResource);
+                        var info = CraftResources.GetInfo(_resource);
 
                         Type resourceType = null;
                         if (info?.ResourceTypes.Length > 0)
@@ -308,7 +306,7 @@ namespace Server.Items
         public virtual bool CanFortify => true;
 
         [EncodedInt]
-        [SerializableField(6)]
+        [SerializableProperty(6, useField: nameof(_hitPoints))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
@@ -664,7 +662,7 @@ namespace Server.Items
 
         public override void AddNameProperty(IPropertyList list)
         {
-            var oreType = _rawResource switch
+            var oreType = _resource switch
             {
                 CraftResource.DullCopper    => 1053108,
                 CraftResource.ShadowIron    => 1053107,

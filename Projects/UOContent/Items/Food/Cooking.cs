@@ -58,8 +58,6 @@ public partial class WoodenBowl : Item
 [SerializationGenerator(0, false)]
 public partial class SackFlour : Item, IHasQuantity
 {
-    private int _quantity;
-
     [Constructible]
     public SackFlour() : base(0x1039)
     {
@@ -68,7 +66,7 @@ public partial class SackFlour : Item, IHasQuantity
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(0)]
+    [SerializableProperty(0)]
     public int Quantity
     {
         get => _quantity;

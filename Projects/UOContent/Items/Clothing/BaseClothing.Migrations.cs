@@ -4,7 +4,7 @@ public partial class BaseClothing
 {
     private void MigrateFrom(V6Content content)
     {
-        _rawResource = content.RawResource ?? DefaultResource;
+        _resource = content.RawResource ?? DefaultResource;
         _attributes = content.Attributes ?? AttributesDefaultValue();
         _clothingAttributes = content.ClothingAttributes ?? ClothingAttributesDefaultValue();
         _skillBonuses = content.SkillBonuses ?? SkillBonusesDefaultValue();
@@ -24,11 +24,11 @@ public partial class BaseClothing
 
         if (GetSaveFlag(flags, OldSaveFlag.Resource))
         {
-            _rawResource = (CraftResource)reader.ReadEncodedInt();
+            _resource = (CraftResource)reader.ReadEncodedInt();
         }
         else
         {
-            _rawResource = DefaultResource;
+            _resource = DefaultResource;
         }
 
         Attributes = new AosAttributes(this);

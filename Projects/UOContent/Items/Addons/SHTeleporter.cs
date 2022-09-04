@@ -11,13 +11,6 @@ namespace Server.Items
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private Point3D _teleOffset;
 
-        //The extra custom processing done in the property setters causes deserialisation to fail.
-        //These hidden private members will auto generate properties with no processing which we can point to.
-        [SerializableField(0, getter: "private", setter: "private")]
-        private bool _rawActive;
-        [SerializableField(1, getter: "private", setter: "private")]
-        private SHTeleComponent _rawTeleDest;
-
         [Constructible]
         public SHTeleComponent(int itemID = 0x1775) : this(itemID, new Point3D(0, 0, 0))
         {
@@ -29,17 +22,18 @@ namespace Server.Items
             Movable = false;
             Hue = 1;
 
-            _rawActive = true;
-            TeleOffset = offset;
+            _active = true;
+            _teleOffset = offset;
         }
 
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Active
         {
-            get => RawActive;
+            get => _active;
             set
             {
-                RawActive = value;
+                _active = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -48,13 +42,14 @@ namespace Server.Items
             }
         }
 
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public SHTeleComponent TeleDest
         {
-            get => RawTeleDest;
+            get => _teleDest;
             set
             {
-                RawTeleDest = value;
+                _teleDest = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -74,15 +69,15 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile m)
         {
-            if (!_rawActive || _rawTeleDest?.Deleted != false || _rawTeleDest.Map == Map.Internal)
+            if (!_active || _teleDest?.Deleted != false || _teleDest.Map == Map.Internal)
             {
                 return;
             }
 
             if (m.InRange(this, 3))
             {
-                var map = _rawTeleDest.Map;
-                var p = _rawTeleDest.TelePoint;
+                var map = _teleDest.Map;
+                var p = _teleDest.TelePoint;
 
                 BaseCreature.TeleportPets(m, p, map);
 
