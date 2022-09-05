@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Install Prerequisites
-        run: dnf install -y findutils
+        run: dnf makecache --refresh && dnf install -y findutils libicu
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
