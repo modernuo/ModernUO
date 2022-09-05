@@ -46,6 +46,8 @@ jobs:
             name: Fedora 36
 
     steps:
+      - name: Install Prerequisites
+        run: dnf install -y findutils
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
