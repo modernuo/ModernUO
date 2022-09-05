@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-macos:
     runs-on: ${{ matrix.os }}
     name: Build (${{ matrix.name }})
     strategy:
@@ -26,8 +26,36 @@ jobs:
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.300
+        dotnet-version: 6.0.400
     - name: Build
       run: ./publish.cmd
     - name: Test
       run: dotnet test --no-restore
+
+  build-linux:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    name: Build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - container: fedora:35
+            name: Fedora 35
+          - container: fedora:36
+            name: Fedora 36
+
+    steps:
+      - name: Install Prerequisites
+        run: dnf makecache --refresh && dnf install -y findutils libicu
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.400
+      - name: Build
+        run: ./publish.cmd
+      - name: Test
+        run: dotnet test --no-restore

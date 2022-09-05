@@ -16,13 +16,12 @@ public partial class LibraryBookcase : FillableContainer
 
     public override void AcquireContent()
     {
-        if (_rawContentType != FillableContentType.None)
+        if (ContentType != FillableContentType.None)
         {
             return;
         }
 
-        RawContentType = FillableContentType.Library;
-        Respawn();
+        ContentType = FillableContentType.Library;
     }
 }
 

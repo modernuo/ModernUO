@@ -20,12 +20,6 @@ namespace Server;
 [SerializationGenerator(0)]
 public partial class ResistanceMod : MobileMod
 {
-    // Field 0
-    private int _offset;
-
-    // Field 1
-    private ResistanceType _type;
-
     public ResistanceMod(Mobile owner) : base(owner)
     {
     }
@@ -36,7 +30,7 @@ public partial class ResistanceMod : MobileMod
         _offset = offset;
     }
 
-    [SerializableField(0)]
+    [SerializableProperty(0)]
     public ResistanceType Type
     {
         get => _type;
@@ -52,7 +46,7 @@ public partial class ResistanceMod : MobileMod
         }
     }
 
-    [SerializableField(1)]
+    [SerializableProperty(1)]
     public int Offset
     {
         get => _offset;
