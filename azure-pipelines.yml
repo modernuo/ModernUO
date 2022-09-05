@@ -9,7 +9,7 @@ variables:
 
 jobs:
 - job: BuildWindows
-  displayName: 'Windows Server 2019'
+  displayName: 'Windows Server 2022'
   pool:
     vmImage: 'windows-latest'
 
