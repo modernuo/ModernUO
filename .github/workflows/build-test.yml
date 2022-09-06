@@ -28,7 +28,7 @@ jobs:
       with:
         dotnet-version: 6.0.400
     - name: Build
-      run: ./publish.cmd
+      run: ./publish.cmd Release
     - name: Test
       run: dotnet test --no-restore
 
@@ -56,6 +56,6 @@ jobs:
         with:
           dotnet-version: 6.0.400
       - name: Build
-        run: ./publish.cmd
+        run: ./publish.cmd Release
       - name: Test
         run: dotnet test --no-restore
