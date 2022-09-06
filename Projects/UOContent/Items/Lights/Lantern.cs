@@ -11,7 +11,7 @@ public partial class Lantern : BaseEquipableLight
     [Constructible]
     public Lantern() : base(0xA25)
     {
-        Duration = FullDuration;
+        Duration = Burnout ? FullDuration : TimeSpan.Zero;
 
         Burning = false;
         Light = LightType.Circle300;
