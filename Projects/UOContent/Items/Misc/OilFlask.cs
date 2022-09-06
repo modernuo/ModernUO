@@ -75,7 +75,7 @@ public partial class FishOilFlask : OilFlask
     }
 
     public override int LabelNumber => 1150863; // fish oil flask
-    public override int FilledMessageNumber => 1150865; //You fill the lamp with fish oil. It should burn for a nice long time.
+    public override int FilledMessageNumber => 1150865; // You fill the lamp with fish oil. It should burn for a nice long time.
     public override double FillMultiplier => 2;
 }
 
