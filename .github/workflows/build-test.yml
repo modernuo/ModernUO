@@ -56,6 +56,6 @@ jobs:
         with:
           dotnet-version: 6.0.400
       - name: Build
-        run: ./publish.cmd linux
+        run: ./publish.cmd Release linux
       - name: Test
         run: dotnet test --no-restore
