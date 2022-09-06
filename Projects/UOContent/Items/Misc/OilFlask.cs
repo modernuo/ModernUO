@@ -1,3 +1,4 @@
+using System.Linq;
 using ModernUO.Serialization;
 using Server.Targeting;
 
@@ -25,43 +26,54 @@ public partial class OilFlask : Item
 
     private void OnTargetPicked(Mobile from, object targeted)
     {
-        switch (targeted)
+        if (targeted is Lantern lantern)
         {
-            case Lantern lantern:
-                if (!lantern.Movable || (lantern.Protected && from.AccessLevel == AccessLevel.Player))
+            if (!lantern.Movable || (lantern.Protected && from.AccessLevel == AccessLevel.Player))
+            {
+                from.SendLocalizedMessage(500685); // You can't use that, it belongs to someone else.
+                return;
+            }
+
+            var wasBurning = lantern.Burning;
+            lantern.Douse();
+            lantern.Duration = Lantern.FullDuration * FillMultiplier;
+            lantern.BurntOut = false;
+
+            if (wasBurning)
+            {
+                lantern.Ignite();
+            }
+
+            from.SendLocalizedMessage(FilledMessageNumber);
+
+            var emptyFlask = new EmptyOilFlask();
+            if (Parent is Container container)
+            {
+                container.AddItem(emptyFlask);
+                emptyFlask.Location = Location;
+            }
+            else
+            {
+                emptyFlask.MoveToWorld(GetWorldLocation(), Map);
+            }
+
+            if (!from.PlaceInBackpack(emptyFlask))
+            {
+                var eable = from.GetItemsInRange(0);
+
+                if (!eable.Any(i => i.StackWith(from, i, false)))
                 {
-                    from.SendLocalizedMessage(500685); // You can't use that, it belongs to someone else.
-                    return;
+                    emptyFlask.MoveToWorld(Location, Map);
                 }
 
-                var wasBurning = lantern.Burning;
-                lantern.Douse();
-                lantern.Duration = Lantern.FullDuration * FillMultiplier;
-                lantern.BurntOut = false;
+                eable.Free();
+            }
 
-                if (wasBurning)
-                {
-                    lantern.Ignite();
-                }
-
-                from.SendLocalizedMessage(FilledMessageNumber);
-
-                var emptyFlask = new EmptyOilFlask();
-                if (Parent is Container container)
-                {
-                    container.AddItem(emptyFlask);
-                    emptyFlask.Location = Location;
-                }
-                else
-                {
-                    emptyFlask.MoveToWorld(GetWorldLocation(), Map);
-                }
-                Consume(1);
-                break;
-
-            default:
-                from.SendLocalizedMessage(502218); // You cannot use that.
-                break;
+            Consume(1);
+        }
+        else
+        {
+            from.SendLocalizedMessage(502218); // You cannot use that.
         }
     }
 }
