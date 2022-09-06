@@ -55,7 +55,7 @@ jobs:
       packageType: sdk
       version: 6.0.400
   - task: NuGetAuthenticate@0
-  - script: ./publish.cmd Release $(os)
+  - script: ./publish.cmd Release linux
     displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'
