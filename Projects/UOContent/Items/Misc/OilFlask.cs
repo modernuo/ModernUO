@@ -27,7 +27,7 @@ public partial class OilFlask : Item
     {
         if (targeted is Lantern lantern)
         {
-            if (!lantern.Movable || (lantern.Protected && from.AccessLevel == AccessLevel.Player))
+            if (!lantern.Movable || lantern.Protected && from.AccessLevel == AccessLevel.Player)
             {
                 from.SendLocalizedMessage(500685); // You can't use that, it belongs to someone else.
                 return;
