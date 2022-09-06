@@ -46,16 +46,6 @@ public partial class OilFlask : Item
             from.SendLocalizedMessage(FilledMessageNumber);
 
             var emptyFlask = new EmptyOilFlask();
-            if (Parent is Container container)
-            {
-                container.AddItem(emptyFlask);
-                emptyFlask.Location = Location;
-            }
-            else
-            {
-                emptyFlask.MoveToWorld(GetWorldLocation(), Map);
-            }
-
             if (!from.PlaceInBackpack(emptyFlask))
             {
                 var didStack = false;
