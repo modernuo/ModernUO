@@ -6,10 +6,12 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class Lantern : BaseEquipableLight
 {
+    public static readonly TimeSpan FullDuration = TimeSpan.FromMinutes(20);
+
     [Constructible]
     public Lantern() : base(0xA25)
     {
-        Duration = Burnout ? TimeSpan.FromMinutes(20) : TimeSpan.Zero;
+        Duration = FullDuration;
 
         Burning = false;
         Light = LightType.Circle300;
