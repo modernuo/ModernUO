@@ -73,15 +73,17 @@ namespace Server.Items
         private static int RandomSize() =>
             Utility.RandomDouble() switch
             {
-                < 0.12 => 0x19B7, // Small
-                < 0.18 => 0x19B8, // Medium clump
-                < 0.25 => 0x19BA, // Medium
-                _      => 0x19B9  // Large
+                < 0.125  => 0x19B7, // Small
+                < 0.1875 => 0x19B8, // Medium clump
+                < 0.25   => 0x19BA, // Medium
+                _        => 0x19B9  // Large
             };
 
         public override bool CanStackWith(Item dropped) =>
-            dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.Hue == Hue &&
-            dropped.Name == Name && dropped.Amount + Amount <= 60000 && dropped != this;
+            dropped.Stackable && Stackable && dropped.Hue == Hue &&
+            dropped.GetType() == GetType() && dropped.ItemID == ItemID &&
+            (dropped as BaseOre)?._resource == _resource && dropped.Name == Name &&
+            dropped.Amount + Amount <= 60000 && dropped != this;
 
         public override void AddNameProperty(IPropertyList list)
         {
@@ -210,9 +212,8 @@ namespace Server.Items
 
                     if (m_Ore.ItemID == 0x19B7 && m_Ore.Amount < 2)
                     {
-                        from.SendLocalizedMessage(
-                            501987
-                        ); // There is not enough metal-bearing ore in this pile to make an ingot.
+                        // There is not enough metal-bearing ore in this pile to make an ingot.
+                        from.SendLocalizedMessage(501987);
                         return;
                     }
 
