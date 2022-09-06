@@ -1,4 +1,3 @@
-using System.Linq;
 using ModernUO.Serialization;
 using Server.Targeting;
 
@@ -59,14 +58,22 @@ public partial class OilFlask : Item
 
             if (!from.PlaceInBackpack(emptyFlask))
             {
+                var didStack = false;
                 var eable = from.GetItemsInRange(0);
 
-                if (!eable.Any(i => i.StackWith(from, i, false)))
+                foreach (var i in eable)
                 {
-                    emptyFlask.MoveToWorld(Location, Map);
+                    if (i.StackWith(from, this, false))
+                    {
+                        didStack = true;
+                        break;
+                    }
                 }
 
                 eable.Free();
+
+                if (!didStack)
+                    emptyFlask.MoveToWorld(Location, Map);
             }
 
             Consume(1);
