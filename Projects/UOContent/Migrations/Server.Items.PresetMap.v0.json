@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.PresetMap",
+  "properties": [
+    {
+      "name": "LabelNumber",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
