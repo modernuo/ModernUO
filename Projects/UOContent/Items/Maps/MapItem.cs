@@ -282,7 +282,7 @@ public partial class MapItem : Item, ICraftable
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        // Version 0 doesn't serialize Facet and Editable
+        // Version 0 doesn't serialize Facet/Editable, and count is not encoded
 
         Bounds = reader.ReadRect2D();
 
