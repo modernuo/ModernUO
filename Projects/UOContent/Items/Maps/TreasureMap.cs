@@ -19,7 +19,7 @@ public partial class TreasureMap : MapItem
     private static Point2D[] _locations;
     private static Point2D[] _havenLocations;
 
-    private static Type[][] m_SpawnTypes =
+    private static Type[][] _spawnTypes =
     {
         new[] { typeof(HeadlessOne), typeof(Skeleton) },
         new[] { typeof(Mongbat), typeof(Ratman), typeof(HeadlessOne), typeof(Skeleton), typeof(Zombie) },
@@ -194,13 +194,13 @@ public partial class TreasureMap : MapItem
 
     public static BaseCreature Spawn(int level, Point3D p, bool guardian)
     {
-        if (level >= 0 && level < m_SpawnTypes.Length)
+        if (level >= 0 && level < _spawnTypes.Length)
         {
             BaseCreature bc;
 
             try
             {
-                bc = m_SpawnTypes[level].RandomElement().CreateInstance<BaseCreature>();
+                bc = _spawnTypes[level].RandomElement().CreateInstance<BaseCreature>();
             }
             catch
             {

@@ -1,44 +1,28 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class HeartOfTheLion : PlateChest
 {
-    public class HeartOfTheLion : PlateChest
+    [Constructible]
+    public HeartOfTheLion()
     {
-        [Constructible]
-        public HeartOfTheLion()
-        {
-            Hue = 0x501;
-            Attributes.Luck = 95;
-            Attributes.DefendChance = 15;
-            ArmorAttributes.LowerStatReq = 100;
-            ArmorAttributes.MageArmor = 1;
-        }
-
-        public HeartOfTheLion(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1070817; // Heart of the Lion
-
-        public override int BasePhysicalResistance => 15;
-        public override int BaseFireResistance => 10;
-        public override int BaseColdResistance => 10;
-        public override int BasePoisonResistance => 10;
-        public override int BaseEnergyResistance => 10;
-
-        public override int InitMinHits => 255;
-        public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Hue = 0x501;
+        Attributes.Luck = 95;
+        Attributes.DefendChance = 15;
+        ArmorAttributes.LowerStatReq = 100;
+        ArmorAttributes.MageArmor = 1;
     }
+
+    public override int LabelNumber => 1070817; // Heart of the Lion
+
+    public override int BasePhysicalResistance => 15;
+    public override int BaseFireResistance => 10;
+    public override int BaseColdResistance => 10;
+    public override int BasePoisonResistance => 10;
+    public override int BaseEnergyResistance => 10;
+
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 }

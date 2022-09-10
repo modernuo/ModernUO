@@ -1,31 +1,15 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class SeahorseStatuette : MonsterStatuette
 {
-    public class SeahorseStatuette : MonsterStatuette
+    private static int[] _hues = { 0, 0x482, 0x489, 0x495, 0x4F2 };
+    [Constructible]
+    public SeahorseStatuette() : base(MonsterStatuetteType.Seahorse)
     {
-        [Constructible]
-        public SeahorseStatuette() : base(MonsterStatuetteType.Seahorse)
-        {
-            LootType = LootType.Regular;
-
-            Hue = Utility.RandomList(0, 0x482, 0x489, 0x495, 0x4F2);
-        }
-
-        public SeahorseStatuette(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        LootType = LootType.Regular;
+        Hue = _hues.RandomElement();
     }
 }

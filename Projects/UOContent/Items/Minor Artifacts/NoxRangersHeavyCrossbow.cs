@@ -1,50 +1,32 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class NoxRangersHeavyCrossbow : HeavyCrossbow
 {
-    public class NoxRangersHeavyCrossbow : HeavyCrossbow
+    [Constructible]
+    public NoxRangersHeavyCrossbow()
     {
-        [Constructible]
-        public NoxRangersHeavyCrossbow()
-        {
-            Hue = 0x58C;
-            WeaponAttributes.HitLeechStam = 40;
-            Attributes.SpellChanneling = 1;
-            Attributes.WeaponSpeed = 30;
-            Attributes.WeaponDamage = 20;
-            WeaponAttributes.ResistPoisonBonus = 10;
-        }
+        Hue = 0x58C;
+        WeaponAttributes.HitLeechStam = 40;
+        Attributes.SpellChanneling = 1;
+        Attributes.WeaponSpeed = 30;
+        Attributes.WeaponDamage = 20;
+        WeaponAttributes.ResistPoisonBonus = 10;
+    }
 
-        public NoxRangersHeavyCrossbow(Serial serial) : base(serial)
-        {
-        }
+    public override int LabelNumber => 1063485;
 
-        public override int LabelNumber => 1063485;
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-        public override int InitMinHits => 255;
-        public override int InitMaxHits => 255;
-
-        public override void GetDamageTypes(
-            Mobile wielder, out int phys, out int fire, out int cold, out int pois,
-            out int nrgy, out int chaos, out int direct
-        )
-        {
-            pois = 50;
-            phys = 50;
-
-            fire = cold = nrgy = chaos = direct = 0;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public override void GetDamageTypes(
+        Mobile wielder, out int phys, out int fire, out int cold, out int pois,
+        out int nrgy, out int chaos, out int direct
+    )
+    {
+        pois = phys = 50;
+        fire = cold = nrgy = chaos = direct = 0;
     }
 }
