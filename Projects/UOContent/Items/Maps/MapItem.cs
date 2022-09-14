@@ -284,17 +284,18 @@ public partial class MapItem : Item, ICraftable
     {
         // Version 0 doesn't serialize Facet/Editable, and count is not encoded
 
-        Bounds = reader.ReadRect2D();
+        _bounds = reader.ReadRect2D();
 
-        Width = reader.ReadInt();
-        Height = reader.ReadInt();
+        _width = reader.ReadInt();
+        _height = reader.ReadInt();
 
-        Protected = reader.ReadBool();
+        _protected = reader.ReadBool();
 
         var count = reader.ReadInt();
+        _pins = new List<Point2D>(count);
         for (var i = 0; i < count; i++)
         {
-            Pins.Add(reader.ReadPoint2D());
+            _pins.Add(reader.ReadPoint2D());
         }
     }
 }
