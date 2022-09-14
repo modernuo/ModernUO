@@ -242,6 +242,21 @@ namespace Server
             Items = EntityPersistence.LoadIndex(basePath, itemIndexInfo, out List<EntityIndex<Item>> items);
             Guilds = EntityPersistence.LoadIndex(basePath, guildIndexInfo, out List<EntityIndex<BaseGuild>> guilds);
 
+            if (Mobiles.Count > 0)
+            {
+                _lastMobile = Mobiles.Keys.Max();
+            }
+
+            if (Items.Count > 0)
+            {
+                _lastItem = Items.Keys.Max();
+            }
+
+            if (Guilds.Count > 0)
+            {
+                _lastGuild = Guilds.Keys.Max();
+            }
+
             EntityPersistence.LoadData(basePath, mobileIndexInfo, mobiles);
             EntityPersistence.LoadData(basePath, itemIndexInfo, items);
             EntityPersistence.LoadData(basePath, guildIndexInfo, guilds);
