@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Server.Logging;
 
@@ -86,6 +87,12 @@ namespace Server.Accounting
             IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
 
             _accountsById = EntityPersistence.LoadIndex(path, indexInfo, out List<EntityIndex<Account>> accounts);
+
+            if (_accountsById.Count > 0)
+            {
+                _lastAccount = _accountsById.Keys.Max();
+            }
+
             EntityPersistence.LoadData(path, indexInfo, accounts);
 
             foreach (var a in _accountsById.Values)
