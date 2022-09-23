@@ -493,6 +493,9 @@ namespace Server.Commands
                     }
                 }
 
+                // Make light never run out of fuel.
+                light.Duration = TimeSpan.Zero;
+
                 if (!unlit)
                 {
                     light.Ignite();

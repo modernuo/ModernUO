@@ -20,7 +20,7 @@ jobs:
       packageType: sdk
       version: 6.0.400
   - task: NuGetAuthenticate@0
-  - script: ./publish.cmd Release win
+  - script: ./publish.cmd Release
     displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'
@@ -30,16 +30,12 @@ jobs:
     matrix:
       'CentOS 8':
         containerImage: centos:8
-        os: centos.8
       'CentOS 7':
         containerImage: centos:7
-        os: centos.7
       'Debian 11':
         containerImage: mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim
-        os: debian.11
       'Ubuntu 20':
         containerImage: mcr.microsoft.com/dotnet/sdk:6.0-focal
-        os: ubuntu.20.04
 
   displayName: Linux
 
@@ -55,7 +51,7 @@ jobs:
       packageType: sdk
       version: 6.0.400
   - task: NuGetAuthenticate@0
-  - script: ./publish.cmd Release $(os)
+  - script: ./publish.cmd Release
     displayName: 'Build'
   - script: dotnet test --no-restore
     displayName: 'Test'

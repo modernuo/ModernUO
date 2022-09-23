@@ -102,6 +102,9 @@ namespace Server.Items
         [SerializableFieldSaveFlag(10)]
         private bool ShouldSerializeCrafter() => _crafter != null;
 
+        // Field 11
+        private ArmorQuality _quality = ArmorQuality.Regular;
+
         [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
 
@@ -190,19 +193,13 @@ namespace Server.Items
         public virtual int OldDexReq => 0;
         public virtual int OldIntReq => 0;
 
-        [SerializableProperty(11)]
+        [SerializableProperty(11, useField: nameof(_quality))]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorQuality Quality
         {
             get => _quality;
             set
             {
-                if (World.Loading)
-                {
-                    _quality = value;
-                    return;
-                }
-
                 UnscaleDurability();
                 _quality = value;
                 ScaleDurability();
@@ -219,12 +216,6 @@ namespace Server.Items
             get => _durability;
             set
             {
-                if (World.Loading)
-                {
-                    _durability = value;
-                    return;
-                }
-
                 UnscaleDurability();
                 _durability = value;
                 ScaleDurability();

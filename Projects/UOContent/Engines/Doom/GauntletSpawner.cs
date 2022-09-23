@@ -84,63 +84,10 @@ namespace Server.Engines.Doom
             get => m_State;
             set
             {
-                if (m_State == value)
+                if (m_State != value)
                 {
-                    return;
-                }
-
-                m_State = value;
-
-                var hue = 0;
-                var lockDoors = m_State == GauntletSpawnerState.InProgress;
-
-                hue = m_State switch
-                {
-                    GauntletSpawnerState.InSequence => InSequenceItemHue,
-                    GauntletSpawnerState.InProgress => InProgressItemHue,
-                    GauntletSpawnerState.Completed  => CompletedItemHue,
-                    _                               => hue
-                };
-
-                if (Door != null)
-                {
-                    Door.Hue = hue;
-                    Door.Locked = lockDoors;
-
-                    if (lockDoors)
-                    {
-                        Door.KeyValue = Key.RandomValue();
-                        Door.Open = false;
-                    }
-
-                    if (Door.Link != null)
-                    {
-                        Door.Link.Hue = hue;
-                        Door.Link.Locked = lockDoors;
-
-                        if (lockDoors)
-                        {
-                            Door.Link.KeyValue = Key.RandomValue();
-                            Door.Open = false;
-                        }
-                    }
-                }
-
-                if (Addon != null)
-                {
-                    Addon.Hue = hue;
-                }
-
-                if (m_State == GauntletSpawnerState.InProgress)
-                {
-                    CreateRegion();
-                    FullSpawn();
-
-                    Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Slice, out _timerToken);
-                }
-                else
-                {
-                    Stop();
+                    m_State = value;
+                    Update();
                 }
             }
         }
@@ -150,6 +97,64 @@ namespace Server.Engines.Doom
         public List<BaseTrap> Traps { get; set; }
 
         public Region Region { get; set; }
+
+        private void Update(bool shouldSpawn = true)
+        {
+            var lockDoors = m_State == GauntletSpawnerState.InProgress;
+
+            var hue = m_State switch
+            {
+                GauntletSpawnerState.InSequence => InSequenceItemHue,
+                GauntletSpawnerState.InProgress => InProgressItemHue,
+                GauntletSpawnerState.Completed  => CompletedItemHue,
+                _                               => 0
+            };
+
+            if (Door != null)
+            {
+                Door.Hue = hue;
+                Door.Locked = lockDoors;
+
+                if (lockDoors)
+                {
+                    Door.KeyValue = Key.RandomValue();
+                    Door.Open = false;
+                }
+
+                if (Door.Link != null)
+                {
+                    Door.Link.Hue = hue;
+                    Door.Link.Locked = lockDoors;
+
+                    if (lockDoors)
+                    {
+                        Door.Link.KeyValue = Key.RandomValue();
+                        Door.Open = false;
+                    }
+                }
+            }
+
+            if (Addon != null)
+            {
+                Addon.Hue = hue;
+            }
+
+            if (m_State == GauntletSpawnerState.InProgress)
+            {
+                CreateRegion();
+
+                if (shouldSpawn)
+                {
+                    FullSpawn();
+                }
+
+                Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Slice, out _timerToken);
+            }
+            else
+            {
+                Stop();
+            }
+        }
 
         public override string DefaultName => "doom spawner";
 
@@ -222,11 +227,9 @@ namespace Server.Engines.Doom
                 return;
             }
 
-            BaseTrap trap;
-
             var random = Utility.Random(100);
 
-            trap = random switch
+            BaseTrap trap = random switch
             {
                 < 22 => new SawTrap(Utility.RandomBool() ? SawTrapType.WestFloor : SawTrapType.NorthFloor),
                 < 44 => new SpikeTrap(Utility.RandomBool() ? SpikeTrapType.WestFloor : SpikeTrapType.NorthFloor),
@@ -446,11 +449,13 @@ namespace Server.Engines.Doom
                         Addon = reader.ReadEntity<BaseAddon>();
                         Sequence = reader.ReadEntity<GauntletSpawner>();
 
-                        State = (GauntletSpawnerState)reader.ReadInt();
+                        m_State = (GauntletSpawnerState)reader.ReadInt();
 
                         break;
                     }
             }
+
+            Timer.DelayCall(() => Update(false));
         }
     }
 }
