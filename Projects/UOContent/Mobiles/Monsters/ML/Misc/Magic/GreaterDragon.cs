@@ -45,6 +45,8 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 5;
             MinTameSkill = 104.7;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public GreaterDragon(Serial serial) : base(serial)
@@ -54,9 +56,7 @@ namespace Server.Mobiles
         public override string CorpseName => "a dragon corpse";
         public override bool StatLossAfterTame => true;
         public override string DefaultName => "a greater dragon";
-
         public override bool ReacquireOnMovement => !Controlled;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => !Controlled;
         public override int TreasureMapLevel => 5;
         public override int Meat => 19;

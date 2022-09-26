@@ -39,6 +39,8 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
+            AddAbility(MonsterAbility.FireBreath);
+
             if (Utility.RandomBool())
             {
                 PackItem(new SulfurousAsh(4));
@@ -57,8 +59,6 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a deep sea serpents corpse";
         public override string DefaultName => "a deep sea serpent";
-
-        public override bool HasBreath => true;
         public override int Meat => 1;
         public override int Scales => 8;
         public override ScaleType ScaleType => ScaleType.Blue;

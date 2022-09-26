@@ -37,6 +37,8 @@ namespace Server.Mobiles
 
             VirtualArmor = 24;
 
+            AddAbility(MonsterAbility.FireBreath);
+
             PackItem(new SulfurousAsh());
         }
 
@@ -48,8 +50,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a lava snake";
 
         public override bool DeathAdderCharmable => true;
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 1;
 
         public override void GenerateLoot()

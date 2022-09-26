@@ -37,6 +37,8 @@ namespace Server.Mobiles
             Karma = -3500;
 
             VirtualArmor = 32;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public FireGargoyle(Serial serial) : base(serial)
@@ -45,7 +47,6 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a charred corpse";
 
-        public override bool HasBreath => true; // fire breath enabled
         public override int TreasureMapLevel => 1;
         public override int Meat => 1;
         public override bool CanFly => true;

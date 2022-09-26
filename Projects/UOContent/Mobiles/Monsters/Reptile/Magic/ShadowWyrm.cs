@@ -36,6 +36,8 @@ namespace Server.Mobiles
             Karma = -22500;
 
             VirtualArmor = 70;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public ShadowWyrm(Serial serial) : base(serial)
@@ -44,9 +46,7 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a shadow wyrm corpse";
         public override string DefaultName => "a shadow wyrm";
-
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => true;
         public override Poison PoisonImmune => Poison.Deadly;
         public override Poison HitPoison => Poison.Deadly;

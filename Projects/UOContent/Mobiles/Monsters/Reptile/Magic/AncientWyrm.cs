@@ -36,6 +36,8 @@ namespace Server.Mobiles
             Karma = -22500;
 
             VirtualArmor = 70;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public AncientWyrm(Serial serial) : base(serial)
@@ -46,7 +48,6 @@ namespace Server.Mobiles
         public override string DefaultName => "an ancient wyrm";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => true;
         public override HideType HideType => HideType.Barbed;
         public override int Hides => 40;

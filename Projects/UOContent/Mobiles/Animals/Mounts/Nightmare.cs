@@ -88,6 +88,8 @@ namespace Server.Mobiles
             }
 
             PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public Nightmare(Serial serial) : base(serial)
@@ -95,8 +97,6 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a nightmare corpse";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 5;
         public override int Hides => 10;
         public override HideType HideType => HideType.Barbed;

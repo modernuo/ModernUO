@@ -37,19 +37,17 @@ namespace Server.Mobiles
 
             Tamable = false;
             ControlSlots = 1;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
-        public UnholySteed(Serial serial)
-            : base(serial)
+        public UnholySteed(Serial serial) : base(serial)
         {
         }
 
         public override string CorpseName => "an unholy corpse";
         public override bool IsDispellable => false;
         public override bool IsBondable => false;
-
-        public override bool HasBreath => true;
-        public override bool CanBreath => true;
 
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 

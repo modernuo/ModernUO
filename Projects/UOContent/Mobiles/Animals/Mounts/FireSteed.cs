@@ -37,6 +37,8 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 2;
             MinTameSkill = 106.0;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public FireSteed(Serial serial) : base(serial)
@@ -44,8 +46,6 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a fire steed corpse";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Daemon | PackInstinct.Equine;
 

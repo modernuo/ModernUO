@@ -48,6 +48,8 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
+            AddAbility(_ability);
+
             PackItem(new MessageInABottle());
 
             var rope = new Rope();
@@ -69,14 +71,6 @@ namespace Server.Mobiles
 
         public override string DefaultName => "a leviathan";
 
-        public override bool HasBreath => true;
-        public override int BreathPhysicalDamage => 70; // TODO: Verify damage type
-        public override int BreathColdDamage => 30;
-        public override int BreathFireDamage => 0;
-        public override int BreathEffectHue => 0x1ED;
-        public override double BreathDamageScalar => 0.05;
-        public override double BreathMinDelay => 5.0;
-        public override double BreathMaxDelay => 7.5;
 
         public override int TreasureMapLevel => 5;
 
@@ -175,6 +169,19 @@ namespace Server.Mobiles
             }
 
             Fisher = null;
+        }
+
+        private static MonsterAbility _ability = new LevianthanBreath();
+
+        public class LevianthanBreath : FireBreath
+        {
+            public override int BreathPhysicalDamage => 70;
+            public override int BreathColdDamage => 30;
+            public override int BreathFireDamage => 0;
+            public override int BreathEffectHue => 0x1ED;
+            public override double BreathDamageScalar => 0.05;
+            public override TimeSpan MinTriggerCooldown => TimeSpan.FromSeconds(5.0);
+            public override TimeSpan MaxTriggerCooldown => TimeSpan.FromSeconds(7.5);
         }
     }
 }

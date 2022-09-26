@@ -37,6 +37,8 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 1;
             MinTameSkill = 71.1;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public HellCat(Serial serial) : base(serial)
@@ -46,7 +48,6 @@ namespace Server.Mobiles
         public override string CorpseName => "a hell cat corpse";
         public override string DefaultName => "a hell cat";
 
-        public override bool HasBreath => true; // fire breath enabled
         public override int Hides => 10;
         public override HideType HideType => HideType.Spined;
         public override FoodType FavoriteFood => FoodType.Meat;

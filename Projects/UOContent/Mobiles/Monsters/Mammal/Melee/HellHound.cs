@@ -35,6 +35,8 @@ namespace Server.Mobiles
             ControlSlots = 1;
             MinTameSkill = 85.5;
 
+            AddAbility(MonsterAbility.FireBreath);
+
             PackItem(new SulfurousAsh(5));
         }
 
@@ -44,8 +46,6 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a hell hound corpse";
         public override string DefaultName => "a hell hound";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 1;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;

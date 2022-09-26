@@ -6,6 +6,8 @@ namespace Server.Mobiles
         public HellSteed(string name = "a hellsteed") : base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
         {
             SetStats(this);
+
+            AddAbility(MonsterAbility.ChaosBreath);
         }
 
         public HellSteed(Serial serial) : base(serial)
@@ -13,8 +15,6 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a hellsteed corpse";
-        public override bool HasBreath => true;
-        public override int BreathChaosDamage => 100;
         public override Poison PoisonImmune => Poison.Lethal;
 
         public static void SetStats(BaseCreature steed)

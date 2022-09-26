@@ -39,6 +39,8 @@ namespace Server.Mobiles
 
             VirtualArmor = 36;
 
+            AddAbility(MonsterAbility.FireBreath);
+
             if (Core.ML && Utility.RandomDouble() < .33)
             {
                 PackItem(Seed.RandomPeculiarSeed(2));
@@ -51,9 +53,7 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a dragon corpse";
         public override string DefaultName => "a serpentine dragon";
-
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override double BonusPetDamageScalar => Core.SE ? 3.0 : 1.0;
 
         public override bool AutoDispel => true;

@@ -42,6 +42,8 @@ namespace Server.Mobiles
             Fame = 5000;
             Karma = -5000;
 
+            AddAbility(MonsterAbility.FireBreath);
+
             var res = Utility.Random(6) switch
             {
                 0 => CraftResource.BlackScales,
@@ -96,7 +98,6 @@ namespace Server.Mobiles
         public override string CorpseName => "a chaos dragoon corpse";
         public override string DefaultName => "a chaos dragoon";
 
-        public override bool HasBreath => true;
         public override bool AutoDispel => true;
         public override bool BardImmune => !Core.AOS;
         public override bool CanRummageCorpses => true;

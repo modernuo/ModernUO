@@ -38,6 +38,8 @@ namespace Server.Mobiles
             ControlSlots = 2;
             MinTameSkill = 84.3;
 
+            AddAbility(MonsterAbility.FireBreath);
+
             PackReg(3);
         }
 
@@ -49,7 +51,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a drake";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override int TreasureMapLevel => 2;
         public override int Meat => 10;
         public override int Hides => 20;

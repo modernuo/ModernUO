@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Server.Mobiles
 {
     public class SkeletalDragon : BaseCreature
@@ -37,6 +39,8 @@ namespace Server.Mobiles
             Karma = -22500;
 
             VirtualArmor = 80;
+
+            AddAbility(MonsterAbility.ColdBreath);
         }
 
         public SkeletalDragon(Serial serial) : base(serial)
@@ -47,10 +51,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a skeletal dragon";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
-        public override int BreathFireDamage => 0;
-        public override int BreathColdDamage => 100;
-        public override int BreathEffectHue => 0x480;
 
         public override double BonusPetDamageScalar => Core.SE ? 3.0 : 1.0;
         // TODO: Undead summoning?

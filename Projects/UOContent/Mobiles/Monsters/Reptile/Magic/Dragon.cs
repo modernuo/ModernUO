@@ -38,6 +38,8 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 3;
             MinTameSkill = 93.9;
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public Dragon(Serial serial) : base(serial)
@@ -48,7 +50,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a dragon";
 
         public override bool ReacquireOnMovement => !Controlled;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => !Controlled;
         public override int TreasureMapLevel => 4;
         public override int Meat => 19;

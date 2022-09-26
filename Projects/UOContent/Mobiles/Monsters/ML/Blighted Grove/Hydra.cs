@@ -36,6 +36,8 @@ namespace Server.Mobiles
             SetSkill(SkillName.Anatomy, 75.4, 79.8);
 
             // TODO: Fame/Karma
+
+            AddAbility(MonsterAbility.FireBreath);
         }
 
         public Hydra(Serial serial)
@@ -45,8 +47,6 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a hydra corpse";
         public override string DefaultName => "a hydra";
-
-        public override bool HasBreath => true;
         public override int Hides => 40;
         public override int Meat => 19;
         public override int TreasureMapLevel => 5;

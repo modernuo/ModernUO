@@ -42,6 +42,8 @@ namespace Server.Mobiles
             Fame = 28000;
             Karma = -28000;
 
+            AddAbility(MonsterAbility.ChaosBreath);
+
             if (Utility.RandomBool())
             {
                 PackNecroScroll(Utility.RandomMinMax(5, 9));
@@ -61,9 +63,6 @@ namespace Server.Mobiles
 
         public override bool GivesMLMinorArtifact => true;
         public override bool AlwaysMurderer => true;
-        public override bool HasBreath => true;
-        public override int BreathChaosDamage => 100;
-        public override int BreathFireDamage => 0;
 
         public override void GenerateLoot()
         {
