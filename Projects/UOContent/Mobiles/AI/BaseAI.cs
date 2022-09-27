@@ -2635,7 +2635,8 @@ public abstract class BaseAI
             var bc = m as BaseCreature;
             var pm = m as PlayerMobile;
 
-            if (Core.AOS && bc?.Summoned == true && bc?.Controlled != true)
+            // Monster don't attack it's own summon
+            if (Core.AOS && bc != null && bc.Summoned && bc.SummonMaster == m_Mobile)
             {
                 continue;
             }
@@ -2722,17 +2723,17 @@ public abstract class BaseAI
             }
 
             var theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
-            //The summon is targeted when nothing else around. Otherwise this monster enters idle mode, 
-            //which players can abuse by casting EVs offscreen and this monster wont fight back
-            if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
-            {
-                enemySummonMob = m;
-                enemySummonVal = theirVal;
-            }
-            else if (theirVal > val && m_Mobile.InLOS(m))
+            if (theirVal > val && m_Mobile.InLOS(m))
             {
                 newFocusMob = m;
                 val = theirVal;
+            }
+            //The summon is targeted when nothing else around. Otherwise this monster enters idle mode, 
+            //which players can abuse by casting EVs offscreen and this monster wont fight back
+            else if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
+            {
+                enemySummonMob = m;
+                enemySummonVal = theirVal;
             }
         }
 
