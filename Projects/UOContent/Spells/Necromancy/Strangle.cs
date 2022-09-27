@@ -60,11 +60,13 @@ namespace Server.Spells.Necromancy
                 m.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
                 m.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-                if (!_table.TryGetValue(m, out var timer))
+                if (_table.TryGetValue(m, out var timer))
                 {
-                    _table[m] = timer = new InternalTimer(m, Caster);
-                    timer.Start();
+                    timer.Stop();
                 }
+                timer = new InternalTimer(m, Caster);
+                _table[m] = timer;
+                timer.Start();
 
                 HarmfulSpell(m);
             }

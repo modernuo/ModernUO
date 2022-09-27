@@ -77,8 +77,8 @@ namespace Server.Spells.Second
                 target.PlaySound(0x1E9);
                 target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
-                var physLoss = Math.Max(0, -15 + (int)(caster.Skills.Inscribe.Value / 20));
-                var resistLoss = Math.Max(0, -35 + (int)(caster.Skills.Inscribe.Value / 20));
+                var physLoss = -15 + (int)(caster.Skills.Inscribe.Value / 20);
+                var resistLoss = -35 + (int)(caster.Skills.Inscribe.Value / 20);
                 var physMod = new ResistanceMod(ResistanceType.Physical, physLoss);
                 var resistMod = new DefaultSkillMod(SkillName.MagicResist, true, resistLoss);
 

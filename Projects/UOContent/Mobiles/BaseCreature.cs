@@ -125,7 +125,11 @@ namespace Server.Mobiles
             m_Damage = damage;
         }
 
-        public int CompareTo(DamageStore ds) => ds?.m_Damage ?? 0 - m_Damage;
+        public int CompareTo(DamageStore ds)
+        {
+            var otherDmg = ds?.m_Damage ?? 0;
+            return otherDmg.CompareTo(m_Damage);
+        }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -3062,7 +3066,7 @@ namespace Server.Mobiles
             if (rights.Count > 0)
             {
                 // This would be the first valid person attacking it.  Gets a 25% bonus.  Per 1/19/07 Five on Friday
-                rights[0].m_Damage = (int)(rights[0].m_Damage * 1.25);
+                rights[rights.Count - 1].m_Damage *= (int) 1.25;
 
                 if (rights.Count > 1)
                 {

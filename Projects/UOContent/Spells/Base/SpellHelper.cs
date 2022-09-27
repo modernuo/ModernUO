@@ -213,7 +213,7 @@ namespace Server.Spells
             {
                 var info = m.Aggressed[i];
 
-                if (info.Defender.Player && Core.Now - info.LastCombatTime < CombatHeatDelay)
+                if (info.Defender.Player && info.Attacker == m && Core.Now - info.LastCombatTime < CombatHeatDelay)
                 {
                     return true;
                 }
@@ -225,7 +225,7 @@ namespace Server.Spells
                 {
                     var info = m.Aggressors[i];
 
-                    if (info.Attacker.Player && Core.Now - info.LastCombatTime < CombatHeatDelay)
+                    if (info.Attacker.Player && info.Attacker == m && Core.Now - info.LastCombatTime < CombatHeatDelay)
                     {
                         return true;
                     }

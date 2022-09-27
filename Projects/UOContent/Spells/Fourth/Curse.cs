@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Targeting;
 
@@ -15,7 +16,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly HashSet<Mobile> _underEffect = new();
+        private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
         public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -37,13 +38,21 @@ namespace Server.Spells.Fourth
                 SpellHelper.AddStatCurse(Caster, m, StatType.Int);
                 SpellHelper.DisableSkillCheck = false;
 
-                // On OSI you CAN curse yourself and get this effect.
-                if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m))
+                var length = SpellHelper.GetDuration(Caster, m);
+                if (Caster.Player && m.Player)
                 {
                     var duration = SpellHelper.GetDuration(Caster, m);
-                    _underEffect.Add(m);
-                    Timer.StartTimer(duration, () => RemoveEffect(m));
-                    m.UpdateResistances();
+                    var timer = new ExpireTimer(m, length);
+                    if (_table.TryGetValue(m, out var existingTimer))
+                    {
+                        existingTimer.Stop();
+                    }
+                    else
+                    {
+                        m.UpdateResistances();
+                    }
+                    timer.Start();
+                    _table[m] = timer;
                 }
 
                 m.Spell?.OnCasterHurt();
@@ -54,8 +63,6 @@ namespace Server.Spells.Fourth
                 m.PlaySound(0x1E1);
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
-
                 var args = $"{percentage}\t{percentage}\t{percentage}\t{10}\t{10}\t{10}\t{10}";
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Curse, 1075835, 1075836, length, m, args));
@@ -73,11 +80,27 @@ namespace Server.Spells.Fourth
 
         public static bool RemoveEffect(Mobile m)
         {
-            var effectRemoved = _underEffect.Remove(m);
+            var effectRemoved = _table.Remove(m);
             m.UpdateResistances();
             return effectRemoved;
         }
 
-        public static bool UnderEffect(Mobile m) => _underEffect.Contains(m);
+        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
+
+        private class ExpireTimer : Timer
+        {
+            private Mobile _mobile;
+
+            public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
+            {
+                _mobile = m;
+            }
+
+            protected override void OnTick()
+            {
+                Stop();
+                RemoveEffect(_mobile);
+            }
+        }
     }
 }
