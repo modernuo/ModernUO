@@ -1924,24 +1924,6 @@ namespace Server.Items
                     lifeLeech += 50; // Additional 50% life leech for cursed weapons (necro spell)
                 }
 
-                context = TransformationSpellHelper.GetContext(attacker);
-
-                if (context?.Type == typeof(VampiricEmbraceSpell))
-                {
-                    lifeLeech += 20; // Vampiric embrace gives an additional 20% life leech
-                }
-
-                if (context?.Type == typeof(WraithFormSpell))
-                {
-                    // Wraith form gives an additional 5-20% mana leech
-                    var wraithLeech = 5 + (int)(15 * attacker.Skills.SpiritSpeak.Value / 100);
-
-                    // Mana leeched by the Wraith Form spell is actually stolen, not just leeched.
-                    defender.Mana -= AOS.Scale(damageGiven, wraithLeech);
-
-                    manaLeech += wraithLeech;
-                }
-
                 if (lifeLeech != 0)
                 {
                     attacker.Hits += AOS.Scale(damageGiven, lifeLeech);

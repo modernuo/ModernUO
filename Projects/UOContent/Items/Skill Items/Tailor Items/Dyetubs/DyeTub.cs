@@ -23,8 +23,6 @@ namespace Server.Items
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private bool _redyable;
 
-        private int _dyedHue;
-
         [Constructible]
         public DyeTub() : base(0xFAB)
         {
@@ -44,7 +42,7 @@ namespace Server.Items
 
         public virtual bool AllowDyables => true;
 
-        [SerializableField(2)]
+        [SerializableProperty(2)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DyedHue
         {

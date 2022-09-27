@@ -43,16 +43,13 @@ namespace Server.Items
     [SerializationGenerator(2, false)]
     public partial class ThighBoots : BaseShoes, IArcaneEquip
     {
-        private int _maxArcaneCharges;
-        private int _curArcaneCharges;
-
         [Constructible]
         public ThighBoots(int hue = 0) : base(0x1711, hue) => Weight = 4.0;
 
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
         [EncodedInt]
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurArcaneCharges
         {
@@ -67,7 +64,7 @@ namespace Server.Items
         }
 
         [EncodedInt]
-        [SerializableField(1)]
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxArcaneCharges
         {

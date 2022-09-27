@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "type": "Server.Items.MapItem",
+  "properties": [
+    {
+      "name": "Bounds",
+      "type": "Server.Rectangle2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Rect2D"
+      ]
+    },
+    {
+      "name": "Width",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Height",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Protected",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Pins",
+      "type": "System.Collections.Generic.List\u003CServer.Point2D\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "",
+        "Server.Point2D",
+        "PrimitiveUOTypeMigrationRule",
+        "Point2D"
+      ]
+    },
+    {
+      "name": "Facet",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    },
+    {
+      "name": "Editable",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

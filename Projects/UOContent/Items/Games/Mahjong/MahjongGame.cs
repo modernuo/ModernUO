@@ -32,12 +32,6 @@ public partial class MahjongGame : Item, ISecurable
     [SerializableField(5, setter: "private")]
     private MahjongPlayers _players;
 
-    // Field 6
-    private bool _showScores;
-
-    // Field 7
-    private bool _spectatorVision;
-
     private DateTime _lastReset;
 
     [Constructible]
@@ -56,7 +50,7 @@ public partial class MahjongGame : Item, ISecurable
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(6)]
+    [SerializableProperty(6)]
     public bool ShowScores
     {
         get => _showScores;
@@ -81,7 +75,7 @@ public partial class MahjongGame : Item, ISecurable
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(7)]
+    [SerializableProperty(7)]
     public bool SpectatorVision
     {
         get => _spectatorVision;

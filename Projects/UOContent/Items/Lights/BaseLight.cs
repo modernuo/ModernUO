@@ -12,12 +12,6 @@ public abstract partial class BaseLight : Item
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
     private bool _burntOut;
 
-    // Field 1
-    private bool _burning;
-
-    // Field 2
-    private TimeSpan _duration = TimeSpan.Zero;
-
     [SerializableField(3)]
     [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
     private bool _protected;
@@ -49,7 +43,7 @@ public abstract partial class BaseLight : Item
     public virtual int UnlitSound => 0x3be;
     public virtual int BurntOutSound => 0x4b8;
 
-    [SerializableField(1)]
+    [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Burning
     {
@@ -65,7 +59,7 @@ public abstract partial class BaseLight : Item
         }
     }
 
-    [SerializableField(2)]
+    [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
     public TimeSpan Duration
     {

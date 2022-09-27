@@ -32,6 +32,19 @@ namespace Server.Spells.Necromancy
         public override int PoisResistOffset => 0;
         public override int NrgyResistOffset => -5;
 
+        public static void DoWraithLeech(Mobile wraith, Mobile defender, int damageGiven)
+        {
+            var wraithLeech = 5 + (int)(15 * wraith.Skills.SpiritSpeak.Value / 100); // Wraith form gives 5-20% mana leech
+            var manaLeech = Math.Min(defender.Mana, AOS.Scale(damageGiven, wraithLeech));
+
+            if (manaLeech != 0)
+            {
+                wraith.Mana += manaLeech;
+                defender.Mana -= manaLeech;
+                wraith.PlaySound(0x44D);
+            }
+        }
+
         public override void DoEffect(Mobile m)
         {
             if (m is PlayerMobile mobile)

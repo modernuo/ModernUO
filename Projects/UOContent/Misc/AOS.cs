@@ -214,6 +214,11 @@ namespace Server
                 return 0;
             }
 
+            if (from != null) // sanity check
+            {
+                SpellHelper.DoLeech(totalDamage, from, m);
+            }
+
             m.Damage(totalDamage, from);
             return totalDamage;
         }

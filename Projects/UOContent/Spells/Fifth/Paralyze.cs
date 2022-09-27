@@ -41,7 +41,7 @@ namespace Server.Spells.Fifth
                 {
                     var secs = (int)(GetDamageSkill(Caster) / 10 - GetResistSkill(m) / 10);
 
-                    if (!Core.SE)
+                    if (!Core.AOS)
                     {
                         secs += 2;
                     }

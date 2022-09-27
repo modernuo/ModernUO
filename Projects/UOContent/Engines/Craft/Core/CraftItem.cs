@@ -116,8 +116,13 @@ namespace Server.Engines.Craft
 
         private int m_ResHue;
         private CraftSystem m_System;
+        private int _itemId;
 
-        public CraftItem(Type type, TextDefinition groupName, TextDefinition name)
+        public CraftItem(Type type, TextDefinition groupName, TextDefinition name) : this(type, groupName, name, -1)
+        {
+        }
+
+        public CraftItem(Type type, TextDefinition groupName, TextDefinition name, int itemId)
         {
             Resources = new List<CraftRes>();
             Skills = new List<CraftSkill>();
@@ -131,6 +136,7 @@ namespace Server.Engines.Craft
             NameNumber = name;
 
             RequiredBeverage = BeverageType.Water;
+            _itemId = itemId;
         }
 
         public bool ForceNonExceptional { get; set; }
@@ -168,6 +174,8 @@ namespace Server.Engines.Craft
         public string NameString { get; }
 
         public int NameNumber { get; }
+
+        public int ItemId => _itemId == -1 ? _itemId = ItemIDOf(ItemType) : _itemId;
 
         public List<CraftRes> Resources { get; }
 

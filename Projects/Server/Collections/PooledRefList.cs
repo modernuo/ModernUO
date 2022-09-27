@@ -143,7 +143,7 @@ public ref struct PooledRefList<T>
             {
                 if (value > 0)
                 {
-                    T[] newItems = ArrayPool.Rent(_size);
+                    T[] newItems = ArrayPool.Rent(value);
                     if (_size > 0)
                     {
                         Array.Copy(_items, newItems, _size);
@@ -1116,7 +1116,7 @@ public ref struct PooledRefList<T>
                 {
                     ThrowEnumerationNotStartedOrEnded();
                 }
-                return Current;
+                return _current;
             }
         }
 
