@@ -2051,7 +2051,7 @@ namespace Server
                 var rpm = root as Mobile;
 
                 if (ip.IsAccessibleTo(from)
-                    && ((rpm != null && rpm.CheckNonlocalDrop(from, this, ip) == true) || rpm == null)
+                    && rpm?.CheckNonlocalDrop(from, this, ip) != false
                     && (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.Location == bounce.WorldLoc)
                 )
                 {
