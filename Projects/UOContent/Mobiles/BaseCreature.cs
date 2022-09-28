@@ -3066,7 +3066,7 @@ namespace Server.Mobiles
                 }
             }
 
-            // Hande damage rights per Five on Friday: https://www.uoguide.com/Five_on_Friday_-_January_19,_2007
+            // Handle damage rights per Five on Friday: https://www.uoguide.com/Five_on_Friday_-_January_19,_2007
             if (rights.Count > 0)
             {
                 if (firstDamager != null)
