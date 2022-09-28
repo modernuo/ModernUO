@@ -26,13 +26,13 @@ namespace Server.Spells.Second
             {
                 SpellHelper.Turn(Caster, m);
 
-                SpellHelper.AddStatBonus(Caster, m, StatType.Dex);
+                var length = SpellHelper.GetDuration(Caster, m);
+                SpellHelper.AddStatBonus(Caster, m, StatType.Dex, length, false);
 
                 m.FixedParticles(0x375A, 10, 15, 5010, EffectLayer.Waist);
                 m.PlaySound(0x1e7);
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Agility, 1075841, length, m, percentage.ToString()));
             }

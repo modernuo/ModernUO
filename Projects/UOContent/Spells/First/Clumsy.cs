@@ -27,7 +27,8 @@ namespace Server.Spells.First
 
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
-                SpellHelper.AddStatCurse(Caster, m, StatType.Dex);
+                var length = SpellHelper.GetDuration(Caster, m);
+                SpellHelper.AddStatCurse(Caster, m, StatType.Dex, length, false);
 
                 m.Spell?.OnCasterHurt();
 
@@ -37,7 +38,6 @@ namespace Server.Spells.First
                 m.PlaySound(0x1DF);
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Clumsy, 1075831, length, m, percentage.ToString()));
 

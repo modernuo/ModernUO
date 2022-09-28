@@ -29,7 +29,8 @@ namespace Server.Spells.First
 
                 // TODO: StoneForm immunity
 
-                SpellHelper.AddStatCurse(Caster, m, StatType.Int);
+                var length = SpellHelper.GetDuration(Caster, m);
+                SpellHelper.AddStatCurse(Caster, m, StatType.Int, length, false);
 
                 m.Spell?.OnCasterHurt();
 
@@ -39,7 +40,6 @@ namespace Server.Spells.First
                 m.PlaySound(0x1E4);
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.FeebleMind, 1075833, length, m, percentage.ToString()));
 

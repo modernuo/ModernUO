@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Server.Targeting;
 
@@ -16,7 +15,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
+        private static readonly Dictionary<Mobile, Timer> _table = new();
 
         public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -31,28 +30,16 @@ namespace Server.Spells.Fourth
                 SpellHelper.Turn(Caster, m);
 
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
-
-                SpellHelper.AddStatCurse(Caster, m, StatType.Str);
-                SpellHelper.DisableSkillCheck = true;
-                SpellHelper.AddStatCurse(Caster, m, StatType.Dex);
-                SpellHelper.AddStatCurse(Caster, m, StatType.Int);
-                SpellHelper.DisableSkillCheck = false;
-
                 var length = SpellHelper.GetDuration(Caster, m);
+
+                SpellHelper.AddStatCurse(Caster, m, StatType.Str, length, false);
+                SpellHelper.AddStatCurse(Caster, m, StatType.Dex, length);
+                SpellHelper.AddStatCurse(Caster, m, StatType.Int, length);
+
                 if (Caster.Player && m.Player)
                 {
-                    var duration = SpellHelper.GetDuration(Caster, m);
-                    var timer = new ExpireTimer(m, length);
-                    if (_table.TryGetValue(m, out var existingTimer))
-                    {
-                        existingTimer.Stop();
-                    }
-                    else
-                    {
-                        m.UpdateResistances();
-                    }
-                    timer.Start();
-                    _table[m] = timer;
+                    RemoveEffect(m);
+                    _table[m] = Timer.DelayCall(length, () => RemoveEffect(m));
                 }
 
                 m.Spell?.OnCasterHurt();
@@ -80,27 +67,16 @@ namespace Server.Spells.Fourth
 
         public static bool RemoveEffect(Mobile m)
         {
-            var effectRemoved = _table.Remove(m);
-            m.UpdateResistances();
-            return effectRemoved;
+            if (_table.Remove(m, out var timer))
+            {
+                timer.Stop();
+                m.UpdateResistances();
+                return true;
+            }
+
+            return false;
         }
 
         public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
-
-        private class ExpireTimer : Timer
-        {
-            private Mobile _mobile;
-
-            public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
-            {
-                _mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                Stop();
-                RemoveEffect(_mobile);
-            }
-        }
     }
 }

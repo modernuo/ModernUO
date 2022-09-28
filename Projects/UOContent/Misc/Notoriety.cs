@@ -181,7 +181,7 @@ namespace Server.Misc
             var pmTarg = target as PlayerMobile;
             var bcTarg = target as BaseCreature;
 
-            if (pmFrom == null && bcFrom != null && bcFrom.Summoned)
+            if (pmFrom == null && bcFrom?.Summoned == true)
             {
                 pmFrom = bcFrom.SummonMaster as PlayerMobile;
             }
