@@ -147,8 +147,6 @@ namespace Server.Spells
         private static Mobile m_TravelCaster;
         private static TravelCheckType m_TravelType;
 
-        public static bool DisableSkillCheck { get; set; }
-
         public static TimeSpan GetDamageDelayForSpell(Spell sp) =>
             !sp.DelayedDamage ? TimeSpan.Zero :
             Core.AOS ? AosDamageDelay : OldDamageDelay;
@@ -225,7 +223,7 @@ namespace Server.Spells
                 {
                     var info = m.Aggressors[i];
 
-                    if (info.Attacker.Player && Core.Now - info.LastCombatTime < CombatHeatDelay)
+                    if (info.Attacker.Player && info.Attacker == m && Core.Now - info.LastCombatTime < CombatHeatDelay)
                     {
                         return true;
                     }
@@ -292,13 +290,14 @@ namespace Server.Spells
                 ? AddStatBonus(m, m, type, offset, duration)
                 : offset >= 0 || AddStatCurse(m, m, type, -offset, duration);
 
-        public static bool AddStatBonus(Mobile caster, Mobile target, StatType type) => AddStatBonus(
-            caster,
-            target,
-            type,
-            GetOffset(caster, target, type, false),
-            GetDuration(caster, target)
-        );
+        public static bool AddStatBonus(Mobile caster, Mobile target, StatType type, TimeSpan duration, bool skillCheck = true) =>
+            AddStatBonus(
+                caster,
+                target,
+                type,
+                GetOffset(caster, target, type, false, skillCheck),
+                duration
+            );
 
         public static bool AddStatBonus(Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration)
         {
@@ -322,13 +321,14 @@ namespace Server.Spells
             return false;
         }
 
-        public static bool AddStatCurse(Mobile caster, Mobile target, StatType type) => AddStatCurse(
-            caster,
-            target,
-            type,
-            GetOffset(caster, target, type, true),
-            GetDuration(caster, target)
-        );
+        public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, TimeSpan duration, bool skillCheck = true) =>
+            AddStatCurse(
+                caster,
+                target,
+                type,
+                GetOffset(caster, target, type, true, skillCheck),
+                duration
+            );
 
         public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration)
         {
@@ -374,34 +374,32 @@ namespace Server.Spells
             return Math.Max(percent, 0);
         }
 
-        public static int GetOffset(Mobile caster, Mobile target, StatType type, bool curse)
+        public static int GetOffset(Mobile caster, Mobile target, StatType type, bool curse, bool skillCheck)
         {
-            if (Core.AOS)
+            if (!Core.AOS)
             {
-                if (!DisableSkillCheck)
+                return 1 + (int)(caster.Skills.Magery.Value * 0.1);
+            }
+
+            if (skillCheck)
+            {
+                caster.CheckSkill(SkillName.EvalInt, 0.0, 120.0);
+
+                if (curse)
                 {
-                    caster.CheckSkill(SkillName.EvalInt, 0.0, 120.0);
-
-                    if (curse)
-                    {
-                        target.CheckSkill(SkillName.MagicResist, 0.0, 120.0);
-                    }
-                }
-
-                var percent = GetOffsetScalar(caster, target, curse);
-
-                switch (type)
-                {
-                    case StatType.Str:
-                        return (int)(target.RawStr * percent);
-                    case StatType.Dex:
-                        return (int)(target.RawDex * percent);
-                    case StatType.Int:
-                        return (int)(target.RawInt * percent);
+                    target.CheckSkill(SkillName.MagicResist, 0.0, 120.0);
                 }
             }
 
-            return 1 + (int)(caster.Skills.Magery.Value * 0.1);
+            var percent = GetOffsetScalar(caster, target, curse);
+
+            return type switch
+            {
+                StatType.Str => (int)(target.RawStr * percent),
+                StatType.Dex => (int)(target.RawDex * percent),
+                StatType.Int => (int)(target.RawInt * percent),
+                _            => 1 + (int)(caster.Skills.Magery.Value * 0.1)
+            };
         }
 
         public static Guild GetGuildFor(Mobile m)

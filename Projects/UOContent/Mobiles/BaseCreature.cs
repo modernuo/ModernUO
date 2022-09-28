@@ -125,7 +125,7 @@ namespace Server.Mobiles
             m_Damage = damage;
         }
 
-        public int CompareTo(DamageStore ds) => ds?.m_Damage ?? 0 - m_Damage;
+        public int CompareTo(DamageStore ds) => (ds?.m_Damage ?? 0).CompareTo(m_Damage);
     }
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -2977,6 +2977,7 @@ namespace Server.Mobiles
         public static List<DamageStore> GetLootingRights(List<DamageEntry> damageEntries, int hitsMax)
         {
             var rights = new List<DamageStore>();
+            DamageStore firstDamager = null;
 
             for (var i = damageEntries.Count - 1; i >= 0; --i)
             {
@@ -3017,12 +3018,15 @@ namespace Server.Mobiles
                         {
                             ds.m_Damage += subEntry.DamageGiven;
                             needNewSubEntry = false;
+                            firstDamager = ds;
                         }
                     }
 
                     if (needNewSubEntry)
                     {
-                        rights.Add(new DamageStore(master, subEntry.DamageGiven));
+                        var ds = new DamageStore(master, subEntry.DamageGiven);
+                        rights.Add(ds);
+                        firstDamager = ds;
                     }
 
                     damage -= subEntry.DamageGiven;
@@ -3030,7 +3034,7 @@ namespace Server.Mobiles
 
                 var m = de.Damager;
 
-                if (m?.Deleted != false || !m.Player)
+                if (m is not { Deleted: false, Player: true })
                 {
                     continue;
                 }
@@ -3050,19 +3054,25 @@ namespace Server.Mobiles
                     {
                         ds.m_Damage += damage;
                         needNewEntry = false;
+                        firstDamager = ds;
                     }
                 }
 
                 if (needNewEntry)
                 {
-                    rights.Add(new DamageStore(m, damage));
+                    var ds = new DamageStore(m, damage);
+                    rights.Add(ds);
+                    firstDamager = ds;
                 }
             }
 
+            // Handle damage rights per Five on Friday: https://www.uoguide.com/Five_on_Friday_-_January_19,_2007
             if (rights.Count > 0)
             {
-                // This would be the first valid person attacking it.  Gets a 25% bonus.  Per 1/19/07 Five on Friday
-                rights[0].m_Damage = (int)(rights[0].m_Damage * 1.25);
+                if (firstDamager != null)
+                {
+                    firstDamager.m_Damage = (int)(firstDamager.m_Damage * 1.25);
+                }
 
                 if (rights.Count > 1)
                 {
