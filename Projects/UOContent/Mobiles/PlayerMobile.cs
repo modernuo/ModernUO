@@ -1143,9 +1143,9 @@ namespace Server.Mobiles
 
             var max = base.GetMaxResistance(type);
 
-            if (type != ResistanceType.Physical && max > 60 && CurseSpell.UnderEffect(this))
+            if (type != ResistanceType.Physical && CurseSpell.UnderEffect(this))
             {
-                max = 60;
+                max -= 10;
             }
 
             if (Core.ML && Race == Race.Elf && type == ResistanceType.Energy)

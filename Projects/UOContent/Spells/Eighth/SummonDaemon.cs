@@ -47,7 +47,7 @@ namespace Server.Spells.Eighth
                 {
                     Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
                     // T2A -> Current
-                    _ => TimeSpan.FromSeconds(4 * Math.Min(5, Caster.Skills.Magery.Value)),
+                    _ => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
                 };
 
                 if (Core.AOS) /* Why two diff daemons? TODO: solve this */

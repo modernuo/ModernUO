@@ -176,11 +176,12 @@ namespace Server.Misc
                 return true;
             }
 
+            var bcFrom = from as BaseCreature;
             var pmFrom = from as PlayerMobile;
             var pmTarg = target as PlayerMobile;
             var bcTarg = target as BaseCreature;
 
-            if (pmFrom == null && from is BaseCreature bcFrom && bcFrom.Summoned)
+            if (pmFrom == null && bcFrom?.Summoned == true)
             {
                 pmFrom = bcFrom.SummonMaster as PlayerMobile;
             }
@@ -257,9 +258,15 @@ namespace Server.Misc
                 return true; // Guild allies or enemies can be harmful
             }
 
-            if (bcTarg?.Controlled == true || bcTarg?.Summoned == true && bcTarg.SummonMaster != from)
+            if (bcTarg?.Controlled == true
+                || (bcTarg?.Summoned == true && bcTarg.SummonMaster != from && bcTarg.SummonMaster.Player))
             {
-                return false; // Cannot harm other controlled mobiles
+                return false; // Cannot harm other controlled mobiles from players
+            }
+
+            if (pmFrom == null && bcFrom != null && bcFrom.Summoned && target.Player)
+            {
+                return true; // Summons from monsters can attack players
             }
 
             if (target.Player)

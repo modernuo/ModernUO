@@ -26,17 +26,15 @@ namespace Server.Spells.Third
             {
                 SpellHelper.Turn(Caster, m);
 
-                SpellHelper.AddStatBonus(Caster, m, StatType.Str);
-                SpellHelper.DisableSkillCheck = true;
-                SpellHelper.AddStatBonus(Caster, m, StatType.Dex);
-                SpellHelper.AddStatBonus(Caster, m, StatType.Int);
-                SpellHelper.DisableSkillCheck = false;
+                var length = SpellHelper.GetDuration(Caster, m);
+                SpellHelper.AddStatBonus(Caster, m, StatType.Str, length, false);
+                SpellHelper.AddStatBonus(Caster, m, StatType.Dex, length);
+                SpellHelper.AddStatBonus(Caster, m, StatType.Int, length);
 
                 m.FixedParticles(0x373A, 10, 15, 5018, EffectLayer.Waist);
                 m.PlaySound(0x1EA);
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
 
                 var args = $"{percentage}\t{percentage}\t{percentage}";
 

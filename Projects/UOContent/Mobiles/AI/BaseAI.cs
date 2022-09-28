@@ -2734,12 +2734,12 @@ public abstract class BaseAI
 
     private bool IsHostile(Mobile from)
     {
-        var count = Math.Max(m_Mobile.Aggressors.Count, m_Mobile.Aggressed.Count);
-
-        if (count <= 0 || m_Mobile.Combatant == from || from.Combatant == m_Mobile)
+        if (m_Mobile.Combatant == from || from.Combatant == m_Mobile)
         {
             return true;
         }
+
+        var count = Math.Max(m_Mobile.Aggressors.Count, m_Mobile.Aggressed.Count);
 
         for (var a = 0; a < count; ++a)
         {

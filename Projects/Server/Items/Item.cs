@@ -2050,9 +2050,9 @@ namespace Server
                 var root = ip.RootParent;
                 var rpm = root as Mobile;
 
-                if (ip.IsAccessibleTo(from) &&
-                    rpm?.CheckNonlocalDrop(from, this, ip) == true &&
-                    (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.Location == bounce.WorldLoc)
+                if (ip.IsAccessibleTo(from)
+                    && rpm?.CheckNonlocalDrop(from, this, ip) != false
+                    && (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.Location == bounce.WorldLoc)
                 )
                 {
                     Location = bounce.Location;
