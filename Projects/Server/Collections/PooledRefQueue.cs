@@ -316,7 +316,11 @@ public ref struct PooledRefQueue<T>
     }
 
     // Increments the index wrapping it if necessary.
+#if NET7_SDK
+    private void MoveNext(scoped ref int index)
+#else
     private void MoveNext(ref int index)
+#endif
     {
         // It is tempting to use the remainder operator here but it is actually much slower
         // than a simple comparison and a rarely taken branch.
