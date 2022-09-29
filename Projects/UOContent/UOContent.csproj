@@ -6,6 +6,7 @@
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '7.0'))">NET7_SDK</DefineConstants>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
@@ -33,6 +34,7 @@
         <Delete Files="..\..\Distribution\Assemblies\zstd" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\zstd.exe" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">

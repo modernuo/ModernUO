@@ -45,7 +45,11 @@ public class GumpHtml : GumpEntry
 
     public bool Scrollbar { get; set; }
 
+#if NET7_SDK
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
+#else
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+#endif
     {
         var textIndex = strings.GetOrAdd(Text ?? "");
         var background = Background ? "1" : "0";

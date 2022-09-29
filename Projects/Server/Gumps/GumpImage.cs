@@ -39,7 +39,11 @@ public class GumpImage : GumpEntry
 
     public string Class { get; set; }
 
+#if NET7_SDK
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
+#else
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+#endif
     {
         var hasHue = Hue != 0;
         var hasClass = !string.IsNullOrEmpty(Class);
