@@ -10,6 +10,7 @@
         <PublishDir>..\..\Distribution</PublishDir>
         <OutDir>..\..\Distribution</OutDir>
         <Version>0.0.0</Version>
+        <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '7.0'))">NET7_SDK</DefineConstants>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution files..." />
@@ -22,7 +23,6 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\ModernUO.SerializationGenerator.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
