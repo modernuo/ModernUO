@@ -21,7 +21,7 @@ public static class MultiData
         // OSI Client 7.0.9.0+ uses 64bit tiledata flags
         var postHSMulFormat = ServerConfiguration.GetSetting(
             "maps.enablePostHSMultiComponentFormat",
-            UOClient.ServerClientVersion >= ClientVersion.Version7090
+            UOClient.ServerClientVersion == null || UOClient.ServerClientVersion >= ClientVersion.Version7090
         );
 
         LoadMul(postHSMulFormat);

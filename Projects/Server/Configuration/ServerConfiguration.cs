@@ -264,35 +264,10 @@ public static class ServerConfiguration
             m_Settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
         }
 
-        bool? isPre60000 = null;
-
         if (m_Settings.Expansion == null)
         {
-            var expansion = GetSetting<Expansion>("currentExpansion");
-            var hasExpansion = expansion != null;
-
-            expansion ??= ServerConfigurationPrompts.GetExpansion();
-
-            if (expansion <= Expansion.ML && !hasExpansion)
-            {
-                isPre60000 = ServerConfigurationPrompts.GetIsClientPre6000();
-                if (isPre60000 == true)
-                {
-                    SetSetting("maps.enablePre6000Trammel", true);
-                }
-            }
-
+            m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ServerConfigurationPrompts.GetExpansion();
             updated = true;
-            m_Settings.Expansion = expansion;
-        }
-
-        if (isPre60000 != true)
-        {
-            if (ServerConfigurationPrompts.GetIsClient7090())
-            {
-                updated = true;
-                SetSetting("maps.enablePostHSMultiComponentFormat", true);
-            }
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
