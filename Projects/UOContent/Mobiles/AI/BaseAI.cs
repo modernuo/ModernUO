@@ -2726,8 +2726,8 @@ public abstract class BaseAI
                 newFocusMob = m;
                 val = theirVal;
             }
-            //The summon is targeted when nothing else around. Otherwise this monster enters idle mode, 
-            //which players can abuse by casting EVs offscreen and this monster wont fight back
+            // The summon is targeted when nothing else around. Otherwise this monster enters idle mode. 
+            // Do a check for this edge case so players cannot abuse by casting EVs offscreen to kill an idle monster.
             else if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
             {
                 enemySummonMob = m;
