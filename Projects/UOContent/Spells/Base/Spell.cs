@@ -78,7 +78,7 @@ namespace Server.Spells
 
         public virtual double CastDelayFastScalar => 1;
         public virtual double CastDelaySecondsPerTick => 0.25;
-        public virtual TimeSpan CastDelayMinimum => TimeSpan.FromSeconds(0.25);
+        public virtual TimeSpan CastDelayMinimum => Core.SA ? TimeSpan.FromSeconds(0.5) : TimeSpan.FromSeconds(0.25);
 
         public virtual bool IsCasting => State == SpellState.Casting;
 
@@ -694,6 +694,12 @@ namespace Server.Spells
             }
 
             var fc = Math.Min(AosAttributes.GetValue(Caster, AosAttribute.CastSpeed), fcMax);
+
+            //OSI added 250ms onto every spell
+            if (Core.SA)
+            {
+                fc--;
+            }
 
             if (ProtectionSpell.Registry.ContainsKey(Caster))
             {
