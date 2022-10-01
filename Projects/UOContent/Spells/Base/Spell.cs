@@ -78,7 +78,7 @@ namespace Server.Spells
 
         public virtual double CastDelayFastScalar => 1;
         public virtual double CastDelaySecondsPerTick => 0.25;
-        public virtual TimeSpan CastDelayMinimum => Core.SA ? TimeSpan.FromSeconds(0.5) : TimeSpan.FromSeconds(0.25);
+        public virtual TimeSpan CastDelayMinimum => TimeSpan.FromSeconds(0.25);
 
         public virtual bool IsCasting => State == SpellState.Casting;
 
