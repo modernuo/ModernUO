@@ -695,12 +695,6 @@ namespace Server.Spells
 
             var fc = Math.Min(AosAttributes.GetValue(Caster, AosAttribute.CastSpeed), fcMax);
 
-            //OSI added 250ms onto every spell
-            if (Core.SA)
-            {
-                fc--;
-            }
-
             if (ProtectionSpell.Registry.ContainsKey(Caster))
             {
                 fc -= 2;
