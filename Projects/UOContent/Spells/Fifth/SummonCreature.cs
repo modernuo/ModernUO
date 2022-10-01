@@ -91,12 +91,16 @@ namespace Server.Spells.Fifth
 
         public override TimeSpan GetCastDelay()
         {
-            if (Core.AOS)
+            var delay = base.GetCastDelay() * (Core.AOS ? 5 : 4);
+
+            // SA made everything 0.25 slower, but that is applied after the scalar
+            // So remove 0.25 * 5 to compensate
+            if (Core.SA)
             {
-                return TimeSpan.FromTicks(base.GetCastDelay().Ticks * 5);
+                delay -= TimeSpan.FromSeconds(1.25);
             }
 
-            return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
+            return delay;
         }
     }
 }

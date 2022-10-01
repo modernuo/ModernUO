@@ -14,13 +14,10 @@ namespace Server.Spells.Necromancy
         public override SkillName CastSkill => SkillName.Necromancy;
         public override SkillName DamageSkill => SkillName.SpiritSpeak;
 
-        // public override int CastDelayBase => base.CastDelayBase; // Reference, 3
-
         public override bool ClearHandsOnCast => false;
 
         // Necromancer spells are not affected by fast cast items, though they are by fast cast recovery
-        public override double CastDelayFastScalar =>
-            Core.SE ? base.CastDelayFastScalar : 0;
+        public override double CastDelayFastScalar => Core.SE ? base.CastDelayFastScalar : 0;
 
         public override int ComputeKarmaAward()
         {

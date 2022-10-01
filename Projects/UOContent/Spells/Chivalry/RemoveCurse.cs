@@ -21,7 +21,9 @@ namespace Server.Spells.Chivalry
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
+        // https://uo.com/wiki/ultima-online-wiki/publish-notes/publish-108/ - 1.5 -> 2.0
+        // According to tests, this includes the 0.25s added penalty, so we are adjusting to 1.75s base.
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(Core.EJ ? 1.75 : 1.5);
 
         public override double RequiredSkill => 5.0;
         public override int RequiredMana => 20;
