@@ -2221,6 +2221,8 @@ namespace Server.Mobiles
             {
                 Dispel(creature);
             }
+
+            TriggerAbility(MonsterAbilityTrigger.TakeMeleeDamage, attacker);
         }
 
         public virtual void Dispel(Mobile m)
@@ -2256,6 +2258,8 @@ namespace Server.Mobiles
             {
                 Dispel(creature);
             }
+
+            TriggerAbility(MonsterAbilityTrigger.Swing, defender);
         }
 
         public override void OnAfterDelete()
