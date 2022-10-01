@@ -93,7 +93,22 @@ namespace Server.Spells.Fifth
         {
             if (Core.AOS)
             {
-                return TimeSpan.FromTicks(base.GetCastDelay().Ticks * 5);
+                var offset = TimeSpan.FromSeconds(0.25);
+                var delay = base.GetCastDelay();
+                if (Core.SA)
+                {
+                    // SA made everything 0.25 slower, remove it before muliplying
+                    delay -= offset;
+                }
+
+                delay *= 5;
+
+                if (Core.SA)
+                {
+                    delay += offset;
+                }
+
+                return delay;
             }
 
             return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);

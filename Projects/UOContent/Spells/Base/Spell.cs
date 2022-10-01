@@ -707,6 +707,13 @@ namespace Server.Spells
 
             var fcDelay = TimeSpan.FromSeconds(-(CastDelayFastScalar * fc * CastDelaySecondsPerTick));
 
+            if (Core.SA)
+            {
+                // At some point OSI added 0.25s to every spell.
+                // This was done after multiplying for summon creature & blade spirits.
+                fcDelay += TimeSpan.FromMilliseconds(250);
+            }
+
             return Utility.Max(CastDelayBase + fcDelay, CastDelayMinimum);
         }
 
