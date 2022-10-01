@@ -34,17 +34,7 @@ namespace Server.Spells.Fifth
             }
             else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds(120);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
-                }
-
+                var duration = TimeSpan.FromSeconds(Core.AOS ? 120 : Utility.Random(80, 40));
                 BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
             }
 
