@@ -53,27 +53,23 @@ namespace Server.Spells.Fifth
 
         public override TimeSpan GetCastDelay()
         {
-            if (Core.AOS)
+            var scalar = Core.Expansion switch
             {
-                var offset = TimeSpan.FromSeconds(0.25);
-                var delay = base.GetCastDelay();
-                if (Core.SA)
-                {
-                    // SA made everything 0.25 slower, remove it before muliplying
-                    delay -= offset;
-                }
+                >= Expansion.SE  => 3,
+                >= Expansion.AOS => 5,
+                _                => 4
+            };
 
-                delay *= Core.SE ? 3 : 5;
+            var delay = base.GetCastDelay() * scalar;
 
-                if (Core.SA)
-                {
-                    delay += offset;
-                }
-
-                return delay;
+            // SA made everything 0.25s slower, but that is applied after the scalar
+            // So remove 0.25 * scalar to compensate
+            if (Core.SA)
+            {
+                delay -= TimeSpan.FromSeconds(0.25 * scalar);
             }
 
-            return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
+            return delay;
         }
 
         public override bool CheckCast()
