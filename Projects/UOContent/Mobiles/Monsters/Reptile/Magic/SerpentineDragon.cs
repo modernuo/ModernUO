@@ -39,8 +39,6 @@ namespace Server.Mobiles
 
             VirtualArmor = 36;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             if (Core.ML && Utility.RandomDouble() < .33)
             {
                 PackItem(Seed.RandomPeculiarSeed(2));
@@ -63,6 +61,9 @@ namespace Server.Mobiles
         public override int Scales => 6;
         public override ScaleType ScaleType => Utility.RandomBool() ? ScaleType.Black : ScaleType.White;
         public override int TreasureMapLevel => 4;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

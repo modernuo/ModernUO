@@ -37,8 +37,6 @@ namespace Server.Mobiles
 
             VirtualArmor = 24;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             PackItem(new SulfurousAsh());
         }
 
@@ -51,6 +49,9 @@ namespace Server.Mobiles
 
         public override bool DeathAdderCharmable => true;
         public override int Meat => 1;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

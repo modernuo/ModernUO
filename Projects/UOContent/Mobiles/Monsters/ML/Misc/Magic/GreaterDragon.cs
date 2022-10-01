@@ -45,8 +45,6 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 5;
             MinTameSkill = 104.7;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public GreaterDragon(Serial serial) : base(serial)
@@ -67,6 +65,9 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

@@ -37,8 +37,6 @@ namespace Server.Mobiles
 
             Tamable = false;
             ControlSlots = 1;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public UnholySteed(Serial serial) : base(serial)
@@ -48,21 +46,19 @@ namespace Server.Mobiles
         public override string CorpseName => "an unholy corpse";
         public override bool IsDispellable => false;
         public override bool IsBondable => false;
-
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override string ApplyNameSuffix(string suffix)
         {
             if (suffix.Length == 0)
             {
-                suffix = Ethic.Evil.Definition.Adjunct.String;
-            }
-            else
-            {
-                suffix = $"{suffix} {Ethic.Evil.Definition.Adjunct.String}";
+                return base.ApplyNameSuffix(Ethic.Evil.Definition.Adjunct.String);
             }
 
-            return base.ApplyNameSuffix(suffix);
+            return base.ApplyNameSuffix($"{suffix} {Ethic.Evil.Definition.Adjunct.String}");
         }
 
         public override void OnDoubleClick(Mobile from)

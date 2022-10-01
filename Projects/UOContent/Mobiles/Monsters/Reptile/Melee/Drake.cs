@@ -38,8 +38,6 @@ namespace Server.Mobiles
             ControlSlots = 2;
             MinTameSkill = 84.3;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             PackReg(3);
         }
 
@@ -59,6 +57,9 @@ namespace Server.Mobiles
         public override ScaleType ScaleType => Body == 60 ? ScaleType.Yellow : ScaleType.Red;
         public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

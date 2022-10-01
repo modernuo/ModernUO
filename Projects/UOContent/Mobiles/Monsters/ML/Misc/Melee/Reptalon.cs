@@ -35,8 +35,6 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 4;
             MinTameSkill = 101.1;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public Reptalon(Serial serial) : base(serial)
@@ -52,6 +50,9 @@ namespace Server.Mobiles
         public override bool StatLossAfterTame => true;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

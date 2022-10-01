@@ -35,8 +35,6 @@ namespace Server.Mobiles
             ControlSlots = 1;
             MinTameSkill = 85.5;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             PackItem(new SulfurousAsh(5));
         }
 
@@ -49,6 +47,9 @@ namespace Server.Mobiles
         public override int Meat => 1;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

@@ -36,8 +36,6 @@ namespace Server.Mobiles
             Karma = -22500;
 
             VirtualArmor = 70;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public AncientWyrm(Serial serial) : base(serial)
@@ -58,6 +56,9 @@ namespace Server.Mobiles
         public override Poison HitPoison => Utility.RandomBool() ? Poison.Lesser : Poison.Regular;
         public override int TreasureMapLevel => 5;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

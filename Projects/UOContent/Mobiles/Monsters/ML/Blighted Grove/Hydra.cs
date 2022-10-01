@@ -36,12 +36,9 @@ namespace Server.Mobiles
             SetSkill(SkillName.Anatomy, 75.4, 79.8);
 
             // TODO: Fame/Karma
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
-        public Hydra(Serial serial)
-            : base(serial)
+        public Hydra(Serial serial) : base(serial)
         {
         }
 
@@ -50,6 +47,9 @@ namespace Server.Mobiles
         public override int Hides => 40;
         public override int Meat => 19;
         public override int TreasureMapLevel => 5;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

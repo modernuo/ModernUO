@@ -40,8 +40,6 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             if (Utility.RandomBool())
             {
                 PackItem(new SulfurousAsh(4));
@@ -68,6 +66,9 @@ namespace Server.Mobiles
         public override HideType HideType => HideType.Horned;
         public override int Scales => 8;
         public override ScaleType ScaleType => ScaleType.Blue;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

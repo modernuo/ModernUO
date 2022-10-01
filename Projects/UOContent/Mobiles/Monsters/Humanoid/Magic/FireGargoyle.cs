@@ -37,8 +37,6 @@ namespace Server.Mobiles
             Karma = -3500;
 
             VirtualArmor = 32;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public FireGargoyle(Serial serial) : base(serial)
@@ -50,6 +48,9 @@ namespace Server.Mobiles
         public override int TreasureMapLevel => 1;
         public override int Meat => 1;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

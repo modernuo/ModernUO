@@ -37,8 +37,6 @@ namespace Server.Mobiles
 
             VirtualArmor = 40;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             PackItem(new SulfurousAsh(3));
             PackItem(new Bone());
             // TODO: body parts, armour
@@ -55,6 +53,9 @@ namespace Server.Mobiles
         public override int Meat => 4;
         public override int Hides => 15;
         public override HideType HideType => HideType.Spined;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

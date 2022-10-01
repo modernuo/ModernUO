@@ -48,17 +48,9 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            AddAbility(_ability);
-
             PackItem(new MessageInABottle());
-
-            var rope = new Rope();
-            rope.ItemID = 0x14F8;
-            PackItem(rope);
-
-            rope = new Rope();
-            rope.ItemID = 0x14FA;
-            PackItem(rope);
+            PackItem(new Rope { ItemID = 0x14F8 });
+            PackItem(new Rope { ItemID = 0x14FA });
         }
 
         public Leviathan(Serial serial) : base(serial)
@@ -70,7 +62,6 @@ namespace Server.Mobiles
         public Mobile Fisher { get; set; }
 
         public override string DefaultName => "a leviathan";
-
 
         public override int TreasureMapLevel => 5;
 
@@ -102,6 +93,9 @@ namespace Server.Mobiles
             typeof(PolarBearMask),
             typeof(VioletCourage)
         };
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

@@ -36,8 +36,6 @@ namespace Server.Mobiles
             Karma = -22500;
 
             VirtualArmor = 70;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public ShadowWyrm(Serial serial) : base(serial)
@@ -58,6 +56,9 @@ namespace Server.Mobiles
         public override ScaleType ScaleType => ScaleType.Black;
         public override HideType HideType => HideType.Barbed;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

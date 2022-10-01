@@ -39,8 +39,6 @@ namespace Server.Mobiles
             Karma = -22500;
 
             VirtualArmor = 80;
-
-            AddAbility(MonsterAbility.ColdBreath);
         }
 
         public SkeletalDragon(Serial serial) : base(serial)
@@ -61,6 +59,9 @@ namespace Server.Mobiles
         public override int Meat => 19; // where's it hiding these? :)
         public override int Hides => 20;
         public override HideType HideType => HideType.Barbed;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

@@ -88,8 +88,6 @@ namespace Server.Mobiles
             }
 
             PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public Nightmare(Serial serial) : base(serial)
@@ -102,6 +100,9 @@ namespace Server.Mobiles
         public override HideType HideType => HideType.Barbed;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

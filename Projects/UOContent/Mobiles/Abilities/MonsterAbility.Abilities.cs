@@ -2,7 +2,9 @@
 
 public abstract partial class MonsterAbility
 {
-    public static MonsterAbility FireBreath { get; } = new FireBreath();
-    public static MonsterAbility ChaosBreath { get; } = new ChaosBreath();
-    public static MonsterAbility ColdBreath { get; } = new ColdBreath();
+    public static FireBreath FireBreath { get; } = new();
+    public static ChaosBreath ChaosBreath { get; } = new();
+    public static ColdBreath ColdBreath { get; } = new();
+
+    public static GraspingClaw GraspingClaw { get; } = new();
 }

@@ -37,8 +37,6 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 1;
             MinTameSkill = 71.1;
-
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public HellCat(Serial serial) : base(serial)
@@ -52,6 +50,9 @@ namespace Server.Mobiles
         public override HideType HideType => HideType.Spined;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Feline;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

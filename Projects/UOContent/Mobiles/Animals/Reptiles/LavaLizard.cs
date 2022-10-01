@@ -42,7 +42,6 @@ namespace Server.Mobiles
             MinTameSkill = 80.7;
 
             PackItem(new SulfurousAsh(Utility.Random(4, 10)));
-            AddAbility(MonsterAbility.FireBreath);
         }
 
         public LavaLizard(Serial serial) : base(serial)
@@ -53,6 +52,9 @@ namespace Server.Mobiles
         public override string DefaultName => "a lava lizard";
         public override int Hides => 12;
         public override HideType HideType => HideType.Spined;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

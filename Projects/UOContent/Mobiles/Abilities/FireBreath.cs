@@ -44,22 +44,19 @@ public class FireBreath : MonsterAbility
 
     public virtual int BreathEffectSound => 0x227;
 
-    public override bool CanTrigger(Mobile source) =>
-        source is BaseCreature { Summoned: false } && base.CanTrigger(source);
+    public override bool CanTrigger(BaseCreature source) => !source.Summoned && base.CanTrigger(source);
 
-    public override void Trigger(Mobile source, Mobile target)
+    public override void Trigger(BaseCreature source, Mobile target)
     {
-        var bc = source as BaseCreature;
-
-        if (CanFireBreathTarget(bc, target))
+        if (CanFireBreathTarget(source, target))
         {
-            BreathStallMovement(bc);
-            BreathPlayAngerSound(bc);
-            BreathPlayAngerAnimation(bc);
+            BreathStallMovement(source);
+            BreathPlayAngerSound(source);
+            BreathPlayAngerAnimation(source);
 
             source.Direction = source.GetDirectionTo(target);
 
-            Timer.StartTimer(TimeSpan.FromSeconds(BreathEffectDelay), () => BreathEffect_Callback(bc, target));
+            Timer.StartTimer(TimeSpan.FromSeconds(BreathEffectDelay), () => BreathEffect_Callback(source, target));
 
             base.Trigger(source, target);
         }

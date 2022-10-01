@@ -40,8 +40,6 @@ namespace Server.Mobiles
             Fame = 8000;
             Karma = -8000;
 
-            AddAbility(MonsterAbility.FireBreath);
-
             var res = Utility.Random(6) switch
             {
                 0 => CraftResource.BlackScales,
@@ -116,6 +114,9 @@ namespace Server.Mobiles
         public override bool CanRummageCorpses => true;
         public override bool AlwaysMurderer => true;
         public override bool ShowFameTitle => false;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override int GetIdleSound() => 0x2CE;
 

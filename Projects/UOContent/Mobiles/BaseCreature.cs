@@ -1116,25 +1116,66 @@ namespace Server.Mobiles
             }
         }
 
-        public Dictionary<MonsterAbilityType, MonsterAbility> MonsterAbilities { get; } = new();
+        public virtual MonsterAbility[] GetMonsterAbilities() => null;
 
-        public bool HasAbility(MonsterAbilityType type) => MonsterAbilities.ContainsKey(type);
-
-        public bool HasAbility(MonsterAbility ability) =>
-            MonsterAbilities.TryGetValue(ability.AbilityType, out var check) && check == ability;
-
-        public void AddAbility(MonsterAbility ability)
+        public virtual bool HasAbility(MonsterAbilityType type)
         {
-            if (ability == null)
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                if (abilities[i].AbilityType == type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public virtual bool HasAbility(MonsterAbility ability)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                if (abilities[i] == ability)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public virtual void TriggerAbility(MonsterAbilityTrigger trigger, Mobile defender)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
             {
                 return;
             }
 
-            MonsterAbilities[ability.AbilityType] = ability;
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                var ability = abilities[i];
+                if (ability.AbilityTrigger == trigger && ability.CanTrigger(this))
+                {
+                    ability.Trigger(this, defender);
+                }
+            }
         }
-
-        public bool RemoveAbility(MonsterAbilityType type, out MonsterAbility ability) =>
-            MonsterAbilities.Remove(type, out ability);
 
         public virtual WeaponAbility GetWeaponAbility() => null;
 
@@ -3462,13 +3503,8 @@ namespace Server.Mobiles
                 m_NextRummageTime = tc + (int)TimeSpan.FromMinutes(delay).TotalMilliseconds;
             }
 
-            if (
-                MonsterAbilities.TryGetValue(MonsterAbilityType.FireBreath, out var firebreath)
-                && firebreath.CanTrigger(this)
-            )
-            {
-                firebreath.Trigger(this, Combatant);
-            }
+            // Fire breath, etc.
+            TriggerAbility(MonsterAbilityTrigger.Action, Combatant);
 
             if ((CanHeal || CanHealOwner) && Alive && !IsHealing && !BardPacified)
             {
