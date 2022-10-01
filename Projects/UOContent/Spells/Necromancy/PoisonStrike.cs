@@ -24,8 +24,7 @@ namespace Server.Spells.Necromancy
             TimeSpan.FromSeconds(
                 Core.Expansion switch
                 {
-                    >= Expansion.SA => 2.0,
-                    >= Expansion.ML => 1.75,
+                    >= Expansion.SA => 1.75,
                     _               => 1.5
                 }
             );
