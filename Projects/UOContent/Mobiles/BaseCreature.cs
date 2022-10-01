@@ -1493,12 +1493,19 @@ namespace Server.Mobiles
             base.OnDamage(amount, from, willKill);
         }
 
-        public virtual void OnDamagedBySpell(Mobile from)
+        public virtual void OnDamagedBySpell(Mobile from, int damage)
         {
             if (CanBeDistracted && ControlOrder == OrderType.Follow)
             {
                 CheckDistracted(from);
             }
+
+            TriggerAbility(MonsterAbilityTrigger.TakeSpellDamage, from);
+        }
+
+        public virtual void OnDamageSpell(Mobile defender, int damage)
+        {
+            TriggerAbility(MonsterAbilityTrigger.SpellCast, defender);
         }
 
         public virtual void OnHarmfulSpell(Mobile from)

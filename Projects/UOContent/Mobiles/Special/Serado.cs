@@ -89,9 +89,9 @@ namespace Server.Mobiles
 
         // TODO: Hit Lightning Area
 
-        public override void OnDamagedBySpell(Mobile attacker)
+        public override void OnDamagedBySpell(Mobile attacker, int damage)
         {
-            base.OnDamagedBySpell(attacker);
+            base.OnDamagedBySpell(attacker, damage);
 
             ScaleResistances();
             DoCounter(attacker);

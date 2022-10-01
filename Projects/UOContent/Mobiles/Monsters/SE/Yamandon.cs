@@ -68,9 +68,9 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems, 6);
         }
 
-        public override void OnDamagedBySpell(Mobile attacker)
+        public override void OnDamagedBySpell(Mobile attacker, int damage)
         {
-            base.OnDamagedBySpell(attacker);
+            base.OnDamagedBySpell(attacker, damage);
 
             DoCounter(attacker);
         }

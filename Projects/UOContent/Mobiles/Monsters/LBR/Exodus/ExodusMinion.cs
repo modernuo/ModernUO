@@ -102,7 +102,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnDamagedBySpell(Mobile from)
+        public override void OnDamagedBySpell(Mobile from, int damage)
         {
             if (from?.Alive == true && Utility.RandomDouble() < 0.4)
             {

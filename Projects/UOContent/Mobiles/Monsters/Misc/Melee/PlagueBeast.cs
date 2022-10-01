@@ -124,7 +124,7 @@ namespace Server.Mobiles
             defender.PlaySound(0x1CB);
         }
 
-        public override void OnDamagedBySpell(Mobile caster)
+        public override void OnDamagedBySpell(Mobile caster, int damage)
         {
             if (Map != null && caster != this && Utility.RandomDouble() < 0.25)
             {

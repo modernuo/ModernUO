@@ -101,9 +101,9 @@ namespace Server.Mobiles
             AOS.Damage(to, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
         }
 
-        public override void OnDamagedBySpell(Mobile attacker)
+        public override void OnDamagedBySpell(Mobile attacker, int damage)
         {
-            base.OnDamagedBySpell(attacker);
+            base.OnDamagedBySpell(attacker, damage);
             ThrowFan(attacker);
         }
 
