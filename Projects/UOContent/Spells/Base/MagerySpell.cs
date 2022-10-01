@@ -22,7 +22,7 @@ namespace Server.Spells
 
         public abstract SpellCircle Circle { get; }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds((3 + (int)Circle) * CastDelaySecondsPerTick);
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(((Core.ML ? 4 : 3) + (int)Circle) * CastDelaySecondsPerTick);
 
         public override bool ConsumeReagents() =>
             base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle);

@@ -19,7 +19,15 @@ namespace Server.Spells.Chivalry
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(Core.SA ? 0.75 : 0.5);
+        public override TimeSpan CastDelayBase =>
+            TimeSpan.FromSeconds(
+                Core.Expansion switch
+                {
+                    >= Expansion.EJ => 1.0,
+                    Expansion.SA    => 0.75,
+                    _               => 0.5
+                }
+            );
 
         public override double RequiredSkill => 45.0;
         public override int RequiredMana => 20;
