@@ -19,8 +19,6 @@ namespace Server.Spells.Chivalry
 
         public override bool ClearHandsOnCast => false;
 
-        public override TimeSpan CastDelayMinimum => TimeSpan.FromSeconds(Core.SA ? 0.5 : 0.25);
-
         public override int CastRecoveryBase => 7;
 
         public override bool CheckCast()
