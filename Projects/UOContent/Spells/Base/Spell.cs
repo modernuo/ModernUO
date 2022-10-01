@@ -705,14 +705,14 @@ namespace Server.Spells
                 fc -= EssenceOfWindSpell.GetFCMalus(Caster);
             }
 
-            var fcDelay = TimeSpan.FromSeconds(-(CastDelayFastScalar * fc * CastDelaySecondsPerTick));
-
             if (Core.SA)
             {
-                // At some point OSI added 0.25s to every spell.
-                // This was done after multiplying for summon creature & blade spirits.
-                fcDelay += TimeSpan.FromMilliseconds(250);
+                // At some point OSI added 0.25s to every spell. This makes the minimum 0.5s
+                // Note: This is done after multiplying for summon creature & blade spirits.
+                fc--;
             }
+
+            var fcDelay = TimeSpan.FromSeconds(-(CastDelayFastScalar * fc * CastDelaySecondsPerTick));
 
             return Utility.Max(CastDelayBase + fcDelay, CastDelayMinimum);
         }
