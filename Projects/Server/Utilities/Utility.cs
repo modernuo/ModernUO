@@ -1063,6 +1063,9 @@ public static class Utility
     public static bool RandomBool() => RandomSources.Source.NextBool();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TimeSpan RandomMinMax(TimeSpan min, TimeSpan max) => new(RandomMinMax(min.Ticks, max.Ticks));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double RandomMinMax(double min, double max)
     {
         if (min > max)
