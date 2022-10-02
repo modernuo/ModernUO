@@ -19,9 +19,11 @@ public abstract class SummonUndead : MonsterAbility
 
     public abstract BaseCreature CreateSummon(BaseCreature source);
 
+    public virtual bool CanTrigger(BaseCreature source) => source.Followers < AmountToSummon && CanTrigger(source);
+
     public override void Trigger(BaseCreature source, Mobile target)
     {
-        var amount = AmountToSummon;
+        var amount = AmountToSummon - source.Followers;
         var distance = SummonRange;
 
         int willTransform = !source.Paralyzed && ChanceToPolymorph > 0 && ChanceToPolymorph > Utility.RandomDouble()
@@ -30,7 +32,7 @@ public abstract class SummonUndead : MonsterAbility
 
         for (var i = 0; i < amount; i++)
         {
-            var loc = Utility.GetValidLocationInLOS(source.Map, source.Location, target.Location, distance);
+            var loc = Utility.GetValidLocationInLOS(source.Map, source, distance);
             BaseCreature summon;
             if (i == willTransform)
             {

@@ -1575,14 +1575,15 @@ public static class Utility
         return center;
     }
 
-    public static Point3D GetValidLocationInLOS(Map map, Point3D from, Point3D center, int range, int retries = 10)
+    public static Point3D GetValidLocationInLOS(Map map, Mobile from, int range, int retries = 10)
     {
         if (map == null)
         {
-            return center;
+            return from.Location;
         }
 
-        var loc = new Point3D(center.Z, center.Y, center.Z);
+        var center = from.Location;
+        var loc = center;
 
         for (var i = 0; i < retries; i++)
         {

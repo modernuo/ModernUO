@@ -27,6 +27,11 @@ public abstract partial class MonsterAbility
     /// <returns>Boolean indicating the ability can trigger.</returns>
     public virtual bool CanTrigger(BaseCreature source)
     {
+        if (_nextTriggerTicks?.TryGetValue(source, out var nextTrigger) == true && Core.TickCount < nextTrigger)
+        {
+            return false;
+        }
+
         var c = ChanceToTrigger;
 
         if (c >= 1)
@@ -39,12 +44,9 @@ public abstract partial class MonsterAbility
             return false;
         }
 
-        if (_nextTriggerTicks?.TryGetValue(source, out var nextTrigger) != true)
-        {
-            return true;
-        }
+        var rnd = Utility.RandomDouble();
 
-        return Core.TickCount >= nextTrigger && c > Utility.RandomDouble();
+        return c > rnd;
     }
 
     /// <summary>
