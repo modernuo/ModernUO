@@ -10,5 +10,7 @@ public enum MonsterAbilityType
     Poison,
     MassPoison,
     ThrowWeapon,
-    DestroyEquipment
+    DestroyEquipment,
+    DeathExplosion,
+    MassDrainLife
 }

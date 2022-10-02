@@ -65,12 +65,13 @@ public class ValoriteElemental : BaseCreature
 
     public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
     {
-        if (from is BaseCreature bc)
+        if (from is BaseCreature bc && (bc.Controlled || bc.BardTarget == this))
         {
-            if (bc.Controlled || bc.BardTarget == this)
-            {
-                damage = 0; // Immune to pets and provoked creatures
-            }
+            damage = 0; // Immune to pets and provoked creatures
+        }
+        else
+        {
+            damage /= 2; // 50% melee damage
         }
     }
 

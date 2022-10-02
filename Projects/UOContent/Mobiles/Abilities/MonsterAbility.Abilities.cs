@@ -26,4 +26,6 @@ public abstract partial class MonsterAbility
     public static ThrowHatchetCounter ThrowHatchetCounter => new();
 
     public static DestroyEquipment DestroyEquipment => new();
+
+    public static DrainLifeAreaAttack DrainLifeAreaAttack => new();
 }
