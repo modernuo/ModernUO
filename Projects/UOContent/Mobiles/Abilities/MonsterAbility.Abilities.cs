@@ -2,9 +2,14 @@
 
 public abstract partial class MonsterAbility
 {
-    public static FireBreath FireBreath { get; } = new();
-    public static ChaosBreath ChaosBreath { get; } = new();
-    public static ColdBreath ColdBreath { get; } = new();
+    // Fire Breath
+    public static FireBreath FireBreath => new();
+    public static ChaosBreath ChaosBreath => new();
+    public static ColdBreath ColdBreath => new();
 
-    public static GraspingClaw GraspingClaw { get; } = new();
+    public static GraspingClaw GraspingClaw => new();
+
+    // Summon Undead
+    public static SummonSkeletons SummonSkeletons => new();
+    public static SummonLesserUndead SummonLesserUndead => new();
 }

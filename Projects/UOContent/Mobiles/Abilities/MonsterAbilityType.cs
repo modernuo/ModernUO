@@ -4,5 +4,6 @@ public enum MonsterAbilityType
 {
     Generic,
     FireBreath,
-    GraspingClaw
+    GraspingClaw,
+    SummonUndead
 }

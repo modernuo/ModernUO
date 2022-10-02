@@ -97,9 +97,9 @@ namespace Server.Mobiles
             DoCounter(attacker);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             ScaleResistances();
             DoCounter(attacker);

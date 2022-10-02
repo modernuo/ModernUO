@@ -18,6 +18,8 @@ public abstract partial class MonsterAbility
     public virtual TimeSpan MinTriggerCooldown => TimeSpan.Zero;
     public virtual TimeSpan MaxTriggerCooldown => TimeSpan.Zero;
 
+    public bool WillTrigger(MonsterAbilityTrigger trigger) => (AbilityTrigger & trigger) != 0;
+
     /// <summary>
     /// Returns true if ability is not on cooldown, and the change to trigger succeeds.
     /// </summary>
@@ -57,8 +59,11 @@ public abstract partial class MonsterAbility
             return;
         }
 
-        var nextTrigger = Core.TickCount
-                          + (long)Utility.RandomMinMax(MinTriggerCooldown, MaxTriggerCooldown).TotalMilliseconds;
+        var randomAmount = MinTriggerCooldown == MaxTriggerCooldown
+            ? MinTriggerCooldown
+            : Utility.RandomMinMax(MinTriggerCooldown, MaxTriggerCooldown);
+
+        var nextTrigger = Core.TickCount + (long)randomAmount.TotalMilliseconds;
 
         _nextTriggerTicks ??= new Dictionary<BaseCreature, long>();
         _nextTriggerTicks[source] = nextTrigger;

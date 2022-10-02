@@ -73,9 +73,9 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (attacker?.Alive == true && attacker.Weapon is BaseRanged && Utility.RandomDouble() < 0.4)
             {

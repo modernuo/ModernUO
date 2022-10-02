@@ -103,9 +103,9 @@ namespace Server.Mobiles
 
         public override int GetHurtSound() => 0x140;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (!m_Stunning && Utility.RandomDouble() < 0.3)
             {

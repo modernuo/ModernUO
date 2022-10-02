@@ -72,9 +72,9 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (Utility.RandomDouble() < 0.1)
             {
@@ -82,9 +82,9 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (Utility.RandomDouble() < 0.1)
             {

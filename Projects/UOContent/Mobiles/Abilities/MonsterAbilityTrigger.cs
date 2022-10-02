@@ -10,5 +10,7 @@ public enum MonsterAbilityTrigger
     TakeMeleeDamage = 0x00000002,
     Swing = 0x00000004, // Includes firing a bow
     TakeSpellDamage = 0x00000008,
-    SpellCast = 0x00000010
+    SpellCast = 0x00000010,
+
+    TakeDamage = TakeMeleeDamage | TakeSpellDamage
 }

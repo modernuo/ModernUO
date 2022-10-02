@@ -81,9 +81,9 @@ namespace Server.Mobiles
 
         public override int GetHurtSound() => 0x2C3;
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (!Core.SE && Utility.RandomDouble() < 0.2 && attacker is BaseCreature c && c.Controlled &&
                 c.ControlMaster != null)

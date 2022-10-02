@@ -1170,7 +1170,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.AbilityTrigger == trigger && ability.CanTrigger(this))
+                if (ability.WillTrigger(trigger) && ability.CanTrigger(this))
                 {
                     ability.Trigger(this, defender);
                 }
@@ -2221,7 +2221,7 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual void OnGotMeleeAttack(Mobile attacker)
+        public virtual void OnGotMeleeAttack(Mobile attacker, int damage)
         {
             if (AutoDispel && attacker is BaseCreature creature && creature.IsDispellable &&
                 AutoDispelChance > Utility.RandomDouble())
@@ -2246,7 +2246,7 @@ namespace Server.Mobiles
             m.Delete();
         }
 
-        public virtual void OnGaveMeleeAttack(Mobile defender)
+        public virtual void OnGaveMeleeAttack(Mobile defender, int damage)
         {
             var p = m_Paragon ? PoisonImpl.IncreaseLevel(HitPoison) : HitPoison;
 
