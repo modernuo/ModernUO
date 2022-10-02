@@ -201,16 +201,16 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             DoSpecialAbility(attacker);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             DoSpecialAbility(defender);
         }

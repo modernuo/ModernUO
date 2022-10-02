@@ -50,10 +50,10 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.15)
             c.DropItem( new DisintegratingThesisNotes() );
-    
+
           if (Utility.RandomDouble() < 0.05)
             c.DropItem( new AssassinChest() );
         }
@@ -66,9 +66,9 @@ namespace Server.Mobiles
             AddLoot(LootPack.UltraRich, 2);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (Utility.RandomDouble() < 0.1)
             {
@@ -76,9 +76,9 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (Utility.RandomDouble() < 0.1)
             {

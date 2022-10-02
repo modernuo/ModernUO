@@ -101,21 +101,21 @@ namespace Server.Mobiles
             AOS.Damage(to, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
         }
 
-        public override void OnDamagedBySpell(Mobile attacker)
+        public override void OnDamagedBySpell(Mobile attacker, int damage)
         {
-            base.OnDamagedBySpell(attacker);
+            base.OnDamagedBySpell(attacker, damage);
             ThrowFan(attacker);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
             ThrowFan(attacker);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (!IsFanned(defender) && Utility.RandomDouble() < 0.05)
             {

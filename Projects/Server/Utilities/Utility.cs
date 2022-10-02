@@ -1063,6 +1063,9 @@ public static class Utility
     public static bool RandomBool() => RandomSources.Source.NextBool();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TimeSpan RandomMinMax(TimeSpan min, TimeSpan max) => new(RandomMinMax(min.Ticks, max.Ticks));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double RandomMinMax(double min, double max)
     {
         if (min > max)
@@ -1539,5 +1542,68 @@ public static class Utility
         }
 
         return combined;
+    }
+
+    public static Point3D GetValidLocation(Map map, Point3D center, int range, int retries = 10)
+    {
+        if (map == null)
+        {
+            return center;
+        }
+
+        var loc = new Point3D(center.Z, center.Y, center.Z);
+
+        for (var i = 0; i < retries; i++)
+        {
+            loc.X = center.X + (Random(range * 2 + 1) - range);
+            loc.Y = center.Y + (Random(range * 2 + 1) - range);
+            loc.Z = center.Z;
+
+            if (map.CanSpawnMobile(loc))
+            {
+                return loc;
+            }
+
+            loc.Z = map.GetAverageZ(loc.X, loc.Y);
+
+            if (map.CanSpawnMobile(loc))
+            {
+                return loc;
+            }
+        }
+
+        return center;
+    }
+
+    public static Point3D GetValidLocationInLOS(Map map, Mobile from, int range, int retries = 10)
+    {
+        if (map == null)
+        {
+            return from.Location;
+        }
+
+        var center = from.Location;
+        var loc = center;
+
+        for (var i = 0; i < retries; i++)
+        {
+            loc.X = center.X + (Random(range * 2 + 1) - range);
+            loc.Y = center.Y + (Random(range * 2 + 1) - range);
+            loc.Z = center.Z;
+
+            if (map.CanSpawnMobile(loc) && map.LineOfSight(from, loc))
+            {
+                return loc;
+            }
+
+            loc.Z = map.GetAverageZ(loc.X, loc.Y);
+
+            if (map.CanSpawnMobile(loc) && map.LineOfSight(from, loc))
+            {
+                return loc;
+            }
+        }
+
+        return center;
     }
 }

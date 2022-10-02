@@ -935,26 +935,29 @@ namespace Server.Spells
 
         public static void Damage(Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage)
         {
-            var iDamage = (int)damage;
+            var damageGiven = (int)damage;
 
             if (delay == TimeSpan.Zero)
             {
-                (from as BaseCreature)?.AlterSpellDamageTo(target, ref iDamage);
-
+                var bcFrom = from as BaseCreature;
                 var bcTarget = target as BaseCreature;
-                bcTarget?.AlterSpellDamageFrom(from, ref iDamage);
 
-                target.Damage(iDamage, from);
+                bcFrom?.AlterSpellDamageTo(target, ref damageGiven);
+                bcTarget?.AlterSpellDamageFrom(from, ref damageGiven);
+
+                target.Damage(damageGiven, from);
+
+                bcFrom?.OnDamageSpell(target, damageGiven);
 
                 if (from != null)
                 {
                     bcTarget?.OnHarmfulSpell(from);
-                    bcTarget?.OnDamagedBySpell(from);
+                    bcTarget?.OnDamagedBySpell(from, damageGiven);
                 }
             }
             else
             {
-                new SpellDamageTimer(spell, target, from, iDamage, delay).Start();
+                new SpellDamageTimer(spell, target, from, damageGiven, delay).Start();
             }
         }
 
@@ -1004,25 +1007,29 @@ namespace Server.Spells
 
             if (delay == TimeSpan.Zero)
             {
-                (from as BaseCreature)?.AlterSpellDamageTo(target, ref dmg);
+                var bcFrom = from as BaseCreature;
+                var bcTarget = target as BaseCreature;
+                bcFrom?.AlterSpellDamageTo(target, ref dmg);
 
-                (target as BaseCreature)?.AlterSpellDamageFrom(from, ref dmg);
+                bcTarget?.AlterSpellDamageFrom(from, ref dmg);
 
                 WeightOverloading.DFA = dfa;
 
                 var damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);
 
                 WeightOverloading.DFA = DFAlgorithm.Standard;
+
+                bcFrom?.OnDamageSpell(target, damageGiven);
+
+                if (bcTarget != null && from != null && delay == TimeSpan.Zero)
+                {
+                    bcTarget.OnHarmfulSpell(from);
+                    bcTarget.OnDamagedBySpell(from, damageGiven);
+                }
             }
             else
             {
                 new SpellDamageTimerAOS(spell, delay, target, from, dmg, phys, fire, cold, pois, nrgy, chaos, dfa).Start();
-            }
-
-            if (target is BaseCreature c && from != null && delay == TimeSpan.Zero)
-            {
-                c.OnHarmfulSpell(from);
-                c.OnDamagedBySpell(from);
             }
         }
 
@@ -1127,16 +1134,17 @@ namespace Server.Spells
 
             protected override void OnTick()
             {
+                var bcFrom = m_From as BaseCreature;
                 var bcTarg = m_Target as BaseCreature;
 
-                if (m_From is BaseCreature bcFrom && m_Target != null)
+                if (m_Target != null)
                 {
-                    bcFrom.AlterSpellDamageTo(m_Target, ref m_Damage);
+                    bcFrom?.AlterSpellDamageTo(m_Target, ref m_Damage);
                 }
 
-                if (bcTarg != null && m_From != null)
+                if (m_From != null)
                 {
-                    bcTarg.AlterSpellDamageFrom(m_From, ref m_Damage);
+                    bcTarg?.AlterSpellDamageFrom(m_From, ref m_Damage);
                 }
 
                 WeightOverloading.DFA = m_DFA;
@@ -1145,10 +1153,12 @@ namespace Server.Spells
 
                 WeightOverloading.DFA = DFAlgorithm.Standard;
 
-                if (bcTarg != null && m_From != null)
+                bcFrom?.OnDamageSpell(m_Target, damageGiven);
+
+                if (m_From != null)
                 {
-                    bcTarg.OnHarmfulSpell(m_From);
-                    bcTarg.OnDamagedBySpell(m_From);
+                    bcTarg?.OnHarmfulSpell(m_From);
+                    bcTarg?.OnDamagedBySpell(m_From, damageGiven);
                 }
 
                 m_Spell?.RemoveDelayedDamageContext(m_Target);

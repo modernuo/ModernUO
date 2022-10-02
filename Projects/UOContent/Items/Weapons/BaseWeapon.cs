@@ -2085,8 +2085,8 @@ namespace Server.Items
                 }
             }
 
-            bcAtt?.OnGaveMeleeAttack(defender);
-            bcDef?.OnGotMeleeAttack(attacker);
+            bcAtt?.OnGaveMeleeAttack(defender, damage);
+            bcDef?.OnGotMeleeAttack(attacker, damage);
 
             a?.OnHit(attacker, defender, damage);
             move?.OnHit(attacker, defender, damage);

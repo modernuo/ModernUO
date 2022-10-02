@@ -49,9 +49,9 @@ namespace Server.Mobiles
 
         public override bool GivesMLMinorArtifact => true;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (Utility.RandomBool())
             {

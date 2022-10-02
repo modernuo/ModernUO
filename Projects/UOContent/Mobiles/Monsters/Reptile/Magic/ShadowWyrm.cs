@@ -44,9 +44,7 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a shadow wyrm corpse";
         public override string DefaultName => "a shadow wyrm";
-
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => true;
         public override Poison PoisonImmune => Poison.Deadly;
         public override Poison HitPoison => Poison.Deadly;
@@ -58,6 +56,9 @@ namespace Server.Mobiles
         public override ScaleType ScaleType => ScaleType.Black;
         public override HideType HideType => HideType.Barbed;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

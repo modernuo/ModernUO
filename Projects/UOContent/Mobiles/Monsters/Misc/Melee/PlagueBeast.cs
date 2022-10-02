@@ -115,16 +115,16 @@ namespace Server.Mobiles
             // TODO: dungeon chest, healthy gland
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             defender.ApplyPoison(this, IsParagon ? Poison.Lethal : Poison.Deadly);
             defender.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);
             defender.PlaySound(0x1CB);
         }
 
-        public override void OnDamagedBySpell(Mobile caster)
+        public override void OnDamagedBySpell(Mobile caster, int damage)
         {
             if (Map != null && caster != this && Utility.RandomDouble() < 0.25)
             {
@@ -137,10 +137,10 @@ namespace Server.Mobiles
                 Say(1053034); // * The plague beast creates another beast from its flesh! *
             }
 
-            base.OnDamagedBySpell(caster);
+            base.OnDamagedBySpell(caster, damage);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
             if (Map != null && attacker != this && Utility.RandomDouble() < 0.25)
             {
@@ -153,7 +153,7 @@ namespace Server.Mobiles
                 Say(1053034); // * The plague beast creates another beast from its flesh! *
             }
 
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
         }
 
         public override int GetIdleSound() => 0x1BF;

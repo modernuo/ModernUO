@@ -292,7 +292,6 @@ namespace Server.Mobiles
 
         private long m_NextAura;
 
-        private long m_NextBreathTime;
         private long m_NextHealOwnerTime = Core.TickCount;
 
         private long m_NextHealTime = Core.TickCount;
@@ -866,7 +865,6 @@ namespace Server.Mobiles
 
         public static bool Summoning { get; set; }
 
-        public virtual bool CanBreath => HasBreath && !Summoned;
         public virtual bool IsDispellable => Summoned && !IsAnimatedDead;
 
         // If they are following a waypoint, they'll continue to follow it even if players aren't around
@@ -1033,52 +1031,8 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int DirectDamage { get; set; }
 
-        // Must be overridden in subclass to enable
-        public virtual bool HasBreath => false;
-
-        // Base damage given is: CurrentHitPoints * BreathDamageScalar
-        public virtual double BreathDamageScalar => Core.AOS ? 0.16 : 0.05;
-
-        // Min/max seconds until next breath
-        public virtual double BreathMinDelay => 30.0;
-        public virtual double BreathMaxDelay => 45.0;
-
-        // Creature stops moving for 1.0 seconds while breathing
-        public virtual double BreathStallTime => 1.0;
-
-        // Effect is sent 1.3 seconds after BreathAngerSound and BreathAngerAnimation is played
-        public virtual double BreathEffectDelay => 1.3;
-
-        // Damage is given 1.0 seconds after effect is sent
-        public virtual double BreathDamageDelay => 1.0;
-
-        public virtual int BreathRange => RangePerception;
-
-        // Damage types
-        public virtual int BreathChaosDamage => 0;
-        public virtual int BreathPhysicalDamage => 0;
-        public virtual int BreathFireDamage => 100;
-        public virtual int BreathColdDamage => 0;
-        public virtual int BreathPoisonDamage => 0;
-        public virtual int BreathEnergyDamage => 0;
-
         // Is immune to breath damages
         public virtual bool BreathImmune => false;
-
-        // Effect details and sound
-        public virtual int BreathEffectItemID => 0x36D4;
-        public virtual int BreathEffectSpeed => 5;
-        public virtual int BreathEffectDuration => 0;
-        public virtual bool BreathEffectExplodes => false;
-        public virtual bool BreathEffectFixedDir => false;
-        public virtual int BreathEffectHue => 0;
-        public virtual int BreathEffectRenderMode => 0;
-
-        public virtual int BreathEffectSound => 0x227;
-
-        // Anger sound/animations
-        public virtual int BreathAngerSound => GetAngerSound();
-        public virtual int BreathAngerAnimation => 12;
 
         public virtual bool CanFlee => !m_Paragon;
 
@@ -1159,6 +1113,67 @@ namespace Server.Mobiles
                 }
 
                 return m_MLQuests;
+            }
+        }
+
+        public virtual MonsterAbility[] GetMonsterAbilities() => null;
+
+        public virtual bool HasAbility(MonsterAbilityType type)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                if (abilities[i].AbilityType == type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public virtual bool HasAbility(MonsterAbility ability)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                if (abilities[i] == ability)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public virtual void TriggerAbility(MonsterAbilityTrigger trigger, Mobile defender)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                var ability = abilities[i];
+                if (ability.WillTrigger(trigger) && ability.CanTrigger(this))
+                {
+                    ability.Trigger(this, defender);
+                }
             }
         }
 
@@ -1478,12 +1493,19 @@ namespace Server.Mobiles
             base.OnDamage(amount, from, willKill);
         }
 
-        public virtual void OnDamagedBySpell(Mobile from)
+        public virtual void OnDamagedBySpell(Mobile from, int damage)
         {
             if (CanBeDistracted && ControlOrder == OrderType.Follow)
             {
                 CheckDistracted(from);
             }
+
+            TriggerAbility(MonsterAbilityTrigger.TakeSpellDamage, from);
+        }
+
+        public virtual void OnDamageSpell(Mobile defender, int damage)
+        {
+            TriggerAbility(MonsterAbilityTrigger.GiveSpellDamage, defender);
         }
 
         public virtual void OnHarmfulSpell(Mobile from)
@@ -2199,13 +2221,15 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual void OnGotMeleeAttack(Mobile attacker)
+        public virtual void OnGotMeleeAttack(Mobile attacker, int damage)
         {
             if (AutoDispel && attacker is BaseCreature creature && creature.IsDispellable &&
                 AutoDispelChance > Utility.RandomDouble())
             {
                 Dispel(creature);
             }
+
+            TriggerAbility(MonsterAbilityTrigger.TakeMeleeDamage, attacker);
         }
 
         public virtual void Dispel(Mobile m)
@@ -2222,7 +2246,7 @@ namespace Server.Mobiles
             m.Delete();
         }
 
-        public virtual void OnGaveMeleeAttack(Mobile defender)
+        public virtual void OnGaveMeleeAttack(Mobile defender, int damage)
         {
             var p = m_Paragon ? PoisonImpl.IncreaseLevel(HitPoison) : HitPoison;
 
@@ -2241,6 +2265,8 @@ namespace Server.Mobiles
             {
                 Dispel(creature);
             }
+
+            TriggerAbility(MonsterAbilityTrigger.GiveMeleeDamage, defender);
         }
 
         public override void OnAfterDelete()
@@ -3488,24 +3514,8 @@ namespace Server.Mobiles
                 m_NextRummageTime = tc + (int)TimeSpan.FromMinutes(delay).TotalMilliseconds;
             }
 
-            // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
-            if (CanBreath && tc - m_NextBreathTime >= 0)
-            {
-                var target = Combatant;
-
-                if (target?.Alive == true && !target.IsDeadBondedPet && CanBeHarmful(target) && target.Map == Map &&
-                    !IsDeadBondedPet && target.InRange(this, BreathRange) && InLOS(target) && !BardPacified)
-                {
-                    if (Core.TickCount - m_NextBreathTime < 30000 && Utility.RandomBool())
-                    {
-                        BreathStart(target);
-                    }
-
-                    m_NextBreathTime = tc + (int)TimeSpan
-                        .FromSeconds(BreathMinDelay + Utility.RandomDouble() * (BreathMaxDelay - BreathMinDelay))
-                        .TotalMilliseconds;
-                }
-            }
+            // Fire breath, etc.
+            TriggerAbility(MonsterAbilityTrigger.Action, Combatant);
 
             if ((CanHeal || CanHealOwner) && Alive && !IsHealing && !BardPacified)
             {
@@ -3891,161 +3901,6 @@ namespace Server.Mobiles
                 m_DeleteTimer.Stop();
                 m_DeleteTimer = null;
             }
-        }
-
-        public virtual void BreathStart(Mobile target)
-        {
-            BreathStallMovement();
-            BreathPlayAngerSound();
-            BreathPlayAngerAnimation();
-
-            Direction = GetDirectionTo(target);
-
-            Timer.StartTimer(TimeSpan.FromSeconds(BreathEffectDelay), () => BreathEffect_Callback(target));
-        }
-
-        public virtual void BreathStallMovement()
-        {
-            if (AIObject != null)
-            {
-                AIObject.NextMove = Core.TickCount + (int)(BreathStallTime * 1000);
-            }
-        }
-
-        public virtual void BreathPlayAngerSound()
-        {
-            PlaySound(BreathAngerSound);
-        }
-
-        public virtual void BreathPlayAngerAnimation()
-        {
-            Animate(BreathAngerAnimation, 5, 1, true, false, 0);
-        }
-
-        public virtual void BreathEffect_Callback(Mobile target)
-        {
-            if (!target.Alive || !CanBeHarmful(target))
-            {
-                return;
-            }
-
-            BreathPlayEffectSound();
-            BreathPlayEffect(target);
-
-            Timer.StartTimer(TimeSpan.FromSeconds(BreathDamageDelay), () => BreathDamage_Callback(target));
-        }
-
-        public virtual void BreathPlayEffectSound()
-        {
-            PlaySound(BreathEffectSound);
-        }
-
-        public virtual void BreathPlayEffect(Mobile target)
-        {
-            Effects.SendMovingEffect(
-                this,
-                target,
-                BreathEffectItemID,
-                BreathEffectSpeed,
-                BreathEffectDuration,
-                BreathEffectFixedDir,
-                BreathEffectExplodes,
-                BreathEffectHue,
-                BreathEffectRenderMode
-            );
-        }
-
-        public virtual void BreathDamage_Callback(Mobile target)
-        {
-            if (target is BaseCreature creature && creature.BreathImmune)
-            {
-                return;
-            }
-
-            if (CanBeHarmful(target))
-            {
-                DoHarmful(target);
-                BreathDealDamage(target);
-            }
-        }
-
-        public virtual void BreathDealDamage(Mobile target)
-        {
-            if (!Evasion.CheckSpellEvasion(target))
-            {
-                var physDamage = BreathPhysicalDamage;
-                var fireDamage = BreathFireDamage;
-                var coldDamage = BreathColdDamage;
-                var poisDamage = BreathPoisonDamage;
-                var nrgyDamage = BreathEnergyDamage;
-
-                if (BreathChaosDamage > 0)
-                {
-                    switch (Utility.Random(5))
-                    {
-                        case 0:
-                            {
-                                physDamage += BreathChaosDamage;
-                                break;
-                            }
-                        case 1:
-                            {
-                                fireDamage += BreathChaosDamage;
-                                break;
-                            }
-                        case 2:
-                            {
-                                coldDamage += BreathChaosDamage;
-                                break;
-                            }
-                        case 3:
-                            {
-                                poisDamage += BreathChaosDamage;
-                                break;
-                            }
-                        case 4:
-                            {
-                                nrgyDamage += BreathChaosDamage;
-                                break;
-                            }
-                    }
-                }
-
-                if (physDamage == 0 && fireDamage == 0 && coldDamage == 0 && poisDamage == 0 && nrgyDamage == 0)
-                {
-                    target.Damage(BreathComputeDamage(), this); // Unresistable damage even in AOS
-                }
-                else
-                {
-                    AOS.Damage(
-                        target,
-                        this,
-                        BreathComputeDamage(),
-                        physDamage,
-                        fireDamage,
-                        coldDamage,
-                        poisDamage,
-                        nrgyDamage
-                    );
-                }
-            }
-        }
-
-        public virtual int BreathComputeDamage()
-        {
-            var damage = (int)(Hits * BreathDamageScalar);
-
-            if (IsParagon)
-            {
-                damage = (int)(damage / Paragon.HitsBuff);
-            }
-
-            if (damage > 200)
-            {
-                damage = 200;
-            }
-
-            return damage;
         }
 
         public void SpillAcid(int amount)

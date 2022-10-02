@@ -99,7 +99,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnDamagedBySpell(Mobile caster)
+        public override void OnDamagedBySpell(Mobile caster, int damage)
         {
             if (caster == this)
             {

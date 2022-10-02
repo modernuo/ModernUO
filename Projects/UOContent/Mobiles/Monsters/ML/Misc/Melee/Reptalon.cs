@@ -46,11 +46,13 @@ namespace Server.Mobiles
         public override int TreasureMapLevel => 5;
         public override int Meat => 5;
         public override int Hides => 10;
-        public override bool CanBreath => true;
         public override bool CanAngerOnTame => true;
         public override bool StatLossAfterTame => true;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

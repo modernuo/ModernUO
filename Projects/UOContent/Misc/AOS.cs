@@ -37,14 +37,12 @@ namespace Server
         public static int Damage(
             Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
             int chaos
-        ) =>
-            Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
+        ) => Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
 
         public static int Damage(
             Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
             bool keepAlive
-        ) =>
-            Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
+        ) => Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
 
         public static int Damage(
             Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois,
@@ -80,20 +78,30 @@ namespace Server
                 switch (Utility.Random(5))
                 {
                     case 0:
-                        phys += chaos;
-                        break;
+                        {
+                            phys += chaos;
+                            break;
+                        }
                     case 1:
-                        fire += chaos;
-                        break;
+                        {
+                            fire += chaos;
+                            break;
+                        }
                     case 2:
-                        cold += chaos;
-                        break;
+                        {
+                            cold += chaos;
+                            break;
+                        }
                     case 3:
-                        pois += chaos;
-                        break;
+                        {
+                            pois += chaos;
+                            break;
+                        }
                     case 4:
-                        nrgy += chaos;
-                        break;
+                        {
+                            nrgy += chaos;
+                            break;
+                        }
                 }
             }
 

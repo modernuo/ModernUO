@@ -102,7 +102,7 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnDamagedBySpell(Mobile from)
+        public override void OnDamagedBySpell(Mobile from, int damage)
         {
             if (from?.Alive == true && Utility.RandomDouble() < 0.4)
             {
@@ -123,9 +123,9 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (FieldActive)
             {

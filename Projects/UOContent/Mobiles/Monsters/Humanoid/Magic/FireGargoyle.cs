@@ -45,10 +45,12 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a charred corpse";
 
-        public override bool HasBreath => true; // fire breath enabled
         public override int TreasureMapLevel => 1;
         public override int Meat => 1;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

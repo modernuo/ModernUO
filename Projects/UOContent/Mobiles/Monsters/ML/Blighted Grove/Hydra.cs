@@ -38,18 +38,18 @@ namespace Server.Mobiles
             // TODO: Fame/Karma
         }
 
-        public Hydra(Serial serial)
-            : base(serial)
+        public Hydra(Serial serial) : base(serial)
         {
         }
 
         public override string CorpseName => "a hydra corpse";
         public override string DefaultName => "a hydra";
-
-        public override bool HasBreath => true;
         public override int Hides => 40;
         public override int Meat => 19;
         public override int TreasureMapLevel => 5;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

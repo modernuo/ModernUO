@@ -51,9 +51,7 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a dragon corpse";
         public override string DefaultName => "a serpentine dragon";
-
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override double BonusPetDamageScalar => Core.SE ? 3.0 : 1.0;
 
         public override bool AutoDispel => true;
@@ -63,6 +61,9 @@ namespace Server.Mobiles
         public override int Scales => 6;
         public override ScaleType ScaleType => Utility.RandomBool() ? ScaleType.Black : ScaleType.White;
         public override int TreasureMapLevel => 4;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -80,9 +81,9 @@ namespace Server.Mobiles
 
         public override int GetHurtSound() => 0x2C3;
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (!Core.SE && Utility.RandomDouble() < 0.2 && attacker is BaseCreature c && c.Controlled &&
                 c.ControlMaster != null)

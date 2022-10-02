@@ -95,13 +95,14 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a nightmare corpse";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 5;
         public override int Hides => 10;
         public override HideType HideType => HideType.Barbed;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

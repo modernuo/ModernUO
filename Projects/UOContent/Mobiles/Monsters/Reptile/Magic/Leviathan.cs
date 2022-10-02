@@ -49,14 +49,8 @@ namespace Server.Mobiles
             CantWalk = true;
 
             PackItem(new MessageInABottle());
-
-            var rope = new Rope();
-            rope.ItemID = 0x14F8;
-            PackItem(rope);
-
-            rope = new Rope();
-            rope.ItemID = 0x14FA;
-            PackItem(rope);
+            PackItem(new Rope { ItemID = 0x14F8 });
+            PackItem(new Rope { ItemID = 0x14FA });
         }
 
         public Leviathan(Serial serial) : base(serial)
@@ -68,15 +62,6 @@ namespace Server.Mobiles
         public Mobile Fisher { get; set; }
 
         public override string DefaultName => "a leviathan";
-
-        public override bool HasBreath => true;
-        public override int BreathPhysicalDamage => 70; // TODO: Verify damage type
-        public override int BreathColdDamage => 30;
-        public override int BreathFireDamage => 0;
-        public override int BreathEffectHue => 0x1ED;
-        public override double BreathDamageScalar => 0.05;
-        public override double BreathMinDelay => 5.0;
-        public override double BreathMaxDelay => 7.5;
 
         public override int TreasureMapLevel => 5;
 
@@ -108,6 +93,9 @@ namespace Server.Mobiles
             typeof(PolarBearMask),
             typeof(VioletCourage)
         };
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -175,6 +163,19 @@ namespace Server.Mobiles
             }
 
             Fisher = null;
+        }
+
+        private static MonsterAbility _ability = new LevianthanBreath();
+
+        public class LevianthanBreath : FireBreath
+        {
+            public override int BreathPhysicalDamage => 70;
+            public override int BreathColdDamage => 30;
+            public override int BreathFireDamage => 0;
+            public override int BreathEffectHue => 0x1ED;
+            public override double BreathDamageScalar => 0.05;
+            public override TimeSpan MinTriggerCooldown => TimeSpan.FromSeconds(5.0);
+            public override TimeSpan MaxTriggerCooldown => TimeSpan.FromSeconds(7.5);
         }
     }
 }
