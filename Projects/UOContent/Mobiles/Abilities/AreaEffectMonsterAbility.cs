@@ -1,4 +1,5 @@
 ﻿using System;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -34,20 +35,26 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
         // target is null for OnCombatAction triggers
 
         var eable = source.GetMobilesInRange(2);
+        using var queue = PooledRefQueue<Mobile>.Create();
         foreach (var m in eable)
         {
             if (CanEffectTarget(source, m))
             {
-                DoEffectTarget(source, m);
+                queue.Enqueue(m);
             }
         }
         eable.Free();
+
+        while (queue.Count > 0)
+        {
+            DoEffectTarget(source, queue.Dequeue());
+        }
 
         base.Trigger(source, target);
     }
 
     protected virtual bool CanEffectTarget(BaseCreature source, Mobile defender) =>
-        source != defender && source.IsEnemy(defender);
+        source != defender && defender.Alive && source.IsEnemy(defender) && source.CanBeHarmful(defender);
 
     protected abstract void DoEffectTarget(BaseCreature source, Mobile defender);
 }

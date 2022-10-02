@@ -20,5 +20,10 @@ public abstract partial class MonsterAbility
     public static PoisonGasCounter PoisonGasCounter => new();
     public static PoisonGasAreaAttack PoisonGasAreaAttack => new();
 
+    // Explosions
+    public static DeathExplosion DeathExplosion => new();
+
     public static ThrowHatchetCounter ThrowHatchetCounter => new();
+
+    public static DestroyEquipment DestroyEquipment => new();
 }

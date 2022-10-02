@@ -8,5 +8,7 @@ public enum MonsterAbilityType
     SummonUndead,
     Stun,
     Poison,
-    MassPoison
+    MassPoison,
+    ThrowWeapon,
+    DestroyEquipment
 }

@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 
 public class FireBreath : MonsterAbility
 {
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.Action;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.OnAction;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.FireBreath;
     public override double ChanceToTrigger => 0.5;
 

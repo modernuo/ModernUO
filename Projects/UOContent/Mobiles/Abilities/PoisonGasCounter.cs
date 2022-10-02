@@ -1,7 +1,10 @@
 ﻿namespace Server.Mobiles;
 
-public class PoisonGasCounter : CounterMonsterAbility
+public class PoisonGasCounter : MonsterAbilityAttack
 {
+    public override MonsterAbilityType AbilityType => MonsterAbilityType.Poison;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage;
+
     public override double ChanceToTrigger => 0.05;
     public virtual int AttackRange => 1;
 

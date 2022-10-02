@@ -2869,6 +2869,8 @@ namespace Server.Mobiles
 
         public override bool OnBeforeDeath()
         {
+            TriggerAbility(MonsterAbilityTrigger.OnDeath, null);
+
             var treasureLevel = TreasureMapLevel;
 
             if (treasureLevel == 1 && Map == Map.Trammel && TreasureMap.IsInHavenIsland(this))
@@ -3515,7 +3517,7 @@ namespace Server.Mobiles
             }
 
             // Fire breath, etc.
-            TriggerAbility(MonsterAbilityTrigger.Action, Combatant);
+            TriggerAbility(MonsterAbilityTrigger.OnAction, Combatant);
 
             if ((CanHeal || CanHealOwner) && Alive && !IsHealing && !BardPacified)
             {
