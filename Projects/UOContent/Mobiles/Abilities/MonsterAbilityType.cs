@@ -5,5 +5,10 @@ public enum MonsterAbilityType
     Generic,
     FireBreath,
     GraspingClaw,
-    SummonUndead
+    SummonUndead,
+    Stun,
+    Poison,
+    MassPoison,
+    ThrowWeapon,
+    DestroyEquipment
 }

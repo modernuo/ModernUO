@@ -2,7 +2,7 @@
 
 public class ChaosBreath : FireBreath
 {
-    public override int BreathChaosDamage => 100;
+    public override int ChaosDamage => 100;
 
-    public override int BreathFireDamage => 0;
+    public override int FireDamage => 0;
 }

@@ -12,4 +12,18 @@ public abstract partial class MonsterAbility
     // Summon Undead
     public static SummonSkeletons SummonSkeletons => new();
     public static SummonLesserUndead SummonLesserUndead => new();
+
+    // Stun
+    public static ColossalBlow ColossalBlow => new();
+
+    // Poison
+    public static PoisonGasCounter PoisonGasCounter => new();
+    public static PoisonGasAreaAttack PoisonGasAreaAttack => new();
+
+    // Explosions
+    public static DeathExplosion DeathExplosion => new();
+
+    public static ThrowHatchetCounter ThrowHatchetCounter => new();
+
+    public static DestroyEquipment DestroyEquipment => new();
 }
