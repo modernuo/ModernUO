@@ -5,6 +5,7 @@ namespace Server.Mobiles;
 public class DeathExplosion : AreaEffectMonsterAbility
 {
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.OnDeath;
+    public override MonsterAbilityType AbilityType => MonsterAbilityType.DeathExplosion;
 
     public override double ChanceToTrigger => 1.0;
     public override TimeSpan MinTriggerCooldown => TimeSpan.Zero;

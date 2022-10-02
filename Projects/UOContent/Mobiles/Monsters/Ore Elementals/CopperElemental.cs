@@ -57,6 +57,12 @@ public class CopperElemental : BaseCreature
         AddLoot(LootPack.Gems, 2);
     }
 
+    public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
+    {
+        base.AlterMeleeDamageFrom(from, ref damage);
+        damage /= 2; // 50% melee damage
+    }
+
     public override void CheckReflect(Mobile caster, ref bool reflect)
     {
         reflect = true; // Every spell is reflected back to the caster
