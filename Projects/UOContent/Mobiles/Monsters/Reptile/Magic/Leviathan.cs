@@ -169,9 +169,9 @@ namespace Server.Mobiles
 
         public class LevianthanBreath : FireBreath
         {
-            public override int BreathPhysicalDamage => 70;
-            public override int BreathColdDamage => 30;
-            public override int BreathFireDamage => 0;
+            public override int PhysicalDamage => 70;
+            public override int ColdDamage => 30;
+            public override int FireDamage => 0;
             public override int BreathEffectHue => 0x1ED;
             public override double BreathDamageScalar => 0.05;
             public override TimeSpan MinTriggerCooldown => TimeSpan.FromSeconds(5.0);

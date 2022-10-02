@@ -27,12 +27,12 @@ public class FireBreath : MonsterAbility
     public virtual int BreathRange(BaseCreature source) => source.RangePerception;
 
     // Damage Types
-    public virtual int BreathChaosDamage => 0;
-    public virtual int BreathPhysicalDamage => 0;
-    public virtual int BreathFireDamage => 100;
-    public virtual int BreathColdDamage => 0;
-    public virtual int BreathPoisonDamage => 0;
-    public virtual int BreathEnergyDamage => 0;
+    public virtual int ChaosDamage => 0;
+    public virtual int PhysicalDamage => 0;
+    public virtual int FireDamage => 100;
+    public virtual int ColdDamage => 0;
+    public virtual int PoisonDamage => 0;
+    public virtual int EnergyDamage => 0;
 
     // Effect details and sound
     public virtual int BreathEffectItemID => 0x36D4;
@@ -146,39 +146,39 @@ public class FireBreath : MonsterAbility
     {
         if (!Evasion.CheckSpellEvasion(target))
         {
-            var physDamage = BreathPhysicalDamage;
-            var fireDamage = BreathFireDamage;
-            var coldDamage = BreathColdDamage;
-            var poisDamage = BreathPoisonDamage;
-            var nrgyDamage = BreathEnergyDamage;
+            var physDamage = PhysicalDamage;
+            var fireDamage = FireDamage;
+            var coldDamage = ColdDamage;
+            var poisDamage = PoisonDamage;
+            var nrgyDamage = EnergyDamage;
 
-            if (BreathChaosDamage > 0)
+            if (ChaosDamage > 0)
             {
                 switch (Utility.Random(5))
                 {
                     case 0:
                         {
-                            physDamage += BreathChaosDamage;
+                            physDamage += ChaosDamage;
                             break;
                         }
                     case 1:
                         {
-                            fireDamage += BreathChaosDamage;
+                            fireDamage += ChaosDamage;
                             break;
                         }
                     case 2:
                         {
-                            coldDamage += BreathChaosDamage;
+                            coldDamage += ChaosDamage;
                             break;
                         }
                     case 3:
                         {
-                            poisDamage += BreathChaosDamage;
+                            poisDamage += ChaosDamage;
                             break;
                         }
                     case 4:
                         {
-                            nrgyDamage += BreathChaosDamage;
+                            nrgyDamage += ChaosDamage;
                             break;
                         }
                 }

@@ -90,7 +90,7 @@ namespace Server.Mobiles
                     }
                 case 1:
                     {
-                        defender.SendAsciiMessage("You have been hit by a paralyzing blow!");
+                        defender.SendLocalizedMessage(1072221); // You have been hit by a paralyzing blow!
                         defender.Freeze(TimeSpan.FromSeconds(3.0));
                         break;
                     }

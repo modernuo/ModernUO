@@ -4170,6 +4170,7 @@ namespace Server.Mobiles
 
         public virtual void OnActionCombat()
         {
+            TriggerAbility(MonsterAbilityTrigger.OnCombatAction, null);
         }
 
         public virtual void OnActionGuard()
