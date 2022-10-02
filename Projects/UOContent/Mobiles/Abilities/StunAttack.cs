@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles;
 
-public abstract class StunAbility : MonsterAbility
+public abstract class StunAttack : MonsterAbility
 {
     // Prevents infinite loop
     private HashSet<BaseCreature> _stunning;

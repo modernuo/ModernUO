@@ -16,7 +16,9 @@ public abstract partial class MonsterAbility
     // Stun
     public static ColossalBlow ColossalBlow => new();
 
+    // Poison
+    public static PoisonGasCounter PoisonGasCounter => new();
     public static PoisonGasAreaAttack PoisonGasAreaAttack => new();
 
-    public static ThrowHatchetAttack ThrowHatchetAttack => new();
+    public static ThrowHatchetCounter ThrowHatchetCounter => new();
 }

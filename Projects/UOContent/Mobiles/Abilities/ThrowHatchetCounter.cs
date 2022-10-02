@@ -2,11 +2,12 @@
 
 namespace Server.Mobiles;
 
-public class ThrowHatchetAttack : ThrowWeaponMonsterAbility
+public class ThrowHatchetCounter : CounterAttack
 {
-    protected override void ThrowEffect(BaseCreature source, Mobile defender)
+    protected override void OnAttack(BaseCreature source, Mobile defender)
     {
         source.MovingEffect(defender, 0xF43, 10, 0, false, false);
+        AOS.Damage(defender, source, 50, 100, 0, 0, 0, 0, 0);
     }
 
     protected override bool CanEffectTarget(BaseCreature source, Mobile defender) =>

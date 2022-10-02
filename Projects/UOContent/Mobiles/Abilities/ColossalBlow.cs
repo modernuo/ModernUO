@@ -2,7 +2,7 @@
 
 namespace Server.Mobiles;
 
-public class ColossalBlow : StunAbility
+public class ColossalBlow : StunAttack
 {
     public override void Trigger(BaseCreature source, Mobile target)
     {

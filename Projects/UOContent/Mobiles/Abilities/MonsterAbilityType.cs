@@ -7,5 +7,6 @@ public enum MonsterAbilityType
     GraspingClaw,
     SummonUndead,
     Stun,
+    Poison,
     MassPoison
 }

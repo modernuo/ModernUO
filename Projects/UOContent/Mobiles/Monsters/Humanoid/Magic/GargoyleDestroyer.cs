@@ -57,7 +57,7 @@ public class GargoyleDestroyer : BaseCreature
     public override int Meat => 1;
     public override bool CanFly => true;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.ThrowHatchetAttack };
+    private static MonsterAbility[] _abilities = { MonsterAbility.ThrowHatchetCounter };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void GenerateLoot()
