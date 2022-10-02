@@ -1,6 +1,6 @@
 ﻿namespace Server.Mobiles;
 
-public class PoisonGasCounter : CounterAttack
+public class PoisonGasCounter : CounterMonsterAbility
 {
     public override double ChanceToTrigger => 0.05;
     public virtual int AttackRange => 1;

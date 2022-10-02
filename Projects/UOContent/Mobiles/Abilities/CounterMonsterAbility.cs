@@ -1,6 +1,6 @@
 ﻿namespace Server.Mobiles;
 
-public abstract class CounterAttack : MonsterAbility
+public abstract class CounterMonsterAbility : MonsterAbility
 {
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage;
     public override double ChanceToTrigger => 0.4;

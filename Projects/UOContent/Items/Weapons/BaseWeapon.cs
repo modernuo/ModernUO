@@ -14,7 +14,6 @@ using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
-using CounterAttack = Server.Spells.Bushido.CounterAttack;
 
 namespace Server.Items
 {

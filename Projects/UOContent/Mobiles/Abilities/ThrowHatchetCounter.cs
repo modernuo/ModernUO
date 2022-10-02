@@ -2,7 +2,7 @@
 
 namespace Server.Mobiles;
 
-public class ThrowHatchetCounter : CounterAttack
+public class ThrowHatchetCounter : CounterMonsterAbility
 {
     protected override void OnAttack(BaseCreature source, Mobile defender)
     {
