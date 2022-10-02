@@ -5,6 +5,7 @@ namespace Server.Mobiles;
 
 public class FireBreath : MonsterAbility
 {
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.Action;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.FireBreath;
     public override double ChanceToTrigger => 0.5;
 
@@ -212,11 +213,6 @@ public class FireBreath : MonsterAbility
             damage = (int)(damage / Paragon.HitsBuff);
         }
 
-        if (damage > 200)
-        {
-            damage = 200;
-        }
-
-        return damage;
+        return Math.Min(damage, 200);
     }
 }

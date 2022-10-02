@@ -8,7 +8,7 @@ public class GraspingClaw : MonsterAbility
     private Dictionary<Mobile, ExpireTimer> _table;
 
     public override MonsterAbilityType AbilityType => MonsterAbilityType.GraspingClaw;
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.Swing;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveMeleeDamage;
     public override double ChanceToTrigger => 0.10;
 
     public override void Trigger(BaseCreature source, Mobile target)

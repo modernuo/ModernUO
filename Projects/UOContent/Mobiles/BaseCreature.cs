@@ -1505,7 +1505,7 @@ namespace Server.Mobiles
 
         public virtual void OnDamageSpell(Mobile defender, int damage)
         {
-            TriggerAbility(MonsterAbilityTrigger.SpellCast, defender);
+            TriggerAbility(MonsterAbilityTrigger.GiveSpellDamage, defender);
         }
 
         public virtual void OnHarmfulSpell(Mobile from)
@@ -2266,7 +2266,7 @@ namespace Server.Mobiles
                 Dispel(creature);
             }
 
-            TriggerAbility(MonsterAbilityTrigger.Swing, defender);
+            TriggerAbility(MonsterAbilityTrigger.GiveMeleeDamage, defender);
         }
 
         public override void OnAfterDelete()
