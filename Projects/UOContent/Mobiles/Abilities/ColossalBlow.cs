@@ -4,7 +4,7 @@ namespace Server.Mobiles;
 
 public class ColossalBlow : StunAttack
 {
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         target.Animate(21, 6, 1, true, false, 0);
         source.PlaySound(0xEE);
@@ -15,7 +15,7 @@ public class ColossalBlow : StunAttack
             "You have been stunned by a colossal blow!"
         );
 
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     protected override void Recover(Mobile defender)

@@ -21,7 +21,7 @@ public abstract class SummonUndead : MonsterAbility
 
     public virtual bool CanTrigger(BaseCreature source) => source.Followers < AmountToSummon && CanTrigger(source);
 
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         var amount = AmountToSummon - source.Followers;
         var distance = SummonRange;
@@ -58,7 +58,7 @@ public abstract class SummonUndead : MonsterAbility
             summon.PlaySound(summon.GetAttackSound());
         }
 
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     private static void EndPolymorph(BaseCreature source)

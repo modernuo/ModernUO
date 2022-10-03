@@ -15,9 +15,9 @@ public abstract class StunAttack : MonsterAbility
 
     public virtual TimeSpan StunDuration => TimeSpan.FromSeconds(5.0);
 
-    public override bool CanTrigger(BaseCreature source) => !_stunning.Contains(source) && base.CanTrigger(source);
+    public override bool CanTrigger(BaseCreature source, MonsterAbilityTrigger trigger) => !_stunning.Contains(source) && base.CanTrigger(source, trigger);
 
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         if (source.Weapon is BaseWeapon weapon)
         {
@@ -33,7 +33,7 @@ public abstract class StunAttack : MonsterAbility
             Timer.DelayCall(StunDuration, Recover, target);
         }
 
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     protected virtual void Recover(Mobile defender)

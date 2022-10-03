@@ -194,26 +194,24 @@ namespace Server
                 totalDamage = m.Hits;
             }
 
-            if (from?.Deleted == false && from.Alive)
+            if (from is { Deleted: false, Alive: true })
             {
                 var reflectPhys = AosAttributes.GetValue(m, AosAttribute.ReflectPhysical);
 
+                if (reflectPhys != 0 && from is BaseCreature bcFrom)
+                {
+                    var magicalBarrier = bcFrom.GetAbility(MonsterAbilityType.MagicalBarrier);
+                    magicalBarrier.AlterMeleeDamageFrom(bcFrom, m, ref reflectPhys);
+                }
+
                 if (reflectPhys != 0)
                 {
-                    if ((from as ExodusMinion)?.FieldActive == true ||
-                        (from as ExodusOverseer)?.FieldActive == true)
-                    {
-                        from.FixedParticles(0x376A, 20, 10, 0x2530, EffectLayer.Waist);
-                        from.PlaySound(0x2F4);
-                        m.SendAsciiMessage("Your weapon cannot penetrate the creature's magical barrier");
-                    }
-                    else
-                    {
-                        from.Damage(
-                            Scale(damage * phys * (100 - (ignoreArmor ? 0 : m.PhysicalResistance)) / 10000, reflectPhys),
-                            m
-                        );
-                    }
+                    var reflectDamage = Scale(
+                        damage * phys * (100 - (ignoreArmor ? 0 : m.PhysicalResistance)) / 10000,
+                        reflectPhys
+                    );
+
+                    from.Damage(reflectDamage, m);
                 }
             }
 

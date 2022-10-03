@@ -6,7 +6,7 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
 {
     public virtual int AreaRange => 3;
 
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         var eable = source.GetMobilesInRange(AreaRange);
         using var queue = PooledRefQueue<Mobile>.Create();
@@ -24,7 +24,7 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
             DoEffectTarget(source, queue.Dequeue());
         }
 
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     protected virtual bool CanEffectTarget(BaseCreature source, Mobile defender) =>

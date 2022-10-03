@@ -2,14 +2,14 @@
 
 public abstract class MonsterAbilityAttack : MonsterAbility
 {
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         if (CanEffectTarget(source, target))
         {
             OnAttack(source, target);
         }
 
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     protected virtual void OnAttack(BaseCreature source, Mobile defender)

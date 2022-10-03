@@ -28,4 +28,6 @@ public abstract partial class MonsterAbility
     public static DestroyEquipment DestroyEquipment => new();
 
     public static DrainLifeAreaAttack DrainLifeAreaAttack => new();
+
+    public static MagicalBarrierCounter MagicalBarrierCounter => new();
 }

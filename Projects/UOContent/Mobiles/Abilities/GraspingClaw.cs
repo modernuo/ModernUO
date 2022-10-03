@@ -11,7 +11,7 @@ public class GraspingClaw : MonsterAbility
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveMeleeDamage;
     public override double ChanceToTrigger => 0.10;
 
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         if (_table.Remove(target, out var timer))
         {
@@ -55,7 +55,7 @@ public class GraspingClaw : MonsterAbility
         _table ??= new Dictionary<Mobile, ExpireTimer>();
         _table[target] = timer;
 
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     private class ExpireTimer : Timer

@@ -4,10 +4,10 @@ public class SummonLesserUndead : SummonUndead
 {
     private int _group;
 
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         _group = Utility.Random(2);
-        base.Trigger(source, target);
+        base.Trigger(trigger, source, target);
     }
 
     public override BaseCreature CreateSummon(BaseCreature source)

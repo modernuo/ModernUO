@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 
 public class FireBreath : MonsterAbility
 {
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.OnAction;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.Think;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.FireBreath;
     public override double ChanceToTrigger => 0.5;
 
@@ -45,9 +45,9 @@ public class FireBreath : MonsterAbility
 
     public virtual int BreathEffectSound => 0x227;
 
-    public override bool CanTrigger(BaseCreature source) => !source.Summoned && base.CanTrigger(source);
+    public override bool CanTrigger(BaseCreature source, MonsterAbilityTrigger trigger) => !source.Summoned && base.CanTrigger(source, trigger);
 
-    public override void Trigger(BaseCreature source, Mobile target)
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         if (CanFireBreathTarget(source, target))
         {
@@ -59,7 +59,7 @@ public class FireBreath : MonsterAbility
 
             Timer.StartTimer(TimeSpan.FromSeconds(BreathEffectDelay), () => BreathEffect_Callback(source, target));
 
-            base.Trigger(source, target);
+            base.Trigger(trigger, source, target);
         }
     }
 

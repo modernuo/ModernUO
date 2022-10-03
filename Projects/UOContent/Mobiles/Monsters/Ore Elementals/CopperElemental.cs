@@ -60,6 +60,7 @@ public class CopperElemental : BaseCreature
     public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
     {
         base.AlterMeleeDamageFrom(from, ref damage);
+
         damage /= 2; // 50% melee damage
     }
 
