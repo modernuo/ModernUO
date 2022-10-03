@@ -85,38 +85,13 @@ public class ExodusMinion : BaseCreature
 
     public override int GetHurtSound() => 0x140;
 
-    public override void OnDamagedBySpell(Mobile from, int damage)
+    private static MonsterAbility[] _abilities =
     {
-        if (from?.Alive == true && Utility.RandomDouble() < 0.4)
-        {
-            SendEBolt(from);
-        }
+        // OSI changed the ability some time around UOML
+        Core.ML ? MonsterAbility.EnergyBoltCounter : MonsterAbility.MagicalBarrier
+    };
 
-        base.OnDamagedBySpell(from, damage);
-    }
-
-    public override void OnGotMeleeAttack(Mobile attacker, int damage)
-    {
-        base.OnGotMeleeAttack(attacker, damage);
-
-        if (attacker is { Alive: true, Weapon: BaseRanged } && Utility.RandomDouble() < 0.4)
-        {
-            SendEBolt(attacker);
-        }
-    }
-
-    public void SendEBolt(Mobile to)
-    {
-        MovingParticles(to, 0x379F, 7, 0, false, true, 0xBE3, 0xFCB, 0x211);
-        to.PlaySound(0x229);
-        DoHarmful(to);
-        AOS.Damage(to, this, 50, 0, 0, 0, 0, 100);
-    }
-
-    private static MonsterAbility[] _abilities = { MonsterAbility.MagicalBarrierCounter };
-
-    // OSI Removed this ability roughly during UOML
-    public override MonsterAbility[] GetMonsterAbilities() => Core.ML ? null : _abilities;
+    public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void Serialize(IGenericWriter writer)
     {

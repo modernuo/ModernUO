@@ -13,5 +13,6 @@ public enum MonsterAbilityType
     DestroyEquipment,
     DeathExplosion,
     MassDrainLife,
-    MagicalBarrier
+    MagicalBarrier,
+    EnergyBoltCounter
 }

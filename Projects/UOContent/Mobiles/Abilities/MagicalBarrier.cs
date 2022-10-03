@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles;
 
-public class MagicalBarrierCounter : MonsterAbility
+public class MagicalBarrier : MonsterAbility
 {
     private HashSet<Mobile> _inactiveField;
 
