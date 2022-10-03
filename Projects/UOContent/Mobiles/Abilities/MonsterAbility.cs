@@ -23,9 +23,8 @@ public abstract partial class MonsterAbility
     /// <summary>
     /// Returns true if ability is not on cooldown, and the change to trigger succeeds.
     /// </summary>
-    /// <param name="source">The mobile this ability is attached to</param>
     /// <returns>Boolean indicating the ability can trigger.</returns>
-    public virtual bool CanTrigger(BaseCreature source)
+    public virtual bool CanTrigger(BaseCreature source, MonsterAbilityTrigger trigger)
     {
         if (_nextTriggerTicks?.TryGetValue(source, out var nextTrigger) == true && Core.TickCount < nextTrigger)
         {
@@ -53,8 +52,7 @@ public abstract partial class MonsterAbility
     /// Triggers the monster's ability. Override this and call `base.Trigger(source);` to make sure
     /// the cooldown is tracked.
     /// </summary>
-    /// <param name="source"></param>
-    public virtual void Trigger(BaseCreature source, Mobile target)
+    public virtual void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
         if (MinTriggerCooldown <= TimeSpan.Zero && MaxTriggerCooldown <= TimeSpan.Zero)
         {
@@ -69,5 +67,33 @@ public abstract partial class MonsterAbility
 
         _nextTriggerTicks ??= new Dictionary<BaseCreature, long>();
         _nextTriggerTicks[source] = nextTrigger;
+    }
+
+    public virtual void AlterMeleeDamageFrom(BaseCreature source, Mobile target, ref int damage)
+    {
+    }
+
+    public virtual void AlterMeleeDamageTo(BaseCreature source, Mobile target, ref int damage)
+    {
+    }
+
+    public virtual void AlterSpellDamageScalarFrom(BaseCreature source, Mobile target, ref double scalar)
+    {
+    }
+
+    public virtual void AlterSpellDamageScalarTo(BaseCreature source, Mobile target, ref double scalar)
+    {
+    }
+
+    public virtual void AlterSpellDamageFrom(BaseCreature source, Mobile target, ref int damage)
+    {
+    }
+
+    public virtual void AlterSpellDamageTo(BaseCreature source, Mobile target, ref int damage)
+    {
+    }
+
+    public virtual void Move(BaseCreature creature, Direction d)
+    {
     }
 }

@@ -8,10 +8,10 @@ public class PoisonGasCounter : MonsterAbilityAttack
     public override double ChanceToTrigger => 0.05;
     public virtual int AttackRange => 1;
 
-    protected override bool CanEffectTarget(BaseCreature source, Mobile defender) =>
+    protected override bool CanEffectTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender) =>
         source.InRange(defender, AttackRange) && defender is not BaseCreature { BardProvoked: true };
 
-    protected override void OnAttack(BaseCreature source, Mobile defender)
+    protected override void OnAttack(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
         source.Animate(10, 4, 1, true, false, 0);
         AOS.Damage(defender, source, 50, 100, 0, 0, 0, 0, 0);

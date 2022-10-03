@@ -12,9 +12,9 @@ public class DestroyEquipment : MonsterAbilityAttack
 
     public virtual int AttackRange => 1;
 
-    protected override void OnAttack(BaseCreature source, Mobile defender)
+    protected override void OnAttack(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
-        base.OnAttack(source, defender);
+        base.OnAttack(trigger, source, defender);
         using var queue = PooledRefQueue<Item>.Create();
 
         for (var i = 0; i < defender.Items.Count; i++)
@@ -50,6 +50,6 @@ public class DestroyEquipment : MonsterAbilityAttack
         defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1080035, name);
     }
 
-    protected override bool CanEffectTarget(BaseCreature source, Mobile defender) =>
+    protected override bool CanEffectTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender) =>
         defender.Player && defender.AccessLevel == AccessLevel.Player && source.InRange(defender, AttackRange);
 }

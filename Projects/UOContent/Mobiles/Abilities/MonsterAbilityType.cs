@@ -12,5 +12,7 @@ public enum MonsterAbilityType
     ThrowWeapon,
     DestroyEquipment,
     DeathExplosion,
-    MassDrainLife
+    MassDrainLife,
+    MagicalBarrier,
+    EnergyBoltCounter
 }

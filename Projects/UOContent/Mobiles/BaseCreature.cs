@@ -1118,24 +1118,25 @@ namespace Server.Mobiles
 
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
 
-        public virtual bool HasAbility(MonsterAbilityType type)
+        public virtual MonsterAbility GetAbility(MonsterAbilityType type)
         {
             var abilities = GetMonsterAbilities();
 
             if (abilities == null)
             {
-                return false;
+                return null;
             }
 
             for (var i = 0; i < abilities.Length; i++)
             {
-                if (abilities[i].AbilityType == type)
+                var ability = abilities[i];
+                if (ability.AbilityType == type)
                 {
-                    return true;
+                    return ability;
                 }
             }
 
-            return false;
+            return null;
         }
 
         public virtual bool HasAbility(MonsterAbility ability)
@@ -1170,9 +1171,96 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this))
+                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
                 {
-                    ability.Trigger(this, defender);
+                    ability.Trigger(trigger, this, defender);
+                }
+            }
+        }
+
+        public virtual void TriggerAbilityMove(MonsterAbilityTrigger trigger, Mobile defender, Direction d)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                var ability = abilities[i];
+                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                {
+                    ability.Move(this, d);
+                }
+            }
+        }
+
+        public virtual void TriggerAbilityAlterDamage(MonsterAbilityTrigger trigger, Mobile defender, ref int damage)
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                var ability = abilities[i];
+                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                {
+                    if ((trigger & MonsterAbilityTrigger.GiveMeleeDamage) != 0)
+                    {
+                        ability.AlterMeleeDamageTo(this, defender, ref damage);
+                    }
+
+                    if ((trigger & MonsterAbilityTrigger.TakeMeleeDamage) != 0)
+                    {
+                        ability.AlterMeleeDamageFrom(this, defender, ref damage);
+                    }
+
+                    if ((trigger & MonsterAbilityTrigger.GiveSpellDamage) != 0)
+                    {
+                        ability.AlterSpellDamageTo(this, defender, ref damage);
+                    }
+
+                    if ((trigger & MonsterAbilityTrigger.TakeSpellDamage) != 0)
+                    {
+                        ability.AlterSpellDamageFrom(this, defender, ref damage);
+                    }
+                }
+            }
+        }
+
+        public virtual void TriggerAbilityAlterDamageScalar(
+            MonsterAbilityTrigger trigger,
+            Mobile defender,
+            ref double scalar
+        )
+        {
+            var abilities = GetMonsterAbilities();
+
+            if (abilities == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < abilities.Length; i++)
+            {
+                var ability = abilities[i];
+                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                {
+                    if ((trigger & MonsterAbilityTrigger.GiveSpellDamage) != 0)
+                    {
+                        ability.AlterSpellDamageScalarTo(this, defender, ref scalar);
+                    }
+
+                    if ((trigger & MonsterAbilityTrigger.TakeSpellDamage) != 0)
+                    {
+                        ability.AlterSpellDamageScalarFrom(this, defender, ref scalar);
+                    }
                 }
             }
         }
@@ -2232,6 +2320,17 @@ namespace Server.Mobiles
             TriggerAbility(MonsterAbilityTrigger.TakeMeleeDamage, attacker);
         }
 
+        public override bool Move(Direction d)
+        {
+            if (!base.Move(d))
+            {
+                return false;
+            }
+
+            TriggerAbilityMove(MonsterAbilityTrigger.Movement, this, d);
+            return true;
+        }
+
         public virtual void Dispel(Mobile m)
         {
             Effects.SendLocationParticles(
@@ -2869,7 +2968,7 @@ namespace Server.Mobiles
 
         public override bool OnBeforeDeath()
         {
-            TriggerAbility(MonsterAbilityTrigger.OnDeath, null);
+            TriggerAbility(MonsterAbilityTrigger.Death, null);
 
             var treasureLevel = TreasureMapLevel;
 
@@ -3517,7 +3616,7 @@ namespace Server.Mobiles
             }
 
             // Fire breath, etc.
-            TriggerAbility(MonsterAbilityTrigger.OnAction, Combatant);
+            TriggerAbility(MonsterAbilityTrigger.Think, Combatant);
 
             if ((CanHeal || CanHealOwner) && Alive && !IsHealing && !BardPacified)
             {
@@ -4021,26 +4120,32 @@ namespace Server.Mobiles
 
         public virtual void AlterDamageScalarFrom(Mobile caster, ref double scalar)
         {
+            TriggerAbilityAlterDamageScalar(MonsterAbilityTrigger.TakeSpellDamage, caster, ref scalar);
         }
 
         public virtual void AlterDamageScalarTo(Mobile target, ref double scalar)
         {
+            TriggerAbilityAlterDamageScalar(MonsterAbilityTrigger.GiveSpellDamage, target, ref scalar);
         }
 
         public virtual void AlterSpellDamageFrom(Mobile from, ref int damage)
         {
+            TriggerAbilityAlterDamage(MonsterAbilityTrigger.TakeSpellDamage, from, ref damage);
         }
 
         public virtual void AlterSpellDamageTo(Mobile to, ref int damage)
         {
+            TriggerAbilityAlterDamage(MonsterAbilityTrigger.GiveSpellDamage, to, ref damage);
         }
 
         public virtual void AlterMeleeDamageFrom(Mobile from, ref int damage)
         {
+            TriggerAbilityAlterDamage(MonsterAbilityTrigger.TakeMeleeDamage, from, ref damage);
         }
 
         public virtual void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
+            TriggerAbilityAlterDamage(MonsterAbilityTrigger.GiveMeleeDamage, to, ref damage);
         }
 
         public virtual bool CheckFoodPreference(Item f) =>
@@ -4081,16 +4186,11 @@ namespace Server.Mobiles
 
                     if (amount > 0)
                     {
-                        int stamGain;
-
-                        if (f is Gold)
+                        int stamGain = f switch
                         {
-                            stamGain = amount - 50;
-                        }
-                        else
-                        {
-                            stamGain = amount * 15 - 50;
-                        }
+                            Gold => amount - 50,
+                            _    => amount * 15 - 50
+                        };
 
                         if (stamGain > 0)
                         {
@@ -4172,7 +4272,7 @@ namespace Server.Mobiles
 
         public virtual void OnActionCombat()
         {
-            TriggerAbility(MonsterAbilityTrigger.OnCombatAction, null);
+            TriggerAbility(MonsterAbilityTrigger.CombatAction, null);
         }
 
         public virtual void OnActionGuard()

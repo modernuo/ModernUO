@@ -23,9 +23,13 @@ public abstract partial class MonsterAbility
     // Explosions
     public static DeathExplosion DeathExplosion => new();
 
+    // Direct attack counters
     public static ThrowHatchetCounter ThrowHatchetCounter => new();
+    public static EnergyBoltCounter EnergyBoltCounter => new();
 
     public static DestroyEquipment DestroyEquipment => new();
 
     public static DrainLifeAreaAttack DrainLifeAreaAttack => new();
+
+    public static MagicalBarrier MagicalBarrier => new();
 }
