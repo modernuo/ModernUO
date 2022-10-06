@@ -1074,8 +1074,6 @@ namespace Server.Accounting
                     }
                 }
 
-                Console.WriteLine("{0} {1}", hasAccess ? "yes" : "no", _accessLevel);
-
                 if (!hasAccess)
                 {
                     return false;
