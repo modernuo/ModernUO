@@ -194,24 +194,35 @@ namespace Server
                 totalDamage = m.Hits;
             }
 
+            var bcFrom = from as BaseCreature;
+
             if (from is { Deleted: false, Alive: true })
             {
                 var reflectPhys = AosAttributes.GetValue(m, AosAttribute.ReflectPhysical);
+                var reflectPhysAbility = bcFrom?.GetAbility(MonsterAbilityType.ReflectPhysicalDamage) as ReflectPhysicalDamage;
 
-                if (reflectPhys != 0 && from is BaseCreature bcFrom)
+                if (reflectPhysAbility
+                        ?.CanTrigger(bcFrom, MonsterAbilityTrigger.CombatAction) == true)
                 {
-                    var magicalBarrier = bcFrom.GetAbility(MonsterAbilityType.MagicalBarrier);
-                    magicalBarrier.AlterMeleeDamageFrom(bcFrom, m, ref reflectPhys);
+                    reflectPhys += reflectPhysAbility.PercentReflected;
+                    m.SendLocalizedMessage(1070844); // The creature repels the attack back at you.
                 }
 
-                if (reflectPhys != 0)
+                if (reflectPhys > 0)
                 {
                     var reflectDamage = Scale(
                         damage * phys * (100 - (ignoreArmor ? 0 : m.PhysicalResistance)) / 10000,
                         reflectPhys
                     );
 
-                    from.Damage(reflectDamage, m);
+                    bcFrom
+                        ?.GetAbility(MonsterAbilityType.MagicalBarrier)
+                        ?.AlterMeleeDamageFrom(bcFrom, m, ref reflectDamage);
+
+                    if (reflectDamage > 0)
+                    {
+                        from.Damage(reflectDamage, m);
+                    }
                 }
             }
 

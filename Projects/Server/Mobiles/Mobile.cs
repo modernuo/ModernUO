@@ -5761,6 +5761,11 @@ namespace Server
 
         public virtual void Damage(int amount, Mobile from = null, bool informMount = true)
         {
+            if (amount <= 0)
+            {
+                return;
+            }
+
             if (!CanBeDamaged() || Deleted)
             {
                 return;
@@ -5771,66 +5776,63 @@ namespace Server
                 return;
             }
 
-            if (amount > 0)
+            var oldHits = Hits;
+            var newHits = oldHits - amount;
+
+            m_Spell?.OnCasterHurt();
+
+            // if (m_Spell != null && m_Spell.State == SpellState.Casting)
+            // m_Spell.Disturb( DisturbType.Hurt, false, true );
+
+            if (from != null)
             {
-                var oldHits = Hits;
-                var newHits = oldHits - amount;
+                RegisterDamage(amount, from);
+            }
 
-                m_Spell?.OnCasterHurt();
+            DisruptiveAction();
 
-                // if (m_Spell != null && m_Spell.State == SpellState.Casting)
-                // m_Spell.Disturb( DisturbType.Hurt, false, true );
+            Paralyzed = false;
 
-                if (from != null)
-                {
-                    RegisterDamage(amount, from);
-                }
-
-                DisruptiveAction();
-
-                Paralyzed = false;
-
-                switch (VisibleDamageType)
-                {
-                    case VisibleDamageType.Related:
-                        {
-                            SendVisibleDamageRelated(from, amount);
-                            break;
-                        }
-                    case VisibleDamageType.Everyone:
-                        {
-                            SendVisibleDamageEveryone(amount);
-                            break;
-                        }
-                    case VisibleDamageType.Selective:
-                        {
-                            SendVisibleDamageSelective(from, amount);
-                            break;
-                        }
-                }
-
-                OnDamage(amount, from, newHits < 0);
-
-                if (informMount)
-                {
-                    Mount?.OnRiderDamaged(amount, from, newHits < 0);
-                }
-
-                if (newHits < 0)
-                {
-                    LastKiller = from;
-
-                    Hits = 0;
-
-                    if (oldHits >= 0)
+            switch (VisibleDamageType)
+            {
+                case VisibleDamageType.Related:
                     {
-                        Kill();
+                        SendVisibleDamageRelated(from, amount);
+                        break;
                     }
-                }
-                else
+                case VisibleDamageType.Everyone:
+                    {
+                        SendVisibleDamageEveryone(amount);
+                        break;
+                    }
+                case VisibleDamageType.Selective:
+                    {
+                        SendVisibleDamageSelective(from, amount);
+                        break;
+                    }
+            }
+
+            OnDamage(amount, from, newHits < 0);
+
+            if (informMount)
+            {
+                Mount?.OnRiderDamaged(amount, from, newHits < 0);
+            }
+
+            if (newHits < 0)
+            {
+                LastKiller = from;
+
+                Hits = 0;
+
+                if (oldHits >= 0)
                 {
-                    Hits = newHits;
+                    Kill();
                 }
+            }
+            else
+            {
+                Hits = newHits;
             }
         }
 
