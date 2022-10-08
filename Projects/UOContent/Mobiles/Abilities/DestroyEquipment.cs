@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Mobiles;
 
-public class DestroyEquipment : MonsterAbilityAttack
+public class DestroyEquipment : MonsterAbilitySingleTarget
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.DestroyEquipment;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveMeleeDamage;
@@ -12,9 +12,9 @@ public class DestroyEquipment : MonsterAbilityAttack
 
     public virtual int AttackRange => 1;
 
-    protected override void OnAttack(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
+    protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
-        base.OnAttack(trigger, source, defender);
+        base.OnTarget(trigger, source, defender);
         using var queue = PooledRefQueue<Item>.Create();
 
         for (var i = 0; i < defender.Items.Count; i++)

@@ -98,7 +98,13 @@ public class Betrayer : BaseCreature
         AddLoot(LootPack.Gems, 1);
     }
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.ColossalBlow, MonsterAbility.PoisonGasAreaAttack };
+    private static MonsterAbility[] _abilities =
+    {
+        new MonsterAbilityGroup(
+            (1, MonsterAbility.ColossalBlow),
+            (1, MonsterAbility.PoisonGasAreaAttack)
+        )
+    };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void Serialize(IGenericWriter writer)

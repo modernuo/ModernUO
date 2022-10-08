@@ -15,5 +15,7 @@ public enum MonsterAbilityType
     MassDrainLife,
     MagicalBarrier,
     EnergyBoltCounter,
-    ReflectPhysicalDamage
+    ReflectPhysicalDamage,
+    FanningFire, // Fire debuff
+    RuneCorruption
 }

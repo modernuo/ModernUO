@@ -2,15 +2,15 @@
 
 namespace Server.Mobiles;
 
-public class EnergyBoltCounter : MonsterAbilityAttack
+public class EnergyBoltCounter : MonsterAbilitySingleTarget
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.EnergyBoltCounter;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage; // Ranged attackers
     public override double ChanceToTrigger => 0.4;
 
-    protected override void OnAttack(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
+    protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
-        base.OnAttack(trigger, source, defender);
+        base.OnTarget(trigger, source, defender);
 
         source.MovingParticles(defender, 0x379F, 7, 0, false, true, 0xBE3, 0xFCB, 0x211);
         defender.PlaySound(0x229);

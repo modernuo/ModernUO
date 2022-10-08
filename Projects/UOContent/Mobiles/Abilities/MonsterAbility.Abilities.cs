@@ -7,7 +7,10 @@ public abstract partial class MonsterAbility
     public static ChaosBreath ChaosBreath => new();
     public static ColdBreath ColdBreath => new();
 
+    // Resistance Debuffs
     public static GraspingClaw GraspingClaw => new();
+    public static RuneCorruption RuneCorruption => new();
+    public static FanningFire FanningFire => new();
 
     // Summon Undead
     public static SummonSkeletons SummonSkeletons => new();
@@ -32,4 +35,6 @@ public abstract partial class MonsterAbility
     public static DrainLifeAreaAttack DrainLifeAreaAttack => new();
 
     public static MagicalBarrier MagicalBarrier => new();
+
+    public static ReflectPhysicalDamage ReflectPhysicalDamage => new();
 }
