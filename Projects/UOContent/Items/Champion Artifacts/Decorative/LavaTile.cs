@@ -1,13 +1,12 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class LavaTile : Item
 {
-    [SerializationGenerator(0, false)]
-    public partial class LavaTile : Item
+    [Constructible]
+    public LavaTile() : base(0x12EE)
     {
-        [Constructible]
-        public LavaTile() : base(0x12EE)
-        {
-        }
     }
 }
