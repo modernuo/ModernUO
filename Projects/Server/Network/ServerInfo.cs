@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ServerInfo.cs                                                   *
  *                                                                       *
@@ -17,44 +17,43 @@ using System;
 using System.Buffers.Binary;
 using System.Net;
 
-namespace Server.Network
+namespace Server.Network;
+
+public sealed class ServerInfo
 {
-    public sealed class ServerInfo
+    private readonly IPEndPoint m_Address;
+
+    public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
     {
-        private readonly IPEndPoint m_Address;
-
-        public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
-        {
-            Name = name;
-            FullPercent = fullPercent;
-            TimeZone = tz.GetUtcOffset(DateTime.Now).Hours;
-            Address = address;
-        }
-
-        public string Name { get; set; }
-
-        public int FullPercent { get; set; }
-
-        public int TimeZone { get; set; }
-
-        public IPEndPoint Address
-        {
-            get => m_Address;
-            init
-            {
-                m_Address = value;
-                Span<byte> integer = stackalloc byte[4];
-                value.Address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
-                if (bytesWritten != 4)
-                {
-                    throw new InvalidOperationException("IP Address could not be serialized to an integer");
-                }
-
-                RawAddress = BinaryPrimitives.ReadUInt32LittleEndian(integer);
-            }
-        }
-
-        // UO doesn't support IPv6 servers
-        public uint RawAddress { get; private set; }
+        Name = name;
+        FullPercent = fullPercent;
+        TimeZone = tz.GetUtcOffset(DateTime.Now).Hours;
+        Address = address;
     }
+
+    public string Name { get; set; }
+
+    public int FullPercent { get; set; }
+
+    public int TimeZone { get; set; }
+
+    public IPEndPoint Address
+    {
+        get => m_Address;
+        init
+        {
+            m_Address = value;
+            Span<byte> integer = stackalloc byte[4];
+            value.Address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
+            if (bytesWritten != 4)
+            {
+                throw new InvalidOperationException("IP Address could not be serialized to an integer");
+            }
+
+            RawAddress = BinaryPrimitives.ReadUInt32LittleEndian(integer);
+        }
+    }
+
+    // UO doesn't support IPv6 servers
+    public uint RawAddress { get; private set; }
 }

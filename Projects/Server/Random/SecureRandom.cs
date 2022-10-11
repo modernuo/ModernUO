@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SecureRandom.cs                                                 *
  *                                                                       *
@@ -19,23 +19,22 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Server.Random;
 
-namespace Server
+namespace Server;
+
+public class SecureRandom : BaseRandomSource
 {
-    public class SecureRandom : BaseRandomSource
+    private RandomNumberGenerator m_Random;
+
+    public RandomNumberGenerator Generator => m_Random ??= RandomNumberGenerator.Create();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override ulong NextULong()
     {
-        private RandomNumberGenerator m_Random;
-
-        public RandomNumberGenerator Generator => m_Random ??= RandomNumberGenerator.Create();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override ulong NextULong()
-        {
-            Span<byte> buffer = stackalloc byte[sizeof(ulong)];
-            NextBytes(buffer);
-            return BinaryPrimitives.ReadUInt64BigEndian(buffer);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
+        Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+        NextBytes(buffer);
+        return BinaryPrimitives.ReadUInt64BigEndian(buffer);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
 }

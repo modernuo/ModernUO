@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: DynamicJson.cs                                                  *
  *                                                                       *
@@ -18,50 +18,49 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
+namespace Server.Json;
+
+public class DynamicJson
 {
-    public class DynamicJson
+    public static DynamicJson Create(Type type) => new()
     {
-        public static DynamicJson Create(Type type) => new()
+        Type = type.Name,
+        Data = new Dictionary<string, JsonElement>()
+    };
+
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
+
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> Data { get; set; }
+
+    // TODO: Use JSON Node in .NET 6
+    public void SetProperty<T>(string key, JsonSerializerOptions options, T value)
+    {
+        using var doc = JsonDocument.Parse(JsonSerializer.SerializeToUtf8Bytes(value, options));
+        Data[key] = doc.RootElement.Clone();
+    }
+
+    public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
+    {
+        if (Data.TryGetValue(key, out var el))
         {
-            Type = type.Name,
-            Data = new Dictionary<string, JsonElement>()
-        };
-
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
-
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> Data { get; set; }
-
-        // TODO: Use JSON Node in .NET 6
-        public void SetProperty<T>(string key, JsonSerializerOptions options, T value)
-        {
-            using var doc = JsonDocument.Parse(JsonSerializer.SerializeToUtf8Bytes(value, options));
-            Data[key] = doc.RootElement.Clone();
+            t = el.ToObject<T>(options);
+            return true;
         }
 
-        public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
-        {
-            if (Data.TryGetValue(key, out var el))
-            {
-                t = el.ToObject<T>(options);
-                return true;
-            }
+        t = default;
+        return false;
+    }
 
-            t = default;
-            return false;
+    public bool GetEnumProperty<T>(string key, JsonSerializerOptions options, out T t) where T : struct, Enum
+    {
+        if (Data.TryGetValue(key, out var el))
+        {
+            return Enum.TryParse(el.ToObject<string>(options), out t);
         }
 
-        public bool GetEnumProperty<T>(string key, JsonSerializerOptions options, out T t) where T : struct, Enum
-        {
-            if (Data.TryGetValue(key, out var el))
-            {
-                return Enum.TryParse(el.ToObject<string>(options), out t);
-            }
-
-            t = default;
-            return false;
-        }
+        t = default;
+        return false;
     }
 }

@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.400
+        dotnet-version: 6.0.401
     - name: Build
       run: ./publish.cmd Release
     - name: Test
@@ -54,7 +54,7 @@ jobs:
       - name: Setup .NET 6
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.400
+          dotnet-version: 6.0.401
       - name: Build
         run: ./publish.cmd Release
       - name: Test

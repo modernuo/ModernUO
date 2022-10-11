@@ -86,7 +86,7 @@ namespace Server.Accounting
 
             IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
 
-            _accountsById = EntityPersistence.LoadIndex(path, indexInfo, out List<EntityIndex<Account>> accounts);
+            _accountsById = EntityPersistence.LoadIndex(path, indexInfo, out List<EntitySpan<Account>> accounts);
 
             if (_accountsById.Count > 0)
             {

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ServerSettings.cs                                               *
  *                                                                       *
@@ -17,23 +17,22 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json.Serialization;
 
-namespace Server
+namespace Server;
+
+public class ServerSettings
 {
-    public class ServerSettings
-    {
-        [JsonPropertyName("assemblyDirectories")]
-        public List<string> AssemblyDirectories { get; set; } = new();
+    [JsonPropertyName("assemblyDirectories")]
+    public List<string> AssemblyDirectories { get; set; } = new();
 
-        [JsonPropertyName("dataDirectories")]
-        public HashSet<string> DataDirectories { get; set; } = new();
+    [JsonPropertyName("dataDirectories")]
+    public HashSet<string> DataDirectories { get; set; } = new();
 
-        [JsonPropertyName("listeners")]
-        public List<IPEndPoint> Listeners { get; set; } = new();
+    [JsonPropertyName("listeners")]
+    public List<IPEndPoint> Listeners { get; set; } = new();
 
-        [JsonPropertyName("expansion")]
-        public Expansion? Expansion { get; set; }
+    [JsonPropertyName("expansion")]
+    public Expansion? Expansion { get; set; }
 
-        [JsonPropertyName("settings")]
-        public SortedDictionary<string, string> Settings { get; set; } = new();
-    }
+    [JsonPropertyName("settings")]
+    public SortedDictionary<string, string> Settings { get; set; } = new();
 }

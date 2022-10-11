@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: EntityPersistence.cs                                            *
  *                                                                       *
@@ -21,314 +21,313 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Server
+namespace Server;
+
+public static class EntityPersistence
 {
-    public static class EntityPersistence
+    private const int _idxVersion = 1;
+
+    public static void WriteEntities<I, T>(
+        IIndexInfo<I> indexInfo,
+        Dictionary<I, T> entities,
+        List<Type> types,
+        string savePath,
+        out Dictionary<string, int> counts
+    ) where T : class, ISerializable
     {
-        private const int _idxVersion = 1;
+        counts = new Dictionary<string, int>();
 
-        public static void WriteEntities<I, T>(
-            IIndexInfo<I> indexInfo,
-            Dictionary<I, T> entities,
-            List<Type> types,
-            string savePath,
-            out Dictionary<string, int> counts
-        ) where T : class, ISerializable
+        var typeName = indexInfo.TypeName;
+
+        var path = Path.Combine(savePath, typeName);
+
+        PathUtility.EnsureDirectory(path);
+
+        string idxPath = Path.Combine(path, $"{typeName}.idx");
+        string tdbPath = Path.Combine(path, $"{typeName}.tdb");
+        string binPath = Path.Combine(path, $"{typeName}.bin");
+
+        using var idx = new BinaryFileWriter(idxPath, false);
+        using var tdb = new BinaryFileWriter(tdbPath, false);
+        using var bin = new BinaryFileWriter(binPath, true);
+
+        idx.Write(1); // Version
+        idx.Write(entities.Count);
+        foreach (var e in entities.Values)
         {
-            counts = new Dictionary<string, int>();
+            long start = bin.Position;
 
-            var typeName = indexInfo.TypeName;
+            idx.Write(e.TypeRef);
+            idx.Write(e.Serial);
+            idx.Write(e.Created.Ticks);
+            idx.Write(e.LastSerialized.Ticks);
+            idx.Write(start);
 
-            var path = Path.Combine(savePath, typeName);
+            e.SerializeTo(bin);
 
-            PathUtility.EnsureDirectory(path);
+            idx.Write((int)(bin.Position - start));
 
-            string idxPath = Path.Combine(path, $"{typeName}.idx");
-            string tdbPath = Path.Combine(path, $"{typeName}.tdb");
-            string binPath = Path.Combine(path, $"{typeName}.bin");
-
-            using var idx = new BinaryFileWriter(idxPath, false);
-            using var tdb = new BinaryFileWriter(tdbPath, false);
-            using var bin = new BinaryFileWriter(binPath, true);
-
-            idx.Write(1); // Version
-            idx.Write(entities.Count);
-            foreach (var e in entities.Values)
+            var type = e.GetType().FullName;
+            if (type != null)
             {
-                long start = bin.Position;
-
-                idx.Write(e.TypeRef);
-                idx.Write(e.Serial);
-                idx.Write(e.Created.Ticks);
-                idx.Write(e.LastSerialized.Ticks);
-                idx.Write(start);
-
-                e.SerializeTo(bin);
-
-                idx.Write((int)(bin.Position - start));
-
-                var type = e.GetType().FullName;
-                if (type != null)
-                {
-                    counts[type] = (counts.TryGetValue(type, out var count) ? count : 0) + 1;
-                }
-            }
-
-            tdb.Write(types.Count);
-            for (int i = 0; i < types.Count; ++i)
-            {
-                tdb.Write(types[i].FullName);
+                counts[type] = (counts.TryGetValue(type, out var count) ? count : 0) + 1;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SaveEntities<T>(
-            IEnumerable<T> list,
-            Action<T> serializer
-        ) where T : class, ISerializable => Parallel.ForEach(list, serializer);
-
-        public static Dictionary<I, T> LoadIndex<I, T>(
-            string path,
-            IIndexInfo<I> indexInfo,
-            out List<EntityIndex<T>> entities
-        ) where T : class, ISerializable
+        tdb.Write(types.Count);
+        for (int i = 0; i < types.Count; ++i)
         {
-            var map = new Dictionary<I, T>();
-            object[] ctorArgs = new object[1];
+            tdb.Write(types[i].FullName);
+        }
+    }
 
-            var indexType = indexInfo.TypeName;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SaveEntities<T>(
+        IEnumerable<T> list,
+        Action<T> serializer
+    ) where T : class, ISerializable => Parallel.ForEach(list, serializer);
 
-            string indexPath = Path.Combine(path, indexType, $"{indexType}.idx");
-            string typesPath = Path.Combine(path, indexType, $"{indexType}.tdb");
+    public static Dictionary<I, T> LoadIndex<I, T>(
+        string path,
+        IIndexInfo<I> indexInfo,
+        out List<EntitySpan<T>> entities
+    ) where T : class, ISerializable
+    {
+        var map = new Dictionary<I, T>();
+        object[] ctorArgs = new object[1];
 
-            entities = new List<EntityIndex<T>>();
+        var indexType = indexInfo.TypeName;
 
-            if (!File.Exists(indexPath) || !File.Exists(typesPath))
-            {
-                return map;
-            }
+        string indexPath = Path.Combine(path, indexType, $"{indexType}.idx");
+        string typesPath = Path.Combine(path, indexType, $"{indexType}.tdb");
 
-            using FileStream idx = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReader idxReader = new BinaryReader(idx);
+        entities = new List<EntitySpan<T>>();
 
-            using FileStream tdb = new FileStream(typesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BinaryReader tdbReader = new BinaryReader(tdb);
-
-            List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
-
-            int count;
-            var version = idxReader.ReadInt32();
-
-            // Handle non-versioned (version 0).
-            if (version > _idxVersion || idx.Length - 4 - version * 20 == 0)
-            {
-                count = version;
-                version = 0;
-            }
-            else
-            {
-                count = idxReader.ReadInt32();
-            }
-
-            var now = DateTime.UtcNow;
-
-            for (int i = 0; i < count; ++i)
-            {
-                var typeID = idxReader.ReadInt32();
-                var serial = idxReader.ReadUInt32();
-                var created = version == 0 ? now : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
-                var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
-                var pos = idxReader.ReadInt64();
-                var length = idxReader.ReadInt32();
-
-                Tuple<ConstructorInfo, string> objs = types[typeID];
-
-                if (objs == null)
-                {
-                    continue;
-                }
-
-                ConstructorInfo ctor = objs.Item1;
-                I indexer = indexInfo.CreateIndex(serial);
-
-                ctorArgs[0] = indexer;
-
-                if (ctor.Invoke(ctorArgs) is T t)
-                {
-                    t.Created = created;
-                    t.LastSerialized = lastSerialized;
-                    entities.Add(new EntityIndex<T>(t, typeID, pos, length));
-                    map[indexer] = t;
-                }
-            }
-
-            tdbReader.Close();
-            idxReader.Close();
-
+        if (!File.Exists(indexPath) || !File.Exists(typesPath))
+        {
             return map;
         }
 
-        public static void LoadData<I, T>(
-            string path,
-            IIndexInfo<I> indexInfo,
-            List<EntityIndex<T>> entities
-        ) where T : class, ISerializable
+        using FileStream idx = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        BinaryReader idxReader = new BinaryReader(idx);
+
+        using FileStream tdb = new FileStream(typesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        BinaryReader tdbReader = new BinaryReader(tdb);
+
+        List<Tuple<ConstructorInfo, string>> types = ReadTypes<I>(tdbReader);
+
+        int count;
+        var version = idxReader.ReadInt32();
+
+        // Handle non-versioned (version 0).
+        if (version > _idxVersion || idx.Length - 4 - version * 20 == 0)
         {
-            var indexType = indexInfo.TypeName;
+            count = version;
+            version = 0;
+        }
+        else
+        {
+            count = idxReader.ReadInt32();
+        }
 
-            string dataPath = Path.Combine(path, indexType, $"{indexType}.bin");
+        var now = DateTime.UtcNow;
 
-            if (!File.Exists(dataPath) || new FileInfo(dataPath).Length == 0)
+        for (int i = 0; i < count; ++i)
+        {
+            var typeID = idxReader.ReadInt32();
+            var serial = idxReader.ReadUInt32();
+            var created = version == 0 ? now : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
+            var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
+            var pos = idxReader.ReadInt64();
+            var length = idxReader.ReadInt32();
+
+            Tuple<ConstructorInfo, string> objs = types[typeID];
+
+            if (objs == null)
             {
-                return;
+                continue;
             }
 
-            using var mmf = MemoryMappedFile.CreateFromFile(dataPath, FileMode.Open);
-            using var stream = mmf.CreateViewStream();
-            BufferReader br = null;
+            ConstructorInfo ctor = objs.Item1;
+            I indexer = indexInfo.CreateIndex(serial);
 
-            var deleteAllFailures = false;
+            ctorArgs[0] = indexer;
 
-            foreach (var entry in entities)
+            if (ctor.Invoke(ctorArgs) is T t)
             {
-                T t = entry.Entity;
+                t.Created = created;
+                t.LastSerialized = lastSerialized;
+                entities.Add(new EntitySpan<T>(t, typeID, pos, length));
+                map[indexer] = t;
+            }
+        }
 
-                var position = entry.Position;
-                stream.Seek(position, SeekOrigin.Begin);
+        tdbReader.Close();
+        idxReader.Close();
 
-                // Skip this entry
-                if (t == null)
+        return map;
+    }
+
+    public static void LoadData<I, T>(
+        string path,
+        IIndexInfo<I> indexInfo,
+        List<EntitySpan<T>> entities
+    ) where T : class, ISerializable
+    {
+        var indexType = indexInfo.TypeName;
+
+        string dataPath = Path.Combine(path, indexType, $"{indexType}.bin");
+
+        if (!File.Exists(dataPath) || new FileInfo(dataPath).Length == 0)
+        {
+            return;
+        }
+
+        using var mmf = MemoryMappedFile.CreateFromFile(dataPath, FileMode.Open);
+        using var stream = mmf.CreateViewStream();
+        BufferReader br = null;
+
+        var deleteAllFailures = false;
+
+        foreach (var entry in entities)
+        {
+            T t = entry.Entity;
+
+            var position = entry.Position;
+            stream.Seek(position, SeekOrigin.Begin);
+
+            // Skip this entry
+            if (t == null)
+            {
+                continue;
+            }
+
+            if (entry.Length == 0)
+            {
+                t.Delete();
+                continue;
+            }
+
+            var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
+            if (br == null)
+            {
+                br = new BufferReader(buffer, t.LastSerialized);
+            }
+            else
+            {
+                br.Reset(buffer, out _);
+            }
+
+            stream.Read(buffer.AsSpan());
+            string error;
+
+            try
+            {
+                t.Deserialize(br);
+
+                error = br.Position != entry.Length
+                    ? $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
+                    : null;
+            }
+            catch (Exception e)
+            {
+                error = e.ToString();
+            }
+
+            if (error == null)
+            {
+                t.InitializeSaveBuffer(buffer);
+            }
+            else
+            {
+                Console.WriteLine($"***** Bad deserialize of {t.GetType()} *****");
+                Console.WriteLine(error);
+
+                ConsoleKey pressedKey;
+
+                if (!deleteAllFailures)
                 {
+                    Console.WriteLine("Delete the object and continue? (y/n/a)");
+                    pressedKey = Console.ReadKey(true).Key;
+
+                    if (pressedKey == ConsoleKey.A)
+                    {
+                        deleteAllFailures = true;
+                    }
+                    else if (pressedKey != ConsoleKey.Y)
+                    {
+                        throw new Exception("Deserialization failed.");
+                    }
+                }
+
+                t.Delete();
+            }
+        }
+    }
+
+    private static List<Tuple<ConstructorInfo, string>> ReadTypes<I>(BinaryReader tdbReader)
+    {
+        var constructorTypes = new[] { typeof(I) };
+
+        var count = tdbReader.ReadInt32();
+
+        var types = new List<Tuple<ConstructorInfo, string>>(count);
+
+        for (var i = 0; i < count; ++i)
+        {
+            var typeName = tdbReader.ReadString();
+
+            var t = AssemblyHandler.FindTypeByFullName(typeName, false);
+
+            if (t?.IsAbstract != false)
+            {
+                Console.WriteLine("failed");
+
+                var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
+
+                Console.WriteLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
+
+                if (Console.ReadKey(true).Key == ConsoleKey.Y)
+                {
+                    types.Add(null);
+                    Console.WriteLine("Loading...");
                     continue;
                 }
 
-                if (entry.Length == 0)
-                {
-                    t.Delete();
-                    continue;
-                }
+                Console.WriteLine("Types will not be deleted. An exception will be thrown.");
 
-                var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
-                if (br == null)
-                {
-                    br = new BufferReader(buffer, t.LastSerialized);
-                }
-                else
-                {
-                    br.Reset(buffer, out _);
-                }
-
-                stream.Read(buffer.AsSpan());
-                string error;
-
-                try
-                {
-                    t.Deserialize(br);
-
-                    error = br.Position != entry.Length
-                        ? $"Serialized object was {entry.Length} bytes, but {br.Position} bytes deserialized"
-                        : null;
-                }
-                catch (Exception e)
-                {
-                    error = e.ToString();
-                }
-
-                if (error == null)
-                {
-                    t.InitializeSaveBuffer(buffer);
-                }
-                else
-                {
-                    Console.WriteLine($"***** Bad deserialize of {t.GetType()} *****");
-                    Console.WriteLine(error);
-
-                    ConsoleKey pressedKey;
-
-                    if (!deleteAllFailures)
-                    {
-                        Console.WriteLine("Delete the object and continue? (y/n/a)");
-                        pressedKey = Console.ReadKey(true).Key;
-
-                        if (pressedKey == ConsoleKey.A)
-                        {
-                            deleteAllFailures = true;
-                        }
-                        else if (pressedKey != ConsoleKey.Y)
-                        {
-                            throw new Exception("Deserialization failed.");
-                        }
-                    }
-
-                    t.Delete();
-                }
+                throw new Exception($"Bad type '{typeName}'");
             }
-        }
 
-        private static List<Tuple<ConstructorInfo, string>> ReadTypes<I>(BinaryReader tdbReader)
-        {
-            var constructorTypes = new[] { typeof(I) };
+            var ctor = t.GetConstructor(constructorTypes);
 
-            var count = tdbReader.ReadInt32();
-
-            var types = new List<Tuple<ConstructorInfo, string>>(count);
-
-            for (var i = 0; i < count; ++i)
+            if (ctor != null)
             {
-                var typeName = tdbReader.ReadString();
-
-                var t = AssemblyHandler.FindTypeByFullName(typeName, false);
-
-                if (t?.IsAbstract != false)
-                {
-                    Console.WriteLine("failed");
-
-                    var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
-
-                    Console.WriteLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
-
-                    if (Console.ReadKey(true).Key == ConsoleKey.Y)
-                    {
-                        types.Add(null);
-                        Console.WriteLine("Loading...");
-                        continue;
-                    }
-
-                    Console.WriteLine("Types will not be deleted. An exception will be thrown.");
-
-                    throw new Exception($"Bad type '{typeName}'");
-                }
-
-                var ctor = t.GetConstructor(constructorTypes);
-
-                if (ctor != null)
-                {
-                    types.Add(new Tuple<ConstructorInfo, string>(ctor, typeName));
-                }
-                else
-                {
-                    throw new Exception($"Type '{t}' does not have a serialization constructor");
-                }
+                types.Add(new Tuple<ConstructorInfo, string>(ctor, typeName));
             }
-
-            return types;
-        }
-
-        private static void SerializeTo(this ISerializable entity, IGenericWriter writer)
-        {
-            var saveBuffer = entity.SaveBuffer;
-
-            // If nothing was serialized we expect the object to be deleted on deserialization
-            if (saveBuffer.Position == 0)
+            else
             {
-                return;
+                throw new Exception($"Type '{t}' does not have a serialization constructor");
             }
-
-            // Resize to the exact size
-            saveBuffer.Resize((int)saveBuffer.Position);
-
-            // Write that amount
-            writer.Write(saveBuffer.Buffer);
         }
+
+        return types;
+    }
+
+    private static void SerializeTo(this ISerializable entity, IGenericWriter writer)
+    {
+        var saveBuffer = entity.SaveBuffer;
+
+        // If nothing was serialized we expect the object to be deleted on deserialization
+        if (saveBuffer.Position == 0)
+        {
+            return;
+        }
+
+        // Resize to the exact size
+        saveBuffer.Resize((int)saveBuffer.Position);
+
+        // Write that amount
+        writer.Write(saveBuffer.Buffer);
     }
 }
