@@ -3,7 +3,6 @@ using ModernUO.Serialization;
 namespace Server.Items
 {
     [SerializationGenerator(0)]
-    [TypeAlias("Server.Items.GargishClothKilt", "Server.Items.GargishClothKiltArmor")]
     public partial class GargishClothKiltType2 : BaseArmor
     {
         [Constructible]

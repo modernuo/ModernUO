@@ -14,6 +14,8 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Threading.Tasks;
@@ -27,30 +29,53 @@ public static class AdhocPersistence
      * Note: The buffer may not be the same after returning from the function if more data is written
      * than the initial buffer can handle.
      */
-    public static BufferWriter Serialize(Action<IGenericWriter> serializer)
+    public static BufferWriter Serialize(Action<IGenericWriter> serializer, ConcurrentQueue<Type> types)
     {
-        var saveBuffer = new BufferWriter(true);
+        var saveBuffer = new BufferWriter(true, types);
         serializer(saveBuffer);
         return saveBuffer;
     }
 
     /**
      * Writes a buffer to disk. This function should be called asynchronously.
+     * Writes the filePath for the binary data, and an accompanying SerializedTypes.db file of all possible types.
      */
-    public static void WriteSnapshot(string filePath, Span<byte> buffer)
+    public static void WriteSnapshot(FileInfo file, Span<byte> buffer)
     {
-        var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
-        var file = new FileInfo(fullPath);
-        PathUtility.EnsureDirectory(file.DirectoryName);
+        var dirPath = file.DirectoryName;
+        PathUtility.EnsureDirectory(dirPath);
 
-        using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
+        using var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write);
         fs.Write(buffer);
     }
 
-    public static void SerializeAndSnapshot(string filePath, Action<IGenericWriter> serializer)
+    /**
+     * Serializes to a memory buffer synchronously, then flushes to the path asynchronously.
+     * See WriteSnapshot for more info about how the snapshot.
+     */
+    public static void SerializeAndSnapshot(string filePath, Action<IGenericWriter> serializer, ConcurrentQueue<Type> types = null)
     {
-        var saveBuffer = Serialize(serializer);
-        Task.Run(() => { WriteSnapshot(filePath, saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position)); });
+        types ??= new ConcurrentQueue<Type>();
+        var saveBuffer = Serialize(serializer, types);
+        Task.Run(
+            () =>
+            {
+                var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
+                var file = new FileInfo(fullPath);
+
+                WriteSnapshot(file, saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position));
+
+                // TODO: Create a PooledHashSet if performance becomes an issue.
+                var typesSet = new HashSet<Type>();
+
+                // Dedupe the queue.
+                foreach (var type in types)
+                {
+                    typesSet.Add(type);
+                }
+
+                Persistence.WriteSerializedTypesSnapshot(file.DirectoryName, typesSet);
+            });
     }
 
     public static void Deserialize(string filePath, Action<IGenericReader> deserializer)

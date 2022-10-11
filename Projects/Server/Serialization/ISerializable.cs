@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 
 namespace Server;
@@ -28,7 +29,6 @@ public interface ISerializable
     long SavePosition { get; protected internal set; }
     BufferWriter SaveBuffer { get; protected internal set; }
 
-    int TypeRef { get; }
     Serial Serial { get; }
 
     // Executed on every entity, before it's serialized.
@@ -39,11 +39,9 @@ public interface ISerializable
     void Delete();
     bool Deleted { get; }
 
-    void SetTypeRef(Type type);
-
-    public void InitializeSaveBuffer(byte[] buffer)
+    public void InitializeSaveBuffer(byte[] buffer, ConcurrentQueue<Type> types)
     {
-        SaveBuffer = new BufferWriter(buffer, true);
+        SaveBuffer = new BufferWriter(buffer, true, types);
         if (World.DirtyTrackingEnabled)
         {
             SavePosition = SaveBuffer.Position;
@@ -54,9 +52,9 @@ public interface ISerializable
         }
     }
 
-    public void Serialize()
+    public void Serialize(ConcurrentQueue<Type> types)
     {
-        SaveBuffer ??= new BufferWriter(true);
+        SaveBuffer ??= new BufferWriter(true, types);
 
         BeforeSerialize();
 

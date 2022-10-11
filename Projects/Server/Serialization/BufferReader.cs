@@ -15,30 +15,40 @@
 
 using System;
 using System.Buffers.Binary;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Collections;
+using Server.Logging;
 using Server.Text;
 
 namespace Server;
 
 public class BufferReader : IGenericReader
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BufferReader));
+
+    private Dictionary<ulong, string> _typesDb;
     private Encoding _encoding;
     private byte[] _buffer;
     private int _position;
 
     public long Position => _position;
 
-    public BufferReader(byte[] buffer, Encoding encoding = null)
+    public BufferReader(byte[] buffer, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
         _buffer = buffer;
         _encoding = encoding ?? TextEncoding.UTF8;
+        _typesDb = typesDb;
     }
 
-    public BufferReader(byte[] buffer, DateTime lastSerialized) : this(buffer) => LastSerialized = lastSerialized;
+    public BufferReader(byte[] buffer, DateTime lastSerialized, Dictionary<ulong, string> typesDb = null) : this(buffer)
+    {
+        LastSerialized = lastSerialized;
+        _typesDb = typesDb;
+    }
 
     public void Reset(byte[] newBuffer, out byte[] oldBuffer)
     {
@@ -49,22 +59,20 @@ public class BufferReader : IGenericReader
 
     public DateTime LastSerialized { get; init; }
 
-    public string ReadString(bool intern = false)
-    {
-        if (!ReadBool())
-        {
-            return null;
-        }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadString(bool intern = false) => ReadBool() ? ReadStringRaw(intern) : null;
 
+    public string ReadStringRaw(bool intern = false)
+    {
         var length = ((IGenericReader)this).ReadEncodedInt();
         if (length <= 0)
         {
-            return intern ? Utility.Intern("") : "";
+            return "".Intern();
         }
 
         var str = TextEncoding.GetString(_buffer.AsSpan(_position, length), _encoding);
         _position += length;
-        return intern ? Utility.Intern(str) : str;
+        return intern ? str.Intern() : str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -142,6 +150,62 @@ public class BufferReader : IGenericReader
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
+
+    public Type ReadType() =>
+        ReadByte() switch
+        {
+            0 => null,
+            1 => AssemblyHandler.FindTypeByFullName(ReadStringRaw()), // Backward compatibility
+            2 => ReadTypeByHash()
+        };
+
+    public Type ReadTypeByHash()
+    {
+        var hash = ReadULong();
+        var t = AssemblyHandler.FindTypeByHash(hash);
+
+        if (t != null)
+        {
+            return t;
+        }
+
+        if (_typesDb == null)
+        {
+            logger.Error(
+                new Exception($"The file SerializedTypes.db was not loaded. Type hash '{hash}' could not be found."),
+                "Invalid {Hash} at position {Position}",
+                hash,
+                Position
+            );
+
+            return null;
+        }
+
+        if (!_typesDb.TryGetValue(hash, out var typeName))
+        {
+            logger.Error(
+                new Exception($"Type hash '{hash}' is not present in the serialized types database."),
+                "Invalid type hash {Hash} at position {Position}",
+                hash,
+                Position
+            );
+
+            return null;
+        }
+
+        t = AssemblyHandler.FindTypeByFullName(typeName, false);
+
+        if (t == null)
+        {
+            logger.Error(
+                new Exception($"Type '{typeName}' was not found."),
+                "Type {Type} was not found.",
+                typeName
+            );
+        }
+
+        return t;
+    }
 
     public int Read(Span<byte> buffer)
     {

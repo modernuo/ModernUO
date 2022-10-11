@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BufferedFileWriter.cs                                           *
+ * File: BufferWriter.cs                                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -25,8 +26,9 @@ namespace Server;
 
 public class BufferWriter : IGenericWriter
 {
-    private readonly Encoding m_Encoding;
-    private readonly bool m_PrefixStrings;
+    private ConcurrentQueue<Type> _types;
+    private Encoding _encoding;
+    private bool _prefixStrings;
     private long _bytesWritten;
     private long _index;
 
@@ -53,22 +55,24 @@ public class BufferWriter : IGenericWriter
 
     private byte[] _buffer;
 
-    public BufferWriter(byte[] buffer, bool prefixStr)
+    public BufferWriter(byte[] buffer, bool prefixStr, ConcurrentQueue<Type> types = null)
     {
-        m_PrefixStrings = prefixStr;
-        m_Encoding = TextEncoding.UTF8;
+        _prefixStrings = prefixStr;
+        _encoding = TextEncoding.UTF8;
         _buffer = buffer;
+        _types = types;
     }
 
-    public BufferWriter(bool prefixStr) : this(0, prefixStr)
+    public BufferWriter(bool prefixStr, ConcurrentQueue<Type> types = null) : this(0, prefixStr, types)
     {
     }
 
-    public BufferWriter(int count, bool prefixStr)
+    public BufferWriter(int count, bool prefixStr, ConcurrentQueue<Type> types = null)
     {
-        m_PrefixStrings = prefixStr;
-        m_Encoding = TextEncoding.UTF8;
+        _prefixStrings = prefixStr;
+        _encoding = TextEncoding.UTF8;
         _buffer = GC.AllocateUninitializedArray<byte>(count < 1 ? BufferSize : count);
+        _types = types;
     }
 
     public virtual long Position => Index;
@@ -170,7 +174,7 @@ public class BufferWriter : IGenericWriter
 
     public void Write(string value)
     {
-        if (m_PrefixStrings)
+        if (_prefixStrings)
         {
             if (value == null)
             {
@@ -300,9 +304,23 @@ public class BufferWriter : IGenericWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(Serial serial) => Write(serial.Value);
 
+    public void Write(Type type)
+    {
+        if (type == null)
+        {
+            Write((byte)0);
+        }
+        else
+        {
+            Write((byte)0x2); // xxHash3 64bit
+            Write(AssemblyHandler.GetTypeHash(type));
+            _types?.Enqueue(type);
+        }
+    }
+
     internal void InternalWriteString(string value)
     {
-        var remaining = m_Encoding.GetByteCount(value);
+        var remaining = _encoding.GetByteCount(value);
 
         ((IGenericWriter)this).WriteEncodedInt(remaining);
 
@@ -313,14 +331,14 @@ public class BufferWriter : IGenericWriter
 
         // It is much faster to encode to stack buffer, then copy to the real buffer
         Span<byte> span = stackalloc byte[Math.Min(BufferSize, 256)];
-        var maxChars = span.Length / m_Encoding.GetMaxByteCount(1);
+        var maxChars = span.Length / _encoding.GetMaxByteCount(1);
         var charsLeft = value.Length;
         var current = 0;
 
         while (charsLeft > 0)
         {
             var charCount = Math.Min(charsLeft, maxChars);
-            var bytesWritten = m_Encoding.GetBytes(value.AsSpan(current, charCount), span);
+            var bytesWritten = _encoding.GetBytes(value.AsSpan(current, charCount), span);
             remaining -= bytesWritten;
             charsLeft -= charCount;
             current += charCount;

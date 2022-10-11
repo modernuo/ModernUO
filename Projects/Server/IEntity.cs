@@ -43,10 +43,6 @@ public class Entity : IEntity
 
     public Entity(Serial serial) => Serial = serial;
 
-    public void SetTypeRef(Type type)
-    {
-    }
-
     DateTime ISerializable.Created { get; set; } = Core.Now;
 
     DateTime ISerializable.LastSerialized { get; set; } = DateTime.MaxValue;

@@ -19,16 +19,13 @@ public struct EntitySpan<T> where T : ISerializable
 {
     public T Entity { get; }
 
-    public int TypeID { get;  }
-
     public long Position { get; }
 
     public int Length { get; }
 
-    public EntitySpan(T entity, int typeID, long position, int length)
+    public EntitySpan(T entity, long position, int length)
     {
         Entity = entity;
-        TypeID = typeID;
         Position = position;
         Length = length;
     }

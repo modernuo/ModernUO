@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Server;
@@ -31,7 +32,7 @@ public static class GenericPersistence
 
         void Serialize()
         {
-            saveBuffer ??= new BufferWriter(true);
+            saveBuffer ??= new BufferWriter(true, World.SerializedTypes);
             saveBuffer.Seek(0, SeekOrigin.Begin);
 
             serializer(saveBuffer);
@@ -41,10 +42,10 @@ public static class GenericPersistence
         {
             string binPath = Path.Combine(savePath, name, $"{name}.bin");
             var buffer = saveBuffer!.Buffer.AsSpan(0, (int)saveBuffer.Position);
-            AdhocPersistence.WriteSnapshot(binPath, buffer);
+            AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
         }
 
-        void Deserialize(string savePath) =>
+        void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
             AdhocPersistence.Deserialize(Path.Combine(savePath, name, $"{name}.bin"), deserializer);
 
         Persistence.Register(name, Serialize, WriterSnapshot, Deserialize, priority);

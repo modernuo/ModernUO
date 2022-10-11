@@ -1809,8 +1809,7 @@ public class Container : Item
 
 public class ContainerData
 {
-    private static ILogger _logger;
-    private static ILogger Logger => _logger ??= LogFactory.GetLogger(typeof(ContainerData));
+    private static ILogger logger = LogFactory.GetLogger(typeof(ContainerData));
     private static readonly Dictionary<int, ContainerData> m_Table;
 
     static ContainerData()
@@ -1875,7 +1874,7 @@ public class ContainerData
 
                                 if (m_Table.ContainsKey(id))
                                 {
-                                    Logger.Warning("double ItemID entry in Data\\containers.cfg");
+                                    logger.Warning("double ItemID entry in Data\\containers.cfg");
                                 }
                                 else
                                 {
