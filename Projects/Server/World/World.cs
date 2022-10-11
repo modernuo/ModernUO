@@ -465,6 +465,8 @@ public static class World
     /**
      * Duplicates can be weeded out asynchronously while flushing
      * If performance becomes a problem, we need to build a dual mode concurrent array.
+     *
+     ****************************************************** Proposal ******************************************************
      * The structure is initialized with a large capacity to avoid unnecessary resizing.
      * Write Mode:
      * - Multiple threads can add a single, or a range of elements concurrently.
@@ -489,6 +491,7 @@ public static class World
      * How is this different from ConcurrentQueue?
      * The functionality is very similar, except the constraints allow the implementation to be done without locks.
      * Since this implementation uses pooled arrays, allocations will approach zero over time.
+     **********************************************************************************************************************
      */
     public static ConcurrentQueue<Type> SerializedTypes { get; } = new();
 
