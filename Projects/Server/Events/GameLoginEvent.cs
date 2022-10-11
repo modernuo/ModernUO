@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GameLoginEvent.cs                                               *
  *                                                                       *
@@ -17,33 +17,32 @@ using System;
 using System.Runtime.CompilerServices;
 using Server.Network;
 
-namespace Server
+namespace Server;
+
+public class GameLoginEventArgs
 {
-    public class GameLoginEventArgs
+    public GameLoginEventArgs(NetState state, string un, string pw)
     {
-        public GameLoginEventArgs(NetState state, string un, string pw)
-        {
-            State = state;
-            Username = un;
-            Password = pw;
-        }
-
-        public NetState State { get; }
-
-        public string Username { get; }
-
-        public string Password { get; }
-
-        public bool Accepted { get; set; }
-
-        public CityInfo[] CityInfo { get; set; }
+        State = state;
+        Username = un;
+        Password = pw;
     }
 
-    public static partial class EventSink
-    {
-        public static event Action<GameLoginEventArgs> GameLogin;
+    public NetState State { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvokeGameLogin(GameLoginEventArgs e) => GameLogin?.Invoke(e);
-    }
+    public string Username { get; }
+
+    public string Password { get; }
+
+    public bool Accepted { get; set; }
+
+    public CityInfo[] CityInfo { get; set; }
+}
+
+public static partial class EventSink
+{
+    public static event Action<GameLoginEventArgs> GameLogin;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void InvokeGameLogin(GameLoginEventArgs e) => GameLogin?.Invoke(e);
 }

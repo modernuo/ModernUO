@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: CollectionHelpers.cs                                            *
  *                                                                       *
@@ -16,17 +16,16 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Server.Collections
+namespace Server.Collections;
+
+public static class CollectionHelpers
 {
-    public static class CollectionHelpers
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddNotNull<T>(this ICollection<T> coll, T t) where T : class
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void AddNotNull<T>(this ICollection<T> coll, T t) where T : class
+        if (t != null)
         {
-            if (t != null)
-            {
-                coll.Add(t);
-            }
+            coll.Add(t);
         }
     }
 }

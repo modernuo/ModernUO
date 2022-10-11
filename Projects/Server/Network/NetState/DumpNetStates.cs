@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: DumpNetStates.cs                                                *
  *                                                                       *
@@ -15,25 +15,24 @@
 
 using System.IO;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class DumpNetStates
 {
-    public static class DumpNetStates
+    public static void Initialize()
     {
-        public static void Initialize()
+        CommandSystem.Register("DumpNetStates", AccessLevel.Administrator, DumpNetStatesCommand);
+    }
+
+    public static void DumpNetStatesCommand(CommandEventArgs args)
+    {
+        using var file = new StreamWriter("netstatedump.csv");
+
+        file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
+
+        foreach (var ns in TcpServer.Instances)
         {
-            CommandSystem.Register("DumpNetStates", AccessLevel.Administrator, DumpNetStatesCommand);
-        }
-
-        public static void DumpNetStatesCommand(CommandEventArgs args)
-        {
-            using var file = new StreamWriter("netstatedump.csv");
-
-            file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
-
-            foreach (var ns in TcpServer.Instances)
-            {
-                file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
-            }
+            file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
         }
     }
 }

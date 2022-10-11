@@ -1,65 +1,64 @@
 using System;
 
-namespace Server
+namespace Server;
+
+public class KeywordList
 {
-    public class KeywordList
+    private static readonly int[] m_EmptyInts = Array.Empty<int>();
+    private int[] m_Keywords;
+
+    public KeywordList()
     {
-        private static readonly int[] m_EmptyInts = Array.Empty<int>();
-        private int[] m_Keywords;
+        m_Keywords = new int[8];
+        Count = 0;
+    }
 
-        public KeywordList()
+    public int Count { get; private set; }
+
+    public bool Contains(int keyword)
+    {
+        var contains = false;
+
+        for (var i = 0; !contains && i < Count; ++i)
         {
-            m_Keywords = new int[8];
-            Count = 0;
+            contains = keyword == m_Keywords[i];
         }
 
-        public int Count { get; private set; }
+        return contains;
+    }
 
-        public bool Contains(int keyword)
+    public void Add(int keyword)
+    {
+        if (Count + 1 > m_Keywords.Length)
         {
-            var contains = false;
+            var old = m_Keywords;
+            m_Keywords = new int[old.Length * 2];
 
-            for (var i = 0; !contains && i < Count; ++i)
+            for (var i = 0; i < old.Length; ++i)
             {
-                contains = keyword == m_Keywords[i];
+                m_Keywords[i] = old[i];
             }
-
-            return contains;
         }
 
-        public void Add(int keyword)
+        m_Keywords[Count++] = keyword;
+    }
+
+    public int[] ToArray()
+    {
+        if (Count == 0)
         {
-            if (Count + 1 > m_Keywords.Length)
-            {
-                var old = m_Keywords;
-                m_Keywords = new int[old.Length * 2];
-
-                for (var i = 0; i < old.Length; ++i)
-                {
-                    m_Keywords[i] = old[i];
-                }
-            }
-
-            m_Keywords[Count++] = keyword;
+            return m_EmptyInts;
         }
 
-        public int[] ToArray()
+        var keywords = new int[Count];
+
+        for (var i = 0; i < Count; ++i)
         {
-            if (Count == 0)
-            {
-                return m_EmptyInts;
-            }
-
-            var keywords = new int[Count];
-
-            for (var i = 0; i < Count; ++i)
-            {
-                keywords[i] = m_Keywords[i];
-            }
-
-            Count = 0;
-
-            return keywords;
+            keywords[i] = m_Keywords[i];
         }
+
+        Count = 0;
+
+        return keywords;
     }
 }

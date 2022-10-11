@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Xoshiro256PlusPlus.cs                                           *
  *                                                                       *
@@ -16,109 +16,88 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Server.Random
+namespace Server.Random;
+
+public class Xoshiro256PlusPlus : BaseRandomSource
 {
-    public class Xoshiro256PlusPlus : BaseRandomSource
+    private static readonly ulong[] JUMP =
+        { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
+
+    private static readonly ulong[] LONG_JUMP =
+        { 0x76e15d3efefdcbbf, 0xc5004e441c522fb3, 0x77710069854ee241, 0x39109bb02acbe635 };
+
+    private ulong _s0, _s1, _s2, _s3;
+
+    public Xoshiro256PlusPlus() : this((ulong)Environment.TickCount64)
     {
-        private static readonly ulong[] JUMP =
-            { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
+    }
 
-        private static readonly ulong[] LONG_JUMP =
-            { 0x76e15d3efefdcbbf, 0xc5004e441c522fb3, 0x77710069854ee241, 0x39109bb02acbe635 };
+    public Xoshiro256PlusPlus(ulong seed)
+    {
+        var mix = new SplitMix64(seed);
+        var state = new ulong[4];
+        mix.FillArray(state);
+        _s0 = state[0];
+        _s1 = state[1];
+        _s2 = state[2];
+        _s3 = state[3];
+    }
 
-        private ulong _s0, _s1, _s2, _s3;
+    private Xoshiro256PlusPlus(ulong s0, ulong s1, ulong s2, ulong s3)
+    {
+        _s0 = s0;
+        _s1 = s1;
+        _s2 = s2;
+        _s3 = s3;
+    }
 
-        public Xoshiro256PlusPlus() : this((ulong)Environment.TickCount64)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override ulong NextULong()
+    {
+        var r1 = (_s1 << 2) + _s1;
+        var r2 = (r1 << 7) | (r1 >> 57);
+        var rslt = (r2 << 3) + r2;
+
+        var t = _s1 << 17;
+
+        _s2 ^= _s0;
+        _s3 ^= _s1;
+        _s1 ^= _s2;
+        _s0 ^= _s3;
+
+        _s2 ^= t;
+
+        _s3 = (_s3 << 45) | (_s3 >> 19);
+
+        return rslt;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override unsafe void NextBytes(Span<byte> b)
+    {
+        if (b.Length == 0)
         {
+            return;
         }
 
-        public Xoshiro256PlusPlus(ulong seed)
+        var s0 = _s0;
+        var s1 = _s1;
+        var s2 = _s2;
+        var s3 = _s3;
+
+        var i = 0;
+
+        fixed (byte* pBuffer = b)
         {
-            var mix = new SplitMix64(seed);
-            var state = new ulong[4];
-            mix.FillArray(state);
-            _s0 = state[0];
-            _s1 = state[1];
-            _s2 = state[2];
-            _s3 = state[3];
-        }
+            var pULong = (ulong*)pBuffer;
 
-        private Xoshiro256PlusPlus(ulong s0, ulong s1, ulong s2, ulong s3)
-        {
-            _s0 = s0;
-            _s1 = s1;
-            _s2 = s2;
-            _s3 = s3;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override ulong NextULong()
-        {
-            var r1 = (_s1 << 2) + _s1;
-            var r2 = (r1 << 7) | (r1 >> 57);
-            var rslt = (r2 << 3) + r2;
-
-            var t = _s1 << 17;
-
-            _s2 ^= _s0;
-            _s3 ^= _s1;
-            _s1 ^= _s2;
-            _s0 ^= _s3;
-
-            _s2 ^= t;
-
-            _s3 = (_s3 << 45) | (_s3 >> 19);
-
-            return rslt;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override unsafe void NextBytes(Span<byte> b)
-        {
-            if (b.Length == 0)
-            {
-                return;
-            }
-
-            var s0 = _s0;
-            var s1 = _s1;
-            var s2 = _s2;
-            var s3 = _s3;
-
-            var i = 0;
-
-            fixed (byte* pBuffer = b)
-            {
-                var pULong = (ulong*)pBuffer;
-
-                for (var bound = b.Length / sizeof(ulong); i < bound; i++)
-                {
-                    var r1 = (s1 << 2) + s1;
-                    var r2 = (r1 << 7) | (r1 >> 57);
-                    pULong[i] = (r2 << 3) + r2;
-
-                    var t = s1 << 17;
-                    s2 ^= s0;
-                    s3 ^= s1;
-                    s1 ^= s2;
-                    s0 ^= s3;
-
-                    s2 ^= t;
-
-                    s3 = (s3 << 45) | (s3 >> 19);
-                }
-            }
-
-            i *= 8;
-
-            if (i < b.Length)
+            for (var bound = b.Length / sizeof(ulong); i < bound; i++)
             {
                 var r1 = (s1 << 2) + s1;
                 var r2 = (r1 << 7) | (r1 >> 57);
-                var rslt = (r2 << 3) + r2;
+                pULong[i] = (r2 << 3) + r2;
 
                 var t = s1 << 17;
-
                 s2 ^= s0;
                 s3 ^= s1;
                 s1 ^= s2;
@@ -127,90 +106,110 @@ namespace Server.Random
                 s2 ^= t;
 
                 s3 = (s3 << 45) | (s3 >> 19);
-
-                while (i < b.Length)
-                {
-                    b[i++] = (byte)rslt;
-                    rslt >>= 8;
-                }
             }
-
-            _s0 = s0;
-            _s1 = s1;
-            _s2 = s2;
-            _s3 = s3;
         }
 
-        public void Jump() => Jump(JUMP);
+        i *= 8;
 
-        public void LongJump() => Jump(LONG_JUMP);
-
-        private void Jump(in ulong[] jumps)
+        if (i < b.Length)
         {
-            ulong s0 = 0;
-            ulong s1 = 0;
-            ulong s2 = 0;
-            ulong s3 = 0;
+            var r1 = (s1 << 2) + s1;
+            var r2 = (r1 << 7) | (r1 >> 57);
+            var rslt = (r2 << 3) + r2;
 
-            for (var i = 0; i < jumps.Length; i++)
+            var t = s1 << 17;
+
+            s2 ^= s0;
+            s3 ^= s1;
+            s1 ^= s2;
+            s0 ^= s3;
+
+            s2 ^= t;
+
+            s3 = (s3 << 45) | (s3 >> 19);
+
+            while (i < b.Length)
             {
-                for (var b = 0; b < 64; b++)
-                {
-                    if ((jumps[i] & (1ul << b)) != 0)
-                    {
-                        s0 ^= _s0;
-                        s1 ^= _s1;
-                        s2 ^= _s2;
-                        s3 ^= _s3;
-                    }
-
-                    NextULong();
-                }
+                b[i++] = (byte)rslt;
+                rslt >>= 8;
             }
-
-            _s0 = s0;
-            _s1 = s1;
-            _s2 = s2;
-            _s3 = s3;
         }
 
-        public Xoshiro256PlusPlus Split()
-        {
-            var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
-            rng.Jump();
-            return rng;
-        }
-
-        public Xoshiro256PlusPlus LongSplit()
-        {
-            var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
-            rng.LongJump();
-            return rng;
-        }
+        _s0 = s0;
+        _s1 = s1;
+        _s2 = s2;
+        _s3 = s3;
     }
 
-    public class SplitMix64
+    public void Jump() => Jump(JUMP);
+
+    public void LongJump() => Jump(LONG_JUMP);
+
+    private void Jump(in ulong[] jumps)
     {
-        private ulong x;
+        ulong s0 = 0;
+        ulong s1 = 0;
+        ulong s2 = 0;
+        ulong s3 = 0;
 
-        public SplitMix64(ulong seed) => x = seed;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ulong Next()
+        for (var i = 0; i < jumps.Length; i++)
         {
-            var z = x += 0x9e3779b97f4a7c15;
-            z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
-            z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-            return z ^ (z >> 31);
+            for (var b = 0; b < 64; b++)
+            {
+                if ((jumps[i] & (1ul << b)) != 0)
+                {
+                    s0 ^= _s0;
+                    s1 ^= _s1;
+                    s2 ^= _s2;
+                    s3 ^= _s3;
+                }
+
+                NextULong();
+            }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FillArray(ulong[] arr)
+        _s0 = s0;
+        _s1 = s1;
+        _s2 = s2;
+        _s3 = s3;
+    }
+
+    public Xoshiro256PlusPlus Split()
+    {
+        var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
+        rng.Jump();
+        return rng;
+    }
+
+    public Xoshiro256PlusPlus LongSplit()
+    {
+        var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
+        rng.LongJump();
+        return rng;
+    }
+}
+
+public class SplitMix64
+{
+    private ulong x;
+
+    public SplitMix64(ulong seed) => x = seed;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ulong Next()
+    {
+        var z = x += 0x9e3779b97f4a7c15;
+        z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
+        z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
+        return z ^ (z >> 31);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void FillArray(ulong[] arr)
+    {
+        for (var i = 0; i < arr.Length; i++)
         {
-            for (var i = 0; i < arr.Length; i++)
-            {
-                arr[i] = Next();
-            }
+            arr[i] = Next();
         }
     }
 }

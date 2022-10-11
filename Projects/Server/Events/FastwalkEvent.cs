@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: FastwalkEvent.cs                                                *
  *                                                                       *
@@ -17,22 +17,21 @@ using System;
 using System.Runtime.CompilerServices;
 using Server.Network;
 
-namespace Server
+namespace Server;
+
+public class FastWalkEventArgs
 {
-    public class FastWalkEventArgs
-    {
-        public FastWalkEventArgs(NetState state) => NetState = state;
+    public FastWalkEventArgs(NetState state) => NetState = state;
 
-        public NetState NetState { get; }
+    public NetState NetState { get; }
 
-        public bool Blocked { get; set; } = true;
-    }
+    public bool Blocked { get; set; } = true;
+}
 
-    public static partial class EventSink
-    {
-        public static event Action<FastWalkEventArgs> FastWalk;
+public static partial class EventSink
+{
+    public static event Action<FastWalkEventArgs> FastWalk;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvokeFastWalk(FastWalkEventArgs e) => FastWalk?.Invoke(e);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void InvokeFastWalk(FastWalkEventArgs e) => FastWalk?.Invoke(e);
 }

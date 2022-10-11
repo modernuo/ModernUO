@@ -1,33 +1,32 @@
 using Server.Network;
 
-namespace Server.HuePickers
+namespace Server.HuePickers;
+
+public class HuePicker
 {
-    public class HuePicker
+    private static Serial _nextSerial = (Serial)1;
+
+    public HuePicker(int itemID)
     {
-        private static Serial _nextSerial = (Serial)1;
-
-        public HuePicker(int itemID)
+        do
         {
-            do
-            {
-                Serial = _nextSerial++;
-            } while (Serial == 0);
+            Serial = _nextSerial++;
+        } while (Serial == 0);
 
-            ItemID = itemID;
-        }
+        ItemID = itemID;
+    }
 
-        public Serial Serial { get; }
+    public Serial Serial { get; }
 
-        public int ItemID { get; }
+    public int ItemID { get; }
 
-        public virtual void OnResponse(int hue)
-        {
-        }
+    public virtual void OnResponse(int hue)
+    {
+    }
 
-        public void SendTo(NetState state)
-        {
-            state.SendDisplayHuePicker(Serial, ItemID);
-            state.AddHuePicker(this);
-        }
+    public void SendTo(NetState state)
+    {
+        state.SendDisplayHuePicker(Serial, ItemID);
+        state.AddHuePicker(this);
     }
 }

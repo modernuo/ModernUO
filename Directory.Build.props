@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Authors>Kamron Batman</Authors>
         <Company>ModernUO</Company>
-        <Copyright>2019-2020</Copyright>
+        <Copyright>2019-2022</Copyright>
         <TargetFramework>net6.0</TargetFramework>
         <Platforms>x64</Platforms>
         <PlatformTarget>x64</PlatformTarget>
