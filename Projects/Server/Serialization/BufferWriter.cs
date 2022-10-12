@@ -139,6 +139,7 @@ public class BufferWriter : IGenericWriter
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(BitArray bitArray)
     {
         var byteLength = BitArray.GetByteArrayLengthFromBitLength(bitArray.Length);
@@ -149,6 +150,7 @@ public class BufferWriter : IGenericWriter
         Index += byteLength;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public virtual long Seek(long offset, SeekOrigin origin)
     {
         Debug.Assert(
@@ -172,6 +174,7 @@ public class BufferWriter : IGenericWriter
         });
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(string value)
     {
         if (_prefixStrings)
@@ -192,6 +195,7 @@ public class BufferWriter : IGenericWriter
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(long value)
     {
         FlushIfNeeded(8);
@@ -206,6 +210,7 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = (byte)(value >> 56);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ulong value)
     {
         FlushIfNeeded(8);
@@ -220,6 +225,7 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = (byte)(value >> 56);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(int value)
     {
         FlushIfNeeded(4);
@@ -230,6 +236,7 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = (byte)(value >> 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(uint value)
     {
         FlushIfNeeded(4);
@@ -240,6 +247,7 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = (byte)(value >> 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(short value)
     {
         FlushIfNeeded(2);
@@ -248,6 +256,7 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = (byte)(value >> 8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ushort value)
     {
         FlushIfNeeded(2);
@@ -256,6 +265,7 @@ public class BufferWriter : IGenericWriter
         _buffer[Index++] = (byte)(value >> 8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void Write(double value)
     {
         FlushIfNeeded(8);
@@ -268,6 +278,7 @@ public class BufferWriter : IGenericWriter
         Index += 8;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void Write(float value)
     {
         FlushIfNeeded(4);
@@ -304,6 +315,7 @@ public class BufferWriter : IGenericWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(Serial serial) => Write(serial.Value);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(Type type)
     {
         if (type == null)
@@ -318,6 +330,7 @@ public class BufferWriter : IGenericWriter
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void InternalWriteString(string value)
     {
         var remaining = _encoding.GetByteCount(value);
