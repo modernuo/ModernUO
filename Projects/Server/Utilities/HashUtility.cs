@@ -35,6 +35,7 @@ public static class HashUtility
     // **********************************************************
     private const ulong xxHash3Seed = 9609125370673258709ul; // Randomly generated 64-bit prime number
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ComputeHash64(string? data, FastHashAlgorithm algorithm = FastHashAlgorithm.XXHash3_64) =>
         algorithm switch
         {
