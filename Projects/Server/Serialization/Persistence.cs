@@ -14,13 +14,14 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Server;
 
-public class Persistence
+public static class Persistence
 {
     public const int DefaultPriority = 100;
 
@@ -30,7 +31,7 @@ public class Persistence
         string name,
         Action serializer,
         Action<string> snapshotWriter,
-        Action<string> deserializer,
+        Action<string, Dictionary<ulong, string>> deserializer,
         int priority = DefaultPriority
     )
     {
@@ -50,11 +51,39 @@ public class Persistence
 
     public static void Load(string path)
     {
+        var typesDb = LoadTypes(path);
+
         // This should probably not be parallel since Mobiles must be loaded before Items
         foreach (var entry in _registry)
         {
-            entry.Deserialize(path);
+            entry.Deserialize(path, typesDb);
         }
+    }
+
+    private static Dictionary<ulong, string> LoadTypes(string path)
+    {
+        var db = new Dictionary<ulong, string>();
+
+        string tdbPath = Path.Combine(path, "SerializedTypes.db");
+        if (!File.Exists(tdbPath))
+        {
+            return db;
+        }
+
+        using FileStream tdb = new FileStream(tdbPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        BinaryReader tdbReader = new BinaryReader(tdb);
+
+        var version = tdbReader.ReadInt32();
+        var count = tdbReader.ReadInt32();
+
+        for (var i = 0; i < count; ++i)
+        {
+            var hash = tdbReader.ReadUInt64();
+            var typeName = tdbReader.ReadString();
+            db[hash] = typeName;
+        }
+
+        return db;
     }
 
     public static void Serialize()
@@ -62,11 +91,38 @@ public class Persistence
         Parallel.ForEach(_registry, entry => entry.Serialize());
     }
 
-    public static void WriteSnapshot(string path)
+    public static void WriteSnapshot(string path, ConcurrentQueue<Type> types)
     {
         foreach (var entry in _registry)
         {
             entry.WriteSnapshot(path);
+        }
+
+        // Dedupe the queue.
+        foreach (var type in types)
+        {
+            _typesSet.Add(type);
+        }
+
+        WriteSerializedTypesSnapshot(path, _typesSet);
+        _typesSet.Clear();
+    }
+
+    private static HashSet<Type> _typesSet = new();
+
+    public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
+    {
+        string tdbPath = Path.Combine(path, "SerializedTypes.db");
+        using var tdb = new BinaryFileWriter(tdbPath, false);
+
+        tdb.Write(0); // version
+        tdb.Write(types.Count);
+
+        foreach (var type in types)
+        {
+            var fullName = type.FullName;
+            tdb.Write(HashUtility.ComputeHash64(fullName));
+            tdb.Write(fullName);
         }
     }
 
@@ -76,7 +132,7 @@ public class Persistence
         public int Priority { get; init; }
         public Action Serialize { get; init; } // Serializing to memory buffers
         public Action<string> WriteSnapshot { get; init; }
-        public Action<string> Deserialize { get; init; }
+        public Action<string, Dictionary<ulong, string>> Deserialize { get; init; }
     }
 
     internal class RegistryEntryComparer : IComparer<RegistryEntry>

@@ -37,6 +37,7 @@ public interface IGenericWriter
     void Write(sbyte value);
     void Write(bool value);
     void Write(Serial serial);
+    void Write(Type type);
 
     void Write(DateTime value)
     {

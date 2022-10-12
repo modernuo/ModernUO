@@ -38,12 +38,12 @@ public enum WorldState
 
 public static class World
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(World));
+    private static ILogger logger = LogFactory.GetLogger(typeof(World));
 
-    private static readonly ManualResetEvent m_DiskWriteHandle = new(true);
-    private static readonly Dictionary<Serial, IEntity> _pendingAdd = new();
-    private static readonly Dictionary<Serial, IEntity> _pendingDelete = new();
-    private static readonly ConcurrentQueue<Item> _decayQueue = new();
+    private static ManualResetEvent m_DiskWriteHandle = new(true);
+    private static Dictionary<Serial, IEntity> _pendingAdd = new();
+    private static Dictionary<Serial, IEntity> _pendingDelete = new();
+    private static ConcurrentQueue<Item> _decayQueue = new();
 
     private static string _tempSavePath; // Path to the temporary folder for the save
     private static bool _enableSaveStats;
@@ -124,10 +124,6 @@ public static class World
     }
 
     private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
-
-    internal static List<Type> ItemTypes { get; } = new();
-    internal static List<Type> MobileTypes { get; } = new();
-    internal static List<Type> GuildTypes { get; } = new();
 
     public static string SavePath { get; private set; }
 
@@ -232,15 +228,15 @@ public static class World
     public static void Broadcast(int hue, bool ascii, string format, params object[] args) =>
         Broadcast(hue, ascii, string.Format(format, args));
 
-    internal static void LoadEntities(string basePath)
+    internal static void LoadEntities(string basePath, Dictionary<ulong, string> typesDb)
     {
         IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
         IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
         IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-        Mobiles = EntityPersistence.LoadIndex(basePath, mobileIndexInfo, out List<EntitySpan<Mobile>> mobiles);
-        Items = EntityPersistence.LoadIndex(basePath, itemIndexInfo, out List<EntitySpan<Item>> items);
-        Guilds = EntityPersistence.LoadIndex(basePath, guildIndexInfo, out List<EntitySpan<BaseGuild>> guilds);
+        Mobiles = EntityPersistence.LoadIndex(basePath, mobileIndexInfo, typesDb, out List<EntitySpan<Mobile>> mobiles);
+        Items = EntityPersistence.LoadIndex(basePath, itemIndexInfo, typesDb, out List<EntitySpan<Item>> items);
+        Guilds = EntityPersistence.LoadIndex(basePath, guildIndexInfo, typesDb, out List<EntitySpan<BaseGuild>> guilds);
 
         if (Mobiles.Count > 0)
         {
@@ -257,9 +253,9 @@ public static class World
             _lastGuild = Guilds.Keys.Max();
         }
 
-        EntityPersistence.LoadData(basePath, mobileIndexInfo, mobiles);
-        EntityPersistence.LoadData(basePath, itemIndexInfo, items);
-        EntityPersistence.LoadData(basePath, guildIndexInfo, guilds);
+        EntityPersistence.LoadData(basePath, mobileIndexInfo, typesDb, mobiles);
+        EntityPersistence.LoadData(basePath, itemIndexInfo, typesDb,  items);
+        EntityPersistence.LoadData(basePath, guildIndexInfo, typesDb, guilds);
     }
 
     public static void Load()
@@ -392,9 +388,9 @@ public static class World
         IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
         IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-        EntityPersistence.WriteEntities(mobileIndexInfo, Mobiles, MobileTypes, basePath, out var mobileCounts);
-        EntityPersistence.WriteEntities(itemIndexInfo, Items, ItemTypes, basePath, out var itemCounts);
-        EntityPersistence.WriteEntities(guildIndexInfo, Guilds, GuildTypes, basePath, out var guildCounts);
+        EntityPersistence.WriteEntities(mobileIndexInfo, Mobiles, basePath, SerializedTypes, out var mobileCounts);
+        EntityPersistence.WriteEntities(itemIndexInfo, Items, basePath, SerializedTypes, out var itemCounts);
+        EntityPersistence.WriteEntities(guildIndexInfo, Guilds, basePath, SerializedTypes, out var guildCounts);
 
         if (_enableSaveStats)
         {
@@ -413,7 +409,7 @@ public static class World
             var watch = Stopwatch.StartNew();
             logger.Information("Writing world save snapshot");
 
-            Persistence.WriteSnapshot(tempPath);
+            Persistence.WriteSnapshot(tempPath, SerializedTypes);
 
             watch.Stop();
 
@@ -444,6 +440,9 @@ public static class World
             }
         }
 
+        // Clear types
+        SerializedTypes.Clear();
+
         m_DiskWriteHandle.Set();
 
         Core.LoopContext.Post(FinishWorldSave);
@@ -463,6 +462,39 @@ public static class World
 
     private static DateTime _serializationStart;
 
+    /**
+     * Duplicates can be weeded out asynchronously while flushing
+     * If performance becomes a problem, we need to build a dual mode concurrent array.
+     *
+     ****************************************************** Proposal ******************************************************
+     * The structure is initialized with a large capacity to avoid unnecessary resizing.
+     * Write Mode:
+     * - Multiple threads can add a single, or a range of elements concurrently.
+     * - Elements can be Peeked, but there are no guarantees.
+     * - To resize the internal array, replaced it with the next size up from an array pool.
+     * - The structure cannot be cleared in this mode.
+     *
+     * Read Mode:
+     * - The array can be read from multiple threads using a ref struct enumerator.
+     * - Elements cannot be added or reassigned.
+     * - Cleared by replacing the internal array with another one from the pool.
+     * - Note: Upon clearing, the existing array is not sent back to the pool until there are zero enumerators.
+     *
+     * Enumeration:
+     * - Multiple threads can enumerate while in read mode. The enumerator will Interlocked.Increment a read counter.
+     * - Upon dispose of the enumerator, the read counter will be lowered with an Interlocked.Decrement
+     * - When the read counter reaches 0, if there is a cleared array, the array is sent back to the pool zeroed.
+     *
+     * Notes:
+     * - Elements can never be removed.
+     *
+     * How is this different from ConcurrentQueue?
+     * The functionality is very similar, except the constraints allow the implementation to be done without locks.
+     * Since this implementation uses pooled arrays, allocations will approach zero over time.
+     **********************************************************************************************************************
+     */
+    public static ConcurrentQueue<Type> SerializedTypes { get; } = new();
+
     internal static void SaveEntities()
     {
         _serializationStart = DateTime.UtcNow;
@@ -479,7 +511,7 @@ public static class World
             EnqueueForDecay(item);
         }
 
-        entity.Serialize();
+        entity.Serialize(SerializedTypes);
     }
 
     public static void Save()
@@ -632,7 +664,10 @@ public static class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddGuild(BaseGuild guild) => Guilds[guild.Serial] = guild;
+    public static void AddGuild(BaseGuild guild)
+    {
+        Guilds[guild.Serial] = guild;
+    }
 
     public static void RemoveEntity<T>(T entity) where T : class, IEntity
     {

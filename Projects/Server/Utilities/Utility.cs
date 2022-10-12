@@ -120,8 +120,10 @@ public static class Utility
         sb.Append(value);
     }
 
-    public static string Intern(string str) => str?.Length > 0 ? string.Intern(str) : str;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Intern(this string str) => str?.Length > 0 ? string.Intern(str) : str;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Intern(ref string str)
     {
         str = Intern(str);

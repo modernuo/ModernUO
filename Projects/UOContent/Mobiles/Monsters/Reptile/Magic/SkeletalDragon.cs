@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Server.Mobiles
 {
     public class SkeletalDragon : BaseCreature

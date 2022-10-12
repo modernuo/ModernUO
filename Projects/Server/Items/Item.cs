@@ -217,24 +217,15 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         SetLastMoved();
 
         World.AddEntity(this);
-        SetTypeRef(GetType());
     }
 
     public Item(Serial serial)
     {
         Serial = serial;
-        SetTypeRef(GetType());
     }
 
     public void SetTypeRef(Type type)
     {
-        TypeRef = World.ItemTypes.IndexOf(type);
-
-        if (TypeRef == -1)
-        {
-            World.ItemTypes.Add(type);
-            TypeRef = World.ItemTypes.Count - 1;
-        }
     }
 
     public int TempFlags
@@ -785,8 +776,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
-
-    public int TypeRef { get; private set; }
 
     public virtual void Serialize(IGenericWriter writer)
     {

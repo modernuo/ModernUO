@@ -15,6 +15,10 @@ namespace Server.Accounting
     [SerializationGenerator(4)]
     public partial class Account : IAccount, IComparable<Account>, ISerializable
     {
+        public void SetTypeRef(Type type)
+        {
+        }
+
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
         public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
         public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
@@ -145,7 +149,6 @@ namespace Server.Accounting
         public Account(XmlElement node)
         {
             Serial = Accounts.NewAccount;
-            SetTypeRef(GetType());
 
             _username = Utility.GetText(node["username"], "empty");
 
@@ -216,17 +219,6 @@ namespace Server.Accounting
 
             Accounts.Add(this);
             this.MarkDirty();
-        }
-
-        public void SetTypeRef(Type type)
-        {
-            TypeRef = Accounts.Types.IndexOf(type);
-
-            if (TypeRef == -1)
-            {
-                Accounts.Types.Add(type);
-                TypeRef = Accounts.Types.Count - 1;
-            }
         }
 
         /// <summary>
@@ -304,8 +296,6 @@ namespace Server.Accounting
 
         [CommandProperty(AccessLevel.GameMaster)]
         DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
-
-        public int TypeRef { get; private set; }
 
         public Serial Serial { get; set; }
 

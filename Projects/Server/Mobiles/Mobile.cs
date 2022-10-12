@@ -340,7 +340,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         DefaultMobileInit();
 
         World.AddEntity(this);
-        SetTypeRef(GetType());
     }
 
     public Mobile(Serial serial)
@@ -351,19 +350,10 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         Aggressed = new List<AggressorInfo>();
         NextSkillTime = Core.TickCount;
         DamageEntries = new List<DamageEntry>();
-
-        SetTypeRef(GetType());
     }
 
     public void SetTypeRef(Type type)
     {
-        TypeRef = World.MobileTypes.IndexOf(type);
-
-        if (TypeRef == -1)
-        {
-            World.MobileTypes.Add(type);
-            TypeRef = World.MobileTypes.Count - 1;
-        }
     }
 
     public static bool DragEffects { get; set; } = true;
@@ -2271,8 +2261,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
-
-    public int TypeRef { get; private set; }
 
     public virtual void Serialize(IGenericWriter writer)
     {

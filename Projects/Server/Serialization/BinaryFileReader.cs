@@ -14,27 +14,34 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Buffers;
 using Server.Collections;
+using Server.Logging;
 using Server.Text;
 
 namespace Server;
 
 public class BinaryFileReader : IGenericReader, IDisposable
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BinaryFileReader));
+
+    private Dictionary<ulong, string> _typesDb;
     private BinaryReader _reader;
     private Encoding _encoding;
 
-    public BinaryFileReader(BinaryReader br, Encoding encoding = null)
+    public BinaryFileReader(BinaryReader br, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
         _reader = br;
         _encoding = encoding ?? TextEncoding.UTF8;
+        _typesDb = typesDb;
     }
 
-    public BinaryFileReader(Stream stream, Encoding encoding = null) : this(new BinaryReader(stream), encoding)
+    public BinaryFileReader(Stream stream, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
+        : this(new BinaryReader(stream), typesDb, encoding)
     {
     }
 
@@ -46,23 +53,20 @@ public class BinaryFileReader : IGenericReader, IDisposable
     public DateTime LastSerialized { get; init; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadString(bool intern = false)
-    {
-        if (!ReadBool())
-        {
-            return null;
-        }
+    public string ReadString(bool intern = false) => ReadBool() ? ReadStringRaw(intern) : null;
 
+    public string ReadStringRaw(bool intern = false)
+    {
         var length = ((IGenericReader)this).ReadEncodedInt();
         if (length <= 0)
         {
-            return intern ? Utility.Intern("") : "";
+            return "".Intern();
         }
 
         byte[] buffer = STArrayPool<byte>.Shared.Rent(length);
         var str = TextEncoding.GetString(buffer.AsSpan(0, length), _encoding);
         STArrayPool<byte>.Shared.Return(buffer);
-        return intern ? Utility.Intern(str) : str;
+        return intern ? str.Intern() : str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,6 +104,62 @@ public class BinaryFileReader : IGenericReader, IDisposable
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)_reader.ReadUInt32();
+
+    public Type ReadType() =>
+        ReadByte() switch
+        {
+            0 => null,
+            1 => AssemblyHandler.FindTypeByFullName(ReadStringRaw()), // Backward compatibility
+            2 => ReadTypeByHash()
+        };
+
+    public Type ReadTypeByHash()
+    {
+        var hash = ReadULong();
+        var t = AssemblyHandler.FindTypeByHash(hash);
+
+        if (t != null)
+        {
+            return t;
+        }
+
+        if (_typesDb == null)
+        {
+            logger.Error(
+                new Exception($"The file SerializedTypes.db was not loaded. Type hash '{hash}' could not be found."),
+                "Invalid {Hash} at position {Position}",
+                hash,
+                Position
+            );
+
+            return null;
+        }
+
+        if (!_typesDb.TryGetValue(hash, out var typeName))
+        {
+            logger.Error(
+                new Exception($"Type hash '{hash}' is not present in the serialized types database."),
+                "Invalid type hash {Hash} at position {Position}",
+                hash,
+                Position
+            );
+
+            return null;
+        }
+
+        t = AssemblyHandler.FindTypeByFullName(typeName, false);
+
+        if (t == null)
+        {
+            logger.Error(
+                new Exception($"Type '{typeName}' was not found."),
+                "Type {Type} was not found.",
+                typeName
+            );
+        }
+
+        return t;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Read(Span<byte> buffer) => _reader.Read(buffer);

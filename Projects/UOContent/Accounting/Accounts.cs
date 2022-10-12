@@ -14,7 +14,6 @@ namespace Server.Accounting
         private static readonly Dictionary<string, Account> _accountsByName = new(32, StringComparer.OrdinalIgnoreCase);
         private static Dictionary<Serial, Account> _accountsById = new(32);
         private static Serial _lastAccount;
-        internal static List<Type> Types { get; } = new();
 
         private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
 
@@ -44,13 +43,18 @@ namespace Server.Accounting
         public static void Configure() =>
             Persistence.Register("Accounts", Serialize, WriteSnapshot, Deserialize);
 
-        internal static void Serialize() =>
-            EntityPersistence.SaveEntities(_accountsById.Values, account => ((ISerializable)account).Serialize());
+        internal static void Serialize()
+        {
+            EntityPersistence.SaveEntities(
+                _accountsById.Values,
+                account => ((ISerializable)account).Serialize(World.SerializedTypes)
+            );
+        }
 
         internal static void WriteSnapshot(string basePath)
         {
             IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
-            EntityPersistence.WriteEntities(indexInfo, _accountsById, Types, basePath, out _);
+            EntityPersistence.WriteEntities(indexInfo, _accountsById, basePath,World.SerializedTypes, out _);
         }
 
         public static IEnumerable<IAccount> GetAccounts() => _accountsByName.Values;
@@ -73,7 +77,7 @@ namespace Server.Accounting
             _accountsById.Remove(a.Serial);
         }
 
-        internal static void Deserialize(string path)
+        internal static void Deserialize(string path, Dictionary<ulong, string> typesDb)
         {
             var filePath = Path.Combine(path, "Accounts", "accounts.xml");
 
@@ -86,14 +90,14 @@ namespace Server.Accounting
 
             IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
 
-            _accountsById = EntityPersistence.LoadIndex(path, indexInfo, out List<EntitySpan<Account>> accounts);
+            _accountsById = EntityPersistence.LoadIndex(path, indexInfo, typesDb, out List<EntitySpan<Account>> accounts);
 
             if (_accountsById.Count > 0)
             {
                 _lastAccount = _accountsById.Keys.Max();
             }
 
-            EntityPersistence.LoadData(path, indexInfo, accounts);
+            EntityPersistence.LoadData(path, indexInfo, typesDb, accounts);
 
             foreach (var a in _accountsById.Values)
             {

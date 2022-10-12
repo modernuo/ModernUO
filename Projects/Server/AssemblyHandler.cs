@@ -14,12 +14,14 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using Server.Logging;
 
 namespace Server;
 
@@ -27,6 +29,7 @@ public static class AssemblyHandler
 {
     private static readonly Dictionary<Assembly, TypeCache> m_TypeCaches = new();
     private static TypeCache m_NullCache;
+
     public static Assembly[] Assemblies { get; set; }
 
     internal static Assembly AssemblyResolver(object sender, ResolveEventArgs args)
@@ -66,6 +69,8 @@ public static class AssemblyHandler
         EnsureAssemblyDirectories();
         var assemblyDirectories = ServerConfiguration.AssemblyDirectories;
 
+        Assembly assembly = null;
+
         foreach (var assemblyDir in assemblyDirectories)
         {
             var assemblyPath = PathUtility.GetFullPath(Path.Combine(assemblyDir, fileName), Core.BaseDirectory);
@@ -74,12 +79,17 @@ public static class AssemblyHandler
                 var assemblyNameCheck = AssemblyName.GetAssemblyName(assemblyPath);
                 if (assemblyNameCheck.FullName == fullName)
                 {
-                    return AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+                    assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+                    break;
                 }
             }
         }
 
-        return null;
+        // This forces the type caching to be generated.
+        // We need this for world loading to find types by hash.
+        GetTypeCache(assembly);
+
+        return assembly;
     }
 
     public static Assembly LoadAssemblyByFileName(string assemblyFile)
@@ -154,6 +164,11 @@ public static class AssemblyHandler
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong GetTypeHash(Type type) => GetTypeHash(type.FullName);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong GetTypeHash(string key) => key == null ? 0 : HashUtility.ComputeHash64(key);
 
     public static TypeCache GetTypeCache(Assembly asm)
     {
@@ -195,84 +210,120 @@ public static class AssemblyHandler
 
         return null;
     }
+
+    public static Type FindTypeByHash(ulong hash)
+    {
+        for (var i = 0; i < Assemblies.Length; i++)
+        {
+            foreach (var type in GetTypeCache(Assemblies[i]).GetTypesByHash(hash, true, false))
+            {
+                return type;
+            }
+        }
+
+        foreach(var type in GetTypeCache(Core.Assembly).GetTypesByHash(hash, true, false))
+        {
+            return type;
+        }
+
+        return null;
+    }
 }
 
 public class TypeCache
 {
-    private readonly Dictionary<string, int[]> _nameMap = new();
-    private readonly Dictionary<string, int[]> _nameMapInsensitive = new();
-    private readonly Dictionary<string, int[]> _fullNameMap = new();
-    private readonly Dictionary<string, int[]> _fullNameMapInsensitive = new();
+    private static ILogger logger = LogFactory.GetLogger(typeof(TypeCache));
+
+    private Dictionary<ulong, Type[]> _nameMap = new();
+    private Dictionary<ulong, Type[]> _nameMapInsensitive = new();
+    private Dictionary<ulong, Type[]> _fullNameMap = new();
+    private Dictionary<ulong, Type[]> _fullNameMapInsensitive = new();
 
     public TypeCache(Assembly asm)
     {
         Types = asm?.GetTypes() ?? Type.EmptyTypes;
 
-        var nameMap = new Dictionary<string, HashSet<int>>();
-        var nameMapInsensitive = new Dictionary<string, HashSet<int>>();
-        var fullNameMap = new Dictionary<string, HashSet<int>>();
-        var fullNameMapInsensitive = new Dictionary<string, HashSet<int>>();
+        var nameMap = new Dictionary<string, HashSet<Type>>();
+        var nameMapInsensitive = new Dictionary<string, HashSet<Type>>();
+        var fullNameMap = new Dictionary<string, HashSet<Type>>();
+        var fullNameMapInsensitive = new Dictionary<string, HashSet<Type>>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void addTypeToRefs(int index, string fullTypeName)
+        void addTypeToRefs(Type type, string typeName, string fullTypeName)
         {
-            var typeName = fullTypeName[(fullTypeName.LastIndexOf('.') + 1)..];
-            AddToRefs(index, typeName, nameMap);
-            AddToRefs(index, typeName.ToLower(), nameMapInsensitive);
-            AddToRefs(index, fullTypeName, fullNameMap);
-            AddToRefs(index, fullTypeName.ToLower(), fullNameMapInsensitive);
+            AddToRefs(type, typeName, nameMap);
+            AddToRefs(type, typeName.ToLower(), nameMapInsensitive);
+            AddToRefs(type, fullTypeName, fullNameMap);
+            AddToRefs(type, fullTypeName.ToLower(), fullNameMapInsensitive);
         }
 
         var aliasType = typeof(TypeAliasAttribute);
         for (var i = 0; i < Types.Length; i++)
         {
             var current = Types[i];
-            addTypeToRefs(i, current.FullName);
+            addTypeToRefs(current, current.Name, current.FullName ?? "");
             if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
             {
                 for (var j = 0; j < alias.Aliases.Length; j++)
                 {
-                    addTypeToRefs(i, alias.Aliases[j]);
+                    var fullTypeName = alias.Aliases[j];
+                    var typeName = fullTypeName[(fullTypeName.LastIndexOf('.')+1)..];
+                    addTypeToRefs(current, typeName, fullTypeName);
                 }
             }
         }
 
         foreach (var (key, value) in nameMap)
         {
-            _nameMap[key] = value.ToArray();
+            _nameMap[HashUtility.ComputeHash64(key)] = value.ToArray();
         }
 
         foreach (var (key, value) in nameMapInsensitive)
         {
-            _nameMapInsensitive[key] = value.ToArray();
+            _nameMapInsensitive[HashUtility.ComputeHash64(key)] = value.ToArray();
         }
 
         foreach (var (key, value) in fullNameMap)
         {
-            _fullNameMap[key] = value.ToArray();
+            var values = value.ToArray();
+            _fullNameMap[HashUtility.ComputeHash64(key)] = value.ToArray();
+#if DEBUG
+            if (values.Length > 1)
+            {
+                for (var i = 0; i < values.Length; i++)
+                {
+                    var type = values[i];
+                    logger.Warning(
+                        "Duplicate type {Type1} for {Name}.",
+                        type,
+                        key
+                    );
+                }
+            }
+#endif
         }
 
         foreach (var (key, value) in fullNameMapInsensitive)
         {
-            _fullNameMapInsensitive[key] = value.ToArray();
+            _fullNameMapInsensitive[HashUtility.ComputeHash64(key)] = value.ToArray();
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AddToRefs(int index, string key, Dictionary<string, HashSet<int>> map)
+    private static void AddToRefs(Type type, string key, Dictionary<string, HashSet<Type>> map)
     {
-        if (key == null)
+        if (string.IsNullOrEmpty(key))
         {
             return;
         }
 
         if (map.TryGetValue(key, out var refs))
         {
-            refs.Add(index);
+            refs.Add(type);
         }
         else
         {
-            refs = new HashSet<int> { index };
+            refs = new HashSet<Type> { type };
             map.Add(key, refs);
         }
     }
@@ -280,49 +331,35 @@ public class TypeCache
     public Type[] Types { get; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TypeEnumerable GetTypesByName(string name, bool full, bool ignoreCase) => new(name, this, full, ignoreCase);
+    public TypeEnumerator GetTypesByName(string name, bool full, bool ignoreCase) => new(name, this, full, ignoreCase);
 
-    public ref struct TypeEnumerable
-    {
-        private readonly TypeCache _cache;
-        private readonly string _name;
-        private readonly bool _ignoreCase;
-        private readonly bool _full;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TypeEnumerable(string name, TypeCache cache, bool full, bool ignoreCase)
-        {
-            _name = name;
-            _cache = cache;
-            _ignoreCase = ignoreCase;
-            _full = full;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TypeEnumerator GetEnumerator() => new(_name, _cache, _full, _ignoreCase);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TypeEnumerator GetTypesByHash(ulong hash, bool full, bool ignoreCase) => new(hash, this, full, ignoreCase);
 
     public ref struct TypeEnumerator
     {
-        private readonly TypeCache _cache;
-        private readonly int[] _values;
+        private Type[] _values;
         private int _index;
         private Type _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal TypeEnumerator(string name, TypeCache cache, bool full, bool ignoreCase)
+            : this(HashUtility.ComputeHash64(ignoreCase ? name.ToLower() : name), cache, full, ignoreCase)
         {
-            _cache = cache;
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal TypeEnumerator(ulong hash, TypeCache cache, bool full, bool ignoreCase)
+        {
             if (ignoreCase)
             {
-                var map = full ? _cache._fullNameMapInsensitive : _cache._nameMapInsensitive;
-                _values = map.TryGetValue(name.ToLower(), out var values) ? values : Array.Empty<int>();
+                var map = full ? cache._fullNameMapInsensitive : cache._nameMapInsensitive;
+                _values = map.TryGetValue(hash, out var values) ? values : Array.Empty<Type>();
             }
             else
             {
-                var map = full ? _cache._fullNameMap : _cache._nameMap;
-                _values = map.TryGetValue(name, out var values) ? values : Array.Empty<int>();
+                var map = full ? cache._fullNameMap : cache._nameMap;
+                _values = map.TryGetValue(hash, out var values) ? values : Array.Empty<Type>();
             }
 
             _index = 0;
@@ -330,14 +367,14 @@ public class TypeCache
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TypeEnumerator GetEnumerator() => this;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            int[] localList = _values;
-
-            if ((uint)_index < (uint)localList.Length)
+            if ((uint)_index < (uint)_values.Length)
             {
-                _current = _cache.Types[_values[_index++]];
-
+                _current = _values[_index++];
                 return true;
             }
 
