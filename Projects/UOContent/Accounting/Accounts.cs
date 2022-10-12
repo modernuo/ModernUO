@@ -54,7 +54,7 @@ namespace Server.Accounting
         internal static void WriteSnapshot(string basePath)
         {
             IIndexInfo<Serial> indexInfo = new EntityTypeIndex("Accounts");
-            EntityPersistence.WriteEntities(indexInfo, _accountsById, basePath, out _);
+            EntityPersistence.WriteEntities(indexInfo, _accountsById, basePath,World.SerializedTypes, out _);
         }
 
         public static IEnumerable<IAccount> GetAccounts() => _accountsByName.Values;

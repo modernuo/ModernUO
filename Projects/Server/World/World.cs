@@ -388,9 +388,9 @@ public static class World
         IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
         IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
 
-        EntityPersistence.WriteEntities(mobileIndexInfo, Mobiles, basePath, out var mobileCounts);
-        EntityPersistence.WriteEntities(itemIndexInfo, Items, basePath, out var itemCounts);
-        EntityPersistence.WriteEntities(guildIndexInfo, Guilds, basePath, out var guildCounts);
+        EntityPersistence.WriteEntities(mobileIndexInfo, Mobiles, basePath, SerializedTypes, out var mobileCounts);
+        EntityPersistence.WriteEntities(itemIndexInfo, Items, basePath, SerializedTypes, out var itemCounts);
+        EntityPersistence.WriteEntities(guildIndexInfo, Guilds, basePath, SerializedTypes, out var guildCounts);
 
         if (_enableSaveStats)
         {

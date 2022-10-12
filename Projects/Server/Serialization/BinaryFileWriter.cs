@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 
 namespace Server;
@@ -23,11 +24,11 @@ public class BinaryFileWriter : BufferWriter, IDisposable
     private readonly Stream _file;
     private long _position;
 
-    public BinaryFileWriter(string filename, bool prefixStr) :
-        this(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None), prefixStr)
+    public BinaryFileWriter(string filename, bool prefixStr, ConcurrentQueue<Type> types = null) :
+        this(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None), prefixStr, types)
     {}
 
-    public BinaryFileWriter(Stream stream, bool prefixStr) : base(prefixStr)
+    public BinaryFileWriter(Stream stream, bool prefixStr, ConcurrentQueue<Type> types = null) : base(prefixStr, types)
     {
         _file = stream;
         _position = _file.Position;

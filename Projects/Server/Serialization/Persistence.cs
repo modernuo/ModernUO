@@ -86,11 +86,6 @@ public static class Persistence
         return db;
     }
 
-    private static void SaveTypes(string path)
-    {
-
-    }
-
     public static void Serialize()
     {
         Parallel.ForEach(_registry, entry => entry.Serialize());

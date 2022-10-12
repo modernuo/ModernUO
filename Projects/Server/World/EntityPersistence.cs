@@ -30,6 +30,7 @@ public static class EntityPersistence
         IIndexInfo<I> indexInfo,
         Dictionary<I, T> entities,
         string savePath,
+        ConcurrentQueue<Type> types,
         out Dictionary<string, int> counts
     ) where T : class, ISerializable
     {
@@ -44,8 +45,8 @@ public static class EntityPersistence
         string idxPath = Path.Combine(path, $"{typeName}.idx");
         string binPath = Path.Combine(path, $"{typeName}.bin");
 
-        using var idx = new BinaryFileWriter(idxPath, false);
-        using var bin = new BinaryFileWriter(binPath, true);
+        using var idx = new BinaryFileWriter(idxPath, false, types);
+        using var bin = new BinaryFileWriter(binPath, true, types);
 
         idx.Write(2); // Version
         idx.Write(entities.Count);
@@ -81,7 +82,7 @@ public static class EntityPersistence
     public static Dictionary<I, T> LoadIndex<I, T>(
         string path,
         IIndexInfo<I> indexInfo,
-        Dictionary<ulong, string> typeDb,
+        Dictionary<ulong, string> serializedTypes,
         out List<EntitySpan<T>> entities
     ) where T : class, ISerializable
     {
@@ -122,7 +123,7 @@ public static class EntityPersistence
         }
 
         // We must have a typeDb from SerializedTypes.db, or a tdb file
-        if (typeDb == null && types == null)
+        if (serializedTypes == null && types == null)
         {
             return map;
         }
@@ -141,7 +142,7 @@ public static class EntityPersistence
                 }
 
                 var hash = idxReader.ReadUInt64();
-                typeDb!.TryGetValue(hash, out var typeName);
+                serializedTypes!.TryGetValue(hash, out var typeName);
                 ctor = GetConstructorFor(typeName, AssemblyHandler.FindTypeByHash(hash), ctorArguments);
             }
             else
