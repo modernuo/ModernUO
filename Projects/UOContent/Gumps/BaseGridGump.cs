@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using Server.Utilities;
+
 namespace Server.Gumps
 {
     public abstract class BaseGridGump : Gump
@@ -37,9 +40,10 @@ namespace Server.Gumps
         public virtual int TextHue => 0;
         public virtual int TextOffsetX => 2;
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string Center(string text) => text.Center();
 
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+        public string Color(string text, int color) => text.Color(color);
 
         public int GetButtonID(int typeCount, int type, int index) => 1 + index * typeCount + type;
 

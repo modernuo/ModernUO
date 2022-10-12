@@ -85,9 +85,9 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x508;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (Utility.RandomBool())
             {

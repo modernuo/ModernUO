@@ -14,8 +14,7 @@ namespace Server.Spells.Spellweaving
 
         private static readonly Dictionary<Mobile, GiftOfRenewalTimer> _table = new();
 
-        public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public GiftOfRenewalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -82,7 +81,7 @@ namespace Server.Spells.Spellweaving
             if (_table.Remove(m, out var timer))
             {
                 timer.Stop();
-                Timer.StartTimer(TimeSpan.FromSeconds(60), timer.m_Caster.EndAction<GiftOfRenewalSpell>);
+                Timer.StartTimer(TimeSpan.FromSeconds(60), timer._caster.EndAction<GiftOfRenewalSpell>);
                 return true;
             }
 
@@ -91,52 +90,50 @@ namespace Server.Spells.Spellweaving
 
         private class GiftOfRenewalTimer : Timer
         {
-            public readonly Mobile m_Caster;
-            public readonly int m_HitsPerRound;
-            public readonly Mobile m_Mobile;
+            public Mobile _caster;
+            public int _hitsPerRound;
+            public Mobile _mobile;
 
             internal GiftOfRenewalTimer(Mobile caster, Mobile mobile, int hitsPerRound, int duration)
                 : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), duration / 2)
             {
-                m_Caster = caster;
-                m_Mobile = mobile;
-                m_HitsPerRound = hitsPerRound;
+                _caster = caster;
+                _mobile = mobile;
+                _hitsPerRound = hitsPerRound;
             }
 
             protected override void OnTick()
             {
                 if (Index + 1 == Count)
                 {
-                    StopEffect(m_Mobile);
-                    m_Mobile.PlaySound(0x455);
-                    m_Mobile.SendLocalizedMessage(1075071); // The Gift of Renewal has faded.
+                    StopEffect(_mobile);
+                    _mobile.PlaySound(0x455);
+                    _mobile.SendLocalizedMessage(1075071); // The Gift of Renewal has faded.
                     return;
                 }
 
-                var m = m_Mobile;
-
-                if (!_table.ContainsKey(m))
+                if (!_table.ContainsKey(_mobile))
                 {
                     Stop();
                     return;
                 }
 
-                if (!m.Alive)
+                if (!_mobile.Alive)
                 {
                     Stop();
-                    StopEffect(m);
+                    StopEffect(_mobile);
                     return;
                 }
 
-                if (m.Hits >= m.HitsMax)
+                if (_mobile.Hits >= _mobile.HitsMax)
                 {
                     return;
                 }
 
-                var toHeal = m_HitsPerRound;
+                var toHeal = _hitsPerRound;
 
-                SpellHelper.Heal(toHeal, m, m_Caster);
-                m.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
+                SpellHelper.Heal(toHeal, _mobile, _caster);
+                _mobile.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
             }
         }
     }

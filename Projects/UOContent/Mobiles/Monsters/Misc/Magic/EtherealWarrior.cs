@@ -97,18 +97,18 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x2F7;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             defender.Damage(Utility.Random(10, 10), this);
             defender.Stam -= Utility.Random(10, 10);
             defender.Mana -= Utility.Random(10, 10);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             attacker.Damage(Utility.Random(10, 10), this);
             attacker.Stam -= Utility.Random(10, 10);

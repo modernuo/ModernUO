@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ChatPackets.cs                                                  *
  *                                                                       *
@@ -21,10 +21,10 @@ namespace Server.Engines.Chat
 {
     public static class ChatPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0xB5, 0x40, true, OpenChatWindowRequest);
-            IncomingPackets.Register(0xB3, 0, true, ChatAction);
+            IncomingPackets.Register(0xB5, 0x40, true, &OpenChatWindowRequest);
+            IncomingPackets.Register(0xB3, 0, true, &ChatAction);
         }
 
         public static void OpenChatWindowRequest(NetState state, CircularBufferReader reader, int packetLength)

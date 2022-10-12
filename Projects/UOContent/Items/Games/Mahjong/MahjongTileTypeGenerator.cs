@@ -1,31 +1,28 @@
-using System.Collections.Generic;
+namespace Server.Engines.Mahjong;
 
-namespace Server.Engines.Mahjong
+public class MahjongTileTypeGenerator
 {
-    public class MahjongTileTypeGenerator
+    private MahjongTileType[] _leftTileTypes;
+    private int _nextTile;
+
+    public MahjongTileTypeGenerator()
     {
-        public MahjongTileTypeGenerator()
-        {
-            LeftTileTypes = new List<MahjongTileType>(136);
+        _leftTileTypes = new MahjongTileType[136];
 
-            for (var i = 1; i <= 34; i++)
-            {
-                var tile = (MahjongTileType)i;
-                LeftTileTypes.Add(tile);
-                LeftTileTypes.Add(tile);
-                LeftTileTypes.Add(tile);
-                LeftTileTypes.Add(tile);
-            }
+        for (int i = 1, j = 0; i <= 34; i++)
+        {
+            var tile = (MahjongTileType)i;
+            _leftTileTypes[j++] = tile;
+            _leftTileTypes[j++] = tile;
+            _leftTileTypes[j++] = tile;
+            _leftTileTypes[j++] = tile;
         }
 
-        public List<MahjongTileType> LeftTileTypes { get; }
-
-        public MahjongTileType Next()
-        {
-            var next = LeftTileTypes.RandomElement();
-            LeftTileTypes.Remove(next);
-
-            return next;
-        }
+        _leftTileTypes.Shuffle();
+        _leftTileTypes.Shuffle();
+        _leftTileTypes.Shuffle();
+        _leftTileTypes.Shuffle();
     }
+
+    public MahjongTileType Next() => _leftTileTypes[_nextTile++];
 }

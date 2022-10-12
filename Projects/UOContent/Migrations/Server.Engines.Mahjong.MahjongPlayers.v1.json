@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "type": "Server.Engines.Mahjong.MahjongPlayers",
+  "properties": [
+    {
+      "name": "Players",
+      "type": "Server.Mobile[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "InGame",
+      "type": "bool[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "bool",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "PublicHand",
+      "type": "bool[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "bool",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "Scores",
+      "type": "int[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "int",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "DealerPosition",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

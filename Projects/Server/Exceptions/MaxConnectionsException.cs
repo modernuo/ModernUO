@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MaxConnectionsException.cs                                      *
  *                                                                       *
@@ -15,12 +15,11 @@
 
 using System;
 
-namespace Server.Exceptions
+namespace Server.Exceptions;
+
+public class MaxConnectionsException : Exception
 {
-    public class MaxConnectionsException : Exception
+    public MaxConnectionsException() : base("Maximum connections exceeded")
     {
-        public MaxConnectionsException() : base("Maximum connections exceeded")
-        {
-        }
     }
 }

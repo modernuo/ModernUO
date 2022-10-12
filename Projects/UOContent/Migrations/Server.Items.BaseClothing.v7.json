@@ -3,7 +3,7 @@
   "type": "Server.Items.BaseClothing",
   "properties": [
     {
-      "name": "RawResource",
+      "name": "Resource",
       "type": "Server.Items.CraftResource",
       "usesSaveFlag": true,
       "rule": "EnumMigrationRule"

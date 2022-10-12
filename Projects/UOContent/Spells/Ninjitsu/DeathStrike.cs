@@ -29,19 +29,15 @@ namespace Server.Spells.Ninjitsu
 
             var ninjitsu = attacker.Skills.Ninjitsu.Value;
 
-            double chance;
-
             // TODO: should be defined onHit method, what if the player hit and remove the weapon before process? ;)
             var isRanged = attacker.Weapon is BaseRanged;
 
-            if (ninjitsu < 100) // This formula is an approximation from OSI data.  TODO: find correct formula
+            var chance = ninjitsu switch
             {
-                chance = 30 + (ninjitsu - 85) * 2.2;
-            }
-            else
-            {
-                chance = 63 + (ninjitsu - 100) * 1.1;
-            }
+                // This formula is an approximation from OSI data.  TODO: find correct formula
+                < 100 => 30 + (ninjitsu - 85) * 2.2,
+                _     => 63 + (ninjitsu - 100) * 1.1
+            };
 
             if (chance / 100 < Utility.RandomDouble())
             {
@@ -91,19 +87,19 @@ namespace Server.Spells.Ninjitsu
 
         private class DeathStrikeTimer : Timer
         {
-            public readonly Mobile m_Attacker;
-            public readonly int m_DamageBonus;
-            public readonly bool m_isRanged;
-            public readonly Mobile m_Target;
+            private Mobile _attacker;
+            private int _damageBonus;
+            private bool _isRanged;
+            private Mobile _target;
             public int Steps { get; set; }
 
             internal DeathStrikeTimer(Mobile target, Mobile attacker, int damageBonus, bool isRanged)
                 : base(TimeSpan.FromSeconds(5.0))
             {
-                m_Target = target;
-                m_Attacker = attacker;
-                m_DamageBonus = damageBonus;
-                m_isRanged = isRanged;
+                _target = target;
+                _attacker = attacker;
+                _damageBonus = damageBonus;
+                _isRanged = isRanged;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -116,13 +112,12 @@ namespace Server.Spells.Ninjitsu
             {
                 int damage;
 
-                var ninjitsu = m_Attacker.Skills.Ninjitsu.Value;
-                var stalkingBonus = Tracking.GetStalkingBonus(m_Attacker, m_Target);
+                var ninjitsu = _attacker.Skills.Ninjitsu.Value;
+                var stalkingBonus = Tracking.GetStalkingBonus(_attacker, _target);
 
                 if (Core.ML)
                 {
-                    var scalar = Math.Min(1, (m_Attacker.Skills.Hiding.Value +
-                                              m_Attacker.Skills.Stealth.Value) / 220);
+                    var scalar = Math.Min(1, (_attacker.Skills.Hiding.Value + _attacker.Skills.Stealth.Value) / 220);
 
                     // New formula doesn't apply DamageBonus anymore, caps must be, directly, 60/30.
                     if (Steps >= 5)
@@ -134,10 +129,12 @@ namespace Server.Spells.Ninjitsu
                         damage = (int)Math.Floor(Math.Min(30, ninjitsu / 9 * (0.3 + 0.7 * scalar) + stalkingBonus));
                     }
 
-                    if (m_isRanged)
+                    if (_isRanged)
                     {
                         damage /= 2;
                     }
+
+                    _target.Damage(damage, _attacker); // Damage is direct.
                 }
                 else
                 {
@@ -145,18 +142,12 @@ namespace Server.Spells.Ninjitsu
                     var baseDamage = ninjitsu / divisor * 10;
 
                     var maxDamage = Steps >= 5 ? 62 : 22;
-                    damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + m_DamageBonus;
-                }
+                    damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + _damageBonus;
 
-                if (Core.ML)
-                {
-                    m_Target.Damage(damage, m_Attacker); // Damage is direct.
-                }
-                else
-                {
+                    // Damage is physical.
                     AOS.Damage(
-                        m_Target,
-                        m_Attacker,
+                        _target,
+                        _attacker,
                         damage,
                         true,
                         100,
@@ -169,7 +160,7 @@ namespace Server.Spells.Ninjitsu
                         false,
                         false,
                         true
-                    ); // Damage is physical.
+                    );
                 }
 
                 Stop();

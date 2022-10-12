@@ -21,6 +21,7 @@ public static class ValueStringBuilderExtensions
 {
     // Compiler generated
     public static void Append(
+        // ReSharper disable once RedundantAssignment
         this ref ValueStringBuilder stringBuilder,
         [InterpolatedStringHandlerArgument("stringBuilder")]
         ref ValueStringBuilder.AppendInterpolatedStringHandler handler)

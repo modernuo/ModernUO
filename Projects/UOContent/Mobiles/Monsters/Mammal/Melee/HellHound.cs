@@ -44,11 +44,12 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a hell hound corpse";
         public override string DefaultName => "a hell hound";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 1;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

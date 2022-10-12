@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Utilities;
 
@@ -25,6 +26,8 @@ namespace Server.Engines.Craft
 
     public class CraftItem
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(CraftItem));
+
         private static readonly Dictionary<Type, int> _itemIds = new();
 
         private static readonly int[] m_HeatSources =
@@ -113,8 +116,13 @@ namespace Server.Engines.Craft
 
         private int m_ResHue;
         private CraftSystem m_System;
+        private int _itemId;
 
-        public CraftItem(Type type, TextDefinition groupName, TextDefinition name)
+        public CraftItem(Type type, TextDefinition groupName, TextDefinition name) : this(type, groupName, name, -1)
+        {
+        }
+
+        public CraftItem(Type type, TextDefinition groupName, TextDefinition name, int itemId)
         {
             Resources = new List<CraftRes>();
             Skills = new List<CraftSkill>();
@@ -128,6 +136,7 @@ namespace Server.Engines.Craft
             NameNumber = name;
 
             RequiredBeverage = BeverageType.Water;
+            _itemId = itemId;
         }
 
         public bool ForceNonExceptional { get; set; }
@@ -166,6 +175,8 @@ namespace Server.Engines.Craft
 
         public int NameNumber { get; }
 
+        public int ItemId => _itemId == -1 ? _itemId = ItemIDOf(ItemType) : _itemId;
+
         public List<CraftRes> Resources { get; }
 
         public List<CraftSkill> Skills { get; }
@@ -174,8 +185,8 @@ namespace Server.Engines.Craft
         {
             if (Recipe != null)
             {
-                Console.WriteLine(
-                    "Warning: Attempted add of recipe #{0} to the crafting of {1} in CraftSystem {2}.",
+                logger.Warning(
+                    "Attempted add of recipe #{Id} to the crafting of {ItemTypeName} in CraftSystem {CraftSystem}.",
                     id,
                     ItemType.Name,
                     system
@@ -190,16 +201,7 @@ namespace Server.Engines.Craft
         {
             var number = ItemIDOf(type);
 
-            if (number >= 0x4000)
-            {
-                number += 1078872;
-            }
-            else
-            {
-                number += 1020000;
-            }
-
-            return number;
+            return number + (number >= 0x4000 ? 1078872 : 1020000);
         }
 
         public static int ItemIDOf(Type type)
@@ -262,10 +264,9 @@ namespace Server.Engines.Craft
             return itemId;
         }
 
-        public void AddRes(Type type, TextDefinition name, int amount)
-        {
-            AddRes(type, name, amount, "");
-        }
+        public void AddRes(Type type, int amount, TextDefinition message) => AddRes(type, null, amount, message);
+
+        public void AddRes(Type type, TextDefinition name, int amount) => AddRes(type, name, amount, "");
 
         public void AddRes(Type type, TextDefinition name, int amount, TextDefinition message)
         {
@@ -281,17 +282,11 @@ namespace Server.Engines.Craft
 
         public bool ConsumeAttributes(Mobile from, ref TextDefinition message, bool consume)
         {
-            bool consumMana;
-            bool consumHits;
-            bool consumStam;
-
             if (Hits > 0 && from.Hits < Hits)
             {
                 message = "You lack the required hit points to make that.";
                 return false;
             }
-
-            consumHits = consume;
 
             if (Mana > 0 && from.Mana < Mana)
             {
@@ -299,28 +294,16 @@ namespace Server.Engines.Craft
                 return false;
             }
 
-            consumMana = consume;
-
             if (Stam > 0 && from.Stam < Stam)
             {
                 message = "You lack the required stamina to make that.";
                 return false;
             }
 
-            consumStam = consume;
-
-            if (consumMana)
+            if (consume)
             {
                 from.Mana -= Mana;
-            }
-
-            if (consumHits)
-            {
                 from.Hits -= Hits;
-            }
-
-            if (consumStam)
-            {
                 from.Stam -= Stam;
             }
 
@@ -825,7 +808,7 @@ namespace Server.Engines.Craft
             chance = system.ECA switch
             {
                 CraftECA.FiftyPercentChanceMinusTenPercent => chance * 0.5 - 0.1,
-                CraftECA.ChanceMinusSixtyToFourtyFive => chance - Math.Clamp(
+                CraftECA.ChanceMinusSixtyToFortyFive => chance - Math.Clamp(
                     0.60 - (from.Skills[system.MainSkill].Value - 95.0) * 0.03,
                     0.45,
                     0.60
@@ -838,8 +821,7 @@ namespace Server.Engines.Craft
 
         public bool CheckSkills(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality, out bool allRequiredSkills
-        ) =>
-            CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
+        ) => CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
 
         public bool CheckSkills(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
@@ -898,17 +880,13 @@ namespace Server.Engines.Craft
                 return 0;
             }
 
-            double chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
-                (1.0 - craftSystem.GetChanceAtMin(this));
+            var minChance = craftSystem.GetChanceAtMin(this);
 
-            if (allRequiredSkills && from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
+            double chance = minChance + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) * (1.0 - minChance);
+
+            if (from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
             {
                 chance += talisman.SuccessBonus / 100.0;
-            }
-
-            if (allRequiredSkills && valMainSkill >= maxMainSkill)
-            {
-                chance = 1.0;
             }
 
             return chance;
@@ -939,7 +917,7 @@ namespace Server.Engines.Craft
 
             var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
 
-            if (!allRequiredSkills || !(chance >= 0.0))
+            if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
                 from.SendGump(

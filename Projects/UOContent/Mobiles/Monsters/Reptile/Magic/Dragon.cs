@@ -48,7 +48,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a dragon";
 
         public override bool ReacquireOnMovement => !Controlled;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => !Controlled;
         public override int TreasureMapLevel => 4;
         public override int Meat => 19;
@@ -59,6 +58,9 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

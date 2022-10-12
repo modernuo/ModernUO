@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        private static readonly Dictionary<Mobile, Mobile> m_OathTable = new();
+        private static readonly Dictionary<Mobile, Mobile> _oathTable = new();
         private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
         public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
@@ -38,11 +38,11 @@ namespace Server.Spells.Necromancy
             {
                 Caster.SendLocalizedMessage(1060508); // You can't curse that.
             }
-            else if (m_OathTable.ContainsKey(Caster))
+            else if (_oathTable.ContainsKey(Caster))
             {
                 Caster.SendLocalizedMessage(1061607); // You are already bonded in a Blood Oath.
             }
-            else if (m_OathTable.ContainsKey(m))
+            else if (_oathTable.ContainsKey(m))
             {
                 if (m.Player)
                 {
@@ -65,11 +65,10 @@ namespace Server.Spells.Necromancy
                  * ((ss-rm)/8)+8
                  */
 
-                _table.TryGetValue(m, out var timer);
-                timer?.DoExpire();
+                RemoveCurse(m);
 
-                m_OathTable[Caster] = Caster;
-                m_OathTable[m] = Caster;
+                _oathTable[Caster] = Caster;
+                _oathTable[m] = Caster;
 
                 m.Spell?.OnCasterHurt();
 
@@ -84,7 +83,7 @@ namespace Server.Spells.Necromancy
                 var duration = TimeSpan.FromSeconds((GetDamageSkill(Caster) - GetResistSkill(m)) / 8 + 8);
                 m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
-                timer = new ExpireTimer(Caster, m, duration);
+                var timer = new ExpireTimer(Caster, m, duration);
                 timer.Start();
 
                 BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, Caster, m.Name));
@@ -102,58 +101,59 @@ namespace Server.Spells.Necromancy
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static void RemoveCurse(Mobile m)
+        public static bool RemoveCurse(Mobile target)
         {
-            _table.TryGetValue(m, out var t);
-            t?.DoExpire();
+            if (_table.Remove(target, out var timer))
+            {
+                var caster = timer.Caster;
+                if (_oathTable.Remove(caster))
+                {
+                    caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
+                }
+
+                if (_oathTable.Remove(target))
+                {
+                    target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
+                }
+
+                timer.Stop();
+
+                BuffInfo.RemoveBuff(caster, BuffIcon.BloodOathCaster);
+                BuffInfo.RemoveBuff(target, BuffIcon.BloodOathCurse);
+
+                return true;
+            }
+
+            return false;
         }
 
         public static Mobile GetBloodOath(Mobile m) =>
-            m == null || m_OathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
+            m == null || _oathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
 
         private class ExpireTimer : Timer
         {
-            private readonly Mobile m_Caster;
-            private readonly DateTime m_End;
-            private readonly Mobile m_Target;
+            private Mobile _target;
+            private DateTime _end;
+
+            public Mobile Caster { get; }
 
             public ExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(
                 TimeSpan.FromSeconds(1.0),
                 TimeSpan.FromSeconds(1.0)
             )
             {
-                m_Caster = caster;
-                m_Target = target;
-                m_End = Core.Now + delay;
+                Caster = caster;
+                _target = target;
+                _end = Core.Now + delay;
             }
 
             protected override void OnTick()
             {
-                if (m_Caster.Deleted || m_Target.Deleted || !m_Caster.Alive || !m_Target.Alive ||
-                    Core.Now >= m_End)
+                if (Caster.Deleted || _target.Deleted || !Caster.Alive || !_target.Alive ||
+                    Core.Now >= _end)
                 {
-                    DoExpire();
+                    RemoveCurse(_target);
                 }
-            }
-
-            public void DoExpire()
-            {
-                if (m_OathTable.Remove(m_Caster))
-                {
-                    m_Caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
-                }
-
-                if (m_OathTable.Remove(m_Target))
-                {
-                    m_Target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
-                }
-
-                Stop();
-
-                BuffInfo.RemoveBuff(m_Caster, BuffIcon.BloodOathCaster);
-                BuffInfo.RemoveBuff(m_Target, BuffIcon.BloodOathCurse);
-
-                _table.Remove(m_Caster);
             }
         }
     }

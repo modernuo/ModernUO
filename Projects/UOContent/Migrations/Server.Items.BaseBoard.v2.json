@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.BaseBoard",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

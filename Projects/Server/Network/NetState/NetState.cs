@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NetState.cs                                                     *
  *                                                                       *
@@ -219,6 +219,8 @@ public partial class NetState : IComparable<NetState>
     public ServerInfo[] ServerInfo { get; set; }
 
     public IAccount Account { get; set; }
+
+    public string Assistant { get; set; }
 
     public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
 
@@ -724,7 +726,7 @@ public partial class NetState : IComparable<NetState>
         catch (Exception ex)
         {
 #if DEBUG
-                Console.WriteLine(ex);
+            Console.WriteLine(ex);
 #endif
             TraceException(ex);
             Disconnect("Exception during HandleReceive");
@@ -745,7 +747,7 @@ public partial class NetState : IComparable<NetState>
      * length is the total buffer length. We might be able to use packetReader.Capacity() instead.
      * packetLength is the length of the packet that this function actually found.
      */
-    private ParserState HandlePacket(CircularBufferReader packetReader, byte packetId, out int packetLength)
+    private unsafe ParserState HandlePacket(CircularBufferReader packetReader, byte packetId, out int packetLength)
     {
         PacketHandler handler = IncomingPackets.GetHandler(packetId);
         int length = packetReader.Length;
@@ -793,7 +795,7 @@ public partial class NetState : IComparable<NetState>
             }
         }
 
-        ThrottlePacketCallback throttler = handler.ThrottleCallback;
+        var throttler = handler.ThrottleCallback;
         if (throttler != null)
         {
             if (!throttler(packetId, this, out bool drop))

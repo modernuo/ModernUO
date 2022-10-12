@@ -16,7 +16,7 @@ namespace Server.Spells.Necromancy
             Reagent.DaemonBlood
         );
 
-        private static readonly Dictionary<Mobile, MRBucket> _table = new();
+        private static readonly Dictionary<Mobile, MRExpireTimer> _table = new();
 
         public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -52,13 +52,10 @@ namespace Server.Spells.Necromancy
                 m.PlaySound(0x258);
                 m.FixedParticles(0x373A, 1, 17, 9903, 15, 4, EffectLayer.Head);
 
-                var duration =
-                    TimeSpan.FromSeconds(
-                        ((GetDamageSkill(Caster) - GetResistSkill(m)) / 5.0 + 20.0) * (m.Player ? 1.0 : 2.0)
-                    );
+                var duration = ((GetDamageSkill(Caster) - GetResistSkill(m)) / 5.0 + 20.0) * (m.Player ? 1.0 : 2.0);
                 m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
-                SetMindRotScalar(Caster, m, m.Player ? 1.25 : 2.00, duration);
+                SetMindRotScalar(Caster, m, m.Player ? 1.25 : 2.00, TimeSpan.FromSeconds(duration));
 
                 HarmfulSpell(m);
             }
@@ -71,24 +68,27 @@ namespace Server.Spells.Necromancy
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        public static void ClearMindRotScalar(Mobile m)
+        public static bool ClearMindRotScalar(Mobile m)
         {
-            if (_table.Remove(m, out var tmpB))
+            if (_table.Remove(m, out var timer))
             {
-                tmpB.m_MRExpireTimer.Stop();
+                timer.Stop();
                 m.SendLocalizedMessage(1060872); // Your mind feels normal again.
+                BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
+
+                return true;
             }
 
-            BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
+            return false;
         }
 
         public static bool HasMindRotScalar(Mobile m) => _table.ContainsKey(m);
 
         public static bool GetMindRotScalar(Mobile m, ref double scalar)
         {
-            if (_table.TryGetValue(m, out var tmpB))
+            if (_table.TryGetValue(m, out var timer))
             {
-                scalar = tmpB.m_Scalar;
+                scalar = timer._double;
                 return true;
             }
 
@@ -99,10 +99,11 @@ namespace Server.Spells.Necromancy
         {
             if (!_table.ContainsKey(target))
             {
-                var tmpB = new MRBucket(scalar, new MRExpireTimer(target, duration));
-                _table.Add(target, tmpB);
+                var timer = new MRExpireTimer(target, scalar, duration);
+                timer.Start();
+                _table[target] = timer;
+
                 BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
-                tmpB.m_MRExpireTimer.Start();
                 target.SendLocalizedMessage(1074384);
             }
         }
@@ -110,38 +111,27 @@ namespace Server.Spells.Necromancy
 
     public class MRExpireTimer : Timer
     {
-        private readonly DateTime m_End;
-        private readonly Mobile m_Target;
+        private DateTime _end;
+        private Mobile _target;
+        public double _double;
 
-        public MRExpireTimer(Mobile target, TimeSpan delay) : base(
+        public MRExpireTimer(Mobile target, double scalar, TimeSpan delay) : base(
             TimeSpan.FromSeconds(1.0),
             TimeSpan.FromSeconds(1.0)
         )
         {
-            m_Target = target;
-            m_End = Core.Now + delay;
+            _double = scalar;
+            _target = target;
+            _end = Core.Now + delay;
         }
 
         protected override void OnTick()
         {
-            if (m_Target.Deleted || !m_Target.Alive || Core.Now >= m_End)
+            if (_target.Deleted || !_target.Alive || Core.Now >= _end)
             {
-                MindRotSpell.ClearMindRotScalar(m_Target);
+                MindRotSpell.ClearMindRotScalar(_target);
                 Stop();
             }
-        }
-    }
-
-    public class MRBucket
-    {
-        public MRExpireTimer m_MRExpireTimer;
-
-        public double m_Scalar;
-
-        public MRBucket(double theScalar, MRExpireTimer theTimer)
-        {
-            m_Scalar = theScalar;
-            m_MRExpireTimer = theTimer;
         }
     }
 }

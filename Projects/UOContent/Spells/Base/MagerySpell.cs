@@ -7,9 +7,13 @@ namespace Server.Spells
     {
         private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
-        // Starts at Circle -2 to account for scrolls
+        /*
+         * Starts at Circle -2 to account for scrolls
+         * Mana requirements formula: (14 * (circle - 1)) + 2 = 50% probability
+         * Add or subtract 20 for max or min limits
+         */
         private static readonly double[] _requiredSkill = Core.ML ?
-            new[] { -46.0, -32.0, 0.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
+            new[] { -46.0, -32.0, -18.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
             new[] { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
 
         public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
@@ -94,8 +98,19 @@ namespace Server.Spells
 
         public virtual double GetResistPercent(Mobile target) => GetResistPercentForCircle(target, Circle);
 
-        public override TimeSpan GetCastDelay() =>
-            !Core.ML && Scroll is BaseWand ? TimeSpan.Zero :
-            !Core.AOS ? TimeSpan.FromSeconds(0.5 + 0.25 * (int)Circle) : base.GetCastDelay();
+        public override TimeSpan GetCastDelay()
+        {
+            if (!Core.ML && Scroll is BaseWand)
+            {
+                return TimeSpan.Zero;
+            }
+
+            if (!Core.AOS)
+            {
+                return TimeSpan.FromSeconds(0.5 + 0.25 * (int)Circle);
+            }
+
+            return base.GetCastDelay();
+        }
     }
 }

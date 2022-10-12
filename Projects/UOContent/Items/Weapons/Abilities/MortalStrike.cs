@@ -41,12 +41,15 @@ namespace Server.Items
 
         public static bool IsWounded(Mobile m) => _table.ContainsKey(m);
 
-        private static void StopTimer(Mobile m)
+        private static bool StopTimer(Mobile m)
         {
             if (_table.Remove(m, out var timerToken))
             {
                 timerToken.Cancel();
+                return true;
             }
+
+            return false;
         }
 
         public static void BeginWound(Mobile m, TimeSpan duration)
@@ -58,11 +61,16 @@ namespace Server.Items
             m.YellowHealthbar = true;
         }
 
-        public static void EndWound(Mobile m)
+        public static bool EndWound(Mobile m)
         {
-            StopTimer(m);
-            m.YellowHealthbar = false;
-            m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.
+            if (StopTimer(m))
+            {
+                m.YellowHealthbar = false;
+                m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.
+                return true;
+            }
+
+            return false;
         }
     }
 }

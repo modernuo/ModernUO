@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: InvalidThreadException.cs                                       *
  *                                                                       *
@@ -15,12 +15,11 @@
 
 using System;
 
-namespace Server.Exceptions
+namespace Server.Exceptions;
+
+public class InvalidThreadException : Exception
 {
-    public class InvalidThreadException : Exception
+    public InvalidThreadException(string methodName) : base($"{methodName} executed on an invalid thread.")
     {
-        public InvalidThreadException(string methodName) : base($"{methodName} executed on an invalid thread.")
-        {
-        }
     }
 }

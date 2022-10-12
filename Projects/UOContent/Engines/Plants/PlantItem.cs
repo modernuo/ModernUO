@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Gumps;
@@ -476,10 +475,8 @@ namespace Server.Engines.Plants
             }
             else if (m_PlantStatus != PlantStatus.BowlOfDirt)
             {
-                from.SendLocalizedMessage(
-                    1080389,
-                    $"#{GetLocalizedPlantStatus()}"
-                ); // This bowl of dirt already has a ~1_val~ in it!
+                // This bowl of dirt already has a ~1_val~ in it!
+                from.SendLocalizedMessage(1080389, $"#{GetLocalizedPlantStatus()}");
             }
             else if (PlantSystem.Water < 2)
             {

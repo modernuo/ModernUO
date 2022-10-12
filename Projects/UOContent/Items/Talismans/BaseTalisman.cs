@@ -1238,29 +1238,27 @@ namespace Server.Items
                             0x100
                         );
 
-                        StatMod mod;
-
-                        mod = target.GetStatMod("[Magic] Str Offset");
+                        var mod = target.GetStatMod("[Magic] Str Curse");
                         if (mod?.Offset < 0)
                         {
-                            target.RemoveStatMod("[Magic] Str Offset");
+                            target.RemoveStatMod("[Magic] Str Curse");
                         }
 
-                        mod = target.GetStatMod("[Magic] Dex Offset");
+                        mod = target.GetStatMod("[Magic] Dex Curse");
                         if (mod?.Offset < 0)
                         {
-                            target.RemoveStatMod("[Magic] Dex Offset");
+                            target.RemoveStatMod("[Magic] Dex Curse");
                         }
 
-                        mod = target.GetStatMod("[Magic] Int Offset");
+                        mod = target.GetStatMod("[Magic] Int Curse");
                         if (mod?.Offset < 0)
                         {
-                            target.RemoveStatMod("[Magic] Int Offset");
+                            target.RemoveStatMod("[Magic] Int Curse");
                         }
 
                         target.Paralyzed = false;
 
-                        EvilOmenSpell.TryEndEffect(target);
+                        EvilOmenSpell.EndEffect(target);
                         StrangleSpell.RemoveCurse(target);
                         CorpseSkinSpell.RemoveCurse(target);
                         CurseSpell.RemoveEffect(target);

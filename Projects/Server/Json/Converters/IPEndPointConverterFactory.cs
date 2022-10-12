@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: IPEndPointConverterFactory.cs                                   *
  *                                                                       *
@@ -18,13 +18,12 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class IPEndPointConverterFactory : JsonConverterFactory
-    {
-        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(IPEndPoint);
+namespace Server.Json;
 
-        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-            new IPEndPointConverter();
-    }
+public class IPEndPointConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(IPEndPoint);
+
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+        new IPEndPointConverter();
 }

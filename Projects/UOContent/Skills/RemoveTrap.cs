@@ -78,9 +78,8 @@ namespace Server.SkillHandlers
 
                     if (faction == null)
                     {
-                        from.SendLocalizedMessage(
-                            1010538
-                        ); // You may not disarm faction traps unless you are in an opposing faction
+                        // You may not disarm faction traps unless you are in an opposing faction
+                        from.SendLocalizedMessage(1010538);
                     }
                     else if (trap.Faction != null && faction == trap.Faction && !isOwner)
                     {
@@ -88,9 +87,8 @@ namespace Server.SkillHandlers
                     }
                     else if (!isOwner && kit == null)
                     {
-                        from.SendLocalizedMessage(
-                            1042530
-                        ); // You must have a trap removal kit at the base level of your pack to disarm a faction trap.
+                        // You must have a trap removal kit at the base level of your pack to disarm a faction trap.
+                        from.SendLocalizedMessage(1042530);
                     }
                     else
                     {
@@ -110,13 +108,8 @@ namespace Server.SkillHandlers
 
                                 if (silver > 0)
                                 {
-                                    from.SendLocalizedMessage(
-                                        1008113,
-                                        true,
-                                        silver.ToString(
-                                            "N0"
-                                        )
-                                    ); // You have been granted faction silver for removing the enemy trap :
+                                    // You have been granted faction silver for removing the enemy trap :
+                                    from.SendLocalizedMessage(1008113, true, silver.ToString("N0"));
                                 }
                             }
 

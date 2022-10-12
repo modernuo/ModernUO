@@ -6,9 +6,6 @@ namespace Server.Items
     [SerializationGenerator(2, false)]
     public partial class LeatherGloves : BaseArmor, IArcaneEquip
     {
-        private int _maxArcaneCharges;
-        private int _curArcaneCharges;
-
         [Constructible]
         public LeatherGloves() : base(0x13C6) => Weight = 1.0;
 
@@ -32,7 +29,7 @@ namespace Server.Items
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
         [EncodedInt]
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int CurArcaneCharges
         {
@@ -46,7 +43,7 @@ namespace Server.Items
         }
 
         [EncodedInt]
-        [SerializableField(1)]
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxArcaneCharges
         {

@@ -25,20 +25,20 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)](https://access.redhat.com/downloads)
 
 #### Running the server
-[![.NET](https://img.shields.io/badge/-6.0-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-6.0.8-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%206.0%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-%206.0.400%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 #### Supported IDEs
 &nbsp;&nbsp;&nbsp;
 [<img height="64"
-      title="Jetbrains Rider 2021.3" alt="Jetbrains Rider 2021.3" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download)
+      title="Jetbrains Rider 2022.2.2" alt="Jetbrains Rider 2022.2.2" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [<img height="64" title="Visual Studio 2022" alt="Visual Studio 2022" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png">](https://visualstudio.microsoft.com/downloads)
 <br />
-Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visual Studio 2022+
+Rider 2022.2.2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visual Studio 2022+
 ###### Note: VS Code is not currently supported.
 
 ## Getting Started
@@ -56,8 +56,9 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
     - `linuxmint.17`, `linuxmint.18`, `linuxmint.19` - Linux Mint
     - `debian.10`, `debian.11` - Debian
     - `centos.7`, `centos.8` - CentOS
-    - `fedora.32`, `fedora.33`, `fedora.34` - Fedora
+    - `fedora.32`, `fedora.33`, `fedora.34`, `fedora.35`, `fedora.36` - Fedora
     - `rhel.7`, `rhel.8` - Redhat
+    - `linux` - Other linux distros
     - If blank, the operating system running the build is used. Linux Mint 20 is not supported directly yet, so build explicitly against `ubuntu.20.04` instead.
 
 ## Running the Server
@@ -67,18 +68,22 @@ Rider 2021.3+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 **Note:** If you are running a version of linux that isn't listed above, then you may have to install the following using a package manager:
   * `libargon2-dev`, `libz-dev`, and `zstd`
 
-## Thanks
-- RunUO Team & Community
-- ServUO Team & Community
-- [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
-
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
 
 ## Want to sponsor?
 Thank you for supporting us! You can find out how by visiting the [sponsors](./SPONSORS.md) page.
 
+## Collaborators
+[![Kamron Batman](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/3953314&h=64&w=64&fit=cover&mask=circle&maxage=1d)](https://github.com/kamronbatman)
+[![Mark1145](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/15312181&h=64&w=64&fit=cover&mask=circle&maxage=1d)](https://github.com/mark1145)
+
+## Thanks
+- RunUO Team & Community
+- [Voxpire](https://github.com/Voxpire), the ServUO Team & Community
+- [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
+
 </br></br>
-<p align=center>Development Tools & Plugins provided with &hearts; by </br><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" height="64px" alt="JetBrains" title="JetBrains" /></a> 
+<p align=center>Development Tools & Plugins provided with &hearts; by </br><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" height="64px" alt="JetBrains" title="JetBrains" /></a>
 <a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
 </p>

@@ -109,18 +109,18 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             defender.Damage(Utility.Random(20, 10), this);
             defender.Stam -= Utility.Random(20, 10);
             defender.Mana -= Utility.Random(20, 10);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (Utility.RandomDouble() <= 0.1)
             {

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: AccountLoginEvent.cs                                            *
  *                                                                       *
@@ -17,33 +17,32 @@ using System;
 using System.Runtime.CompilerServices;
 using Server.Network;
 
-namespace Server
+namespace Server;
+
+public class AccountLoginEventArgs
 {
-    public class AccountLoginEventArgs
+    public AccountLoginEventArgs(NetState state, string username, string password)
     {
-        public AccountLoginEventArgs(NetState state, string username, string password)
-        {
-            State = state;
-            Username = username;
-            Password = password;
-        }
-
-        public NetState State { get; }
-
-        public string Username { get; }
-
-        public string Password { get; }
-
-        public bool Accepted { get; set; }
-
-        public ALRReason RejectReason { get; set; }
+        State = state;
+        Username = username;
+        Password = password;
     }
 
-    public static partial class EventSink
-    {
-        public static event Action<AccountLoginEventArgs> AccountLogin;
+    public NetState State { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvokeAccountLogin(AccountLoginEventArgs e) => AccountLogin?.Invoke(e);
-    }
+    public string Username { get; }
+
+    public string Password { get; }
+
+    public bool Accepted { get; set; }
+
+    public ALRReason RejectReason { get; set; }
+}
+
+public static partial class EventSink
+{
+    public static event Action<AccountLoginEventArgs> AccountLogin;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void InvokeAccountLogin(AccountLoginEventArgs e) => AccountLogin?.Invoke(e);
 }

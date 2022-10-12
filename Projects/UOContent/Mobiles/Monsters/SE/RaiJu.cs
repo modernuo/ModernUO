@@ -56,9 +56,9 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems, 2);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (Utility.RandomDouble() >= 0.1 || m_Table.Contains(defender))
             {

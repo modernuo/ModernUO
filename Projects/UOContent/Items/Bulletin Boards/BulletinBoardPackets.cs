@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BulletinBoardPackets.cs                                         *
  *                                                                       *
@@ -24,9 +24,9 @@ namespace Server.Network
 {
     public static class BulletinBoardPackets
     {
-        public static void Configure()
+        public static unsafe void Configure()
         {
-            IncomingPackets.Register(0x71, 0, true, BBClientRequest);
+            IncomingPackets.Register(0x71, 0, true, &BBClientRequest);
         }
 
         public static string FormatTS(TimeSpan ts)

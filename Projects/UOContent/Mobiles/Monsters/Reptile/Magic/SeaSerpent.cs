@@ -60,14 +60,15 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a sea serpents corpse";
         public override string DefaultName => "a sea serpent";
-
-        public override bool HasBreath => true;
         public override int TreasureMapLevel => 2;
 
         public override int Hides => 10;
         public override HideType HideType => HideType.Horned;
         public override int Scales => 8;
         public override ScaleType ScaleType => ScaleType.Blue;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

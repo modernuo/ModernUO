@@ -38,7 +38,12 @@ namespace Server.Spells.Fifth
                 Effects.PlaySound(loc, Caster.Map, 0x20B);
 
                 var itemID = eastToWest ? 0x3915 : 0x3922;
-                var duration = TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Fixed / 25);
+                var duration = Core.Expansion switch
+                {
+                    Expansion.None  => TimeSpan.FromSeconds(20),
+                    < Expansion.LBR => TimeSpan.FromSeconds(15 + Caster.Skills.Magery.Value * 0.4),
+                    _               => TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Fixed * 0.4)
+                };
 
                 for (var i = -2; i <= 2; ++i)
                 {

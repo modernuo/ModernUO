@@ -94,9 +94,6 @@ namespace Server.Items
         [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
 
-        // Field 9
-        private int _hitPoints;
-
         [InvalidateProperties]
         [SerializableField(10)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
@@ -108,18 +105,8 @@ namespace Server.Items
         // Field 11
         private ArmorQuality _quality = ArmorQuality.Regular;
 
-        // Field 12
-        private ArmorDurabilityLevel _durability = ArmorDurabilityLevel.Regular;
-
-        // Field 13
-        private ArmorProtectionLevel _protection = ArmorProtectionLevel.Regular;
-
-        // Field 14
-        [SerializableField(14, "private", "private")]
-        private CraftResource _rawResource;
-
         [SerializableFieldSaveFlag(14)]
-        private bool ShouldSerializeResource() => _rawResource != DefaultResource;
+        private bool ShouldSerializeResource() => _resource != DefaultResource;
 
         // Field 15
         private int _armorBase = -1;
@@ -168,8 +155,8 @@ namespace Server.Items
         {
             _crafter = null;
 
-            _rawResource = DefaultResource;
-            Hue = CraftResources.GetHue(_rawResource);
+            _resource = DefaultResource;
+            Hue = CraftResources.GetHue(_resource);
 
             _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
@@ -206,19 +193,13 @@ namespace Server.Items
         public virtual int OldDexReq => 0;
         public virtual int OldIntReq => 0;
 
-        [SerializableField(11)]
+        [SerializableProperty(11, useField: nameof(_quality))]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorQuality Quality
         {
             get => _quality;
             set
             {
-                if (World.Loading)
-                {
-                    _quality = value;
-                    return;
-                }
-
                 UnscaleDurability();
                 _quality = value;
                 ScaleDurability();
@@ -228,19 +209,13 @@ namespace Server.Items
         [SerializableFieldSaveFlag(11)]
         private bool ShouldSerializeArmorQuality() => _quality != ArmorQuality.Regular;
 
-        [SerializableField(12)]
+        [SerializableProperty(12)]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorDurabilityLevel Durability
         {
             get => _durability;
             set
             {
-                if (World.Loading)
-                {
-                    _durability = value;
-                    return;
-                }
-
                 UnscaleDurability();
                 _durability = value;
                 ScaleDurability();
@@ -250,16 +225,16 @@ namespace Server.Items
         [SerializableFieldSaveFlag(12)]
         private bool ShouldSerializeDurability() => _durability != ArmorDurabilityLevel.Regular;
 
-        [SerializableField(13)]
+        [SerializableProperty(13)]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorProtectionLevel ProtectionLevel
         {
-            get => _protection;
+            get => _protectionLevel;
             set
             {
-                if (_protection != value)
+                if (_protectionLevel != value)
                 {
-                    _protection = value;
+                    _protectionLevel = value;
 
                     Invalidate();
                     InvalidateProperties();
@@ -271,23 +246,24 @@ namespace Server.Items
         }
 
         [SerializableFieldSaveFlag(13)]
-        private bool ShouldSerializeProtectionLevel() => _protection != ArmorProtectionLevel.Regular;
+        private bool ShouldSerializeProtectionLevel() => _protectionLevel != ArmorProtectionLevel.Regular;
 
+        [SerializableProperty(14)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => _rawResource;
+            get => _resource;
             set
             {
-                if (_rawResource != value)
+                if (_resource != value)
                 {
                     UnscaleDurability();
 
-                    RawResource = value;
+                    _resource = value;
 
                     if (CraftItem.RetainsColor(GetType()))
                     {
-                        Hue = CraftResources.GetHue(_rawResource);
+                        Hue = CraftResources.GetHue(_resource);
                     }
 
                     Invalidate();
@@ -302,7 +278,7 @@ namespace Server.Items
         private CraftResource ResourceDefaultValue() => DefaultResource;
 
         [EncodedInt]
-        [SerializableField(15)]
+        [SerializableProperty(15, useField: nameof(_armorBase))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int BaseArmorRating
         {
@@ -329,12 +305,12 @@ namespace Server.Items
             {
                 var ar = BaseArmorRating;
 
-                if (_protection != ArmorProtectionLevel.Regular)
+                if (_protectionLevel != ArmorProtectionLevel.Regular)
                 {
-                    ar += 10 + 5 * (int)_protection;
+                    ar += 10 + 5 * (int)_protectionLevel;
                 }
 
-                ar += _rawResource switch
+                ar += _resource switch
                 {
                     CraftResource.DullCopper    => 2,
                     CraftResource.ShadowIron    => 4,
@@ -358,7 +334,7 @@ namespace Server.Items
         public double ArmorRatingScaled => ArmorRating * ArmorScalar;
 
         [EncodedInt]
-        [SerializableField(16)]
+        [SerializableProperty(16, useField: nameof(_strBonus))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrBonus
         {
@@ -378,7 +354,7 @@ namespace Server.Items
         private int StrBonusDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(17)]
+        [SerializableProperty(17, useField: nameof(_dexBonus))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexBonus
         {
@@ -398,7 +374,7 @@ namespace Server.Items
         private int DexBonusDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(18)]
+        [SerializableProperty(18, useField: nameof(_intBonus))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntBonus
         {
@@ -418,7 +394,7 @@ namespace Server.Items
         private int IntBonusDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(19)]
+        [SerializableProperty(19, useField: nameof(_strReq))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
         {
@@ -438,7 +414,7 @@ namespace Server.Items
         private int StrReqDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(20)]
+        [SerializableProperty(20, useField: nameof(_dexReq))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexRequirement
         {
@@ -458,7 +434,7 @@ namespace Server.Items
         private int DexReqDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(21)]
+        [SerializableProperty(21, useField: nameof(_intReq))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntRequirement
         {
@@ -477,7 +453,7 @@ namespace Server.Items
         [SerializableFieldDefault(21)]
         private int IntReqDefaultValue() => -1;
 
-        [SerializableField(22)]
+        [SerializableProperty(22, useField: nameof(_meditate))]
         [CommandProperty(AccessLevel.GameMaster)]
         public AMA MeditationAllowance
         {
@@ -675,7 +651,7 @@ namespace Server.Items
             {
                 try
                 {
-                    var res = CraftResources.GetInfo(_rawResource).ResourceTypes[0].CreateInstance<Item>();
+                    var res = CraftResources.GetInfo(_resource).ResourceTypes[0].CreateInstance<Item>();
 
                     ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
                     return true;
@@ -693,7 +669,7 @@ namespace Server.Items
         public virtual bool CanFortify => true;
 
         [EncodedInt]
-        [SerializableField(9)]
+        [SerializableProperty(9)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
@@ -752,15 +728,10 @@ namespace Server.Items
             var halfar = ArmorRating / 2.0;
             var absorbed = (int)(halfar + halfar * Utility.RandomDouble());
 
-            // Don't go below zero
-            damageTaken = Math.Min(absorbed, damageTaken);
+            damageTaken = Math.Max(0, damageTaken - absorbed);
 
-            if (absorbed < 2)
-            {
-                absorbed = 2;
-            }
-
-            if (Utility.Random(100) < 25) // 25% chance to lower durability
+            // 25% chance to lower durability
+            if (Utility.Random(4) == 0)
             {
                 if (Core.AOS && ArmorAttributes.SelfRepair > Utility.Random(10))
                 {
@@ -768,16 +739,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    int wear;
-
-                    if (weapon.Type == WeaponType.Bashing)
-                    {
-                        wear = absorbed / 2;
-                    }
-                    else
-                    {
-                        wear = Utility.Random(2);
-                    }
+                    var wear = weapon.Type == WeaponType.Bashing ? Math.Max(1, absorbed / 2) : Utility.Random(2);
 
                     if (wear > 0 && _maxHitPoints > 0)
                     {
@@ -800,11 +762,8 @@ namespace Server.Items
 
                                 if (Parent is Mobile mobile)
                                 {
-                                    mobile.LocalOverheadMessage(
-                                        MessageType.Regular,
-                                        0x3B2,
-                                        1061121
-                                    ); // Your equipment is severely damaged.
+                                    // Your equipment is severely damaged.
+                                    mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
                                 }
                             }
                             else
@@ -881,11 +840,11 @@ namespace Server.Items
         }
 
         public CraftAttributeInfo GetResourceAttrs() =>
-            CraftResources.GetInfo(_rawResource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
+            CraftResources.GetInfo(_resource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
 
         public int GetProtOffset()
         {
-            return _protection switch
+            return _protectionLevel switch
             {
                 ArmorProtectionLevel.Guarding        => 1,
                 ArmorProtectionLevel.Hardening       => 2,
@@ -913,7 +872,7 @@ namespace Server.Items
             {
                 bonus += ArmorAttributes.DurabilityBonus;
 
-                var resInfo = CraftResources.GetInfo(_rawResource);
+                var resInfo = CraftResources.GetInfo(_resource);
                 CraftAttributeInfo attrInfo = null;
 
                 if (resInfo != null)
@@ -986,7 +945,7 @@ namespace Server.Items
 
             var v = ArmorAttributes.LowerStatReq;
 
-            var info = CraftResources.GetInfo(_rawResource);
+            var info = CraftResources.GetInfo(_resource);
 
             var attrInfo = info?.AttributeInfo;
 
@@ -1045,9 +1004,9 @@ namespace Server.Items
                 SkillBonuses.AddTo(m);
             }
 
-            if (_rawResource == CraftResource.None)
+            if (_resource == CraftResource.None)
             {
-                _rawResource = DefaultResource;
+                _resource = DefaultResource;
             }
 
             var strBonus = ComputeStatBonus(StatType.Str);
@@ -1056,21 +1015,21 @@ namespace Server.Items
 
             if (m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
             {
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -1180,21 +1139,21 @@ namespace Server.Items
 
             if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
             {
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    from.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    from.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    from.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -1205,11 +1164,11 @@ namespace Server.Items
         {
             if (parent is Mobile m)
             {
-                var modName = Serial.ToString();
+                var serial = Serial;
 
-                m.RemoveStatMod($"{modName}Str");
-                m.RemoveStatMod($"{modName}Dex");
-                m.RemoveStatMod($"{modName}Int");
+                m.RemoveStatMod($"{serial}Str");
+                m.RemoveStatMod($"{serial}Dex");
+                m.RemoveStatMod($"{serial}Int");
 
                 if (Core.AOS)
                 {
@@ -1225,7 +1184,7 @@ namespace Server.Items
 
         public override void AddNameProperty(IPropertyList list)
         {
-            var oreType = _rawResource switch
+            var oreType = _resource switch
             {
                 CraftResource.DullCopper    => 1053108,
                 CraftResource.ShadowIron    => 1053107,
@@ -1293,7 +1252,7 @@ namespace Server.Items
             return Attributes.SpellChanneling != 0;
         }
 
-        public virtual int GetLuckBonus() => CraftResources.GetInfo(_rawResource)?.AttributeInfo?.ArmorLuck ?? 0;
+        public virtual int GetLuckBonus() => CraftResources.GetInfo(_resource)?.AttributeInfo?.ArmorLuck ?? 0;
 
         public override void GetProperties(IPropertyList list)
         {
@@ -1514,13 +1473,13 @@ namespace Server.Items
                     attrs.Add(new EquipInfoAttribute(1038000 + (int)_durability));
                 }
 
-                if (_protection > ArmorProtectionLevel.Regular && _protection <= ArmorProtectionLevel.Invulnerability)
+                if (_protectionLevel > ArmorProtectionLevel.Regular && _protectionLevel <= ArmorProtectionLevel.Invulnerability)
                 {
-                    attrs.Add(new EquipInfoAttribute(1038005 + (int)_protection));
+                    attrs.Add(new EquipInfoAttribute(1038005 + (int)_protectionLevel));
                 }
             }
-            else if (_durability != ArmorDurabilityLevel.Regular || _protection > ArmorProtectionLevel.Regular &&
-                _protection <= ArmorProtectionLevel.Invulnerability)
+            else if (_durability != ArmorDurabilityLevel.Regular || _protectionLevel > ArmorProtectionLevel.Regular &&
+                _protectionLevel <= ArmorProtectionLevel.Invulnerability)
             {
                 attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
             }

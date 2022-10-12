@@ -218,7 +218,7 @@ namespace Server.Saves
             }
         }
 
-        public static void AutoArchiveLocally()
+        public static async void AutoArchiveLocally()
         {
             var date = Core.Now;
 
@@ -232,22 +232,22 @@ namespace Server.Saves
                 return;
             }
 
-            ThreadPool.UnsafeQueueUserWorkItem(
-                _ =>
+            ThreadPool.QueueUserWorkItem(
+                now =>
                 {
-                    if (date >= _nextHourlyArchive)
+                    if (now >= _nextHourlyArchive)
                     {
                         Rollup(ArchivePeriod.Hourly);
                         _nextHourlyArchive = _nextHourlyArchive.AddHours(1);
                     }
 
-                    if (date >= _nextDailyArchive)
+                    if (now >= _nextDailyArchive)
                     {
                         Rollup(ArchivePeriod.Daily);
                         _nextDailyArchive = _nextDailyArchive.AddDays(1);
                     }
 
-                    if (date >= _nextMonthlyArchive)
+                    if (now >= _nextMonthlyArchive)
                     {
                         Rollup(ArchivePeriod.Monthly);
                         _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(1);
@@ -256,7 +256,8 @@ namespace Server.Saves
                     Prune?.Invoke();
                     _isArchiving = 0;
                 },
-                null
+                date,
+                false
             );
         }
 

@@ -59,6 +59,9 @@ namespace Server.Mobiles
         public override Poison PoisonImmune => Poison.Lethal;
         public override int TreasureMapLevel => 4;
 
+        private static MonsterAbility[] _abilities = { MonsterAbility.SummonSkeletons };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich);

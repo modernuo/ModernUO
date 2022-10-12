@@ -19,15 +19,11 @@ namespace Server.Spells.Mysticism
 
         private static readonly Dictionary<Mobile, SpellPlagueTimer> _table = new();
 
-        public SpellPlagueSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public SpellPlagueSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
-
-        public override double RequiredSkill => 70.0;
-        public override int RequiredMana => 40;
+        public override SpellCircle Circle => SpellCircle.Seventh;
 
         public static void Initialize()
         {
@@ -80,12 +76,16 @@ namespace Server.Spells.Mysticism
 
         public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
-        public static void RemoveEffect(Mobile m)
+        public static bool RemoveEffect(Mobile m)
         {
-            if (_table.TryGetValue(m, out var context))
+            if (_table.Remove(m, out var context))
             {
-                context.EndPlague(false);
+                context.Stop();
+                BuffInfo.RemoveBuff(m, BuffIcon.SpellPlague);
+                return true;
             }
+
+            return false;
         }
 
         public static void CheckPlague(Mobile m)
@@ -179,9 +179,9 @@ namespace Server.Spells.Mysticism
                 }
             }
 
-            public void EndPlague(bool restart = true)
+            public void EndPlague()
             {
-                if (restart && m_Next != null)
+                if (m_Next != null)
                 {
                     _table[m_Target] = m_Next;
                     m_Next.StartPlague();
@@ -191,28 +191,29 @@ namespace Server.Spells.Mysticism
                     _table.Remove(m_Target);
                     BuffInfo.RemoveBuff(m_Target, BuffIcon.SpellPlague);
                 }
+
+                Stop();
             }
         }
 
         private class InternalTarget : Target
         {
-            private readonly SpellPlagueSpell m_Owner;
+            private readonly SpellPlagueSpell _owner;
 
-            public InternalTarget(SpellPlagueSpell owner)
-                : base(12, false, TargetFlags.Harmful) =>
-                m_Owner = owner;
+            public InternalTarget(SpellPlagueSpell owner) : base(12, false, TargetFlags.Harmful) =>
+                _owner = owner;
 
             protected override void OnTarget(Mobile from, object o)
             {
                 if (o is Mobile mobile)
                 {
-                    m_Owner.Target(mobile);
+                    _owner.Target(mobile);
                 }
             }
 
             protected override void OnTargetFinish(Mobile from)
             {
-                m_Owner.FinishSequence();
+                _owner.FinishSequence();
             }
         }
     }

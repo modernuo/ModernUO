@@ -113,15 +113,8 @@ namespace Server.SkillHandlers
                 base.OnDisturb(type, message);
             }
 
-            public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
-            {
-                if (type is DisturbType.EquipRequest or DisturbType.UseRequest)
-                {
-                    return false;
-                }
-
-                return true;
-            }
+            public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable) =>
+                type != DisturbType.EquipRequest && type != DisturbType.UseRequest;
 
             public override void SayMantra()
             {

@@ -46,7 +46,6 @@ namespace Server.Mobiles
         public override string DefaultName => "an ancient wyrm";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => true;
         public override HideType HideType => HideType.Barbed;
         public override int Hides => 40;
@@ -57,6 +56,9 @@ namespace Server.Mobiles
         public override Poison HitPoison => Utility.RandomBool() ? Poison.Lesser : Poison.Regular;
         public override int TreasureMapLevel => 5;
         public override bool CanFly => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

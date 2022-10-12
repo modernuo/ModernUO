@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IPEndPointConverter.cs                                          *
  *                                                                       *
@@ -18,21 +18,20 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class IPEndPointConverter : JsonConverter<IPEndPoint>
-    {
-        public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (IPEndPoint.TryParse(reader.GetString()!, out var ipep))
-            {
-                return ipep;
-            }
+namespace Server.Json;
 
-            throw new JsonException("IPEndPoint must be in the correct format");
+public class IPEndPointConverter : JsonConverter<IPEndPoint>
+{
+    public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (IPEndPoint.TryParse(reader.GetString()!, out var ipep))
+        {
+            return ipep;
         }
 
-        public override void Write(Utf8JsonWriter writer, IPEndPoint value, JsonSerializerOptions options)
-            => writer.WriteStringValue(value.ToString());
+        throw new JsonException("IPEndPoint must be in the correct format");
     }
+
+    public override void Write(Utf8JsonWriter writer, IPEndPoint value, JsonSerializerOptions options)
+        => writer.WriteStringValue(value.ToString());
 }

@@ -10,9 +10,6 @@ namespace Server.Items
         [SerializableField(0, setter: "private")]
         private List<AddonContainerComponent> _components;
 
-        [SerializableField(1, "private", "private")]
-        private CraftResource _rawResource;
-
         public BaseAddonContainer(int itemID) : base(itemID)
         {
             AddonComponent.ApplyLightTo(this);
@@ -44,16 +41,17 @@ namespace Server.Items
             }
         }
 
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
-            get => _rawResource;
+            get => _resource;
             set
             {
-                if (_rawResource != value)
+                if (_resource != value)
                 {
-                    RawResource = value;
-                    Hue = CraftResources.GetHue(_rawResource);
+                    _resource = value;
+                    Hue = CraftResources.GetHue(_resource);
 
                     InvalidateProperties();
                     this.MarkDirty();
@@ -172,9 +170,9 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (!CraftResources.IsStandard(_rawResource))
+            if (!CraftResources.IsStandard(_resource))
             {
-                list.Add(CraftResources.GetLocalizationNumber(_rawResource));
+                list.Add(CraftResources.GetLocalizationNumber(_resource));
             }
         }
 
@@ -205,7 +203,7 @@ namespace Server.Items
         private void Deserialize(IGenericReader reader, int version)
         {
             _components = reader.ReadEntityList<AddonContainerComponent>();
-            _rawResource = version == 1 ? reader.ReadEnum<CraftResource>() : (CraftResource)reader.ReadInt();
+            _resource = version == 1 ? reader.ReadEnum<CraftResource>() : (CraftResource)reader.ReadInt();
         }
 
         [AfterDeserialization]

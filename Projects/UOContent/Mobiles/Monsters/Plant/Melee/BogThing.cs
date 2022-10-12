@@ -118,9 +118,9 @@ namespace Server.Mobiles
             eable.Free();
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             if (Hits > HitsMax / 4)
             {

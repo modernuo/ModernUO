@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TypeConverter.cs                                                *
  *                                                                       *
@@ -16,29 +16,31 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Server.Logging;
 
-namespace Server.Json
+namespace Server.Json;
+
+public class TypeConverter : JsonConverter<Type>
 {
-    public class TypeConverter : JsonConverter<Type>
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(TypeConverter));
+
+    public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        if (reader.TokenType != JsonTokenType.String)
         {
-            if (reader.TokenType != JsonTokenType.String)
-            {
-                throw new JsonException("The JSON value could not be converted to System.Type");
-            }
-
-            var typeName = reader.GetString();
-            var type = AssemblyHandler.FindTypeByName(typeName);
-            if (type == null)
-            {
-                Console.WriteLine("Invalid type {0} deserialized", typeName);
-            }
-
-            return type;
+            throw new JsonException("The JSON value could not be converted to System.Type");
         }
 
-        public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>
-            writer.WriteStringValue(value.FullName);
+        var typeName = reader.GetString();
+        var type = AssemblyHandler.FindTypeByName(typeName);
+        if (type == null)
+        {
+            logger.Warning("Attempted to deserialize type {Type} which does not exist.", typeName);
+        }
+
+        return type;
     }
+
+    public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.FullName);
 }

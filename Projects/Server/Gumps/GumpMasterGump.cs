@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GumpMasterGump.cs                                               *
  *                                                                       *
@@ -24,7 +24,11 @@ public class GumpMasterGump : GumpEntry
 
     public int GumpID { get; set; }
 
+#if NET7_SDK
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
+#else
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+#endif
     {
         writer.WriteAscii($"{{ mastergump {GumpID} }}");
     }

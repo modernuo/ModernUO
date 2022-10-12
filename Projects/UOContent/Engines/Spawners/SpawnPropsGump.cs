@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GlobalPropsGump.cs                                              *
  *                                                                       *
@@ -96,7 +96,7 @@ namespace Server.Gumps
                     }
                 case 3: // Apply
                     {
-                        using var propsBuilder = new ValueStringBuilder(64);
+                        using var propsBuilder = ValueStringBuilder.Create();
                         bool first = true;
                         foreach (var attr in MobileAttributes)
                         {

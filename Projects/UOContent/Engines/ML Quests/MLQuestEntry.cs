@@ -386,9 +386,8 @@ namespace Server.Engines.MLQuests
                         rewardItem.Delete();
                     }
 
-                    Player.SendLocalizedMessage(
-                        1078524
-                    ); // Your backpack is full. You cannot complete the quest and receive your reward.
+                    // Your backpack is full. You cannot complete the quest and receive your reward.
+                    Player.SendLocalizedMessage(1078524);
                     return;
                 }
 
@@ -398,10 +397,8 @@ namespace Server.Engines.MLQuests
 
                     if (rewardItem.Stackable)
                     {
-                        Player.SendLocalizedMessage(
-                            1115917,
-                            $"{rewardItem.Amount}\t{rewardName}"
-                        ); // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
+                        // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
+                        Player.SendLocalizedMessage(1115917, $"{rewardItem.Amount}\t{rewardName}");
                     }
                     else
                     {

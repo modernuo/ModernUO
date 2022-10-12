@@ -988,11 +988,8 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                1078187
-            ); // The art of fencing requires a dexterous hand, a quick wit and fleet feet.
+            // The art of fencing requires a dexterous hand, a quick wit and fleet feet.
+            MLQuestSystem.Tell(this, pm, 1078187);
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -1053,11 +1050,8 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                1078136
-            ); // There is an art to slaying your enemies swiftly. It's called tactics, and I can teach it to you.
+            // There is an art to slaying your enemies swiftly. It's called tactics, and I can teach it to you.
+            MLQuestSystem.Tell(this, pm, 1078136);
         }
 
         public override void Serialize(IGenericWriter writer)

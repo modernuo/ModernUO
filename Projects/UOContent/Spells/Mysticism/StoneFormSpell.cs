@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Server.Factions;
 using Server.Spells.Fifth;
 using Server.Spells.Ninjitsu;
@@ -21,15 +20,11 @@ namespace Server.Spells.Mysticism
 
         private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
 
-        public StoneFormSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public StoneFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
-
-        public override double RequiredSkill => 33.0;
-        public override int RequiredMana => 11;
+        public override SpellCircle Circle => SpellCircle.Fourth;
 
         public static void Initialize()
         {
@@ -102,7 +97,7 @@ namespace Server.Spells.Mysticism
                     Caster.BodyMod = 0x2C1;
                     Caster.HueMod = 0;
 
-                    var offset = (int)((GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 24.0);
+                    var offset = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 24.0);
 
                     ResistanceMod[] mods =
                     {
@@ -123,13 +118,16 @@ namespace Server.Spells.Mysticism
                     Caster.PlaySound(0x65A);
                     Caster.Delta(MobileDelta.Resistances);
 
+                    var damageBonus = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 12.0);
+                    var resistCap = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 48.0);
+
                     BuffInfo.AddBuff(
                         Caster,
                         new BuffInfo(
                             BuffIcon.StoneForm,
                             1080145,
                             1080146,
-                            $"-10\t-2\t{offset}\t{GetResistCapBonus(Caster)}\t{GetDIBonus(Caster)}",
+                            $"-10\t-2\t{offset}\t{resistCap}\t{damageBonus}",
                             false
                         )
                     );
@@ -138,10 +136,6 @@ namespace Server.Spells.Mysticism
 
             FinishSequence();
         }
-
-        public static int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 12.0);
-
-        public static int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 48.0);
 
         public static void RemoveEffects(Mobile m)
         {

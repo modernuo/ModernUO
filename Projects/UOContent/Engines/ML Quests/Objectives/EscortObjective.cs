@@ -47,16 +47,12 @@ namespace Server.Engines.MLQuests.Objectives
 
                     if (minutes == 1)
                     {
-                        MLQuestSystem.Tell(quester, pm, "You must rest 1 minute before we set out on this journey.");
+                        MLQuestSystem.Tell(quester, pm, 1042722);
                     }
                     else
                     {
-                        MLQuestSystem.Tell(
-                            quester,
-                            pm,
-                            1071195,
-                            minutes.ToString()
-                        ); // You must rest ~1_minsleft~ minutes before we set out on this journey.
+                        // You must rest ~1_minsleft~ minutes before we set out on this journey.
+                        MLQuestSystem.Tell(quester, pm, 1071195, minutes.ToString());
                     }
                 }
 
@@ -141,10 +137,8 @@ namespace Server.Engines.MLQuests.Objectives
             }
             else if (m_Objective.Destination.Contains(m_Escort))
             {
-                m_Escort.Say(
-                    1042809,
-                    pm.Name
-                ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
+                // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
+                m_Escort.Say(1042809, pm.Name);
 
                 if (pm.Young || m_Escort.Region.IsPartOf("Haven Island"))
                 {
@@ -251,7 +245,7 @@ namespace Server.Engines.MLQuests.Objectives
             }
 
             // Note: this sound is sent twice on OSI (once here and once in Cancel())
-            // m_Player.SendSound( 0x5B3 ); // private sound
+            // m_Player.SendSound(0x5B3); // private sound
             pm.SendLocalizedMessage(1071194); // You have failed your escort quest...
 
             if (!instance.Removed)

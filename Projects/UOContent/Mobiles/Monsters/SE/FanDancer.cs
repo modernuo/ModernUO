@@ -64,18 +64,15 @@ namespace Server.Mobiles
 
         public override bool Uncalmable => true;
 
+        private static MonsterAbility[] _abilities = { new ReflectPhysicalDamage() };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.Gems, 2);
         }
-
-        /* TODO: Repel Magic
-         * 10% chance of repelling a melee attack (why did they call it repel magic anyway?)
-         * Cliloc: 1070844
-         * Effect: damage is dealt to the attacker, no damage is taken by the fan dancer
-         */
 
         private void ThrowFan(Mobile to)
         {
@@ -101,21 +98,21 @@ namespace Server.Mobiles
             AOS.Damage(to, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
         }
 
-        public override void OnDamagedBySpell(Mobile attacker)
+        public override void OnDamagedBySpell(Mobile attacker, int damage)
         {
-            base.OnDamagedBySpell(attacker);
+            base.OnDamagedBySpell(attacker, damage);
             ThrowFan(attacker);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
             ThrowFan(attacker);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (!IsFanned(defender) && Utility.RandomDouble() < 0.05)
             {

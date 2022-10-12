@@ -360,7 +360,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "orcs",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
             Objectives.Add(
                 new KillObjective(
                     5,
@@ -368,7 +368,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "orc bombers",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
             Objectives.Add(
                 new KillObjective(
                     3,
@@ -376,7 +376,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "orc brutes",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -437,7 +437,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "Moug-Guur",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -466,7 +466,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "Chiikkaha",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -496,7 +496,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "Szavetra",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.Strongbox);
         }
@@ -603,7 +603,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "ogres",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -630,7 +630,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "ogre lords",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -657,7 +657,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "cyclops",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -686,7 +686,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "titans",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -713,7 +713,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "gargoyles",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }

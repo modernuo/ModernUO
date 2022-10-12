@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TileMatrixLoader.cs                                             *
  *                                                                       *
@@ -17,42 +17,41 @@ using System;
 using System.Diagnostics;
 using Server.Logging;
 
-namespace Server
+namespace Server;
+
+internal static class TileMatrixLoader
 {
-    internal static class TileMatrixLoader
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrixLoader));
+
+    internal static void LoadTileMatrix()
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrixLoader));
+        logger.Information("Loading maps");
 
-        internal static void LoadTileMatrix()
+        var stopwatch = Stopwatch.StartNew();
+        Exception exception = null;
+
+        try
         {
-            logger.Information("Loading maps");
-
-            var stopwatch = Stopwatch.StartNew();
-            Exception exception = null;
-
-            try
+            foreach (var m in Map.AllMaps)
             {
-                foreach (var m in Map.AllMaps)
-                {
-                    m.Tiles.Force(); // Forces the map file stream references to load
-                }
+                m.Tiles.Force(); // Forces the map file stream references to load
             }
-            catch (Exception ex)
-            {
-                exception = ex;
-            }
+        }
+        catch (Exception ex)
+        {
+            exception = ex;
+        }
 
-            stopwatch.Stop();
+        stopwatch.Stop();
 
-            if (exception == null)
-            {
-                logger.Information("Maps loaded ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
-            }
-            else
-            {
-                logger.Error(exception, "Loading maps failed ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
-                throw exception;
-            }
+        if (exception == null)
+        {
+            logger.Information("Maps loaded ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+        }
+        else
+        {
+            logger.Error(exception, "Loading maps failed ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+            throw exception;
         }
     }
 }

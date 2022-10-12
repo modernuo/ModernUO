@@ -106,9 +106,8 @@ namespace Server.Engines.PartySystem
                     }
                     else
                     {
-                        from.SendLocalizedMessage(
-                            1005448
-                        ); // You have chosen to prevent your party from looting your corpse.
+                        // You have chosen to prevent your party from looting your corpse.
+                        from.SendLocalizedMessage(1005448);
                     }
                 }
             }

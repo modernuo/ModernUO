@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingMessagePackets.cs                                       *
  *                                                                       *
@@ -40,10 +40,10 @@ public static class IncomingMessagePackets
 {
     private static readonly KeywordList m_KeywordList = new();
 
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x03, 0, true, AsciiSpeech);
-        IncomingPackets.Register(0xAD, 0, true, UnicodeSpeech);
+        IncomingPackets.Register(0x03, 0, true, &AsciiSpeech);
+        IncomingPackets.Register(0xAD, 0, true, &UnicodeSpeech);
     }
 
     public static void AsciiSpeech(NetState state, CircularBufferReader reader, int packetLength)

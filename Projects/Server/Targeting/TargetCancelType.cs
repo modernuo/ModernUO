@@ -1,10 +1,9 @@
-namespace Server.Targeting
+namespace Server.Targeting;
+
+public enum TargetCancelType
 {
-    public enum TargetCancelType
-    {
-        Overridden,
-        Canceled,
-        Disconnected,
-        Timeout
-    }
+    Overridden,
+    Canceled,
+    Disconnected,
+    Timeout
 }

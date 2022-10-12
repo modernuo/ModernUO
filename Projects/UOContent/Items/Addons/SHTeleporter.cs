@@ -7,9 +7,6 @@ namespace Server.Items
     [SerializationGenerator(0, false)]
     public partial class SHTeleComponent : AddonComponent
     {
-        private bool _active;
-        private SHTeleComponent _teleDest;
-
         [SerializableField(2)]
         [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
         private Point3D _teleOffset;
@@ -26,21 +23,17 @@ namespace Server.Items
             Hue = 1;
 
             _active = true;
-            TeleOffset = offset;
+            _teleOffset = offset;
         }
 
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Active
         {
             get => _active;
             set
             {
-                if (value != _active)
-                {
-                    _active = value;
-                    this.MarkDirty();
-                }
+                _active = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -49,18 +42,14 @@ namespace Server.Items
             }
         }
 
-        [SerializableField(1)]
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public SHTeleComponent TeleDest
         {
             get => _teleDest;
             set
             {
-                if (value != _teleDest)
-                {
-                    _teleDest = value;
-                    this.MarkDirty();
-                }
+                _teleDest = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {

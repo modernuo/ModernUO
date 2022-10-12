@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingTargetingPackets.cs                                     *
  *                                                                       *
@@ -20,9 +20,9 @@ namespace Server.Network;
 
 public static class IncomingTargetingPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x6C, 19, true, TargetResponse);
+        IncomingPackets.Register(0x6C, 19, true, &TargetResponse);
     }
 
     public static void TargetResponse(NetState state, CircularBufferReader reader, int packetLength)

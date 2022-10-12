@@ -71,9 +71,9 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x28D;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             if (Utility.RandomDouble() > 0.2)
             {
@@ -90,7 +90,7 @@ namespace Server.Mobiles
                     }
                 case 1:
                     {
-                        defender.SendAsciiMessage("You have been hit by a paralyzing blow!");
+                        defender.SendLocalizedMessage(1072221); // You have been hit by a paralyzing blow!
                         defender.Freeze(TimeSpan.FromSeconds(3.0));
                         break;
                     }

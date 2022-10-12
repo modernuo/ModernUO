@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingEntityPackets.cs                                        *
  *                                                                       *
@@ -19,12 +19,12 @@ public static class IncomingEntityPackets
 {
     public static bool SingleClickProps { get; set; }
 
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x06, 5, true, UseReq);
-        IncomingPackets.Register(0x09, 5, true, LookReq);
-        IncomingPackets.Register(0xB6, 9, true, ObjectHelpRequest);
-        IncomingPackets.Register(0xD6, 0, true, BatchQueryProperties);
+        IncomingPackets.Register(0x06, 5, true, &UseReq);
+        IncomingPackets.Register(0x09, 5, true, &LookReq);
+        IncomingPackets.Register(0xB6, 9, true, &ObjectHelpRequest);
+        IncomingPackets.Register(0xD6, 0, true, &BatchQueryProperties);
     }
 
     public static void ObjectHelpRequest(NetState state, CircularBufferReader reader, int packetLength)

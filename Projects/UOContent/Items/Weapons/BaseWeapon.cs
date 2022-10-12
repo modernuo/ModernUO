@@ -939,21 +939,21 @@ namespace Server.Items
             {
                 var m = from;
 
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    m.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -1004,11 +1004,11 @@ namespace Server.Items
                 return;
             }
 
-            var modName = Serial.ToString();
+            var serial = Serial;
 
-            m.RemoveStatMod($"{modName}Str");
-            m.RemoveStatMod($"{modName}Dex");
-            m.RemoveStatMod($"{modName}Int");
+            m.RemoveStatMod($"{serial}Str");
+            m.RemoveStatMod($"{serial}Dex");
+            m.RemoveStatMod($"{serial}Int");
 
             if (!_enableInstaHit && m.Weapon is BaseWeapon weapon)
             {
@@ -1900,7 +1900,6 @@ namespace Server.Items
                 var lifeLeech = 0;
                 var stamLeech = 0;
                 var manaLeech = 0;
-                int wraithLeech;
 
                 if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
                     Utility.Random(100))
@@ -1925,24 +1924,6 @@ namespace Server.Items
                     lifeLeech += 50; // Additional 50% life leech for cursed weapons (necro spell)
                 }
 
-                context = TransformationSpellHelper.GetContext(attacker);
-
-                if (context?.Type == typeof(VampiricEmbraceSpell))
-                {
-                    lifeLeech += 20; // Vampiric embrace gives an additional 20% life leech
-                }
-
-                if (context?.Type == typeof(WraithFormSpell))
-                {
-                    // Wraith form gives an additional 5-20% mana leech
-                    wraithLeech = 5 + (int)(15 * attacker.Skills.SpiritSpeak.Value / 100);
-
-                    // Mana leeched by the Wraith Form spell is actually stolen, not just leeched.
-                    defender.Mana -= AOS.Scale(damageGiven, wraithLeech);
-
-                    manaLeech += wraithLeech;
-                }
-
                 if (lifeLeech != 0)
                 {
                     attacker.Hits += AOS.Scale(damageGiven, lifeLeech);
@@ -1964,10 +1945,11 @@ namespace Server.Items
                 }
             }
 
+            var isAcidMonster = m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental;
             // Stratics says 50% chance, seems more like 4%..
-            if (m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental |Utility.RandomDouble() < .04)
+            if (isAcidMonster || Utility.RandomDouble() < 0.04)
             {
-                if (MaxRange <= 1 && defender is Slime or AcidElemental)
+                if (isAcidMonster)
                 {
                     attacker.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500263); // *Acid blood scars your weapon!*
                 }
@@ -2103,8 +2085,8 @@ namespace Server.Items
                 }
             }
 
-            bcAtt?.OnGaveMeleeAttack(defender);
-            bcDef?.OnGotMeleeAttack(attacker);
+            bcAtt?.OnGaveMeleeAttack(defender, damage);
+            bcDef?.OnGotMeleeAttack(attacker, damage);
 
             a?.OnHit(attacker, defender, damage);
             move?.OnHit(attacker, defender, damage);
@@ -2865,7 +2847,7 @@ namespace Server.Items
 
             if (m_Poison != null && m_PoisonCharges > 0)
             {
-                list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+                list.Add(1062412 + m_Poison.Level, m_PoisonCharges);
             }
 
             if (m_Slayer != SlayerName.None)
@@ -3054,7 +3036,7 @@ namespace Server.Items
 
             if ((prop = WeaponAttributes.MageWeapon) != 0)
             {
-                list.Add(1060438, (30 - prop).ToString()); // mage weapon -~1_val~ skill
+                list.Add(1060438, 30 - prop); // mage weapon -~1_val~ skill
             }
 
             if ((prop = Attributes.BonusMana) != 0)
@@ -4148,21 +4130,21 @@ namespace Server.Items
 
             if (parentMobile != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
             {
-                var modName = Serial.ToString();
+                var serial = Serial;
 
                 if (strBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    parentMobile.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    parentMobile.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 

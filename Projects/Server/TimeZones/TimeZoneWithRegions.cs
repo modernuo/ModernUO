@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TimeZoneWithRegions.cs                                          *
  *                                                                       *
@@ -15,14 +15,13 @@
 
 using System.Text.Json.Serialization;
 
-namespace Server
-{
-    public record TimeZoneWithRegions
-    {
-        [JsonPropertyName("timezone")]
-        public string TimeZone { get; init; }
+namespace Server;
 
-        [JsonPropertyName("regions")]
-        public string[] Regions { get; init; }
-    }
+public record TimeZoneWithRegions
+{
+    [JsonPropertyName("timezone")]
+    public string TimeZone { get; init; }
+
+    [JsonPropertyName("regions")]
+    public string[] Regions { get; init; }
 }

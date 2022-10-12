@@ -550,7 +550,15 @@ namespace Server.Gumps
                             var v = ns.Version;
 
                             AddLabel(20, y, LabelHue, "Version:");
-                            AddLabel(200, y, LabelHue, v == null ? "(null)" : v.ToString());
+                            if (ns.Assistant != null)
+                            {
+                                AddLabel(200, y, LabelHue, $"{v.SourceString ?? "(null)"} ({ns.Assistant})");
+                            }
+                            else
+                            {
+                                AddLabel(200, y, LabelHue, v.SourceString ?? "(null)");
+                            }
+
                             y += 20;
 
                             AddLabel(20, y, LabelHue, "Location:");
@@ -1321,9 +1329,7 @@ namespace Server.Gumps
 
                                 var loginList = acct.LoginIPs;
 
-                                var contains = false;
-
-                                for (var i = 0; !contains && i < loginList.Length; ++i)
+                                for (var i = 0; i < loginList.Length; ++i)
                                 {
                                     if (firewallEntry.IsBlocked(loginList[i]))
                                     {
@@ -2645,7 +2651,7 @@ namespace Server.Gumps
                                 {
                                     index -= 2;
 
-                                    if (m_List != null && index >= 0 && index < m_List.Count)
+                                    if (index < m_List?.Count)
                                     {
                                         if (m_List[index] is not NetState ns)
                                         {

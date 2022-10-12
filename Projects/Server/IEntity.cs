@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IEntity.cs                                                      *
  *                                                                       *
@@ -15,110 +15,105 @@
 
 using System;
 
-namespace Server
+namespace Server;
+
+public interface IEntity : IPoint3D, ISerializable
 {
-    public interface IEntity : IPoint3D, ISerializable
+    Point3D Location { get; }
+    Map Map { get; }
+    void MoveToWorld(Point3D location, Map map);
+
+    void ProcessDelta();
+
+    bool InRange(Point2D p, int range);
+
+    bool InRange(Point3D p, int range);
+
+    void RemoveItem(Item item);
+}
+
+public class Entity : IEntity
+{
+    public Entity(Serial serial, Point3D loc, Map map) : this(serial)
     {
-        Point3D Location { get; }
-        Map Map { get; }
-        void MoveToWorld(Point3D location, Map map);
-
-        void ProcessDelta();
-
-        bool InRange(Point2D p, int range);
-
-        bool InRange(Point3D p, int range);
-
-        void RemoveItem(Item item);
+        Location = loc;
+        Map = map;
+        Deleted = false;
     }
 
-    public class Entity : IEntity
+    public Entity(Serial serial) => Serial = serial;
+
+    DateTime ISerializable.Created { get; set; } = Core.Now;
+
+    DateTime ISerializable.LastSerialized { get; set; } = DateTime.MaxValue;
+
+    long ISerializable.SavePosition { get; set; } = -1;
+
+    BufferWriter ISerializable.SaveBuffer { get; set; }
+
+    public int TypeRef => -1;
+
+    public Serial Serial { get; }
+
+    public Point3D Location { get; private set; }
+
+    public int X => Location.X;
+
+    public int Y => Location.Y;
+
+    public int Z => Location.Z;
+
+    public Map Map { get; private set; }
+
+    public void MoveToWorld(Point3D newLocation, Map map)
     {
-        public Entity(Serial serial, Point3D loc, Map map) : this(serial)
-        {
-            Location = loc;
-            Map = map;
-            Deleted = false;
-        }
+        Location = newLocation;
+        Map = map;
+    }
 
-        public Entity(Serial serial) => Serial = serial;
+    public bool Deleted { get; }
 
-        public void SetTypeRef(Type type)
-        {
-        }
+    public void Delete()
+    {
+    }
 
-        DateTime ISerializable.Created { get; set; } = Core.Now;
+    public void ProcessDelta()
+    {
+    }
 
-        DateTime ISerializable.LastSerialized { get; set; } = DateTime.MaxValue;
+    public void RemoveItem(Item item)
+    {
+    }
 
-        long ISerializable.SavePosition { get; set; } = -1;
+    public bool InRange(Point2D p, int range) =>
+        p.m_X >= Location.m_X - range
+        && p.m_X <= Location.m_X + range
+        && p.m_Y >= Location.m_Y - range
+        && p.m_Y <= Location.m_Y + range;
 
-        BufferWriter ISerializable.SaveBuffer { get; set; }
+    public bool InRange(Point3D p, int range) =>
+        p.m_X >= Location.m_X - range
+        && p.m_X <= Location.m_X + range
+        && p.m_Y >= Location.m_Y - range
+        && p.m_Y <= Location.m_Y + range;
 
-        public int TypeRef => -1;
+    public bool InRange(IPoint2D p, int range) =>
+        p.X >= Location.m_X - range
+        && p.X <= Location.m_X + range
+        && p.Y >= Location.m_Y - range
+        && p.Y <= Location.m_Y + range;
 
-        public Serial Serial { get; }
+    public void BeforeSerialize()
+    {
+    }
 
-        public Point3D Location { get; private set; }
+    public void Deserialize(IGenericReader reader)
+    {
+        // Should not actually be saved
+        Timer.StartTimer(Delete);
+    }
 
-        public int X => Location.X;
-
-        public int Y => Location.Y;
-
-        public int Z => Location.Z;
-
-        public Map Map { get; private set; }
-
-        public void MoveToWorld(Point3D newLocation, Map map)
-        {
-            Location = newLocation;
-            Map = map;
-        }
-
-        public bool Deleted { get; }
-
-        public void Delete()
-        {
-        }
-
-        public void ProcessDelta()
-        {
-        }
-
-        public void RemoveItem(Item item)
-        {
-        }
-
-        public bool InRange(Point2D p, int range) =>
-            p.m_X >= Location.m_X - range
-            && p.m_X <= Location.m_X + range
-            && p.m_Y >= Location.m_Y - range
-            && p.m_Y <= Location.m_Y + range;
-
-        public bool InRange(Point3D p, int range) =>
-            p.m_X >= Location.m_X - range
-            && p.m_X <= Location.m_X + range
-            && p.m_Y >= Location.m_Y - range
-            && p.m_Y <= Location.m_Y + range;
-
-        public bool InRange(IPoint2D p, int range) =>
-            p.X >= Location.m_X - range
-            && p.X <= Location.m_X + range
-            && p.Y >= Location.m_Y - range
-            && p.Y <= Location.m_Y + range;
-
-        public void BeforeSerialize()
-        {
-        }
-
-        public void Deserialize(IGenericReader reader)
-        {
-            // Should not actually be saved
-            Timer.StartTimer(Delete);
-        }
-
-        public void Serialize(IGenericWriter writer)
-        {
-        }
+    public void Serialize(IGenericWriter writer)
+    {
     }
 }

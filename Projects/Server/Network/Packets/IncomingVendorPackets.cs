@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingVendorPackets.cs                                        *
  *                                                                       *
@@ -19,10 +19,10 @@ namespace Server.Network;
 
 public static class IncomingVendorPackets
 {
-    public static void Configure()
+    public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x3B, 0, true, VendorBuyReply);
-        IncomingPackets.Register(0x9F, 0, true, VendorSellReply);
+        IncomingPackets.Register(0x3B, 0, true, &VendorBuyReply);
+        IncomingPackets.Register(0x9F, 0, true, &VendorSellReply);
     }
 
     public static void VendorBuyReply(NetState state, CircularBufferReader reader, int packetLength)

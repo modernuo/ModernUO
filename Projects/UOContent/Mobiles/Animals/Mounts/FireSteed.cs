@@ -44,10 +44,11 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a fire steed corpse";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Daemon | PackInstinct.Equine;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

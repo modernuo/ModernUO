@@ -54,54 +54,8 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 2);
         }
 
-        public void DrainLife()
-        {
-            var eable = GetMobilesInRange(2);
-
-            foreach (var m in eable)
-            {
-                if (m == this || !CanBeHarmful(m) ||
-                    !(m.Player || m is BaseCreature creature &&
-                        (creature.Controlled || creature.Summoned || creature.Team != Team)))
-                {
-                    continue;
-                }
-
-                DoHarmful(m);
-
-                m.FixedParticles(0x374A, 10, 15, 5013, 0x496, 0, EffectLayer.Waist);
-                m.PlaySound(0x231);
-
-                // m.SendMessage( "You feel the life drain out of you!" );
-
-                var toDrain = Utility.RandomMinMax(10, 40);
-
-                Hits += toDrain;
-                m.Damage(toDrain, this);
-            }
-
-            eable.Free();
-        }
-
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
-
-            if (Utility.RandomDouble() <= 0.1)
-            {
-                DrainLife();
-            }
-        }
-
-        public override void OnGotMeleeAttack(Mobile attacker)
-        {
-            base.OnGotMeleeAttack(attacker);
-
-            if (Utility.RandomDouble() <= 0.1)
-            {
-                DrainLife();
-            }
-        }
+        private static MonsterAbility[] _abilities = { MonsterAbility.DrainLifeAreaAttack };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void Serialize(IGenericWriter writer)
         {

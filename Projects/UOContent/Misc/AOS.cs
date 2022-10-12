@@ -37,14 +37,12 @@ namespace Server
         public static int Damage(
             Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
             int chaos
-        ) =>
-            Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
+        ) => Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
 
         public static int Damage(
             Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
             bool keepAlive
-        ) =>
-            Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
+        ) => Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
 
         public static int Damage(
             Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois,
@@ -80,20 +78,30 @@ namespace Server
                 switch (Utility.Random(5))
                 {
                     case 0:
-                        phys += chaos;
-                        break;
+                        {
+                            phys += chaos;
+                            break;
+                        }
                     case 1:
-                        fire += chaos;
-                        break;
+                        {
+                            fire += chaos;
+                            break;
+                        }
                     case 2:
-                        cold += chaos;
-                        break;
+                        {
+                            cold += chaos;
+                            break;
+                        }
                     case 3:
-                        pois += chaos;
-                        break;
+                        {
+                            pois += chaos;
+                            break;
+                        }
                     case 4:
-                        nrgy += chaos;
-                        break;
+                        {
+                            nrgy += chaos;
+                            break;
+                        }
                 }
             }
 
@@ -164,23 +172,20 @@ namespace Server
                 }
             }
 
-            if (from?.Player != true && m.Player && m.Mount is SwampDragon pet)
+            if (from?.Player != true && m.Player && m.Mount is SwampDragon { HasBarding: true } pet)
             {
-                if (pet.HasBarding)
+                var percent = pet.BardingExceptional ? 20 : 10;
+                var absorbed = Scale(totalDamage, percent);
+
+                totalDamage -= absorbed;
+                pet.BardingHP -= absorbed;
+
+                if (pet.BardingHP < 0)
                 {
-                    var percent = pet.BardingExceptional ? 20 : 10;
-                    var absorbed = Scale(totalDamage, percent);
+                    pet.HasBarding = false;
+                    pet.BardingHP = 0;
 
-                    totalDamage -= absorbed;
-                    pet.BardingHP -= absorbed;
-
-                    if (pet.BardingHP < 0)
-                    {
-                        pet.HasBarding = false;
-                        pet.BardingHP = 0;
-
-                        m.SendLocalizedMessage(1053031); // Your dragon's barding has been destroyed!
-                    }
+                    m.SendLocalizedMessage(1053031); // Your dragon's barding has been destroyed!
                 }
             }
 
@@ -189,27 +194,46 @@ namespace Server
                 totalDamage = m.Hits;
             }
 
-            if (from?.Deleted == false && from.Alive)
+            var bcFrom = from as BaseCreature;
+
+            if (from is { Deleted: false, Alive: true })
             {
                 var reflectPhys = AosAttributes.GetValue(m, AosAttribute.ReflectPhysical);
+                var reflectPhysAbility = bcFrom?.GetAbility(MonsterAbilityType.ReflectPhysicalDamage) as ReflectPhysicalDamage;
 
-                if (reflectPhys != 0)
+                if (reflectPhysAbility
+                        ?.CanTrigger(bcFrom, MonsterAbilityTrigger.CombatAction) == true)
                 {
-                    if ((from as ExodusMinion)?.FieldActive == true ||
-                        (from as ExodusOverseer)?.FieldActive == true)
+                    reflectPhys += reflectPhysAbility.PercentReflected;
+                    m.SendLocalizedMessage(1070844); // The creature repels the attack back at you.
+                }
+
+                if (reflectPhys > 0)
+                {
+                    var reflectDamage = Scale(
+                        damage * phys * (100 - (ignoreArmor ? 0 : m.PhysicalResistance)) / 10000,
+                        reflectPhys
+                    );
+
+                    bcFrom
+                        ?.GetAbility(MonsterAbilityType.MagicalBarrier)
+                        ?.AlterMeleeDamageFrom(bcFrom, m, ref reflectDamage);
+
+                    if (reflectDamage > 0)
                     {
-                        from.FixedParticles(0x376A, 20, 10, 0x2530, EffectLayer.Waist);
-                        from.PlaySound(0x2F4);
-                        m.SendAsciiMessage("Your weapon cannot penetrate the creature's magical barrier");
-                    }
-                    else
-                    {
-                        from.Damage(
-                            Scale(damage * phys * (100 - (ignoreArmor ? 0 : m.PhysicalResistance)) / 10000, reflectPhys),
-                            m
-                        );
+                        from.Damage(reflectDamage, m);
                     }
                 }
+            }
+
+            if (totalDamage <= 0)
+            {
+                return 0;
+            }
+
+            if (from != null) // sanity check
+            {
+                SpellHelper.DoLeech(totalDamage, from, m);
             }
 
             m.Damage(totalDamage, from);
@@ -566,21 +590,21 @@ namespace Server
 
             if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
             {
-                var modName = Owner.Serial.ToString();
+                var serial = Owner.Serial;
 
                 if (strBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Str, $"{serial}Str", strBonus, TimeSpan.Zero));
                 }
 
                 if (dexBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Dex, $"{serial}Dex", dexBonus, TimeSpan.Zero));
                 }
 
                 if (intBonus != 0)
                 {
-                    to.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+                    to.AddStatMod(new StatMod(StatType.Int, $"{serial}Int", intBonus, TimeSpan.Zero));
                 }
             }
 
@@ -589,11 +613,11 @@ namespace Server
 
         public void RemoveStatBonuses(Mobile from)
         {
-            var modName = Owner.Serial.ToString();
+            var serial = Owner.Serial;
 
-            from.RemoveStatMod($"{modName}Str");
-            from.RemoveStatMod($"{modName}Dex");
-            from.RemoveStatMod($"{modName}Int");
+            from.RemoveStatMod($"{serial}Str");
+            from.RemoveStatMod($"{serial}Dex");
+            from.RemoveStatMod($"{serial}Int");
 
             from.CheckStatTimers();
         }
@@ -955,7 +979,7 @@ namespace Server
 
     public sealed class AosSkillBonuses : BaseAttributes
     {
-        private List<SkillMod> m_Mods;
+        private HashSet<SkillMod> m_Mods;
 
         public AosSkillBonuses(Item owner) : base(owner)
         {
@@ -1068,7 +1092,7 @@ namespace Server
                     continue;
                 }
 
-                m_Mods ??= new List<SkillMod>();
+                m_Mods ??= new HashSet<SkillMod>();
 
                 SkillMod sk = new DefaultSkillMod(skill, true, bonus);
                 sk.ObeyCap = true;
@@ -1084,10 +1108,10 @@ namespace Server
                 return;
             }
 
-            for (var i = 0; i < m_Mods.Count; ++i)
+            foreach (var mod in m_Mods)
             {
-                var m = m_Mods[i].Owner;
-                m_Mods[i].Remove();
+                var m = mod.Owner;
+                mod.Remove();
 
                 if (Core.ML)
                 {

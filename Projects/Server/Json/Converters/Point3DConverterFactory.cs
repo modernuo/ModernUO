@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point3DConverterFactory.cs                                      *
  *                                                                       *
@@ -17,14 +17,13 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class Point3DConverterFactory : JsonConverterFactory
-    {
-        public override bool CanConvert(Type typeToConvert) =>
-            typeToConvert == typeof(Point3D) || typeToConvert == typeof(IPoint3D);
+namespace Server.Json;
 
-        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-            new Point3DConverter();
-    }
+public class Point3DConverterFactory : JsonConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =>
+        typeToConvert == typeof(Point3D) || typeToConvert == typeof(IPoint3D);
+
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+        new Point3DConverter();
 }

@@ -48,7 +48,7 @@ namespace Server.Spells.Second
                     }
                     else
                     {
-                        m.SendLocalizedMessage(1010060); // You have failed to cure your target!
+                        Caster.SendLocalizedMessage(1010060); // You have failed to cure your target!
                     }
                 }
 

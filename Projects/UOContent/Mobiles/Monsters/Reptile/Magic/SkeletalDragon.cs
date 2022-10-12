@@ -47,10 +47,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a skeletal dragon";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
-        public override int BreathFireDamage => 0;
-        public override int BreathColdDamage => 100;
-        public override int BreathEffectHue => 0x480;
 
         public override double BonusPetDamageScalar => Core.SE ? 3.0 : 1.0;
         // TODO: Undead summoning?
@@ -61,6 +57,9 @@ namespace Server.Mobiles
         public override int Meat => 19; // where's it hiding these? :)
         public override int Hides => 20;
         public override HideType HideType => HideType.Barbed;
+
+        private static MonsterAbility[] _abilities = { MonsterAbility.ColdBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {

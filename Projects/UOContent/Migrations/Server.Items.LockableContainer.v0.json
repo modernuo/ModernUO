@@ -51,7 +51,7 @@
       ]
     },
     {
-      "name": "RawLocked",
+      "name": "Locked",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [

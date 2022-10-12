@@ -16,15 +16,11 @@ namespace Server.Spells.Mysticism
             Reagent.Nightshade
         );
 
-        public AnimatedWeaponSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public AnimatedWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
-
-        public override double RequiredSkill => 33.0;
-        public override int RequiredMana => 11;
+        public override SpellCircle Circle => SpellCircle.Fourth;
 
         public void Target(IPoint3D p)
         {
@@ -44,7 +40,7 @@ namespace Server.Spells.Mysticism
             }
             else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
-                var level = (int)((GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 2.0);
+                var level = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 2.0);
 
                 var duration = TimeSpan.FromSeconds(10 + level);
 

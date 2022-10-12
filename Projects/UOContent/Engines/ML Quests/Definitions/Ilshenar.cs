@@ -25,7 +25,7 @@ namespace Server.Engines.MLQuests.Definitions
         // OSI sends this instead, but it doesn't make sense for an escortable
         // public override void OnComplete( MLQuestInstance instance )
         // {
-        // instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
+        //     instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
         // }
     }
 

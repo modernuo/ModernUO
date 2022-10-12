@@ -33,8 +33,8 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (!IsChildOf(from.Backpack) && Parent != from
-            )                                       // TODO: These checks don't match EA, but they match BaseTool for now
+            // TODO: These checks don't match EA, but they match BaseTool for now
+            if (!IsChildOf(from.Backpack) && Parent != from)
             {
                 from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
