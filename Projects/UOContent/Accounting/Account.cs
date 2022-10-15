@@ -15,10 +15,6 @@ namespace Server.Accounting
     [SerializationGenerator(4)]
     public partial class Account : IAccount, IComparable<Account>, ISerializable
     {
-        public void SetTypeRef(Type type)
-        {
-        }
-
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
         public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
         public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);

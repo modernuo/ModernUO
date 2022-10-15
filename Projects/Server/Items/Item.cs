@@ -219,14 +219,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         World.AddEntity(this);
     }
 
-    public Item(Serial serial)
-    {
-        Serial = serial;
-    }
-
-    public void SetTypeRef(Type type)
-    {
-    }
+    public Item(Serial serial) => Serial = serial;
 
     public int TempFlags
     {

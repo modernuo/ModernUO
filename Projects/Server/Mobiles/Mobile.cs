@@ -355,10 +355,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         DamageEntries = new List<DamageEntry>();
     }
 
-    public void SetTypeRef(Type type)
-    {
-    }
-
     public static bool DragEffects { get; set; } = true;
 
     [CommandProperty(AccessLevel.GameMaster)]
