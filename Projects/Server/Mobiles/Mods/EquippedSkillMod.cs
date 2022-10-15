@@ -27,8 +27,8 @@ public partial class EquippedSkillMod : SkillMod
     {
     }
 
-    public EquippedSkillMod(SkillName skill, bool relative, double value, Item item, Mobile mobile)
-        : base(skill, relative, value, mobile) => _item = item;
+    public EquippedSkillMod(SkillName skill, string name, bool relative, double value, Item item, Mobile owner)
+        : base(skill, name, relative, value, owner) => _item = item;
 
     public override bool CheckCondition() => !_item.Deleted && Owner?.Deleted == false && _item.Parent == Owner;
 }

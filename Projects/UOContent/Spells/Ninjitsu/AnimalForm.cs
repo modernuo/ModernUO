@@ -237,11 +237,12 @@ namespace Server.Spells.Ninjitsu
                 m.NetState.SendSpeedControl(SpeedControlSetting.Mount);
             }
 
+            // TODO: Determine if transform spell skill mods to a generic location like stat mods
             SkillMod mod = null;
 
             if (entry.StealthBonus)
             {
-                mod = new DefaultSkillMod(SkillName.Stealth, true, 20.0) { ObeyCap = true };
+                mod = new DefaultSkillMod(SkillName.Stealth, "StealthAnimalForm", true, 20.0) { ObeyCap = true };
                 m.AddSkillMod(mod);
             }
 
@@ -249,7 +250,7 @@ namespace Server.Spells.Ninjitsu
 
             if (entry.StealingBonus)
             {
-                stealingMod = new DefaultSkillMod(SkillName.Stealing, true, 10.0) { ObeyCap = true };
+                stealingMod = new DefaultSkillMod(SkillName.Stealing, "StealingAnimalForm", true, 10.0) { ObeyCap = true };
                 m.AddSkillMod(stealingMod);
             }
 

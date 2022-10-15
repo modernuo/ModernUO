@@ -1,4 +1,14 @@
 {
   "version": 0,
-  "type": "Server.MobileMod"
+  "type": "Server.MobileMod",
+  "properties": [
+    {
+      "name": "Name",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
 }

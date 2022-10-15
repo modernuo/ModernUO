@@ -78,15 +78,15 @@ namespace Server.Spells.Fifth
                         targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
 
                         var physiMod = -25 + (int)(targ.Skills.Inscribe.Value / 20);
-                        var otherMod = 10;
+                        const int otherMod = 10;
 
                         mods = new[]
                         {
-                            new ResistanceMod(ResistanceType.Physical, physiMod),
-                            new ResistanceMod(ResistanceType.Fire, otherMod),
-                            new ResistanceMod(ResistanceType.Cold, otherMod),
-                            new ResistanceMod(ResistanceType.Poison, otherMod),
-                            new ResistanceMod(ResistanceType.Energy, otherMod)
+                            new ResistanceMod(ResistanceType.Physical, "PhysicalResistMagicResist", physiMod),
+                            new ResistanceMod(ResistanceType.Fire, "FireResistMagicResist", otherMod),
+                            new ResistanceMod(ResistanceType.Cold, "ColdResistMagicResist", otherMod),
+                            new ResistanceMod(ResistanceType.Poison, "PoisonResistMagicResist", otherMod),
+                            new ResistanceMod(ResistanceType.Energy, "EnergyResistMagicResist", otherMod)
                         };
 
                         _table[targ] = mods;

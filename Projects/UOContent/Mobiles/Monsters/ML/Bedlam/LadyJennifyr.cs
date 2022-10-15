@@ -78,18 +78,17 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (m_Table.TryGetValue(defender, out var timer))
+            if (m_Table.Remove(defender, out var timer))
             {
                 timer.DoExpire();
             }
 
             defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
             defender.PlaySound(0x208);
-            defender.SendLocalizedMessage(
-                1070833
-            ); // The creature fans you with fire, reducing your resistance to fire attacks.
+            // The creature fans you with fire, reducing your resistance to fire attacks.
+            defender.SendLocalizedMessage(1070833);
 
-            var mod = new ResistanceMod(ResistanceType.Fire, -10);
+            var mod = new ResistanceMod(ResistanceType.Fire, "FireResistFanningFire", -10);
             defender.AddResistanceMod(mod);
 
             m_Table[defender] = timer = new ExpireTimer(defender, mod);
@@ -127,13 +126,13 @@ namespace Server.Mobiles
                 m_Mobile.RemoveResistanceMod(m_Mod);
 
                 Stop();
-                m_Table.Remove(m_Mobile);
             }
 
             protected override void OnTick()
             {
                 m_Mobile.SendLocalizedMessage(1070834); // Your resistance to fire attacks has returned.
                 DoExpire();
+                m_Table.Remove(m_Mobile);
             }
         }
     }
