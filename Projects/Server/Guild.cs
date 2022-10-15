@@ -33,14 +33,7 @@ public abstract class BaseGuild : ISerializable
         World.AddGuild(this);
     }
 
-    protected BaseGuild(Serial serial)
-    {
-        Serial = serial;
-    }
-
-    public void SetTypeRef(Type type)
-    {
-    }
+    protected BaseGuild(Serial serial) => Serial = serial;
 
     public abstract string Abbreviation { get; set; }
     public abstract string Name { get; set; }
