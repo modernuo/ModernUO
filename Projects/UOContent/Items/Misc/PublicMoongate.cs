@@ -358,7 +358,8 @@ namespace Server.Items
 
                 checkLists = Core.Expansion switch
                 {
-                    >= Expansion.TOL when (flags & ClientFlags.TerMur) != 0 => young ? PMList.TOLListsYoung : PMList.TOLLists,
+                    >= Expansion.TOL when (flags & ClientFlags.TerMur) != 0 =>
+                        young ? PMList.TOLListsYoung : PMList.TOLLists,
                     >= Expansion.SA when (flags & ClientFlags.TerMur) != 0 => young ? PMList.SAListsYoung : PMList.SALists,
                     >= Expansion.SE when (flags & ClientFlags.Tokuno) != 0 => young ? PMList.SEListsYoung : PMList.SELists,
                     >= Expansion.AOS when (flags & ClientFlags.Malas) != 0 => young ? PMList.AOSListsYoung : PMList.AOSLists,
