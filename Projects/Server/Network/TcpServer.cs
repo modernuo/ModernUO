@@ -105,7 +105,10 @@ public static class TcpServer
         {
             LingerState = new LingerOption(false, 0),
             ExclusiveAddressUse = true,
-            NoDelay = true
+            NoDelay = true,
+            Blocking = false,
+            SendBufferSize = 64 * 1024,
+            ReceiveBufferSize = 64 * 1024
         };
 
         try
