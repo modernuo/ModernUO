@@ -14,19 +14,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-11
-            name: MacOS 11
           - os: macos-12
             name: MacOS 12
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.401
+        dotnet-version: 6.0.402
     - name: Build
       run: ./publish.cmd Release
     - name: Test
@@ -48,13 +46,13 @@ jobs:
     steps:
       - name: Install Prerequisites
         run: dnf makecache --refresh && dnf install -y findutils libicu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Setup .NET 6
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.401
+          dotnet-version: 6.0.402
       - name: Build
         run: ./publish.cmd Release
       - name: Test

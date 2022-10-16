@@ -18,8 +18,8 @@ jobs:
     displayName: 'Install .NET 6'
     inputs:
       packageType: sdk
-      version: 6.0.401
-  - task: NuGetAuthenticate@0
+      version: 6.0.402
+  - task: NuGetAuthenticate@1
   - script: ./publish.cmd Release
     displayName: 'Build'
   - script: dotnet test --no-restore
@@ -49,8 +49,8 @@ jobs:
     displayName: 'Install .NET 6'
     inputs:
       packageType: sdk
-      version: 6.0.401
-  - task: NuGetAuthenticate@0
+      version: 6.0.402
+  - task: NuGetAuthenticate@1
   - script: ./publish.cmd Release
     displayName: 'Build'
   - script: dotnet test --no-restore
