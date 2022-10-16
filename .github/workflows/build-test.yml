@@ -14,8 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-11
-            name: MacOS 11
           - os: macos-12
             name: MacOS 12
 
