@@ -82,7 +82,11 @@ public class HealerAI : BaseAI
                 }
                 else if (NeedLHeal(toHelp))
                 {
-                    m_Mobile.DebugSay("{toHelp.Name} needs a lesser heal");
+                    if (m_Mobile.Debug)
+                    {
+                        m_Mobile.DebugSay("{toHelp.Name} needs a lesser heal");
+                    }
+
                     new HealSpell(m_Mobile).Cast();
                 }
             }

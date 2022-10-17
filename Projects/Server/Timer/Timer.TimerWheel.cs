@@ -28,8 +28,9 @@ public partial class Timer
     private const int _tickRatePowerOf2 = 3;
     private const int _tickRate = 1 << _tickRatePowerOf2; // 8ms
 
-    private static readonly Timer[][] _rings = new Timer[_ringLayers][];
-    private static readonly int[] _ringIndexes = new int[_ringLayers];
+    private static Timer[][] _rings = new Timer[_ringLayers][];
+    private static int[] _ringIndexes = new int[_ringLayers];
+    private static Timer[] _executingRings = new Timer[_ringLayers];
 
     private static long _lastTickTurned = -1;
     private static bool _timerWheelExecuting;
@@ -60,8 +61,6 @@ public partial class Timer
     {
         _timerWheelExecuting = true;
         var turnNextWheel = false;
-
-        var _executingRings = new Timer[_ringLayers];
 
         // Detach the chain from the timer wheel. This allows adding timers to the same slot during execution.
         for (var i = 0; i < _ringLayers; i++)
@@ -120,6 +119,9 @@ public partial class Timer
 
                 timer = next;
             } while (timer != null);
+
+            // Clear out the rings
+            _executingRings[i] = null;
         }
 
         _timerWheelExecuting = false;
