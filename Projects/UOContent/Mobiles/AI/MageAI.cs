@@ -419,14 +419,20 @@ public class MageAI : BaseAI
                             goto default;
                         }
 
-                        m_Mobile.DebugSay("Attempting to poison");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Attempting to poison");
+                        }
 
                         spell = new PoisonSpell(m_Mobile);
                         break;
                     }
                 case 2: // Bless ourselves
                     {
-                        m_Mobile.DebugSay("Blessing myself");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Blessing myself");
+                        }
 
                         spell = new BlessSpell(m_Mobile);
                         break;
@@ -434,7 +440,10 @@ public class MageAI : BaseAI
                 case 3:
                 case 4: // Curse them
                     {
-                        m_Mobile.DebugSay("Attempting to curse");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Attempting to curse");
+                        }
 
                         spell = GetRandomCurseSpell();
                         break;
@@ -446,14 +455,20 @@ public class MageAI : BaseAI
                             goto default;
                         }
 
-                        m_Mobile.DebugSay("Attempting to paralyze");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Attempting to paralyze");
+                        }
 
                         spell = new ParalyzeSpell(m_Mobile);
                         break;
                     }
                 case 6: // Drain mana
                     {
-                        m_Mobile.DebugSay("Attempting to drain mana");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Attempting to drain mana");
+                        }
 
                         spell = GetRandomManaDrainSpell();
                         break;
@@ -465,14 +480,20 @@ public class MageAI : BaseAI
                             goto default;
                         }
 
-                        m_Mobile.DebugSay("Attempting to invis myself");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Attempting to invis myself");
+                        }
 
                         spell = new InvisibilitySpell(m_Mobile);
                         break;
                     }
                 default: // Damage them
                     {
-                        m_Mobile.DebugSay("Just doing damage");
+                        if (m_Mobile.Debug)
+                        {
+                            m_Mobile.DebugSay("Just doing damage");
+                        }
 
                         spell = GetRandomDamageSpell();
                         break;
@@ -517,7 +538,10 @@ public class MageAI : BaseAI
                     {
                         if (c.Paralyzed && !c.Poisoned && !m_Mobile.Meditating)
                         {
-                            m_Mobile.DebugSay("I am going to meditate");
+                            if (m_Mobile.Debug)
+                            {
+                                m_Mobile.DebugSay("I am going to meditate");
+                            }
 
                             m_Mobile.UseSkill(SkillName.Meditation);
                         }
