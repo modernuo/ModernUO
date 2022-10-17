@@ -71,11 +71,13 @@ public class Lockpick : Item
 
             if (targeted is ILockpickable lockpickable)
             {
-                var item = lockpickable as Item;
-                from.Direction = from.GetDirectionTo(item);
-
-                if (lockpickable.Locked)
+                if (lockpickable is Item item && lockpickable.Locked)
                 {
+                    if (item.RootParent != from)
+                    {
+                        from.Direction = from.GetDirectionTo(item);
+                    }
+
                     from.PlaySound(0x241);
 
                     new InternalTimer(from, lockpickable, m_Item).Start();
