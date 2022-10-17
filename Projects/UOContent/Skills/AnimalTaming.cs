@@ -122,67 +122,43 @@ namespace Server.SkillHandlers
 
                 if (mobile is not BaseCreature creature)
                 {
-                    mobile.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        502469,
-                        from.NetState
-                    ); // That being cannot be tamed.
+                    // That being cannot be tamed.
+                    mobile.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502469, from.NetState);
                     return;
                 }
 
                 if (!creature.Tamable)
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1049655,
-                        from.NetState
-                    ); // That creature cannot be tamed.
+                    // That creature cannot be tamed.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1049655, from.NetState);
                     return;
                 }
 
                 if (creature.Controlled)
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        502804,
-                        from.NetState
-                    ); // That animal looks tame already.
+                    // That animal looks tame already.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502804, from.NetState);
                     return;
                 }
 
                 if (from.Female && !creature.AllowFemaleTamer)
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1049653,
-                        from.NetState
-                    ); // That creature can only be tamed by males.
+                    // That creature can only be tamed by males.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1049653, from.NetState);
                     return;
                 }
 
                 if (!from.Female && !creature.AllowMaleTamer)
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1049652,
-                        from.NetState
-                    ); // That creature can only be tamed by females.
+                    // That creature can only be tamed by females.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1049652, from.NetState);
                     return;
                 }
 
                 if (creature is CuSidhe && from.Race != Race.Elf)
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        502801,
-                        from.NetState
-                    ); // You can't tame that!
+                    // You can't tame that!
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502801, from.NetState);
                     return;
                 }
 
@@ -194,34 +170,22 @@ namespace Server.SkillHandlers
 
                 if (creature.Owners.Count >= BaseCreature.MaxOwners && !creature.Owners.Contains(from))
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1005615,
-                        from.NetState
-                    ); // This animal has had too many owners and is too upset for you to tame.
+                    // This animal has had too many owners and is too upset for you to tame.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1005615, from.NetState);
                     return;
                 }
 
                 if (MustBeSubdued(creature))
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1054025,
-                        from.NetState
-                    ); // You must subdue this creature before you can tame it!
+                    // You must subdue this creature before you can tame it!
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1054025, from.NetState);
                     return;
                 }
 
                 if (!(CheckMastery(from, creature) || from.Skills.AnimalTaming.Value >= creature.MinTameSkill))
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        502806,
-                        from.NetState
-                    ); // You have no chance of taming this creature.
+                    // You have no chance of taming this creature.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502806, from.NetState);
                     return;
                 }
 
@@ -231,33 +195,22 @@ namespace Server.SkillHandlers
 
                     if (faction == null || faction != warHorse.Faction)
                     {
-                        creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1042590,
-                            from.NetState
-                        ); // You cannot tame this creature.
+                        // You cannot tame this creature.
+                        creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1042590, from.NetState);
                         return;
                     }
                 }
 
                 if (m_BeingTamed.Contains(creature))
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        502802,
-                        from.NetState
-                    ); // Someone else is already taming this.
+                    // Someone else is already taming this.
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502802, from.NetState);
                 }
                 else if (creature.CanAngerOnTame && Utility.RandomDouble() <= 0.95)
                 {
-                    creature.PrivateOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        502805,
-                        from.NetState
-                    ); // You seem to anger the beast!
+                    // You seem to anger the beast!
+                    creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502805, from.NetState);
+
                     creature.PlaySound(creature.GetAngerSound());
                     creature.Direction = creature.GetDirectionTo(from);
 
@@ -337,93 +290,64 @@ namespace Server.SkillHandlers
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            502795,
-                            m_Tamer.NetState
-                        ); // You are too far away to continue taming.
+                        // You are too far away to continue taming.
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502795, m_Tamer.NetState);
                         Stop();
                     }
                     else if (!m_Tamer.CheckAlive())
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            502796,
-                            m_Tamer.NetState
-                        ); // You are dead, and cannot continue taming.
+                        // You are dead, and cannot continue taming.
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502796, m_Tamer.NetState);
                         Stop();
                     }
                     else if (!m_Tamer.CanSee(m_Creature) || !m_Tamer.InLOS(m_Creature) || !CanPath())
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Tamer.SendLocalizedMessage(
-                            1049654
-                        ); // You do not have a clear path to the animal you are taming, and must cease your attempt.
+                        // You do not have a clear path to the animal you are taming, and must cease your attempt.
+                        m_Tamer.SendLocalizedMessage(1049654);
                         Stop();
                     }
                     else if (!m_Creature.Tamable)
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1049655,
-                            m_Tamer.NetState
-                        ); // That creature cannot be tamed.
+                        // That creature cannot be tamed.
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1049655, m_Tamer.NetState);
                         Stop();
                     }
                     else if (m_Creature.Controlled)
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            502804,
-                            m_Tamer.NetState
-                        ); // That animal looks tame already.
+                        // That animal looks tame already.
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502804, m_Tamer.NetState);
                         Stop();
                     }
                     else if (m_Creature.Owners.Count >= BaseCreature.MaxOwners && !m_Creature.Owners.Contains(m_Tamer))
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1005615,
-                            m_Tamer.NetState
-                        ); // This animal has had too many owners and is too upset for you to tame.
+                        // This animal has had too many owners and is too upset for you to tame.
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1005615, m_Tamer.NetState);
                         Stop();
                     }
                     else if (MustBeSubdued(m_Creature))
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1054025,
-                            m_Tamer.NetState
-                        ); // You must subdue this creature before you can tame it!
+                        // You must subdue this creature before you can tame it!
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1054025, m_Tamer.NetState);
                         Stop();
                     }
                     else if (de?.LastDamage > m_StartTime)
                     {
                         m_BeingTamed.Remove(m_Creature);
                         m_Tamer.NextSkillTime = Core.TickCount;
-                        m_Creature.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            502794,
-                            m_Tamer.NetState
-                        ); // The animal is too angry to continue taming.
+                        // The animal is too angry to continue taming.
+                        m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502794, m_Tamer.NetState);
                         Stop();
                     }
                     else if (m_Count < m_MaxCount)
@@ -433,14 +357,20 @@ namespace Server.SkillHandlers
                         switch (Utility.Random(3))
                         {
                             case 0:
-                                m_Tamer.PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(502790, 4));
-                                break;
+                                {
+                                    m_Tamer.PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(502790, 4));
+                                    break;
+                                }
                             case 1:
-                                m_Tamer.PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(1005608, 6));
-                                break;
+                                {
+                                    m_Tamer.PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(1005608, 6));
+                                    break;
+                                }
                             case 2:
-                                m_Tamer.PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(1010593, 4));
-                                break;
+                                {
+                                    m_Tamer.PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(1010593, 4));
+                                    break;
+                                }
                         }
 
                         if (!alreadyOwned) // Passively check animal lore for gain
@@ -511,12 +441,8 @@ namespace Server.SkillHandlers
                             }
                             else
                             {
-                                m_Creature.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x3B2,
-                                    502799,
-                                    m_Tamer.NetState
-                                ); // It seems to accept you as master.
+                                // It seems to accept you as master.
+                                m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502799, m_Tamer.NetState);
                                 m_Creature.Owners.Add(m_Tamer);
                             }
 
@@ -525,12 +451,8 @@ namespace Server.SkillHandlers
                         }
                         else
                         {
-                            m_Creature.PrivateOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                502798,
-                                m_Tamer.NetState
-                            ); // You fail to tame the creature.
+                            // You fail to tame the creature.
+                            m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502798, m_Tamer.NetState);
                         }
                     }
                 }

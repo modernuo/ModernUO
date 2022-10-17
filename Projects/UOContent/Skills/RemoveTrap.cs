@@ -26,7 +26,6 @@ namespace Server.SkillHandlers
             else
             {
                 m.Target = new InternalTarget();
-
                 m.SendLocalizedMessage(502368); // Which trap will you attempt to disarm?
             }
 
@@ -47,12 +46,15 @@ namespace Server.SkillHandlers
                 }
                 else if (targeted is TrappableContainer targ)
                 {
-                    from.Direction = from.GetDirectionTo(targ);
-
                     if (targ.TrapType == TrapType.None)
                     {
                         from.SendLocalizedMessage(502373); // That doesn't appear to be trapped
                         return;
+                    }
+
+                    if (targ.RootParent == from)
+                    {
+                        from.Direction = from.GetDirectionTo(targ);
                     }
 
                     from.PlaySound(0x241);
