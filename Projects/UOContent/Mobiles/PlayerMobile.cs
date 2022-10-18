@@ -4589,12 +4589,10 @@ namespace Server.Mobiles
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (m_BuffTable == null || !m_BuffTable.Remove(b, out var info))
+            if (m_BuffTable?.Remove(b) != true)
             {
                 return;
             }
-
-            info.TimerToken.Cancel();
 
             if (NetState?.BuffIcon == true)
             {

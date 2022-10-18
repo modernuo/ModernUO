@@ -208,7 +208,7 @@ public partial class Timer
     public static void DumpInfo(TextWriter tw)
     {
         tw.WriteLine($"Date: {Core.Now.ToLocalTime()}\n");
-        tw.WriteLine($"Pool - Count: {_poolCount - _timerPoolDepletionAmount}; Size {_poolCapacity}\n");
+        tw.WriteLine($"Pool - Count: {_poolCount}; Capacity {_poolCapacity}\n");
 
         var total = 0.0;
         var hash = new Dictionary<string, int>();

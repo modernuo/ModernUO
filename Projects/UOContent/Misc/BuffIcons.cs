@@ -9,8 +9,7 @@ namespace Server
     {
         private TimerExecutionToken _timerToken;
 
-        public BuffInfo(BuffIcon iconID, int titleCliloc)
-            : this(iconID, titleCliloc, titleCliloc + 1)
+        public BuffInfo(BuffIcon iconID, int titleCliloc) : this(iconID, titleCliloc, titleCliloc + 1)
         {
         }
 
@@ -105,8 +104,6 @@ namespace Server
 
         public long TimeStart { get; }
 
-        public TimerExecutionToken TimerToken => _timerToken;
-
         public bool RetainThroughDeath { get; }
 
         public TextDefinition Args { get; }
@@ -139,6 +136,7 @@ namespace Server
 
         public static void RemoveBuff(Mobile m, BuffInfo b)
         {
+            b._timerToken.Cancel();
             (m as PlayerMobile)?.RemoveBuff(b);
         }
 
