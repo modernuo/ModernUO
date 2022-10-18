@@ -21,33 +21,27 @@ namespace Server;
 
 public partial class Timer
 {
-    private const int _timerPoolDepletionThreshold = 128; // Maximum timers allocated in a single tick before we force adjust
-    private static int _timerPoolDepletionAmount;         // Amount the pool has been depleted by
     private static int _maxPoolCapacity;
     private static int _poolCapacity;
     private static int _poolCount;
     private static DelayCallTimer _poolHead;
-    private static int _isRefilling;
+    private static bool _isRefilling;
 
     public static void CheckTimerPool()
     {
-        // Anything less than this threshold and we are ok with the number of allocations.
-        if (_timerPoolDepletionAmount < _timerPoolDepletionThreshold)
+        if (_poolCount > 0 || _isRefilling)
         {
-            _timerPoolDepletionAmount = 0;
             return;
         }
 
-        var growthFactor = Math.DivRem(_timerPoolDepletionAmount, _poolCapacity, out var rem);
-        var amountToGrow = _poolCapacity * (growthFactor + (rem > 0 ? 1 : 0));
+        var amountToGrow = _poolCapacity * 2;
         var amountToRefill = Math.Min(_maxPoolCapacity, amountToGrow);
 
         var maximumHit = amountToGrow > amountToRefill ? " Maximum pool size has been reached." : "";
-        var warningMessage = $"Timer pool depleted by {{Amount}}. Refilling with {{AmountRefill}}.{maximumHit}";
+        var warningMessage = $"Refilling timer pool with {{AmountRefill}}.{maximumHit}";
 
-        logger.Warning(warningMessage, _timerPoolDepletionAmount, amountToRefill);
+        logger.Warning(warningMessage, amountToRefill);
         RefillPoolAsync(amountToRefill);
-        _timerPoolDepletionAmount = 0;
     }
 
     public static void ConfigureTimerPool()
@@ -64,9 +58,6 @@ public partial class Timer
         tail.Attach(_poolHead);
         _poolHead = head;
         _poolCount += amount;
-#if DEBUG_TIMERS
-        logger.Information("Returning to pool. ({Count} / {Capacity})", _poolCount, _poolCapacity);
-#endif
     }
 
     private static DelayCallTimer GetFromPool()
@@ -109,10 +100,7 @@ public partial class Timer
 
     internal static async void RefillPoolAsync(int amountToRefill)
     {
-        if (Interlocked.CompareExchange(ref _isRefilling, 0, 1) == 1)
-        {
-            return;
-        }
+        _isRefilling = true;
 
         var (headTimer, tailTimer) = await Task.Run(
             () =>
@@ -125,6 +113,6 @@ public partial class Timer
 
         ReturnToPool(amountToRefill, headTimer, tailTimer);
         _poolCapacity = amountToRefill;
-        _isRefilling = 0;
+        _isRefilling = false;
     }
 }
