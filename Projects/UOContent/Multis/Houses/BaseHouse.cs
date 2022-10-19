@@ -1197,7 +1197,10 @@ namespace Server.Multis
         {
             LockedDownFlag = 1;
             SecureFlag = 2;
+        }
 
+        public static void Initialize()
+        {
             Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Decay_OnTick);
         }
 
