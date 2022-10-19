@@ -22,6 +22,9 @@ namespace Server;
 
 public partial class Timer
 {
+#if DEBUG_TIMERS
+    private const int _chainExecutionThreshold = 512;
+#endif
     private const int _ringSizePowerOf2 = 12;
     private const int _ringSize = 1 << _ringSizePowerOf2; // 4096
     private const int _ringLayers = 3;
@@ -84,8 +87,15 @@ public partial class Timer
 
         for (var i = 0; i < _ringLayers; i++)
         {
+#if DEBUG_TIMERS
+            var executionCount = 0;
+#endif
             while (_executingRings[i] != null)
             {
+#if DEBUG_TIMERS
+                executionCount++;
+#endif
+
                 var timer = _executingRings[i];
 
                 // Set the executing timer to the next in the link list because we will be detaching.
@@ -112,6 +122,16 @@ public partial class Timer
                     timer.OnDetach();
                 }
             }
+#if DEBUG_TIMERS
+            if (executionCount > _chainExecutionThreshold)
+            {
+                logger.Warning(
+                    "Timer threshold of {Threshold} met. Executed {Count} timers sequentially.",
+                    _chainExecutionThreshold,
+                    executionCount
+                );
+            }
+#endif
         }
     }
 
