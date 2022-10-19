@@ -33,7 +33,7 @@ public static class OutgoingContainerPackets
             return;
         }
 
-        if (ObjectPropertyList.Enabled && ns.NewSpellbook)
+        if (ns.NewSpellbook)
         {
             ns.SendNewSpellbookContent(book, graphic, offset, content);
         }

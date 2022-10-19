@@ -79,7 +79,7 @@ public partial class Timer
 
     public Timer Start()
     {
-        if (World.WorldState is WorldState.Initial or WorldState.Saving)
+        if (World.WorldState is WorldState.Saving)
         {
             logger.Error(
                 "Attempted to start timer {Timer} ({HashCode}) while world is {State}\n{StackTrace}",
@@ -123,7 +123,7 @@ public partial class Timer
 
     public void Stop()
     {
-        if (World.WorldState is WorldState.Initial or WorldState.Saving)
+        if (World.WorldState is WorldState.Saving)
         {
             logger.Error(
                 "Attempted to stop timer {Timer} ({HashCode}) while world is {State}\n{StackTrace}",
