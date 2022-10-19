@@ -16,8 +16,8 @@
 using System;
 #if DEBUG_TIMERS
 using System.Collections.Generic;
-#endif
 using System.Diagnostics;
+#endif
 using System.Runtime.CompilerServices;
 
 namespace Server;
