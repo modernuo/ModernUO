@@ -153,13 +153,13 @@ public partial class Timer
 
         Running = false;
 
-        // We are at the head on the timer ring
+        // We are the head on the timer ring
         if (_rings[_ring][_slot] == this)
         {
             _rings[_ring][_slot] = _nextTimer;
         }
 
-        // We are head on the executing ring
+        // We are the head on the executing ring
         if (_executingRings[_ring] == this)
         {
             _executingRings[_ring] = _nextTimer;
