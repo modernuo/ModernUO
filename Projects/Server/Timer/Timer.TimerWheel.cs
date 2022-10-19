@@ -33,7 +33,6 @@ public partial class Timer
     private static Timer[] _executingRings = new Timer[_ringLayers];
 
     private static long _lastTickTurned = -1;
-    private static bool _timerWheelExecuting;
 
     public static void Init(long tickCount)
     {
@@ -59,7 +58,6 @@ public partial class Timer
 
     private static void Turn()
     {
-        _timerWheelExecuting = true;
         var turnNextWheel = false;
 
         // Detach the chain from the timer wheel. This allows adding timers to the same slot during execution.
@@ -86,15 +84,12 @@ public partial class Timer
 
         for (var i = 0; i < _ringLayers; i++)
         {
-            var timer = _executingRings[i];
-            if (timer == null)
+            while (_executingRings[i] != null)
             {
-                continue;
-            }
+                var timer = _executingRings[i];
 
-            do
-            {
-                var next = timer._nextTimer;
+                // Set the executing timer to the next in the link list because we will be detaching.
+                _executingRings[i] = timer._nextTimer;
 
                 timer.Detach();
 
@@ -116,15 +111,8 @@ public partial class Timer
                 {
                     timer.OnDetach();
                 }
-
-                timer = next;
-            } while (timer != null);
-
-            // Clear out the rings
-            _executingRings[i] = null;
+            }
         }
-
-        _timerWheelExecuting = false;
     }
 
     private static void Execute(Timer timer)
@@ -232,7 +220,7 @@ public partial class Timer
 
                     total++;
 
-                    t = t?._nextTimer;
+                    t = t._nextTimer;
                 }
             }
         }
