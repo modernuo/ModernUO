@@ -184,15 +184,6 @@ public partial class Timer
     private void Attach(Timer timer)
     {
 #if DEBUG_TIMERS
-        if (_prevTimer != null)
-        {
-            logger.Error(
-                "{Timer} ({HashCode}) attached with a previous timer already set!",
-                this,
-                GetHashCode()
-            );
-        }
-
         if (_nextTimer != null)
         {
             logger.Error(
