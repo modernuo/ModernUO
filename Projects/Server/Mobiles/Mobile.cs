@@ -3172,14 +3172,17 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         Resistances[3] += BasePoisonResistance;
         Resistances[4] += BaseEnergyResistance;
 
-        for (var i = 0; i < _resistanceMods.Count; i++)
+        if (_resistanceMods != null)
         {
-            var mod = _resistanceMods[i];
-            var v = (int)mod.Type;
-
-            if (v >= 0 && v < Resistances.Length)
+            for (var i = 0; i < _resistanceMods.Count; i++)
             {
-                Resistances[v] += mod.Offset;
+                var mod = _resistanceMods[i];
+                var v = (int)mod.Type;
+
+                if (v >= 0 && v < Resistances.Length)
+                {
+                    Resistances[v] += mod.Offset;
+                }
             }
         }
 
