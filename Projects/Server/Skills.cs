@@ -271,33 +271,36 @@ public class Skill
 
             Owner.Owner.ValidateSkillMods();
 
-            var mods = Owner.Owner.SkillMods;
-
             double bonusObey = 0.0, bonusNotObey = 0.0;
 
-            foreach (var mod in mods)
-            {
-                if (mod.Skill != (SkillName)Info.SkillID)
-                {
-                    continue;
-                }
+            var mods = Owner.Owner.SkillMods;
 
-                if (mod.Relative)
+            if (mods != null)
+            {
+                foreach (var mod in mods)
                 {
-                    if (mod.ObeyCap)
+                    if (mod.Skill != (SkillName)Info.SkillID)
                     {
-                        bonusObey += mod.Value;
+                        continue;
+                    }
+
+                    if (mod.Relative)
+                    {
+                        if (mod.ObeyCap)
+                        {
+                            bonusObey += mod.Value;
+                        }
+                        else
+                        {
+                            bonusNotObey += mod.Value;
+                        }
                     }
                     else
                     {
-                        bonusNotObey += mod.Value;
+                        bonusObey = 0.0;
+                        bonusNotObey = 0.0;
+                        value = mod.Value;
                     }
-                }
-                else
-                {
-                    bonusObey = 0.0;
-                    bonusNotObey = 0.0;
-                    value = mod.Value;
                 }
             }
 
