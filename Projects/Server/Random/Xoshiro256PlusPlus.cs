@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 
 namespace Server.Random;
@@ -28,14 +29,20 @@ public class Xoshiro256PlusPlus : BaseRandomSource
 
     private ulong _s0, _s1, _s2, _s3;
 
-    public Xoshiro256PlusPlus() : this((ulong)Environment.TickCount64)
+    public Xoshiro256PlusPlus()
     {
+        Span<byte> states = stackalloc byte[32];
+        RandomSources.SecureSource.NextBytes(states);
+        _s0 = BinaryPrimitives.ReadUInt64LittleEndian(states[..8]);
+        _s1 = BinaryPrimitives.ReadUInt64LittleEndian(states[8..16]);
+        _s2 = BinaryPrimitives.ReadUInt64LittleEndian(states[16..24]);
+        _s3 = BinaryPrimitives.ReadUInt64LittleEndian(states[24..32]);
     }
 
     public Xoshiro256PlusPlus(ulong seed)
     {
         var mix = new SplitMix64(seed);
-        var state = new ulong[4];
+        Span<ulong> state = stackalloc ulong[4];
         mix.FillArray(state);
         _s0 = state[0];
         _s1 = state[1];
@@ -205,7 +212,7 @@ public class SplitMix64
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void FillArray(ulong[] arr)
+    public void FillArray(Span<ulong> arr)
     {
         for (var i = 0; i < arr.Length; i++)
         {
