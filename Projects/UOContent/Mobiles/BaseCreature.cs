@@ -3982,7 +3982,7 @@ namespace Server.Mobiles
 
         public static void Configure()
         {
-            BondingEnabled = ServerConfiguration.GetOrUpdateSetting("taming.enableBonding", true);
+            BondingEnabled = ServerConfiguration.GetSetting("taming.enableBonding", Core.LBR);
         }
 
         public void BeginDeleteTimer()
