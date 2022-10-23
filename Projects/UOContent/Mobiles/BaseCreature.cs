@@ -3821,8 +3821,23 @@ namespace Server.Mobiles
 
         public static void TeleportPets(Mobile master, Point3D loc, Map map, bool onlyBonded = false)
         {
-            using var queue = PooledRefQueue<Mobile>.Create();
+            if (master is PlayerMobile pm)
+            {
+                for (var i = 0; i < pm.AllFollowers.Count; i++)
+                {
+                    var m = pm.AllFollowers[i];
+                    if (master.InRange(m, 3) && m is BaseCreature
+                            { Controlled: true, ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come } pet &&
+                        pet.ControlMaster == master && (!onlyBonded || pet.IsBonded))
+                    {
+                        m.MoveToWorld(loc, map);
+                    }
+                }
 
+                return;
+            }
+
+            using var queue = PooledRefQueue<Mobile>.Create();
             var eable = master.GetMobilesInRange(3);
             foreach (var m in eable)
             {
@@ -3833,7 +3848,6 @@ namespace Server.Mobiles
                     queue.Enqueue(pet);
                 }
             }
-
             eable.Free();
 
             while (queue.Count > 0)
@@ -3982,7 +3996,7 @@ namespace Server.Mobiles
 
         public static void Configure()
         {
-            BondingEnabled = ServerConfiguration.GetOrUpdateSetting("taming.enableBonding", true);
+            BondingEnabled = ServerConfiguration.GetSetting("taming.enableBonding", Core.LBR);
         }
 
         public void BeginDeleteTimer()
