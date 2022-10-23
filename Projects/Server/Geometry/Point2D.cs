@@ -20,7 +20,7 @@ namespace Server;
 [Parsable]
 public struct Point2D
     : IPoint2D, IComparable<Point2D>, IComparable<IPoint2D>, IEquatable<object>, IEquatable<Point2D>,
-        IEquatable<IPoint2D>
+        IEquatable<IPoint2D>, ISpanFormattable
 {
     internal int m_X;
     internal int m_Y;
@@ -50,8 +50,6 @@ public struct Point2D
     public Point2D(Point2D p) : this(p.X, p.Y)
     {
     }
-
-    public override string ToString() => $"({m_X}, {m_Y})";
 
     public static Point2D Parse(string value)
     {
@@ -111,5 +109,21 @@ public struct Point2D
     {
         var xComparison = m_X.CompareTo(other.X);
         return xComparison != 0 ? xComparison : m_Y.CompareTo(other.Y);
+    }
+
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+    {
+        return destination.TryWrite(provider, $"({m_X}, {m_Y})", out charsWritten);
+    }
+
+    public override string ToString() {
+        return $"{this}";
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
     }
 }
