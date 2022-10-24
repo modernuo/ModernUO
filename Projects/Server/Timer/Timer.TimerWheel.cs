@@ -175,7 +175,9 @@ public partial class Timer
             var resolution = 1L << resolutionPowerOf2;
             var nextResolutionPowerOf2 = resolutionPowerOf2 + _ringSizePowerOf2;
             var max = 1L << nextResolutionPowerOf2;
-            if (delay < max)
+            var lastRing = i == _ringLayers - 1;
+
+            if (delay < max || lastRing)
             {
                 var remaining = delay & (resolution - 1);
                 var slot = (delay >> resolutionPowerOf2) + _ringIndexes[i] + (remaining > 0 ? 1 : 0);
@@ -190,6 +192,13 @@ public partial class Timer
                 if (slot >= _ringSize)
                 {
                     slot -= _ringSize;
+
+                    // Slot should only be more than 4096 if we are on the last ring and the timer is more than max capacity
+                    // In this case, we will just throw it on the last slot.
+                    if (lastRing && slot > _ringSize)
+                    {
+                        slot = _ringSize - 1;
+                    }
                 }
 
                 timer.Attach(_rings[i][slot]);
@@ -206,11 +215,6 @@ public partial class Timer
             delay -= resolution * (_ringSize - _ringIndexes[i]);
             resolutionPowerOf2 = nextResolutionPowerOf2;
         }
-
-        // TODO: Handle timers > 17yrs
-#if DEBUG_TIMERS
-        logger.Error("Timer is more than max duration. ({Duration})", originalDelay);
-#endif
     }
 
     public static void DumpInfo(TextWriter tw)
