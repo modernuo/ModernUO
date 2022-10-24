@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -30,6 +31,7 @@ public partial class Timer
     private const int _ringLayers = 3;
     private const int _tickRatePowerOf2 = 3;
     private const int _tickRate = 1 << _tickRatePowerOf2; // 8ms
+    private const long _maxDuration = (long)_tickRate << (_ringSizePowerOf2 * _ringLayers - 1);
 
     private static Timer[][] _rings = new Timer[_ringLayers][];
     private static int[] _ringIndexes = new int[_ringLayers];
@@ -164,9 +166,7 @@ public partial class Timer
 
     private static void AddTimer(Timer timer, long delay)
     {
-#if DEBUG_TIMERS
         var originalDelay = delay;
-#endif
         delay = Math.Max(0, delay);
 
         var resolutionPowerOf2 = _tickRatePowerOf2;
@@ -175,10 +175,13 @@ public partial class Timer
             var resolution = 1L << resolutionPowerOf2;
             var nextResolutionPowerOf2 = resolutionPowerOf2 + _ringSizePowerOf2;
             var max = 1L << nextResolutionPowerOf2;
-            if (delay < max)
+            var lastRing = i == _ringLayers - 1;
+
+            if (delay < max || lastRing)
             {
+                var ringIndex = _ringIndexes[i];
                 var remaining = delay & (resolution - 1);
-                var slot = (delay >> resolutionPowerOf2) + _ringIndexes[i] + (remaining > 0 ? 1 : 0);
+                var slot = (delay >> resolutionPowerOf2) + ringIndex + (remaining > 0 ? 1 : 0);
 
                 // Round up if we have a delay of 0
                 if (delay == 0)
@@ -190,6 +193,21 @@ public partial class Timer
                 if (slot >= _ringSize)
                 {
                     slot -= _ringSize;
+
+                    // Slot should only be more than 4096 if we are on the last ring and the timer is more than max capacity
+                    // In this case, we will just throw it on the last slot.
+                    if (lastRing && slot > _ringSize)
+                    {
+                        logger.Error(
+                            "Timer {Timer} has a duration of {Duration}ms, more than max capacity of {MaxDuration}ms.\n{StackTrace}",
+                            timer.GetType(),
+                            originalDelay,
+                            _maxDuration,
+                            new StackTrace()
+                        );
+
+                        slot = Math.Max(0, ringIndex - 1);
+                    }
                 }
 
                 timer.Attach(_rings[i][slot]);
@@ -206,11 +224,6 @@ public partial class Timer
             delay -= resolution * (_ringSize - _ringIndexes[i]);
             resolutionPowerOf2 = nextResolutionPowerOf2;
         }
-
-        // TODO: Handle timers > 17yrs
-#if DEBUG_TIMERS
-        logger.Error("Timer is more than max duration. ({Duration})", originalDelay);
-#endif
     }
 
     public static void DumpInfo(TextWriter tw)
