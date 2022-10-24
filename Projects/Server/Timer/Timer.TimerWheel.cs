@@ -179,8 +179,9 @@ public partial class Timer
 
             if (delay < max || lastRing)
             {
+                var ringIndex = _ringIndexes[i];
                 var remaining = delay & (resolution - 1);
-                var slot = (delay >> resolutionPowerOf2) + _ringIndexes[i] + (remaining > 0 ? 1 : 0);
+                var slot = (delay >> resolutionPowerOf2) + ringIndex + (remaining > 0 ? 1 : 0);
 
                 // Round up if we have a delay of 0
                 if (delay == 0)
@@ -198,13 +199,14 @@ public partial class Timer
                     if (lastRing && slot > _ringSize)
                     {
                         logger.Error(
-                            "Timer {Timer} has duration {Duration}, more than max capacity of {MaxDuration}ms.\n{StackTrace}",
+                            "Timer {Timer} has a duration of {Duration}ms, more than max capacity of {MaxDuration}ms.\n{StackTrace}",
                             timer.GetType(),
                             originalDelay,
                             _maxDuration,
                             new StackTrace()
                         );
-                        slot = _ringSize - 1;
+
+                        slot = Math.Max(0, ringIndex - 1);
                     }
                 }
 
