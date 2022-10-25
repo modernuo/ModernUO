@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using Server.Buffers;
 
 namespace Server;
 
@@ -117,7 +118,12 @@ public struct Point2D
     }
 
     public override string ToString() {
-        return $"{this}";
+        // Maximum number of characters that are needed to represent this:
+        // 4 characters for (, )
+        // Up to 11 characters to represent each integer
+        Span<char> span = stackalloc char[4+11*2];
+        this.TryFormat(span, out var charsWritten, null, null);
+        return span.Slice(0, charsWritten).ToString();
     }
 
     public string ToString(string format, IFormatProvider formatProvider)
@@ -126,4 +132,5 @@ public struct Point2D
         // default ToString implementation.
         return ToString();
     }
+
 }
