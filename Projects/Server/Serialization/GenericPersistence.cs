@@ -26,6 +26,7 @@ public static class GenericPersistence
         string name,
         Action<IGenericWriter> serializer,
         Action<IGenericReader> deserializer,
+        Action afterSerialize = null,
         int priority = Persistence.DefaultPriority
     )
     {
@@ -49,6 +50,6 @@ public static class GenericPersistence
         void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
             AdhocPersistence.Deserialize(Path.Combine(savePath, name, $"{name}.bin"), deserializer);
 
-        Persistence.Register(name, Serialize, WriteSnapshot, Deserialize, priority);
+        Persistence.Register(name, Serialize, WriteSnapshot, Deserialize, afterSerialize, priority);
     }
 }

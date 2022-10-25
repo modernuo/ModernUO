@@ -3402,6 +3402,17 @@ namespace Server.Mobiles
             writer.Write(GameTime);
         }
 
+        // Do we need to run an after serialize?
+        public override bool ExecutesAfterSerialize => ShouldKillDecay() || ShouldAtrophy();
+
+        public override void AfterSerialize()
+        {
+            base.AfterSerialize();
+
+            CheckKillDecay();
+            CheckAtrophies();
+        }
+
         public bool ShouldAtrophy()
         {
             var sacrifice = SacrificeVirtue.ShouldAtrophy(this);
@@ -3419,6 +3430,7 @@ namespace Server.Mobiles
             JusticeVirtue.CheckAtrophy(this);
             CompassionVirtue.CheckAtrophy(this);
             ValorVirtue.CheckAtrophy(this);
+
             ChampionTitleInfo.CheckAtrophy(this);
         }
 
