@@ -277,6 +277,9 @@ public static class World
         Persistence.Load(SavePath);
         EventSink.InvokeWorldLoad();
 
+        // Set the world to running before we process our queues
+        WorldState = WorldState.Running;
+
         ProcessSafetyQueues();
 
         foreach (var item in Items.Values)
@@ -304,8 +307,6 @@ public static class World
             Mobiles.Count,
             watch.Elapsed.TotalSeconds
         );
-
-        WorldState = WorldState.Running;
     }
 
     private static void ProcessSafetyQueues()
