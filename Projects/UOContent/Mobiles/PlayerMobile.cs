@@ -3430,7 +3430,6 @@ namespace Server.Mobiles
             JusticeVirtue.CheckAtrophy(this);
             CompassionVirtue.CheckAtrophy(this);
             ValorVirtue.CheckAtrophy(this);
-
             ChampionTitleInfo.CheckAtrophy(this);
         }
 
