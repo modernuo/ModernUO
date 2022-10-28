@@ -2387,6 +2387,12 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         writer.Write((byte)m_IntLock);
     }
 
+    public virtual bool ShouldExecuteAfterSerialize => false;
+
+    public virtual void AfterSerialize()
+    {
+    }
+
     public bool Deleted { get; private set; }
 
     public virtual void Delete()
@@ -6038,10 +6044,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     }
 
     public virtual void OnHeal(ref int amount, Mobile from)
-    {
-    }
-
-    public virtual void BeforeSerialize()
     {
     }
 

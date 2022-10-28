@@ -1041,6 +1041,12 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
+    public virtual bool ShouldExecuteAfterSerialize => false;
+
+    public virtual void AfterSerialize()
+    {
+    }
+
     public void MoveToWorld(WorldLocation worldLocation)
     {
         MoveToWorld(worldLocation.Location, worldLocation.Map);
@@ -2549,10 +2555,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         {
             VerifyCompactInfo();
         }
-    }
-
-    public virtual void BeforeSerialize()
-    {
     }
 
     public virtual void Deserialize(IGenericReader reader)

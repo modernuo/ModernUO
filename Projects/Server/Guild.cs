@@ -39,6 +39,10 @@ public abstract class BaseGuild : ISerializable
     public abstract string Name { get; set; }
     public abstract GuildType Type { get; set; }
     public abstract bool Disbanded { get; }
+
+    public abstract bool ShouldExecuteAfterSerialize { get; }
+    public abstract void AfterSerialize();
+
     public abstract void Delete();
 
     public bool Deleted => Disbanded;
@@ -58,7 +62,6 @@ public abstract class BaseGuild : ISerializable
 
     public int TypeRef { get; private set; }
 
-    public abstract void BeforeSerialize();
     public abstract void Serialize(IGenericWriter writer);
 
     public abstract void Deserialize(IGenericReader reader);

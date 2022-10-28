@@ -103,10 +103,6 @@ public class Entity : IEntity
         && p.Y >= Location.m_Y - range
         && p.Y <= Location.m_Y + range;
 
-    public void BeforeSerialize()
-    {
-    }
-
     public void Deserialize(IGenericReader reader)
     {
         // Should not actually be saved
@@ -114,6 +110,12 @@ public class Entity : IEntity
     }
 
     public void Serialize(IGenericWriter writer)
+    {
+    }
+
+    public bool ShouldExecuteAfterSerialize => false;
+
+    public void AfterSerialize()
     {
     }
 }

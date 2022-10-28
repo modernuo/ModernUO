@@ -31,13 +31,17 @@ public interface ISerializable
 
     Serial Serial { get; }
 
-    // Executed on every entity, before it's serialized.
-    // For example, this is used to clean up weak references and mark them dirty.
-    void BeforeSerialize();
     void Deserialize(IGenericReader reader);
     void Serialize(IGenericWriter writer);
-    void Delete();
+
+    // Determines if AfterSerialize should execute. This is checked on a worker thread.
+    bool ShouldExecuteAfterSerialize { get; }
+
+    // Executes after serialization if ShouldExecuteAfterSerialize is true. This is run on the game thread synchronously.
+    void AfterSerialize();
+
     bool Deleted { get; }
+    void Delete();
 
     public void InitializeSaveBuffer(byte[] buffer, ConcurrentQueue<Type> types)
     {
@@ -56,7 +60,12 @@ public interface ISerializable
     {
         SaveBuffer ??= new BufferWriter(true, types);
 
-        BeforeSerialize();
+        // Queue for post serialization if this entity has it enabled
+        // This will run AfterSerialize in the main game thread after the world is done saving
+        if (ShouldExecuteAfterSerialize)
+        {
+            World.EnqueueAfterSerialization(this);
+        }
 
         // Clean, don't bother serializing
         if (SavePosition > -1)

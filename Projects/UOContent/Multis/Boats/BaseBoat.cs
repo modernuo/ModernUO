@@ -29,36 +29,36 @@ namespace Server.Multis
             Decaying
         }
 
-        private static readonly Rectangle2D[] m_BritWrap =
+        private static Rectangle2D[] m_BritWrap =
             { new(16, 16, 5120 - 32, 4096 - 32), new(5136, 2320, 992, 1760) };
 
-        private static readonly Rectangle2D[] m_IlshWrap = { new(16, 16, 2304 - 32, 1600 - 32) };
-        private static readonly Rectangle2D[] m_TokunoWrap = { new(16, 16, 1448 - 32, 1448 - 32) };
+        private static Rectangle2D[] m_IlshWrap = { new(16, 16, 2304 - 32, 1600 - 32) };
+        private static Rectangle2D[] m_TokunoWrap = { new(16, 16, 1448 - 32, 1448 - 32) };
 
-        private static readonly TimeSpan BoatDecayDelay = TimeSpan.FromDays(9.0);
+        private static TimeSpan BoatDecayDelay = TimeSpan.FromDays(9.0);
 
-        private static readonly TimeSpan SlowInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 0.75);
-        private static readonly TimeSpan FastInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
+        private static TimeSpan SlowInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 0.75);
+        private static TimeSpan FastInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
 
-        private static readonly int SlowSpeed = 1;
-        private static readonly int FastSpeed = NewBoatMovement ? 1 : 3;
+        private const int SlowSpeed = 1;
+        private static int FastSpeed = NewBoatMovement ? 1 : 3;
 
-        private static readonly TimeSpan SlowDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 1.50);
-        private static readonly TimeSpan FastDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
+        private static TimeSpan SlowDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 1.50);
+        private static TimeSpan FastDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
 
-        private static readonly int SlowDriftSpeed = 1;
-        private static readonly int FastDriftSpeed = 1;
+        private const int SlowDriftSpeed = 1;
+        private const int FastDriftSpeed = 1;
 
-        private static readonly Direction Forward = Direction.North;
-        private static readonly Direction ForwardLeft = Direction.Up;
-        private static readonly Direction ForwardRight = Direction.Right;
-        private static readonly Direction Backward = Direction.South;
-        private static readonly Direction BackwardLeft = Direction.Left;
-        private static readonly Direction BackwardRight = Direction.Down;
-        private static readonly Direction Left = Direction.West;
-        private static readonly Direction Right = Direction.East;
-        private static Direction Port = Left;
-        private static Direction Starboard = Right;
+        private const Direction Forward = Direction.North;
+        private const Direction ForwardLeft = Direction.Up;
+        private const Direction ForwardRight = Direction.Right;
+        private const Direction Backward = Direction.South;
+        private const Direction BackwardLeft = Direction.Left;
+        private const Direction BackwardRight = Direction.Down;
+        private const Direction Left = Direction.West;
+        private const Direction Right = Direction.East;
+        private const Direction Port = Left;
+        private const Direction Starboard = Right;
 
         private int m_ClientSpeed;
 
@@ -296,6 +296,14 @@ namespace Server.Multis
             }
         }
 
+        public override bool ShouldExecuteAfterSerialize => !m_Decaying && CheckDecay();
+
+        public override void AfterSerialize()
+        {
+            base.AfterSerialize();
+            CheckDecay();
+        }
+
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
@@ -316,8 +324,6 @@ namespace Server.Multis
             writer.Write(Hold);
             writer.Write(Anchored);
             writer.Write(m_ShipName);
-
-            CheckDecay();
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -527,6 +533,8 @@ namespace Server.Multis
             TillerMan?.InvalidateProperties();
         }
 
+        private bool ShouldDecay => !IsMoving && Core.Now >= m_DecayTime;
+
         public bool CheckDecay()
         {
             if (m_Decaying)
@@ -534,12 +542,10 @@ namespace Server.Multis
                 return true;
             }
 
-            if (!IsMoving && Core.Now >= m_DecayTime)
+            if (ShouldDecay)
             {
                 new DecayTimer(this).Start();
-
                 m_Decaying = true;
-
                 return true;
             }
 

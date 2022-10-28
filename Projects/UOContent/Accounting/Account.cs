@@ -295,10 +295,6 @@ namespace Server.Accounting
 
         public Serial Serial { get; set; }
 
-        public void BeforeSerialize()
-        {
-        }
-
         [AfterDeserialization]
         private void AfterDeserialization()
         {
@@ -335,6 +331,12 @@ namespace Server.Accounting
             {
                 CheckYoung();
             }
+        }
+
+        public bool ShouldExecuteAfterSerialize => false;
+
+        public void AfterSerialize()
+        {
         }
 
         /// <summary>
