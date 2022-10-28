@@ -6,10 +6,10 @@ public class ResetRng
 {
     public static void Initialize()
     {
-        CommandSystem.Register("RestRng", AccessLevel.Administrator, ResetRng_OnCommand);
+        CommandSystem.Register("ResetRng", AccessLevel.Administrator, ResetRng_OnCommand);
     }
 
-    [Usage("RestRng")]
+    [Usage("ResetRng")]
     [Description(
         "Resets the global RNG. Use with care! Do not reset often as this will affect the over-all distribution."
     )]
