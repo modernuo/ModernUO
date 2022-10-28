@@ -15,8 +15,8 @@ namespace Server.Misc
 
         public static string[] HarrowerTitles =
         {
-            "Spite", "Opponent", "Hunter", "Venom", "Executioner", "Annihilator", "Champion", "Assailant", "Purifier",
-            "Nullifier"
+            "Spite", "Opponent", "Hunter", "Venom", "Executioner",
+            "Annihilator", "Champion", "Assailant", "Purifier", "Nullifier"
         };
 
         private static readonly string[,] m_Levels =
@@ -267,11 +267,8 @@ namespace Server.Misc
             if (!Core.AOS && wasPositiveKarma && m.Karma < 0 && pm?.KarmaLocked == false)
             {
                 pm.KarmaLocked = true;
-                m.SendLocalizedMessage(
-                    1042511,
-                    "",
-                    0x22
-                ); // Karma is locked.  A mantra spoken at a shrine will unlock it again.
+                // Karma is locked.  A mantra spoken at a shrine will unlock it again.
+                m.SendLocalizedMessage(1042511, "", 0x22);
             }
         }
 
@@ -320,7 +317,7 @@ namespace Server.Misc
 
                 if (info.Harrower > 0)
                 {
-                    title.AppendFormat(": {0} of Evil", HarrowerTitles[Math.Min(HarrowerTitles.Length, info.Harrower) - 1]);
+                    title.Append($": {HarrowerTitles[Math.Min(HarrowerTitles.Length, info.Harrower) - 1]} of Evil");
                 }
                 else
                 {
@@ -346,20 +343,18 @@ namespace Server.Misc
                     if (offset > 0)
                     {
                         var champInfo = ChampionSpawnInfo.GetInfo((ChampionSpawnType)highestType);
-                        title.AppendFormat(
-                            ": {0} of the {1}",
-                            champInfo.LevelNames[Math.Min(offset, champInfo.LevelNames.Length) - 1],
-                            champInfo.Name
+                        title.Append(
+                            $": {champInfo.LevelNames[Math.Min(offset, champInfo.LevelNames.Length) - 1]} of the {champInfo.Name}"
                         );
                     }
                 }
             }
 
-            var customTitle = beheld.Title;
+            var customTitle = beheld.Title?.Trim();
 
-            if ((customTitle = customTitle?.Trim())?.Length > 0)
+            if (customTitle?.Length > 0)
             {
-                title.AppendFormat(" {0}", customTitle);
+                title.Append($" {customTitle}");
             }
             else if (showSkillTitle && beheld.Player)
             {
@@ -367,7 +362,7 @@ namespace Server.Misc
 
                 if (skillTitle != null)
                 {
-                    title.Append(", ").Append(skillTitle);
+                    title.Append($", {skillTitle}");
                 }
             }
 

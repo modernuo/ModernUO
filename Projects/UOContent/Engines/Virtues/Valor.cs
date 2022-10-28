@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Engines.CannedEvil;
 using Server.Mobiles;
 using Server.Targeting;
@@ -24,28 +25,19 @@ public static class ValorVirtue
         }
     }
 
-    public static void CheckAtrophy(Mobile from)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastValorLoss + LossDelay < Core.Now;
+
+    public static void CheckAtrophy(PlayerMobile pm)
     {
-        if (from is not PlayerMobile pm)
+        if (ShouldAtrophy(pm))
         {
-            return;
-        }
-
-        try
-        {
-            if (pm.LastValorLoss + LossDelay < Core.Now)
+            if (VirtueHelper.Atrophy(pm, VirtueName.Valor, LossAmount))
             {
-                if (VirtueHelper.Atrophy(from, VirtueName.Valor, LossAmount))
-                {
-                    from.SendLocalizedMessage(1054040); // You have lost some Valor.
-                }
-
-                pm.LastValorLoss = Core.Now;
+                pm.SendLocalizedMessage(1054040); // You have lost some Valor.
             }
-        }
-        catch
-        {
-            // ignored
+
+            pm.LastValorLoss = Core.Now;
         }
     }
 

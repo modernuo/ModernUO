@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Mobiles;
 
 namespace Server
@@ -18,25 +19,19 @@ namespace Server
             from.SendLocalizedMessage(1053001); // This virtue is not activated through the virtue menu.
         }
 
-        public static void CheckAtrophy(Mobile from)
-        {
-            if (from is not PlayerMobile pm)
-            {
-                return;
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastCompassionLoss + LossDelay < Core.Now;
 
-            try
+        public static void CheckAtrophy(PlayerMobile pm)
+        {
+            if (ShouldAtrophy(pm))
             {
-                if (pm.LastCompassionLoss + LossDelay < Core.Now)
+                if (VirtueHelper.Atrophy(pm, VirtueName.Compassion, LossAmount))
                 {
-                    VirtueHelper.Atrophy(from, VirtueName.Compassion, LossAmount);
-                    // OSI has no cliloc message for losing compassion.  Weird.
-                    pm.LastCompassionLoss = Core.Now;
+                    pm.SendLocalizedMessage(1114420); // You have lost some Compassion.
                 }
-            }
-            catch
-            {
-                // ignored
+
+                pm.LastCompassionLoss = Core.Now;
             }
         }
     }

@@ -68,20 +68,13 @@ namespace Server
         public static void ActivateEmbrace(PlayerMobile pm)
         {
             var duration = GetHonorDuration(pm);
-            int usedPoints;
 
-            if (pm.Virtues.Honor < 4399)
+            int usedPoints = pm.Virtues.Honor switch
             {
-                usedPoints = 400;
-            }
-            else if (pm.Virtues.Honor < 10599)
-            {
-                usedPoints = 600;
-            }
-            else
-            {
-                usedPoints = 1000;
-            }
+                < 4399  => 400,
+                < 10599 => 600,
+                _       => 1000
+            };
 
             VirtueHelper.Atrophy(pm, VirtueName.Honor, usedPoints);
 

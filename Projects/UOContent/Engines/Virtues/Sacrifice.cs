@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -36,31 +37,22 @@ namespace Server
             }
         }
 
-        public static void CheckAtrophy(Mobile from)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastSacrificeLoss + LossDelay < Core.Now;
+
+        public static void CheckAtrophy(PlayerMobile pm)
         {
-            if (from is not PlayerMobile pm)
+            if (ShouldAtrophy(pm))
             {
-                return;
-            }
-
-            try
-            {
-                if (pm.LastSacrificeLoss + LossDelay < Core.Now)
+                if (VirtueHelper.Atrophy(pm, VirtueName.Sacrifice, LossAmount))
                 {
-                    if (VirtueHelper.Atrophy(from, VirtueName.Sacrifice, LossAmount))
-                    {
-                        from.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
-                    }
-
-                    var level = VirtueHelper.GetLevel(from, VirtueName.Sacrifice);
-
-                    pm.AvailableResurrects = (int)level;
-                    pm.LastSacrificeLoss = Core.Now;
+                    pm.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
                 }
-            }
-            catch
-            {
-                // ignored
+
+                var level = VirtueHelper.GetLevel(pm, VirtueName.Sacrifice);
+
+                pm.AvailableResurrects = (int)level;
+                pm.LastSacrificeLoss = Core.Now;
             }
         }
 
@@ -183,15 +175,9 @@ namespace Server
             }
         }
 
-        public static bool ValidateCreature(Mobile m)
-        {
-            if (m is BaseCreature creature && (creature.Controlled || creature.Summoned))
-            {
-                return false;
-            }
-
-            return m is Lich or Succubus or Daemon or EvilMage or EnslavedGargoyle or GargoyleEnforcer;
-        }
+        public static bool ValidateCreature(Mobile m) =>
+            (m is not BaseCreature creature || !creature.Controlled && !creature.Summoned) &&
+            m is Lich or Succubus or Daemon or EvilMage or EnslavedGargoyle or GargoyleEnforcer;
 
         private class InternalTarget : Target
         {
