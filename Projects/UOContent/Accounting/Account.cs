@@ -333,7 +333,7 @@ namespace Server.Accounting
             }
         }
 
-        public bool ExecutesAfterSerialize => false;
+        public bool ShouldExecuteAfterSerialize => false;
 
         public void AfterSerialize()
         {

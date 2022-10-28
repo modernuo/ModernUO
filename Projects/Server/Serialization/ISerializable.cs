@@ -34,9 +34,10 @@ public interface ISerializable
     void Deserialize(IGenericReader reader);
     void Serialize(IGenericWriter writer);
 
-    // Executed after serialization synchronously. This is run on the main game thread.
-    bool ExecutesAfterSerialize { get; }
+    // Determines if AfterSerialize should execute. This is checked on a worker thread.
+    bool ShouldExecuteAfterSerialize { get; }
 
+    // Executes after serialization if ShouldExecuteAfterSerialize is true. This is run on the game thread synchronously.
     void AfterSerialize();
 
     bool Deleted { get; }
@@ -61,7 +62,7 @@ public interface ISerializable
 
         // Queue for post serialization if this entity has it enabled
         // This will run AfterSerialize in the main game thread after the world is done saving
-        if (ExecutesAfterSerialize)
+        if (ShouldExecuteAfterSerialize)
         {
             World.EnqueueAfterSerialization(this);
         }

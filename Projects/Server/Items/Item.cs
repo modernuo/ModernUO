@@ -1041,7 +1041,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    public virtual bool ExecutesAfterSerialize => false;
+    public virtual bool ShouldExecuteAfterSerialize => false;
 
     public virtual void AfterSerialize()
     {

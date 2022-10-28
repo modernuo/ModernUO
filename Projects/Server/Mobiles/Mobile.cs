@@ -2387,7 +2387,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         writer.Write((byte)m_IntLock);
     }
 
-    public virtual bool ExecutesAfterSerialize => false;
+    public virtual bool ShouldExecuteAfterSerialize => false;
 
     public virtual void AfterSerialize()
     {

@@ -113,7 +113,7 @@ public class Entity : IEntity
     {
     }
 
-    public bool ExecutesAfterSerialize => false;
+    public bool ShouldExecuteAfterSerialize => false;
 
     public void AfterSerialize()
     {

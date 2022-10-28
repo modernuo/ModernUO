@@ -1227,7 +1227,7 @@ namespace Server.Guilds
             writer.Write(Website);
         }
 
-        public override bool ExecutesAfterSerialize => false;
+        public override bool ShouldExecuteAfterSerialize => false;
 
         public override void AfterSerialize()
         {

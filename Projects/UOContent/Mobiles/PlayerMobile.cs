@@ -3403,7 +3403,7 @@ namespace Server.Mobiles
         }
 
         // Do we need to run an after serialize?
-        public override bool ExecutesAfterSerialize => ShouldKillDecay() || ShouldAtrophy();
+        public override bool ShouldExecuteAfterSerialize => ShouldKillDecay() || ShouldAtrophy();
 
         public override void AfterSerialize()
         {

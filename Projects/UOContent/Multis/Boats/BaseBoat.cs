@@ -296,7 +296,7 @@ namespace Server.Multis
             }
         }
 
-        public override bool ExecutesAfterSerialize => !m_Decaying && CheckDecay();
+        public override bool ShouldExecuteAfterSerialize => !m_Decaying && CheckDecay();
 
         public override void AfterSerialize()
         {

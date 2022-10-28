@@ -40,7 +40,7 @@ public abstract class BaseGuild : ISerializable
     public abstract GuildType Type { get; set; }
     public abstract bool Disbanded { get; }
 
-    public abstract bool ExecutesAfterSerialize { get; }
+    public abstract bool ShouldExecuteAfterSerialize { get; }
     public abstract void AfterSerialize();
 
     public abstract void Delete();
