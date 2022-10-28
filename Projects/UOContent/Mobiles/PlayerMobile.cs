@@ -1247,8 +1247,6 @@ namespace Server.Mobiles
 
         private static void OnLogin(Mobile from)
         {
-            CheckAtrophies(from);
-
             if (AccountHandler.LockdownLevel > AccessLevel.Player)
             {
                 string notice;
@@ -1286,6 +1284,7 @@ namespace Server.Mobiles
 
             if (from is PlayerMobile mobile)
             {
+                mobile.CheckAtrophies();
                 mobile.ClaimAutoStabledPets();
             }
         }
@@ -3243,7 +3242,8 @@ namespace Server.Mobiles
                 }
             }
 
-            CheckAtrophies(this);
+            CheckKillDecay();
+            CheckAtrophies();
 
             if (Hidden) // Hiding is the only buff where it has an effect that's serialized.
             {
@@ -3273,10 +3273,6 @@ namespace Server.Mobiles
                     t.Remove(key);
                 }
             }
-
-            CheckKillDecay();
-
-            CheckAtrophies(this);
 
             base.Serialize(writer);
 
@@ -3406,18 +3402,27 @@ namespace Server.Mobiles
             writer.Write(GameTime);
         }
 
-        public static void CheckAtrophies(Mobile m)
+        public bool ShouldAtrophy()
         {
-            SacrificeVirtue.CheckAtrophy(m);
-            JusticeVirtue.CheckAtrophy(m);
-            CompassionVirtue.CheckAtrophy(m);
-            ValorVirtue.CheckAtrophy(m);
+            var sacrifice = SacrificeVirtue.ShouldAtrophy(this);
+            var justice = JusticeVirtue.ShouldAtrophy(this);
+            var compassion = CompassionVirtue.ShouldAtrophy(this);
+            var valor = ValorVirtue.ShouldAtrophy(this);
+            var titles = ChampionTitleInfo.ShouldAtrophy(this);
 
-            if (m is PlayerMobile mobile)
-            {
-                ChampionTitleInfo.CheckAtrophy(mobile);
-            }
+            return sacrifice || justice || compassion || valor || titles;
         }
+
+        public void CheckAtrophies()
+        {
+            SacrificeVirtue.CheckAtrophy(this);
+            JusticeVirtue.CheckAtrophy(this);
+            CompassionVirtue.CheckAtrophy(this);
+            ValorVirtue.CheckAtrophy(this);
+            ChampionTitleInfo.CheckAtrophy(this);
+        }
+
+        public bool ShouldKillDecay() => m_ShortTermElapse < GameTime || m_LongTermElapse < GameTime;
 
         public void CheckKillDecay()
         {

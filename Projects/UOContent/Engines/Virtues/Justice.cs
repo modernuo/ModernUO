@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -6,7 +7,7 @@ using Server.Targeting;
 
 namespace Server
 {
-#pragma warning disable CA1052
+#pragma warning disable CA1052 // Cannot be static because its used as a generic for CanBeginAction.
     public class JusticeVirtue
     {
         private const int LossAmount = 950;
@@ -71,13 +72,12 @@ namespace Server
 
         public static void OnVirtueTargeted(Mobile from, object obj)
         {
-            var protector = from as PlayerMobile;
-            var pm = obj as PlayerMobile;
-
-            if (protector == null)
+            if (from is not PlayerMobile protector)
             {
                 return;
             }
+
+            var pm = obj as PlayerMobile;
 
             if (!VirtueHelper.IsSeeker(protector, VirtueName.Justice))
             {
@@ -175,28 +175,20 @@ namespace Server
             }
         }
 
-        public static void CheckAtrophy(Mobile from)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastJusticeLoss + LossDelay < Core.Now;
+
+
+        public static void CheckAtrophy(PlayerMobile pm)
         {
-            if (from is not PlayerMobile pm)
+            if (ShouldAtrophy(pm))
             {
-                return;
-            }
-
-            try
-            {
-                if (pm.LastJusticeLoss + LossDelay < Core.Now)
+                if (VirtueHelper.Atrophy(pm, VirtueName.Justice, LossAmount))
                 {
-                    if (VirtueHelper.Atrophy(from, VirtueName.Justice, LossAmount))
-                    {
-                        from.SendLocalizedMessage(1049373); // You have lost some Justice.
-                    }
-
-                    pm.LastJusticeLoss = Core.Now;
+                    pm.SendLocalizedMessage(1049373); // You have lost some Justice.
                 }
-            }
-            catch
-            {
-                // ignored
+
+                pm.LastJusticeLoss = Core.Now;
             }
         }
     }

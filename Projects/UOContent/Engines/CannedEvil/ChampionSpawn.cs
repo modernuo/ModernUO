@@ -585,7 +585,7 @@ namespace Server.Engines.CannedEvil
                                 }
                             }
 
-                            int mobSubLevel = GetSubLevelfor (m) + 1;
+                            int mobSubLevel = GetSubLevelfor(m) + 1;
 
                             if (mobSubLevel >= 0)
                             {
@@ -604,12 +604,10 @@ namespace Server.Engines.CannedEvil
                                         m.SendLocalizedMessage(1054030); // You have gained in Valor!
                                     }
 
-                                    //No delay on Valor gains
+                                    // No delay on Valor gains
                                 }
 
-                                ChampionTitleInfo info = pm.ChampionTitles;
-
-                                info.Award(m_Type, mobSubLevel);
+                                pm.ChampionTitles.Award(m_Type, mobSubLevel);
                             }
                         }
                     }
