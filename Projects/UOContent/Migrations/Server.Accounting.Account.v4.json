@@ -74,7 +74,6 @@
       "type": "System.Collections.Generic.List\u003CServer.Accounting.AccountComment\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "Server.Accounting.AccountComment",
         "SerializationMethodSignatureMigrationRule",
         ""
@@ -85,7 +84,6 @@
       "type": "System.Collections.Generic.List\u003CServer.Accounting.AccountTag\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "Server.Accounting.AccountTag",
         "SerializationMethodSignatureMigrationRule",
         ""

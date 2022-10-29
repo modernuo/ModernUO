@@ -489,24 +489,34 @@ namespace Server.Items
                     switch (info.ButtonID)
                     {
                         case 1: // Left
-                            newX = curNode.X - 1;
-                            newY = curNode.Y;
-                            break;
+                            {
+                                newX = curNode.X - 1;
+                                newY = curNode.Y;
+                                break;
+                            }
                         case 2: // Up
-                            newX = curNode.X;
-                            newY = curNode.Y - 1;
-                            break;
+                            {
+                                newX = curNode.X;
+                                newY = curNode.Y - 1;
+                                break;
+                            }
                         case 3: // Right
-                            newX = curNode.X + 1;
-                            newY = curNode.Y;
-                            break;
+                            {
+                                newX = curNode.X + 1;
+                                newY = curNode.Y;
+                                break;
+                            }
                         case 4: // Down
-                            newX = curNode.X;
-                            newY = curNode.Y + 1;
-                            break;
+                            {
+                                newX = curNode.X;
+                                newY = curNode.Y + 1;
+                                break;
+                            }
 
                         default:
-                            return;
+                            {
+                                return;
+                            }
                     }
 
                     if (nextNode.X == newX && nextNode.Y == newY)

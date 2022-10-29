@@ -7,7 +7,6 @@
       "type": "System.Collections.Generic.List\u003CServer.Items.AddonComponent\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "Server.Items.AddonComponent",
         "SerializableInterfaceMigrationRule"
       ]
