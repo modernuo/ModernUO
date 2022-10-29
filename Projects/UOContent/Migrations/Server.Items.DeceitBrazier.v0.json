@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Items.DeceitBrazier",
+  "properties": [
+    {
+      "name": "SpawnRange",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "NextSpawnDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    }
+  ]
+}

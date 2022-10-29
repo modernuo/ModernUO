@@ -76,10 +76,7 @@ namespace Server.Items
         {
             private readonly Item m_Item;
 
-            public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
-            {
-                m_Item = item;
-            }
+            public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0)) => m_Item = item;
 
             protected override void OnTick()
             {

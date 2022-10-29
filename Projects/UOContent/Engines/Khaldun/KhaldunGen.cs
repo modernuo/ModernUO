@@ -100,10 +100,12 @@ namespace Server.Commands
                 return;
             }
 
-            var item = new EffectController();
-            item.SoundID = sound;
-            item.TriggerType = EffectTriggerType.InRange;
-            item.TriggerRange = range;
+            var item = new EffectController
+            {
+                SoundId = sound,
+                TriggerType = EffectTriggerType.InRange,
+                TriggerRange = range
+            };
 
             item.MoveToWorld(new Point3D(x, y, z), Map.Felucca);
             m_Count++;

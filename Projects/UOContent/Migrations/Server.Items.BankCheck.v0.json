@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.BankCheck",
+  "properties": [
+    {
+      "name": "Worth",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

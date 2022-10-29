@@ -1221,10 +1221,7 @@ namespace Server.Items
         {
             private readonly Corpse m_Corpse;
 
-            public InternalTimer(Corpse c, TimeSpan delay) : base(delay)
-            {
-                m_Corpse = c;
-            }
+            public InternalTimer(Corpse c, TimeSpan delay) : base(delay) => m_Corpse = c;
 
             protected override void OnTick()
             {

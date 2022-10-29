@@ -81,11 +81,7 @@ namespace Server.Items
         {
             private readonly Item m_Item;
 
-            public SpawnTimer(Item item) : base(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10)))
-            {
-
-                m_Item = item;
-            }
+            public SpawnTimer(Item item) : base(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10))) => m_Item = item;
 
             protected override void OnTick()
             {

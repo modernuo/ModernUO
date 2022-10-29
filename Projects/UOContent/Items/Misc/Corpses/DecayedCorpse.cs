@@ -97,10 +97,7 @@ namespace Server.Items
         {
             private readonly DecayedCorpse m_Corpse;
 
-            public InternalTimer(DecayedCorpse c, TimeSpan delay) : base(delay)
-            {
-                m_Corpse = c;
-            }
+            public InternalTimer(DecayedCorpse c, TimeSpan delay) : base(delay) => m_Corpse = c;
 
             protected override void OnTick()
             {
