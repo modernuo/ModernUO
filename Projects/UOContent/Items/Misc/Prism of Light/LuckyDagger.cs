@@ -1,26 +1,12 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class LuckyDagger : Item
 {
-    public class LuckyDagger : Item
-    {
-        [Constructible]
-        public LuckyDagger() : base(0xF52) => Hue = 0x8A5;
+    [Constructible]
+    public LuckyDagger() : base(0xF52) => Hue = 0x8A5;
 
-        public LuckyDagger(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
+    public override int LabelNumber => 1151983; // Lucky Dagger
 }
