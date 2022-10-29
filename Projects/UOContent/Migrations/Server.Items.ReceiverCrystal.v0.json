@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.ReceiverCrystal",
+  "properties": [
+    {
+      "name": "Sender",
+      "type": "Server.Items.BroadcastCrystal",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

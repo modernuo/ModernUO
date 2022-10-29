@@ -145,10 +145,7 @@ namespace Server.Items
         {
             private readonly TrashBarrel m_Barrel;
 
-            public EmptyTimer(TrashBarrel barrel) : base(TimeSpan.FromMinutes(3.0))
-            {
-                m_Barrel = barrel;
-            }
+            public EmptyTimer(TrashBarrel barrel) : base(TimeSpan.FromMinutes(3.0)) => m_Barrel = barrel;
 
             protected override void OnTick()
             {
