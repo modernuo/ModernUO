@@ -20,7 +20,7 @@ namespace Server.Commands
             var found = false;
             foreach (var item in eable)
             {
-                if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemID == inactiveItemID && morphItem.ActiveItemID == activeItemID)
+                if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemId == inactiveItemID && morphItem.ActiveItemId == activeItemID)
                 {
                     found = true;
                     break;

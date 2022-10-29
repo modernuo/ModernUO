@@ -39,7 +39,6 @@
       "type": "System.Collections.Generic.List\u003CServer.Point2D\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "Server.Point2D",
         "PrimitiveUOTypeMigrationRule",
         "Point2D"

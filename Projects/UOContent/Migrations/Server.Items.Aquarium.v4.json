@@ -47,7 +47,6 @@
       "type": "System.Collections.Generic.List\u003Cint\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "int",
         "PrimitiveTypeMigrationRule",
         ""

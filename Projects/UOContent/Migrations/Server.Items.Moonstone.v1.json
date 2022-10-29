@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.Moonstone",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Items.MoonstoneType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

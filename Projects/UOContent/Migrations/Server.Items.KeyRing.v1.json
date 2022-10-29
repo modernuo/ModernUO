@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "type": "Server.Items.KeyRing",
+  "properties": [
+    {
+      "name": "Keys",
+      "type": "System.Collections.Generic.List\u003CServer.Items.Key\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.Key",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}
