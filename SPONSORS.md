@@ -15,14 +15,14 @@ We greatly appreciate the support! Use one of the following platforms below:
 #### Patreon
 [<img alt="Patreon | ModernUO" data-canonical-src="https://user-images.githubusercontent.com/3953314/104968719-7c96e980-599b-11eb-839b-28745496b1a4.png" src="https://user-images.githubusercontent.com/3953314/104968719-7c96e980-599b-11eb-839b-28745496b1a4.png" width=128px />](https://muo.gg/patreon)
 
+#### Buy Me a Coffee
+<a href="https://muo.gg/coffee" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" height="60px" width="217px"></a>
+
 #### Paypal
 [<img alt="Paypal | Sabresite" data-canonical-src="https://user-images.githubusercontent.com/3953314/104967693-d5b14e00-5998-11eb-93fc-b098e791a620.png" src="https://user-images.githubusercontent.com/3953314/104967693-d5b14e00-5998-11eb-93fc-b098e791a620.png" width=256px />](https://muo.gg/paypal)
 
 #### Venmo
 [<img alt="Venmo | Sabresite" data-canonical-src="https://user-images.githubusercontent.com/3953314/104967817-2759d880-5999-11eb-92ec-c4193da79570.png" src="https://user-images.githubusercontent.com/3953314/104967817-2759d880-5999-11eb-92ec-c4193da79570.png" width=256px />](https://muo.gg/venmo)
-
-#### Buy Me a Coffee
-[<img alt="Buy Me A Coffee | ModernUO" data-canonical-src="https://user-images.githubusercontent.com/3953314/198871867-68391c6c-5f97-4ab0-b8fe-97fa5f31e33e.png" src="https://user-images.githubusercontent.com/3953314/198871867-68391c6c-5f97-4ab0-b8fe-97fa5f31e33e.png" width=256px />](https://muo.gg/coffee)
 
 #### Bitcoin (37QmRWTCjVoNWycMpo1t5JnYVDmJTGSJ9W)
 <img alt="Bitcoin" src="https://cdn.discordapp.com/attachments/751318817765982318/917180331147288606/December5-022645PM.png" width=256px />
