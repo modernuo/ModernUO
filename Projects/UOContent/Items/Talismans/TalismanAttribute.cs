@@ -39,7 +39,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, SaveFlag.Name))
             {
-                Name = TextDefinition.Deserialize(reader);
+                Name = reader.ReadTextDefinition();
             }
 
             if (GetSaveFlag(flags, SaveFlag.Amount))
@@ -94,7 +94,7 @@ namespace Server.Items
 
             if (GetSaveFlag(flags, SaveFlag.Name))
             {
-                TextDefinition.Serialize(writer, Name);
+                writer.Write(Name);
             }
 
             if (GetSaveFlag(flags, SaveFlag.Amount))

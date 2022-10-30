@@ -134,7 +134,7 @@ namespace Server.Factions
 
             if (IsCorrupted)
             {
-                TextDefinition.AddTo(list, m_Corrupted.Definition.SigilControl);
+                m_Corrupted.Definition.SigilControl.AddTo(list);
             }
             else
             {

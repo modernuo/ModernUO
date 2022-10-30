@@ -96,7 +96,7 @@ namespace Server.Engines.MLQuests
 
         public BaseObjectiveInstance[] Objectives { get; set; }
 
-        public bool SkipReportBack => TextDefinition.IsNullOrEmpty(Quest.CompletionMessage);
+        public bool SkipReportBack => Quest.CompletionMessage.IsNullOrEmpty();
 
         private void Register()
         {
@@ -166,7 +166,7 @@ namespace Server.Engines.MLQuests
                     obj.OnQuestCompleted();
                 }
 
-                TextDefinition.SendMessageTo(Player, Quest.CompletionNotice, 0x23);
+                Quest.CompletionNotice.SendMessageTo(Player, 0x23);
 
                 /*
                  * Advance to the ClaimReward=true stage if this quest has no
@@ -176,8 +176,8 @@ namespace Server.Engines.MLQuests
                  * For quests that require collections, this is done later when
                  * the player double clicks the quester.
                  */
-                if (!Removed && SkipReportBack && !Quest.RequiresCollection
-                ) // An OnQuestCompleted can potentially have removed this instance already
+                // An OnQuestCompleted can potentially have removed this instance already
+                if (!Removed && SkipReportBack && !Quest.RequiresCollection)
                 {
                     ContinueReportBack(false);
                 }

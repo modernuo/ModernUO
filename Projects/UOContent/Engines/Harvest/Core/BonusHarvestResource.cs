@@ -23,7 +23,7 @@ namespace Server.Engines.Harvest
 
         public void SendSuccessTo(Mobile m)
         {
-            TextDefinition.SendMessageTo(m, SuccessMessage);
+            SuccessMessage.SendMessageTo(m);
         }
     }
 }

@@ -112,13 +112,12 @@ namespace Server.Engines.Craft
             if (craftItem.RequiredExpansion != Expansion.None)
             {
                 var supportsEx = from.NetState?.SupportsExpansion(craftItem.RequiredExpansion) == true;
-                TextDefinition.AddHtmlText(
+                RequiredExpansionMessage(craftItem.RequiredExpansion).AddHtmlText(
                     this,
                     170,
                     302 + m_OtherCount++ * 20,
                     310,
                     18,
-                    RequiredExpansionMessage(craftItem.RequiredExpansion),
                     false,
                     false,
                     supportsEx ? LabelColor : RedLabelColor,

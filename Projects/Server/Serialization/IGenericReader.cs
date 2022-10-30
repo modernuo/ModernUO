@@ -120,5 +120,16 @@ public interface IGenericReader
 
     BitArray ReadBitArray();
 
+    TextDefinition ReadTextDefinition()
+    {
+        return ReadEncodedInt() switch
+        {
+            0 => new TextDefinition(),
+            1 => new TextDefinition(ReadEncodedInt()),
+            2 => new TextDefinition(ReadString()),
+            _ => null
+        };
+    }
+
     long Seek(long offset, SeekOrigin origin);
 }

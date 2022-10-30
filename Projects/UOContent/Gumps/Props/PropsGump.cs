@@ -545,7 +545,7 @@ namespace Server.Gumps
 
             if (o is TextDefinition definition)
             {
-                return definition.Format(true);
+                return definition.Format() ?? "-empty-";
             }
 
             return o.ToString();
