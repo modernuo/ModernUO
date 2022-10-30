@@ -17,7 +17,7 @@ namespace Server.Spells
         public virtual SkillName MoveSkill => SkillName.Bushido;
         public virtual double RequiredSkill => 0.0;
 
-        public virtual TextDefinition AbilityMessage => 0;
+        public virtual TextDefinition AbilityMessage => TextDefinition.Empty;
 
         public virtual bool BlockedByAnimalForm => true;
         public virtual bool DelayedContext => false;

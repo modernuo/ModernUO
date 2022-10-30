@@ -7,7 +7,7 @@ namespace Server.Spells.Bushido
         public override int BaseMana => 5;
         public override double RequiredSkill => 50.0;
 
-        public override TextDefinition AbilityMessage => new(1063167); // You prepare to strike quickly.
+        public override TextDefinition AbilityMessage { get; } = 1063167; // You prepare to strike quickly.
 
         public override bool DelayedContext => true;
 

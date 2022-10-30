@@ -18,7 +18,7 @@ public class DefAlchemy : CraftSystem
 
     public override SkillName MainSkill => SkillName.Alchemy;
 
-    public override TextDefinition GumpTitle => 1044001;
+    public override TextDefinition GumpTitle { get; } = 1044001;
 
     public static CraftSystem CraftSystem { get; private set; }
 

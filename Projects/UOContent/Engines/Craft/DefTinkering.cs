@@ -32,7 +32,7 @@ public class DefTinkering : CraftSystem
 
     public override SkillName MainSkill => SkillName.Tinkering;
 
-    public override TextDefinition GumpTitle => 1044007;
+    public override TextDefinition GumpTitle { get; } = 1044007;
 
     public static CraftSystem CraftSystem { get; private set; }
 

@@ -8,8 +8,8 @@ namespace Server.Spells.Ninjitsu
         public override int BaseMana => 30;
         public override double RequiredSkill => Core.ML ? 40.0 : 20.0;
 
-        public override TextDefinition AbilityMessage =>
-            new(1063089); // You prepare to Backstab your opponent.
+        // You prepare to Backstab your opponent.
+        public override TextDefinition AbilityMessage { get; } = 1063089;
 
         public override bool ValidatesDuringHit => false;
 

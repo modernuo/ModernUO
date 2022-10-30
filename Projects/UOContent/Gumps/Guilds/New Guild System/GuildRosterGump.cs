@@ -70,9 +70,7 @@ namespace Server.Guilds
 
             defs[0] = name;
             defs[1] = pm.GuildRank.Name;
-            defs[2] = pm.NetState != null
-                ? new TextDefinition(1063015)
-                : new TextDefinition(pm.LastOnline.ToString("yyyy-MM-dd"));
+            defs[2] = pm.NetState != null ? 1063015 : pm.LastOnline.ToString("yyyy-MM-dd");
             defs[3] = pm.GuildTitle ?? "";
 
             return defs;
@@ -151,8 +149,8 @@ namespace Server.Guilds
             {
                 pm.SendLocalizedMessage(1063051, targ.Name); // ~1_val~ is already a member of a guild.
             }
-            else if (targ.HasGump<BaseGuildGump>() || targ.HasGump<CreateGuildGump>()
-            ) // TODO: Check message if CreateGuildGump Open
+            // TODO: Check message if CreateGuildGump Open
+            else if (targ.HasGump<BaseGuildGump>() || targ.HasGump<CreateGuildGump>())
             {
                 pm.SendLocalizedMessage(1063052, targ.Name); // ~1_val~ is currently considering another guild invitation.
             }

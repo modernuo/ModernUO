@@ -19,7 +19,7 @@ public class DefBlacksmithy : CraftSystem
 
     public override SkillName MainSkill => SkillName.Blacksmith;
 
-    public override TextDefinition GumpTitle => 1044002;
+    public override TextDefinition GumpTitle { get; } = 1044002;
 
     public static CraftSystem CraftSystem { get; private set; }
 
