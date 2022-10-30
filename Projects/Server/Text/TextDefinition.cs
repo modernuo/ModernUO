@@ -13,17 +13,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Runtime.CompilerServices;
+
 namespace Server;
 
 [Parsable]
 [PropertyObject]
-public class TextDefinition
+public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
 {
-    public TextDefinition(string text) : this(0, text)
+    public static readonly TextDefinition Empty = new();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TextDefinition Of(int number) => Of(number, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TextDefinition Of(string text) => Of(0, text);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TextDefinition Of(int number, string text) => new(number, text);
+
+    private TextDefinition()
     {
     }
 
-    public TextDefinition(int number = 0, string text = null)
+    private TextDefinition(int number, string text)
     {
         Number = number;
         String = text;
@@ -45,9 +59,9 @@ public class TextDefinition
 
     public string GetValue() => Number > 0 ? Number.ToString() : String ?? "";
 
-    public static implicit operator TextDefinition(int v) => new(v);
+    public static implicit operator TextDefinition(int v) => Of(v);
 
-    public static implicit operator TextDefinition(string s) => new(s);
+    public static implicit operator TextDefinition(string s) => Of(s);
 
     public static implicit operator int(TextDefinition m) => m?.Number ?? 0;
 
@@ -60,6 +74,48 @@ public class TextDefinition
             return null;
         }
 
-        return Utility.ToInt32(value, out var i) ? new TextDefinition(i) : new TextDefinition(value);
+        return Utility.ToInt32(value, out var i) ? Of(i) : Of(value);
     }
+
+    public void Deconstruct(out int number, out string s)
+    {
+        if (Number > 0)
+        {
+            number = Number;
+            s = null;
+        }
+        else
+        {
+            number = 0;
+            s = String;
+        }
+    }
+
+    public override bool Equals(object obj) => Equals(obj as TextDefinition);
+
+    public bool Equals(TextDefinition other)
+    {
+        if (ReferenceEquals(null, other))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        if (Number > 0 || other.Number > 0)
+        {
+            return Number == other.Number;
+        }
+
+        return String == other.String;
+    }
+
+    public override int GetHashCode() => Number > 0 ? HashCode.Combine(Number) : HashCode.Combine(String);
+
+    public static bool operator ==(TextDefinition left, TextDefinition right) => Equals(left, right);
+
+    public static bool operator !=(TextDefinition left, TextDefinition right) => !Equals(left, right);
 }

@@ -24,7 +24,7 @@ public class DefTailoring : CraftSystem
 
     public override SkillName MainSkill => SkillName.Tailoring;
 
-    public override TextDefinition GumpTitle => 1044005; // Tailoring Menu
+    public override TextDefinition GumpTitle { get; } = 1044005; // Tailoring Menu
 
     public static CraftSystem CraftSystem { get; private set; }
 

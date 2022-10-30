@@ -36,7 +36,7 @@ public class DefInscription : CraftSystem
 
     public override SkillName MainSkill => SkillName.Inscribe;
 
-    public override TextDefinition GumpTitle => 1044009;
+    public override TextDefinition GumpTitle { get; } = 1044009;
 
     public static CraftSystem CraftSystem { get; private set; }
 

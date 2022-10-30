@@ -5,8 +5,7 @@ namespace Server.Engines.MLQuests.Rewards
 {
     public class DummyReward : BaseReward
     {
-        public DummyReward(TextDefinition name)
-            : base(name)
+        public DummyReward(TextDefinition name) : base(name)
         {
         }
 

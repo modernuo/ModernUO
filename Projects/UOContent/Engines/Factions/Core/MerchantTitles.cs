@@ -42,44 +42,44 @@ namespace Server.Factions
             new(
                 SkillName.Inscribe,
                 90.0,
-                new TextDefinition(1060773, "Scribe"),
-                new TextDefinition(1011468, "SCRIBE"),
-                new TextDefinition(1010121, "You now have the faction title of scribe")
+                1060773, // Scribe
+                1011468, // SCRIBE
+                1010121 // You now have the faction title of scribe
             ),
             new(
                 SkillName.Carpentry,
                 90.0,
-                new TextDefinition(1060774, "Carpenter"),
-                new TextDefinition(1011469, "CARPENTER"),
-                new TextDefinition(1010122, "You now have the faction title of carpenter")
+                1060774, // Carpenter
+                1011469, // CARPENTER
+                1010122 // You now have the faction title of carpenter
             ),
             new(
                 SkillName.Tinkering,
                 90.0,
-                new TextDefinition(1022984, "Tinker"),
-                new TextDefinition(1011470, "TINKER"),
-                new TextDefinition(1010123, "You now have the faction title of tinker")
+                1022984, // Tinker
+                1011470, // TINKER
+                1010123 // You now have the faction title of tinker
             ),
             new(
                 SkillName.Blacksmith,
                 90.0,
-                new TextDefinition(1023016, "Blacksmith"),
-                new TextDefinition(1011471, "BLACKSMITH"),
-                new TextDefinition(1010124, "You now have the faction title of blacksmith")
+                1023016, // Blacksmith
+                1011471, // BLACKSMITH
+                1010124 // You now have the faction title of blacksmith
             ),
             new(
                 SkillName.Fletching,
                 90.0,
-                new TextDefinition(1023022, "Bowyer"),
-                new TextDefinition(1011472, "BOWYER"),
-                new TextDefinition(1010125, "You now have the faction title of Bowyer")
+                1023022, // Bowyer
+                1011472, // BOWYER
+                1010125 // You now have the faction title of Bowyer
             ),
             new(
                 SkillName.Tailoring,
                 90.0,
-                new TextDefinition(1022982, "Tailor"),
-                new TextDefinition(1018300, "TAILOR"),
-                new TextDefinition(1042162, "You now have the faction title of Tailor")
+                1022982, // Tailor
+                1018300, // TAILOR
+                1042162 // You now have the faction title of Tailor
             )
         };
 
