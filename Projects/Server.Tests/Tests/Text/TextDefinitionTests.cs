@@ -6,11 +6,12 @@ namespace Server.Tests;
 public class TextDefinitionTests
 {
     [Theory]
-    [InlineData(100100, "#100100")]
-    [InlineData("Hello", "Hello")]
-    public void TestTextDefinitionToString(TextDefinition actual, string expected)
+    [InlineData(10345, "", "#10345")]
+    [InlineData(0, "Hello", "Hello")]
+    [InlineData(10345, "Hello", "#10345")]
+    public void TestTextDefinitionToString(int a1, string a2, string expected)
     {
-        Assert.Equal(expected, actual.ToString());
+        Assert.Equal(expected, TextDefinition.Of(a1, a2).ToString());
     }
 
     [Theory]
