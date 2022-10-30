@@ -39,10 +39,9 @@ public class TextDefinition
 
     public override string ToString() => Number > 0 ? $"#{Number}" : String ?? "";
 
-    public string Format(bool propsGump) =>
+    public string Format() =>
         Number > 0 ? $"{Number} (0x{Number:X})" :
-        String != null ? $"\"{String}\"" :
-        propsGump ? "-empty-" : "empty";
+        String != null ? $"\"{String}\"" : null;
 
     public string GetValue() => Number > 0 ? Number.ToString() : String ?? "";
 
