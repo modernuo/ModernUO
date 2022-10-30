@@ -215,12 +215,12 @@ namespace Server.Mobiles
 
             writer.WriteEncodedInt(titles.Harrower);
 
-            var length = titles.m_Values.Length;
+            var length = titles.m_Values?.Length ?? 0;
             writer.WriteEncodedInt(length);
 
             for (var i = 0; i < length; i++)
             {
-                titles.m_Values[i] ??= new TitleInfo();
+                titles.m_Values![i] ??= new TitleInfo();
 
                 TitleInfo.Serialize(writer, titles.m_Values[i]);
             }
