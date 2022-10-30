@@ -70,7 +70,7 @@ namespace Server.Gumps
 
             AddButton(10, y + 54, 0xFB1, 0xFB2, 0);                    // Cancel Button
             AddHtmlLocalized(45, y + 56, x - 50, 20, 1060051, 0x7FFF); // CANCEL
-            TextDefinition.AddHtmlText(this, 14, 12, x, 20, header, false, false, 0x7FFF, 0xFFFFFF);
+            header.AddHtmlText(this, 14, 12, x, 20, false, false, 0x7FFF, 0xFFFFFF);
 
             AddPage(1);
 
@@ -112,7 +112,7 @@ namespace Server.Gumps
                     10
                 );
                 AddTooltip(b.LocalizedTooltip);
-                TextDefinition.AddHtmlText(this, innerX + 84, innerY, 250, 60, b.Label, false, false, 0x7FFF, 0xFFFFFF);
+                b.Label.AddHtmlText(this, innerX + 84, innerY, 250, 60, false, false, 0x7FFF, 0xFFFFFF);
             }
         }
 

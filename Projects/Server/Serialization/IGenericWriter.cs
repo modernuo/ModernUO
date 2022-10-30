@@ -164,5 +164,27 @@ public interface IGenericWriter
 
     void Write(BitArray bitArray);
 
+    void Write(TextDefinition def)
+    {
+        if (def == null)
+        {
+            WriteEncodedInt(3);
+        }
+        else if (def.Number > 0)
+        {
+            WriteEncodedInt(1);
+            WriteEncodedInt(def.Number);
+        }
+        else if (def.String != null)
+        {
+            WriteEncodedInt(2);
+            Write(def.String);
+        }
+        else
+        {
+            WriteEncodedInt(0); // Empty
+        }
+    }
+
     long Seek(long offset, SeekOrigin origin);
 }

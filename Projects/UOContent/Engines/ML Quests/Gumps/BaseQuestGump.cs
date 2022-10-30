@@ -149,7 +149,7 @@ namespace Server.Engines.MLQuests.Gumps
                 0x2710
             );
 
-            TextDefinition.AddHtmlText(this, 98, 156, 312, 240, quest.Description, false, true, 0x15F90, 0xBDE784);
+            quest.Description.AddHtmlText(this, 98, 156, 312, 240, false, true, 0x15F90, 0xBDE784);
         }
 
         public void AddObjectives(MLQuest quest)
@@ -250,7 +250,7 @@ namespace Server.Engines.MLQuests.Gumps
 
         public void AddConversation(TextDefinition text)
         {
-            TextDefinition.AddHtmlText(this, 98, 140, 312, 180, text, false, true, 0x15F90, 0xBDE784);
+            text.AddHtmlText(this, 98, 140, 312, 180, false, true, 0x15F90, 0xBDE784);
         }
 
         /* OSI gump IDs:

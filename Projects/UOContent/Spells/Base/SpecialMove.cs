@@ -252,7 +252,7 @@ namespace Server.Spells
                     m.NetState.SendToggleSpecialAbility(moveID + 1, true);
                 }
 
-                TextDefinition.SendMessageTo(m, move.AbilityMessage);
+                move.AbilityMessage.SendMessageTo(m);
             }
 
             return true;

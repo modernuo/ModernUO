@@ -33,10 +33,7 @@ namespace Server.Items
 
         public override void HandleInvalidTransfer(Mobile from)
         {
-            if (InvalidTransferMessage != null)
-            {
-                TextDefinition.SendMessageTo(from, InvalidTransferMessage);
-            }
+            InvalidTransferMessage.SendMessageTo(from);
 
             Delete();
         }
