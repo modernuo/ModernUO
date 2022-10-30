@@ -51,6 +51,8 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
 
     public bool IsEmpty => Number <= 0 && String == null;
 
+    public override string ToString() => Number > 0 ? $"#{Number}" : String ?? "";
+
     public string Format() =>
         Number > 0 ? $"{Number} (0x{Number:X})" :
         String != null ? $"\"{String}\"" : null;
@@ -103,9 +105,9 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
             return true;
         }
 
-        if ((Number > 0 || other.Number > 0) && Number == other.Number)
+        if (Number > 0 || other.Number > 0)
         {
-            return true;
+            return Number == other.Number;
         }
 
         return String == other.String;
