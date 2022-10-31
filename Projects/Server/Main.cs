@@ -327,7 +327,7 @@ public static class Core
             if (!close)
             {
                 Console.WriteLine("This exception is fatal, press return to exit");
-                Console.ReadKey();
+                Console.ReadLine();
             }
 
             Kill();
