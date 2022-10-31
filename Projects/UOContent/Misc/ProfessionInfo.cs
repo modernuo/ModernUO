@@ -103,9 +103,9 @@ namespace Server
 
                         var cols = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
                         var key = cols[0].ToLowerInvariant();
-                        var value = cols[1].Trim('"');
+                        var value = cols[1].Trim('"').ToLowerInvariant();
 
-                        if (key == "type" && !value.Equals("profession", StringComparison.InvariantCultureIgnoreCase))
+                        if (key == "type" && value != "profession")
                         {
                             break;
                         }
