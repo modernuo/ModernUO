@@ -207,9 +207,10 @@ namespace Server.Items
 
         private static void ApplySkillBonus(AosSkillBonuses attrs, int min, int max, int index, int low, int high)
         {
+            var isSpellBook = attrs.Owner is Spellbook;
             var possibleSkills =
-                new List<SkillName>(attrs.Owner is Spellbook ? m_PossibleSpellbookSkills : m_PossibleBonusSkills);
-            var count = Core.SE ? possibleSkills.Count : possibleSkills.Count - 2;
+                new List<SkillName>(isSpellBook ? m_PossibleSpellbookSkills : m_PossibleBonusSkills);
+            var count = Core.SE || isSpellBook ? possibleSkills.Count : possibleSkills.Count - 2;
 
             SkillName sk;
             bool found;
@@ -532,11 +533,20 @@ namespace Server.Items
             // -1 To Exclude the Fey Slayer which appears ONLY on a certain artifact.
             var group = groups[Utility.Random(groups.Length - 1)];
 
-            // 10% chance for a super slayer
-            var entry = group.Entries.Length == 0 || Utility.Random(10) == 0
-                ? group.Super : group.Entries.RandomElement();
+            //10% chance of a super
+            if (isSuper || Utility.Random(10) == 0)
+            {
+                return group.Super.Name;
+            }
 
-            return entry.Name;
+            //Failed the super roll but there's no child slayers: re-roll it
+            if (group.Entries.Length == 0)
+            {
+                return GetRandomSlayer(isSuper);
+            }
+
+            //Lessor slayer
+            return group.Entries.RandomElement().Name;
         }
 
         public void ApplyAttributesTo(BaseArmor armor)

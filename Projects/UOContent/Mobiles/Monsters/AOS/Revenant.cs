@@ -73,6 +73,8 @@ namespace Server.Mobiles
         public override bool BardImmune => true;
         public override Poison PoisonImmune => Poison.Lethal;
 
+        public override bool IgnoreMobiles => true;
+
         public override void DisplayPaperdollTo(Mobile to)
         {
             // Do nothing

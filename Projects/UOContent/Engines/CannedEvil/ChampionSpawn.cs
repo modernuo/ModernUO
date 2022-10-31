@@ -20,11 +20,13 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Regions;
+using Server.Logging;
 
 namespace Server.Engines.CannedEvil
 {
     public class ChampionSpawn : Item
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ChampionSpawn));
         private bool m_Active;
         private ChampionSpawnType m_Type;
         private List<Mobile> m_Creatures;
@@ -597,11 +599,11 @@ namespace Server.Engines.CannedEvil
                                 {
                                     if (gainedPath)
                                     {
-                                        m.SendLocalizedMessage(1054032); // You have gained a path in Valor!
+                                        pm.SendLocalizedMessage(1054032); // You have gained a path in Valor!
                                     }
                                     else
                                     {
-                                        m.SendLocalizedMessage(1054030); // You have gained in Valor!
+                                        pm.SendLocalizedMessage(1054030); // You have gained in Valor!
                                     }
 
                                     // No delay on Valor gains
@@ -851,12 +853,15 @@ namespace Server.Engines.CannedEvil
 
         public Mobile Spawn(params Type[] types)
         {
+            var type = types[Utility.Random(types.Length)];
             try
             {
-                return Activator.CreateInstance(types[Utility.Random(types.Length)]) as Mobile;
+                return Activator.CreateInstance(type) as Mobile;
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error($"Failed to spawn {type} of {m_Type} at champ {Location.X} {Location.Y} {Location.Z}");
+                logger.Error($"{e}");
                 return null;
             }
         }

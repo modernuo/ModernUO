@@ -32,10 +32,9 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            var length = GetPartyMemberListPacketLength(p);
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
-            writer.Write((ushort)length);
+            writer.Write((ushort)buffer.Length);
             writer.Write((ushort)0x06); // Sub-packet
             writer.Write((byte)0x01); // Command
             writer.Write((byte)p.Count);

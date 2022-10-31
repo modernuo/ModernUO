@@ -49,30 +49,41 @@ namespace Server.Spells.Necromancy
                     using var pool = PooledRefQueue<Mobile>.Create();
 
                     var cbc = Caster as BaseCreature;
-                    var isMonster = cbc?.Controlled == false && !cbc.Summoned;
+                    var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
                     var eable = Caster.GetMobilesInRange(Core.ML ? 4 : 5);
                     foreach (var m in eable)
                     {
-                        if (Caster == m || !Caster.InLOS(m) || (!isMonster && !SpellHelper.ValidIndirectTarget(Caster, m)) ||
-                            !Caster.CanBeHarmful(m, false))
+                        if (Caster == m
+                            || !Caster.InLOS(m)
+                            || (!isMonster && !SpellHelper.ValidIndirectTarget(Caster, m))
+                            || !Caster.CanBeHarmful(m, false))
                         {
                             continue;
                         }
 
-                        if (isMonster)
+                        if (isMonster && m.Player)
+                            continue;
+
+                        if (m is BaseCreature bc)
                         {
-                            if (m is BaseCreature bc)
-                            {
-                                if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
-                                {
-                                    continue;
-                                }
-                            }
-                            else if (!m.Player)
+                            if (isMonster && !bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
                             {
                                 continue;
                             }
+
+                            //Animate dead casting wither shouldn't hit: familiars or player or pets
+                            if (isMonster && bc.IsNecroFamiliar)
+                                continue;
+
+                            if (bc.IsAnimatedDead)
+                                continue;
+
+                            if (isMonster && bc.Summoned)
+                                continue;
+
+                            if (isMonster && bc.Controlled)
+                                continue;
                         }
 
                         pool.Enqueue(m);

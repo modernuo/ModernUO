@@ -487,15 +487,7 @@ namespace Server.Items
 
                 if (Quality == WeaponQuality.Exceptional)
                 {
-                    if (Attributes.WeaponDamage > 35)
-                    {
-                        Attributes.WeaponDamage -= 20;
-                    }
-                    else
-                    {
-                        Attributes.WeaponDamage = 15;
-                    }
-
+                    Attributes.WeaponDamage = 35;
                     if (Core.ML)
                     {
                         Attributes.WeaponDamage += (int)(from.Skills.ArmsLore.Value / 20);
@@ -2477,8 +2469,7 @@ namespace Server.Items
                 damageBonus = 100;
             }
 
-            var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus +
-                             (GetDamageBonus() + damageBonus) / 100.0;
+            var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus + damageBonus / 100.0;
 
             return damage + (int)(damage * totalBonus);
         }
@@ -2884,7 +2875,8 @@ namespace Server.Items
                 list.Add(1060400); // use best weapon skill
             }
 
-            if ((prop = GetDamageBonus() + Attributes.WeaponDamage) != 0)
+            var preAosDamageBonus = !Core.AOS ? GetDamageBonus() : 0;
+            if ((prop = preAosDamageBonus + Attributes.WeaponDamage) != 0)
             {
                 list.Add(1060401, prop); // damage increase ~1_val~%
             }

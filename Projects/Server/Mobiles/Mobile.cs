@@ -405,6 +405,8 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
     public virtual bool NewGuildDisplay => false;
 
+    public virtual bool IgnoreMobiles => false;
+
     public List<Mobile> Stabled { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]

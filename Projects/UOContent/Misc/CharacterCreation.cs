@@ -232,9 +232,9 @@ public static class CharacterCreation
 
         var profession = ProfessionInfo.Professions[args.Profession];
 
-        switch (profession?.Name.ToLowerInvariant())
+        switch (args.Profession)
         {
-            case "necromancer":
+            case 4:
                 {
                     if ((flags & ClientFlags.Malas) != 0)
                     {
@@ -254,11 +254,11 @@ public static class CharacterCreation
 
                     break;
                 }
-            case "paladin":
+            case 5:
                 {
                     return _newHavenInfo;
                 }
-            case "samurai":
+            case 6:
                 {
                     if ((flags & ClientFlags.Tokuno) != 0)
                     {
@@ -278,7 +278,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case "ninja":
+            case 7:
                 {
                     if ((flags & ClientFlags.Tokuno) != 0)
                     {

@@ -67,11 +67,12 @@ namespace Server.Multis
         private DateTime m_DecayTime;
 
         private Direction m_Facing;
-        private TimerExecutionToken _moveTimerToken;
 
         private string m_ShipName;
 
-        private TimerExecutionToken _turnTimerToken;
+
+        private TurnTimer _turnTimer;
+        private MoveTimer _moveTimer;
 
         public BaseBoat() : base(0x0)
         {
@@ -125,7 +126,7 @@ namespace Server.Multis
         public Direction Moving { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsMoving => _moveTimerToken.Running;
+        public bool IsMoving => _moveTimer?.Running == true;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int Speed { get; set; }
@@ -459,8 +460,8 @@ namespace Server.Multis
             Hold?.Delete();
             PPlank?.Delete();
             SPlank?.Delete();
-            _turnTimerToken.Cancel();
-            _moveTimerToken.Cancel();
+            _turnTimer?.Stop();
+            _moveTimer?.Stop();
 
             Boats.Remove(this);
         }
@@ -1091,8 +1092,8 @@ namespace Server.Multis
             Speed = FastSpeed;
             Order = single ? BoatOrder.Single : BoatOrder.Course;
 
-            _moveTimerToken.Cancel();
-            Timer.StartTimer(FastInterval, FastInterval, StopBoat, out _moveTimerToken);
+            if (!SafelyStartMoveTimer(FastInterval, single))
+                return false;
 
             if (message)
             {
@@ -1279,11 +1280,27 @@ namespace Server.Multis
 
             if (Order != BoatOrder.Move)
             {
-                _moveTimerToken.Cancel();
+                _turnTimer?.Stop();
             }
 
-            _turnTimerToken.Cancel();
-            Timer.StartTimer(TimeSpan.FromMilliseconds(500), () => Turn(offset), out _turnTimerToken);
+            _turnTimer ??= new TurnTimer(offset, this, TimeSpan.FromMilliseconds(500), message);
+
+            if (_turnTimer.Running && _turnTimer.Turn == offset)
+            {
+                //Dont let them spin around in circles like crazy
+                return true;
+            }
+
+            //Have they issued a new command too soon? Ignore it if so
+            var turnTimerNext = (_turnTimer.Next - Core.Now).TotalMilliseconds;
+            if (turnTimerNext < 0 && turnTimerNext > -250)
+            {
+                return true;
+            }
+
+            _turnTimer.Turn = offset;
+            _turnTimer.Stop();
+            _turnTimer.Start();
 
             if (message)
             {
@@ -1295,7 +1312,7 @@ namespace Server.Multis
 
         public bool Turn(int offset, bool message = true)
         {
-            _turnTimerToken.Cancel();
+            _turnTimer?.Stop();
 
             if (CheckDecay())
             {
@@ -1347,9 +1364,40 @@ namespace Server.Multis
             m_ClientSpeed = clientSpeed;
             Order = BoatOrder.Move;
 
-            _moveTimerToken.Cancel();
-            Timer.StartTimer(interval, single ? 1 : 0, StopBoat, out _moveTimerToken);
+            SafelyStartMoveTimer(interval, single);
 
+            return true;
+        }
+
+        private bool SafelyStartMoveTimer(TimeSpan interval, bool single)
+        {
+            var singleNum = single ? 1 : 0;
+            _moveTimer ??= new MoveTimer(this, interval, interval, singleNum);
+
+            //Do not allow them to travel faster simply by respamming the command
+            if (_moveTimer.Running && _moveTimer.Interval == interval && _moveTimer.Single == singleNum)
+            {
+                return false;
+            }
+
+            //Have they issued a new command too soon? Ignore it if so
+            var moverTimerNext = (_moveTimer.Next - Core.Now).TotalMilliseconds;
+            if (moverTimerNext < 0 && moverTimerNext > -500)
+            {
+                return false;
+            }
+
+            //Changing the interval or flipping between commands: "Forward" and "Forward One"
+            TimeSpan delay = TimeSpan.Zero;
+            if (interval.TotalMilliseconds > Math.Abs(moverTimerNext))
+            {
+                var addedDelay = (int)(interval.TotalMilliseconds - Math.Abs(moverTimerNext));
+                delay = new TimeSpan(0, 0, 0, 0, addedDelay);
+            }
+
+            _moveTimer.Stop();
+            _moveTimer = new MoveTimer(this, delay, interval, singleNum);
+            _moveTimer.Start();
             return true;
         }
 
@@ -1360,7 +1408,7 @@ namespace Server.Multis
                 return false;
             }
 
-            if (!_moveTimerToken.Running)
+            if (_moveTimer?.Running == false)
             {
                 if (message)
                 {
@@ -1373,7 +1421,7 @@ namespace Server.Multis
             Moving = Direction.North;
             Speed = 0;
             m_ClientSpeed = 0;
-            _moveTimerToken.Cancel();
+            _moveTimer?.Stop();
 
             if (message)
             {
@@ -1891,7 +1939,7 @@ namespace Server.Multis
                             continue;
                         }
 
-                         // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
+                        // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
                         if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
                         {
                             _current = current;
@@ -2045,6 +2093,45 @@ namespace Server.Multis
         {
             EventSink.WorldLoad += UpdateAllComponents;
             EventSink.WorldSave += UpdateAllComponents;
+        }
+
+        private class TurnTimer : Timer
+        {
+            public int Turn;
+            private bool _message;
+            private BaseBoat _boat;
+
+            public TurnTimer(int turn, BaseBoat boat, TimeSpan delay, bool message = true) : base(delay)
+            {
+                Turn = turn;
+                _message = message;
+                _boat = boat;
+            }
+            protected override void OnTick()
+            {
+                _boat?.Turn(Turn, _message);
+                Stop();
+            }
+        }
+
+        private class MoveTimer : Timer
+        {
+            public TimeSpan BoatMoveDelay;
+            public TimeSpan BoatMoveInterval;
+            public int Single;
+            private BaseBoat _boat;
+
+            public MoveTimer(BaseBoat boat, TimeSpan delay, TimeSpan interval, int single = 0) : base(delay, interval, single)
+            {
+                BoatMoveInterval = interval;
+                BoatMoveDelay = delay;
+                Single = single;
+                _boat = boat;
+            }
+            protected override void OnTick()
+            {
+                _boat?.StopBoat();
+            }
         }
 
         private class DecayTimer : Timer

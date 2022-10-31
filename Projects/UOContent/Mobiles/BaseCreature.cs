@@ -1315,6 +1315,19 @@ namespace Server.Mobiles
             return m_Team != c.m_Team || (_summoned || m_Controlled) != (c._summoned || c.m_Controlled);
         }
 
+        public override int GetPacketFlags(bool stygianAbyss)
+        {
+            var flags = base.GetPacketFlags(stygianAbyss);
+
+            if (IgnoreMobiles)
+            {
+                flags |= 0x10;
+            }
+
+            return flags;
+        }
+
+
         public override string ApplyNameSuffix(string suffix)
         {
             if (IsParagon && !GivesMLMinorArtifact)
