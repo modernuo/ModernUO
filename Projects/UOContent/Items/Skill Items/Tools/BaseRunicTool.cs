@@ -534,7 +534,7 @@ namespace Server.Items
             var group = groups[Utility.Random(groups.Length - 1)];
 
             //10% chance of a super
-            if (isSuper || Utility.Random(10) == 0)
+            if (Utility.Random(10) == 0)
             {
                 return group.Super.Name;
             }
@@ -542,7 +542,7 @@ namespace Server.Items
             //Failed the super roll but there's no child slayers: re-roll it
             if (group.Entries.Length == 0)
             {
-                return GetRandomSlayer(isSuper);
+                return GetRandomSlayer();
             }
 
             //Lessor slayer
