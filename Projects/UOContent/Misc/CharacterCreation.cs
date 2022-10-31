@@ -230,9 +230,11 @@ public static class CharacterCreation
         var flags = args.State?.Flags ?? ClientFlags.None;
         var m = args.Mobile;
 
-        switch (args.Profession)
+        var profession = ProfessionInfo.Professions[args.Profession];
+
+        switch (profession?.Name.ToLowerInvariant())
         {
-            case 4:
+            case "necromancer":
                 {
                     if ((flags & ClientFlags.Malas) != 0)
                     {
@@ -252,11 +254,11 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 5:
+            case "paladin":
                 {
                     return _newHavenInfo;
                 }
-            case 6:
+            case "samurai":
                 {
                     if ((flags & ClientFlags.Tokuno) != 0)
                     {
@@ -276,7 +278,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 7:
+            case "ninja":
                 {
                     if ((flags & ClientFlags.Tokuno) != 0)
                     {
@@ -399,9 +401,9 @@ public static class CharacterCreation
         var elf = m.Race == Race.Elf;
         var gargoyle = m.Race == Race.Gargoyle;
 
-        switch (prof)
+        switch (profession?.Name.ToLowerInvariant())
         {
-            case 4: // necromancer
+            case "necromancer":
                 {
                     Container regs = new BagOfNecroReagents { LootType = LootType.Regular };
 
@@ -454,7 +456,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 5: // paladin
+            case "paladin":
                 {
                     if (elf)
                     {
@@ -495,7 +497,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 6: // samurai
+            case "samurai":
                 {
                     addSkillItems = false;
 
@@ -532,7 +534,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 7:
+            case "ninja":
                 {
                     addSkillItems = false;
 
@@ -572,7 +574,10 @@ public static class CharacterCreation
                     m.PackItem(new BookOfNinjitsu());
                     break;
                 }
-            default: // warrior
+            case "swordsman":
+            case "fencer":
+            case "warrior":
+            case "mace fighter":
                 {
                     if (elf)
                     {
