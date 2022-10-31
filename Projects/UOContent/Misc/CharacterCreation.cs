@@ -230,8 +230,6 @@ public static class CharacterCreation
         var flags = args.State?.Flags ?? ClientFlags.None;
         var m = args.Mobile;
 
-        var profession = ProfessionInfo.Professions[args.Profession];
-
         switch (args.Profession)
         {
             case 4:
@@ -403,7 +401,7 @@ public static class CharacterCreation
 
         switch (prof)
         {
-            case 4://"necromancer":
+            case 4: // necromancer
                 {
                     Container regs = new BagOfNecroReagents { LootType = LootType.Regular };
 
@@ -456,7 +454,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 5://"paladin":
+            case 5: // paladin
                 {
                     if (elf)
                     {
@@ -497,7 +495,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case 6: //samurai
+            case 6: // samurai
                 {
                     addSkillItems = false;
 
@@ -574,7 +572,7 @@ public static class CharacterCreation
                     m.PackItem(new BookOfNinjitsu());
                     break;
                 }
-            case 1://"warrior"
+            default: // warrior
                 {
                     if (elf)
                     {

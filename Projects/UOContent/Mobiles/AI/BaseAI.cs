@@ -2660,13 +2660,13 @@ public abstract class BaseAI
                 }
 
                 // Animated creatures cannot attack other animated creatures
-                if (m_Mobile.IsAnimatedDead && bc != null && bc.IsAnimatedDead)
+                if (m_Mobile.IsAnimatedDead && bc?.IsAnimatedDead == true)
                 {
                     continue;
                 }
 
                 // Animated creatures cannot attack pets of other players
-                if (m_Mobile.IsAnimatedDead && bc != null && bc.Controlled)
+                if (m_Mobile.IsAnimatedDead && bc?.Controlled == true)
                 {
                     continue;
                 }
@@ -2738,7 +2738,7 @@ public abstract class BaseAI
                 newFocusMob = m;
                 val = theirVal;
             }
-            // The summon is targeted when nothing else around. Otherwise this monster enters idle mode. 
+            // The summon is targeted when nothing else around. Otherwise this monster enters idle mode.
             // Do a check for this edge case so players cannot abuse by casting EVs offscreen to kill an idle monster.
             else if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
             {
