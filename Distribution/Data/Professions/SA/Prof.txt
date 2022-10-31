@@ -1,4 +1,4 @@
-TheBegin
+Begin
 	Name			Samurai
 	TrueName		"Samurai"
 	NameId			1062948
@@ -9,7 +9,7 @@ TheBegin
 	Type			Profession
 	Skill			Bushido			30
 	Skill			Swordsmanship		30
-	Skill			Focus		30
+	Skill			Focus		30					
 	Skill			Parrying	30
 	Stat			Str			40
 	Stat			Dex			30
@@ -27,7 +27,7 @@ Begin
 	Type			Profession
 	Skill			Ninjitsu		30
 	Skill			Hiding			30
-	Skill			Fencing		30
+	Skill			Fencing		30					
 	Skill			Stealth		30
 	Stat			Str			40
 	Stat			Dex			30
@@ -46,7 +46,7 @@ Begin
 	Skill			Chivalry		30
 	Skill			Tactics 		30
 	Skill			Focus 		30
-	Skill			Swordsmanship		30
+	Skill			Swordsmanship		30					
 	Stat			Str			45
 	Stat			Dex			20
 	Stat			Int			25
@@ -100,7 +100,7 @@ Begin
 	Skill			Magery			30
 	Skill			Meditation		30
 	Skill			Evaluate Intelligence	30
-	Skill			Wrestling		30
+	Skill			Wrestling		30					
 	Stat			Str			25
 	Stat			Dex			20
 	Stat			Int			45
