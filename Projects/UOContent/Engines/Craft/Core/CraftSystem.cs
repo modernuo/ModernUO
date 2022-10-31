@@ -50,7 +50,7 @@ namespace Server.Engines.Craft
 
         public abstract SkillName MainSkill { get; }
 
-        public virtual TextDefinition GumpTitle => 0;
+        public virtual TextDefinition GumpTitle => TextDefinition.Empty;
 
         public virtual CraftECA ECA => CraftECA.ChanceMinusSixty;
 

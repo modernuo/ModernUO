@@ -33,7 +33,7 @@ public class Recipe
 
     public int ID { get; }
 
-    public TextDefinition TextDefinition => _td ??= new TextDefinition(CraftItem.NameNumber, CraftItem.NameString);
+    public TextDefinition TextDefinition => _td ??= TextDefinition.Of(CraftItem.NameNumber, CraftItem.NameString);
 
     public static void Initialize()
     {

@@ -10,8 +10,8 @@ namespace Server.Spells.Bushido
         public override int BaseMana => 0;
         public override double RequiredSkill => 25.0;
 
-        public override TextDefinition AbilityMessage =>
-            new(1063122); // You better kill your enemy with your next hit or you'll be rather sorry...
+        // You better kill your enemy with your next hit or you'll be rather sorry...
+        public override TextDefinition AbilityMessage { get; } = 1063122;
 
         public override double GetDamageScalar(Mobile attacker, Mobile defender) =>
             // TODO: 20 -> Perfection
