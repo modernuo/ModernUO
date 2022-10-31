@@ -401,9 +401,9 @@ public static class CharacterCreation
         var elf = m.Race == Race.Elf;
         var gargoyle = m.Race == Race.Gargoyle;
 
-        switch (profession?.Name.ToLowerInvariant())
+        switch (prof)
         {
-            case "necromancer":
+            case 4://"necromancer":
                 {
                     Container regs = new BagOfNecroReagents { LootType = LootType.Regular };
 
@@ -456,7 +456,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case "paladin":
+            case 5://"paladin":
                 {
                     if (elf)
                     {
@@ -497,7 +497,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case "samurai":
+            case 6: //samurai
                 {
                     addSkillItems = false;
 
@@ -534,7 +534,7 @@ public static class CharacterCreation
 
                     break;
                 }
-            case "ninja":
+            case 7:
                 {
                     addSkillItems = false;
 
@@ -574,10 +574,7 @@ public static class CharacterCreation
                     m.PackItem(new BookOfNinjitsu());
                     break;
                 }
-            case "swordsman":
-            case "fencer":
-            case "warrior":
-            case "mace fighter":
+            case 1://"warrior"
                 {
                     if (elf)
                     {
