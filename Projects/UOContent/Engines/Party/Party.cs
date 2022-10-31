@@ -195,7 +195,7 @@ namespace Server.Engines.PartySystem
             m.Party = this;
 
             Span<byte> memberList =
-                stackalloc byte[PartyPackets.GetPartyMemberListPacketLength(this)].InitializePacket();
+                stackalloc byte[PartyPackets.GetPartyMemberListPacketLength(Count)].InitializePacket();
             Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
 
             for (var i = 0; i < Members.Count; ++i)
@@ -216,12 +216,7 @@ namespace Server.Engines.PartySystem
             }
         }
 
-        public void OnAccept(Mobile from)
-        {
-            OnAccept(from, false);
-        }
-
-        public void OnAccept(Mobile from, bool force)
+        public void OnAccept(Mobile from, bool force = false)
         {
             var ourFaction = Faction.Find(Leader);
             var theirFaction = Faction.Find(from);
@@ -289,26 +284,31 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> removeMember =
-                stackalloc byte[PartyPackets.GetPartyRemoveMemberPacketLength(this)].InitializePacket();
-
+            var removed = false;
             for (var i = 0; i < Members.Count; i++)
             {
                 if (Members[i].Mobile == m)
                 {
                     Members.RemoveAt(i);
-
-                    m.NetState.SendPartyRemoveMember(m.Serial);
-                    m.Party = null;
-
-                    m.SendLocalizedMessage(1005451); // You have been removed from the party.
-
-                    PartyPackets.CreatePartyRemoveMember(removeMember, m.Serial, this);
-                    SendToAll(removeMember);
-                    SendToAll(1005452); // A player has been removed from your party.
-
+                    removed = true;
                     break;
                 }
+            }
+
+            if (removed)
+            {
+                Span<byte> removeMember =
+                    stackalloc byte[PartyPackets.GetPartyRemoveMemberPacketLength(Count)].InitializePacket();
+
+                // Send empty party to the player removed
+                m.NetState.SendPartyRemoveMember(m.Serial);
+                m.Party = null;
+
+                m.SendLocalizedMessage(1005451); // You have been removed from the party.
+
+                PartyPackets.CreatePartyRemoveMember(removeMember, m.Serial, this);
+                SendToAll(removeMember);
+                SendToAll(1005452); // A player has been removed from your party.
             }
 
             if (Members.Count == 1)

@@ -860,8 +860,13 @@ namespace Server.Engines.CannedEvil
             }
             catch (Exception e)
             {
-                logger.Error($"Failed to spawn {type} of {m_Type} at champ {Location.X} {Location.Y} {Location.Z}");
-                logger.Error($"{e}");
+                logger.Error(
+                    e,
+                    "Failed to spawn {MobileType} for champion type {ChampionSpawnType} at {Location}.",
+                    type,
+                    m_Type,
+                    Location
+                );
                 return null;
             }
         }
