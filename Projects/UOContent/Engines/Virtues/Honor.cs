@@ -218,13 +218,13 @@ namespace Server
 
             m_Timer = new InternalTimer(this);
             m_Timer.Start();
-            source.m_hontime = Core.Now + TimeSpan.FromMinutes(40);
+            source._honorTime = Core.Now + TimeSpan.FromMinutes(40);
 
             Timer.StartTimer(
                 TimeSpan.FromMinutes(40),
                 () =>
                 {
-                    if (source.m_hontime < Core.Now && source.SentHonorContext != null)
+                    if (source._honorTime < Core.Now && source.SentHonorContext != null)
                     {
                         Cancel();
                     }

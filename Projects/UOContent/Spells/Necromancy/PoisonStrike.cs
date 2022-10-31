@@ -77,46 +77,38 @@ namespace Server.Spells.Necromancy
                         pool.Enqueue(m);
                     }
 
-
-
                     var cbc = Caster as BaseCreature;
                     var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
                     var eable = m.GetMobilesInRange(2);
                     foreach (Mobile targ in eable)
                     {
-                        if (targ != Caster
-                            && m != targ
-                            && SpellHelper.ValidIndirectTarget(Caster, targ)
-                            && Caster.CanBeHarmful(targ, false))
+                        if (targ == Caster || m == targ || !SpellHelper.ValidIndirectTarget(Caster, targ)
+                            || !Caster.CanBeHarmful(targ, false))
                         {
+                            continue;
+                        }
 
-                            if (isMonster && targ.Player)
-                                continue;
+                        if (isMonster && targ.Player)
+                        {
+                            continue;
+                        }
 
-                            //Animate dead casting poison strike shouldn't hit: familiars or player or pets
-                            if (targ is BaseCreature bc)
+                        // Animate dead casting poison strike shouldn't hit: familiars or player or pets
+                        if (targ is BaseCreature bc)
+                        {
+                            if (bc.IsAnimatedDead)
                             {
-                                if (isMonster && !bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
-                                {
-                                    continue;
-                                }
-
-                                if (isMonster && bc.IsNecroFamiliar)
-                                    continue;
-
-                                if (bc.IsAnimatedDead)
-                                    continue;
-
-                                if (isMonster && bc.Summoned)
-                                    continue;
-
-                                if (isMonster && bc.Controlled)
-                                    continue;
+                                continue;
                             }
 
-                            pool.Enqueue(targ);
+                            if (isMonster && (bc.Controlled || bc.Summoned || bc.Team == cbc.Team || bc.IsNecroFamiliar))
+                            {
+                                continue;
+                            }
                         }
+
+                        pool.Enqueue(targ);
                     }
 
                     eable.Free();

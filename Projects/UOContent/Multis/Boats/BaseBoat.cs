@@ -1093,7 +1093,9 @@ namespace Server.Multis
             Order = single ? BoatOrder.Single : BoatOrder.Course;
 
             if (!SafelyStartMoveTimer(FastInterval, single))
+            {
                 return false;
+            }
 
             if (message)
             {
@@ -1285,20 +1287,20 @@ namespace Server.Multis
 
             _turnTimer ??= new TurnTimer(offset, this, TimeSpan.FromMilliseconds(500), message);
 
-            if (_turnTimer.Running && _turnTimer.Turn == offset)
+            if (_turnTimer.Running && _turnTimer._turn == offset)
             {
-                //Dont let them spin around in circles like crazy
+                // Dont let them spin around in circles like crazy
                 return true;
             }
 
-            //Have they issued a new command too soon? Ignore it if so
+            // Have they issued a new command too soon? Ignore it if so
             var turnTimerNext = (_turnTimer.Next - Core.Now).TotalMilliseconds;
-            if (turnTimerNext < 0 && turnTimerNext > -250)
+            if (turnTimerNext is < 0 and > -250)
             {
                 return true;
             }
 
-            _turnTimer.Turn = offset;
+            _turnTimer._turn = offset;
             _turnTimer.Stop();
             _turnTimer.Start();
 
@@ -1372,31 +1374,39 @@ namespace Server.Multis
         private bool SafelyStartMoveTimer(TimeSpan interval, bool single)
         {
             var singleNum = single ? 1 : 0;
-            _moveTimer ??= new MoveTimer(this, interval, interval, singleNum);
 
-            //Do not allow them to travel faster simply by respamming the command
-            if (_moveTimer.Running && _moveTimer.Interval == interval && _moveTimer.Single == singleNum)
+            if (_moveTimer != null)
             {
-                return false;
+                // Do not allow them to travel faster simply by respamming the command
+                if (_moveTimer.Running && _moveTimer.Interval == interval && _moveTimer.Single == singleNum)
+                {
+                    return false;
+                }
+
+                // Have they issued a new command too soon? Ignore it if so
+                var moverTimerNext = (_moveTimer.Next - Core.Now).TotalMilliseconds;
+                if (moverTimerNext is < 0 and > -500)
+                {
+                    return false;
+                }
+
+                // Changing the interval or flipping between commands: "Forward" and "Forward One"
+                TimeSpan delay = TimeSpan.Zero;
+                if (interval.TotalMilliseconds > Math.Abs(moverTimerNext))
+                {
+                    var addedDelay = (int)(interval.TotalMilliseconds - Math.Abs(moverTimerNext));
+                    delay = TimeSpan.FromMilliseconds(addedDelay);
+                }
+
+                _moveTimer.Stop();
+                _moveTimer.Delay = delay;
+                _moveTimer.Interval = interval;
+            }
+            else
+            {
+                _moveTimer = new MoveTimer(this, interval, interval, singleNum);
             }
 
-            //Have they issued a new command too soon? Ignore it if so
-            var moverTimerNext = (_moveTimer.Next - Core.Now).TotalMilliseconds;
-            if (moverTimerNext < 0 && moverTimerNext > -500)
-            {
-                return false;
-            }
-
-            //Changing the interval or flipping between commands: "Forward" and "Forward One"
-            TimeSpan delay = TimeSpan.Zero;
-            if (interval.TotalMilliseconds > Math.Abs(moverTimerNext))
-            {
-                var addedDelay = (int)(interval.TotalMilliseconds - Math.Abs(moverTimerNext));
-                delay = new TimeSpan(0, 0, 0, 0, addedDelay);
-            }
-
-            _moveTimer.Stop();
-            _moveTimer = new MoveTimer(this, delay, interval, singleNum);
             _moveTimer.Start();
             return true;
         }
@@ -2097,19 +2107,19 @@ namespace Server.Multis
 
         private class TurnTimer : Timer
         {
-            public int Turn;
+            internal int _turn;
             private bool _message;
             private BaseBoat _boat;
 
             public TurnTimer(int turn, BaseBoat boat, TimeSpan delay, bool message = true) : base(delay)
             {
-                Turn = turn;
+                _turn = turn;
                 _message = message;
                 _boat = boat;
             }
             protected override void OnTick()
             {
-                _boat?.Turn(Turn, _message);
+                _boat?.Turn(_turn, _message);
                 Stop();
             }
         }

@@ -94,7 +94,9 @@ namespace Server.Accounting
             _totalGameTime = reader.ReadTimeSpan();
 
             if (version > 1)
+            {
                 _email = reader.ReadString();
+            }
 
             Timer.StartTimer(AfterDeserialization);
         }

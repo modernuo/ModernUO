@@ -52,41 +52,36 @@ namespace Server.Spells.Necromancy
                     var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
                     var eable = Caster.GetMobilesInRange(Core.ML ? 4 : 5);
-                    foreach (var m in eable)
+                    foreach (var targ in eable)
                     {
-                        if (Caster == m
-                            || !Caster.InLOS(m)
-                            || (!isMonster && !SpellHelper.ValidIndirectTarget(Caster, m))
-                            || !Caster.CanBeHarmful(m, false))
+                        if (targ == Caster
+                            || !Caster.InLOS(targ)
+                            || !isMonster && !SpellHelper.ValidIndirectTarget(Caster, targ)
+                            || !Caster.CanBeHarmful(targ, false))
                         {
                             continue;
                         }
 
-                        if (isMonster && m.Player)
-                            continue;
-
-                        if (m is BaseCreature bc)
+                        if (isMonster && targ.Player)
                         {
-                            if (isMonster && !bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
+                            continue;
+                        }
+
+                        // Animate dead casting poison strike shouldn't hit: familiars or player or pets
+                        if (targ is BaseCreature bc)
+                        {
+                            if (bc.IsAnimatedDead)
                             {
                                 continue;
                             }
 
-                            //Animate dead casting wither shouldn't hit: familiars or player or pets
-                            if (isMonster && bc.IsNecroFamiliar)
+                            if (isMonster && (bc.Controlled || bc.Summoned || bc.Team == cbc.Team || bc.IsNecroFamiliar))
+                            {
                                 continue;
-
-                            if (bc.IsAnimatedDead)
-                                continue;
-
-                            if (isMonster && bc.Summoned)
-                                continue;
-
-                            if (isMonster && bc.Controlled)
-                                continue;
+                            }
                         }
 
-                        pool.Enqueue(m);
+                        pool.Enqueue(targ);
                     }
 
                     eable.Free();

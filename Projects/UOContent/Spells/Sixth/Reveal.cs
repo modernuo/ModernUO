@@ -42,7 +42,7 @@ namespace Server.Spells.Sixth
                         }
 
                         if (!m.Hidden
-                            || (m.AccessLevel != AccessLevel.Player && Caster.AccessLevel <= m.AccessLevel)
+                            || m.AccessLevel > AccessLevel.Player && Caster.AccessLevel <= m.AccessLevel
                             || !CheckDifficulty(Caster, m))
                         {
                             continue;
