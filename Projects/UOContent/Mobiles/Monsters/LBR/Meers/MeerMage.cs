@@ -181,7 +181,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (m.FindItemOnLayer(Layer.TwoHanded) is Torch { Burning: true })
+            if (m.FindItemOnLayer<Torch>(Layer.TwoHanded)?.Burning == true)
             {
                 StopEffect(m, true);
                 return;

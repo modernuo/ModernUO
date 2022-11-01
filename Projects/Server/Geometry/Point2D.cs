@@ -68,8 +68,7 @@ public struct Point2D
 
     public bool Equals(Point2D other) => m_X == other.m_X && m_Y == other.m_Y;
 
-    public bool Equals(IPoint2D other) =>
-        m_X == other?.X && m_Y == other.Y;
+    public bool Equals(IPoint2D other) => m_X == other?.X && m_Y == other.Y;
 
     public override bool Equals(object obj) => obj is Point2D other && Equals(other);
 

@@ -33,12 +33,24 @@ namespace Server.Spells.Bushido
                 return false;
             }
 
-            if (caster.FindItemOnLayer(Layer.OneHanded) is not BaseWeapon weap)
-            {
-                weap = caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
-            }
+            var weap =
+                caster.FindItemOnLayer<BaseWeapon>(Layer.OneHanded) ??
+                caster.FindItemOnLayer<BaseWeapon>(Layer.TwoHanded);
 
-            if (weap != null)
+            if (weap == null)
+            {
+                if (caster.FindItemOnLayer(Layer.TwoHanded) is not BaseShield)
+                {
+                    if (messages)
+                    {
+                        // You must have a weapon or a shield equipped to use this ability!
+                        caster.SendLocalizedMessage(1062944);
+                    }
+
+                    return false;
+                }
+            }
+            else
             {
                 if (Core.ML && caster.Skills[weap.Skill].Base < 50)
                 {
@@ -50,15 +62,6 @@ namespace Server.Spells.Bushido
 
                     return false;
                 }
-            }
-            else if (caster.FindItemOnLayer(Layer.TwoHanded) is not BaseShield)
-            {
-                if (messages)
-                {
-                    caster.SendLocalizedMessage(1062944); // You must have a weapon or a shield equipped to use this ability!
-                }
-
-                return false;
             }
 
             if (!caster.CanBeginAction<Evasion>())
@@ -76,10 +79,9 @@ namespace Server.Spells.Bushido
 
         public static bool CheckSpellEvasion(Mobile defender)
         {
-            if (defender.FindItemOnLayer(Layer.OneHanded) is not BaseWeapon weap)
-            {
-                weap = defender.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
-            }
+            var weap =
+                defender.FindItemOnLayer<BaseWeapon>(Layer.OneHanded) ??
+                defender.FindItemOnLayer<BaseWeapon>(Layer.TwoHanded);
 
             if (Core.ML)
             {
