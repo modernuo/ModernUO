@@ -488,6 +488,7 @@ namespace Server.Items
                 if (Quality == WeaponQuality.Exceptional)
                 {
                     Attributes.WeaponDamage = 35;
+
                     if (Core.ML)
                     {
                         Attributes.WeaponDamage += (int)(from.Skills.ArmsLore.Value / 20);
@@ -2377,27 +2378,8 @@ namespace Server.Items
             };
         }
 
-        public virtual int GetDamageBonus()
-        {
-            var quality = m_Quality switch
-            {
-                WeaponQuality.Low         => -20,
-                WeaponQuality.Exceptional => 20,
-                _                         => 0
-            };
-
-            var damageLevel = m_DamageLevel switch
-            {
-                WeaponDamageLevel.Ruin  => 15,
-                WeaponDamageLevel.Might => 20,
-                WeaponDamageLevel.Force => 25,
-                WeaponDamageLevel.Power => 30,
-                WeaponDamageLevel.Vanq  => 35,
-                _                       => 0
-            };
-
-            return VirtualDamageBonus + quality + damageLevel;
-        }
+        // Note: AOS quality/damage bonuses removed since they are incorporated into the crafting already
+        public virtual int GetDamageBonus() => VirtualDamageBonus;
 
         public virtual double ScaleDamageAOS(Mobile attacker, double damage, bool checkSkills)
         {
@@ -2469,9 +2451,9 @@ namespace Server.Items
                 damageBonus = 100;
             }
 
-            var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus + damageBonus / 100.0;
+            var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus + damageBonus + GetDamageBonus();
 
-            return damage + (int)(damage * totalBonus);
+            return damage + damage * totalBonus / 100.0;
         }
 
         public virtual int ComputeDamageAOS(Mobile attacker, Mobile defender) =>
@@ -2875,8 +2857,7 @@ namespace Server.Items
                 list.Add(1060400); // use best weapon skill
             }
 
-            var preAosDamageBonus = !Core.AOS ? GetDamageBonus() : 0;
-            if ((prop = preAosDamageBonus + Attributes.WeaponDamage) != 0)
+            if ((prop = GetDamageBonus() + Attributes.WeaponDamage) != 0)
             {
                 list.Add(1060401, prop); // damage increase ~1_val~%
             }
