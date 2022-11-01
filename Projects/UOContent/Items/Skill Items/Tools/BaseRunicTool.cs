@@ -530,23 +530,14 @@ namespace Server.Items
                 return SlayerName.None;
             }
 
-            // -1 To Exclude the Fey Slayer which appears ONLY on a certain artifact.
-            var group = groups[Utility.Random(groups.Length - 1)];
-
-            //10% chance of a super
-            if (Utility.Random(10) == 0)
+            // 10% chance of a super - skip fey
+            if (Utility.RandomDouble() < 0.10)
             {
-                return group.Super.Name;
+                return groups[Utility.Random(groups.Length - 1)].Super.Name;
             }
 
-            //Failed the super roll but there's no child slayers: re-roll it
-            if (group.Entries.Length == 0)
-            {
-                return GetRandomSlayer();
-            }
-
-            //Lessor slayer
-            return group.Entries.RandomElement().Name;
+            // Minor slayer - skip fey and undead
+            return groups[Utility.Random(groups.Length - 2)].Entries.RandomElement().Name;
         }
 
         public void ApplyAttributesTo(BaseArmor armor)
