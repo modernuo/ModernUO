@@ -105,7 +105,7 @@ namespace Server
                         var key = cols[0].ToLowerInvariant();
                         var value = cols[1].Trim('"');
 
-                        if (key == "type" && !value.Equals("profession", StringComparison.InvariantCultureIgnoreCase))
+                        if (key == "type" && !value.InsensitiveEquals("profession"))
                         {
                             break;
                         }
