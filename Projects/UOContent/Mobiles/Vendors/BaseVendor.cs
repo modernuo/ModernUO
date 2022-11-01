@@ -100,8 +100,7 @@ namespace Server.Mobiles
         {
             get
             {
-                var pack = FindItemOnLayer<Container>(Layer.ShopBuy);
-                if (pack == null)
+                if (FindItemOnLayer(Layer.ShopBuy) is not Container pack)
                 {
                     pack = new Backpack { Layer = Layer.ShopBuy, Visible = false };
                     AddItem(pack);
