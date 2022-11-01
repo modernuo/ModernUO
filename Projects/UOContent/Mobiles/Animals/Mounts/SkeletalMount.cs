@@ -3,7 +3,7 @@ namespace Server.Mobiles
     public class SkeletalMount : BaseMount
     {
         [Constructible]
-        public SkeletalMount(string name = null) : base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
+        public SkeletalMount() : base(793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
         {
             SetStr(91, 100);
             SetDex(46, 55);

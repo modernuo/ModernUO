@@ -6,8 +6,10 @@ namespace Server.Mobiles;
 
 public class Hiryu : BaseMount
 {
+    public override string DefaultName => "a hiryu";
+
     [Constructible]
-    public Hiryu() : base("a hiryu", 243, 0x3E94, AIType.AI_Melee)
+    public Hiryu() : base(243, 0x3E94, AIType.AI_Melee)
     {
         Hue = GetHue();
 

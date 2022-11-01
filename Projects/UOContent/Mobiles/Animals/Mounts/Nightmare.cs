@@ -4,13 +4,10 @@ namespace Server.Mobiles
 {
     public class Nightmare : BaseMount
     {
+        public override string DefaultName => "a nightmare";
+
         [Constructible]
-        public Nightmare(string name = "a nightmare") : base(
-            name,
-            0x74,
-            0x3EA7,
-            AIType.AI_Mage
-        )
+        public Nightmare() : base(0x74, 0x3EA7, AIType.AI_Mage)
         {
             BaseSoundID = Core.AOS ? 0xA8 : 0x16A;
 

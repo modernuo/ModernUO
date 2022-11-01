@@ -6,8 +6,10 @@ namespace Server.Mobiles
 {
     public class Beetle : BaseMount
     {
+        public override string DefaultName => "a giant beetle";
+
         [Constructible]
-        public Beetle(string name = "a giant beetle") : base(name, 0x317, 0x3EBC, AIType.AI_Melee)
+        public Beetle() : base( 0x317, 0x3EBC, AIType.AI_Melee)
         {
             SetStr(300);
             SetDex(100);

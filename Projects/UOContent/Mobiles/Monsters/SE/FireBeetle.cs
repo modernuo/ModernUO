@@ -6,8 +6,10 @@ namespace Server.Mobiles
     [Forge]
     public class FireBeetle : BaseMount
     {
+        public override string DefaultName => "a fire beetle";
+
         [Constructible]
-        public FireBeetle() : base("a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee)
+        public FireBeetle() : base(0xA9, 0x3E95, AIType.AI_Melee)
         {
             SetStam(100);
             SetStr(300);

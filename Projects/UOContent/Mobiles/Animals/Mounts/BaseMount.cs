@@ -11,11 +11,10 @@ namespace Server.Mobiles
         private Mobile m_Rider;
 
         public BaseMount(
-            string name, int bodyID, int itemID, AIType aiType, FightMode fightMode = FightMode.Closest,
+            int bodyID, int itemID, AIType aiType, FightMode fightMode = FightMode.Closest,
             int rangePerception = 10, int rangeFight = 1
         ) : base(aiType, fightMode, rangePerception, rangeFight)
         {
-            Name = name;
             Body = bodyID;
 
             InternalItem = new MountItem(this, itemID);

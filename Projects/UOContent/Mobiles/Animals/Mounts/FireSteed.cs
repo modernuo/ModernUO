@@ -5,8 +5,10 @@ namespace Server.Mobiles
 {
     public class FireSteed : BaseMount
     {
+        public override string DefaultName => "a fire steed";
+
         [Constructible]
-        public FireSteed(string name = "a fire steed") : base(name, 0xBE, 0x3E9E, AIType.AI_Melee)
+        public FireSteed() : base(0xBE, 0x3E9E, AIType.AI_Melee)
         {
             BaseSoundID = 0xA8;
 

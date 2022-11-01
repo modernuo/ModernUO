@@ -2,8 +2,10 @@ namespace Server.Mobiles
 {
     public class FrenziedOstard : BaseMount
     {
+        public override string DefaultName => "a frenzied ostard";
+
         [Constructible]
-        public FrenziedOstard(string name = "a frenzied ostard") : base(name, 0xDA, 0x3EA4, AIType.AI_Melee)
+        public FrenziedOstard() : base(0xDA, 0x3EA4, AIType.AI_Melee)
         {
             Hue = Race.Human.RandomHairHue() | 0x8000;
 

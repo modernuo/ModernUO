@@ -4,8 +4,10 @@ namespace Server.Mobiles
 {
     public class Reptalon : BaseMount
     {
+        public override string DefaultName => "a reptalon";
+
         [Constructible]
-        public Reptalon() : base("a reptalon", 0x114, 0x3E90, AIType.AI_Melee)
+        public Reptalon() : base(0x114, 0x3E90, AIType.AI_Melee)
         {
             BaseSoundID = 0x16A;
 
