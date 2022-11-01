@@ -4,6 +4,8 @@ namespace Server.Mobiles
 {
     public class SwampDragon : BaseMount
     {
+        public override string DefaultName => "a swamp dragon";
+
         private string _bardingCraftedBy;
         private bool m_BardingExceptional;
         private int m_BardingHP;
@@ -11,7 +13,7 @@ namespace Server.Mobiles
         private bool m_HasBarding;
 
         [Constructible]
-        public SwampDragon(string name = "a swamp dragon") : base(name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor)
+        public SwampDragon() : base(0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor)
         {
             BaseSoundID = 0x16A;
 

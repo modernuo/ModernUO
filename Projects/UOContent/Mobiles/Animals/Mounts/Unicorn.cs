@@ -6,8 +6,10 @@ namespace Server.Mobiles
 {
     public class Unicorn : BaseMount
     {
+        public override string DefaultName => "a unicorn";
+
         [Constructible]
-        public Unicorn(string name = "a unicorn") : base(name, 0x7A, 0x3EB4, AIType.AI_Mage, FightMode.Evil)
+        public Unicorn() : base(0x7A, 0x3EB4, AIType.AI_Mage, FightMode.Evil)
         {
             BaseSoundID = 0x4BC;
 

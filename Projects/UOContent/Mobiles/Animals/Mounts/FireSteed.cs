@@ -5,8 +5,10 @@ namespace Server.Mobiles
 {
     public class FireSteed : BaseMount
     {
+        public override string DefaultName => "a fire steed";
+
         [Constructible]
-        public FireSteed(string name = "a fire steed") : base(name, 0xBE, 0x3E9E, AIType.AI_Melee)
+        public FireSteed() : base(0xBE, 0x3E9E, AIType.AI_Melee)
         {
             BaseSoundID = 0xA8;
 
@@ -37,6 +39,9 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 2;
             MinTameSkill = 106.0;
+
+            PackItem(new SulfurousAsh(Utility.RandomMinMax(151, 300)));
+            PackItem(new Ruby(Utility.RandomMinMax(16, 30)));
         }
 
         public FireSteed(Serial serial) : base(serial)
@@ -52,8 +57,6 @@ namespace Server.Mobiles
 
         public override void GenerateLoot()
         {
-            PackItem(new SulfurousAsh(Utility.RandomMinMax(151, 300)));
-            PackItem(new Ruby(Utility.RandomMinMax(16, 30)));
         }
 
         public override void Serialize(IGenericWriter writer)

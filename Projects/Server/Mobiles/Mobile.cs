@@ -329,6 +329,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     private int m_WarmodeChanges;
     private bool _warmodeSpamValue;
     private IWeapon m_Weapon;
+    private bool _ignoreMobiles;
 
     private bool m_YellowHealthbar;
     private List<StatMod> _statMods;
@@ -404,6 +405,20 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     public static int MaxPlayerResistance { get; set; } = 70;
 
     public virtual bool NewGuildDisplay => false;
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual bool IgnoreMobiles
+    {
+        get => _ignoreMobiles;
+        set
+        {
+            if (_ignoreMobiles != value)
+            {
+                _ignoreMobiles = value;
+                Delta(MobileDelta.Flags);
+            }
+        }
+    }
 
     public List<Mobile> Stabled { get; private set; }
 
@@ -6972,6 +6987,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         if (m_Blessed || m_YellowHealthbar)
         {
             flags |= 0x08;
+        }
+
+        if (IgnoreMobiles)
+        {
+            flags |= 0x10;
         }
 
         if (m_Warmode)

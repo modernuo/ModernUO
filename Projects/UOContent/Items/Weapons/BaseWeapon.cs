@@ -487,14 +487,7 @@ namespace Server.Items
 
                 if (Quality == WeaponQuality.Exceptional)
                 {
-                    if (Attributes.WeaponDamage > 35)
-                    {
-                        Attributes.WeaponDamage -= 20;
-                    }
-                    else
-                    {
-                        Attributes.WeaponDamage = 15;
-                    }
+                    Attributes.WeaponDamage = 35;
 
                     if (Core.ML)
                     {
@@ -2385,27 +2378,8 @@ namespace Server.Items
             };
         }
 
-        public virtual int GetDamageBonus()
-        {
-            var quality = m_Quality switch
-            {
-                WeaponQuality.Low         => -20,
-                WeaponQuality.Exceptional => 20,
-                _                         => 0
-            };
-
-            var damageLevel = m_DamageLevel switch
-            {
-                WeaponDamageLevel.Ruin  => 15,
-                WeaponDamageLevel.Might => 20,
-                WeaponDamageLevel.Force => 25,
-                WeaponDamageLevel.Power => 30,
-                WeaponDamageLevel.Vanq  => 35,
-                _                       => 0
-            };
-
-            return VirtualDamageBonus + quality + damageLevel;
-        }
+        // Note: AOS quality/damage bonuses removed since they are incorporated into the crafting already
+        public virtual int GetDamageBonus() => VirtualDamageBonus;
 
         public virtual double ScaleDamageAOS(Mobile attacker, double damage, bool checkSkills)
         {
@@ -2477,10 +2451,9 @@ namespace Server.Items
                 damageBonus = 100;
             }
 
-            var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus +
-                             (GetDamageBonus() + damageBonus) / 100.0;
+            var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus + damageBonus + GetDamageBonus();
 
-            return damage + (int)(damage * totalBonus);
+            return damage + damage * totalBonus / 100.0;
         }
 
         public virtual int ComputeDamageAOS(Mobile attacker, Mobile defender) =>

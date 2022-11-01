@@ -2,8 +2,10 @@ namespace Server.Mobiles
 {
     public class HellSteed : BaseMount
     {
+        public override string DefaultName => "a frenzied ostard";
+
         [Constructible]
-        public HellSteed(string name = "a hellsteed") : base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
+        public HellSteed() : base(793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
         {
             SetStats(this);
         }

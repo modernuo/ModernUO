@@ -6,8 +6,10 @@ namespace Server.Mobiles
 {
     public class Kirin : BaseMount
     {
+        public override string DefaultName => "a ki-rin";
+
         [Constructible]
-        public Kirin(string name = "a ki-rin") : base(name, 132, 0x3EAD, AIType.AI_Mage, FightMode.Evil)
+        public Kirin() : base(132, 0x3EAD, AIType.AI_Mage, FightMode.Evil)
         {
             BaseSoundID = 0x3C5;
 

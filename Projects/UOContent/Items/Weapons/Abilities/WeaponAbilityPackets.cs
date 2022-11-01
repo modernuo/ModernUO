@@ -18,6 +18,13 @@ namespace Server.Items
 
             if (index >= 1 && index < WeaponAbility.Abilities.Length)
             {
+                if (m.Mounted && index == 6) //dismount
+                {
+                    WeaponAbility.ClearCurrentAbility(m);
+                    m.SendLocalizedMessage(1061283); // You cannot perform that attack while mounted!
+                    return;
+                }
+
                 WeaponAbility.SetCurrentAbility(m, WeaponAbility.Abilities[index]);
             }
             else

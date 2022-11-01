@@ -20,11 +20,14 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Regions;
+using Server.Logging;
+using Server.Utilities;
 
 namespace Server.Engines.CannedEvil
 {
     public class ChampionSpawn : Item
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ChampionSpawn));
         private bool m_Active;
         private ChampionSpawnType m_Type;
         private List<Mobile> m_Creatures;
@@ -597,11 +600,11 @@ namespace Server.Engines.CannedEvil
                                 {
                                     if (gainedPath)
                                     {
-                                        m.SendLocalizedMessage(1054032); // You have gained a path in Valor!
+                                        pm.SendLocalizedMessage(1054032); // You have gained a path in Valor!
                                     }
                                     else
                                     {
-                                        m.SendLocalizedMessage(1054030); // You have gained in Valor!
+                                        pm.SendLocalizedMessage(1054030); // You have gained in Valor!
                                     }
 
                                     // No delay on Valor gains
@@ -682,10 +685,18 @@ namespace Server.Engines.CannedEvil
 
             try
             {
-                Champion = Activator.CreateInstance(ChampionSpawnInfo.GetInfo(m_Type).Champion) as Mobile;
+                Champion = ChampionSpawnInfo.GetInfo(m_Type).Champion.CreateInstance<Mobile>();
             }
             catch (Exception e)
-            { Console.WriteLine($"Exception creating champion {m_Type}: {e}"); }
+            {
+                logger.Error(
+                    e,
+                    "Failed to spawn champion \"{MobileType}\" at {Location} ({Map}).",
+                    m_Type,
+                    Location,
+                    Map
+                );
+            }
 
             if (Champion != null)
             {
@@ -851,12 +862,21 @@ namespace Server.Engines.CannedEvil
 
         public Mobile Spawn(params Type[] types)
         {
+            var type = types[Utility.Random(types.Length)];
             try
             {
-                return Activator.CreateInstance(types[Utility.Random(types.Length)]) as Mobile;
+                return type.CreateInstance<Mobile>();
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error(
+                    e,
+                    "Failed to spawn minion \"{Type}\" for champion {ChampionSpawnType} at {Location} ({Map}).",
+                    type,
+                    m_Type,
+                    Location,
+                    Map
+                );
                 return null;
             }
         }

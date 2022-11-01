@@ -5,7 +5,7 @@ namespace Server.Mobiles
     public class RedDeath : SkeletalMount
     {
         [Constructible]
-        public RedDeath() : base("Red Death")
+        public RedDeath() : base()
         {
             IsParagon = true;
 
@@ -54,6 +54,8 @@ namespace Server.Mobiles
         public RedDeath(Serial serial) : base(serial)
         {
         }
+
+        public override string DefaultName => "Red Death";
 
         public override string CorpseName => "a Red Death corpse";
 

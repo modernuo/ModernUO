@@ -36,10 +36,14 @@ namespace Server.Spells.Sixth
 
                     foreach (var m in eable)
                     {
-                        if (m is ShadowKnight &&
-                            (m.X != p.X || m.Y != p.Y || !m.Hidden || m.AccessLevel != AccessLevel.Player &&
-                             Caster.AccessLevel <= m.AccessLevel ||
-                             !CheckDifficulty(Caster, m)))
+                        if (m is ShadowKnight && (m.X != p.X || m.Y != p.Y))
+                        {
+                            continue;
+                        }
+
+                        if (!m.Hidden
+                            || m.AccessLevel > AccessLevel.Player && Caster.AccessLevel <= m.AccessLevel
+                            || !CheckDifficulty(Caster, m))
                         {
                             continue;
                         }

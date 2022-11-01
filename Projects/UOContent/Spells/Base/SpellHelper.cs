@@ -312,7 +312,7 @@ namespace Server.Spells
                 return true;
             }
 
-            if (mod == null || mod.Offset < offset)
+            if (mod == null || mod.Offset <= offset)
             {
                 target.AddStatMod(new StatMod(type, name, offset, duration));
                 return true;

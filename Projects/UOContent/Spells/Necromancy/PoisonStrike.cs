@@ -77,17 +77,38 @@ namespace Server.Spells.Necromancy
                         pool.Enqueue(m);
                     }
 
-                    var eable = m.GetMobilesInRange(2);
+                    var cbc = Caster as BaseCreature;
+                    var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
+                    var eable = m.GetMobilesInRange(2);
                     foreach (Mobile targ in eable)
                     {
-                        if (!(Caster is BaseCreature && targ is BaseCreature) &&
-                            targ != Caster && m != targ &&
-                            SpellHelper.ValidIndirectTarget(Caster, targ) &&
-                            Caster.CanBeHarmful(targ, false))
+                        if (targ == Caster || m == targ || !SpellHelper.ValidIndirectTarget(Caster, targ)
+                            || !Caster.CanBeHarmful(targ, false))
                         {
-                            pool.Enqueue(targ);
+                            continue;
                         }
+
+                        if (isMonster && targ.Player)
+                        {
+                            continue;
+                        }
+
+                        // Animate dead casting poison strike shouldn't hit: familiars or player or pets
+                        if (targ is BaseCreature bc)
+                        {
+                            if (bc.IsAnimatedDead)
+                            {
+                                continue;
+                            }
+
+                            if (isMonster && (bc.Controlled || bc.Summoned || bc.Team == cbc.Team || bc.IsNecroFamiliar))
+                            {
+                                continue;
+                            }
+                        }
+
+                        pool.Enqueue(targ);
                     }
 
                     eable.Free();

@@ -4,9 +4,10 @@ namespace Server.Mobiles
 {
     public class UnholySteed : BaseMount
     {
+        public override string DefaultName => "a dark steed";
+
         [Constructible]
-        public UnholySteed()
-            : base("a dark steed", 0x74, 0x3EA7, AIType.AI_Melee, FightMode.Aggressor)
+        public UnholySteed() : base(0x74, 0x3EA7, AIType.AI_Melee, FightMode.Aggressor)
         {
             SetStr(496, 525);
             SetDex(86, 105);

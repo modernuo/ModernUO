@@ -109,6 +109,7 @@ public static class ValorVirtue
             // Your challenge is heard by the Champion of this region! Beware its wrath!
             from.SendLocalizedMessage(1054037);
             idol.Spawn.Start();
+            idol.Spawn.ActivatedByValor = true;
             // Uncomment to not allow advancing level after starting with valor.
             // idol.Spawn.HasBeenAdvanced = true;
         }

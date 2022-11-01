@@ -2,8 +2,10 @@ namespace Server.Mobiles
 {
     public class Ridgeback : BaseMount
     {
+        public override string DefaultName => "a ridgeback";
+
         [Constructible]
-        public Ridgeback(string name = "a ridgeback") : base(name, 187, 0x3EBA, AIType.AI_Animal, FightMode.Aggressor)
+        public Ridgeback() : base(187, 0x3EBA, AIType.AI_Animal, FightMode.Aggressor)
         {
             BaseSoundID = 0x3F3;
 

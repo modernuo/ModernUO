@@ -402,11 +402,13 @@ namespace Server.Items
             Groups = new[]
             {
                 humanoid,
-                undead,
                 elemental,
                 abyss,
                 arachnid,
                 reptilian,
+                // Skip undead for minor slayers
+                undead,
+                // Skip fey for random slayer
                 fey
             };
 

@@ -2633,8 +2633,8 @@ public abstract class BaseAI
             var bc = m as BaseCreature;
             var pm = m as PlayerMobile;
 
-            // Monster don't attack it's own summon
-            if (Core.AOS && bc != null && bc.Summoned && bc.SummonMaster == m_Mobile)
+            // Monster don't attack it's own summon or the summon of another monster
+            if (Core.AOS && bc != null && bc.Summoned && (bc.SummonMaster == m_Mobile || (!bc.SummonMaster.Player && IsHostile(bc.SummonMaster))))
             {
                 continue;
             }
@@ -2655,6 +2655,18 @@ public abstract class BaseAI
 
                 // Animated creatures cannot attack players directly.
                 if (pm != null && m_Mobile.IsAnimatedDead)
+                {
+                    continue;
+                }
+
+                // Animated creatures cannot attack other animated creatures
+                if (m_Mobile.IsAnimatedDead && bc?.IsAnimatedDead == true)
+                {
+                    continue;
+                }
+
+                // Animated creatures cannot attack pets of other players
+                if (m_Mobile.IsAnimatedDead && bc?.Controlled == true)
                 {
                     continue;
                 }
@@ -2726,7 +2738,7 @@ public abstract class BaseAI
                 newFocusMob = m;
                 val = theirVal;
             }
-            // The summon is targeted when nothing else around. Otherwise this monster enters idle mode. 
+            // The summon is targeted when nothing else around. Otherwise this monster enters idle mode.
             // Do a check for this edge case so players cannot abuse by casting EVs offscreen to kill an idle monster.
             else if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
             {

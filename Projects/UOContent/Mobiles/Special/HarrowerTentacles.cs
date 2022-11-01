@@ -146,12 +146,17 @@ namespace Server.Mobiles
 
                 foreach (var m in eable)
                 {
-                    if (m == m_Owner || !(m_Owner.CanBeHarmful(m) || m.Player && m.Alive))
+                    if (m == m_Owner || !m_Owner.CanBeHarmful(m))
                     {
                         continue;
                     }
 
-                    if (m is not BaseCreature bc || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
+                    if (m.Player && !m.Alive)
+                    {
+                        continue;
+                    }
+
+                    if (m is BaseCreature bc && !(bc.Controlled || bc.IsAnimatedDead || bc.Summoned || bc.Team != m_Owner.Team))
                     {
                         continue;
                     }

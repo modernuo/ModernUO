@@ -165,9 +165,7 @@ namespace Server.Mobiles
 
         private int m_HairModID = -1, m_HairModHue;
 
-        public DateTime m_hontime;
-
-        private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
+        public DateTime _honorTime;
 
         private Mobile m_InsuranceAward;
         private int m_InsuranceBonus;
@@ -418,20 +416,6 @@ namespace Server.Mobiles
         {
             get;
             set;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IgnoreMobiles // IgnoreMobiles should be moved to Server.Mobiles
-        {
-            get => m_IgnoreMobiles;
-            set
-            {
-                if (m_IgnoreMobiles != value)
-                {
-                    m_IgnoreMobiles = value;
-                    Delta(MobileDelta.Flags);
-                }
-            }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -950,18 +934,6 @@ namespace Server.Mobiles
             }
 
             return true;
-        }
-
-        public override int GetPacketFlags(bool stygianAbyss)
-        {
-            var flags = base.GetPacketFlags(stygianAbyss);
-
-            if (m_IgnoreMobiles)
-            {
-                flags |= 0x10;
-            }
-
-            return flags;
         }
 
         public bool GetFlag(PlayerFlag flag) => (Flags & flag) != 0;
@@ -2336,7 +2308,7 @@ namespace Server.Mobiles
                  pm.DuelPlayer.Eliminated) || base.OnMoveOver(m);
 
         public override bool CheckShove(Mobile shoved) =>
-            m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation(shoved, typeof(WraithFormSpell)) ||
+            IgnoreMobiles || shoved.IgnoreMobiles || TransformationSpellHelper.UnderTransformation(shoved, typeof(WraithFormSpell)) ||
             base.CheckShove(shoved);
 
         protected override void OnMapChange(Map oldMap)
@@ -3228,7 +3200,7 @@ namespace Server.Mobiles
 
             if (AccessLevel > AccessLevel.Player)
             {
-                m_IgnoreMobiles = true;
+                IgnoreMobiles = true;
             }
 
             var list = Stabled;

@@ -23,7 +23,7 @@ namespace Server.Engines.PartySystem
     public static class PartyPackets
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetPartyMemberListPacketLength(Party p) => 7 + p.Count * 4;
+        public static int GetPartyMemberListPacketLength(int partyCount) => 7 + partyCount * 4;
 
         public static void CreatePartyMemberList(Span<byte> buffer, Party p)
         {
@@ -32,15 +32,16 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            var length = GetPartyMemberListPacketLength(p);
+            var count = p.Count;
+            var length = GetPartyMemberListPacketLength(count);
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)length);
             writer.Write((ushort)0x06); // Sub-packet
             writer.Write((byte)0x01); // Command
-            writer.Write((byte)p.Count);
+            writer.Write((byte)count);
 
-            for (var i = 0; i < p.Count; ++i)
+            for (var i = 0; i < count; ++i)
             {
                 writer.Write(p[i].Mobile.Serial);
             }
@@ -53,14 +54,14 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetPartyMemberListPacketLength(p)];
+            Span<byte> buffer = stackalloc byte[GetPartyMemberListPacketLength(p.Count)];
             CreatePartyMemberList(buffer, p);
 
             ns.Send(buffer);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetPartyRemoveMemberPacketLength(Party p) => 11 + (p?.Count * 4 ?? 0);
+        public static int GetPartyRemoveMemberPacketLength(int partyCount) => 11 + partyCount * 4;
 
         public static void SendPartyRemoveMember(this NetState ns, Serial m, Party p = null)
         {
@@ -69,7 +70,7 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetPartyRemoveMemberPacketLength(p)];
+            Span<byte> buffer = stackalloc byte[GetPartyRemoveMemberPacketLength(p?.Count ?? 0)];
             CreatePartyRemoveMember(buffer, m, p);
 
             ns.Send(buffer);
@@ -82,14 +83,14 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            var length = GetPartyRemoveMemberPacketLength(p);
+            var count = p?.Count ?? 0;
+            var length = GetPartyRemoveMemberPacketLength(count);
             var writer = new SpanWriter(buffer);
             writer.Write((byte)0xBF); // Packet ID
             writer.Write((ushort)length);
             writer.Write((ushort)0x06); // Sub-packet
             writer.Write((byte)0x02);   // Command
 
-            var count = p?.Count ?? 0;
             writer.Write((byte)count);
             writer.Write(removed);
 
