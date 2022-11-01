@@ -21,6 +21,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Regions;
 using Server.Logging;
+using Server.Utilities;
 
 namespace Server.Engines.CannedEvil
 {
@@ -684,10 +685,18 @@ namespace Server.Engines.CannedEvil
 
             try
             {
-                Champion = Activator.CreateInstance(ChampionSpawnInfo.GetInfo(m_Type).Champion) as Mobile;
+                Champion = ChampionSpawnInfo.GetInfo(m_Type).Champion.CreateInstance<Mobile>();
             }
             catch (Exception e)
-            { Console.WriteLine($"Exception creating champion {m_Type}: {e}"); }
+            {
+                logger.Error(
+                    e,
+                    "Failed to spawn champion \"{MobileType}\" at {Location} ({Map}).",
+                    m_Type,
+                    Location,
+                    Map
+                );
+            }
 
             if (Champion != null)
             {
@@ -856,16 +865,17 @@ namespace Server.Engines.CannedEvil
             var type = types[Utility.Random(types.Length)];
             try
             {
-                return Activator.CreateInstance(type) as Mobile;
+                return type.CreateInstance<Mobile>();
             }
             catch (Exception e)
             {
                 logger.Error(
                     e,
-                    "Failed to spawn {MobileType} for champion type {ChampionSpawnType} at {Location}.",
+                    "Failed to spawn minion \"{Type}\" for champion {ChampionSpawnType} at {Location} ({Map}).",
                     type,
                     m_Type,
-                    Location
+                    Location,
+                    Map
                 );
                 return null;
             }
