@@ -1016,20 +1016,22 @@ namespace Server.Engines.Craft
                 return;
             }
 
-            int checkResHue = 0, checkMaxAmount = 0;
+            var checkResHue = 0;
+            var checkMaxAmount = 0;
             TextDefinition checkMessage = null;
 
+            var consumeRes = ConsumeRes(
+                from,
+                typeRes,
+                craftSystem,
+                ref checkResHue,
+                ref checkMaxAmount,
+                ConsumeType.None,
+                ref checkMessage
+            );
+
             // Not enough resource to craft it
-            if (!(ConsumeRes(
-                      from,
-                      typeRes,
-                      craftSystem,
-                      ref checkResHue,
-                      ref checkMaxAmount,
-                      ConsumeType.None,
-                      ref checkMessage
-                  )
-                  && ConsumeAttributes(from, ref checkMessage, false)))
+            if (!(consumeRes && ConsumeAttributes(from, ref checkMessage, false)))
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
@@ -1058,9 +1060,18 @@ namespace Server.Engines.Craft
 
             if (CheckSkills(from, typeRes, craftSystem, ref ignored, out var allRequiredSkills))
             {
+                consumeRes = ConsumeRes(
+                    from,
+                    typeRes,
+                    craftSystem,
+                    ref resHue,
+                    ref maxAmount,
+                    ConsumeType.All,
+                    ref message
+                );
+
                 // Not enough resource to craft it
-                if (!(ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref message)
-                      && ConsumeAttributes(from, ref message, true)))
+                if (!(consumeRes && ConsumeAttributes(from, ref message, true)))
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
                     {
@@ -1083,13 +1094,16 @@ namespace Server.Engines.Craft
 
                 tool.UsesRemaining--;
 
-                if (craftSystem is DefBlacksmithy &&
-                    from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
+                if (craftSystem is DefBlacksmithy)
                 {
-                    hammer.UsesRemaining--;
-                    if (hammer.UsesRemaining < 1)
+                    var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                    if (hammer != tool)
                     {
-                        hammer.Delete();
+                        hammer.UsesRemaining--;
+                        if (hammer.UsesRemaining < 1)
+                        {
+                            hammer.Delete();
+                        }
                     }
                 }
 

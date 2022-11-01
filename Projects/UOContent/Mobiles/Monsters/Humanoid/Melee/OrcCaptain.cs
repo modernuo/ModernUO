@@ -85,23 +85,14 @@ namespace Server.Mobiles
             AddLoot(LootPack.Meager, 2);
         }
 
-        public override bool IsEnemy(Mobile m)
-        {
-            if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
-            {
-                return false;
-            }
-
-            return base.IsEnemy(m);
-        }
+        public override bool IsEnemy(Mobile m) =>
+            (!m.Player || m.FindItemOnLayer<OrcishKinMask>(Layer.Helm) == null) && base.IsEnemy(m);
 
         public override void AggressiveAction(Mobile aggressor, bool criminal)
         {
             base.AggressiveAction(aggressor, criminal);
 
-            var item = aggressor.FindItemOnLayer(Layer.Helm);
-
-            if (item is OrcishKinMask)
+            if (aggressor.FindItemOnLayer(Layer.Helm) is OrcishKinMask item)
             {
                 AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
                 item.Delete();

@@ -171,7 +171,7 @@ namespace Server.Items
         {
             if (attacker.Player)
             {
-                var quiver = attacker.FindItemOnLayer(Layer.Cloak) as BaseQuiver;
+                var quiver = attacker.FindItemOnLayer<BaseQuiver>(Layer.Cloak);
                 var pack = attacker.Backpack;
 
                 if (quiver == null || Utility.Random(100) >= quiver.LowerAmmoCost)

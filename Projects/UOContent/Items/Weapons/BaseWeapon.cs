@@ -1373,7 +1373,7 @@ namespace Server.Items
                 return false;
             }
 
-            var shield = defender.FindItemOnLayer(Layer.TwoHanded) as BaseShield;
+            var shield = defender.FindItemOnLayer<BaseShield>(Layer.TwoHanded);
 
             var parry = defender.Skills.Parry.Value;
             var bushidoNonRacial = defender.Skills.Bushido.NonRacialValue;
@@ -1489,7 +1489,7 @@ namespace Server.Items
                         defender.Stam += Utility.RandomMinMax(1, (int)(bushido / 5));
                     }
 
-                    var shield = defender.FindItemOnLayer(Layer.TwoHanded) as BaseShield;
+                    var shield = defender.FindItemOnLayer<BaseShield>(Layer.TwoHanded);
 
                     shield?.OnHit(this, damage);
                 }
@@ -1785,9 +1785,11 @@ namespace Server.Items
                 out var direct
             );
 
-            if (Core.ML && this is BaseRanged && attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)
+            if (Core.ML && this is BaseRanged)
             {
-                quiver.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
+                attacker
+                    .FindItemOnLayer<BaseQuiver>(Layer.Cloak)
+                    ?.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
             }
 
             if (Consecrated)

@@ -18,14 +18,14 @@ namespace Server.Spells.Ninjitsu
                 return false;
             }
 
-            Item handOne = from.FindItemOnLayer(Layer.OneHanded) as BaseWeapon;
+            Item handOne = from.FindItemOnLayer<BaseWeapon>(Layer.OneHanded);
 
             if (handOne != null && handOne is not BaseRanged)
             {
                 return base.Validate(from);
             }
 
-            Item handTwo = from.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
+            Item handTwo = from.FindItemOnLayer<BaseWeapon>(Layer.TwoHanded);
 
             if (handTwo != null && handTwo is not BaseRanged)
             {

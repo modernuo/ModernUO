@@ -717,10 +717,7 @@ namespace Server.Engines.ConPVP
             {
                 mob.Resurrect();
 
-                if (mob.FindItemOnLayer(Layer.OuterTorso) is DeathRobe robe)
-                {
-                    robe.Delete();
-                }
+                mob.FindItemOnLayer<DeathRobe>(Layer.OuterTorso)?.Delete();
 
                 if (cont is Corpse corpse)
                 {

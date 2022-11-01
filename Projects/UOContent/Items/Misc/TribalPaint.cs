@@ -48,7 +48,7 @@ namespace Server.Items
                 {
                     from.SendLocalizedMessage(1061634); // You cannot disguise yourself while in that form.
                 }
-                else if (from.IsBodyMod || from.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+                else if (from.IsBodyMod || from.FindItemOnLayer<OrcishKinMask>(Layer.Helm) != null)
                 {
                     from.SendLocalizedMessage(501605); // You are already disguised.
                 }
