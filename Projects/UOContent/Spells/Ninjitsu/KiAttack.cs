@@ -11,8 +11,8 @@ namespace Server.Spells.Ninjitsu
         public override int BaseMana => 25;
         public override double RequiredSkill => 80.0;
 
-        public override TextDefinition AbilityMessage =>
-            new(1063099); // Your Ki Attack must be complete within 2 seconds for the damage bonus!
+        // Your Ki Attack must be complete within 2 seconds for the damage bonus!
+        public override TextDefinition AbilityMessage { get; } = 1063099;
 
         public override void OnUse(Mobile from)
         {

@@ -42,8 +42,8 @@ namespace Server.Factions
                 5000,
                 1000,
                 10,
-                new TextDefinition(1011549, "POTION BOTTLE VENDOR"),
-                new TextDefinition(1011544, "Buy Potion Bottle Vendor")
+                1011549, // POTION BOTTLE VENDOR
+                1011544 // Buy Potion Bottle Vendor
             ),
             new(
                 typeof(FactionBoardVendor),
@@ -51,8 +51,8 @@ namespace Server.Factions
                 3000,
                 500,
                 10,
-                new TextDefinition(1011552, "WOOD VENDOR"),
-                new TextDefinition(1011545, "Buy Wooden Board Vendor")
+                1011552, // WOOD VENDOR
+                1011545 // Buy Wooden Board Vendor
             ),
             new(
                 typeof(FactionOreVendor),
@@ -60,8 +60,8 @@ namespace Server.Factions
                 3000,
                 500,
                 10,
-                new TextDefinition(1011553, "IRON ORE VENDOR"),
-                new TextDefinition(1011546, "Buy Iron Ore Vendor")
+                1011553, // IRON ORE VENDOR
+                1011546 // Buy Iron Ore Vendor
             ),
             new(
                 typeof(FactionReagentVendor),
@@ -69,8 +69,8 @@ namespace Server.Factions
                 5000,
                 1000,
                 10,
-                new TextDefinition(1011554, "REAGENT VENDOR"),
-                new TextDefinition(1011547, "Buy Reagent Vendor")
+                1011554, // REAGENT VENDOR
+                1011547 // Buy Reagent Vendor
             ),
             new(
                 typeof(FactionHorseVendor),
@@ -78,8 +78,8 @@ namespace Server.Factions
                 5000,
                 1000,
                 1,
-                new TextDefinition(1011556, "HORSE BREEDER"),
-                new TextDefinition(1011555, "Buy Horse Breeder")
+                1011556, // HORSE BREEDER
+                1011555 // Buy Horse Breeder
             )
         };
     }

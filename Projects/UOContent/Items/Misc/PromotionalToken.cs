@@ -122,11 +122,11 @@ public partial class SoulstoneFragmentToken : PromotionalToken
     {
     }
 
-    public override TextDefinition ItemGumpName => 1070999; // <center>Soulstone Fragment</center>
-    public override TextDefinition ItemName => 1071000;     // soulstone fragment
+    public override TextDefinition ItemGumpName { get; } = 1070999; // <center>Soulstone Fragment</center>
+    public override TextDefinition ItemName { get; } = 1071000;     // soulstone fragment
 
     // A soulstone fragment has been created in your bank box.
-    public override TextDefinition ItemReceiveMessage => 1070976;
+    public override TextDefinition ItemReceiveMessage { get; } = 1070976;
 
     public override Item CreateItemFor(Mobile from) =>
         from?.Account != null ? new SoulstoneFragment(from.Account.ToString()) : null;

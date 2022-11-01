@@ -124,9 +124,9 @@ public interface IGenericReader
     {
         return ReadEncodedInt() switch
         {
-            0 => new TextDefinition(),
-            1 => new TextDefinition(ReadEncodedInt()),
-            2 => new TextDefinition(ReadString()),
+            0 => TextDefinition.Empty,
+            1 => ReadEncodedInt(),
+            2 => ReadString(),
             _ => null
         };
     }

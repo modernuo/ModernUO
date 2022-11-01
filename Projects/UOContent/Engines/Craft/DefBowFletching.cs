@@ -16,7 +16,7 @@ public class DefBowFletching : CraftSystem
 
     public override SkillName MainSkill => SkillName.Fletching;
 
-    public override TextDefinition GumpTitle => 1044006;
+    public override TextDefinition GumpTitle { get; } = 1044006;
 
     public static CraftSystem CraftSystem { get; private set; }
 
