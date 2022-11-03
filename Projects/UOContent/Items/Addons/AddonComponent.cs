@@ -40,7 +40,7 @@ namespace Server.Items
     [SerializationGenerator(1, false)]
     public partial class AddonComponent : Item, IChoppable
     {
-        private static readonly LightEntry[] m_Entries =
+        private static LightEntry[] _entries =
         {
             new(
                 LightType.WestSmall,
@@ -196,9 +196,9 @@ namespace Server.Items
 
             var itemID = item.ItemID;
 
-            for (var i = 0; i < m_Entries.Length; ++i)
+            for (var i = 0; i < _entries.Length; ++i)
             {
-                var entry = m_Entries[i];
+                var entry = _entries[i];
                 var toMatch = entry.m_ItemIDs;
                 var contains = false;
 

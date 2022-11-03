@@ -127,6 +127,8 @@ namespace Server.Items
         {
             AddComponent(new PickpocketDip(0x1EC3), 0, 0, 0);
         }
+
+        public override BaseAddonDeed Deed => new PickpocketDipEastDeed();
     }
 
     [SerializationGenerator(0, false)]

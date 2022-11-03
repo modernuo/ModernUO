@@ -320,6 +320,8 @@ namespace Server.Items
         {
             AddComponent(new BallotBox(), 0, 0, 0);
         }
+
+        public override BaseAddonDeed Deed => new BallotBoxDeed();
     }
 
     [SerializationGenerator(0)]
