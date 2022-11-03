@@ -56,7 +56,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
         Patch = pat;
         Type = type;
 
-        SourceString = Utility.Intern(ToStringImpl());
+        SourceString = ToStringImpl().Intern();
     }
 
     public ClientVersion(string fmt)
