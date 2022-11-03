@@ -381,9 +381,7 @@ namespace Server.Items
             {
                 var rand = Utility.Random(i + 1);
 
-                var temp = attackers[rand];
-                attackers[rand] = attackers[i];
-                attackers[i] = temp;
+                (attackers[rand], attackers[i]) = (attackers[i], attackers[rand]);
             }
 
             // stackables first, for the remaining stackables, have those be randomly added after
@@ -394,17 +392,13 @@ namespace Server.Items
 
                 if (item.Amount >= attackers.Count)
                 {
-                    var amountPerAttacker = item.Amount / attackers.Count;
-                    var remainder = item.Amount % attackers.Count;
+                    var amountPerAttacker = Math.DivRem(item.Amount, attackers.Count, out var remainder);
 
                     for (var j = 0; j < (remainder == 0 ? attackers.Count - 1 : attackers.Count); j++)
                     {
+                        // LiftItemDupe automagically adds it as a child item to the corpse
                         var splitItem =
-                            Mobile.LiftItemDupe(
-                                item,
-                                item.Amount -
-                                amountPerAttacker
-                            ); // LiftItemDupe automagically adds it as a child item to the corpse
+                            Mobile.LiftItemDupe(item, item.Amount - amountPerAttacker);
 
                         m_InstancedItems.Add(splitItem, new InstancedItemInfo(splitItem, attackers[j]));
 

@@ -134,19 +134,16 @@ namespace Server.Engines.CannedEvil
             {
                 from.SendLocalizedMessage(1049486); // You can only sacrifice items that are in your backpack!
             }
+            else if (skull.Type == Type)
+            {
+                skull.Movable = false;
+                skull.MoveToWorld(GetWorldTop(), Map);
+
+                Skull = skull;
+            }
             else
             {
-                if (skull.Type == Type)
-                {
-                    skull.Movable = false;
-                    skull.MoveToWorld(GetWorldTop(), Map);
-
-                    Skull = skull;
-                }
-                else
-                {
-                    SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
-                }
+                SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
             }
         }
 
