@@ -2311,7 +2311,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public virtual bool OnDragDrop(Mobile from, Item dropped)
     {
-        var success = Parent is Container container && container.OnStackAttempt(from, this, dropped) ||
+        var success = (Parent as Container)?.OnStackAttempt(from, this, dropped) ??
                       StackWith(from, dropped);
 
         if (success && Spawner != null)

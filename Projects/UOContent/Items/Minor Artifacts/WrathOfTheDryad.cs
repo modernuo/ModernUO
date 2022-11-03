@@ -5,6 +5,9 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class WrathOfTheDryad : GnarledStaff
 {
+    public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
+
     [Constructible]
     public WrathOfTheDryad()
     {
