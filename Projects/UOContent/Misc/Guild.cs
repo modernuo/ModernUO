@@ -35,11 +35,11 @@ namespace Server.Guilds
             new(1062963, 0, RankFlags.None),   // Ronin
             new(1062962, 1, RankFlags.Member), // Member
             new(
-                1062961,
+                1062961, // Emmissary
                 2,
                 RankFlags.Member | RankFlags.RemovePlayers | RankFlags.CanInvitePlayer | RankFlags.CanSetGuildTitle |
                 RankFlags.CanPromoteDemote
-            ),                                                              // Emmissary
+            ),
             new(1062960, 3, RankFlags.Member | RankFlags.ControlWarStatus), // Warlord
             new(1062959, 4, RankFlags.All)                                  // Leader
         };
@@ -92,8 +92,6 @@ namespace Server.Guilds
 
             leader.Alliance = this;
             partner.Alliance = this;
-
-            Alliances.TryAdd(Name.ToLower(), this);
         }
 
         public AllianceInfo(IGenericReader reader)
@@ -113,6 +111,8 @@ namespace Server.Guilds
                         break;
                     }
             }
+
+            Timer.DelayCall((alliances, alliance) => alliances.TryAdd(alliance.Name.ToLower(), alliance), Alliances, this);
         }
 
         public static Dictionary<string, AllianceInfo> Alliances { get; } = new();
@@ -176,8 +176,6 @@ namespace Server.Guilds
 
             Guild.Tidy(m_PendingMembers);
             writer.Write(m_PendingMembers);
-
-            Alliances.TryAdd(Name.ToLower(), this);
         }
 
         public void AddPendingGuild(Guild g)
