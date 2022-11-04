@@ -64,7 +64,9 @@ public class BinaryFileReader : IGenericReader, IDisposable
         }
 
         byte[] buffer = STArrayPool<byte>.Shared.Rent(length);
-        var str = TextEncoding.GetString(buffer.AsSpan(0, length), _encoding);
+        var strBuffer = buffer.AsSpan(0, length);
+        _reader.Read(strBuffer);
+        var str = TextEncoding.GetString(strBuffer, _encoding);
         STArrayPool<byte>.Shared.Return(buffer);
         return intern ? str.Intern() : str;
     }
