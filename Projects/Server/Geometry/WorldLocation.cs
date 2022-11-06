@@ -167,7 +167,7 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     {
         if (_map == null)
         {
-            return destination.TryWrite(provider, $"({_loc.m_X}, {_loc.m_Y}, {_loc.m_Z}) [-null-]", out charsWritten);
+            return destination.TryWrite(provider, $"({_loc.m_X}, {_loc.m_Y}, {_loc.m_Z}) [(-null-)]", out charsWritten);
         }
 
         return destination.TryWrite(provider, $"({_loc.m_X}, {_loc.m_Y}, {_loc.m_Z}) [{_map}]", out charsWritten);
@@ -178,8 +178,8 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
         if (_map == null)
         {
             // Maximum number of characters that are needed to represent this:
-            // 9 characters for (, , ) [-null-]
-            const int staticLength = 15;
+            // 9 characters for (, , ) [(-null-)]
+            const int staticLength = 17;
             // Up to 11 characters to represent each integer
             const int maxLength = staticLength + 11 * 3;
             Span<char> span = stackalloc char[maxLength];
