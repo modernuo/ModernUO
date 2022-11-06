@@ -6,7 +6,6 @@
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
-        <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '7.0'))">NET7_SDK</DefineConstants>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
@@ -24,15 +23,7 @@
         <Delete Files="..\..\Distribution\Assemblies\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\libargon2.dylib" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\libargon2.so" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\zlib.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\zstd" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\zstd.exe" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
     </Target>
@@ -43,11 +34,11 @@
         <PackageReference Include="MailKit" Version="3.4.2" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
-        <PackageReference Include="Zlib.Bindings" Version="1.9.2" />
-        <PackageReference Include="Argon2.Bindings" Version="1.13.0" />
-        <PackageReference Include="Zstd.Binaries" Version="1.4.0" />
+        <PackageReference Include="Zlib.Bindings" Version="1.10.1" />
+        <PackageReference Include="Argon2.Bindings" Version="1.14.4" />
+        <PackageReference Include="Zstd.Binaries" Version="1.5.1" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.5.0" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.5.3" />
         <PackageReference Include="ModernUO.Serialization.Generator" Version="2.5.2" />
     </ItemGroup>
     <ItemGroup>

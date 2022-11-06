@@ -42,11 +42,7 @@ public class GumpRadio : GumpEntry
 
     public int SwitchID { get; set; }
 
-#if NET7_SDK
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
-#else
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-#endif
     {
         var initialState = InitialState ? "1" : "0";
         writer.WriteAscii($"{{ radio {X} {Y} {InactiveID} {ActiveID} {initialState} {SwitchID} }}");

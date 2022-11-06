@@ -4,14 +4,13 @@
         <Authors>Kamron Batman</Authors>
         <Company>ModernUO</Company>
         <Copyright>2019-2022</Copyright>
-        <TargetFramework>net6.0</TargetFramework>
-        <Platforms>x64</Platforms>
-        <PlatformTarget>x64</PlatformTarget>
+        <TargetFramework>net7.0</TargetFramework>
+        <Platforms>x64;arm64</Platforms>
         <LangVersion>preview</LangVersion>
         <PublicRelease>true</PublicRelease>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <NoWarn>NU1603</NoWarn>
-        <RuntimeIdentifiers>win-x64;osx-x64;linux-x64;debian.10-x64;debian.11-x64;ubuntu.16.04-x64;ubuntu.18.04-x64;ubuntu.20.04-x64;centos.7-x64;centos.8-x64;fedora.32-x64;fedora.33-x64;fedora.34-x64;fedora.35-x64;fedora.36-x64;rhel.7-x64;rhel.8-x64;linuxmint.17-x64;linuxmint.18-x64;linuxmint.19-x64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x64;win-arm64;osx-x64;osx-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
         <Configurations>Debug;Release;Analyze</Configurations>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -21,10 +20,14 @@
         <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
         <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
         <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+        <IsX64 Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'">true</IsX64>
+        <IsArm64 Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'ARM64'">true</IsArm64>
         <DefineConstants Condition="'$(IsWindows)'=='true'">WINDOWS</DefineConstants>
         <DefineConstants Condition="'$(IsOSX)'=='true'">OSX</DefineConstants>
         <DefineConstants Condition="'$(IsLinux)'=='true'">LINUX</DefineConstants>
         <DefineConstants Condition="'$(IsOSX)'=='true' OR '$(IsLinux)'=='true'">UNIX</DefineConstants>
+        <DefineConstants Condition="'$(IsX64)'=='true'">CPU_X64</DefineConstants>
+        <DefineConstants Condition="'$(IsArm64)'=='true'">CPU_ARM64</DefineConstants>
         <DefineConstants Condition="'$(SkipLocalsInitAttribute)'=='true'">NO_LOCAL_INIT</DefineConstants>
         <DefineConstants>MUO</DefineConstants>
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
@@ -36,11 +39,17 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(IsWindows)'=='true' AND '$(RuntimeIdentifier)'==''">
+    <PropertyGroup Condition="'$(IsWindows)'=='true' AND '$(IsX64)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(IsOSX)'=='true' AND '$(RuntimeIdentifier)'==''">
+    <PropertyGroup Condition="'$(IsWindows)'=='true' AND '$(IsArm64)'=='true' AND '$(RuntimeIdentifier)'==''">
+        <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(IsOSX)'=='true' AND '$(IsX64)'=='true' AND '$(RuntimeIdentifier)'==''">
         <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(IsOSX)'=='true' AND '$(isArm64)'=='true' AND '$(RuntimeIdentifier)'==''">
+        <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <DefineConstants>TRACE;DEBUG</DefineConstants>

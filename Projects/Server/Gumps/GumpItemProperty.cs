@@ -24,11 +24,7 @@ public class GumpItemProperty : GumpEntry
 
     public Serial Serial { get; set; }
 
-#if NET7_SDK
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
-#else
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-#endif
     {
         writer.WriteAscii($"{{ itemproperty {Serial.Value} }}");
     }
