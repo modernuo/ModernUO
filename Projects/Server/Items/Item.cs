@@ -2040,7 +2040,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
             if (ip.IsAccessibleTo(from)
                 && rpm?.CheckNonlocalDrop(from, this, ip) != false
-                && (!ip.Movable || rpm == from || ip.Map == bounce.Map && root.Location == bounce.WorldLoc)
+                && (!ip.Movable || rpm == from || ip.Map == bounce.Map && root?.Location == bounce.WorldLoc)
                )
             {
                 Location = bounce.Location;
