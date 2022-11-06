@@ -161,15 +161,10 @@ public struct Rectangle3D : IEquatable<Rectangle3D>, ISpanFormattable
         // Maximum number of characters that are needed to represent this:
         // 13 characters for (, , )+(, , )
         // Up to 11 characters to represent each integer
-        const int maxLength = 13 + 11 * 6; // 1478 bytes > 1024, so use a shared buffer.
-        // Note: We use a thread-safe array pool just in case, yes it is slower.
-        char[] array = ArrayPool<char>.Shared.Rent(maxLength);
-        var span = array.AsSpan();
+        const int maxLength = 13 + 11 * 6;
+        Span<char> span = stackalloc char[maxLength];
         TryFormat(span, out var charsWritten, null, null);
-        var returnStr = span[..charsWritten].ToString();
-
-        ArrayPool<char>.Shared.Return(array);
-        return returnStr;
+        return span[..charsWritten].ToString();
     }
 
     public string ToString(string format, IFormatProvider formatProvider)
