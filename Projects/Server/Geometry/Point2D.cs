@@ -113,7 +113,8 @@ public struct Point2D
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
         => destination.TryWrite(provider, $"({m_X}, {m_Y})", out charsWritten);
 
-    public override string ToString() {
+    public override string ToString()
+    {
         // Maximum number of characters that are needed to represent this:
         // 4 characters for (, )
         // Up to 11 characters to represent each integer

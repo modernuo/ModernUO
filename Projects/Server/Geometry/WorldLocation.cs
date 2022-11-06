@@ -173,7 +173,8 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
         return destination.TryWrite(provider, $"({_loc.m_X}, {_loc.m_Y}, {_loc.m_Z}) [{_map}]", out charsWritten);
     }
 
-    public override string ToString() {
+    public override string ToString()
+    {
         if (_map == null)
         {
             // Maximum number of characters that are needed to represent this:

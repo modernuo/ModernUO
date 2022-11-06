@@ -155,7 +155,8 @@ public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
         => destination.TryWrite(provider, $"({X}, {Y})+({Width}, {Height})", out charsWritten);
 
-    public override string ToString() {
+    public override string ToString()
+    {
         // Maximum number of characters that are needed to represent this:
         // 9 characters for (, )+(, )
         // Up to 11 characters to represent each integer
