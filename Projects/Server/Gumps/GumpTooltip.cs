@@ -32,11 +32,7 @@ public class GumpTooltip : GumpEntry
 
     public string Args { get; set; }
 
-#if NET7_SDK
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
-#else
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-#endif
     {
         writer.WriteAscii(string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}");
     }

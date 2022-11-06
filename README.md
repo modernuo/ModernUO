@@ -15,31 +15,38 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 10/11/2016/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
-![MacOS 10.15/11/12](https://img.shields.io/badge/-monterey-222222?logo=apple&logoColor=white)
-[![Debian 10/11](https://img.shields.io/badge/-bullseye-A81D33?logo=debian)](https://www.debian.org/distrib/)
-[![Ubuntu 16/18/20 LTS](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/download/server)
-[![Linux Mint 17/18/19/20](https://img.shields.io/badge/-20-87CF3E?logo=linux%20mint&logoColor=white)](https://linuxmint.com/download.php)
-[![CentOS 7/8](https://img.shields.io/badge/-8.5-262577?logo=centos&logoColor=white)](https://www.centos.org/download/)
-[![Fedora 32/33/34/35/36](https://img.shields.io/badge/-36-51a2da?logo=fedora&logoColor=white)](https://getfedora.org/en/server/download/)
-[![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=red%20hat&logoColor=white)](https://access.redhat.com/downloads)
+[![Windows 10/11/2016/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+![MacOS 10.15/11/12/13](https://img.shields.io/badge/-ventura-222222?logo=apple&logoColor=white&labelColor=222222)
+[![Debian 10/11](https://img.shields.io/badge/-bullseye-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
+[![Ubuntu 16/18/20/22 LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
+<br />
+[![Alpine 3.15+](https://img.shields.io/badge/-3.16-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
+[![Fedora 33/34/35/36](https://img.shields.io/badge/-36-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
+[![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
+[![CentOS 7/8/9](https://img.shields.io/badge/-9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
+[![openSUSE 15+](https://img.shields.io/badge/-15-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
+[![SUSE Enterprise 12 SP2+](https://img.shields.io/badge/-12%20SP2-0C322C?logo=suse&logoColor=30BA78&labelColor=222222)](https://www.suse.com/download/sles/)
+[![Linux Mint 17/18/19/20](https://img.shields.io/badge/-20-87CF3E?logo=linux%20mint&logoColor=87CF3E&labelColor=222222)](https://linuxmint.com/download.php)
+[![Arch](https://img.shields.io/badge/-Arch-1793D1?logo=archlinux&logoColor=1793D1&labelColor=222222)](https://archlinux.org/download/)
 
 #### Running the server
-[![.NET](https://img.shields.io/badge/-6.0.8-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![.NET](https://img.shields.io/badge/-7.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Development
-[![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=white)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%206.0.400%20SDK-5C2D91?logo=.NET)](https://dotnet.microsoft.com/download/dotnet/6.0)
+[![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
+[![.NET](https://img.shields.io/badge/-%207.0.100%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Supported IDEs
-&nbsp;&nbsp;&nbsp;
-[<img height="64"
-      title="Jetbrains Rider 2022.2.2" alt="Jetbrains Rider 2022.2.2" src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png">](https://www.jetbrains.com/rider/download)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[<img height="64" title="Visual Studio 2022" alt="Visual Studio 2022" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png">](https://visualstudio.microsoft.com/downloads)
-<br />
-Rider 2022.2.2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visual Studio 2022+
-###### Note: VS Code is not currently supported.
+
+<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2022.2.3+"
+      alt="Jetbrains Rider 2022.2.3+"
+      src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png"></a><img
+      alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://code.visualstudio.com/download"><img height="64" title="VSCode"
+      alt="VSCode"
+      src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a><img alt="space" width="32"
+      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.4+"
+      alt="Visual Studio 2022 v17.4+"
+      src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png"></a></p>
 
 ## Getting Started
 - Install prerequisite [requirements](https://github.com/modernuo/ModernUO#requirements)
@@ -48,25 +55,35 @@ Rider 2022.2.2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp
 - Open `ModernUO.sln` to start developing
 
 ## Building/Publishing
-- Run `./publish.cmd [release|debug (default: release)] [os]`
-  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md)
+- Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
+  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md)
     - `win` - Windows 10/11/2016/2019/2022
-    - `osx` - MacOS 10.15/11.0+/12.0+ (Catalina, Big Sur, Monterey)
-    - `ubuntu.16.04`, `ubuntu.18.04` `ubuntu.20.04` - Ubuntu LTS
-    - `linuxmint.17`, `linuxmint.18`, `linuxmint.19` - Linux Mint
-    - `debian.10`, `debian.11` - Debian
-    - `centos.7`, `centos.8` - CentOS
-    - `fedora.32`, `fedora.33`, `fedora.34`, `fedora.35`, `fedora.36` - Fedora
-    - `rhel.7`, `rhel.8` - Redhat
-    - `linux` - Other linux distros
-    - If blank, the operating system running the build is used. Linux Mint 20 is not supported directly yet, so build explicitly against `ubuntu.20.04` instead.
+    - `osx` - MacOS 10.15/11/12/13 (Catalina, Big Sur, Monterey, Ventura)
+    - `linux` - Linux
+  - `arch`
+    - `x64` - Intel 64-bit
+    - `arm64` - ARM 64-bit
+
+## Linux Prerequisites
+### Fedora, CentOS, RHEL, etc
+```shell
+dnf upgrade --refresh -y
+# CentOS does not come with EPEL enabled
+dnf install -y epel-release epel-next-release
+# Note: libargon2 is old.
+# Download/symlink from here: https://github.com/modernuo/Argon2.Bindings/tree/main/runtimes
+dnf install -y findutils libicu zlib-devel zstd libargon2-devel
+```
+
+### Ubuntu, Debian, etc
+```shell
+apt-get update -y
+apt-get install -y libicu-dev libz-dev zstd libargon2-dev
+```
 
 ## Running the Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
 - Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the server
-
-**Note:** If you are running a version of linux that isn't listed above, then you may have to install the following using a package manager:
-  * `libargon2-dev`, `libz-dev`, and `zstd`
 
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)

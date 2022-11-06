@@ -45,11 +45,7 @@ public class GumpSpriteImage : GumpEntry
 
     public int SY { get; set; }
 
-#if NET7_SDK
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
-#else
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-#endif
     {
         writer.WriteAscii($"{{ picinpic {X} {Y} {GumpID} {Width} {Height} {SX} {SY} }}");
     }

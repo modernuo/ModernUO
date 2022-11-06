@@ -50,11 +50,7 @@ public class GumpTextEntryLimited : GumpEntry
 
     public int Size { get; set; }
 
-#if NET7_SDK
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
-#else
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-#endif
     {
         var textIndex = strings.GetOrAdd(InitialText ?? "");
         writer.WriteAscii($"{{ textentrylimited {X} {Y} {Width} {Height} {Hue} {EntryID} {textIndex} {Size} }}");

@@ -36,11 +36,7 @@ public class GumpAlphaRegion : GumpEntry
 
     public int Height { get; set; }
 
-#if NET7_SDK
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
-#else
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-#endif
     {
         writer.WriteAscii($"{{ checkertrans {X} {Y} {Width} {Height} }}");
     }
