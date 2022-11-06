@@ -174,15 +174,13 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     }
 
     public override string ToString() {
-        // 9 characters for (, , ) []
-        const int staticLength = 9;
-
         if (_map == null)
         {
             // Maximum number of characters that are needed to represent this:
+            // 9 characters for (, , ) [-null-]
+            const int staticLength = 15;
             // Up to 11 characters to represent each integer
-            // 6 characters for -null-
-            const int maxLength = staticLength + 6 + 11 * 3;
+            const int maxLength = staticLength + 11 * 3;
             Span<char> span = stackalloc char[maxLength];
             TryFormat(span, out var charsWritten, null, null);
             return span[..charsWritten].ToString();
