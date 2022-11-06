@@ -118,9 +118,22 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatab
     public static Serial operator --(Serial l) => (Serial)(l.Value - 1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override string ToString() => $"{this}";
+    public override string ToString()
+    {
+        // Maximum number of characters that are needed to represent this:
+        // 2 characters for 0x
+        // Up to 8 characters to represent the value in hex
+        Span<char> span = stackalloc char[10];
+        TryFormat(span, out var charsWritten, null, null);
+        return span[..charsWritten].ToString();
+    }
 
-    public string ToString(string format, IFormatProvider formatProvider) => ToString();
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
+    }
 
     public bool TryFormat(
         Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider

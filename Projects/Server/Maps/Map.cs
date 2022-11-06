@@ -314,7 +314,7 @@ public static class PooledEnumeration
 }
 
 [Parsable]
-public sealed class Map : IComparable<Map>
+public sealed class Map : IComparable<Map>, ISpanFormattable
 {
     public const int SectorSize = 16;
     public const int SectorShift = 4;
@@ -525,7 +525,28 @@ public sealed class Map : IComparable<Map>
         return null;
     }
 
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+    {
+        if (destination.Length >= Name.Length)
+        {
+            Name.CopyTo(destination);
+            charsWritten = Name.Length;
+            return true;
+        }
+
+        charsWritten = 0;
+        return false;
+    }
+
+
     public override string ToString() => Name;
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
+    }
 
     public int GetAverageZ(int x, int y)
     {
