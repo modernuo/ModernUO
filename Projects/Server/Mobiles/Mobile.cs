@@ -8454,7 +8454,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         for (var i = 0; i < _statMods.Count; i++)
         {
             var mod = _statMods[i];
-            if (mod.Name == name)
+            if (mod.Name == name && !mod.HasElapsed())
             {
                 return mod;
             }
