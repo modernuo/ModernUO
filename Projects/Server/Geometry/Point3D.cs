@@ -21,7 +21,7 @@ namespace Server;
 [Parsable]
 public struct Point3D
     : IPoint3D, IComparable<Point3D>, IComparable<IPoint3D>, IEquatable<object>, IEquatable<Point3D>,
-        IEquatable<IPoint3D>
+        IEquatable<IPoint3D>, ISpanFormattable
 {
     internal int m_X;
     internal int m_Y;
@@ -69,8 +69,6 @@ public struct Point3D
         m_Y = y;
         m_Z = z;
     }
-
-    public override string ToString() => $"({m_X}, {m_Y}, {m_Z})";
 
     public bool Equals(Point3D other) => m_X == other.m_X && m_Y == other.m_Y && m_Z == other.m_Z;
 
@@ -163,5 +161,26 @@ public struct Point3D
         }
 
         return m_Z.CompareTo(other.Z);
+    }
+
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+        => destination.TryWrite(provider, $"({m_X}, {m_Y}, {m_Z})", out charsWritten);
+
+    public override string ToString()
+    {
+        // Maximum number of characters that are needed to represent this:
+        // 6 characters for (, , )
+        // Up to 11 characters to represent each integer
+        const int maxLength = 6 + 11 * 3;
+        Span<char> span = stackalloc char[maxLength];
+        TryFormat(span, out var charsWritten, null, null);
+        return span[..charsWritten].ToString();
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
     }
 }
