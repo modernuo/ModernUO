@@ -301,20 +301,19 @@ namespace Server.Spells
 
         public static bool AddStatBonus(Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration)
         {
-            var offset = bonus;
             var name = $"[Magic] {type} Buff";
 
             var mod = target.GetStatMod(name);
 
             if (mod?.Offset < 0)
             {
-                target.AddStatMod(new StatMod(type, name, mod.Offset + offset, duration));
+                target.AddStatMod(new StatMod(type, name, mod.Offset + bonus, duration));
                 return true;
             }
 
-            if (mod == null || mod.Offset <= offset)
+            if (mod == null || mod.Offset <= bonus)
             {
-                target.AddStatMod(new StatMod(type, name, offset, duration));
+                target.AddStatMod(new StatMod(type, name, bonus, duration));
                 return true;
             }
 
