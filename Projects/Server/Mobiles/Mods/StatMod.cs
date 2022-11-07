@@ -33,6 +33,9 @@ public partial class StatMod : MobileMod
     [SerializableField(3, setter: "private")]
     private int _offset;
 
+    // Added a timer since GetStatOffset was processing expiration sand that was causing recursion in DeltaQueue
+    // ProcessDeltaQueue -> Dequeue -> ProcessDelta -> SendStats packet -> get_HitsMax ->
+    // - GetStatOffset -> Delta -> Queue to DeltaQueue
     private TimerExecutionToken _timerToken;
 
     public StatMod(Mobile owner) : base(owner)
