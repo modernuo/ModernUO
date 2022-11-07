@@ -33,6 +33,8 @@ public partial class StatMod : MobileMod
     [SerializableField(3, setter: "private")]
     private int _offset;
 
+    private TimerExecutionToken _timerToken;
+
     public StatMod(Mobile owner) : base(owner)
     {
     }
@@ -43,7 +45,26 @@ public partial class StatMod : MobileMod
         _offset = offset;
         _duration = duration;
         _added = Core.Now;
+
+        if (_duration > TimeSpan.Zero)
+        {
+            Timer.StartTimer(duration, RemoveFromOwner, out _timerToken);
+        }
     }
 
-    public bool HasElapsed() => _duration != TimeSpan.Zero && Core.Now - _added >= _duration;
+    public bool HasElapsed() => _duration > TimeSpan.Zero && Core.Now - _added >= _duration;
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        if (_duration > TimeSpan.Zero && Core.Now - _added < _duration)
+        {
+            Timer.StartTimer(_duration, RemoveFromOwner, out _timerToken);
+        }
+    }
+
+    private void RemoveFromOwner() => Owner?.RemoveStatMod(this);
+
+    // Called by Mobile.RemoveStatMod()
+    public void Remove() => _timerToken.Cancel();
 }

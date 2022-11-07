@@ -8392,6 +8392,33 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         return false;
     }
 
+    public virtual void RemoveStatMod(StatMod mod)
+    {
+        if (mod == null)
+        {
+            return;
+        }
+
+        // Remove it just in case it was orphaned somehow.
+        mod.Remove();
+
+        if (_statMods == null)
+        {
+            return;
+        }
+
+        if (_statMods.Remove(mod))
+        {
+            CheckStatTimers();
+            Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
+        }
+
+        if (_statMods.Count == 0)
+        {
+            _statMods = null;
+        }
+    }
+
     public virtual void RemoveStatMod(string name)
     {
         if (_statMods == null || name == null)
@@ -8405,11 +8432,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             if (mod.Name == name)
             {
                 _statMods.RemoveAt(i);
+                mod.Remove();
                 CheckStatTimers();
                 Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
             }
         }
-
 
         if (_statMods.Count == 0)
         {
@@ -8471,7 +8498,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     }
 
     /// <summary>
-    ///     Computes the total modified offset for the specified stat type. Expired <see cref="StatMod" /> instances are removed.
+    ///     Computes the total modified offset for the specified stat type.
     /// </summary>
     public int GetStatOffset(StatType type)
     {
@@ -8484,26 +8511,13 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
         var offset = 0;
 
-        using var queue = PooledRefQueue<StatMod>.Create(8);
         for (var i = 0; i < _statMods.Count; i++)
         {
             var mod = _statMods[i];
-            if (mod.HasElapsed())
-            {
-                queue.Enqueue(mod);
-            }
-            else if ((mod.Type & type) != 0)
+            if ((mod.Type & type) != 0 && !mod.HasElapsed())
             {
                 offset += mod.Offset;
             }
-        }
-
-        while (queue.Count > 0)
-        {
-            var mod = queue.Dequeue();
-            _statMods.Remove(mod);
-            Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
-            CheckStatTimers();
         }
 
         return offset;
