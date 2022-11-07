@@ -8444,7 +8444,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         }
     }
 
-    public virtual StatMod GetStatMod(string name)
+    public virtual StatMod GetStatMod(string name, bool includeElapsed = false)
     {
         if (_statMods == null || name == null)
         {
@@ -8454,7 +8454,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         for (var i = 0; i < _statMods.Count; i++)
         {
             var mod = _statMods[i];
-            if (mod.Name == name && !mod.HasElapsed())
+            if (mod.Name == name && !mod.HasElapsed() || includeElapsed)
             {
                 return mod;
             }
@@ -8502,9 +8502,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     /// </summary>
     public int GetStatOffset(StatType type)
     {
-        _statMods ??= new List<StatMod>();
-
-        if (_statMods.Count <= 0)
+        if (_statMods == null || _statMods.Count == 0)
         {
             return 0;
         }
