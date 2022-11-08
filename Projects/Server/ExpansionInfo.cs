@@ -191,6 +191,11 @@ public class ExpansionInfo
     static ExpansionInfo()
     {
         var path = Path.Combine(Core.BaseDirectory, "Data/expansion.json");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException($"Expansion file '{path}' could not be found.");
+        }
+
         var expansions = JsonConfig.Deserialize<List<ExpansionConfig>>(path);
 
         Table = new ExpansionInfo[expansions.Count];
