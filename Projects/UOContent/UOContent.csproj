@@ -4,7 +4,6 @@
         <RootNamespace>Server</RootNamespace>
         <AssemblyName>UOContent</AssemblyName>
         <Product>ModernUO Content</Product>
-        <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
