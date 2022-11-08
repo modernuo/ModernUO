@@ -7,7 +7,6 @@
         <AssemblyName>ModernUO</AssemblyName>
         <Win32Resource />
         <Product>ModernUO Server</Product>
-        <PublishDir>..\..\Distribution</PublishDir>
         <OutDir>..\..\Distribution</OutDir>
         <Version>0.0.0</Version>
     </PropertyGroup>
@@ -42,8 +41,5 @@
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Assistants" />
     </ItemGroup>
 </Project>
