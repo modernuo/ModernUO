@@ -502,7 +502,10 @@ namespace Server.Engines.CannedEvil
                 {
                     RegisterDamageTo(Champion);
 
-                    AwardArtifact((Champion as BaseChampion)?.GetArtifact());
+                    if (Core.ML)
+                    {
+                        AwardArtifact((Champion as BaseChampion)?.GetArtifact());
+                    }
 
                     DamageEntries.Clear();
 
