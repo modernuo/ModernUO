@@ -562,6 +562,7 @@ namespace Server.Engines.CannedEvil
                             {
                                 if (Map == Map.Felucca)
                                 {
+                                    // 1 in 1000 you get either a scroll of transcendence or a powerscroll
                                     var random = Utility.Random(2000);
                                     if (random == 0)
                                     {
