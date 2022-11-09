@@ -47,7 +47,7 @@ public class Dismount : WeaponAbility
             return;
         }
 
-        if (Core.ML && attacker is LesserHiryu && Utility.RandomDouble() <= 0.8)
+        if (Core.ML && attacker is LesserHiryu && Utility.RandomDouble() < 0.8)
         {
             return; // Lesser Hiryu have an 80% chance of missing this attack
         }

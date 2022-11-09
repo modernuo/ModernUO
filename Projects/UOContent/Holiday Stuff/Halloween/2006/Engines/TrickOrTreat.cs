@@ -196,7 +196,7 @@ namespace Server.Engines.Events
                             }
                         );
 
-                        if (Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100)
+                        if (Utility.RandomDouble() < 0.01 && from.Skills.Begging.Value >= 100)
                         {
                             from.AddToBackpack(HolidaySettings.RandomGMBeggerItem);
 

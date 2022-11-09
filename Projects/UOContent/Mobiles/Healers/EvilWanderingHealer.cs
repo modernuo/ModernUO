@@ -51,7 +51,7 @@ namespace Server.Mobiles
         {
             base.OnDeath(c);
 
-            if (Utility.RandomDouble() < 0.5)
+            if (Utility.RandomBool())
             {
                 c.DropItem(new FragmentOfAMap());
             }

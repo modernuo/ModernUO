@@ -2995,7 +2995,7 @@ namespace Server.Mobiles
                     {
                         PackItem(new ParagonChest(Name, treasureLevel));
                     }
-                    else if ((Map == Map.Felucca || Map == Map.Trammel) && Utility.RandomDouble() <= TreasureMap.LootChance)
+                    else if ((Map == Map.Felucca || Map == Map.Trammel) && Utility.RandomDouble() < TreasureMap.LootChance)
                     {
                         PackItem(new TreasureMap(treasureLevel, Map));
                     }
@@ -4222,7 +4222,7 @@ namespace Server.Mobiles
                         {
                             for (var i = 0; i < amount; ++i)
                             {
-                                if (m_Loyalty < MaxLoyalty && Utility.RandomDouble() <= 0.5)
+                                if (m_Loyalty < MaxLoyalty && Utility.RandomBool())
                                 {
                                     m_Loyalty += 10;
                                 }
@@ -4799,7 +4799,7 @@ namespace Server.Mobiles
 
         public void PackNecroScroll(int index)
         {
-            if (!Core.AOS || Utility.RandomDouble() >= 0.05)
+            if (!Core.AOS || Utility.RandomDouble() < 0.95)
             {
                 return;
             }

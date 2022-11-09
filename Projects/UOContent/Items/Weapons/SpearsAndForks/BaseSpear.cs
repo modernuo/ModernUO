@@ -37,7 +37,7 @@ namespace Server.Items
             {
                 --PoisonCharges;
 
-                if (Utility.RandomDouble() >= 0.5) // 50% chance to poison
+                if (Utility.RandomBool()) // 50% chance to poison
                 {
                     defender.ApplyPoison(attacker, Poison);
                 }

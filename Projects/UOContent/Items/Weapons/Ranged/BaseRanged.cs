@@ -94,7 +94,7 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {
             if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
-                Utility.RandomDouble() <= 0.4)
+                Utility.RandomDouble() < 0.4)
             {
                 defender.AddToBackpack(Ammo);
             }
@@ -124,7 +124,7 @@ namespace Server.Items
 
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
-            if (attacker.Player && Utility.RandomDouble() <= 0.4)
+            if (attacker.Player && Utility.RandomDouble() < 0.4)
             {
                 if (Core.SE)
                 {

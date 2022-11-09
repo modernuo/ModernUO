@@ -151,7 +151,7 @@ namespace Server.Mobiles
             {
                 scalar *= 0.1;
 
-                if (Utility.RandomDouble() <= 0.1)
+                if (Utility.RandomDouble() < 0.1)
                 {
                     SpawnPixies(caster);
                 }
@@ -173,7 +173,7 @@ namespace Server.Mobiles
 
             CheckQueen();
 
-            if (m_Queen != null && Utility.RandomDouble() <= 0.1)
+            if (m_Queen != null && Utility.RandomDouble() < 0.1)
             {
                 SpawnPixies(attacker);
             }

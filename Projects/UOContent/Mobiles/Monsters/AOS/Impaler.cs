@@ -53,7 +53,7 @@ namespace Server.Mobiles
         public override bool Unprovokable => Core.SE;
         public override bool AreaPeaceImmune => Core.SE;
         public override Poison PoisonImmune => Poison.Lethal;
-        public override Poison HitPoison => Utility.RandomDouble() <= 0.8 ? Poison.Greater : Poison.Deadly;
+        public override Poison HitPoison => Utility.RandomDouble() < 0.8 ? Poison.Greater : Poison.Deadly;
 
         public override int TreasureMapLevel => 1;
 

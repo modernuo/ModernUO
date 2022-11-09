@@ -83,7 +83,7 @@ namespace Server.Mobiles
         {
             base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() <= 0.2)
+            if (Utility.RandomDouble() < 0.2)
             {
                 Earthquake();
             }

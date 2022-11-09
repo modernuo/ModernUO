@@ -56,7 +56,7 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Arachnid;
         public override Poison PoisonImmune => Poison.Greater;
-        public override Poison HitPoison => Utility.RandomDouble() <= 0.8 ? Poison.Greater : Poison.Deadly;
+        public override Poison HitPoison => Utility.RandomDouble() < 0.8 ? Poison.Greater : Poison.Deadly;
 
         public override void GenerateLoot()
         {

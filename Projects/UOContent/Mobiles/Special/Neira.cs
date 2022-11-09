@@ -144,7 +144,7 @@ namespace Server.Mobiles
         {
             base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() <= 0.1) // 10% chance to drop or throw an unholy bone
+            if (Utility.RandomDouble() < 0.1) // 10% chance to drop or throw an unholy bone
             {
                 AddUnholyBone(defender, 0.25);
             }
@@ -156,7 +156,7 @@ namespace Server.Mobiles
         {
             base.OnGotMeleeAttack(attacker, damage);
 
-            if (Utility.RandomDouble() <= 0.1) // 10% chance to drop or throw an unholy bone
+            if (Utility.RandomDouble() < 0.1) // 10% chance to drop or throw an unholy bone
             {
                 AddUnholyBone(attacker, 0.25);
             }
@@ -166,7 +166,7 @@ namespace Server.Mobiles
         {
             base.AlterDamageScalarFrom(caster, ref scalar);
 
-            if (Utility.RandomDouble() <= 0.1) // 10% chance to throw an unholy bone
+            if (Utility.RandomDouble() < 0.1) // 10% chance to throw an unholy bone
             {
                 AddUnholyBone(caster, 1.0);
             }

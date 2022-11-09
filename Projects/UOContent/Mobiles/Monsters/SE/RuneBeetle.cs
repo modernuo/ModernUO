@@ -99,7 +99,7 @@ namespace Server.Mobiles
         {
             base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() >= 0.05)
+            if (Utility.RandomDouble() < 0.95)
             {
                 return;
             }

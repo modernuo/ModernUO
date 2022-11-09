@@ -122,16 +122,16 @@ namespace Server.Mobiles
         {
             base.OnGotMeleeAttack(attacker, damage);
 
-            if (Hits > HitsMax / 4)
+            if (Utility.RandomDouble() < 0.25)
             {
-                if (Utility.RandomDouble() <= 0.25)
+                if (Hits > HitsMax / 4)
                 {
                     SpawnBogling(attacker);
                 }
-            }
-            else if (Utility.RandomDouble() <= 0.25)
-            {
-                EatBoglings();
+                else
+                {
+                    EatBoglings();
+                }
             }
         }
     }

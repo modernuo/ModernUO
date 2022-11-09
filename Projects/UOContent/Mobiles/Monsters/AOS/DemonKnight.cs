@@ -191,18 +191,12 @@ namespace Server.Mobiles
             }
 
             var luck = LootPack.GetLuckChanceForKiller(boss);
-            int chance;
 
-            if (boss is DemonKnight)
+            return boss switch
             {
-                chance = 1500 + luck / 5;
-            }
-            else
-            {
-                chance = 750 + luck / 10;
-            }
-
-            return chance;
+                DemonKnight => 1500 + luck / 5,
+                _           => 750 + luck / 10
+            };
         }
 
         public static bool CheckArtifactChance(Mobile boss) => GetArtifactChance(boss) > Utility.Random(100000);

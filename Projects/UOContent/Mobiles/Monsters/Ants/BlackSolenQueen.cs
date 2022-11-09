@@ -40,7 +40,7 @@ namespace Server.Mobiles
 
             SolenHelper.PackPicnicBasket(this);
 
-            PackItem(new ZoogiFungus(Utility.RandomDouble() > 0.05 ? 5 : 25));
+            PackItem(new ZoogiFungus(Utility.RandomDouble() < 0.95 ? 5 : 25));
 
             if (Utility.RandomDouble() < 0.05)
             {
