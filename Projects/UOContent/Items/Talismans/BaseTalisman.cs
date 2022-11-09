@@ -1059,7 +1059,7 @@ namespace Server.Items
 
         public static TalismanAttribute GetRandomSummoner()
         {
-            if (Utility.RandomDouble() > 0.025)
+            if (Utility.RandomDouble() < 0.975)
             {
                 return new TalismanAttribute();
             }
