@@ -214,7 +214,7 @@ namespace Server.SkillHandlers
                     creature.PlaySound(creature.GetAngerSound());
                     creature.Direction = creature.GetDirectionTo(from);
 
-                    if (creature.BardPacified && Utility.RandomDouble() > 0.24)
+                    if (creature.BardPacified && Utility.RandomDouble() < 0.75)
                     {
                         Timer.StartTimer(TimeSpan.FromSeconds(2.0), () => Pacify(creature));
                     }
