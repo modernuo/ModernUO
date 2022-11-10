@@ -219,7 +219,7 @@ namespace Server.Spells.Necromancy
                     AOS.Damage(_target, _from, (int)damage, 0, 0, 0, 100, 0);
 
                     // OSI: randomly revealed between first and third damage tick, guessing 60% chance
-                    if (Utility.RandomDouble() >= 0.60)
+                    if (Utility.RandomDouble() < 0.40)
                     {
                         _target.RevealingAction();
                     }

@@ -49,7 +49,7 @@ namespace Server.Mobiles
 
             AddItem(new Tessen());
 
-            if (Utility.RandomDouble() <= 0.02)
+            if (Utility.RandomDouble() < 0.02)
             {
                 PackItem(new OrigamiPaper());
             }

@@ -185,12 +185,12 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (Utility.RandomDouble() <= 0.6) // 60% chance to polymorph attacker into a ratman
+            if (Utility.RandomDouble() < 0.6) // 60% chance to polymorph attacker into a ratman
             {
                 Polymorph(target);
             }
 
-            if (Utility.RandomDouble() <= 0.2) // 20% chance to more ratmen
+            if (Utility.RandomDouble() < 0.2) // 20% chance to spawn more ratmen
             {
                 SpawnRatmen(target);
             }

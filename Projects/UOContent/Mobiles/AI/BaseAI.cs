@@ -2248,7 +2248,7 @@ public abstract class BaseAI
 
         if (blocked)
         {
-            var offset = Utility.RandomDouble() >= 0.6 ? 1 : -1;
+            var offset = Utility.RandomDouble() < 0.4 ? 1 : -1;
 
             for (var i = 0; i < 2; ++i)
             {

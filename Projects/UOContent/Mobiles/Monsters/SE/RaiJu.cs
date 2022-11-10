@@ -60,7 +60,7 @@ namespace Server.Mobiles
         {
             base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() >= 0.1 || m_Table.Contains(defender))
+            if (Utility.RandomDouble() < 0.9 || m_Table.Contains(defender))
             {
                 return;
             }

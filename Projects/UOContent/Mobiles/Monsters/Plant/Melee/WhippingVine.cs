@@ -40,7 +40,7 @@ namespace Server.Mobiles
             PackReg(3);
             PackItem(new FertileDirt(Utility.RandomMinMax(1, 10)));
 
-            if (Utility.RandomDouble() <= 0.2)
+            if (Utility.RandomDouble() < 0.2)
             {
                 PackItem(new ExecutionersCap());
             }

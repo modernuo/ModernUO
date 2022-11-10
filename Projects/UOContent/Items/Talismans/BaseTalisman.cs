@@ -1059,7 +1059,7 @@ namespace Server.Items
 
         public static TalismanAttribute GetRandomSummoner()
         {
-            if (Utility.RandomDouble() >= 0.025)
+            if (Utility.RandomDouble() < 0.975)
             {
                 return new TalismanAttribute();
             }
@@ -1141,7 +1141,7 @@ namespace Server.Items
             ? (TalismanSlayerName)Utility.RandomMinMax(1, 9)
             : TalismanSlayerName.None;
 
-        public static int GetRandomCharges() => Utility.RandomDouble() < 0.5 ? Utility.RandomMinMax(10, 50) : 0;
+        public static int GetRandomCharges() => Utility.RandomBool() ? Utility.RandomMinMax(10, 50) : 0;
 
         [Flags]
         private enum SaveFlag

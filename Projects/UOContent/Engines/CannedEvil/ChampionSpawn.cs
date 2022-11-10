@@ -502,8 +502,10 @@ namespace Server.Engines.CannedEvil
                 {
                     RegisterDamageTo(Champion);
 
-                    //if (m_Champion is BaseChampion)
-                    //	AwardArtifact(((BaseChampion)m_Champion).GetArtifact());
+                    if (Core.ML)
+                    {
+                        AwardArtifact((Champion as BaseChampion)?.GetArtifact());
+                    }
 
                     DamageEntries.Clear();
 
@@ -560,31 +562,22 @@ namespace Server.Engines.CannedEvil
                             {
                                 if (Map == Map.Felucca)
                                 {
-                                    if (Utility.RandomDouble() < 0.001)
+                                    // 1 in 1000 you get either a scroll of transcendence or a powerscroll
+                                    var random = Utility.Random(2000);
+                                    if (random == 0)
                                     {
-                                        double random = Utility.Random (49);
-
-                                        if (random <= 24)
-                                        {
-                                            ScrollofTranscendence SoTF = CreateRandomFelSoT();
-                                            GiveScrollOfTranscendenceFelTo (pm, SoTF);
-                                        }
-                                        else
-                                        {
-                                            PowerScroll PS = CreateRandomFelPS();
-                                            GivePowerScrollFelTo (pm, PS);
-                                        }
+                                        GiveScrollOfTranscendenceFelTo(pm, CreateRandomFelSoT());
+                                    }
+                                    else if (random == 1)
+                                    {
+                                        GivePowerScrollFelTo(pm, CreateRandomFelPS());
                                     }
                                 }
 
-                                if (Map == Map.Ilshenar || Map == Map.Tokuno)
+                                if ((Map == Map.Ilshenar || Map == Map.Tokuno) && Utility.Random(10000) < 15)
                                 {
-                                    if (Utility.RandomDouble() < 0.0015)
-                                    {
-                                        pm.SendLocalizedMessage(1094936); // You have received a Scroll of Transcendence!
-                                        ScrollofTranscendence SoTT = CreateRandomTramSoT();
-                                        pm.AddToBackpack(SoTT);
-                                    }
+                                    pm.SendLocalizedMessage(1094936); // You have received a Scroll of Transcendence!
+                                    pm.AddToBackpack(CreateRandomTramSoT());
                                 }
                             }
 

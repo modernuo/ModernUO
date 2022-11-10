@@ -52,7 +52,7 @@ namespace Server.Mobiles
             AddItem(new BoneArms());
             AddItem(new BoneLegs());
 
-            if (Utility.RandomDouble() < 0.5)
+            if (Utility.RandomBool())
             {
                 AddItem(new SavageMask());
             }

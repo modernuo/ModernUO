@@ -206,7 +206,7 @@ namespace Server.SkillHandlers
                     // Someone else is already taming this.
                     creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502802, from.NetState);
                 }
-                else if (creature.CanAngerOnTame && Utility.RandomDouble() <= 0.95)
+                else if (creature.CanAngerOnTame && Utility.RandomDouble() < 0.95)
                 {
                     // You seem to anger the beast!
                     creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502805, from.NetState);
@@ -214,7 +214,7 @@ namespace Server.SkillHandlers
                     creature.PlaySound(creature.GetAngerSound());
                     creature.Direction = creature.GetDirectionTo(from);
 
-                    if (creature.BardPacified && Utility.RandomDouble() > .24)
+                    if (creature.BardPacified && Utility.RandomDouble() < 0.75)
                     {
                         Timer.StartTimer(TimeSpan.FromSeconds(2.0), () => Pacify(creature));
                     }

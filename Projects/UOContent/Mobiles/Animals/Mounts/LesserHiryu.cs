@@ -103,7 +103,7 @@ public class LesserHiryu : BaseMount
     {
         var tamingChance = base.GetControlChance(m, useBaseSkill);
 
-        if (tamingChance >= 0.95)
+        if (tamingChance < 0.05)
         {
             return tamingChance;
         }

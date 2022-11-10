@@ -105,7 +105,7 @@ namespace Server.Mobiles
 
                 m_Thrown++;
 
-                if (Utility.RandomDouble() <= 0.75 && m_Thrown % 2 == 1) // 75% chance to quickly throw another bomb
+                if (m_Thrown % 2 == 1 && Utility.RandomDouble() < 0.75) // 75% chance to quickly throw another bomb
                 {
                     m_NextBomb = Core.Now + TimeSpan.FromSeconds(3.0);
                 }

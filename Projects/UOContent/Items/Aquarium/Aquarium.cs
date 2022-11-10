@@ -656,7 +656,7 @@ namespace Server.Items
                         {
                             fish.Hue = FishHues.RandomElement();
                         }
-                        else if (Utility.RandomDouble() < 0.5)
+                        else if (Utility.RandomBool())
                         {
                             fish.Hue = Utility.RandomMinMax(0x100, 0x3E5);
                         }

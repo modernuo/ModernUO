@@ -94,7 +94,7 @@ namespace Server.Mobiles
 
         public void AreaPeace()
         {
-            if (Combatant == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() > 0.1)
+            if (Combatant == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() < 0.9)
             {
                 return;
             }
@@ -122,7 +122,7 @@ namespace Server.Mobiles
 
         public void AreaUndress()
         {
-            if (Combatant == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() > 0.005)
+            if (Combatant == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() >= 0.005)
             {
                 return;
             }

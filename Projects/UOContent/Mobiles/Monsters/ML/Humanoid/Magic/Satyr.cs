@@ -90,7 +90,7 @@ namespace Server.Mobiles
 
         public void Peace(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() > 0.1)
+            if (target == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() < 0.9)
             {
                 return;
             }
@@ -111,7 +111,7 @@ namespace Server.Mobiles
         public void Suppress(Mobile target)
         {
             if (target == null || m_Suppressed.ContainsKey(target) || Deleted || !Alive ||
-                m_NextSuppress > Core.Now || Utility.RandomDouble() > 0.1)
+                m_NextSuppress > Core.Now || Utility.RandomDouble() < 0.9)
             {
                 return;
             }
@@ -160,7 +160,7 @@ namespace Server.Mobiles
 
         public void Undress(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() > 0.005)
+            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() >= 0.005)
             {
                 return;
             }
@@ -193,7 +193,7 @@ namespace Server.Mobiles
 
         public void Provoke(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextProvoke > Core.Now || Utility.RandomDouble() > 0.05)
+            if (target == null || Deleted || !Alive || m_NextProvoke > Core.Now || Utility.RandomDouble() < 0.95)
             {
                 return;
             }

@@ -161,7 +161,9 @@ namespace Server.SkillHandlers
                 {
                     Caster.CheckSkill(SkillName.SpiritSpeak, 0.0, 120.0);
 
-                    if (Utility.RandomDouble() > Caster.Skills.SpiritSpeak.Value / 100.0)
+                    var skill = Caster.Skills.SpiritSpeak.Value;
+
+                    if (skill < 100.0 && Utility.RandomDouble() >= skill / 100.0)
                     {
                         Caster.SendLocalizedMessage(502443); // You fail your attempt at contacting the netherworld.
                     }
