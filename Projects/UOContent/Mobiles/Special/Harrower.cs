@@ -650,7 +650,7 @@ namespace Server.Mobiles
 
                 g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
-                if (Utility.RandomDouble() < 0.95)
+                if (Utility.RandomDouble() < 0.05)
                 {
                     return;
                 }
