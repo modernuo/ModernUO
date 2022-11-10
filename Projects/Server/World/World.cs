@@ -162,7 +162,7 @@ public static class World
     {
         if (WorldState != WorldState.Saving)
         {
-            logger.Warning($"Attempting to queue {item} for decay but the world is not saving");
+            logger.Warning("Attempting to queue {Item} for decay but the world is not saving", item);
             return;
         }
 
@@ -655,7 +655,7 @@ public static class World
                 {
                     if (_pendingDelete.Remove(entity.Serial))
                     {
-                        logger.Warning($"Deleted then added {entity.GetType().Name} during {WorldState.ToString()} state.");
+                        logger.Warning("Deleted then added {Entity} during {WorldState} state.", entity.GetType().Name, WorldState.ToString());
                     }
                     _pendingAdd[entity.Serial] = entity;
                     break;
