@@ -536,7 +536,7 @@ namespace Server.Mobiles
                     return;
                 }
 
-                if (Utility.RandomDouble() > 0.25)
+                if (Utility.RandomDouble() < 0.75)
                 {
                     return;
                 }

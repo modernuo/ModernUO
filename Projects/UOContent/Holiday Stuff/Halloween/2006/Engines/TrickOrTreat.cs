@@ -185,7 +185,7 @@ namespace Server.Engines.Events
                         return;
                     }
 
-                    if (Utility.RandomDouble() > .10)
+                    if (Utility.RandomDouble() < 0.90)
                     {
                         begged.Say(
                             Utility.Random(3) switch

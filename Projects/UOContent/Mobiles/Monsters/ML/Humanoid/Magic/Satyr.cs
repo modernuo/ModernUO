@@ -160,7 +160,7 @@ namespace Server.Mobiles
 
         public void Undress(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() > 0.005)
+            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() >= 0.005)
             {
                 return;
             }
