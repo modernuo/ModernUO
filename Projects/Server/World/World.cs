@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Guilds;
 using Server.Logging;
@@ -664,22 +665,93 @@ public static class World
                 {
                     if (entity.Serial.IsItem)
                     {
-                        Items[entity.Serial] = entity as Item;
+                        if (!Items.TryAdd(entity.Serial, entity as Item))
+                        {
+                            var existing = Items[entity.Serial];
+
+                            if (existing == entity)
+                            {
+                                logger.Error(
+                                    "Attempted to add '{Entity}' ({Serial}) to World.Items but it already exists in the collection.\n{StackTrace}",
+                                    entity.GetType().FullName,
+                                    entity.Serial,
+                                    new StackTrace()
+                                );
+                            }
+                            else
+                            {
+                                logger.Error(
+                                    "Attempted to add '{Entity}' ({Serial}) to World.Items but found '{ExistingEntity}' ({ExistingSerial}).\n{StackTrace}",
+                                    entity.GetType().FullName,
+                                    entity.Serial,
+                                    existing.GetType().FullName,
+                                    existing.Serial,
+                                    new StackTrace()
+                                );
+                            }
+                        }
                     }
 
                     if (entity.Serial.IsMobile)
                     {
-                        Mobiles[entity.Serial] = entity as Mobile;
+                        if (!Mobiles.TryAdd(entity.Serial, entity as Mobile))
+                        {
+                            var existing = Mobiles[entity.Serial];
+
+                            if (existing == entity)
+                            {
+                                logger.Error(
+                                    "Attempted to add '{Entity}' ({Serial}) to World.Mobiles but it already exists in the collection.\n{StackTrace}",
+                                    entity.GetType().FullName,
+                                    entity.Serial,
+                                    new StackTrace()
+                                );
+                            }
+                            else
+                            {
+                                logger.Error(
+                                    "Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but found '{{ExistingEntity}}' ({{ExistingSerial}}).\n{StackTrace}",
+                                    entity.GetType().FullName,
+                                    entity.Serial,
+                                    existing.GetType().FullName,
+                                    existing.Serial,
+                                    new StackTrace()
+                                );
+                            }
+                        }
                     }
                     break;
                 }
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void AddGuild(BaseGuild guild)
     {
-        Guilds[guild.Serial] = guild;
+        if (!Guilds.TryAdd(guild.Serial, guild))
+        {
+            var existing = Guilds[guild.Serial];
+
+            if (existing == guild)
+            {
+                logger.Error(
+                    "Attempted to add '{Entity}' ({Serial}) to World.Guilds but it already exists in the collection.\n{StackTrace}",
+                    guild.GetType().FullName,
+                    guild.Serial,
+                    new StackTrace()
+                );
+            }
+            else
+            {
+                logger.Error(
+                    "Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but found '{{ExistingEntity}}' ({{ExistingSerial}}).\n{StackTrace}",
+                    guild.GetType().FullName,
+                    guild.Serial,
+                    existing.GetType().FullName,
+                    existing.Serial,
+                    new StackTrace()
+                );
+            }
+        }
     }
 
     public static void RemoveEntity<T>(T entity) where T : class, IEntity
