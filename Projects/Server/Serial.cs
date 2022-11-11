@@ -30,13 +30,13 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatab
     public bool IsMobile
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value > 0 && Value < World.ItemOffset;
+        get => Value is > 0 and < World.ItemOffset;
     }
 
     public bool IsItem
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value >= World.ItemOffset && Value < World.MaxItemSerial;
+        get => Value is >= World.ItemOffset and < World.MaxItemSerial;
     }
 
     public bool IsValid
