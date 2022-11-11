@@ -61,11 +61,7 @@ public static class IncomingTargetingPackets
                 // User pressed escape
                 t.Cancel(from, TargetCancelType.Canceled);
             }
-            else if (t.TargetID != targetID)
-            {
-                // Sanity, prevent fake target
-            }
-            else
+            else if (t.TargetID == targetID)
             {
                 object toTarget;
 
