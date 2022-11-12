@@ -90,11 +90,11 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     }
 
     public bool Equals(WorldLocation other) =>
-        _loc.Equals(other._loc) && _map.MapID == other._map.MapID;
+        _loc.Equals(other._loc) && _map?.MapID == other._map?.MapID;
 
     public bool Equals(IEntity other) =>
         !ReferenceEquals(other, null) && _loc == other.Location &&
-        _map.MapID == other.Map.MapID;
+        _map?.MapID == other.Map?.MapID;
 
     public override bool Equals(object obj) =>
         obj is WorldLocation other && Equals(other);
@@ -200,7 +200,7 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     {
         s = s.Trim();
 
-        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(']'))
+        if (!s.EndsWithOrdinal(']'))
         {
             throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
@@ -211,17 +211,19 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
             throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        var loc = Point3D.Parse(s.Slice(1, mapStartBracket), provider);
-        var map = Map.Parse(s.Slice(mapStartBracket + 1, s.Length - 2), provider);
+        var loc = Point3D.Parse(s[..(mapStartBracket - 1)], provider);
 
-        return new WorldLocation(loc, map);
+        var mapSlice = s.Slice(mapStartBracket + 1, s.Length - mapStartBracket - 2);
+        return mapSlice.EqualsOrdinal("(-null-)")
+            ? new WorldLocation(loc, null)
+            : new WorldLocation(loc, Map.Parse(mapSlice, provider));
     }
 
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out WorldLocation result)
     {
         s = s.Trim();
 
-        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(']'))
+        if (!s.EndsWithOrdinal(']'))
         {
             result = default;
             return false;
@@ -234,15 +236,20 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
             return false;
         }
 
-        var locSpan = s.Slice(1, mapStartBracket);
-
-        if (!Point3D.TryParse(locSpan, provider, out var loc))
+        if (!Point3D.TryParse(s[..(mapStartBracket - 1)], provider, out var loc))
         {
             result = default;
             return false;
         }
 
-        if (!Map.TryParse(s.Slice(mapStartBracket + 1, s.Length - 2), provider, out var map))
+        var mapSlice = s.Slice(mapStartBracket + 1, s.Length - mapStartBracket - 2);
+        if (mapSlice.EqualsOrdinal("(-null-)"))
+        {
+            result = new WorldLocation(loc, null);
+            return true;
+        }
+
+        if (!Map.TryParse(mapSlice, provider, out var map))
         {
             result = default;
             return false;
