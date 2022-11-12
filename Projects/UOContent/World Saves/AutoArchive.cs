@@ -416,14 +416,12 @@ namespace Server.Saves
                 var i = 0;
                 foreach (var part in value.Tokenize('-'))
                 {
-                    if (int.TryParse(part, out var partValue))
-                    {
-                        parts[i++] = partValue;
-                    }
-                    else
+                    if (!int.TryParse(part, out var partValue))
                     {
                         break;
                     }
+
+                    parts[i++] = partValue;
                 }
 
                 if (i == 0)
