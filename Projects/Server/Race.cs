@@ -137,12 +137,8 @@ public abstract class Race : ISpanParsable<Race>
     {
         if (int.TryParse(s, out var index) && index >= 0 && index < Races.Length)
         {
-            var race = Races[index];
-            if (race != null)
-            {
-                result = default;
-                return false;
-            }
+            result = Races[index];
+            return result != null;
         }
 
         s = s.Trim();
