@@ -142,9 +142,18 @@ public struct Point2D
         }
 
         var first = s.Slice(1, comma - 1).Trim();
-        var second = s.Slice(comma + 1, s.Length - 2 - comma).Trim();
+        if (!Utility.ToInt32(first, out var x))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
 
-        return new Point2D(Utility.ToInt32(first), Utility.ToInt32(second));
+        var second = s.Slice(comma + 1, s.Length - comma - 2).Trim();
+        if (!Utility.ToInt32(second, out var y))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        return new Point2D(x, y);
     }
 
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Point2D result)

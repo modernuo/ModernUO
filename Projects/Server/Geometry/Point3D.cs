@@ -190,16 +190,35 @@ public struct Point3D
 
         var first = s.Slice(1, firstComma - 1).Trim();
 
-        var secondComma = s[(firstComma + 1)..].IndexOfOrdinal(',');
-        if (secondComma == -1)
+        if (!Utility.ToInt32(first, out var x))
         {
             throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
-        var second = s.Slice(firstComma + 1, secondComma - 1).Trim();
 
-        var third = s.Slice(secondComma + 1, s.Length - 2 - secondComma).Trim();
+        var offset = firstComma + 1;
 
-        return new Point3D(Utility.ToInt32(first), Utility.ToInt32(second), Utility.ToInt32(third));
+        var secondComma = s[offset..].IndexOfOrdinal(',');
+        if (secondComma == -1 || offset == secondComma)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var second = s.Slice(firstComma + 1, secondComma).Trim();
+
+        if (!Utility.ToInt32(second, out var y))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        offset += secondComma + 1;
+
+        var third = s.Slice(offset, s.Length - offset - 1).Trim();
+        if (!Utility.ToInt32(third, out var z))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        return new Point3D(x, y, z);
     }
 
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Point3D result)
@@ -219,29 +238,32 @@ public struct Point3D
             return false;
         }
 
-        var secondComma = s[(firstComma + 1)..].IndexOfOrdinal(',');
-        if (secondComma == -1 || firstComma + 1 == secondComma)
-        {
-            result = default;
-            return false;
-        }
-
         var first = s.Slice(1, firstComma - 1).Trim();
-
         if (!Utility.ToInt32(first, out var x))
         {
             result = default;
             return false;
         }
 
-        var second = s.Slice(firstComma + 1, secondComma - firstComma - 1).Trim();
+        var offset = firstComma + 1;
+
+        var secondComma = s[offset..].IndexOfOrdinal(',');
+        if (secondComma == -1 || offset == secondComma)
+        {
+            result = default;
+            return false;
+        }
+
+        var second = s.Slice(firstComma + 1, secondComma).Trim();
         if (!Utility.ToInt32(second, out var y))
         {
             result = default;
             return false;
         }
 
-        var third = s.Slice(secondComma + 1, s.Length - secondComma - 2).Trim();
+        offset += secondComma + 1;
+
+        var third = s.Slice(offset, s.Length - offset - 1).Trim();
         if (!Utility.ToInt32(third, out var z))
         {
             result = default;

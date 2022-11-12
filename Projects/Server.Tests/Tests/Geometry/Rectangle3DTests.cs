@@ -69,4 +69,72 @@ public class Rectangle3DTests
         Assert.False(p4.TryFormat(array, out var cp4, null, null));
         Assert.Equal(0, cp4);
     }
+
+    [Fact]
+    public void TestRectangle3DTryParse()
+    {
+        // Happy Path
+        Assert.True(Rectangle3D.TryParse("(101, 23, 10)+(55, 89, 1)", null, out var p));
+        Assert.Equal(new Rectangle3D(new Point3D(101, 23, 10), new Point3D(55, 89, 1)), p);
+        Assert.Equal(new Rectangle3D(new Point3D(101, 23, 10), new Point3D(55, 89, 1)), Rectangle3D.Parse("(101, 23, 10)+(55, 89, 1)", null));
+
+        // Trimming
+        Assert.True(Rectangle3D.TryParse(" (101,23,10)+ (55, 89,1)  ", null, out p));
+        Assert.Equal(new Rectangle3D(new Point3D(101, 23, 10), new Point3D(55, 89, 1)), p);
+        Assert.Equal(new Rectangle3D(new Point3D(101, 23, 10), new Point3D(55, 89, 1)), Rectangle3D.Parse(" (101,23,10)+ (55, 89,1)  ", null));
+
+        // No parenthesis
+        Assert.False(Rectangle3D.TryParse("101, 23, 10)+( 55, 89, 1)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("101, 23, 10)+( 55, 89, 1)", null));
+
+        Assert.False(Rectangle3D.TryParse("(101, 23, 10)+(55, 89, 1", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(101, 23, 10)+(55, 89, 1", null));
+
+        // No numbers
+        Assert.False(Rectangle3D.TryParse("()", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("()", null));
+
+        Assert.False(Rectangle3D.TryParse("(,)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,)", null));
+
+        Assert.False(Rectangle3D.TryParse("(|)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(|)", null));
+
+        Assert.False(Rectangle3D.TryParse("(101)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(101)", null));
+
+        Assert.False(Rectangle3D.TryParse("(101,)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(101,)", null));
+
+        Assert.False(Rectangle3D.TryParse("(101,23)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(101,23)", null));
+
+        Assert.False(Rectangle3D.TryParse("(,23)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,23)", null));
+
+        Assert.False(Rectangle3D.TryParse("(,23)+(,55)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,23)+(,55)", null));
+
+        Assert.False(Rectangle3D.TryParse("(,23,)+(,89)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,23,)+(,89)", null));
+
+        Assert.False(Rectangle3D.TryParse("(101,,10)+(55, 89 1)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,23,)+(,89)", null));
+
+        Assert.False(Rectangle3D.TryParse("(,,)+(55,89, 1)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,,)+(55,89, 1)", null));
+    }
 }

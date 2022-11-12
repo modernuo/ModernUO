@@ -69,4 +69,64 @@ public class Rectangle2DTests
         Assert.False(p4.TryFormat(array, out var cp4, null, null));
         Assert.Equal(0, cp4);
     }
+
+    [Fact]
+    public void TestRectangle2DTryParse()
+    {
+        // Happy Path
+        Assert.True(Rectangle2D.TryParse("(101, 23)+(55, 89)", null, out var p));
+        Assert.Equal(new Rectangle2D(new Point2D(101, 23), new Point2D(55, 89)), p);
+        Assert.Equal(new Rectangle2D(new Point2D(101, 23), new Point2D(55, 89)), Rectangle2D.Parse("(101, 23)+(55, 89)", null));
+
+        // Trimming
+        Assert.True(Rectangle2D.TryParse(" (101,23)+ (55, 89)  ", null, out p));
+        Assert.Equal(new Rectangle2D(new Point2D(101, 23), new Point2D(55, 89)), p);
+        Assert.Equal(new Rectangle2D(new Point2D(101, 23), new Point2D(55, 89)), Rectangle2D.Parse(" (101,23)+ (55, 89)  ", null));
+
+        // No parenthesis
+        Assert.False(Rectangle2D.TryParse("101, 23)+( 55, 89)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("101, 23)+( 55, 89)", null));
+
+        Assert.False(Rectangle2D.TryParse("(101, 23)+(55, 89", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(101, 23)+(55, 89", null));
+
+        // No numbers
+        Assert.False(Rectangle2D.TryParse("()", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("()", null));
+
+        Assert.False(Rectangle2D.TryParse("(,)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(,)", null));
+
+        Assert.False(Rectangle2D.TryParse("(|)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(|)", null));
+
+        Assert.False(Rectangle2D.TryParse("(101)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(101)", null));
+
+        Assert.False(Rectangle2D.TryParse("(101,)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(101,)", null));
+
+        Assert.False(Rectangle2D.TryParse("(,23)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(,23)", null));
+
+        Assert.False(Rectangle2D.TryParse("(,23)+(,55)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(,23)+(,55)", null));
+
+        Assert.False(Rectangle2D.TryParse("(,23,)+(,89)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(,23,)+(,89)", null));
+
+        Assert.False(Rectangle2D.TryParse("(,,)+(55,89)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Rectangle2D.Parse("(,,)+(55,89)", null));
+    }
 }
