@@ -63,6 +63,15 @@ public static class World
     {
         get
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                logger.Error(
+                    "Attempted to get a new mobile serial from the wrong thread!\n{StackTrace}",
+                    new StackTrace()
+                );
+            }
+#endif
             var last = _lastMobile;
             var maxMobile = (Serial)MaxMobileSerial;
 
@@ -90,6 +99,15 @@ public static class World
     {
         get
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                logger.Error(
+                    "Attempted to get a new item serial from the wrong thread!\n{StackTrace}",
+                    new StackTrace()
+                );
+            }
+#endif
             var last = _lastItem;
 
             for (int i = 0; i < _maxItems; i++)
@@ -325,6 +343,9 @@ public static class World
 
             RemoveEntity(entity);
         }
+
+        _pendingAdd.Clear();
+        _pendingDelete.Clear();
     }
 
     private static void AppendSafetyLog(string action, ISerializable entity)
