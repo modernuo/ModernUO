@@ -65,4 +65,44 @@ public class Point2DTests
         Assert.False(p4.TryFormat(array, out var cp4, null, null));
         Assert.Equal(0, cp4);
     }
+
+    [Fact]
+    public void TestPoint2DTryParse()
+    {
+        // Happy Path
+        Assert.True(Point2D.TryParse("(101, 23)", null, out var p));
+        Assert.Equal(new Point2D(101, 23), p);
+        Assert.Equal(new Point2D(101, 23), Point2D.Parse("(101, 23)", null));
+
+        // Trimming
+        Assert.True(Point2D.TryParse(" (101,23)  ", null, out p));
+        Assert.Equal(new Point2D(101, 23), p);
+        Assert.Equal(new Point2D(101, 23), Point2D.Parse(" (101,23)  ", null));
+
+        // No parenthesis
+        Assert.False(Point2D.TryParse("101, 23)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Point2D.Parse("101, 23)", null));
+
+        Assert.False(Point2D.TryParse("(101, 23", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Point2D.Parse("(101, 23", null));
+
+        // No numbers
+        Assert.False(Point2D.TryParse("()", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Point2D.Parse("()", null));
+
+        Assert.False(Point2D.TryParse("(101)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Point2D.Parse("(101)", null));
+
+        Assert.False(Point2D.TryParse("(101,)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Point2D.Parse("(101,)", null));
+
+        Assert.False(Point2D.TryParse("(,23)", null, out p));
+        Assert.Equal(default, p);
+        Assert.Throws<FormatException>(() => Point2D.Parse("(,23)", null));
+    }
 }
