@@ -313,8 +313,7 @@ public static class PooledEnumeration
     }
 }
 
-[Parsable]
-public sealed class Map : IComparable<Map>, ISpanFormattable
+public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 {
     public const int SectorSize = 16;
     public const int SectorShift = 4;
@@ -480,49 +479,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable
         }
 
         return mapValues;
-    }
-
-    // Handles null checks
-    public static Map Parse(string value) => Parse(value ?? ReadOnlySpan<char>.Empty);
-
-    public static Map Parse(ReadOnlySpan<char> value)
-    {
-        value = value.Trim();
-
-        if (value.Length == 0)
-        {
-            return null;
-        }
-
-        if (value.InsensitiveEquals("Internal"))
-        {
-            return Internal;
-        }
-
-        if (!int.TryParse(value, out var index))
-        {
-            index = -1;
-        }
-        else if (index == 127)
-        {
-            return Internal;
-        }
-
-        for (int i = 0; i < Maps.Length; i++)
-        {
-            var map = Maps[i];
-            if (map == null)
-            {
-                continue;
-            }
-
-            if (index >= 0 && map.MapIndex == index || value.InsensitiveEquals(map.Name))
-            {
-                return map;
-            }
-        }
-
-        return null;
     }
 
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
@@ -1709,4 +1665,98 @@ public sealed class Map : IComparable<Map>, ISpanFormattable
         }
     }
 #pragma warning restore CA1000 // Do not declare static members on generic types
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Map Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Map Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Map result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Map Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        if (s.Length == 0)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        if (s.InsensitiveEquals("Internal"))
+        {
+            return Internal;
+        }
+
+        if (!int.TryParse(s, provider, out var index))
+        {
+            index = -1;
+        }
+        else if (index == 127)
+        {
+            return Internal;
+        }
+
+        for (int i = 0; i < Maps.Length; i++)
+        {
+            var map = Maps[i];
+            if (map == null)
+            {
+                continue;
+            }
+
+            if (index >= 0 && map.MapIndex == index || s.InsensitiveEquals(map.Name))
+            {
+                return map;
+            }
+        }
+
+        throw new FormatException($"The input string '{s}' was not in a correct format.");
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Map result)
+    {
+        s = s.Trim();
+
+        if (s.Length == 0)
+        {
+            result = default;
+            return false;
+        }
+
+        if (s.InsensitiveEquals("Internal"))
+        {
+            result = Internal;
+            return true;
+        }
+
+        if (!int.TryParse(s, provider, out var index))
+        {
+            index = -1;
+        }
+        else if (index == 127)
+        {
+            result = Internal;
+            return true;
+        }
+
+        for (int i = 0; i < Maps.Length; i++)
+        {
+            var map = Maps[i];
+            if (map == null)
+            {
+                continue;
+            }
+
+            if (index >= 0 && map.MapIndex == index || s.InsensitiveEquals(map.Name))
+            {
+                result = map;
+                return true;
+            }
+        }
+
+        result = default;
+        return false;
+    }
 }

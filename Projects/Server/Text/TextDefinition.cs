@@ -18,9 +18,8 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
-[Parsable]
 [PropertyObject]
-public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
+public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, ISpanParsable<TextDefinition>
 {
     public static readonly TextDefinition Empty = new();
 
@@ -31,7 +30,13 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
     public static TextDefinition Of(string text) => Of(0, text);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TextDefinition Of(ReadOnlySpan<char> text) => Of(0, text);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TextDefinition Of(int number, string text) => new(number, text);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TextDefinition Of(int number, ReadOnlySpan<char> text) => new(number, text);
 
     private TextDefinition()
     {
@@ -41,6 +46,12 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
     {
         Number = number;
         String = text;
+    }
+
+    private TextDefinition(int number, ReadOnlySpan<char> text)
+    {
+        Number = number;
+        String = text.ToString();
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -66,16 +77,6 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
     public static implicit operator int(TextDefinition m) => m?.Number ?? 0;
 
     public static implicit operator string(TextDefinition m) => m?.String;
-
-    public static TextDefinition Parse(string value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-
-        return Utility.ToInt32(value, out var i) ? Of(i) : Of(value);
-    }
 
     public void Deconstruct(out int number, out string s)
     {
@@ -118,4 +119,38 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>
     public static bool operator ==(TextDefinition left, TextDefinition right) => Equals(left, right);
 
     public static bool operator !=(TextDefinition left, TextDefinition right) => !Equals(left, right);
+
+    public static TextDefinition Parse(string value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        return Utility.ToInt32(value, out var i) ? Of(i) : Of(value);
+    }
+
+    public static TextDefinition Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    public static bool TryParse(string s, IFormatProvider provider, out TextDefinition result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static TextDefinition Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        // We don't trim
+        return int.TryParse(s, provider, out var label) ? Of(label) : Of(s);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out TextDefinition result)
+    {
+        if (int.TryParse(s, provider, out var label))
+        {
+            result = Of(label);
+            return true;
+        }
+
+        // We don't trim
+        result = Of(s);
+        return true;
+    }
 }

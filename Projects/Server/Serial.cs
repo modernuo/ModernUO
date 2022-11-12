@@ -18,7 +18,8 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
-public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatable<Serial>, ISpanFormattable
+public readonly struct Serial : IComparable<Serial>, IComparable<uint>,
+    IEquatable<Serial>, ISpanFormattable, ISpanParsable<Serial>
 {
     public static readonly Serial MinusOne = new(0xFFFFFFFF);
     public static readonly Serial Zero = new(0);
@@ -152,4 +153,28 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatab
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ToInt32() => (int)Value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Serial Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Serial Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Serial result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Serial Parse(ReadOnlySpan<char> s, IFormatProvider provider) => new(Utility.ToUInt32(s));
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Serial result)
+    {
+        if (Utility.ToUInt32(s, out var value))
+        {
+            result = new Serial(value);
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
 }

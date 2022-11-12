@@ -4,12 +4,8 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
-[Parsable]
-public abstract class Race
+public abstract class Race : ISpanParsable<Race>
 {
-    private static string[] m_RaceNames;
-    private static Race[] m_RaceValues;
-
     protected Race(
         int raceID, int raceIndex, string name, string pluralName, int maleBody, int femaleBody,
         int maleGhostBody, int femaleGhostBody, Expansion requiredExpansion
@@ -68,58 +64,6 @@ public abstract class Race
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAllowedRace(Race race, int allowedRaceFlags) => (allowedRaceFlags & race.RaceFlag) != 0;
 
-    public static string[] GetRaceNames()
-    {
-        CheckNamesAndValues();
-        return m_RaceNames;
-    }
-
-    public static Race[] GetRaceValues()
-    {
-        CheckNamesAndValues();
-        return m_RaceValues;
-    }
-
-    public static Race Parse(string value)
-    {
-        CheckNamesAndValues();
-
-        for (var i = 0; i < m_RaceNames.Length; ++i)
-        {
-            if (m_RaceNames[i].InsensitiveEquals(value))
-            {
-                return m_RaceValues[i];
-            }
-        }
-
-        if (int.TryParse(value, out var index) && index >= 0 && index < Races.Length &&
-            Races[index] != null)
-        {
-            return Races[index];
-        }
-
-        throw new ArgumentException("Invalid race name");
-    }
-
-    private static void CheckNamesAndValues()
-    {
-        if (m_RaceNames?.Length == AllRaces.Count)
-        {
-            return;
-        }
-
-        m_RaceNames = new string[AllRaces.Count];
-        m_RaceValues = new Race[AllRaces.Count];
-
-        for (var i = 0; i < AllRaces.Count; ++i)
-        {
-            var race = AllRaces[i];
-
-            m_RaceNames[i] = race.Name;
-            m_RaceValues[i] = race;
-        }
-    }
-
     public override string ToString() => Name;
 
     public virtual bool ValidateHair(Mobile m, int itemID) => ValidateHair(m.Female, itemID);
@@ -153,4 +97,67 @@ public abstract class Race
     public virtual int GhostBody(Mobile m) => GhostBody(m.Female);
 
     public virtual int GhostBody(bool female) => female ? FemaleGhostBody : MaleGhostBody;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Race Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Race Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Race result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Race Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        if (int.TryParse(s, out var index) && index >= 0 && index < Races.Length)
+        {
+            var race = Races[index];
+            if (race != null)
+            {
+                return race;
+            }
+        }
+
+        s = s.Trim();
+
+        for (var i = 0; i < Races.Length; ++i)
+        {
+            var race = Races[i];
+            if (s.InsensitiveEquals(race.Name) || s.InsensitiveEquals(race.PluralName))
+            {
+                return race;
+            }
+        }
+
+        throw new FormatException($"The input string '{s}' was not in a correct format.");
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Race result)
+    {
+        if (int.TryParse(s, out var index) && index >= 0 && index < Races.Length)
+        {
+            var race = Races[index];
+            if (race != null)
+            {
+                result = default;
+                return false;
+            }
+        }
+
+        s = s.Trim();
+
+        for (var i = 0; i < Races.Length; ++i)
+        {
+            var race = Races[i];
+            if (s.InsensitiveEquals(race.Name) || s.InsensitiveEquals(race.PluralName))
+            {
+                result = race;
+                return true;
+            }
+        }
+
+        result = default;
+        return false;
+    }
 }

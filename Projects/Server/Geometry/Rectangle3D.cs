@@ -14,11 +14,11 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
 [NoSort]
-[Parsable]
 [PropertyObject]
 public struct Rectangle3D : IEquatable<Rectangle3D>, ISpanFormattable
 {
@@ -171,5 +171,65 @@ public struct Rectangle3D : IEquatable<Rectangle3D>, ISpanFormattable
         // format and formatProvider are not doing anything right now, so use the
         // default ToString implementation.
         return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle3D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle3D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Rectangle3D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Rectangle3D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        var delimiter = s.IndexOfOrdinal('+');
+        if (delimiter == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        if (!Point3D.TryParse(s[..delimiter], provider, out var start))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        if (!Point3D.TryParse(s[(delimiter + 1)..], provider, out var end))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        return new Rectangle3D(start, end);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Rectangle3D result)
+    {
+        s = s.Trim();
+
+        var delimiter = s.IndexOfOrdinal('+');
+        if (delimiter == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        if (!Point3D.TryParse(s[..delimiter], provider, out var start))
+        {
+            result = default;
+            return false;
+        }
+
+        if (!Point3D.TryParse(s[(delimiter + 1)..], provider, out var end))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new Rectangle3D(start, end);
+        return true;
     }
 }

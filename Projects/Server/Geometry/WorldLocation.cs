@@ -16,12 +16,12 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
-[Parsable]
 public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<WorldLocation>, IEquatable<IEntity>,
-    ISpanFormattable
+    ISpanFormattable, ISpanParsable<WorldLocation>
 {
     internal Point3D _loc;
     internal Map _map;
@@ -63,7 +63,7 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
         set => _map = value;
     }
 
-    public WorldLocation(IEntity e) : this(e.Location.X, e.Location.Y, e.Location.Z, e.Map)
+    public WorldLocation(IEntity e) : this(e.Location, e.Map)
     {
     }
 
@@ -75,8 +75,10 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     {
     }
 
-    public WorldLocation(Point3D p, Map map) : this(p.X, p.Y, p.Z, map)
+    public WorldLocation(Point3D p, Map map)
     {
+        _loc = p;
+        _map = map;
     }
 
     public WorldLocation(int x, int y, int z, Map map)
@@ -88,11 +90,11 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     }
 
     public bool Equals(WorldLocation other) =>
-        _loc.Equals(other._loc) && _map.MapID == other._map.MapID;
+        _loc.Equals(other._loc) && _map?.MapID == other._map?.MapID;
 
     public bool Equals(IEntity other) =>
         !ReferenceEquals(other, null) && _loc == other.Location &&
-        _map.MapID == other.Map.MapID;
+        _map?.MapID == other.Map?.MapID;
 
     public override bool Equals(object obj) =>
         obj is WorldLocation other && Equals(other);
@@ -138,31 +140,6 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     public static bool operator <=(WorldLocation l, IEntity r) =>
         !ReferenceEquals(r, null) && l._loc <= r.Location && l._map == r.Map;
 
-    public static WorldLocation Parse(string value)
-    {
-        var start = value.IndexOfOrdinal('(');
-        var end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
-
-        start = end;
-        end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
-
-        start = end;
-        end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var z);
-
-        start = end;
-        end = value.IndexOf(')', start + 1);
-
-        var map = Map.Parse(value.AsSpan(start + 1, end - (start + 1)).Trim());
-
-        return new WorldLocation(x, y, z, map);
-    }
-
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
     {
         if (_map == null)
@@ -207,5 +184,78 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
         // format and formatProvider are not doing anything right now, so use the
         // default ToString implementation.
         return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WorldLocation Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WorldLocation Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out WorldLocation result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static WorldLocation Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        if (!s.EndsWithOrdinal(']'))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var mapStartBracket = s.IndexOf('[');
+        if (mapStartBracket == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var loc = Point3D.Parse(s[..(mapStartBracket - 1)], provider);
+
+        var mapSlice = s.Slice(mapStartBracket + 1, s.Length - mapStartBracket - 2);
+        return mapSlice.EqualsOrdinal("(-null-)")
+            ? new WorldLocation(loc, null)
+            : new WorldLocation(loc, Map.Parse(mapSlice, provider));
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out WorldLocation result)
+    {
+        s = s.Trim();
+
+        if (!s.EndsWithOrdinal(']'))
+        {
+            result = default;
+            return false;
+        }
+
+        var mapStartBracket = s.IndexOf('[');
+        if (mapStartBracket == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        if (!Point3D.TryParse(s[..(mapStartBracket - 1)], provider, out var loc))
+        {
+            result = default;
+            return false;
+        }
+
+        var mapSlice = s.Slice(mapStartBracket + 1, s.Length - mapStartBracket - 2);
+        if (mapSlice.EqualsOrdinal("(-null-)"))
+        {
+            result = new WorldLocation(loc, null);
+            return true;
+        }
+
+        if (!Map.TryParse(mapSlice, provider, out var map))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new WorldLocation(loc, map);
+        return true;
     }
 }

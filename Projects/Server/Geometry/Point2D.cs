@@ -14,13 +14,13 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
-[Parsable]
 public struct Point2D
     : IPoint2D, IComparable<Point2D>, IComparable<IPoint2D>, IEquatable<object>, IEquatable<Point2D>,
-        IEquatable<IPoint2D>, ISpanFormattable
+        IEquatable<IPoint2D>, ISpanFormattable, ISpanParsable<Point2D>
 {
     internal int m_X;
     internal int m_Y;
@@ -49,21 +49,6 @@ public struct Point2D
 
     public Point2D(Point2D p) : this(p.X, p.Y)
     {
-    }
-
-    public static Point2D Parse(string value)
-    {
-        var start = value.IndexOfOrdinal('(');
-        var end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
-
-        start = end;
-        end = value.IndexOf(')', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
-
-        return new Point2D(x, y);
     }
 
     public bool Equals(Point2D other) => m_X == other.m_X && m_Y == other.m_Y;
@@ -129,5 +114,80 @@ public struct Point2D
         // format and formatProvider are not doing anything right now, so use the
         // default ToString implementation.
         return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point2D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point2D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Point2D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Point2D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var comma = s.IndexOfOrdinal(',');
+        if (comma == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var first = s.Slice(1, comma - 1).Trim();
+        if (!Utility.ToInt32(first, out var x))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var second = s.Slice(comma + 1, s.Length - comma - 2).Trim();
+        if (!Utility.ToInt32(second, out var y))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        return new Point2D(x, y);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Point2D result)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
+        {
+            result = default;
+            return false;
+        }
+
+        var comma = s.IndexOfOrdinal(',');
+        if (comma == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        var first = s.Slice(1, comma - 1).Trim();
+        if (!Utility.ToInt32(first, out var x))
+        {
+            result = default;
+            return false;
+        }
+
+        var second = s.Slice(comma + 1, s.Length - comma - 2).Trim();
+        if (!Utility.ToInt32(second, out var y))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new Point2D(x, y);
+        return true;
     }
 }

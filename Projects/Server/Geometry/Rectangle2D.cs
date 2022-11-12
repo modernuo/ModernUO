@@ -14,13 +14,13 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
 [NoSort]
-[Parsable]
 [PropertyObject]
-public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
+public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable, ISpanParsable<Rectangle2D>
 {
     private Point2D _start;
     private Point2D _end;
@@ -118,31 +118,6 @@ public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
 
     public static bool operator !=(Rectangle2D l, Rectangle2D r) => l._start != r._start || l._end != r._end;
 
-    public static Rectangle2D Parse(string value)
-    {
-        var start = value.IndexOfOrdinal('(');
-        var end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
-
-        start = end;
-        end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
-
-        start = end;
-        end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var w);
-
-        start = end;
-        end = value.IndexOf(')', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var h);
-
-        return new Rectangle2D(x, y, w, h);
-    }
-
     public bool Contains(Point3D p) =>
         _start.m_X <= p.m_X && _start.m_Y <= p.m_Y && _end.m_X > p.m_X && _end.m_Y > p.m_Y;
 
@@ -171,5 +146,65 @@ public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
         // format and formatProvider are not doing anything right now, so use the
         // default ToString implementation.
         return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle2D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle2D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Rectangle2D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Rectangle2D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        var delimiter = s.IndexOfOrdinal('+');
+        if (delimiter == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        if (!Point2D.TryParse(s[..delimiter], provider, out var start))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        if (!Point2D.TryParse(s[(delimiter + 1)..], provider, out var end))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        return new Rectangle2D(start, end);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Rectangle2D result)
+    {
+        s = s.Trim();
+
+        var delimiter = s.IndexOfOrdinal('+');
+        if (delimiter == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        if (!Point2D.TryParse(s[..delimiter], provider, out var start))
+        {
+            result = default;
+            return false;
+        }
+
+        if (!Point2D.TryParse(s[(delimiter + 1)..], provider, out var end))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new Rectangle2D(start, end);
+        return true;
     }
 }
