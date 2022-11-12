@@ -14,13 +14,13 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
 [NoSort]
-[Parsable]
 [PropertyObject]
-public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
+public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable, ISpanParsable<Rectangle2D>
 {
     private Point2D _start;
     private Point2D _end;
@@ -118,31 +118,6 @@ public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
 
     public static bool operator !=(Rectangle2D l, Rectangle2D r) => l._start != r._start || l._end != r._end;
 
-    public static Rectangle2D Parse(string value)
-    {
-        var start = value.IndexOfOrdinal('(');
-        var end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
-
-        start = end;
-        end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
-
-        start = end;
-        end = value.IndexOf(',', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var w);
-
-        start = end;
-        end = value.IndexOf(')', start + 1);
-
-        Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var h);
-
-        return new Rectangle2D(x, y, w, h);
-    }
-
     public bool Contains(Point3D p) =>
         _start.m_X <= p.m_X && _start.m_Y <= p.m_Y && _end.m_X > p.m_X && _end.m_Y > p.m_Y;
 
@@ -171,5 +146,112 @@ public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable
         // format and formatProvider are not doing anything right now, so use the
         // default ToString implementation.
         return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle2D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle2D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Rectangle2D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Rectangle2D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var firstComma = s.IndexOfOrdinal(',');
+        if (firstComma == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var secondComma = s[(firstComma + 1)..].IndexOfOrdinal(',');
+        if (secondComma == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var thirdComma = s[(secondComma + 1)..].IndexOfOrdinal(',');
+        if (thirdComma == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        var x = s.Slice(1, firstComma - 1).Trim();
+        var y = s.Slice(firstComma + 1, secondComma - firstComma - 1).Trim();
+        var w = s.Slice(secondComma + 1, thirdComma - secondComma - 1).Trim();
+        var h = s.Slice(thirdComma + 1, s.Length - thirdComma - 2).Trim();
+
+        return new Rectangle2D(Utility.ToInt32(x), Utility.ToInt32(y), Utility.ToInt32(w), Utility.ToInt32(h));
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Rectangle2D result)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
+        {
+            result = default;
+            return false;
+        }
+
+        var firstComma = s.IndexOfOrdinal(',');
+        if (firstComma == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        var secondComma = s[(firstComma + 1)..].IndexOfOrdinal(',');
+        if (secondComma == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        var thirdComma = s[(secondComma + 1)..].IndexOfOrdinal(',');
+        if (thirdComma == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        var first = s.Slice(1, firstComma - 1).Trim();
+        if (!Utility.ToInt32(first, out var x))
+        {
+            result = default;
+            return false;
+        }
+        var second = s.Slice(firstComma + 1, secondComma - firstComma - 1).Trim();
+        if (!Utility.ToInt32(second, out var y))
+        {
+            result = default;
+            return false;
+        }
+
+        var third = s.Slice(secondComma + 1, thirdComma - secondComma - 1).Trim();
+        if (!Utility.ToInt32(third, out var w))
+        {
+            result = default;
+            return false;
+        }
+
+        var fourth = s.Slice(thirdComma + 1, s.Length - thirdComma - 2).Trim();
+        if (!Utility.ToInt32(fourth, out var h))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new Rectangle2D(x, y, w, h);
+        return true;
     }
 }

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
-[Parsable]
-public abstract class Poison
+public abstract class Poison : ISpanParsable<Poison>
 {
     /*public abstract TimeSpan Interval{ get; }
       public abstract TimeSpan Duration{ get; }*/
@@ -44,9 +44,6 @@ public abstract class Poison
         Poisons.Add(reg);
     }
 
-    public static Poison Parse(string value) =>
-        (int.TryParse(value, out var plevel) ? GetPoison(plevel) : null) ?? GetPoison(value);
-
     public static Poison GetPoison(int level)
     {
         for (var i = 0; i < Poisons.Count; ++i)
@@ -62,18 +59,63 @@ public abstract class Poison
         return null;
     }
 
-    public static Poison GetPoison(string name)
+    public static Poison GetPoison(ReadOnlySpan<char> name)
     {
         for (var i = 0; i < Poisons.Count; ++i)
         {
             var p = Poisons[i];
 
-            if (Utility.InsensitiveCompare(p.Name, name) == 0)
+            if (name.InsensitiveEquals(p.Name))
             {
                 return p;
             }
         }
 
         return null;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Poison Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Poison Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Poison result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Poison Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        if (int.TryParse(s, provider, out var pLevel))
+        {
+            var result = GetPoison(pLevel);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        var poison = GetPoison(s.Trim());
+        if (poison == null)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        }
+
+        return poison;
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Poison result)
+    {
+        if (int.TryParse(s, provider, out var pLevel))
+        {
+            result = GetPoison(pLevel);
+            if (result != null)
+            {
+                return true;
+            }
+        }
+
+        result = GetPoison(s.Trim());
+        return result != null;
     }
 }

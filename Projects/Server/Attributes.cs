@@ -88,11 +88,6 @@ public class TypeAliasAttribute : Attribute
     public string[] Aliases { get; }
 }
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public class ParsableAttribute : Attribute
-{
-}
-
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum)]
 public class CustomEnumAttribute : Attribute
 {
