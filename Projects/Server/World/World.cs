@@ -84,7 +84,7 @@ public static class World
                     last = (Serial)1;
                 }
 
-                if (FindMobile(last) == null)
+                if (FindMobile(last, true) == null)
                 {
                     return _lastMobile = last;
                 }
@@ -119,7 +119,7 @@ public static class World
                     last = (Serial)ItemOffset;
                 }
 
-                if (FindItem(last) == null)
+                if (FindItem(last, true) == null)
                 {
                     return _lastItem = last;
                 }
@@ -619,7 +619,10 @@ public static class World
                 {
                     if (_pendingDelete.TryGetValue(serial, out var entity))
                     {
-                        return !returnDeleted ? null : entity as T;
+                        if (returnDeleted)
+                        {
+                            return entity as T;
+                        }
                     }
 
                     if (_pendingAdd.TryGetValue(serial, out entity))
