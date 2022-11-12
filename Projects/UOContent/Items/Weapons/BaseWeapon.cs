@@ -1940,9 +1940,12 @@ namespace Server.Items
                 }
             }
 
-            var isAcidMonster = m_MaxHits > 0 && MaxRange <= 1 && defender is Slime or AcidElemental;
+            var isAcidMonster =
+                m_MaxHits > 0 && MaxRange <= 1 && Attributes.SpellChanneling == 0 &&
+                defender is Slime or AcidElemental;
+
             // Stratics says 50% chance, seems more like 4%..
-            if (isAcidMonster || Utility.RandomDouble() < 0.04)
+            if (isAcidMonster || Utility.Random(25) == 0)
             {
                 if (isAcidMonster)
                 {
