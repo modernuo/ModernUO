@@ -46,11 +46,16 @@ internal static class TileMatrixLoader
 
         if (exception == null)
         {
-            logger.Information("Maps loaded ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+            logger.Information("Loading maps {Status} ({Duration:F2} seconds)", "done", stopwatch.Elapsed.TotalSeconds);
         }
         else
         {
-            logger.Error(exception, "Loading maps failed ({Duration:F2} seconds)", stopwatch.Elapsed.TotalSeconds);
+            logger.Error(
+                exception,
+                "Loading maps {Status} ({Duration:F2} seconds)",
+                "failed",
+                stopwatch.Elapsed.TotalSeconds
+            );
             throw exception;
         }
     }

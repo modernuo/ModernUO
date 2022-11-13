@@ -85,7 +85,7 @@ namespace Server.Engines.Spawners
             {
                 var file = files[i];
                 from.SendMessage("GenerateSpawners: Generating spawners from {0}...", file.Name);
-                logger.Information($"{from} is generating spawners from {file.FullName}");
+                logger.Information("{User} is generating spawners from {File}", from, file.FullName);
 
                 NetState.FlushAll();
 
@@ -213,7 +213,7 @@ namespace Server.Engines.Spawners
             }
 
 #if DEBUG
-            logger.Error($"{message}\n{ex}");
+            logger.Error(ex, message);
 #endif
         }
     }
