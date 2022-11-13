@@ -334,24 +334,25 @@ public static class World
             AddEntity(entity);
         }
 
+        _pendingAdd.Clear();
+
         foreach (var entity in _pendingDelete.Values)
         {
             if (_pendingAdd.ContainsKey(entity.Serial))
             {
-                logger.Warning("Entity {Entity} was both pending both deletion and addition after save", entity);
+                logger.Warning("Entity {Entity} was both pending deletion and addition after save", entity);
             }
 
             RemoveEntity(entity);
         }
 
-        _pendingAdd.Clear();
         _pendingDelete.Clear();
     }
 
     private static void AppendSafetyLog(string action, ISerializable entity)
     {
         var message =
-            $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
+            $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause an inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
         logger.Information(message);
 
@@ -617,20 +618,30 @@ public static class World
             case WorldState.Saving:
             case WorldState.WritingSave:
                 {
-                    if (_pendingDelete.TryGetValue(serial, out var entity))
-                    {
-                        if (returnDeleted)
-                        {
-                            return entity as T;
-                        }
-                    }
-
-                    if (_pendingAdd.TryGetValue(serial, out entity))
+                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as T;
                     }
 
-                    goto case WorldState.Running;
+                    if (!_pendingAdd.TryGetValue(serial, out entity))
+                    {
+                        if (serial.IsItem)
+                        {
+                            if (Items.TryGetValue(serial, out var item))
+                            {
+                                entity = item;
+                            }
+                        }
+                        else // if (serial.IsMobile)
+                        {
+                            if (Mobiles.TryGetValue(serial, out var mob))
+                            {
+                                entity = mob;
+                            }
+                        }
+                    }
+
+                    return entity?.Deleted == false || returnDeleted ? entity as T : null;
                 }
             case WorldState.Running:
                 {
