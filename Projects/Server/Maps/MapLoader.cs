@@ -80,18 +80,19 @@ public static class MapLoader
         if (failures.Count > 0)
         {
             logger.Warning(
-                "Map Definitions loaded with failures ({Count} maps, {FailureCount} failures) ({Duration:F2} seconds)",
+                $"Loading map definitions {{Status}} ({{Count}} maps, {{FailureCount}} failures) ({{Duration:F2}} seconds){Environment.NewLine}{{Failures}}",
+                "failed",
                 count,
                 failures.Count,
-                stopwatch.Elapsed.TotalSeconds
+                stopwatch.Elapsed.TotalSeconds,
+                failures
             );
-
-            logger.Warning("Map load failures: {Failure}", failures);
         }
         else
         {
             logger.Information(
-                "Map Definitions loaded successfully ({Count} maps, {FailureCount} failures) ({Duration:F2} seconds)",
+                "Loading map definitions {Status} ({Count} maps, {FailureCount} failures) ({Duration:F2} seconds)",
+                "done",
                 count,
                 failures.Count,
                 stopwatch.Elapsed.TotalSeconds

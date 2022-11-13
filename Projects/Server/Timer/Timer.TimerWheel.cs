@@ -199,7 +199,7 @@ public partial class Timer
                     if (lastRing && slot > _ringSize)
                     {
                         logger.Error(
-                            "Timer {Timer} has a duration of {Duration}ms, more than max capacity of {MaxDuration}ms.\n{StackTrace}",
+                            $"Timer {{Timer}} has a duration of {{Duration}}ms, more than max capacity of {{MaxDuration}}ms.{Environment.NewLine}{{StackTrace}}",
                             timer.GetType(),
                             originalDelay,
                             _maxDuration,
@@ -228,8 +228,8 @@ public partial class Timer
 
     public static void DumpInfo(TextWriter tw)
     {
-        tw.WriteLine($"Date: {Core.Now.ToLocalTime()}\n");
-        tw.WriteLine($"Pool - Count: {_poolCount}; Capacity {_poolCapacity}\n");
+        tw.WriteLine($"Date: {Core.Now.ToLocalTime()}{Environment.NewLine}");
+        tw.WriteLine($"Pool - Count: {_poolCount}; Capacity {_poolCapacity}{Environment.NewLine}");
 
         var total = 0.0;
         var hash = new Dictionary<string, int>();

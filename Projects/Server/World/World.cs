@@ -320,7 +320,8 @@ public static class World
 
         watch.Stop();
 
-        logger.Information("World loaded ({ItemCount} items, {MobileCount} mobiles) ({Duration:F2} seconds)",
+        logger.Information("Loading world {Status} ({ItemCount} items, {MobileCount} mobiles) ({Duration:F2} seconds)",
+            "done",
             Items.Count,
             Mobiles.Count,
             watch.Elapsed.TotalSeconds
@@ -352,9 +353,9 @@ public static class World
     private static void AppendSafetyLog(string action, ISerializable entity)
     {
         var message =
-            $"Warning: Attempted to {action} {entity} during world save.{Environment.NewLine}This action could cause an inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
+            $"Warning: Attempted to {{Action}} {{Entity}} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
-        logger.Information(message);
+        logger.Information(message, action, entity);
 
         try
         {
@@ -440,7 +441,7 @@ public static class World
 
             watch.Stop();
 
-            logger.Information("Writing world save snapshot done ({Duration:F2} seconds)", watch.Elapsed.TotalSeconds);
+            logger.Information("Writing world save snapshot {Status} ({Duration:F2} seconds)", "done", watch.Elapsed.TotalSeconds);
         }
         catch (Exception ex)
         {
@@ -449,7 +450,7 @@ public static class World
 
         if (exception != null)
         {
-            logger.Error(exception, "Writing world save snapshot failed.");
+            logger.Error(exception, "Writing world save snapshot {Status}.", "failed");
             Persistence.TraceException(exception);
 
             BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
@@ -587,7 +588,7 @@ public static class World
         if (exception == null)
         {
             var duration = watch.Elapsed.TotalSeconds;
-            logger.Information("World save completed ({Duration:F2} seconds)", duration);
+            logger.Information("Saving world {Status} ({Duration:F2} seconds)", "done", duration);
 
             // Only broadcast if it took at least 150ms
             if (duration >= 0.15)
@@ -597,7 +598,7 @@ public static class World
         }
         else
         {
-            logger.Error(exception, "World save failed");
+            logger.Error(exception, "Saving world {Status}", "failed");
             Persistence.TraceException(exception);
 
             BroadcastStaff(0x35, true, "World save failed.");
@@ -678,7 +679,7 @@ public static class World
         {
             default: // Not Running
                 {
-                    throw new Exception($"Added {entity.GetType().Name} before world load.\n");
+                    throw new Exception($"Added {entity.GetType().Name} before world load.");
                 }
             case WorldState.Saving:
                 {
@@ -706,7 +707,7 @@ public static class World
                             if (existing == entity)
                             {
                                 logger.Error(
-                                    "Attempted to add '{Entity}' ({Serial}) to World.Items but it already exists in the collection.\n{StackTrace}",
+                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
                                     entity.GetType().FullName,
                                     entity.Serial,
                                     new StackTrace()
@@ -715,7 +716,7 @@ public static class World
                             else
                             {
                                 logger.Error(
-                                    "Attempted to add '{Entity}' ({Serial}) to World.Items but found '{ExistingEntity}' ({ExistingSerial}).\n{StackTrace}",
+                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
                                     entity.GetType().FullName,
                                     entity.Serial,
                                     existing.GetType().FullName,
@@ -735,7 +736,7 @@ public static class World
                             if (existing == entity)
                             {
                                 logger.Error(
-                                    "Attempted to add '{Entity}' ({Serial}) to World.Mobiles but it already exists in the collection.\n{StackTrace}",
+                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
                                     entity.GetType().FullName,
                                     entity.Serial,
                                     new StackTrace()
@@ -744,7 +745,7 @@ public static class World
                             else
                             {
                                 logger.Error(
-                                    "Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but found '{{ExistingEntity}}' ({{ExistingSerial}}).\n{StackTrace}",
+                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
                                     entity.GetType().FullName,
                                     entity.Serial,
                                     existing.GetType().FullName,
@@ -768,7 +769,7 @@ public static class World
             if (existing == guild)
             {
                 logger.Error(
-                    "Attempted to add '{Entity}' ({Serial}) to World.Guilds but it already exists in the collection.\n{StackTrace}",
+                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
                     guild.GetType().FullName,
                     guild.Serial,
                     new StackTrace()
@@ -777,7 +778,7 @@ public static class World
             else
             {
                 logger.Error(
-                    "Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but found '{{ExistingEntity}}' ({{ExistingSerial}}).\n{StackTrace}",
+                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
                     guild.GetType().FullName,
                     guild.Serial,
                     existing.GetType().FullName,
@@ -794,7 +795,7 @@ public static class World
         {
             default: // Not Running
                 {
-                    throw new Exception($"Removed {entity.GetType().Name} before world load.\n");
+                    throw new Exception($"Removed {entity.GetType().Name} before world load.");
                 }
             case WorldState.Saving:
                 {

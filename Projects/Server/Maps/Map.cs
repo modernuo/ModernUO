@@ -407,7 +407,11 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         {
             if (this == Internal && m_Name != "Internal")
             {
-                logger.Warning("Internal map name was '{Name}'\n{StackTrace}", m_Name, new StackTrace());
+                logger.Warning(
+                    $"Internal map name was '{{Name}}'{Environment.NewLine}{{StackTrace}}",
+                    m_Name,
+                    new StackTrace()
+                );
                 m_Name = "Internal";
             }
 
@@ -417,7 +421,11 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         {
             if (this == Internal && value != "Internal")
             {
-                logger.Warning("Attempted to set internal map name to '{Value}'\n{StackTrace}", value, new StackTrace());
+                logger.Warning(
+                    $"Attempted to set internal map name to '{{Value}}'{Environment.NewLine}{{StackTrace}}",
+                    value,
+                    new StackTrace()
+                );
                 value = "Internal";
             }
 

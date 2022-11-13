@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -63,7 +64,8 @@ internal static class RegionLoader
         if (failures.Count == 0)
         {
             logger.Information(
-                "Regions loaded ({Count} regions, {FailureCount} failures) ({Duration:F2} seconds)",
+                "Loading regions {Status} ({Count} regions, {FailureCount} failures) ({Duration:F2} seconds)",
+                "done",
                 count,
                 failures.Count,
                 stopwatch.Elapsed.TotalSeconds
@@ -72,13 +74,13 @@ internal static class RegionLoader
         else
         {
             logger.Warning(
-                "Failed loading regions ({Count} regions, {FailureCount} failures) ({Duration:F2} seconds)",
+                $"Loading regions {{Status}} ({{Count}} regions, {{FailureCount}} failures) ({{Duration:F2}} seconds){Environment.NewLine}{{Failures}}",
+                "failed",
                 count,
                 failures.Count,
-                stopwatch.Elapsed.TotalSeconds
+                stopwatch.Elapsed.TotalSeconds,
+                failures
             );
-
-            logger.Warning("{Failures}", failures);
         }
     }
 }

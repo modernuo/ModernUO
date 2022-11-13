@@ -82,7 +82,7 @@ public partial class Timer
         if (World.WorldState is WorldState.Saving)
         {
             logger.Error(
-                "Attempted to start timer {Timer} ({HashCode}) while world is {State}\n{StackTrace}",
+                $"Attempted to start timer {{Timer}} ({{HashCode}}) while world is {{State}}{Environment.NewLine}{{StackTrace}}",
                 GetType(),
                 GetHashCode(),
                 World.WorldState,
@@ -94,7 +94,7 @@ public partial class Timer
         if (Thread.CurrentThread != Core.Thread)
         {
             logger.Error(
-                "Attempted to start timer {Timer} ({HashCode}) from an invalid thread!\n{StackTrace}",
+                $"Attempted to start timer {{Timer}} ({{HashCode}}) from an invalid thread!{Environment.NewLine}{{StackTrace}}",
                 GetType(),
                 GetHashCode(),
                 new StackTrace()
@@ -126,7 +126,7 @@ public partial class Timer
         if (World.WorldState is WorldState.Saving)
         {
             logger.Error(
-                "Attempted to stop timer {Timer} ({HashCode}) while world is {State}\n{StackTrace}",
+                $"Attempted to stop timer {{Timer}} ({{HashCode}}) while world is {{State}}{Environment.NewLine}{{StackTrace}}",
                 GetType(),
                 GetHashCode(),
                 World.WorldState,
@@ -138,7 +138,7 @@ public partial class Timer
         if (Thread.CurrentThread != Core.Thread)
         {
             logger.Error(
-                "Attempted to stop timer {Timer} ({HashCode}) from an invalid thread!\n{StackTrace}",
+                $"Attempted to stop timer {{Timer}} ({{HashCode}}) from an invalid thread!{Environment.NewLine}{{StackTrace}}",
                 GetType(),
                 GetHashCode(),
                 new StackTrace()
@@ -231,7 +231,11 @@ public partial class Timer
     {
         if (Running)
         {
-            logger.Error("{Timer} detached while still running!\n{StackTrace}", this, new StackTrace());
+            logger.Error(
+                $"{{Timer}} detached while still running!{Environment.NewLine}{{StackTrace}}",
+                this,
+                new StackTrace()
+            );
             return;
         }
 

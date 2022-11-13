@@ -75,7 +75,7 @@ public partial class Timer
         t.Start();
 
 #if DEBUG_TIMERS
-        DelayCallTimer._stackTraces[t.GetHashCode()] = $"{callback.Method.Name}\n{new StackTrace()}";
+        DelayCallTimer._stackTraces[t.GetHashCode()] = $"{callback.Method.Name}{Environment.NewLine}{new StackTrace()}";
 #endif
     }
 
@@ -102,7 +102,7 @@ public partial class Timer
         t.Start();
 
 #if DEBUG_TIMERS
-        DelayCallTimer._stackTraces[t.GetHashCode()] = $"{callback.Method.Name}\n{new StackTrace()}";
+        DelayCallTimer._stackTraces[t.GetHashCode()] = $"{callback.Method.Name}{Environment.NewLine}{new StackTrace()}";
 #endif
         token = new TimerExecutionToken(t);
     }
@@ -184,7 +184,7 @@ public partial class Timer
             }
 
 #if DEBUG_TIMERS
-            logger.Warning("Timer pool depleted and timer was allocated.\n{StackTrace}", new StackTrace());
+            logger.Warning($"Timer pool depleted and timer was allocated.{Environment.NewLine}{{StackTrace}}", new StackTrace());
 #endif
             return new DelayCallTimer(delay, interval, count, callback);
         }
@@ -198,7 +198,7 @@ public partial class Timer
         {
             if (!_allowFinalization)
             {
-                logger.Warning("Pooled timer was not returned to the pool.\n{StackTrace}", _stackTraces[GetHashCode()]);
+                logger.Warning($"Pooled timer was not returned to the pool.{Environment.NewLine}{{StackTrace}}", _stackTraces[GetHashCode()]);
             }
         }
 #endif
