@@ -2680,7 +2680,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
                         if (m_Parent == null && (parent.IsMobile || parent.IsItem))
                         {
-                            Delete();
+                            Timer.DelayCall(Delete);
                         }
                     }
 
@@ -2841,7 +2841,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
                         if (m_Parent == null && (parent.IsMobile || parent.IsItem))
                         {
-                            Delete();
+                            Timer.DelayCall(Delete);
                         }
                     }
 
@@ -2959,7 +2959,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
                     if (m_Parent == null && (parent.IsMobile || parent.IsItem))
                     {
-                        Delete();
+                        Timer.DelayCall(Delete);
                     }
 
                     var count = reader.ReadInt();

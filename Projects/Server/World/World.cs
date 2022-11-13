@@ -63,6 +63,15 @@ public static class World
     {
         get
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                logger.Error(
+                    "Attempted to get a new mobile serial from the wrong thread!\n{StackTrace}",
+                    new StackTrace()
+                );
+            }
+#endif
             var last = _lastMobile;
             var maxMobile = (Serial)MaxMobileSerial;
 
@@ -75,7 +84,7 @@ public static class World
                     last = (Serial)1;
                 }
 
-                if (FindMobile(last) == null)
+                if (FindMobile(last, true) == null)
                 {
                     return _lastMobile = last;
                 }
@@ -90,6 +99,15 @@ public static class World
     {
         get
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                logger.Error(
+                    "Attempted to get a new item serial from the wrong thread!\n{StackTrace}",
+                    new StackTrace()
+                );
+            }
+#endif
             var last = _lastItem;
 
             for (int i = 0; i < _maxItems; i++)
@@ -101,7 +119,7 @@ public static class World
                     last = (Serial)ItemOffset;
                 }
 
-                if (FindItem(last) == null)
+                if (FindItem(last, true) == null)
                 {
                     return _lastItem = last;
                 }
@@ -317,15 +335,19 @@ public static class World
             AddEntity(entity);
         }
 
+        _pendingAdd.Clear();
+
         foreach (var entity in _pendingDelete.Values)
         {
             if (_pendingAdd.ContainsKey(entity.Serial))
             {
-                logger.Warning("Entity {Entity} was both pending both deletion and addition after save", entity);
+                logger.Warning("Entity {Entity} was both pending deletion and addition after save", entity);
             }
 
             RemoveEntity(entity);
         }
+
+        _pendingDelete.Clear();
     }
 
     private static void AppendSafetyLog(string action, ISerializable entity)
@@ -597,17 +619,30 @@ public static class World
             case WorldState.Saving:
             case WorldState.WritingSave:
                 {
-                    if (_pendingDelete.TryGetValue(serial, out var entity))
-                    {
-                        return !returnDeleted ? null : entity as T;
-                    }
-
-                    if (_pendingAdd.TryGetValue(serial, out entity))
+                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as T;
                     }
 
-                    goto case WorldState.Running;
+                    if (!_pendingAdd.TryGetValue(serial, out entity))
+                    {
+                        if (serial.IsItem)
+                        {
+                            if (Items.TryGetValue(serial, out var item))
+                            {
+                                entity = item;
+                            }
+                        }
+                        else // if (serial.IsMobile)
+                        {
+                            if (Mobiles.TryGetValue(serial, out var mob))
+                            {
+                                entity = mob;
+                            }
+                        }
+                    }
+
+                    return entity?.Deleted == false || returnDeleted ? entity as T : null;
                 }
             case WorldState.Running:
                 {

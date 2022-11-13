@@ -68,11 +68,6 @@ public class BankBox : Container
                     Owner = reader.ReadEntity<Mobile>();
                     Opened = reader.ReadBool();
 
-                    if (Owner == null)
-                    {
-                        Delete();
-                    }
-
                     break;
                 }
         }
@@ -80,6 +75,11 @@ public class BankBox : Container
         if (ItemID == 0xE41)
         {
             ItemID = 0xE7C;
+        }
+
+        if (Owner == null)
+        {
+            Timer.DelayCall(Delete);
         }
     }
 
