@@ -38,21 +38,7 @@ namespace Server.Items
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            switch (version)
-            {
-                case 1:
-                    {
-                        _resource = (CraftResource)reader.ReadInt();
-                        break;
-                    }
-                case 0:
-                    {
-                        var info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
-
-                        _resource = CraftResources.GetFromOreInfo(info);
-                        break;
-                    }
-            }
+            _resource = (CraftResource)reader.ReadInt();
         }
 
         public override void AddNameProperty(IPropertyList list)
