@@ -53,7 +53,9 @@ namespace Server.Misc
             if (MinRequired != null || MaxRequired != null)
             {
                 logger.Information(
-                    $"Restricting client version to {GetVersionExpression()}. Action to be taken: {_invalidClientResponse}"
+                    "Restricting client version to {ClientVersion}. Action to be taken: {Action}",
+                    GetVersionExpression(),
+                    _invalidClientResponse
                 );
             }
         }

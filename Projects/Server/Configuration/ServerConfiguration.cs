@@ -228,7 +228,7 @@ public static class ServerConfiguration
                 throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
             }
 
-            logger.Information("Reading server configuration done");
+            logger.Information("Reading server configuration {Status}", "done");
         }
         else
         {
