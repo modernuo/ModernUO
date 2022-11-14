@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "type": "Server.Items.WaitTeleporter",
+  "properties": [
+    {
+      "name": "StartMessage",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "@CanBeNull",
+        "TextDefinition"
+      ]
+    },
+    {
+      "name": "ProgressMessage",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "@CanBeNull",
+        "TextDefinition"
+      ]
+    },
+    {
+      "name": "ShowTimeRemaining",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Items.HintItem",
+  "properties": [
+    {
+      "name": "HintMessage",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "TextDefinition"
+      ]
+    }
+  ]
+}

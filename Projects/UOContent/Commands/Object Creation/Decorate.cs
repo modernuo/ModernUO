@@ -261,8 +261,8 @@ namespace Server.Commands
 
                     var hi = new HintItem(m_ItemID, range, messageNumber, hintNumber);
 
-                    hi.WarningString = messageString;
-                    hi.HintString = hintString;
+                    hi.WarningMessage = messageString;
+                    hi.HintMessage = hintString;
                     hi.ResetDelay = resetDelay;
 
                     item = hi;
@@ -316,7 +316,7 @@ namespace Server.Commands
 
                     var wi = new WarningItem(m_ItemID, range, messageNumber);
 
-                    wi.WarningString = messageString;
+                    wi.WarningMessage = messageString;
                     wi.ResetDelay = resetDelay;
 
                     item = wi;
@@ -687,7 +687,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageString = m_Params[i][++indexOf..];
+                            st.Message = m_Params[i][++indexOf..];
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MessageNumber"))
@@ -696,7 +696,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
+                            st.Message = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("PointDest"))
