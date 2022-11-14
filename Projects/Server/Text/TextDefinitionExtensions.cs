@@ -155,5 +155,22 @@ public static class TextDefinitionExtensions
         }
     }
 
+    public static void PublicOverheadMessage(this TextDefinition def, Item item, MessageType messageType, int hue)
+    {
+        if (def == null)
+        {
+            return;
+        }
+
+        if (def.Number > 0)
+        {
+            item.PublicOverheadMessage(messageType, hue, def.Number);
+        }
+        else if (def.String != null)
+        {
+            item.PublicOverheadMessage(messageType, hue, false, def.String);
+        }
+    }
+
     public static bool IsNullOrEmpty(this TextDefinition def) => def?.IsEmpty != false;
 }

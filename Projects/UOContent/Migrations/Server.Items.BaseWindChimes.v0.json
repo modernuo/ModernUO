@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseWindChimes",
+  "properties": [
+    {
+      "name": "TurnedOn",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
