@@ -2074,7 +2074,7 @@ namespace Server.Multis
 
         public bool LockDown(Mobile m, Item item, bool checkIsInside)
         {
-            if (!IsCoOwner(m) || !IsActive)
+            if (!IsFriend(m) || !IsActive)
             {
                 return false;
             }
@@ -2329,13 +2329,17 @@ namespace Server.Multis
 
         public void Release(Mobile m, Item item)
         {
-            if (!IsCoOwner(m) || !IsActive)
+            if (!IsFriend(m) || !IsActive)
             {
                 return;
             }
 
             if (HasLockedDownItem(item))
             {
+                /* How do we ensure that friends can only release things locked down 
+                 * by them and not things locked down by co-owners/owners? It's an\
+                 * important step to prevent grief and separate security levels. */
+
                 item.PublicOverheadMessage(MessageType.Label, 0x3B2, 501657); // [no longer locked down]
                 SetLockdown(item, false);
                 // TidyItemList( m_LockDowns );
@@ -2344,7 +2348,18 @@ namespace Server.Multis
             }
             else if (HasSecureItem(item))
             {
-                ReleaseSecure(m, item);
+                /* We don't want friends of the house releasing secured containers. This is a co-owner/owner
+                 * superpower. */
+
+                if (IsCoOwner(m))
+                {
+                    ReleaseSecure(m, item);
+                }
+                else
+                {
+                    m.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1010418); // You did not lock this down, and you are not able to release this.
+                    return;
+                }               
             }
             else
             {
@@ -2354,7 +2369,7 @@ namespace Server.Multis
 
         public void AddSecure(Mobile m, Item item)
         {
-            if (Secures == null || !IsOwner(m) || !IsActive)
+            if (Secures == null || !IsCoOwner(m) || !IsActive)
             {
                 return;
             }
@@ -2412,7 +2427,17 @@ namespace Server.Multis
                 }
                 else
                 {
-                    info = new SecureInfo((Container)item, SecureLevel.Owner);
+                    /* There seems to be some confusion regarding security access on secured containers. 
+                     * when a player secures a container (via "I wish to secure this"), they are considered 
+                     * the "owner" of that item. Thus, if the option "Owner only" is selected, then the 
+                     * player who secured the container AND the house owner both have access to it. I am not 
+                     * sure how to address this without throwing the whole thing into chaos. 
+                     * 
+                     * As it stands, the gump automatically assigns the house owner as the owner
+                     * of the secured container. Thus, co-owners who secure a container and select 
+                     * "Owner Only" from the security gump will be unable to access or release the container. */
+
+                info = new SecureInfo((Container)item, SecureLevel.Owner); 
 
                     item.IsLockedDown = false;
                     item.IsSecure = true;
@@ -2476,7 +2501,7 @@ namespace Server.Multis
 
         public void ReleaseSecure(Mobile m, Item item)
         {
-            if (Secures == null || !IsOwner(m) || item is StrongBox || !IsActive)
+            if (Secures == null || !IsCoOwner(m) || item is StrongBox || !IsActive)
             {
                 return;
             }
@@ -2503,6 +2528,10 @@ namespace Server.Multis
                     item.PublicOverheadMessage(MessageType.Label, 0x3B2, 501656); // [no longer secure]
                     Secures.RemoveAt(i);
                     return;
+                }
+                else // Added fallback incase the player is a co-owner who is trying to release a container secured by the owner.
+                {
+                    m.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1010418); // You did not lock this down, and you are not able to release this.
                 }
             }
 
@@ -2599,7 +2628,7 @@ namespace Server.Multis
                 /* You have been ejected from this house.
                  * If you persist in entering, you may be banned from the house.
                  */
-                targ.SendLocalizedMessage(501341);
+                    targ.SendLocalizedMessage(501341);
             }
         }
 
@@ -2626,7 +2655,7 @@ namespace Server.Multis
 
         public void RemoveBan(Mobile from, Mobile targ)
         {
-            if (!IsCoOwner(from) || Bans == null)
+            if (!IsFriend(from) || Bans == null)
             {
                 return;
             }
@@ -3950,7 +3979,7 @@ namespace Server.Multis
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (!from.Alive || m_House.Deleted || !m_House.IsCoOwner(from))
+            if (!from.Alive || m_House.Deleted || !m_House.IsFriend(from))
             {
                 return;
             }

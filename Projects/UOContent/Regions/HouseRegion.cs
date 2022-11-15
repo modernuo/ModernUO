@@ -295,50 +295,36 @@ namespace Server.Regions
             }
             else if (e.HasKeyword(0x23)) // I wish to lock this down
             {
-                if (isCoOwner)
-                {
                     from.SendLocalizedMessage(502097); // Lock what down?
                     from.Target = new LockdownTarget(false, House);
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
-                }
             }
             else if (e.HasKeyword(0x24)) // I wish to release this
             {
-                if (isCoOwner)
-                {
                     from.SendLocalizedMessage(502100); // Choose the item you wish to release
                     from.Target = new LockdownTarget(true, House);
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
-                }
             }
             else if (e.HasKeyword(0x25)) // I wish to secure this
             {
-                if (isOwner)
+                if (isCoOwner)
                 {
                     from.SendLocalizedMessage(502103); // Choose the item you wish to secure
                     from.Target = new SecureTarget(false, House);
                 }
                 else
                 {
-                    from.SendLocalizedMessage(502094); // You must be in your house to do this.
+                    from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
                 }
             }
             else if (e.HasKeyword(0x26)) // I wish to unsecure this
             {
-                if (isOwner)
+                if (isCoOwner)
                 {
                     from.SendLocalizedMessage(502106); // Choose the item you wish to unsecure
                     from.Target = new SecureTarget(true, House);
                 }
                 else
                 {
-                    from.SendLocalizedMessage(502094); // You must be in your house to do this.
+                    from.SendLocalizedMessage(1010587); // You are not a co-owner of this house.
                 }
             }
             else if (e.HasKeyword(0x27)) // I wish to place a strongbox
