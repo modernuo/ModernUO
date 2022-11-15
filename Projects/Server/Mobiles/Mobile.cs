@@ -8469,6 +8469,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             return;
         }
 
+        _statMods ??= new List<StatMod>();
         _statMods.Add(mod);
         Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
         CheckStatTimers();
