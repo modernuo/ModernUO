@@ -22,7 +22,7 @@ public partial class LocalizedStatic : Static
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _number;
 
     [Constructible]

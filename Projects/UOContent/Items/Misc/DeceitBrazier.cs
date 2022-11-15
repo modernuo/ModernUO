@@ -12,11 +12,11 @@ public partial class DeceitBrazier : Item
     private TimerExecutionToken _timerToken;
 
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _spawnRange;
 
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _nextSpawnDelay;
 
     [Constructible]

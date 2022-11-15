@@ -14,7 +14,7 @@ public partial class MahjongGame : Item, ISecurable
     public const int BaseScore = 30000;
 
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
 
     [SerializableField(1, setter: "private")]

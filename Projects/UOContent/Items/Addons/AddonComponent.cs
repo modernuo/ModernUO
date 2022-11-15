@@ -28,7 +28,7 @@ namespace Server.Items
     {
         [InvalidateProperties]
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _number;
 
         [Constructible]
@@ -104,11 +104,11 @@ namespace Server.Items
         }
 
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         public BaseAddon _addon;
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         public Point3D _offset;
 
         [Hue]

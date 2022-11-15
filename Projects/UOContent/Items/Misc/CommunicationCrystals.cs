@@ -51,12 +51,12 @@ public partial class BroadcastCrystal : Item
 
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _charges;
 
     [InvalidateProperties]
     [SerializableField(1, getter: "private", setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<ReceiverCrystal> _receivers;
 
     [Constructible]

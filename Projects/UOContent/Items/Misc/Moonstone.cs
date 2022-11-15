@@ -17,7 +17,7 @@ public partial class Moonstone : Item
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private MoonstoneType _type;
 
     [Constructible]

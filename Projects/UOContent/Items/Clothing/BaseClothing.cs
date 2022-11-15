@@ -30,7 +30,7 @@ namespace Server.Items
         private bool ShouldSerializeResource() => _resource != DefaultResource;
 
         [SerializableField(1, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosAttributes _attributes;
 
         [SerializableFieldSaveFlag(1)]
@@ -40,7 +40,7 @@ namespace Server.Items
         private AosAttributes AttributesDefaultValue() => new(this);
 
         [SerializableField(2, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosArmorAttributes _clothingAttributes;
 
         [SerializableFieldSaveFlag(2)]
@@ -50,7 +50,7 @@ namespace Server.Items
         private AosArmorAttributes ClothingAttributesDefaultValue() => new(this);
 
         [SerializableField(3, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosSkillBonuses _skillBonuses;
 
         [SerializableFieldSaveFlag(3)]
@@ -60,7 +60,7 @@ namespace Server.Items
         private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
         [SerializableField(4, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosElementAttributes _resistances;
 
         [SerializableFieldSaveFlag(4)]
@@ -72,14 +72,14 @@ namespace Server.Items
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(5)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maxHitPoints;
 
         [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
 
         [SerializableField(7)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _playerConstructed;
 
         [SerializableFieldSaveFlag(7)]
@@ -87,7 +87,7 @@ namespace Server.Items
 
         [InvalidateProperties]
         [SerializableField(8)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
@@ -95,7 +95,7 @@ namespace Server.Items
 
         [InvalidateProperties]
         [SerializableField(9)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private ClothingQuality _quality = ClothingQuality.Regular;
 
         [SerializableFieldSaveFlag(9)]

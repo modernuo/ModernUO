@@ -48,7 +48,7 @@ namespace Server.Items
     public abstract partial class BaseBulletinBoard : Item
     {
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _boardName;
 
         public BaseBulletinBoard(int itemID) : base(itemID)

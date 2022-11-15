@@ -220,11 +220,11 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
     private static readonly Dictionary<Mobile, Timer> m_Table = new();
 
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Poison _poison;
 
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _poisoner;
 
     public BaseBeverage() => ItemID = ComputeItemID();

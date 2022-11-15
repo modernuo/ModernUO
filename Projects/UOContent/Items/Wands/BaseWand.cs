@@ -26,12 +26,12 @@ namespace Server.Items
     public abstract partial class BaseWand : BaseBashing
     {
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         [SerializableField(0)]
         private WandEffect _wandEffect;
 
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         [SerializableField(1)]
         private int _charges;
 

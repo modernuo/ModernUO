@@ -38,22 +38,22 @@ namespace Server.Items
         }
 
         [SerializableField(1, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _liveCreatures;
 
         [InvalidateProperties]
         [SerializableField(2, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _vacationLeft;
 
         [InvalidateProperties]
         [SerializableField(3, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private AquariumState _food;
 
         [InvalidateProperties]
         [SerializableField(4, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private AquariumState _water;
 
         [SerializableField(5, setter: "private")]
@@ -61,7 +61,7 @@ namespace Server.Items
 
         [InvalidateProperties]
         [SerializableField(6)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _rewardAvailable;
 
         public Aquarium(int itemID) : base(itemID)

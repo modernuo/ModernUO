@@ -22,11 +22,11 @@ namespace Server.Items
         public virtual Point3D WallPosition => Point3D.Zero;
 
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private BaseAddonContainer _addon;
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Point3D _offset;
 
         [Hue]
