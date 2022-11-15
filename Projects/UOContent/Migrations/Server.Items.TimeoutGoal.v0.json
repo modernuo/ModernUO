@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.TimeoutGoal",
+  "properties": [
+    {
+      "name": "Teleporter",
+      "type": "Server.Items.TimeoutTeleporter",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

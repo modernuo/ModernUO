@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.ConditionTeleporter",
+  "properties": [
+    {
+      "name": "Flags",
+      "type": "Server.Items.ConditionTeleporter.ConditionFlag",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

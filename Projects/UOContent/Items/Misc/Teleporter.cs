@@ -638,9 +638,14 @@ public partial class WaitTeleporter : KeywordTeleporter
     }
 }
 
-public class TimeoutTeleporter : Teleporter
+[SerializationGenerator(1, false)]
+public partial class TimeoutTeleporter : Teleporter
 {
-    private Dictionary<Mobile, TimerExecutionToken> m_Teleporting;
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TimeSpan _timeoutDelay;
+
+    private Dictionary<Mobile, TimerExecutionToken> _teleporting;
 
     [Constructible]
     public TimeoutTeleporter() : this(new Point3D(0, 0, 0))
@@ -649,31 +654,23 @@ public class TimeoutTeleporter : Teleporter
 
     [Constructible]
     public TimeoutTeleporter(Point3D pointDest, Map mapDest = null, bool creatures = false)
-        : base(pointDest, mapDest, creatures) =>
-        m_Teleporting = new Dictionary<Mobile, TimerExecutionToken>();
-
-    public TimeoutTeleporter(Serial serial) : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan TimeoutDelay { get; set; }
+        : base(pointDest, mapDest, creatures) => _teleporting = new Dictionary<Mobile, TimerExecutionToken>();
 
     public void StartTimer(Mobile m)
     {
-        StartTimer(m, TimeoutDelay);
+        StartTimer(m, _timeoutDelay);
     }
 
     private void StartTimer(Mobile m, TimeSpan delay)
     {
         StopTimer(m);
         Timer.StartTimer(delay, () => StartTeleport(m), out var timerToken);
-        m_Teleporting[m] = timerToken;
+        _teleporting[m] = timerToken;
     }
 
     public void StopTimer(Mobile m)
     {
-        if (m_Teleporting.Remove(m, out var t))
+        if (_teleporting.Remove(m, out var t))
         {
             t.Cancel();
         }
@@ -681,7 +678,7 @@ public class TimeoutTeleporter : Teleporter
 
     public override void DoTeleport(Mobile m)
     {
-        m_Teleporting.Remove(m);
+        _teleporting.Remove(m);
 
         base.DoTeleport(m);
     }
@@ -701,48 +698,30 @@ public class TimeoutTeleporter : Teleporter
         return true;
     }
 
-    public override void Serialize(IGenericWriter writer)
+    private void Deserialize(IGenericReader reader, int version)
     {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-
-        writer.Write(TimeoutDelay);
-        writer.Write(m_Teleporting.Count);
-
-        foreach (var kvp in m_Teleporting)
-        {
-            writer.Write(kvp.Key);
-            writer.Write(kvp.Value.Next);
-        }
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        TimeoutDelay = reader.ReadTimeSpan();
-        m_Teleporting = new Dictionary<Mobile, TimerExecutionToken>();
+        _timeoutDelay = reader.ReadTimeSpan();
+        _teleporting = new Dictionary<Mobile, TimerExecutionToken>();
 
         var count = reader.ReadInt();
 
         for (var i = 0; i < count; ++i)
         {
-            var m = reader.ReadEntity<Mobile>();
-            var end = reader.ReadDateTime();
-
-            StartTimer(m, end - Core.Now);
+            reader.ReadEntity<Mobile>();
+            reader.ReadDateTime();
         }
     }
 }
 
-public class TimeoutGoal : Item
+[SerializationGenerator(0, false)]
+public partial class TimeoutGoal : Item
 {
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TimeoutTeleporter _teleporter;
+
     [Constructible]
-    public TimeoutGoal()
-        : base(0x1822)
+    public TimeoutGoal() : base(0x1822)
     {
         Movable = false;
         Visible = false;
@@ -750,53 +729,23 @@ public class TimeoutGoal : Item
         Hue = 1154;
     }
 
-    public TimeoutGoal(Serial serial)
-        : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public TimeoutTeleporter Teleporter { get; set; }
-
     public override string DefaultName => "timeout teleporter goal";
 
     public override bool OnMoveOver(Mobile m)
     {
         Teleporter?.StopTimer(m);
-
         return true;
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-
-        writer.Write(Teleporter);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        Teleporter = reader.ReadEntity<TimeoutTeleporter>();
     }
 }
 
-public class ConditionTeleporter : Teleporter
+[SerializationGenerator(1, false)]
+public partial class ConditionTeleporter : Teleporter
 {
-    private ConditionFlag m_Flags;
+    [SerializableField(0, getter: "protected", setter: "protected")]
+    private ConditionFlag _flags;
 
     [Constructible]
     public ConditionTeleporter()
-    {
-    }
-
-    public ConditionTeleporter(Serial serial)
-        : base(serial)
     {
     }
 
@@ -964,7 +913,7 @@ public class ConditionTeleporter : Teleporter
                         }
                     default:
                         {
-                            m.SendMessage("You must remove all of your equipment before proceeding.");
+                            m.SendMessage("You must remove all equipment before proceeding.");
                             return false;
                         }
                 }
@@ -1044,35 +993,22 @@ public class ConditionTeleporter : Teleporter
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    private void Deserialize(IGenericReader reader, int version)
     {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-
-        writer.Write((int)m_Flags);
+        _flags = (ConditionFlag)reader.ReadInt();
     }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        m_Flags = (ConditionFlag)reader.ReadInt();
-    }
-
-    protected bool GetFlag(ConditionFlag flag) => (m_Flags & flag) != 0;
+    protected bool GetFlag(ConditionFlag flag) => (_flags & flag) != 0;
 
     protected void SetFlag(ConditionFlag flag, bool value)
     {
         if (value)
         {
-            m_Flags |= flag;
+            _flags |= flag;
         }
         else
         {
-            m_Flags &= ~flag;
+            _flags &= ~flag;
         }
     }
 
