@@ -11,12 +11,12 @@ public partial class StrongBox : BaseContainer, IChoppable
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _owner;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private BaseHouse _house;
 
     public StrongBox(Mobile owner, BaseHouse house) : base(0xE80)

@@ -24,15 +24,15 @@ public enum EffectTriggerType
 public partial class EffectController : Item
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _effectDelay;
 
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _triggerDelay;
 
     [SerializableField(2)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _soundDelay;
 
     [SerializableField(3)]
@@ -42,75 +42,75 @@ public partial class EffectController : Item
     private IEntity _target;
 
     [SerializableField(5)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private EffectController _sequence;
 
     [SerializableField(6)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _fixedDirection;
 
     [SerializableField(7)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _explodes;
 
     [SerializableField(8)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _playSoundAtTrigger;
 
     [SerializableField(9)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private ECEffectType _effectType;
 
     [SerializableField(10)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private EffectLayer _effectLayer;
 
     [SerializableField(11)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private EffectTriggerType _triggerType;
 
     [SerializableField(12)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _effectItemId;
 
     [SerializableField(13)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _effectHue;
 
     [SerializableField(14)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _renderMode;
 
     [SerializableField(15)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _speed;
 
     [SerializableField(16)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _duration;
 
     [SerializableField(17)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _particleEffect;
 
     [SerializableField(18)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _explodeParticleEffect;
 
     [SerializableField(19)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _explodeSound;
 
     [SerializableField(20)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _unknown;
 
     [SerializableField(21)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _soundId;
 
     [SerializableField(22)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _triggerRange;
 
     [Constructible]

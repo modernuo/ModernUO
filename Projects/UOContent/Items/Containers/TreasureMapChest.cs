@@ -16,20 +16,20 @@ public partial class TreasureMapChest : LockableContainer
     private List<Mobile> _guardians;
 
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _temporary;
 
     [SerializableField(2)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _owner;
 
     [SerializableField(3)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _level;
 
     [TimerDrift]
     [SerializableField(4)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Timer _expireTimer;
 
     [DeserializeTimerField(4)]
@@ -43,7 +43,7 @@ public partial class TreasureMapChest : LockableContainer
 
     [Tidy]
     [SerializableField(5, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private HashSet<Item> _lifted;
 
     [Constructible]

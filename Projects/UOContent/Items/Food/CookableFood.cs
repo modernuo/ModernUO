@@ -7,7 +7,7 @@ namespace Server.Items;
 public abstract partial class CookableFood : Item
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _cookingLevel;
 
     public CookableFood(int itemID, int cookingLevel) : base(itemID) => _cookingLevel = cookingLevel;

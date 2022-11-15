@@ -7,15 +7,15 @@ namespace Server.Items;
 public partial class SerpentPillar : Item
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _active;
 
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _word;
 
     [SerializableField(2)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Rectangle2D _destination;
 
     [Constructible]

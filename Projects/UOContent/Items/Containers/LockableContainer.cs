@@ -49,27 +49,27 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
     public Mobile Picker { get; set; }
 
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _isShipwreckedItem;
 
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _trapOnLockpick;
 
     [SerializableField(2)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _requiredSkill;
 
     [SerializableField(3)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxLockLevel;
 
     [SerializableField(4)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private uint _keyValue;
 
     [SerializableField(5)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _lockLevel;
 
     [SerializableProperty(6)]

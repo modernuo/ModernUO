@@ -11,12 +11,12 @@ namespace Server.Items
     {
         [SerializableField(0)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _balanced;
 
         [SerializableField(1)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _velocity;
 
         private TimerExecutionToken _recoveryTimerToken;

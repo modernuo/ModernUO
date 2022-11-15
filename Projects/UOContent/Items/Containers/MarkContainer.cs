@@ -20,15 +20,15 @@ public partial class MarkContainer : LockableContainer
     }
 
     [SerializableField(2)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Map _targetMap;
 
     [SerializableField(3)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Point3D _target;
 
     [SerializableField(4)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _description;
 
     [Constructible]

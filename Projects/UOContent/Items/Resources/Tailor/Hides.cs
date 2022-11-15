@@ -6,7 +6,7 @@ namespace Server.Items
     public abstract partial class BaseHides : Item, ICommodity
     {
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         [SerializableField(0)]
         private CraftResource _resource;
 

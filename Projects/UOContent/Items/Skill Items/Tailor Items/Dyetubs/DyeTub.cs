@@ -16,11 +16,11 @@ namespace Server.Items
     public partial class DyeTub : Item, ISecurable
     {
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SecureLevel _level;
 
         [SerializableField(1, isVirtual: true)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _redyable;
 
         [Constructible]

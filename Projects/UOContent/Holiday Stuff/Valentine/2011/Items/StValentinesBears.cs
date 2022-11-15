@@ -11,25 +11,25 @@ namespace Server.Items
         [InternString]
         [InvalidateProperties]
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _owner;
 
         [InternString]
         [InvalidateProperties]
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _line1;
 
         [InternString]
         [InvalidateProperties]
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _line2;
 
         [InternString]
         [InvalidateProperties]
         [SerializableField(3)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _line3;
 
         public StValentinesBear(int itemid, string name) : base(itemid)

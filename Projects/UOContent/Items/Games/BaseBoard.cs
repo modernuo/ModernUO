@@ -12,7 +12,7 @@ namespace Server.Items;
 public abstract partial class BaseBoard : Container, ISecurable
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
 
     public BaseBoard(int itemID) : base(itemID)

@@ -43,7 +43,7 @@ namespace Server.Accounting
         ///     0 to 999,999,999 by default.
         /// </summary>
         [SerializableField(6, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
+        [SerializedCommandProperty(AccessLevel.Administrator)]
         public int _totalGold;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Server.Accounting
         ///     One Platinum represents the value of CurrencyThreshold in Gold.
         /// </summary>
         [SerializableField(7, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
+        [SerializedCommandProperty(AccessLevel.Administrator)]
         public int _totalPlat;
 
         private Mobile[] _mobiles;
@@ -117,7 +117,7 @@ namespace Server.Accounting
         }
 
         [SerializableField(14)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.Administrator)]")]
+        [SerializedCommandProperty(AccessLevel.Administrator)]
         private string _email;
 
         private Timer m_YoungTimer;

@@ -7,7 +7,7 @@ namespace Server.Items
     public partial class BigFish : Item, ICarvable
     {
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         [SerializableField(0)]
         private Mobile _fisher;
 

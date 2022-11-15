@@ -114,11 +114,11 @@ namespace Server.Items
     {
         [InvalidateProperties]
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _number;
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _isRewardItem;
 
         [Constructible]

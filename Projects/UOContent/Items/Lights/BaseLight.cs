@@ -9,11 +9,11 @@ public abstract partial class BaseLight : Item
     public static readonly bool Burnout = false;
 
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _burntOut;
 
     [SerializableField(3)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _protected;
 
     [TimerDrift]

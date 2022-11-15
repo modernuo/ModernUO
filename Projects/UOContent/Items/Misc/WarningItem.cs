@@ -11,7 +11,7 @@ public partial class WarningItem : Item
     private bool m_Broadcasting;
 
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TextDefinition _warningMessage;
 
     // Field 1
@@ -134,7 +134,7 @@ public partial class WarningItem : Item
 public partial class HintItem : WarningItem
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TextDefinition _hintMessage;
 
     [Constructible]

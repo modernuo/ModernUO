@@ -12,12 +12,12 @@ public partial class DragonBardingDeed : Item, ICraftable
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _craftedBy;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _exceptional;
 
     public DragonBardingDeed() : base(0x14F0) => Weight = 1.0;

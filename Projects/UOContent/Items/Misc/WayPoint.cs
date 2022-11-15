@@ -8,7 +8,7 @@ namespace Server.Items;
 public partial class WayPoint : Item
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private WayPoint _nextPoint;
 
     [Constructible]

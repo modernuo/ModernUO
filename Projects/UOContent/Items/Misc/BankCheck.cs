@@ -15,7 +15,7 @@ public partial class BankCheck : Item
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _worth;
 
     [Constructible]

@@ -46,15 +46,15 @@ namespace Server.Items
         }
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maintain;
 
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _improve;
 
         [SerializableField(3)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _added;
 
         public override string ToString() => "...";

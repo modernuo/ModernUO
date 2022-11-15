@@ -15,7 +15,7 @@ namespace Server.Items
     public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
     {
         [SerializableField(0, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosAttributes _attributes;
 
         [SerializableFieldSaveFlag(0)]
@@ -25,7 +25,7 @@ namespace Server.Items
         private AosAttributes AttributesDefaultValue() => new(this);
 
         [SerializableField(1, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosArmorAttributes _armorAttributes;
 
         [SerializableFieldSaveFlag(1)]
@@ -37,7 +37,7 @@ namespace Server.Items
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _physicalBonus;
 
         [SerializableFieldSaveFlag(2)]
@@ -46,7 +46,7 @@ namespace Server.Items
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(3)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _fireBonus;
 
         [SerializableFieldSaveFlag(3)]
@@ -55,7 +55,7 @@ namespace Server.Items
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(4)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _coldBonus;
 
         [SerializableFieldSaveFlag(4)]
@@ -64,7 +64,7 @@ namespace Server.Items
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(5)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _poisonBonus;
 
         [SerializableFieldSaveFlag(5)]
@@ -73,14 +73,14 @@ namespace Server.Items
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(6)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _energyBonus;
 
         [SerializableFieldSaveFlag(6)]
         private bool ShouldSerializeEnergyBonus() => _energyBonus != 0;
 
         [SerializableField(7)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _identified;
 
         [SerializableFieldSaveFlag(7)]
@@ -88,7 +88,7 @@ namespace Server.Items
 
         [EncodedInt]
         [SerializableField(8)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maxHitPoints;
 
         [SerializableFieldSaveFlag(8)]
@@ -96,7 +96,7 @@ namespace Server.Items
 
         [InvalidateProperties]
         [SerializableField(10)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _crafter;
 
         [SerializableFieldSaveFlag(10)]
@@ -133,7 +133,7 @@ namespace Server.Items
         private AMA _meditate = (AMA)(-1);
 
         [SerializableField(23, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses _skillBonuses;
 
         [SerializableFieldSaveFlag(23)]
@@ -143,7 +143,7 @@ namespace Server.Items
         private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
         [SerializableField(24)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         public bool _playerConstructed;
 
         [SerializableFieldSaveFlag(24)]

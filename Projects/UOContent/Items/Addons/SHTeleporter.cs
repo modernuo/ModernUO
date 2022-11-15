@@ -8,7 +8,7 @@ namespace Server.Items
     public partial class SHTeleComponent : AddonComponent
     {
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Point3D _teleOffset;
 
         [Constructible]
@@ -101,23 +101,23 @@ namespace Server.Items
         private bool m_Changing;
 
         [SerializableField(0, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _external;
 
         [SerializableField(1, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _upTele;
 
         [SerializableField(2, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _rightTele;
 
         [SerializableField(3, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _downTele;
 
         [SerializableField(4, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _leftTele;
 
         [Constructible]

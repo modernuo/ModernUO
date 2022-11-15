@@ -24,24 +24,24 @@ public abstract partial class BaseJewel : Item, ICraftable
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxHitPoints;
 
     [SerializableField(3)]
     [InvalidateProperties]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private GemType _gemType;
 
     [SerializableField(4, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;
 
     [SerializableField(5, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosElementAttributes _resistances;
 
     [SerializableField(6, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
 
     public BaseJewel(int itemID, Layer layer) : base(itemID)

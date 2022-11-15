@@ -13,17 +13,17 @@ public partial class Guildstone : Item, IAddon, IChoppable
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildName;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildAbbrev;
 
     [InvalidateProperties]
     [SerializableField(2, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Guild _guild;
 
     public Guildstone(Guild g) : this(g, g.Name, g.Abbreviation)
@@ -209,17 +209,17 @@ public partial class GuildstoneDeed : Item
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildName;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildAbbrev;
 
     [InvalidateProperties]
     [SerializableField(2, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Guild _guild;
 
     [Constructible]

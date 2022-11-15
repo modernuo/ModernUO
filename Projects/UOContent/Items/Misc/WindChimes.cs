@@ -10,7 +10,7 @@ public abstract partial class BaseWindChimes : Item
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _turnedOn;
 
     public BaseWindChimes(int itemID) : base(itemID)

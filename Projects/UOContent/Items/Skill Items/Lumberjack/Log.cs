@@ -7,7 +7,7 @@ namespace Server.Items
     public partial class Log : Item, ICommodity, IAxe
     {
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         [SerializableField(0)]
         private CraftResource _resource;
 
