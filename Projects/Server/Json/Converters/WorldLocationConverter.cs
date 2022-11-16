@@ -171,6 +171,7 @@ public class WorldLocationConverter : JsonConverter<WorldLocation>
     public override WorldLocation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         reader.TokenType switch
         {
+            JsonTokenType.String      => WorldLocation.Parse(reader.GetString(), null),
             JsonTokenType.StartArray  => DeserializeArray(ref reader),
             JsonTokenType.StartObject => DeserializeObj(ref reader, options),
             _                         => throw new JsonException("Invalid Json for Point3D")
