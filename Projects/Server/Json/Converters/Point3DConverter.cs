@@ -96,6 +96,7 @@ public class Point3DConverter : JsonConverter<Point3D>
     public override Point3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         reader.TokenType switch
         {
+            JsonTokenType.String      => Point3D.Parse(reader.GetString(), null),
             JsonTokenType.StartArray  => DeserializeArray(ref reader),
             JsonTokenType.StartObject => DeserializeObj(ref reader),
             _                         => throw new JsonException("Invalid Json for Point3D")

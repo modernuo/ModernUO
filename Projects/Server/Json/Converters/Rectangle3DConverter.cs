@@ -164,6 +164,7 @@ public class Rectangle3DConverter : JsonConverter<Rectangle3D>
     public override Rectangle3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         reader.TokenType switch
         {
+            JsonTokenType.String      => Rectangle3D.Parse(reader.GetString(), null),
             JsonTokenType.StartArray  => DeserializeArray(ref reader),
             JsonTokenType.StartObject => DeserializeObj(ref reader, options),
             _                         => throw new JsonException("Invalid Json for Point3D")
