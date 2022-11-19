@@ -1,47 +1,50 @@
-using System.Text.Json;
-using Server.Json;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Ninjitsu;
 
-namespace Server.Regions
+namespace Server.Regions;
+
+public class TwistedWealdDesertRegion : MondainRegion
 {
-    public class TwistedWealdDesertRegion : MondainRegion
+    public TwistedWealdDesertRegion(string name, Map map, Region parent, params Rectangle3D[] area)
+        : base(name, map, parent, area)
     {
-        public TwistedWealdDesertRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-        {
-        }
+    }
 
-        public static void Initialize()
-        {
-            EventSink.Login += Desert_OnLogin;
-        }
+    public TwistedWealdDesertRegion(string name, Map map, Region parent, int priority, params Rectangle3D[] area)
+        : base(name, map, parent, priority, area)
+    {
+    }
 
-        public override void OnEnter(Mobile m)
-        {
-            var ns = m.NetState;
-            if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)) &&
-                m.AccessLevel == AccessLevel.Player)
-            {
-                ns.SendSpeedControl(SpeedControlSetting.Walk);
-            }
-        }
+    public static void Initialize()
+    {
+        EventSink.Login += Desert_OnLogin;
+    }
 
-        public override void OnExit(Mobile m)
+    public override void OnEnter(Mobile m)
+    {
+        var ns = m.NetState;
+        if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)) &&
+            m.AccessLevel == AccessLevel.Player)
         {
-            var ns = m.NetState;
-            if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)))
-            {
-                ns.SendSpeedControl(SpeedControlSetting.Disable);
-            }
+            ns.SendSpeedControl(SpeedControlSetting.Walk);
         }
+    }
 
-        private static void Desert_OnLogin(Mobile m)
+    public override void OnExit(Mobile m)
+    {
+        var ns = m.NetState;
+        if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)))
         {
-            if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel == AccessLevel.Player)
-            {
-                m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
-            }
+            ns.SendSpeedControl(SpeedControlSetting.Disable);
+        }
+    }
+
+    private static void Desert_OnLogin(Mobile m)
+    {
+        if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel == AccessLevel.Player)
+        {
+            m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
         }
     }
 }
