@@ -314,6 +314,10 @@ public abstract class BaseSpawner : Item, ISpawner
     {
         if (newItem is BaseSpawner newSpawner)
         {
+            newSpawner._guid = Guid.NewGuid();
+            newSpawner.Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+            newSpawner.Entries = new List<SpawnerEntry>();
+
             for (var i = 0; i < Entries.Count; i++)
             {
                 newSpawner.AddEntry(
