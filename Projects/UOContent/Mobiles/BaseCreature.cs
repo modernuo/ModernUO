@@ -3826,7 +3826,7 @@ namespace Server.Mobiles
                 for (var i = 0; i < pm.AllFollowers.Count; i++)
                 {
                     var m = pm.AllFollowers[i];
-                    if (master.InRange(m, 3) && m is BaseCreature
+                    if (m.Map == master.Map && master.InRange(m, 3) && m is BaseCreature
                             { Controlled: true, ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come } pet &&
                         pet.ControlMaster == master && (!onlyBonded || pet.IsBonded))
                     {
@@ -3841,7 +3841,7 @@ namespace Server.Mobiles
             var eable = master.GetMobilesInRange(3);
             foreach (var m in eable)
             {
-                if (m is BaseCreature
+                if (m.Map == master.Map && m is BaseCreature
                         { Controlled: true, ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come } pet &&
                     pet.ControlMaster == master && (!onlyBonded || pet.IsBonded))
                 {
