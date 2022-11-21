@@ -9,8 +9,6 @@ namespace Server.Regions;
 
 public class GuardedRegion : BaseRegion
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(GuardedRegion));
-
     private static readonly object[] m_GuardParams = new object[1];
 
     private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new();

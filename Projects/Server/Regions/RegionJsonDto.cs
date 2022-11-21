@@ -21,6 +21,10 @@ namespace Server;
 
 public class RegionJsonDto
 {
+    public Expansion MinExpansion { get; set; } = Expansion.None;
+
+    public Expansion? MaxExpansion { get; set; } = Expansion.EJ;
+
     [JsonIgnore]
     public virtual Type RegionType => typeof(Region);
 
@@ -40,7 +44,9 @@ public class RegionJsonDto
         Priority = region.Priority;
         Area = region.Area;
         GoLocation = region.GoLocation;
-        Music = region.Music != region.DefaultMusic ? region.Music : null;
+        Music = Music != MusicName.Invalid && region.Music != region.DefaultMusic ? region.Music : null;
+        MaxExpansion = region.MaxExpansion == Expansion.EJ ? null : region.MaxExpansion;
+        MinExpansion = region.MinExpansion;
     }
 
     public Region ToRegion()

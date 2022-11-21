@@ -63,7 +63,7 @@ namespace Server.Multis
                 return HousePlacementResult.InvalidCastleKeep;
             }
 
-            if (Region.Find(center, map).IsPartOf<NoHousingRegion>())
+            if (Region.Find(center, map).IsPartOf<NoHousingRegion, NoHousingGuardedRegion>())
             {
                 return HousePlacementResult.BadRegion;
             }

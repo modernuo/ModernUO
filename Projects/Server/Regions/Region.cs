@@ -172,6 +172,12 @@ public class Region : IComparable<Region>
         }
     }
 
+    // Used during deserialization only
+    public Expansion MinExpansion { get; set; }
+
+    // Used during deserialization only
+    public Expansion MaxExpansion { get; set; }
+
     public static List<Region> Regions { get; } = new();
 
     public static TimeSpan StaffLogoutDelay { get; set; } = TimeSpan.Zero;
@@ -446,6 +452,24 @@ public class Region : IComparable<Region>
         } while (r != null);
 
         return null;
+    }
+
+    // TODO: Memoize this
+    public bool IsPartOf<T1, T2>() where T1 : Region where T2 : Region
+    {
+        var r = this;
+
+        do
+        {
+            if (r is T1 or T2)
+            {
+                return true;
+            }
+
+            r = r.Parent;
+        } while (r != null);
+
+        return false;
     }
 
     public Region GetRegion(Type regionType)
