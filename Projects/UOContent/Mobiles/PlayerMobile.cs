@@ -4416,10 +4416,10 @@ namespace Server.Mobiles
             Map map;
 
             var dungeon = Region.GetRegion<DungeonRegion>();
-            if (dungeon != null && dungeon.EntranceLocation != Point3D.Zero)
+            if (dungeon != null && dungeon.Entrance != Point3D.Zero)
             {
-                loc = dungeon.EntranceLocation;
-                map = dungeon.EntranceMap;
+                loc = dungeon.Entrance;
+                map = dungeon.Map;
             }
             else
             {
