@@ -3841,7 +3841,7 @@ namespace Server.Mobiles
             var eable = master.GetMobilesInRange(3);
             foreach (var m in eable)
             {
-                if (m.Map == master.Map && m is BaseCreature
+                if (m is BaseCreature
                         { Controlled: true, ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come } pet &&
                     pet.ControlMaster == master && (!onlyBonded || pet.IsBonded))
                 {
