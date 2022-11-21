@@ -4828,7 +4828,7 @@ namespace Server.Mobiles
         }
 
         // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
-        public virtual string SpeedClass => null;
+        public virtual SpeedLevel SpeedClass => SpeedLevel.None;
 
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {

@@ -1,8 +1,8 @@
 [
   {
-    "name": "Slow",
-    "active": 0.3,
-    "passive": 0.6,
+    "level": "Slow",
+    "active": 0.35,
+    "passive": 0.5,
     "types": [
       "AntLion", "ArcticOgreLord", "BogThing",
       "Bogle", "BoneKnight", "EarthElemental",
@@ -19,9 +19,9 @@
     ]
   },
   {
-    "name": "Medium",
-    "active": 0.25,
-    "passive": 0.5,
+    "level": "Medium",
+    "active": 0.275,
+    "passive": 0.45,
     "types": [
       "AcidElemental", "AgapiteElemental", "Alligator",
       "AncientLich", "Betrayer", "Bird",
@@ -99,7 +99,7 @@
     ]
   },
   {
-    "name": "Fast",
+    "level": "Fast",
     "active": 0.2,
     "passive": 0.4,
     "types": [
@@ -130,9 +130,9 @@
     ]
   },
   {
-    "name": "Very Fast",
-    "active": 0.175,
-    "passive": 0.35,
+    "level": "VeryFast",
+    "active": 0.125,
+    "passive": 0.3,
     "types": [
       "Barracoon", "Mephitis", "Neira",
       "Rikktor", "Semidar", "EnergyVortex",

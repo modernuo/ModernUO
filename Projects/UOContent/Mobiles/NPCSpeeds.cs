@@ -6,11 +6,20 @@ using Server.Json;
 
 namespace Server.Mobiles;
 
+public enum SpeedLevel
+{
+    None,
+    Slow,
+    Medium,
+    Fast,
+    VeryFast
+}
+
 public static class NPCSpeeds
 {
     private const string _tablePath = "Data/npc-speeds.json";
     private static Dictionary<Type, SpeedClassEntry> _speedsByType = new();
-    private static Dictionary<string, SpeedClassEntry> _speedsByName = new();
+    private static Dictionary<SpeedLevel, SpeedClassEntry> _speedsByLevel = new();
 
     // Enabled for pets on HS+
     public static bool ScaleSpeedByDex { get; private set; }
@@ -38,22 +47,19 @@ public static class NPCSpeeds
             return;
         }
 
-        if (bc.SpeedClass != null && _speedsByName.TryGetValue(bc.SpeedClass, out var sp) ||
-            _speedsByType.TryGetValue(bc.GetType(), out sp))
+        if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
+            !_speedsByType.TryGetValue(bc.GetType(), out sp))
         {
-            activeSpeed = sp.ActiveSpeed;
-            passiveSpeed = sp.PassiveSpeed;
-            return;
+            sp = _speedsByLevel[SpeedLevel.Medium];
         }
 
-        // "Fast"
-        activeSpeed = 0.2;
-        passiveSpeed = 0.4;
+        activeSpeed = sp.ActiveSpeed;
+        passiveSpeed = sp.PassiveSpeed;
     }
 
     public static void RegisterSpeed(SpeedClassEntry entry)
     {
-        _speedsByName[entry.Name] = entry;
+        _speedsByLevel[entry.Level] = entry;
 
         foreach (var type in entry.Types)
         {
@@ -87,8 +93,8 @@ public static class NPCSpeeds
 
     public record SpeedClassEntry
     {
-        [JsonPropertyName("name")]
-        public string Name { get; init; }
+        [JsonPropertyName("level")]
+        public SpeedLevel Level { get; init; }
 
         [JsonPropertyName("active")]
         public double ActiveSpeed { get; init; }

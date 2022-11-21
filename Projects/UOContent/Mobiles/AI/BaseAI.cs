@@ -2033,12 +2033,16 @@ public abstract class BaseAI
         }
     }
 
-    public double TransformMoveDelay(double delay)
+    public double TransformMoveDelay(double thinkingSpeed)
     {
         // Monster is passive
-        if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(delay - m_Mobile.PassiveSpeed) < 0.0001)
+        if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(thinkingSpeed - m_Mobile.PassiveSpeed) < 0.0001)
         {
-            delay *= 3;
+            thinkingSpeed *= 3;
+        }
+        else // Movement speed is twice as slow as "thinking"
+        {
+            thinkingSpeed *= 2;
         }
 
         if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
@@ -2059,11 +2063,11 @@ public abstract class BaseAI
 
             if (offset < 1.0)
             {
-                delay += m_Mobile.PassiveSpeed * (1.0 - offset);
+                thinkingSpeed += m_Mobile.PassiveSpeed * (1.0 - offset);
             }
         }
 
-        return delay;
+        return thinkingSpeed;
     }
 
     public virtual bool CheckMove() => Core.TickCount - NextMove >= 0;
