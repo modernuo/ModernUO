@@ -44,7 +44,7 @@ public class RegionJsonDto
         Priority = region.Priority;
         Area = region.Area;
         GoLocation = region.GoLocation;
-        Music = Music != MusicName.Invalid && region.Music != region.DefaultMusic ? region.Music : null;
+        Music = region.Music != MusicName.Invalid && region.Music != region.DefaultMusic ? region.Music : null;
         MaxExpansion = region.MaxExpansion == Expansion.EJ ? null : region.MaxExpansion;
         MinExpansion = region.MinExpansion;
     }

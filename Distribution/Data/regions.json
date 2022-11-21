@@ -1,3845 +1,3551 @@
 [
   {
     "$type": "GuardedRegion",
+    "Map": "Felucca",
     "Name": "Moongates",
-    "Map": "Felucca",
     "Priority": 50,
     "Area": [
-      { "x1": 1330, "y1": 1991, "x2": 1343, "y2": 2004 },
-      { "x1": 1494, "y1": 3767, "x2": 1506, "y2": 3778 },
-      { "x1": 2694, "y1": 685, "x2": 2709, "y2": 701 },
-      { "x1": 1823, "y1": 2943, "x2": 1834, "y2": 2954 },
-      { "x1": 761, "y1": 741, "x2": 780, "y2": 762 },
-      { "x1": 638, "y1": 2062, "x2": 650, "y2": 2073 },
-      { "x1": 4459, "y1": 1276, "x2": 4475, "y2": 1292 },
-      { "x1": 3554, "y1": 2132, "x2": 3572, "y2": 2150 }
+      [1330, 1991, -128, 13, 13, 256],
+      [1494, 3767, -128, 12, 11, 256],
+      [2694, 685, -128, 15, 16, 256],
+      [1823, 2943, -128, 11, 11, 256],
+      [761, 741, -128, 19, 21, 256],
+      [638, 2062, -128, 12, 11, 256],
+      [4459, 1276, -128, 16, 16, 256],
+      [3554, 2132, -128, 18, 18, 256]
     ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Heartwood",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "ElfCity",
-    "Area": [{ "x1": 6911, "y1": 255, "x2": 7168, "y2": 512 }],
-    "GoLocation": { "x": 6984, "y": 337, "z": 0 },
-    "Entrance": { "x": 535, "y": 995 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Sanctuary",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 6157, "y1": 4, "x2": 6399, "y2": 255 }],
-    "GoLocation": { "x": 6173, "y": 23, "z": 0 },
-    "Entrance": { "x": 764, "y": 1646 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Painted Caves",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 6240, "y1": 860, "x2": 6310, "y2": 920 }],
-    "GoLocation": { "x": 6308, "y": 892, "z": -1 },
-    "Entrance": { "x": 1716, "y": 892 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Prism of Light",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 6400, "y1": 0, "x2": 6621, "y2": 255 }],
-    "GoLocation": { "x": 6474, "y": 188, "z": 0 },
-    "Entrance": { "x": 3784, "y": 1097 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Blighted Grove",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "MelisandesLair",
-    "Area": [{ "x1": 6440, "y1": 820, "x2": 6600, "y2": 970 }],
-    "GoLocation": { "x": 6478, "y": 863, "z": 11 },
-    "Entrance": { "x": 587, "y": 1641 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Palace of Paroxysmus",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "ParoxysmusLair",
-    "Area": [{ "x1": 6191, "y1": 311, "x2": 6561, "y2": 671 }],
-    "GoLocation": { "x": 6222, "y": 335, "z": 60 },
-    "Entrance": { "x": 5574, "y": 3024 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Huntsman's Forest",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1595, "y1": 550, "x2": 1715, "y2": 670 }]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Cove",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Cove",
-    "Area": [
-      { "x1": 2200, "y1": 1110, "x2": 2250, "y2": 1160 },
-      { "x1": 2200, "y1": 1160, "x2": 2286, "y2": 1246 }
-    ],
-    "GoLocation": { "x": 2275, "y": 1210, "z": 0 }
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Britain",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Britain1",
-    "Area": [
-      { "x1": 1416, "y1": 1498, "z1": -10, "x2": 1740, "y2": 1777, "z2": 128 },
-      { "x1": 1385, "y1": 1538, "z1": -10, "x2": 1416, "y2": 1777, "z2": 128 },
-      { "x1": 1416, "y1": 1777, "z1": 0, "x2": 1740, "y2": 1837, "z2": 128 },
-      { "x1": 1385, "y1": 1777, "z1": 0, "x2": 1416, "y2": 1907, "z2": 128 },
-      { "x1": 1093, "y1": 1538, "z1": 0, "x2": 1385, "y2": 1907, "z2": 128 }
-    ],
-    "GoLocation": { "x": 1495, "y": 1629, "z": 10 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Blackthorn Castle",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Priority": 50,
-    "Music": "LBCastle",
-    "Area": [{ "x1": 1500, "y1": 1408, "x2": 1546, "y2": 1498 }],
-    "GoLocation": { "x": 1523, "y": 1443, "z": 15 },
-    "Entrance": { "x": 1523, "y": 1504 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 1492, "y1": 1602, "z1": 0, "x2": 1500, "y2": 1621, "z2": 128 },
-      { "x1": 1500, "y1": 1610, "z1": 0, "x2": 1508, "y2": 1626, "z2": 128 },
-      { "x1": 1576, "y1": 1584, "z1": 0, "x2": 1600, "y2": 1600, "z2": 128 },
-      { "x1": 1456, "y1": 1512, "z1": 0, "x2": 1472, "y2": 1528, "z2": 128 },
-      { "x1": 1472, "y1": 1512, "z1": 0, "x2": 1480, "y2": 1520, "z2": 128 },
-      { "x1": 1486, "y1": 1684, "z1": 0, "x2": 1494, "y2": 1692, "z2": 128 },
-      { "x1": 1494, "y1": 1676, "z1": 0, "x2": 1502, "y2": 1700, "z2": 128 },
-      { "x1": 1424, "y1": 1712, "z1": 0, "x2": 1432, "y2": 1736, "z2": 128 },
-      { "x1": 1432, "y1": 1712, "z1": 0, "x2": 1440, "y2": 1724, "z2": 128 },
-      { "x1": 1608, "y1": 1584, "z1": 0, "x2": 1632, "y2": 1592, "z2": 128 },
-      { "x1": 1616, "y1": 1576, "z1": 0, "x2": 1624, "y2": 1584, "z2": 128 },
-      { "x1": 1544, "y1": 1760, "z1": 0, "x2": 1560, "y2": 1776, "z2": 128 },
-      { "x1": 1560, "y1": 1760, "z1": 0, "x2": 1568, "y2": 1768, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Britain 1",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1120, "y1": 1776, "x2": 1152, "y2": 1808 }],
-    "GoLocation": { "x": 1135, "y": 1791, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Britain 2",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1184, "y1": 1808, "x2": 1216, "y2": 1840 }],
-    "GoLocation": { "x": 1199, "y": 1823, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Britain 3",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1216, "y1": 1872, "x2": 1248, "y2": 1904 }],
-    "GoLocation": { "x": 1231, "y": 1887, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Carrot Field in Britain 1",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1208, "y1": 1712, "x2": 1224, "y2": 1736 }],
-    "GoLocation": { "x": 1215, "y": 1723, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "An Onion Field in Britain 1",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1224, "y1": 1712, "x2": 1240, "y2": 1736 }],
-    "GoLocation": { "x": 1231, "y": 1723, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Cabbage Field in Britain 1",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1176, "y1": 1672, "x2": 1192, "y2": 1695 }],
-    "GoLocation": { "x": 1183, "y": 1683, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Turnip Field in Britain 1",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1192, "y1": 1672, "x2": 1208, "y2": 1696 }],
-    "GoLocation": { "x": 1199, "y": 1683, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Britain 4",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1104, "y1": 1608, "x2": 1136, "y2": 1640 }],
-    "GoLocation": { "x": 1120, "y": 1624, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Britain 5",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1136, "y1": 1560, "x2": 1168, "y2": 1592 }],
-    "GoLocation": { "x": 1152, "y": 1576, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Turnip Field in Britain 2",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1208, "y1": 1592, "x2": 1224, "y2": 1616 }],
-    "GoLocation": { "x": 1216, "y": 1604, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Carrot Field in Britain 2",
-    "Map": "Felucca",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1224, "y1": 1592, "x2": 1240, "y2": 1616 }],
-    "GoLocation": { "x": 1232, "y": 1604, "z": 0 }
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Britain Graveyard",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1333, "y1": 1441, "x2": 1417, "y2": 1523 }],
-    "GoLocation": { "x": 1384, "y": 1492, "z": 10 }
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Jhelom Islands",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Jhelom",
-    "Area": [
-      { "x1": 1111, "y1": 3567, "x2": 1144, "y2": 3588 },
-      { "x1": 1078, "y1": 3588, "x2": 1202, "y2": 3709 },
-      { "x1": 1224, "y1": 3592, "x2": 1533, "y2": 4065 }
-    ],
-    "GoLocation": { "x": 1383, "y": 3815, "z": 0 }
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Jhelom",
-    "Map": "Felucca",
-    "Parent": "Jhelom Islands",
-    "Music": "Jhelom",
-    "Area": [
-      { "x1": 1303, "y1": 3670, "z1": -20, "x2": 1492, "y2": 3895, "z2": 128 },
-      { "x1": 1338, "y1": 3895, "z1": -20, "x2": 1412, "y2": 3923, "z2": 128 },
-      { "x1": 1383, "y1": 3951, "z1": -20, "x2": 1492, "y2": 4045, "z2": 128 }
-    ],
-    "GoLocation": { "x": 1383, "y": 3815, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Jhelom",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 1352, "y1": 3800, "z1": -20, "x2": 1368, "y2": 3832, "z2": 128 },
-      { "x1": 1368, "y1": 3808, "z1": -20, "x2": 1376, "y2": 3824, "z2": 128 },
-      { "x1": 1432, "y1": 3768, "z1": -20, "x2": 1464, "y2": 3776, "z2": 128 },
-      { "x1": 1440, "y1": 3776, "z1": -20, "x2": 1464, "y2": 3784, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Minoc",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Minoc",
-    "Area": [
-      { "x1": 2411, "y1": 366, "x2": 2546, "y2": 607 },
-      { "x1": 2548, "y1": 495, "x2": 2620, "y2": 550 },
-      { "x1": 2564, "y1": 585, "x2": 2567, "y2": 627 },
-      { "x1": 2567, "y1": 585, "x2": 2628, "y2": 646 },
-      { "x1": 2499, "y1": 627, "x2": 2567, "y2": 690 }
-    ],
-    "GoLocation": { "x": 2466, "y": 544, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Minoc",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 2457, "y1": 397, "x2": 2497, "y2": 405 },
-      { "x1": 2465, "y1": 405, "x2": 2473, "y2": 413 },
-      { "x1": 2481, "y1": 405, "x2": 2489, "y2": 413 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Ocllo",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Ocllo",
-    "Area": [
-      { "x1": 3587, "y1": 2456, "x2": 3706, "y2": 2555 },
-      { "x1": 3706, "y1": 2460, "x2": 3708, "y2": 2555 },
-      { "x1": 3587, "y1": 2555, "x2": 3693, "y2": 2628 },
-      { "x1": 3590, "y1": 2628, "x2": 3693, "y2": 2686 },
-      { "x1": 3693, "y1": 2555, "x2": 3754, "y2": 2699 },
-      { "x1": 3754, "y1": 2558, "x2": 3761, "y2": 2699 },
-      { "x1": 3761, "y1": 2555, "z1": -127, "x2": 3768, "y2": 2699, "z2": 50 },
-      { "x1": 3695, "y1": 2699, "x2": 3761, "y2": 2712 }
-    ],
-    "GoLocation": { "x": 3650, "y": 2519, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Ocllo",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 3664, "y1": 2608, "x2": 3680, "y2": 2624 },
-      { "x1": 3664, "y1": 2640, "x2": 3672, "y2": 2656 },
-      { "x1": 3672, "y1": 2648, "x2": 3680, "y2": 2656 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Trinsic",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Trinsic",
-    "Area": [
-      { "x1": 1856, "y1": 2636, "x2": 1931, "y2": 2664 },
-      { "x1": 1816, "y1": 2664, "x2": 2099, "y2": 2895 },
-      { "x1": 2099, "y1": 2782, "x2": 2117, "y2": 2807 },
-      { "x1": 1970, "y1": 2895, "x2": 2017, "y2": 2927 },
-      { "x1": 1796, "y1": 2696, "z1": 0, "x2": 1816, "y2": 2763, "z2": 128 },
-      { "x1": 1800, "y1": 2796, "z1": 0, "x2": 1816, "y2": 2848, "z2": 128 }
-    ],
-    "GoLocation": { "x": 1867, "y": 2780, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Trinsic",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 1834, "y1": 2728, "x2": 1856, "y2": 2744 },
-      { "x1": 2024, "y1": 2784, "x2": 2040, "y2": 2804 },
-      { "x1": 2026, "y1": 2804, "x2": 2040, "y2": 2806 },
-      { "x1": 2024, "y1": 2806, "x2": 2040, "y2": 2813 },
-      { "x1": 1923, "y1": 2786, "x2": 1935, "y2": 2808 },
-      { "x1": 1935, "y1": 2786, "x2": 1942, "y2": 2800 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Vesper",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Vesper",
-    "Area": [
-      { "x1": 2893, "y1": 598, "x2": 3014, "y2": 648 },
-      { "x1": 2816, "y1": 648, "x2": 3065, "y2": 1013 },
-      { "x1": 2734, "y1": 944, "x2": 2816, "y2": 948 },
-      { "x1": 2728, "y1": 948, "x2": 2816, "y2": 1001 }
-    ],
-    "GoLocation": { "x": 2899, "y": 676, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Vesper",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 2952, "y1": 864, "x2": 2968, "y2": 896 },
-      { "x1": 2968, "y1": 872, "x2": 2976, "y2": 888 },
-      { "x1": 2776, "y1": 952, "x2": 2792, "y2": 984 },
-      { "x1": 2768, "y1": 960, "x2": 2776, "y2": 976 },
-      { "x1": 2892, "y1": 901, "x2": 2908, "y2": 920 },
-      { "x1": 2908, "y1": 904, "x2": 2916, "y2": 912 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Yew",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Yew",
-    "Area": [
-      { "x1": 92, "y1": 656, "z1": 0, "x2": 441, "y2": 881, "z2": 39 },
-      { "x1": 441, "y1": 746, "z1": 0, "x2": 657, "y2": 881, "z2": 39 },
-      { "x1": 258, "y1": 881, "z1": 0, "x2": 657, "y2": 1261, "z2": 39 },
-      { "x1": 657, "y1": 922, "z1": 0, "x2": 699, "y2": 1229, "z2": 39 },
-      { "x1": 657, "y1": 806, "z1": 0, "x2": 674, "y2": 834, "z2": 39 },
-      { "x1": 718, "y1": 874, "z1": 0, "x2": 756, "y2": 896, "z2": 39 }
-    ],
-    "GoLocation": { "x": 546, "y": 992, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Yew",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 600, "y1": 808, "z1": 0, "x2": 624, "y2": 832, "z2": 39 }]
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Field of Sheep in Yew 1",
-    "Map": "Felucca",
-    "Parent": "Yew",
-    "rune": "A Field of Sheep in Yew",
-    "Area": [{ "x1": 664, "y1": 928, "x2": 686, "y2": 950 }],
-    "GoLocation": { "x": 675, "y": 939, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Field of Sheep in Yew 2",
-    "Map": "Felucca",
-    "Parent": "Yew",
-    "rune": "A Field of Sheep in Yew",
-    "Area": [{ "x1": 664, "y1": 1168, "x2": 686, "y2": 1190 }],
-    "GoLocation": { "x": 675, "y": 1179, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Farm in Yew",
-    "Map": "Felucca",
-    "Parent": "Yew",
-    "rune": "A Farm in Yew",
-    "Area": [{ "x1": 560, "y1": 1088, "x2": 582, "y2": 1110 }],
-    "GoLocation": { "x": 571, "y": 1099, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Yew 1",
-    "Map": "Felucca",
-    "Parent": "Yew",
-    "rune": "A Wheatfield in Yew",
-    "Area": [{ "x1": 560, "y1": 1232, "x2": 576, "y2": 1248 }],
-    "GoLocation": { "x": 567, "y": 1239, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Yew 2",
-    "Map": "Felucca",
-    "Parent": "Yew",
-    "rune": "A Wheatfield in Yew",
-    "Area": [{ "x1": 368, "y1": 1176, "x2": 382, "y2": 1208 }],
-    "GoLocation": { "x": 375, "y": 1191, "z": 0 }
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Wind",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Wind",
-    "Area": [
-      { "x1": 5294, "y1": 19, "x2": 5366, "y2": 139 },
-      { "x1": 5132, "y1": 58, "x2": 5213, "y2": 126 },
-      { "x1": 5197, "y1": 126, "x2": 5252, "y2": 204 },
-      { "x1": 5132, "y1": 3, "x2": 5202, "y2": 58 },
-      { "x1": 5252, "y1": 112, "x2": 5294, "y2": 170 },
-      { "x1": 5213, "y1": 98, "x2": 5252, "y2": 126 },
-      { "x1": 5279, "y1": 57, "x2": 5294, "y2": 112 },
-      { "x1": 5252, "y1": 170, "x2": 5284, "y2": 178 },
-      { "x1": 5286, "y1": 25, "x2": 5294, "y2": 57 },
-      { "x1": 5252, "y1": 178, "x2": 5272, "y2": 183 },
-      { "x1": 5252, "y1": 183, "x2": 5262, "y2": 193 }
-    ],
-    "GoLocation": { "x": 5223, "y": 190, "z": 5 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Wind",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 5159, "y1": 15, "x2": 5184, "y2": 24 },
-      { "x1": 5159, "y1": 24, "x2": 5168, "y2": 40 },
-      { "x1": 5175, "y1": 24, "x2": 5184, "y2": 32 },
-      { "x1": 5212, "y1": 159, "x2": 5221, "y2": 183 },
-      { "x1": 5221, "y1": 171, "x2": 5228, "y2": 183 },
-      { "x1": 5206, "y1": 164, "x2": 5212, "y2": 179 },
-      { "x1": 5303, "y1": 28, "x2": 5319, "y2": 42 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Serpent's Hold",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Serpents",
-    "Area": [{ "x1": 2868, "y1": 3324, "z1": 0, "x2": 3073, "y2": 3519, "z2": 128 }],
-    "GoLocation": { "x": 3010, "y": 3371, "z": 15 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Serpent's Hold",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 2960, "y1": 3400, "z1": 0, "x2": 2976, "y2": 3416, "z2": 128 },
-      { "x1": 2968, "y1": 3416, "z1": 0, "x2": 2976, "y2": 3432, "z2": 128 },
-      { "x1": 3008, "y1": 3450, "z1": 0, "x2": 3022, "y2": 3464, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Skara Brae",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Skarabra",
-    "Area": [{ "x1": 538, "y1": 2107, "x2": 688, "y2": 2297 }],
-    "GoLocation": { "x": 632, "y": 2233, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Skara Brae",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 600, "y1": 2232, "x2": 616, "y2": 2256 },
-      { "x1": 592, "y1": 2240, "x2": 600, "y2": 2256 },
-      { "x1": 616, "y1": 2240, "x2": 624, "y2": 2256 },
-      { "x1": 552, "y1": 2168, "x2": 568, "y2": 2192 },
-      { "x1": 568, "y1": 2168, "x2": 576, "y2": 2176 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Nujel'm",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Nujelm",
-    "Area": [{ "x1": 3475, "y1": 1000, "z1": 0, "x2": 3835, "y2": 1435, "z2": 128 }],
-    "GoLocation": { "x": 3732, "y": 1279, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Nujel'm",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 3736, "y1": 1184, "z1": 0, "x2": 3752, "y2": 1207, "z2": 128 },
-      { "x1": 3728, "y1": 1192, "z1": 0, "x2": 3736, "y2": 1207, "z2": 128 },
-      { "x1": 3728, "y1": 1288, "z1": 0, "x2": 3751, "y2": 1303, "z2": 128 },
-      { "x1": 3728, "y1": 1303, "z1": 0, "x2": 3744, "y2": 1312, "z2": 128 },
-      { "x1": 3728, "y1": 1312, "z1": 0, "x2": 3740, "y2": 1320, "z2": 128 },
-      { "x1": 3728, "y1": 1320, "z1": 0, "x2": 3744, "y2": 1343, "z2": 128 },
-      { "x1": 3744, "y1": 1328, "z1": 0, "x2": 3751, "y2": 1343, "z2": 128 },
-      { "x1": 3760, "y1": 1216, "z1": 0, "x2": 3772, "y2": 1240, "z2": 128 },
-      { "x1": 3772, "y1": 1220, "z1": 0, "x2": 3776, "y2": 1236, "z2": 128 },
-      { "x1": 3776, "y1": 1224, "z1": 0, "x2": 3784, "y2": 1232, "z2": 128 },
-      { "x1": 3728, "y1": 1248, "z1": 0, "x2": 3744, "y2": 1272, "z2": 128 },
-      { "x1": 3744, "y1": 1264, "z1": 0, "x2": 3752, "y2": 1272, "z2": 128 },
-      { "x1": 3744, "y1": 1248, "z1": 0, "x2": 3752, "y2": 1256, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Moonglow",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Moonglow",
-    "Area": [
-      { "x1": 4535, "y1": 844, "z1": 0, "x2": 4555, "y2": 847, "z2": 128 },
-      { "x1": 4530, "y1": 847, "z1": 0, "x2": 4561, "y2": 908, "z2": 128 },
-      { "x1": 4521, "y1": 914, "z1": 0, "x2": 4577, "y2": 963, "z2": 128 },
-      { "x1": 4278, "y1": 915, "z1": 0, "x2": 4332, "y2": 934, "z2": 128 },
-      { "x1": 4283, "y1": 944, "z1": 0, "x2": 4336, "y2": 1017, "z2": 128 },
-      { "x1": 4377, "y1": 1015, "z1": -10, "x2": 4436, "y2": 1052, "z2": 128 },
-      { "x1": 4367, "y1": 1050, "z1": 0, "x2": 4509, "y2": 1195, "z2": 128 },
-      { "x1": 4539, "y1": 1036, "z1": 0, "x2": 4566, "y2": 1054, "z2": 128 },
-      { "x1": 4517, "y1": 1053, "z1": 0, "x2": 4540, "y2": 1075, "z2": 128 },
-      { "x1": 4389, "y1": 1198, "z1": 0, "x2": 4436, "y2": 1237, "z2": 128 },
-      { "x1": 4466, "y1": 1211, "z1": 0, "x2": 4498, "y2": 1236, "z2": 128 },
-      { "x1": 4700, "y1": 1108, "z1": 0, "x2": 4717, "y2": 1126, "z2": 128 },
-      { "x1": 4656, "y1": 1127, "z1": 0, "x2": 4682, "y2": 1140, "z2": 128 },
-      { "x1": 4678, "y1": 1162, "z1": 0, "x2": 4703, "y2": 1187, "z2": 128 },
-      { "x1": 4613, "y1": 1196, "z1": 0, "x2": 4636, "y2": 1218, "z2": 128 },
-      { "x1": 4646, "y1": 1212, "z1": 0, "x2": 4660, "y2": 1229, "z2": 128 },
-      { "x1": 4677, "y1": 1214, "z1": 0, "x2": 4703, "y2": 1236, "z2": 128 },
-      { "x1": 4622, "y1": 1316, "z1": 0, "x2": 4644, "y2": 1340, "z2": 128 },
-      { "x1": 4487, "y1": 1353, "z1": 0, "x2": 4546, "y2": 1374, "z2": 128 },
-      { "x1": 4477, "y1": 1374, "z1": 0, "x2": 4546, "y2": 1409, "z2": 128 },
-      { "x1": 4659, "y1": 1387, "z1": 0, "x2": 4699, "y2": 1427, "z2": 128 },
-      { "x1": 4549, "y1": 1482, "z1": 0, "x2": 4578, "y2": 1509, "z2": 128 },
-      { "x1": 4405, "y1": 1451, "z1": 0, "x2": 4428, "y2": 1474, "z2": 128 },
-      { "x1": 4483, "y1": 1468, "z1": 0, "x2": 4504, "y2": 1481, "z2": 128 }
-    ],
-    "GoLocation": { "x": 4442, "y": 1172, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Moonglow",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 4384, "y1": 1152, "z1": 0, "x2": 4392, "y2": 1176, "z2": 128 },
-      { "x1": 4392, "y1": 1160, "z1": 0, "x2": 4408, "y2": 1168, "z2": 128 },
-      { "x1": 4400, "y1": 1152, "z1": 0, "x2": 4408, "y2": 1160, "z2": 128 },
-      { "x1": 4480, "y1": 1056, "z1": 0, "x2": 4488, "y2": 1072, "z2": 128 },
-      { "x1": 4488, "y1": 1060, "z1": 0, "x2": 4492, "y2": 1068, "z2": 128 },
-      { "x1": 4476, "y1": 1060, "z1": 0, "x2": 4480, "y2": 1068, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "NewMaginciaRegion",
-    "Name": "Magincia",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Magincia",
-    "Area": [
-      { "x1": 3632, "y1": 2032, "x2": 3682, "y2": 2102 },
-      { "x1": 3624, "y1": 2162, "x2": 3719, "y2": 2232 },
-      { "x1": 3752, "y1": 2046, "x2": 3804, "y2": 2094 },
-      { "x1": 3680, "y1": 2045, "x2": 3752, "y2": 2094 },
-      { "x1": 3652, "y1": 2094, "x2": 3812, "y2": 2274 },
-      { "x1": 3649, "y1": 2256, "x2": 3703, "y2": 2303 }
-    ],
-    "GoLocation": { "x": 3714, "y": 2220, "z": 20 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Magincia",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 3687, "y1": 2246, "x2": 3699, "y2": 2262 }]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Buccaneer's Den",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Bucsden",
-    "GuardsDisabled": true,
-    "Area": [
-      { "x1": 2612, "y1": 2057, "x2": 2776, "y2": 2267 },
-      { "x1": 2604, "y1": 2065, "z1": 0, "x2": 2612, "y2": 2254, "z2": 128 }
-    ],
-    "GoLocation": { "x": 2706, "y": 2163, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Buccaneer's Den",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 2712, "y1": 2080, "x2": 2728, "y2": 2096 },
-      { "x1": 2712, "y1": 2096, "x2": 2720, "y2": 2104 },
-      { "x1": 2664, "y1": 2232, "x2": 2688, "y2": 2240 },
-      { "x1": 2672, "y1": 2240, "x2": 2688, "y2": 2248 }
-    ]
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Covetous",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [
-      { "x1": 5376, "y1": 1793, "x2": 5577, "y2": 2048 },
-      { "x1": 5576, "y1": 1791, "x2": 5633, "y2": 2048 }
-    ],
-    "GoLocation": { "x": 5456, "y": 1862, "z": 0 },
-    "Entrance": { "x": 2499, "y": 916 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Deceit",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5122, "y1": 518, "x2": 5370, "y2": 770 }],
-    "GoLocation": { "x": 5187, "y": 635, "z": 0 },
-    "Entrance": { "x": 4111, "y": 429 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Despise",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5377, "y1": 516, "x2": 5631, "y2": 1022 }],
-    "GoLocation": { "x": 5501, "y": 570, "z": 59 },
-    "Entrance": { "x": 1296, "y": 1082 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Destard",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5120, "y1": 770, "x2": 5371, "y2": 1028 }],
-    "GoLocation": { "x": 5243, "y": 1004, "z": 0 },
-    "Entrance": { "x": 1176, "y": 2635 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Hythloth",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5898, "y1": 2, "x2": 6136, "y2": 246 }],
-    "GoLocation": { "x": 5905, "y": 22, "z": 44 },
-    "Entrance": { "x": 4722, "y": 3814 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Khaldun",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5381, "y1": 1284, "x2": 5628, "y2": 1509 }],
-    "GoLocation": { "x": 5571, "y": 1302, "z": 0 },
-    "Entrance": { "x": 5882, "y": 3819 }
-  },
-  {
-    "$type": "JailRegion",
-    "Name": "Jail",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 5271, "y1": 1159, "x2": 5312, "y2": 1192 }],
-    "GoLocation": { "x": 5275, "y": 1163, "z": 0 }
-  },
-  {
-    "$type": "GreenAcresRegion",
-    "Name": "Green Acres",
-    "Map": "Felucca",
-    "Priority": 1,
-    "Area": [{ "x1": 5376, "y1": 512, "x2": 6143, "y2": 1279 }],
-    "GoLocation": { "x": 5445, "y": 1153, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Shame",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [
-      { "x1": 5377, "y1": 2, "x2": 5634, "y2": 262 },
-      { "x1": 5635, "y1": 2, "x2": 5895, "y2": 126 }
-    ],
-    "GoLocation": { "x": 5395, "y": 126, "z": 0 },
-    "Entrance": { "x": 512, "y": 1559 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Wrong",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5633, "y1": 511, "x2": 5886, "y2": 1021 }],
-    "GoLocation": { "x": 5825, "y": 599, "z": 0 },
-    "Entrance": { "x": 2042, "y": 226 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Cave 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 2373, "y1": 900, "x2": 2395, "y2": 928 },
-      { "x1": 2395, "y1": 903, "x2": 2409, "y2": 919 },
-      { "x1": 2373, "y1": 928, "x2": 2383, "y2": 937 },
-      { "x1": 2359, "y1": 927, "x2": 2373, "y2": 945 }
-    ],
-    "GoLocation": { "x": 2367, "y": 942, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Cave 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1887, "y1": 354, "x2": 1920, "y2": 377 }],
-    "GoLocation": { "x": 1903, "y": 365, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Cave 3",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1925, "y1": 307, "x2": 1943, "y2": 325 }],
-    "GoLocation": { "x": 1934, "y": 316, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Cave 4",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 2323, "y1": 809, "x2": 2368, "y2": 851 }],
-    "GoLocation": { "x": 2345, "y": 830, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Britain Mine 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1436, "y1": 1215, "x2": 1465, "y2": 1252 }],
-    "GoLocation": { "x": 1443, "y": 1228, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Britain Mine 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1611, "y1": 1175, "x2": 1662, "y2": 1204 }],
-    "GoLocation": { "x": 1629, "y": 1189, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Minoc Cave 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 2406, "y1": 168, "x2": 2428, "y2": 184 }],
-    "GoLocation": { "x": 2426, "y": 177, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Minoc Cave 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 2418, "y1": 81, "x2": 2442, "y2": 113 }],
-    "GoLocation": { "x": 2440, "y": 94, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Minoc Cave 3",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 2447, "y1": 39, "x2": 2489, "y2": 67 }],
-    "GoLocation": { "x": 2471, "y": 64, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Minoc Mine",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 2556, "y1": 501, "x2": 2562, "y2": 504 },
-      { "x1": 2556, "y1": 474, "x2": 2582, "y2": 501 }
-    ],
-    "GoLocation": { "x": 2558, "y": 499, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Avatar Isle Cave",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 4594, "y1": 3807, "x2": 4617, "y2": 3824 }],
-    "GoLocation": { "x": 4605, "y": 3815, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Ice Isle Cave 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 4018, "y1": 421, "x2": 4067, "y2": 470 }],
-    "GoLocation": { "x": 4054, "y": 440, "z": 3 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Ice Isle Cave 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 4002, "y1": 310, "x2": 4045, "y2": 351 },
-      { "x1": 4005, "y1": 298, "x2": 4027, "y2": 310 }
-    ],
-    "GoLocation": { "x": 4030, "y": 325, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "North Territory Cave",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1973, "y1": 251, "x2": 1994, "y2": 274 }],
-    "GoLocation": { "x": 1984, "y": 262, "z": 8 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Yew Cave",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 766, "y1": 1683, "x2": 778, "y2": 1697 }],
-    "GoLocation": { "x": 773, "y": 1684, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "North Territory Mine 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1713, "y1": 1055, "x2": 1753, "y2": 1080 }],
-    "GoLocation": { "x": 1723, "y": 1065, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "North Territory Mine 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1604, "y1": 958, "x2": 1650, "y2": 1009 }],
-    "GoLocation": { "x": 1638, "y": 974, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Mt Kendall",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 2552, "y1": 448, "x2": 2623, "y2": 507 },
-      { "x1": 2547, "y1": 380, "x2": 2590, "y2": 448 },
-      { "x1": 2590, "y1": 413, "x2": 2623, "y2": 448 }
-    ],
-    "GoLocation": { "x": 2593, "y": 477, "z": 60 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Covetous Mine",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 2429, "y1": 866, "x2": 2448, "y2": 911 },
-      { "x1": 2448, "y1": 879, "x2": 2475, "y2": 907 },
-      { "x1": 2456, "y1": 907, "x2": 2475, "y2": 941 }
-    ],
-    "GoLocation": { "x": 2445, "y": 880, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Terathan Keep",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [
-      { "x1": 5404, "y1": 3099, "x2": 5481, "y2": 3167 },
-      { "x1": 5120, "y1": 1530, "x2": 5374, "y2": 1788 }
-    ],
-    "GoLocation": { "x": 5451, "y": 3143, "z": -60 },
-    "Entrance": { "x": 5426, "y": 3120 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Fire",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5635, "y1": 1285, "x2": 5880, "y2": 1520 }],
-    "GoLocation": { "x": 5760, "y": 2908, "z": 15 },
-    "Entrance": { "x": 2922, "y": 3402 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Ice",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [
-      { "x1": 5668, "y1": 130, "x2": 5888, "y2": 268 },
-      { "x1": 5800, "y1": 319, "x2": 5863, "y2": 384 },
-      { "x1": 5654, "y1": 300, "x2": 5708, "y2": 340 }
-    ],
-    "GoLocation": { "x": 5210, "y": 2322, "z": 30 },
-    "Entrance": { "x": 1996, "y": 80 }
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Delucia",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 5123, "y1": 3942, "x2": 5315, "y2": 4064 },
-      { "x1": 5147, "y1": 4064, "x2": 5272, "y2": 4084 },
-      { "x1": 5235, "y1": 3930, "x2": 5315, "y2": 3942 }
-    ],
-    "GoLocation": { "x": 5228, "y": 3978, "z": 37 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "The Barely Inn",
-    "Map": "Felucca",
-    "Parent": "Delucia",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 5194, "y1": 4053, "x2": 5204, "y2": 4073 }]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Papua",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 5639, "y1": 3095, "x2": 5831, "y2": 3318 },
-      { "x1": 5831, "y1": 3237, "x2": 5851, "y2": 3267 }
-    ],
-    "GoLocation": { "x": 5769, "y": 3176, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Felucca",
-    "Parent": "Papua",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 5757, "y1": 3150, "x2": 5781, "y2": 3174 }]
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Wrong Entrance",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Mountn_a",
-    "Area": [{ "x1": 1939, "y1": 215, "x2": 2073, "y2": 352 }],
-    "GoLocation": { "x": 2043, "y": 236, "z": 13 }
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Covetous Entrance",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Vesper",
-    "Area": [{ "x1": 2433, "y1": 846, "x2": 2561, "y2": 974 }],
-    "GoLocation": { "x": 2499, "y": 918, "z": 0 }
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Despise Entrance",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1289, "y1": 1064, "x2": 1321, "y2": 1101 }],
-    "GoLocation": { "x": 1298, "y": 1081, "z": 0 }
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Despise Passage",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 1338, "y1": 1060, "x2": 1389, "y2": 1122 },
-      { "x1": 1354, "y1": 1122, "x2": 1396, "y2": 1243 },
-      { "x1": 1349, "y1": 1122, "x2": 1354, "y2": 1224 }
-    ],
-    "GoLocation": { "x": 1380, "y": 1114, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Misc Dungeons",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5886, "y1": 1281, "x2": 6143, "y2": 1535 }],
-    "GoLocation": { "x": 6032, "y": 1499, "z": 0 },
-    "Entrance": { "x": 1492, "y": 1641 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Orc Cave",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [
-      { "x1": 5281, "y1": 1283, "x2": 5373, "y2": 1386 },
-      { "x1": 5267, "y1": 1955, "x2": 5364, "y2": 2046 },
-      { "x1": 5127, "y1": 1941, "x2": 5164, "y2": 2024 }
-    ],
-    "GoLocation": { "x": 5137, "y": 2015, "z": 0 },
-    "Entrance": { "x": 1014, "y": 1434 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Cotton Field in Moonglow",
-    "Map": "Felucca",
-    "Priority": 50,
-    "rune": "A Cotton Field in Moonglow",
-    "Area": [{ "x1": 4557, "y1": 1471, "x2": 4577, "y2": 1481 }],
-    "GoLocation": { "x": 4567, "y": 1475, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Skara Brae 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "rune": "A Wheatfield in Skara Brae",
-    "Area": [{ "x1": 796, "y1": 2152, "x2": 832, "y2": 2176 }],
-    "GoLocation": { "x": 813, "y": 2163, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Carrot Field in Skara Brae",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2251, "x2": 832, "y2": 2259 }],
-    "GoLocation": { "x": 823, "y": 2254, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "An Onion Field in Skara Brae",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2261, "x2": 832, "y2": 2269 }],
-    "GoLocation": { "x": 823, "y": 2264, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Cabbage Field in Skara Brae 1",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2271, "x2": 832, "y2": 2279 }],
-    "GoLocation": { "x": 823, "y": 2264, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Cabbage Field in Skara Brae 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2281, "x2": 832, "y2": 2289 }],
-    "GoLocation": { "x": 823, "y": 2274, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Wheatfield in Skara Brae 2",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 835, "y1": 2344, "x2": 851, "y2": 2360 }],
-    "GoLocation": { "x": 843, "y": 2352, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "A Cotton Field in Skara Brae",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2344, "x2": 832, "y2": 2368 }],
-    "GoLocation": { "x": 823, "y": 2355, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Compassion",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1851, "y1": 867, "x2": 1865, "y2": 881 }],
-    "GoLocation": { "x": 1856, "y": 872, "z": -1 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Chaos Shrine",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1456, "y1": 840, "x2": 1460, "y2": 847 }],
-    "GoLocation": { "x": 1456, "y": 854, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Honesty",
-    "Map": "Felucca",
-    "Priority": 37,
-    "Area": [{ "x1": 4209, "y1": 560, "x2": 4216, "y2": 568 }],
-    "GoLocation": { "x": 4217, "y": 564, "z": 36 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Honor",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1721, "y1": 3525, "x2": 1729, "y2": 3531 }],
-    "GoLocation": { "x": 1730, "y": 3528, "z": 3 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Humility",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 4270, "y1": 3694, "x2": 4279, "y2": 3703 }],
-    "GoLocation": { "x": 4276, "y": 3699, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Justice",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 1297, "y1": 629, "x2": 1306, "y2": 638 }],
-    "GoLocation": { "x": 1301, "y": 639, "z": 16 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Sacrifice",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 3352, "y1": 286, "x2": 3358, "y2": 293 }],
-    "GoLocation": { "x": 3355, "y": 299, "z": 9 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Spirituality",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [
-      { "x1": 1590, "y1": 2485, "x2": 1600, "y2": 2496 },
-      { "x1": 1599, "y1": 2488, "x2": 1609, "y2": 2493 }
-    ],
-    "GoLocation": { "x": 1589, "y": 2485, "z": 5 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Valor",
-    "Map": "Felucca",
-    "Priority": 37,
-    "Area": [{ "x1": 2488, "y1": 3928, "x2": 2497, "y2": 3939 }],
-    "GoLocation": { "x": 2496, "y": 3932, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "South Britannian Sea",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 688, "y1": 3700, "x2": 2100, "y2": 4080 }]
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Paroxysmus Exit",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 5620, "y1": 3032, "x2": 5630, "y2": 3042 }],
-    "GoLocation": { "x": 5623, "y": 3038, "z": 15 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Sanctuary Entrance",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 759, "y1": 1635, "x2": 771, "y2": 1647 }],
-    "GoLocation": { "x": 762, "y": 1645, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Solen Hives",
-    "Map": "Felucca",
-    "Priority": 50,
-    "Area": [{ "x1": 5640, "y1": 1776, "x2": 5935, "y2": 2039 }],
-    "GoLocation": { "x": 5774, "y": 1896, "z": 20 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Khaldun",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5381, "y1": 1284, "x2": 5628, "y2": 1509 }],
-    "GoLocation": { "x": 5571, "y": 1302, "z": 0 },
-    "Entrance": { "x": 5882, "y": 3819 }
-  },
-  {
-    "$type": "NoTravelSpellsAllowedRegion",
-    "Name": "Underwater World",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 6251, "y1": 1613, "x2": 6473, "y2": 1813 }]
   },
   {
     "$type": "GuardedRegion",
-    "Name": "Moongates",
-    "Map": "Trammel",
+    "Map": "Felucca",
+    "Name": "T2A Arena",
     "Priority": 50,
     "Area": [
-      { "x1": 1330, "y1": 1991, "x2": 1343, "y2": 2004 },
-      { "x1": 1494, "y1": 3767, "x2": 1506, "y2": 3778 },
-      { "x1": 2694, "y1": 685, "x2": 2709, "y2": 701 },
-      { "x1": 1823, "y1": 2943, "x2": 1834, "y2": 2954 },
-      { "x1": 761, "y1": 741, "x2": 780, "y2": 762 },
-      { "x1": 638, "y1": 2062, "x2": 650, "y2": 2073 },
-      { "x1": 4459, "y1": 1276, "x2": 4475, "y2": 1292 },
-      { "x1": 3554, "y1": 2132, "x2": 3572, "y2": 2150 }
-    ]
+      [2396, 197, -128, 11, 23, 256],
+      [5717, 428, -128, 38, 28, 256],
+      [6085, 3674, -128, 23, 24, 256],
+      [6063, 3698, -128, 48, 52, 256]
+    ],
+    "GoLocation": [6103, 3724, 25]
   },
   {
     "$type": "TownRegion",
-    "Name": "Heartwood",
-    "Map": "Trammel",
+    "Map": "Felucca",
+    "Name": "The Heartwood",
     "Priority": 50,
-    "Music": "ElfCity",
-    "Area": [{ "x1": 6911, "y1": 255, "x2": 7168, "y2": 512 }],
-    "GoLocation": { "x": 6984, "y": 337, "z": 0 },
-    "Entrance": { "x": 535, "y": 995 }
+    "Area": [[6911, 255, -128, 257, 257, 256]],
+    "GoLocation": [6984, 337, 0],
+    "Music": "ElfCity"
   },
   {
-    "$type": "MondainRegion",
+    "$type": "DungeonRegion",
+    "Entrance": [762, 1645, 0],
+    "Map": "Felucca",
     "Name": "Sanctuary",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 6157, "y1": 4, "x2": 6399, "y2": 255 }],
-    "GoLocation": { "x": 6173, "y": 23, "z": 0 },
-    "Entrance": { "x": 764, "y": 1646 }
+    "Area": [[6144, 0, -128, 255, 255, 256]],
+    "GoLocation": [6174, 23, 0],
+    "Music": "Dungeon9"
   },
   {
-    "$type": "MondainRegion",
-    "Name": "Painted Caves",
-    "Map": "Trammel",
+    "$type": "DungeonRegion",
+    "Entrance": [1716, 892, 0],
+    "Map": "Felucca",
+    "Name": "The Painted Caves",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 6240, "y1": 860, "x2": 6310, "y2": 920 }],
-    "GoLocation": { "x": 6308, "y": 892, "z": -1 },
-    "Entrance": { "x": 1716, "y": 892 }
+    "Area": [[6240, 850, -128, 75, 70, 256]],
+    "GoLocation": [6308, 892, -1],
+    "Music": "Dungeon9"
   },
   {
-    "$type": "MondainRegion",
-    "Name": "Prism of Light",
-    "Map": "Trammel",
+    "$type": "DungeonRegion",
+    "Entrance": [3784, 1097, 14],
+    "Map": "Felucca",
+    "Name": "The Prism of Light",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 6400, "y1": 0, "x2": 6621, "y2": 255 }],
-    "GoLocation": { "x": 6474, "y": 188, "z": 0 },
-    "Entrance": { "x": 3784, "y": 1097 }
+    "Area": [[6400, 0, -128, 221, 255, 256]],
+    "GoLocation": [6474, 188, 0],
+    "Music": "Dungeon9"
   },
   {
-    "$type": "MondainRegion",
+    "$type": "DungeonRegion",
+    "Entrance": [587, 1641, -1],
+    "Map": "Felucca",
     "Name": "Blighted Grove",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "MelisandesLair",
-    "Area": [{ "x1": 6440, "y1": 820, "x2": 6600, "y2": 970 }],
-    "GoLocation": { "x": 6478, "y": 863, "z": 11 },
-    "Entrance": { "x": 587, "y": 1641 }
+    "Area": [[6440, 820, -128, 160, 150, 256]],
+    "GoLocation": [6478, 863, 11],
+    "Music": "MelisandesLair"
   },
   {
-    "$type": "MondainRegion",
-    "Name": "Palace of Paroxysmus",
-    "Map": "Trammel",
+    "$type": "DungeonRegion",
+    "Entrance": [5574, 3024, 31],
+    "Map": "Felucca",
+    "Name": "The Palace of Paroxysmus",
     "Priority": 50,
-    "Music": "ParoxysmusLair",
-    "Area": [{ "x1": 6191, "y1": 311, "x2": 6561, "y2": 671 }],
-    "GoLocation": { "x": 6222, "y": 335, "z": 60 },
-    "Entrance": { "x": 5574, "y": 3024 }
+    "Area": [[6191, 311, -128, 370, 360, 256]],
+    "GoLocation": [6222, 335, 60],
+    "Music": "ParoxysmusLair"
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Bravehorn's drinking pool",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1302, "y1": 2331, "x2": 1340, "y2": 2353 }]
+    "Area": [[1302, 2331, -128, 38, 22, 256]]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Huntsman's Forest",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1595, "y1": 550, "x2": 1715, "y2": 670 }]
+    "Area": [[1595, 550, -128, 120, 120, 256]]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Cove",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Cove",
-    "Area": [
-      { "x1": 2200, "y1": 1110, "z1": 0, "x2": 2250, "y2": 1160, "z2": 128 },
-      { "x1": 2200, "y1": 1160, "z1": 0, "x2": 2286, "y2": 1246, "z2": 128 }
-    ],
-    "GoLocation": { "x": 2275, "y": 1210, "z": 0 }
+    "Area": [[2200, 1110, -128, 50, 50, 256], [2200, 1160, -128, 86, 86, 256]],
+    "GoLocation": [2275, 1210, 0],
+    "Music": "Cove"
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Britain",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Britain1",
     "Area": [
-      { "x1": 1416, "y1": 1498, "z1": -10, "x2": 1740, "y2": 1777, "z2": 128 },
-      { "x1": 1500, "y1": 1408, "z1": 0, "x2": 1546, "y2": 1498, "z2": 128 },
-      { "x1": 1385, "y1": 1538, "z1": -10, "x2": 1416, "y2": 1777, "z2": 128 },
-      { "x1": 1416, "y1": 1777, "z1": 0, "x2": 1740, "y2": 1837, "z2": 128 },
-      { "x1": 1385, "y1": 1777, "z1": 0, "x2": 1416, "y2": 1907, "z2": 128 },
-      { "x1": 1093, "y1": 1538, "z1": 0, "x2": 1385, "y2": 1907, "z2": 128 }
+      [1416, 1498, 0, 324, 279, 128],
+      [1500, 1408, 0, 46, 90, 128],
+      [1385, 1538, 0, 31, 239, 128],
+      [1416, 1777, 0, 324, 60, 128],
+      [1385, 1777, 0, 31, 130, 128],
+      [1093, 1538, 0, 292, 369, 128]
     ],
-    "GoLocation": { "x": 1495, "y": 1629, "z": 10 }
+    "GoLocation": [1495, 1629, 10],
+    "Music": "Britain1"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Britain",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 1492, "y1": 1602, "z1": 0, "x2": 1500, "y2": 1621, "z2": 128 },
-      { "x1": 1500, "y1": 1610, "z1": 0, "x2": 1508, "y2": 1626, "z2": 128 },
-      { "x1": 1576, "y1": 1584, "z1": 0, "x2": 1600, "y2": 1600, "z2": 128 },
-      { "x1": 1456, "y1": 1512, "z1": 0, "x2": 1472, "y2": 1528, "z2": 128 },
-      { "x1": 1472, "y1": 1512, "z1": 0, "x2": 1480, "y2": 1520, "z2": 128 },
-      { "x1": 1424, "y1": 1712, "z1": 0, "x2": 1432, "y2": 1736, "z2": 128 },
-      { "x1": 1432, "y1": 1712, "z1": 0, "x2": 1440, "y2": 1724, "z2": 128 },
-      { "x1": 1486, "y1": 1684, "z1": 0, "x2": 1494, "y2": 1692, "z2": 128 },
-      { "x1": 1494, "y1": 1676, "z1": 0, "x2": 1502, "y2": 1700, "z2": 128 },
-      { "x1": 1608, "y1": 1584, "z1": 0, "x2": 1632, "y2": 1592, "z2": 128 },
-      { "x1": 1616, "y1": 1576, "z1": 0, "x2": 1624, "y2": 1584, "z2": 128 },
-      { "x1": 1544, "y1": 1760, "z1": 0, "x2": 1560, "y2": 1776, "z2": 128 },
-      { "x1": 1560, "y1": 1760, "z1": 0, "x2": 1568, "y2": 1768, "z2": 128 }
+      [1492, 1602, 0, 8, 19, 128],
+      [1500, 1610, 0, 8, 16, 128],
+      [1576, 1584, 0, 24, 16, 128],
+      [1456, 1512, 0, 16, 16, 128],
+      [1472, 1512, 0, 8, 8, 128],
+      [1486, 1684, 0, 8, 8, 128],
+      [1494, 1676, 0, 8, 24, 128],
+      [1424, 1712, 0, 8, 24, 128],
+      [1432, 1712, 0, 8, 12, 128],
+      [1608, 1584, 0, 24, 8, 128],
+      [1616, 1576, 0, 8, 8, 128],
+      [1544, 1760, 0, 16, 16, 128],
+      [1560, 1760, 0, 8, 8, 128]
     ]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Wheatfield in Britain 1",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1120, "y1": 1776, "x2": 1152, "y2": 1808 }],
-    "GoLocation": { "x": 1135, "y": 1791, "z": 0 }
+    "Priority": 50,
+    "Area": [[1120, 1776, -128, 32, 32, 256]],
+    "GoLocation": [1135, 1791, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Wheatfield in Britain 2",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1184, "y1": 1808, "x2": 1216, "y2": 1840 }],
-    "GoLocation": { "x": 1199, "y": 1823, "z": 0 }
+    "Priority": 50,
+    "Area": [[1184, 1808, -128, 32, 32, 256]],
+    "GoLocation": [1199, 1823, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Wheatfield in Britain 3",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1216, "y1": 1872, "x2": 1248, "y2": 1904 }],
-    "GoLocation": { "x": 1231, "y": 1887, "z": 0 }
+    "Priority": 50,
+    "Area": [[1216, 1872, -128, 32, 32, 256]],
+    "GoLocation": [1231, 1887, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Carrot Field in Britain 1",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1208, "y1": 1712, "x2": 1224, "y2": 1736 }],
-    "GoLocation": { "x": 1215, "y": 1723, "z": 0 }
+    "Priority": 50,
+    "Area": [[1208, 1712, -128, 16, 24, 256]],
+    "GoLocation": [1215, 1723, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "An Onion Field in Britain 1",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1224, "y1": 1712, "x2": 1240, "y2": 1736 }],
-    "GoLocation": { "x": 1231, "y": 1723, "z": 0 }
+    "Priority": 50,
+    "Area": [[1224, 1712, -128, 16, 24, 256]],
+    "GoLocation": [1231, 1723, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Cabbage Field in Britain 1",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1176, "y1": 1672, "x2": 1192, "y2": 1695 }],
-    "GoLocation": { "x": 1183, "y": 1683, "z": 0 }
+    "Priority": 50,
+    "Area": [[1176, 1672, -128, 16, 23, 256]],
+    "GoLocation": [1183, 1683, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Turnip Field in Britain 1",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1192, "y1": 1672, "x2": 1208, "y2": 1696 }],
-    "GoLocation": { "x": 1199, "y": 1683, "z": 0 }
+    "Priority": 50,
+    "Area": [[1192, 1672, -128, 16, 24, 256]],
+    "GoLocation": [1199, 1683, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Wheatfield in Britain 4",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1104, "y1": 1608, "x2": 1136, "y2": 1640 }],
-    "GoLocation": { "x": 1120, "y": 1624, "z": 0 }
+    "Priority": 50,
+    "Area": [[1104, 1608, -128, 32, 32, 256]],
+    "GoLocation": [1120, 1624, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Wheatfield in Britain 5",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1136, "y1": 1560, "x2": 1168, "y2": 1592 }],
-    "GoLocation": { "x": 1152, "y": 1576, "z": 0 }
+    "Priority": 50,
+    "Area": [[1136, 1560, -128, 32, 32, 256]],
+    "GoLocation": [1152, 1576, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Turnip Field in Britain 2",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1208, "y1": 1592, "x2": 1224, "y2": 1616 }],
-    "GoLocation": { "x": 1216, "y": 1604, "z": 0 }
+    "Priority": 50,
+    "Area": [[1208, 1592, -128, 16, 24, 256]],
+    "GoLocation": [1216, 1604, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Britain",
     "Name": "A Carrot Field in Britain 2",
-    "Map": "Trammel",
-    "Parent": "Britain",
-    "Area": [{ "x1": 1224, "y1": 1592, "x2": 1240, "y2": 1616 }],
-    "GoLocation": { "x": 1232, "y": 1604, "z": 0 }
+    "Priority": 50,
+    "Area": [[1224, 1592, -128, 16, 24, 256]],
+    "GoLocation": [1232, 1604, 0]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Felucca",
     "Name": "Britain Graveyard",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1333, "y1": 1441, "x2": 1417, "y2": 1523 }],
-    "GoLocation": { "x": 1384, "y": 1492, "z": 10 }
+    "Area": [[1333, 1441, -128, 84, 82, 256]],
+    "GoLocation": [1384, 1492, 10]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Felucca",
     "Name": "Jhelom Islands",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Jhelom",
     "Area": [
-      { "x1": 1111, "y1": 3567, "x2": 1144, "y2": 3588 },
-      { "x1": 1078, "y1": 3588, "x2": 1202, "y2": 3709 },
-      { "x1": 1224, "y1": 3592, "x2": 1533, "y2": 4065 }
+      [1111, 3567, -128, 33, 21, 256],
+      [1078, 3588, -128, 124, 121, 256],
+      [1224, 3592, -128, 309, 473, 256]
     ],
-    "GoLocation": { "x": 1383, "y": 3815, "z": 0 }
+    "GoLocation": [1383, 3815, 0],
+    "Music": "Jhelom"
   },
   {
     "$type": "TownRegion",
-    "Name": "Jhelom",
-    "Map": "Trammel",
+    "Map": "Felucca",
     "Parent": "Jhelom Islands",
-    "Music": "Jhelom",
-    "Area": [
-      { "x1": 1303, "y1": 3670, "z1": -20, "x2": 1492, "y2": 3895, "z2": 128 },
-      { "x1": 1338, "y1": 3895, "z1": -20, "x2": 1412, "y2": 3923, "z2": 128 },
-      { "x1": 1383, "y1": 3951, "z1": -20, "x2": 1492, "y2": 4045, "z2": 128 }
-    ],
-    "GoLocation": { "x": 1383, "y": 3815, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
-    "Parent": "Jhelom",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 1352, "y1": 3800, "z1": -20, "x2": 1368, "y2": 3832, "z2": 128 },
-      { "x1": 1368, "y1": 3808, "z1": -20, "x2": 1376, "y2": 3824, "z2": 128 },
-      { "x1": 1432, "y1": 3768, "z1": -20, "x2": 1464, "y2": 3776, "z2": 128 },
-      { "x1": 1440, "y1": 3776, "z1": -20, "x2": 1464, "y2": 3784, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Minoc",
-    "Map": "Trammel",
+    "Name": "Jhelom",
     "Priority": 50,
-    "Music": "Minoc",
     "Area": [
-      { "x1": 2411, "y1": 366, "x2": 2546, "y2": 607 },
-      { "x1": 2548, "y1": 495, "x2": 2620, "y2": 550 },
-      { "x1": 2564, "y1": 585, "x2": 2567, "y2": 627 },
-      { "x1": 2567, "y1": 585, "x2": 2628, "y2": 646 },
-      { "x1": 2499, "y1": 627, "x2": 2567, "y2": 690 }
+      [1303, 3670, -20, 189, 225, 148],
+      [1338, 3895, -20, 74, 28, 148],
+      [1383, 3951, -20, 109, 94, 148]
     ],
-    "GoLocation": { "x": 2466, "y": 544, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
-    "Parent": "Minoc",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 2457, "y1": 397, "x2": 2497, "y2": 405 },
-      { "x1": 2465, "y1": 405, "x2": 2473, "y2": 413 },
-      { "x1": 2481, "y1": 405, "x2": 2489, "y2": 413 }
-    ]
+    "GoLocation": [1383, 3815, 0]
   },
   {
     "$type": "NoHousingRegion",
-    "Name": "Haven Island",
-    "Map": "Trammel",
+    "Map": "Felucca",
+    "Parent": "Jhelom",
     "Priority": 50,
-    "Area": [{ "x1": 3314, "y1": 2345, "x2": 3814, "y2": 3095 }],
-    "GoLocation": { "x": 3627, "y": 2606, "z": 0 }
+    "Area": [
+      [1352, 3800, -20, 16, 32, 148],
+      [1368, 3808, -20, 8, 16, 148],
+      [1432, 3768, -20, 32, 8, 148],
+      [1440, 3776, -20, 24, 8, 148]
+    ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
+    "Name": "Minoc",
+    "Priority": 50,
+    "Area": [
+      [2411, 366, -128, 135, 241, 256],
+      [2548, 495, -128, 72, 55, 256],
+      [2564, 585, -128, 3, 42, 256],
+      [2567, 585, -128, 61, 61, 256],
+      [2499, 627, -128, 68, 63, 256]
+    ],
+    "GoLocation": [2466, 544, 0],
+    "Music": "Minoc"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Minoc",
+    "Priority": 50,
+    "Area": [
+      [2457, 397, -128, 40, 8, 256],
+      [2465, 405, -128, 8, 8, 256],
+      [2481, 405, -128, 8, 8, 256]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Name": "Ocllo",
+    "Priority": 50,
+    "Area": [
+      [3587, 2456, -128, 119, 99, 256],
+      [3706, 2460, -128, 2, 95, 256],
+      [3587, 2555, -128, 106, 73, 256],
+      [3590, 2628, -128, 103, 58, 256],
+      [3693, 2555, -128, 61, 144, 256],
+      [3754, 2558, -128, 7, 141, 256],
+      [3761, 2555, -128, 7, 144, 256],
+      [3695, 2699, -128, 66, 13, 256]
+    ],
+    "GoLocation": [3650, 2519, 0],
+    "Music": "Ocllo"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Ocllo",
+    "Priority": 50,
+    "Area": [
+      [3664, 2608, -128, 16, 16, 256],
+      [3664, 2640, -128, 8, 16, 256],
+      [3672, 2648, -128, 8, 8, 256]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Trinsic",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Trinsic",
     "Area": [
-      { "x1": 1856, "y1": 2636, "x2": 1931, "y2": 2664 },
-      { "x1": 1816, "y1": 2664, "x2": 2099, "y2": 2895 },
-      { "x1": 2099, "y1": 2782, "x2": 2117, "y2": 2807 },
-      { "x1": 1970, "y1": 2895, "x2": 2017, "y2": 2927 },
-      { "x1": 1796, "y1": 2696, "z1": 0, "x2": 1816, "y2": 2763, "z2": 128 },
-      { "x1": 1800, "y1": 2796, "z1": 0, "x2": 1816, "y2": 2848, "z2": 128 }
+      [1856, 2636, -128, 75, 28, 256],
+      [1816, 2664, -128, 283, 231, 256],
+      [2099, 2782, -128, 18, 25, 256],
+      [1970, 2895, -128, 47, 32, 256],
+      [1796, 2696, -128, 20, 67, 256],
+      [1800, 2796, -128, 16, 52, 256]
     ],
-    "GoLocation": { "x": 1867, "y": 2780, "z": 0 }
+    "GoLocation": [1867, 2780, 0],
+    "Music": "Trinsic"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Trinsic",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 1834, "y1": 2728, "x2": 1856, "y2": 2744 },
-      { "x1": 2024, "y1": 2784, "x2": 2040, "y2": 2804 },
-      { "x1": 2026, "y1": 2804, "x2": 2040, "y2": 2806 },
-      { "x1": 2024, "y1": 2806, "x2": 2040, "y2": 2813 },
-      { "x1": 1923, "y1": 2786, "x2": 1935, "y2": 2808 },
-      { "x1": 1935, "y1": 2786, "x2": 1942, "y2": 2800 }
+      [1834, 2728, -128, 22, 16, 256],
+      [2024, 2784, -128, 16, 20, 256],
+      [2026, 2804, -128, 14, 2, 256],
+      [2024, 2806, -128, 16, 7, 256],
+      [1923, 2786, -128, 12, 22, 256],
+      [1935, 2786, -128, 7, 14, 256]
     ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Vesper",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Vesper",
     "Area": [
-      { "x1": 2893, "y1": 598, "x2": 3014, "y2": 648 },
-      { "x1": 2816, "y1": 648, "x2": 3065, "y2": 1013 },
-      { "x1": 2734, "y1": 944, "x2": 2816, "y2": 948 },
-      { "x1": 2728, "y1": 948, "x2": 2816, "y2": 1001 }
+      [2893, 598, -128, 121, 50, 256],
+      [2816, 648, -128, 249, 365, 256],
+      [2734, 944, -128, 82, 4, 256],
+      [2728, 948, -128, 88, 53, 256]
     ],
-    "GoLocation": { "x": 2899, "y": 676, "z": 0 }
+    "GoLocation": [2899, 676, 0],
+    "Music": "Vesper"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Vesper",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 2952, "y1": 864, "x2": 2968, "y2": 896 },
-      { "x1": 2968, "y1": 872, "x2": 2976, "y2": 888 },
-      { "x1": 2776, "y1": 952, "x2": 2792, "y2": 984 },
-      { "x1": 2768, "y1": 960, "x2": 2776, "y2": 976 },
-      { "x1": 2892, "y1": 901, "x2": 2908, "y2": 920 },
-      { "x1": 2908, "y1": 904, "x2": 2916, "y2": 912 }
+      [2952, 864, -128, 16, 32, 256],
+      [2968, 872, -128, 8, 16, 256],
+      [2776, 952, -128, 16, 32, 256],
+      [2768, 960, -128, 8, 16, 256],
+      [2892, 901, -128, 16, 19, 256],
+      [2908, 904, -128, 8, 8, 256]
     ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Yew",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Yew",
     "Area": [
-      { "x1": 92, "y1": 656, "z1": 0, "x2": 441, "y2": 881, "z2": 128 },
-      { "x1": 441, "y1": 746, "z1": 0, "x2": 657, "y2": 881, "z2": 128 },
-      { "x1": 258, "y1": 881, "z1": 0, "x2": 657, "y2": 1261, "z2": 128 },
-      { "x1": 657, "y1": 922, "z1": 0, "x2": 699, "y2": 1229, "z2": 128 },
-      { "x1": 657, "y1": 806, "z1": 0, "x2": 674, "y2": 834, "z2": 128 },
-      { "x1": 718, "y1": 874, "z1": 0, "x2": 756, "y2": 896, "z2": 128 }
+      [92, 656, 0, 349, 225, 39],
+      [441, 746, 0, 216, 135, 39],
+      [258, 881, 0, 399, 380, 39],
+      [657, 922, 0, 42, 307, 39],
+      [657, 806, 0, 17, 28, 39],
+      [718, 874, 0, 38, 22, 39]
     ],
-    "GoLocation": { "x": 546, "y": 992, "z": 0 }
+    "GoLocation": [546, 992, 0],
+    "Music": "Yew"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Yew",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 600, "y1": 808, "z1": 0, "x2": 624, "y2": 832, "z2": 128 }]
+    "Priority": 50,
+    "Area": [[600, 808, 0, 24, 24, 39]]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "RuneName": "A Field of Sheep in Yew",
+    "Map": "Felucca",
+    "Parent": "Yew",
     "Name": "A Field of Sheep in Yew 1",
-    "Map": "Trammel",
-    "Parent": "Yew",
-    "rune": "A Field of Sheep in Yew",
-    "Area": [{ "x1": 664, "y1": 928, "x2": 686, "y2": 950 }],
-    "GoLocation": { "x": 675, "y": 939, "z": 0 }
+    "Priority": 50,
+    "Area": [[664, 928, -128, 22, 22, 256]],
+    "GoLocation": [675, 939, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "RuneName": "A Field of Sheep in Yew",
+    "Map": "Felucca",
+    "Parent": "Yew",
     "Name": "A Field of Sheep in Yew 2",
-    "Map": "Trammel",
-    "Parent": "Yew",
-    "rune": "A Field of Sheep in Yew",
-    "Area": [{ "x1": 664, "y1": 1168, "x2": 686, "y2": 1190 }],
-    "GoLocation": { "x": 675, "y": 1179, "z": 0 }
+    "Priority": 50,
+    "Area": [[664, 1168, -128, 22, 22, 256]],
+    "GoLocation": [675, 1179, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "RuneName": "A Farm in Yew",
+    "Map": "Felucca",
+    "Parent": "Yew",
     "Name": "A Farm in Yew",
-    "Map": "Trammel",
-    "Parent": "Yew",
-    "rune": "A Farm in Yew",
-    "Area": [{ "x1": 560, "y1": 1088, "x2": 582, "y2": 1110 }],
-    "GoLocation": { "x": 571, "y": 1099, "z": 0 }
+    "Priority": 50,
+    "Area": [[560, 1088, -128, 22, 22, 256]],
+    "GoLocation": [571, 1099, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "RuneName": "A Wheatfield in Yew",
+    "Map": "Felucca",
+    "Parent": "Yew",
     "Name": "A Wheatfield in Yew 1",
-    "Map": "Trammel",
-    "Parent": "Yew",
-    "rune": "A Wheatfield in Yew",
-    "Area": [{ "x1": 560, "y1": 1232, "x2": 576, "y2": 1248 }],
-    "GoLocation": { "x": 567, "y": 1239, "z": 0 }
+    "Priority": 50,
+    "Area": [[560, 1232, -128, 16, 16, 256]],
+    "GoLocation": [567, 1239, 0]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
+    "RuneName": "A Wheatfield in Yew",
+    "Map": "Felucca",
+    "Parent": "Yew",
     "Name": "A Wheatfield in Yew 2",
-    "Map": "Trammel",
-    "Parent": "Yew",
-    "rune": "A Wheatfield in Yew",
-    "Area": [{ "x1": 368, "y1": 1176, "x2": 382, "y2": 1208 }],
-    "GoLocation": { "x": 375, "y": 1191, "z": 0 }
+    "Priority": 50,
+    "Area": [[368, 1176, -128, 14, 32, 256]],
+    "GoLocation": [375, 1191, 0]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Wind",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Wind",
     "Area": [
-      { "x1": 5294, "y1": 19, "x2": 5366, "y2": 139 },
-      { "x1": 5132, "y1": 58, "x2": 5213, "y2": 126 },
-      { "x1": 5197, "y1": 126, "x2": 5252, "y2": 204 },
-      { "x1": 5132, "y1": 3, "x2": 5202, "y2": 58 },
-      { "x1": 5252, "y1": 112, "x2": 5294, "y2": 170 },
-      { "x1": 5213, "y1": 98, "x2": 5252, "y2": 126 },
-      { "x1": 5279, "y1": 57, "x2": 5294, "y2": 112 },
-      { "x1": 5252, "y1": 170, "x2": 5284, "y2": 178 },
-      { "x1": 5286, "y1": 25, "x2": 5294, "y2": 57 },
-      { "x1": 5252, "y1": 178, "x2": 5272, "y2": 183 },
-      { "x1": 5252, "y1": 183, "x2": 5262, "y2": 193 }
+      [5294, 19, -128, 72, 120, 256],
+      [5132, 58, -128, 81, 68, 256],
+      [5197, 126, -128, 55, 78, 256],
+      [5132, 3, -128, 70, 55, 256],
+      [5252, 112, -128, 42, 58, 256],
+      [5213, 98, -128, 39, 28, 256],
+      [5279, 57, -128, 15, 55, 256],
+      [5252, 170, -128, 32, 8, 256],
+      [5286, 25, -128, 8, 32, 256],
+      [5252, 178, -128, 20, 5, 256],
+      [5252, 183, -128, 10, 10, 256]
     ],
-    "GoLocation": { "x": 5223, "y": 190, "z": 5 }
+    "GoLocation": [5223, 190, 5],
+    "Music": "Wind"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Wind",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 5159, "y1": 15, "x2": 5184, "y2": 24 },
-      { "x1": 5159, "y1": 24, "x2": 5168, "y2": 40 },
-      { "x1": 5175, "y1": 24, "x2": 5184, "y2": 32 },
-      { "x1": 5212, "y1": 159, "x2": 5221, "y2": 183 },
-      { "x1": 5221, "y1": 171, "x2": 5228, "y2": 183 },
-      { "x1": 5206, "y1": 164, "x2": 5212, "y2": 179 },
-      { "x1": 5303, "y1": 28, "x2": 5319, "y2": 42 }
+      [5159, 15, -128, 25, 9, 256],
+      [5159, 24, -128, 9, 16, 256],
+      [5175, 24, -128, 9, 8, 256],
+      [5212, 159, -128, 9, 24, 256],
+      [5221, 171, -128, 7, 12, 256],
+      [5206, 164, -128, 6, 15, 256],
+      [5303, 28, -128, 16, 14, 256]
     ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Serpent's Hold",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Serpents",
-    "Area": [{ "x1": 2868, "y1": 3324, "z1": 0, "x2": 3073, "y2": 3519, "z2": 128 }],
-    "GoLocation": { "x": 3010, "y": 3371, "z": 15 }
+    "Area": [[2868, 3324, 0, 205, 195, 128]],
+    "GoLocation": [3010, 3371, 15],
+    "Music": "Serpents"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Serpent's Hold",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 2960, "y1": 3400, "z1": 0, "x2": 2976, "y2": 3416, "z2": 128 },
-      { "x1": 2968, "y1": 3416, "z1": 0, "x2": 2976, "y2": 3432, "z2": 128 },
-      { "x1": 3008, "y1": 3450, "z1": 0, "x2": 3022, "y2": 3464, "z2": 128 }
+      [2960, 3400, 0, 16, 16, 128],
+      [2968, 3416, 0, 8, 16, 128],
+      [3008, 3450, 0, 14, 14, 128]
     ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Skara Brae",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Skarabra",
-    "Area": [{ "x1": 538, "y1": 2107, "x2": 688, "y2": 2297 }],
-    "GoLocation": { "x": 632, "y": 2233, "z": 0 }
+    "Area": [[538, 2107, -128, 150, 190, 256]],
+    "GoLocation": [632, 2233, 0],
+    "Music": "Skarabra"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Skara Brae",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 600, "y1": 2232, "x2": 616, "y2": 2256 },
-      { "x1": 592, "y1": 2240, "x2": 600, "y2": 2256 },
-      { "x1": 616, "y1": 2240, "x2": 624, "y2": 2256 },
-      { "x1": 552, "y1": 2168, "x2": 568, "y2": 2192 },
-      { "x1": 568, "y1": 2168, "x2": 576, "y2": 2176 }
+      [600, 2232, -128, 16, 24, 256],
+      [592, 2240, -128, 8, 16, 256],
+      [616, 2240, -128, 8, 16, 256],
+      [552, 2168, -128, 16, 24, 256],
+      [568, 2168, -128, 8, 8, 256]
     ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Nujel'm",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Nujelm",
-    "Area": [{ "x1": 3475, "y1": 1000, "z1": 0, "x2": 3835, "y2": 1435, "z2": 128 }],
-    "GoLocation": { "x": 3732, "y": 1279, "z": 0 }
+    "Area": [[3475, 1000, 0, 360, 435, 128]],
+    "GoLocation": [3732, 1279, 0],
+    "Music": "Nujelm"
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Nujel'm",
-    "LogoutDelay": false,
+    "Priority": 50,
     "Area": [
-      { "x1": 3736, "y1": 1184, "z1": 0, "x2": 3752, "y2": 1207, "z2": 128 },
-      { "x1": 3728, "y1": 1192, "z1": 0, "x2": 3736, "y2": 1207, "z2": 128 },
-      { "x1": 3728, "y1": 1288, "z1": 0, "x2": 3751, "y2": 1303, "z2": 128 },
-      { "x1": 3728, "y1": 1303, "z1": 0, "x2": 3744, "y2": 1312, "z2": 128 },
-      { "x1": 3728, "y1": 1312, "z1": 0, "x2": 3740, "y2": 1320, "z2": 128 },
-      { "x1": 3728, "y1": 1320, "z1": 0, "x2": 3744, "y2": 1343, "z2": 128 },
-      { "x1": 3744, "y1": 1328, "z1": 0, "x2": 3751, "y2": 1343, "z2": 128 },
-      { "x1": 3760, "y1": 1216, "z1": 0, "x2": 3772, "y2": 1240, "z2": 128 },
-      { "x1": 3772, "y1": 1220, "z1": 0, "x2": 3776, "y2": 1236, "z2": 128 },
-      { "x1": 3776, "y1": 1224, "z1": 0, "x2": 3784, "y2": 1232, "z2": 128 },
-      { "x1": 3728, "y1": 1248, "z1": 0, "x2": 3744, "y2": 1272, "z2": 128 },
-      { "x1": 3744, "y1": 1248, "z1": 0, "x2": 3752, "y2": 1256, "z2": 128 },
-      { "x1": 3744, "y1": 1264, "z1": 0, "x2": 3752, "y2": 1272, "z2": 128 }
+      [3736, 1184, 0, 16, 23, 128],
+      [3728, 1192, 0, 8, 15, 128],
+      [3728, 1288, 0, 23, 15, 128],
+      [3728, 1303, 0, 16, 9, 128],
+      [3728, 1312, 0, 12, 8, 128],
+      [3728, 1320, 0, 16, 23, 128],
+      [3744, 1328, 0, 7, 15, 128],
+      [3760, 1216, 0, 12, 24, 128],
+      [3772, 1220, 0, 4, 16, 128],
+      [3776, 1224, 0, 8, 8, 128],
+      [3728, 1248, 0, 16, 24, 128],
+      [3744, 1264, 0, 8, 8, 128],
+      [3744, 1248, 0, 8, 8, 128]
     ]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Moonglow",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Moonglow",
     "Area": [
-      { "x1": 4535, "y1": 844, "z1": 0, "x2": 4555, "y2": 847, "z2": 128 },
-      { "x1": 4530, "y1": 847, "z1": 0, "x2": 4561, "y2": 908, "z2": 128 },
-      { "x1": 4521, "y1": 914, "z1": 0, "x2": 4577, "y2": 963, "z2": 128 },
-      { "x1": 4278, "y1": 915, "z1": 0, "x2": 4332, "y2": 934, "z2": 128 },
-      { "x1": 4283, "y1": 944, "z1": 0, "x2": 4336, "y2": 1017, "z2": 128 },
-      { "x1": 4377, "y1": 1015, "z1": -10, "x2": 4436, "y2": 1052, "z2": 128 },
-      { "x1": 4367, "y1": 1050, "z1": 0, "x2": 4509, "y2": 1195, "z2": 128 },
-      { "x1": 4539, "y1": 1036, "z1": 0, "x2": 4566, "y2": 1054, "z2": 128 },
-      { "x1": 4517, "y1": 1053, "z1": 0, "x2": 4540, "y2": 1075, "z2": 128 },
-      { "x1": 4389, "y1": 1198, "z1": 0, "x2": 4436, "y2": 1237, "z2": 128 },
-      { "x1": 4466, "y1": 1211, "z1": 0, "x2": 4498, "y2": 1236, "z2": 128 },
-      { "x1": 4700, "y1": 1108, "z1": 0, "x2": 4717, "y2": 1126, "z2": 128 },
-      { "x1": 4656, "y1": 1127, "z1": 0, "x2": 4682, "y2": 1140, "z2": 128 },
-      { "x1": 4678, "y1": 1162, "z1": 0, "x2": 4703, "y2": 1187, "z2": 128 },
-      { "x1": 4613, "y1": 1196, "z1": 0, "x2": 4636, "y2": 1218, "z2": 128 },
-      { "x1": 4646, "y1": 1212, "z1": 0, "x2": 4660, "y2": 1229, "z2": 128 },
-      { "x1": 4677, "y1": 1214, "z1": 0, "x2": 4703, "y2": 1236, "z2": 128 },
-      { "x1": 4622, "y1": 1316, "z1": 0, "x2": 4644, "y2": 1340, "z2": 128 },
-      { "x1": 4487, "y1": 1353, "z1": 0, "x2": 4546, "y2": 1374, "z2": 128 },
-      { "x1": 4477, "y1": 1374, "z1": 0, "x2": 4546, "y2": 1409, "z2": 128 },
-      { "x1": 4659, "y1": 1387, "z1": 0, "x2": 4699, "y2": 1427, "z2": 128 },
-      { "x1": 4549, "y1": 1482, "z1": 0, "x2": 4578, "y2": 1509, "z2": 128 },
-      { "x1": 4405, "y1": 1451, "z1": 0, "x2": 4428, "y2": 1474, "z2": 128 },
-      { "x1": 4483, "y1": 1468, "z1": 0, "x2": 4504, "y2": 1481, "z2": 128 }
+      [4535, 844, 0, 20, 3, 128],
+      [4530, 847, 0, 31, 61, 128],
+      [4521, 914, 0, 56, 49, 128],
+      [4278, 915, 0, 54, 19, 128],
+      [4283, 944, 0, 53, 73, 128],
+      [4377, 1015, 0, 59, 37, 128],
+      [4367, 1050, 0, 142, 145, 128],
+      [4539, 1036, 0, 27, 18, 128],
+      [4517, 1053, 0, 23, 22, 128],
+      [4389, 1198, 0, 47, 39, 128],
+      [4466, 1211, 0, 32, 25, 128],
+      [4700, 1108, 0, 17, 18, 128],
+      [4656, 1127, 0, 26, 13, 128],
+      [4678, 1162, 0, 25, 25, 128],
+      [4613, 1196, 0, 23, 22, 128],
+      [4646, 1212, 0, 14, 17, 128],
+      [4677, 1214, 0, 26, 22, 128],
+      [4622, 1316, 0, 22, 24, 128],
+      [4487, 1353, 0, 59, 21, 128],
+      [4477, 1374, 0, 69, 35, 128],
+      [4659, 1387, 0, 40, 40, 128],
+      [4549, 1482, 0, 29, 27, 128],
+      [4405, 1451, 0, 23, 23, 128],
+      [4483, 1468, 0, 21, 13, 128]
     ],
-    "GoLocation": { "x": 4442, "y": 1172, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "The Scholar's Inn",
-    "Map": "Trammel",
-    "Parent": "Moonglow",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 4384, "y1": 1152, "z1": 0, "x2": 4392, "y2": 1176, "z2": 128 },
-      { "x1": 4392, "y1": 1160, "z1": 0, "x2": 4408, "y2": 1168, "z2": 128 },
-      { "x1": 4400, "y1": 1152, "z1": 0, "x2": 4408, "y2": 1160, "z2": 128 },
-      { "x1": 4480, "y1": 1056, "z1": 0, "x2": 4488, "y2": 1072, "z2": 128 },
-      { "x1": 4488, "y1": 1060, "z1": 0, "x2": 4492, "y2": 1068, "z2": 128 },
-      { "x1": 4476, "y1": 1060, "z1": 0, "x2": 4480, "y2": 1068, "z2": 128 }
-    ]
-  },
-  {
-    "$type": "NewMaginciaRegion",
-    "Name": "Magincia",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Music": "Magincia",
-    "Area": [
-      { "x1": 3632, "y1": 2032, "x2": 3682, "y2": 2102 },
-      { "x1": 3624, "y1": 2162, "x2": 3719, "y2": 2232 },
-      { "x1": 3752, "y1": 2046, "x2": 3804, "y2": 2094 },
-      { "x1": 3680, "y1": 2045, "x2": 3752, "y2": 2094 },
-      { "x1": 3652, "y1": 2094, "x2": 3812, "y2": 2274 },
-      { "x1": 3649, "y1": 2256, "x2": 3703, "y2": 2303 }
-    ],
-    "GoLocation": { "x": 3714, "y": 2220, "z": 20 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
-    "Parent": "Magincia",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 3687, "y1": 2246, "x2": 3699, "y2": 2262 }]
+    "GoLocation": [4442, 1172, 0],
+    "Music": "Moonglow"
   },
   {
     "$type": "TownRegion",
-    "Name": "Buccaneer's Den",
-    "Map": "Trammel",
+    "Map": "Felucca",
+    "Parent": "Moonglow",
     "Priority": 50,
-    "Music": "BucsDen",
-    "GuardsDisabled": true,
     "Area": [
-      { "x1": 2612, "y1": 2057, "x2": 2776, "y2": 2267 },
-      { "x1": 2604, "y1": 2065, "z1": 0, "x2": 2612, "y2": 2254, "z2": 128 }
-    ],
-    "GoLocation": { "x": 2706, "y": 2163, "z": 0 }
+      [4384, 1152, 0, 8, 24, 128],
+      [4392, 1160, 0, 16, 8, 128],
+      [4400, 1152, 0, 8, 8, 128],
+      [4480, 1056, 0, 8, 16, 128],
+      [4488, 1060, 0, 4, 8, 128],
+      [4476, 1060, 0, 4, 8, 128]
+    ]
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
-    "Parent": "Buccaneer's Den",
-    "LogoutDelay": false,
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Name": "Magincia",
+    "Priority": 50,
     "Area": [
-      { "x1": 2712, "y1": 2080, "x2": 2728, "y2": 2096 },
-      { "x1": 2712, "y1": 2096, "x2": 2720, "y2": 2104 },
-      { "x1": 2664, "y1": 2232, "x2": 2688, "y2": 2240 },
-      { "x1": 2672, "y1": 2240, "x2": 2688, "y2": 2248 }
+      [3653, 2046, -128, 27, 48, 256],
+      [3752, 2046, -128, 52, 48, 256],
+      [3680, 2045, -128, 72, 49, 256],
+      [3652, 2094, -128, 160, 180, 256],
+      [3649, 2256, -128, 54, 47, 256]
+    ],
+    "GoLocation": [3714, 2220, 20],
+    "Music": "Magincia"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Magincia",
+    "Priority": 50,
+    "Area": [[3680, 2152, -128, 24, 8, 256], [3720, 2216, -128, 16, 16, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Name": "Buccaneer's Den",
+    "Priority": 50,
+    "Area": [
+      [2612, 2057, -128, 164, 210, 256],
+      [2604, 2065, -128, 8, 189, 256]
+    ],
+    "GoLocation": [2706, 2163, 0],
+    "Music": "Bucsden"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Buccaneer's Den",
+    "Priority": 50,
+    "Area": [
+      [2712, 2080, -128, 16, 16, 256],
+      [2712, 2096, -128, 8, 8, 256],
+      [2664, 2232, -128, 24, 8, 256],
+      [2672, 2240, -128, 16, 8, 256]
     ]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [2499, 916, 0],
+    "Map": "Felucca",
     "Name": "Covetous",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
     "Area": [
-      { "x1": 5376, "y1": 1793, "x2": 5577, "y2": 2048 },
-      { "x1": 5576, "y1": 1791, "x2": 5633, "y2": 2048 }
+      [5376, 1793, -128, 201, 255, 256],
+      [5576, 1791, -128, 57, 257, 256]
     ],
-    "GoLocation": { "x": 5456, "y": 1862, "z": 0 },
-    "Entrance": { "x": 2499, "y": 916 }
+    "GoLocation": [5456, 1862, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [4111, 429, 0],
+    "Map": "Felucca",
     "Name": "Deceit",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5122, "y1": 518, "x2": 5370, "y2": 770 }],
-    "GoLocation": { "x": 5187, "y": 635, "z": 0 },
-    "Entrance": { "x": 4111, "y": 429 }
+    "Area": [[5122, 518, -128, 248, 252, 256]],
+    "GoLocation": [5187, 635, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1296, 1082, 0],
+    "Map": "Felucca",
     "Name": "Despise",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5377, "y1": 516, "x2": 5631, "y2": 1022 }],
-    "GoLocation": { "x": 5501, "y": 570, "z": 59 },
-    "Entrance": { "x": 1296, "y": 1082 }
+    "Area": [[5377, 516, -128, 254, 506, 256]],
+    "GoLocation": [5501, 570, 59],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1176, 2635, 0],
+    "Map": "Felucca",
     "Name": "Destard",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5120, "y1": 770, "x2": 5371, "y2": 1028 }],
-    "GoLocation": { "x": 5243, "y": 1004, "z": 0 },
-    "Entrance": { "x": 1176, "y": 2635 }
+    "Area": [[5120, 770, -128, 251, 258, 256]],
+    "GoLocation": [5243, 1004, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [4722, 3814, 0],
+    "Map": "Felucca",
     "Name": "Hythloth",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5898, "y1": 2, "x2": 6136, "y2": 246 }],
-    "GoLocation": { "x": 5905, "y": 22, "z": 44 },
-    "Entrance": { "x": 4722, "y": 3814 }
+    "Area": [[5898, 2, -128, 238, 244, 256]],
+    "GoLocation": [5905, 22, 44],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [5882, 3819, 0],
+    "Map": "Felucca",
+    "Name": "Khaldun",
+    "Priority": 50,
+    "Area": [[5381, 1284, -128, 247, 225, 256]],
+    "GoLocation": [5571, 1302, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "JailRegion",
+    "Map": "Felucca",
     "Name": "Jail",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 5271, "y1": 1159, "x2": 5312, "y2": 1192 }],
-    "GoLocation": { "x": 5275, "y": 1163, "z": 0 }
+    "Area": [[5271, 1159, -128, 41, 33, 256]],
+    "GoLocation": [5275, 1163, 0]
   },
   {
     "$type": "GreenAcresRegion",
+    "Map": "Felucca",
     "Name": "Green Acres",
-    "Map": "Trammel",
     "Priority": 1,
-    "Area": [{ "x1": 5376, "y1": 512, "x2": 6143, "y2": 1279 }],
-    "GoLocation": { "x": 5445, "y": 1153, "z": 0 }
+    "Area": [[5376, 512, -128, 767, 767, 256]],
+    "GoLocation": [5445, 1153, 0]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [512, 1559, 0],
+    "Map": "Felucca",
     "Name": "Shame",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [
-      { "x1": 5377, "y1": 2, "x2": 5634, "y2": 262 },
-      { "x1": 5635, "y1": 2, "x2": 5895, "y2": 126 }
-    ],
-    "GoLocation": { "x": 5395, "y": 126, "z": 0 },
-    "Entrance": { "x": 512, "y": 1559 }
+    "Area": [[5377, 2, -128, 257, 260, 256], [5635, 2, -128, 260, 124, 256]],
+    "GoLocation": [5395, 126, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [2042, 226, 0],
+    "Map": "Felucca",
     "Name": "Wrong",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5633, "y1": 511, "x2": 5886, "y2": 1021 }],
-    "GoLocation": { "x": 5825, "y": 599, "z": 0 },
-    "Entrance": { "x": 2042, "y": 226 }
+    "Area": [[5633, 511, -128, 253, 510, 256]],
+    "GoLocation": [5825, 599, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Cave 1",
-    "Map": "Trammel",
     "Priority": 50,
     "Area": [
-      { "x1": 2373, "y1": 900, "x2": 2395, "y2": 928 },
-      { "x1": 2395, "y1": 903, "x2": 2409, "y2": 919 },
-      { "x1": 2373, "y1": 928, "x2": 2383, "y2": 937 },
-      { "x1": 2359, "y1": 927, "x2": 2373, "y2": 945 }
+      [2373, 900, -128, 22, 28, 256],
+      [2395, 903, -128, 14, 16, 256],
+      [2373, 928, -128, 10, 9, 256],
+      [2359, 927, -128, 14, 18, 256]
     ],
-    "GoLocation": { "x": 2367, "y": 942, "z": 0 }
+    "GoLocation": [2367, 942, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Cave 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1887, "y1": 354, "x2": 1920, "y2": 377 }],
-    "GoLocation": { "x": 1903, "y": 365, "z": 0 }
+    "Area": [[1887, 354, -128, 33, 23, 256]],
+    "GoLocation": [1903, 365, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Cave 3",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1925, "y1": 307, "x2": 1943, "y2": 325 }],
-    "GoLocation": { "x": 1934, "y": 316, "z": 0 }
+    "Area": [[1925, 307, -128, 18, 18, 256]],
+    "GoLocation": [1934, 316, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Cave 4",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 2323, "y1": 809, "x2": 2368, "y2": 851 }],
-    "GoLocation": { "x": 2345, "y": 830, "z": 0 }
+    "Area": [[2323, 809, -128, 45, 42, 256]],
+    "GoLocation": [2345, 830, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Britain Mine 1",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1436, "y1": 1215, "x2": 1465, "y2": 1252 }],
-    "GoLocation": { "x": 1443, "y": 1228, "z": 0 }
+    "Area": [[1436, 1215, -128, 29, 37, 256]],
+    "GoLocation": [1443, 1228, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Britain Mine 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1611, "y1": 1175, "x2": 1662, "y2": 1204 }],
-    "GoLocation": { "x": 1629, "y": 1189, "z": 0 }
+    "Area": [[1611, 1175, -128, 51, 29, 256]],
+    "GoLocation": [1629, 1189, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Minoc Cave 1",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 2406, "y1": 168, "x2": 2428, "y2": 184 }],
-    "GoLocation": { "x": 2426, "y": 177, "z": 0 }
+    "Area": [[2406, 168, -128, 22, 16, 256]],
+    "GoLocation": [2426, 177, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Minoc Cave 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 2418, "y1": 81, "x2": 2442, "y2": 113 }],
-    "GoLocation": { "x": 2440, "y": 94, "z": 0 }
+    "Area": [[2418, 81, -128, 24, 32, 256]],
+    "GoLocation": [2440, 94, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Minoc Cave 3",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 2447, "y1": 39, "x2": 2489, "y2": 67 }],
-    "GoLocation": { "x": 2471, "y": 64, "z": 0 }
+    "Area": [[2447, 39, -128, 42, 28, 256]],
+    "GoLocation": [2471, 64, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Minoc Mine",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [
-      { "x1": 2556, "y1": 501, "x2": 2562, "y2": 504 },
-      { "x1": 2556, "y1": 474, "x2": 2582, "y2": 501 }
-    ],
-    "GoLocation": { "x": 2558, "y": 499, "z": 0 }
+    "Area": [[2556, 501, -128, 6, 3, 256], [2556, 474, -128, 26, 27, 256]],
+    "GoLocation": [2558, 499, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Avatar Isle Cave",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 4594, "y1": 3807, "x2": 4617, "y2": 3824 }],
-    "GoLocation": { "x": 4605, "y": 3815, "z": 0 }
+    "Area": [[4594, 3807, -128, 23, 17, 256]],
+    "GoLocation": [4605, 3815, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Ice Isle Cave 1",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 4018, "y1": 421, "x2": 4067, "y2": 470 }],
-    "GoLocation": { "x": 4054, "y": 440, "z": 3 }
+    "Area": [[4018, 421, -128, 49, 49, 256]],
+    "GoLocation": [4054, 440, 3]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Ice Isle Cave 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [
-      { "x1": 4002, "y1": 310, "x2": 4045, "y2": 351 },
-      { "x1": 4005, "y1": 298, "x2": 4027, "y2": 310 }
-    ],
-    "GoLocation": { "x": 4030, "y": 325, "z": 0 }
+    "Area": [[4002, 310, -128, 43, 41, 256], [4005, 298, -128, 22, 12, 256]],
+    "GoLocation": [4030, 325, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "North Territory Cave",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1973, "y1": 251, "x2": 1994, "y2": 274 }],
-    "GoLocation": { "x": 1984, "y": 262, "z": 8 }
+    "Area": [[1973, 251, -128, 21, 23, 256]],
+    "GoLocation": [1984, 262, 8]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Yew Cave",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 766, "y1": 1683, "x2": 778, "y2": 1697 }],
-    "GoLocation": { "x": 773, "y": 1684, "z": 0 }
+    "Area": [[766, 1683, -128, 12, 14, 256]],
+    "GoLocation": [773, 1684, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "North Territory Mine 1",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1713, "y1": 1055, "x2": 1753, "y2": 1080 }],
-    "GoLocation": { "x": 1723, "y": 1065, "z": 0 }
+    "Area": [[1713, 1055, -128, 40, 25, 256]],
+    "GoLocation": [1723, 1065, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "North Territory Mine 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1604, "y1": 958, "x2": 1650, "y2": 1009 }],
-    "GoLocation": { "x": 1638, "y": 974, "z": 0 }
+    "Area": [[1604, 958, -128, 46, 51, 256]],
+    "GoLocation": [1638, 974, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Mt Kendall",
-    "Map": "Trammel",
     "Priority": 50,
     "Area": [
-      { "x1": 2552, "y1": 448, "x2": 2623, "y2": 507 },
-      { "x1": 2547, "y1": 380, "x2": 2590, "y2": 448 },
-      { "x1": 2590, "y1": 413, "x2": 2623, "y2": 448 }
+      [2552, 448, -128, 71, 59, 256],
+      [2547, 380, -128, 43, 68, 256],
+      [2590, 413, -128, 33, 35, 256]
     ],
-    "GoLocation": { "x": 2593, "y": 477, "z": 60 }
+    "GoLocation": [2593, 477, 60]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "Covetous Mine",
-    "Map": "Trammel",
     "Priority": 50,
     "Area": [
-      { "x1": 2429, "y1": 866, "x2": 2448, "y2": 911 },
-      { "x1": 2448, "y1": 879, "x2": 2475, "y2": 907 },
-      { "x1": 2456, "y1": 907, "x2": 2475, "y2": 941 }
+      [2429, 866, -128, 19, 45, 256],
+      [2448, 879, -128, 27, 28, 256],
+      [2456, 907, -128, 19, 34, 256]
     ],
-    "GoLocation": { "x": 2445, "y": 880, "z": 0 }
+    "GoLocation": [2445, 880, 0]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [5426, 3120, 0],
+    "Map": "Felucca",
     "Name": "Terathan Keep",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
     "Area": [
-      { "x1": 5404, "y1": 3099, "x2": 5481, "y2": 3167 },
-      { "x1": 5120, "y1": 1530, "x2": 5374, "y2": 1788 }
+      [5404, 3099, -128, 77, 68, 256],
+      [5120, 1530, -128, 254, 258, 256]
     ],
-    "GoLocation": { "x": 5451, "y": 3143, "z": -60 },
-    "Entrance": { "x": 5426, "y": 3120 }
+    "GoLocation": [5451, 3143, -60],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [2922, 3402, 0],
+    "Map": "Felucca",
     "Name": "Fire",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5635, "y1": 1285, "x2": 5880, "y2": 1520 }],
-    "GoLocation": { "x": 5760, "y": 2908, "z": 15 },
-    "Entrance": { "x": 2922, "y": 3402 }
+    "Area": [[5635, 1285, -128, 245, 235, 256]],
+    "GoLocation": [5760, 2908, 15],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1996, 80, 0],
+    "Map": "Felucca",
     "Name": "Ice",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
     "Area": [
-      { "x1": 5668, "y1": 130, "x2": 5888, "y2": 268 },
-      { "x1": 5800, "y1": 319, "x2": 5863, "y2": 384 },
-      { "x1": 5654, "y1": 300, "x2": 5708, "y2": 340 }
+      [5668, 130, -128, 220, 138, 256],
+      [5800, 319, -128, 63, 65, 256],
+      [5654, 300, -128, 54, 40, 256]
     ],
-    "GoLocation": { "x": 5210, "y": 2322, "z": 30 },
-    "Entrance": { "x": 1996, "y": 80 }
+    "GoLocation": [5210, 2322, 30],
+    "Music": "Dungeon9"
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Delucia",
-    "Map": "Trammel",
     "Priority": 50,
     "Area": [
-      { "x1": 5123, "y1": 3942, "x2": 5315, "y2": 4064 },
-      { "x1": 5147, "y1": 4064, "x2": 5272, "y2": 4084 },
-      { "x1": 5235, "y1": 3930, "x2": 5315, "y2": 3942 }
+      [5123, 3942, -128, 192, 122, 256],
+      [5147, 4064, -128, 125, 20, 256],
+      [5235, 3930, -128, 80, 12, 256]
     ],
-    "GoLocation": { "x": 5228, "y": 3978, "z": 37 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
-    "Parent": "Delucia",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 5194, "y1": 4053, "x2": 5204, "y2": 4073 }]
+    "GoLocation": [5228, 3978, 37]
   },
   {
     "$type": "TownRegion",
+    "Map": "Felucca",
+    "Parent": "Delucia",
+    "Priority": 50,
+    "Area": [[5194, 4053, -128, 10, 20, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Name": "Papua",
-    "Map": "Trammel",
     "Priority": 50,
     "Area": [
-      { "x1": 5639, "y1": 3095, "x2": 5831, "y2": 3318 },
-      { "x1": 5831, "y1": 3237, "x2": 5851, "y2": 3267 }
+      [5639, 3095, -128, 192, 223, 256],
+      [5831, 3237, -128, 20, 30, 256]
     ],
-    "GoLocation": { "x": 5769, "y": 3176, "z": 0 }
+    "GoLocation": [5769, 3176, 0]
   },
   {
-    "$type": "BaseRegion",
-    "Map": "Trammel",
+    "$type": "TownRegion",
+    "Map": "Felucca",
     "Parent": "Papua",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 5757, "y1": 3150, "x2": 5781, "y2": 3174 }]
+    "Priority": 50,
+    "Area": [[5757, 3150, -128, 24, 24, 256]]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Felucca",
     "Name": "Wrong Entrance",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Mountn_a",
-    "Area": [{ "x1": 1939, "y1": 215, "x2": 2073, "y2": 352 }],
-    "GoLocation": { "x": 2043, "y": 236, "z": 13 }
+    "Area": [[1939, 215, -128, 134, 137, 256]],
+    "GoLocation": [2043, 236, 13],
+    "Music": "Mountn_a"
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Felucca",
     "Name": "Covetous Entrance",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Vesper",
-    "Area": [{ "x1": 2433, "y1": 846, "x2": 2561, "y2": 974 }],
-    "GoLocation": { "x": 2499, "y": 918, "z": 0 }
+    "Area": [[2433, 846, -128, 128, 128, 256]],
+    "GoLocation": [2499, 918, 0],
+    "Music": "Vesper"
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Felucca",
     "Name": "Despise Entrance",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 1289, "y1": 1064, "x2": 1321, "y2": 1101 }],
-    "GoLocation": { "x": 1298, "y": 1081, "z": 0 }
+    "Area": [[1289, 1064, -128, 32, 37, 256]],
+    "GoLocation": [1298, 1081, 0]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Felucca",
     "Name": "Despise Passage",
-    "Map": "Trammel",
     "Priority": 50,
     "Area": [
-      { "x1": 1338, "y1": 1060, "x2": 1389, "y2": 1122 },
-      { "x1": 1354, "y1": 1122, "x2": 1396, "y2": 1243 },
-      { "x1": 1349, "y1": 1122, "x2": 1354, "y2": 1224 }
+      [1338, 1060, -128, 51, 62, 256],
+      [1354, 1122, -128, 42, 121, 256],
+      [1349, 1122, -128, 5, 102, 256]
     ],
-    "GoLocation": { "x": 1380, "y": 1114, "z": 0 }
+    "GoLocation": [1380, 1114, 0]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1492, 1641, 0],
+    "Map": "Felucca",
     "Name": "Misc Dungeons",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 5886, "y1": 1281, "x2": 6143, "y2": 1535 }],
-    "GoLocation": { "x": 6032, "y": 1499, "z": 0 },
-    "Entrance": { "x": 1492, "y": 1641 }
+    "Area": [[5886, 1281, -128, 257, 254, 256]],
+    "GoLocation": [6032, 1499, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1014, 1434, 0],
+    "Map": "Felucca",
     "Name": "Orc Cave",
-    "Map": "Trammel",
     "Priority": 50,
-    "Music": "Dungeon9",
     "Area": [
-      { "x1": 5281, "y1": 1283, "x2": 5373, "y2": 1386 },
-      { "x1": 5267, "y1": 1955, "x2": 5364, "y2": 2046 },
-      { "x1": 5127, "y1": 1941, "x2": 5164, "y2": 2024 }
+      [5281, 1283, -128, 92, 103, 256],
+      [5267, 1955, -128, 97, 91, 256],
+      [5127, 1941, -128, 37, 83, 256]
     ],
-    "GoLocation": { "x": 5137, "y": 2015, "z": 0 },
-    "Entrance": { "x": 1014, "y": 1434 }
+    "GoLocation": [5137, 2015, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "BaseRegion",
+    "RuneName": "A Cotton Field in Moonglow",
+    "Map": "Felucca",
     "Name": "A Cotton Field in Moonglow",
-    "Map": "Trammel",
     "Priority": 50,
-    "rune": "A Cotton Field in Moonglow",
-    "Area": [{ "x1": 4557, "y1": 1471, "x2": 4577, "y2": 1481 }],
-    "GoLocation": { "x": 4567, "y": 1475, "z": 0 }
+    "Area": [[4557, 1471, -128, 20, 10, 256]],
+    "GoLocation": [4567, 1475, 0]
   },
   {
     "$type": "BaseRegion",
+    "RuneName": "A Wheatfield in Skara Brae",
+    "Map": "Felucca",
     "Name": "A Wheatfield in Skara Brae 1",
-    "Map": "Trammel",
     "Priority": 50,
-    "rune": "A Wheatfield in Skara Brae",
-    "Area": [{ "x1": 796, "y1": 2152, "x2": 832, "y2": 2176 }],
-    "GoLocation": { "x": 813, "y": 2163, "z": 0 }
+    "Area": [[796, 2152, -128, 36, 24, 256]],
+    "GoLocation": [813, 2163, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "A Carrot Field in Skara Brae",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2251, "x2": 832, "y2": 2259 }],
-    "GoLocation": { "x": 823, "y": 2254, "z": 0 }
+    "Area": [[816, 2251, -128, 16, 8, 256]],
+    "GoLocation": [823, 2254, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "An Onion Field in Skara Brae",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2261, "x2": 832, "y2": 2269 }],
-    "GoLocation": { "x": 823, "y": 2264, "z": 0 }
+    "Area": [[816, 2261, -128, 16, 8, 256]],
+    "GoLocation": [823, 2264, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "A Cabbage Field in Skara Brae 1",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2271, "x2": 832, "y2": 2279 }],
-    "GoLocation": { "x": 823, "y": 2264, "z": 0 }
+    "Area": [[816, 2271, -128, 16, 8, 256]],
+    "GoLocation": [823, 2264, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "A Cabbage Field in Skara Brae 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2281, "x2": 832, "y2": 2289 }],
-    "GoLocation": { "x": 823, "y": 2274, "z": 0 }
+    "Area": [[816, 2281, -128, 16, 8, 256]],
+    "GoLocation": [823, 2274, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "A Wheatfield in Skara Brae 2",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 835, "y1": 2344, "x2": 851, "y2": 2360 }],
-    "GoLocation": { "x": 843, "y": 2352, "z": 0 }
+    "Area": [[835, 2344, -128, 16, 16, 256]],
+    "GoLocation": [843, 2352, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Felucca",
     "Name": "A Cotton Field in Skara Brae",
-    "Map": "Trammel",
     "Priority": 50,
-    "Area": [{ "x1": 816, "y1": 2344, "x2": 832, "y2": 2368 }],
-    "GoLocation": { "x": 823, "y": 2355, "z": 0 }
+    "Area": [[816, 2344, -128, 16, 24, 256]],
+    "GoLocation": [823, 2355, 0]
   },
   {
-    "$type": "NoHousingRegion",
-    "Name": "FireIsleCasino",
+    "$type": "GuardedRegion",
     "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 4038, "y1": 3303, "x2": 4098, "y2": 3367 }],
-    "GoLocation": { "x": 4047, "y": 3371, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Compassion",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 1851, "y1": 867, "x2": 1865, "y2": 881 }],
-    "GoLocation": { "x": 1856, "y": 872, "z": -1 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Chaos Shrine",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 1456, "y1": 840, "x2": 1460, "y2": 847 }],
-    "GoLocation": { "x": 1456, "y": 854, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Honesty",
-    "Map": "Trammel",
-    "Priority": 37,
-    "Area": [{ "x1": 4209, "y1": 560, "x2": 4216, "y2": 568 }],
-    "GoLocation": { "x": 4217, "y": 564, "z": 36 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Honor",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 1721, "y1": 3525, "x2": 1729, "y2": 3531 }],
-    "GoLocation": { "x": 1730, "y": 3528, "z": 3 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Humility",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 4270, "y1": 3694, "x2": 4279, "y2": 3703 }],
-    "GoLocation": { "x": 4276, "y": 3699, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Justice",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 1297, "y1": 629, "x2": 1306, "y2": 638 }],
-    "GoLocation": { "x": 1301, "y": 639, "z": 16 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Sacrifice",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 3352, "y1": 286, "x2": 3358, "y2": 293 }],
-    "GoLocation": { "x": 3355, "y": 299, "z": 9 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Spirituality",
-    "Map": "Trammel",
+    "Name": "Moongates",
     "Priority": 50,
     "Area": [
-      { "x1": 1590, "y1": 2485, "x2": 1600, "y2": 2496 },
-      { "x1": 1599, "y1": 2488, "x2": 1609, "y2": 2493 }
-    ],
-    "GoLocation": { "x": 1589, "y": 2485, "z": 5 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Valor",
-    "Map": "Trammel",
-    "Priority": 37,
-    "Area": [{ "x1": 2488, "y1": 3928, "x2": 2497, "y2": 3939 }],
-    "GoLocation": { "x": 2496, "y": 3932, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "South Britannian Sea",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 688, "y1": 3700, "x2": 2100, "y2": 4080 }]
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Paroxysmus Exit",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 5620, "y1": 3032, "x2": 5630, "y2": 3042 }],
-    "GoLocation": { "x": 5623, "y": 3038, "z": 15 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Sanctuary Entrance",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 759, "y1": 1635, "x2": 771, "y2": 1647 }],
-    "GoLocation": { "x": 762, "y": 1645, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Solen Hives",
-    "Map": "Trammel",
-    "Priority": 50,
-    "Area": [{ "x1": 5640, "y1": 1776, "x2": 5935, "y2": 2039 }],
-    "GoLocation": { "x": 5774, "y": 1896, "z": 20 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Twisted Weald",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Music": "DreadHornArea",
-    "Area": [{ "x1": 2107, "y1": 1145, "x2": 2254, "y2": 1280 }],
-    "GoLocation": { "x": 2189, "y": 1253, "z": 0 },
-    "Entrance": { "x": 1450, "y": 1473 }
-  },
-  {
-    "$type": "TwistedWealdDesertRegion",
-    "Name": "Twisted Weald Desert",
-    "Map": "Ilshenar",
-    "Parent": "Twisted Weald",
-    "Area": [
-      { "x1": 2139, "y1": 1187, "x2": 2152, "y2": 1194 },
-      { "x1": 2152, "y1": 1164, "x2": 2190, "y2": 1194 },
-      { "x1": 2190, "y1": 1164, "x2": 2225, "y2": 1212 }
+      [1330, 1991, -128, 13, 13, 256],
+      [1494, 3767, -128, 12, 11, 256],
+      [2694, 685, -128, 15, 16, 256],
+      [1823, 2943, -128, 11, 11, 256],
+      [761, 741, -128, 19, 21, 256],
+      [638, 2062, -128, 12, 11, 256],
+      [4459, 1276, -128, 16, 16, 256],
+      [3554, 2132, -128, 18, 18, 256]
     ]
   },
   {
-    "$type": "BaseRegion",
-    "Name": "Sheep Farm",
-    "Map": "Ilshenar",
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "The Heartwood",
     "Priority": 50,
-    "Area": [{ "x1": 1303, "y1": 1312, "x2": 1333, "y2": 1342 }]
+    "Area": [[6911, 255, -128, 257, 257, 256]],
+    "GoLocation": [6984, 337, 0],
+    "Music": "ElfCity"
   },
   {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Valor",
-    "Map": "Ilshenar",
-    "Priority": 37,
-    "Area": [{ "x1": 512, "y1": 200, "x2": 544, "y2": 232 }],
-    "GoLocation": { "x": 539, "y": 221, "z": -36 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Chaos Shrine",
-    "Map": "Ilshenar",
+    "$type": "DungeonRegion",
+    "Entrance": [762, 1645, 0],
+    "Map": "Trammel",
+    "Name": "Sanctuary",
     "Priority": 50,
-    "Area": [{ "x1": 1736, "y1": 224, "x2": 1760, "y2": 248 }],
-    "GoLocation": { "x": 1748, "y": 236, "z": 0 }
+    "Area": [[6144, 0, -128, 255, 255, 256]],
+    "GoLocation": [6174, 23, 0],
+    "Music": "Dungeon9"
   },
   {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Sacrifice",
-    "Map": "Ilshenar",
+    "$type": "DungeonRegion",
+    "Entrance": [1716, 892, 0],
+    "Map": "Trammel",
+    "Name": "The Painted Caves",
     "Priority": 50,
-    "Area": [{ "x1": 1160, "y1": 1280, "x2": 1192, "y2": 1296 }],
-    "GoLocation": { "x": 1196, "y": 1290, "z": -25 }
+    "Area": [[6240, 850, -128, 75, 70, 256]],
+    "GoLocation": [6308, 892, -1],
+    "Music": "Dungeon9"
   },
   {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Honesty",
-    "Map": "Ilshenar",
-    "Priority": 37,
-    "Area": [{ "x1": 712, "y1": 1344, "x2": 736, "y2": 1376 }],
-    "GoLocation": { "x": 725, "y": 1355, "z": -61 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Compassion",
-    "Map": "Ilshenar",
+    "$type": "DungeonRegion",
+    "Entrance": [3784, 1097, 14],
+    "Map": "Trammel",
+    "Name": "The Prism of Light",
     "Priority": 50,
-    "Area": [{ "x1": 1200, "y1": 448, "x2": 1232, "y2": 488 }],
-    "GoLocation": { "x": 1223, "y": 475, "z": -16 }
+    "Area": [[6400, 0, -128, 221, 255, 256]],
+    "GoLocation": [6474, 188, 0],
+    "Music": "Dungeon9"
   },
   {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Spirituality",
-    "Map": "Ilshenar",
+    "$type": "DungeonRegion",
+    "Entrance": [587, 1641, -1],
+    "Map": "Trammel",
+    "Name": "Blighted Grove",
     "Priority": 50,
-    "Area": [{ "x1": 1520, "y1": 1336, "x2": 1536, "y2": 1352 }],
-    "GoLocation": { "x": 1528, "y": 1344, "z": 0 }
+    "Area": [[6440, 820, -128, 160, 150, 256]],
+    "GoLocation": [6478, 863, 11],
+    "Music": "MelisandesLair"
   },
   {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Humility",
-    "Map": "Ilshenar",
+    "$type": "DungeonRegion",
+    "Entrance": [5574, 3024, 31],
+    "Map": "Trammel",
+    "Name": "The Palace of Paroxysmus",
     "Priority": 50,
-    "Area": [{ "x1": 272, "y1": 1008, "x2": 296, "y2": 1024 }],
-    "GoLocation": { "x": 284, "y": 1016, "z": 0 }
+    "Area": [[6191, 311, -128, 370, 360, 256]],
+    "GoLocation": [6222, 335, 60],
+    "Music": "ParoxysmusLair"
   },
   {
     "$type": "BaseRegion",
-    "Name": "Shrine of Honor",
-    "Map": "Ilshenar",
+    "Map": "Trammel",
+    "Name": "Bravehorn's drinking pool",
     "Priority": 50,
-    "Area": [{ "x1": 736, "y1": 712, "x2": 760, "y2": 744 }],
-    "GoLocation": { "x": 748, "y": 728, "z": 0 }
+    "Area": [[1302, 2331, -128, 38, 22, 256]]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Terort Skitas",
-    "Map": "Ilshenar",
-    "Priority": 11,
-    "Area": [{ "x1": 528, "y1": 376, "x2": 624, "y2": 464 }],
-    "GoLocation": { "x": 568, "y": 430, "z": 41 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Pormir Harm",
-    "Map": "Ilshenar",
+    "Map": "Trammel",
+    "Name": "Huntsman's Forest",
     "Priority": 50,
-    "Music": "Stones2",
-    "Area": [{ "x1": 736, "y1": 480, "x2": 768, "y2": 504 }],
-    "GoLocation": { "x": 745, "y": 492, "z": -66 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Pormir Felwis",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Area": [{ "x1": 472, "y1": 336, "x2": 512, "y2": 368 }],
-    "GoLocation": { "x": 472, "y": 352, "z": -78 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Cyclops Temple",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Area": [{ "x1": 880, "y1": 1256, "x2": 936, "y2": 1368 }],
-    "GoLocation": { "x": 901, "y": 1297, "z": -71 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Rat Fort",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Area": [{ "x1": 616, "y1": 792, "x2": 672, "y2": 848 }],
-    "GoLocation": { "x": 642, "y": 845, "z": -58 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Rat Fort Cellar",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Area": [{ "x1": 160, "y1": 736, "x2": 192, "y2": 768 }],
-    "GoLocation": { "x": 171, "y": 750, "z": -28 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Entrance to Central Ilshenar 1",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Area": [{ "x1": 1136, "y1": 584, "x2": 1152, "y2": 600 }],
-    "GoLocation": { "x": 1141, "y": 594, "z": -80 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Entrance to Central Ilshenar 2",
-    "Map": "Ilshenar",
-    "Priority": 50,
-    "Area": [{ "x1": 1232, "y1": 576, "x2": 1240, "y2": 592 }],
-    "GoLocation": { "x": 1238, "y": 583, "z": -19 }
+    "Area": [[1595, 550, -128, 120, 120, 256]]
   },
   {
     "$type": "TownRegion",
-    "Name": "Montor",
-    "Map": "Ilshenar",
-    "Priority": 41,
-    "GuardsDisabled": true,
+    "Map": "Trammel",
+    "Name": "Cove",
+    "Priority": 50,
+    "Area": [[2200, 1110, 0, 50, 50, 128], [2200, 1160, 0, 86, 86, 128]],
+    "GoLocation": [2275, 1210, 0],
+    "Music": "Cove"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Britain",
+    "Priority": 50,
     "Area": [
-      { "x1": 1576, "y1": 272, "x2": 1720, "y2": 368 },
-      { "x1": 1616, "y1": 200, "x2": 1696, "y2": 272 },
-      { "x1": 1696, "y1": 144, "x2": 1736, "y2": 272 },
-      { "x1": 1736, "y1": 144, "x2": 1768, "y2": 208 }
+      [1416, 1498, 0, 324, 279, 128],
+      [1500, 1408, 0, 46, 90, 128],
+      [1385, 1538, 0, 31, 239, 128],
+      [1416, 1777, 0, 324, 60, 128],
+      [1385, 1777, 0, 31, 130, 128],
+      [1093, 1538, 0, 292, 369, 128]
     ],
-    "GoLocation": { "x": 1646, "y": 319, "z": 48 }
+    "GoLocation": [1495, 1629, 10],
+    "Music": "Britain1"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Priority": 50,
+    "Area": [
+      [1492, 1602, 0, 8, 19, 128],
+      [1500, 1610, 0, 8, 16, 128],
+      [1576, 1584, 0, 24, 16, 128],
+      [1456, 1512, 0, 16, 16, 128],
+      [1472, 1512, 0, 8, 8, 128],
+      [1424, 1712, 0, 8, 24, 128],
+      [1432, 1712, 0, 8, 12, 128],
+      [1486, 1684, 0, 8, 8, 128],
+      [1494, 1676, 0, 8, 24, 128],
+      [1608, 1584, 0, 24, 8, 128],
+      [1616, 1576, 0, 8, 8, 128],
+      [1544, 1760, 0, 16, 16, 128],
+      [1560, 1760, 0, 8, 8, 128]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Wheatfield in Britain 1",
+    "Priority": 50,
+    "Area": [[1120, 1776, -128, 32, 32, 256]],
+    "GoLocation": [1135, 1791, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Wheatfield in Britain 2",
+    "Priority": 50,
+    "Area": [[1184, 1808, -128, 32, 32, 256]],
+    "GoLocation": [1199, 1823, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Wheatfield in Britain 3",
+    "Priority": 50,
+    "Area": [[1216, 1872, -128, 32, 32, 256]],
+    "GoLocation": [1231, 1887, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Carrot Field in Britain 1",
+    "Priority": 50,
+    "Area": [[1208, 1712, -128, 16, 24, 256]],
+    "GoLocation": [1215, 1723, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "An Onion Field in Britain 1",
+    "Priority": 50,
+    "Area": [[1224, 1712, -128, 16, 24, 256]],
+    "GoLocation": [1231, 1723, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Cabbage Field in Britain 1",
+    "Priority": 50,
+    "Area": [[1176, 1672, -128, 16, 23, 256]],
+    "GoLocation": [1183, 1683, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Turnip Field in Britain 1",
+    "Priority": 50,
+    "Area": [[1192, 1672, -128, 16, 24, 256]],
+    "GoLocation": [1199, 1683, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Wheatfield in Britain 4",
+    "Priority": 50,
+    "Area": [[1104, 1608, -128, 32, 32, 256]],
+    "GoLocation": [1120, 1624, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Wheatfield in Britain 5",
+    "Priority": 50,
+    "Area": [[1136, 1560, -128, 32, 32, 256]],
+    "GoLocation": [1152, 1576, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Turnip Field in Britain 2",
+    "Priority": 50,
+    "Area": [[1208, 1592, -128, 16, 24, 256]],
+    "GoLocation": [1216, 1604, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Britain",
+    "Name": "A Carrot Field in Britain 2",
+    "Priority": 50,
+    "Area": [[1224, 1592, -128, 16, 24, 256]],
+    "GoLocation": [1232, 1604, 0]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Britain Graveyard",
+    "Priority": 50,
+    "Area": [[1333, 1441, -128, 84, 82, 256]],
+    "GoLocation": [1384, 1492, 10]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Jhelom Islands",
+    "Priority": 50,
+    "Area": [
+      [1111, 3567, -128, 33, 21, 256],
+      [1078, 3588, -128, 124, 121, 256],
+      [1224, 3592, -128, 309, 473, 256]
+    ],
+    "GoLocation": [1383, 3815, 0],
+    "Music": "Jhelom"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Jhelom Islands",
+    "Name": "Jhelom",
+    "Priority": 50,
+    "Area": [
+      [1303, 3670, -20, 189, 225, 148],
+      [1338, 3895, -20, 74, 28, 148],
+      [1383, 3951, -20, 109, 94, 148]
+    ],
+    "GoLocation": [1383, 3815, 0]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": "Jhelom",
+    "Priority": 50,
+    "Area": [
+      [1352, 3800, -20, 16, 32, 148],
+      [1368, 3808, -20, 8, 16, 148],
+      [1432, 3768, -20, 32, 8, 148],
+      [1440, 3776, -20, 24, 8, 148]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Minoc",
+    "Priority": 50,
+    "Area": [
+      [2411, 366, -128, 135, 241, 256],
+      [2548, 495, -128, 72, 55, 256],
+      [2564, 585, -128, 3, 42, 256],
+      [2567, 585, -128, 61, 61, 256],
+      [2499, 627, -128, 68, 63, 256]
+    ],
+    "GoLocation": [2466, 544, 0],
+    "Music": "Minoc"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Minoc",
+    "Priority": 50,
+    "Area": [
+      [2457, 397, -128, 40, 8, 256],
+      [2465, 405, -128, 8, 8, 256],
+      [2481, 405, -128, 8, 8, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Haven Island",
+    "Priority": 50,
+    "Area": [[3314, 2345, -128, 500, 750, 256]],
+    "GoLocation": [3627, 2606, 0]
+  },
+  {
+    "$type": "GuardedRegion",
+    "Map": "Trammel",
+    "Parent": "Haven Island",
+    "Name": "New Haven Moongate",
+    "Priority": 50,
+    "Area": [[3446, 2674, -128, 10, 10, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "Haven Island",
+    "Name": "New Haven",
+    "Priority": 50,
+    "Area": [[3416, 2480, -128, 129, 168, 256]],
+    "GoLocation": [3503, 2574, 14],
+    "Music": "Ocllo"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Little Shop of Alchemy in New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Alchemist",
+    "Priority": 50,
+    "Area": [[3457, 2563, -128, 9, 9, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Bardic Guild in New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Bard",
+    "Priority": 50,
+    "Area": [
+      [3410, 2598, -128, 9, 9, 256],
+      [3419, 2599, -128, 2, 7, 256],
+      [3408, 2607, -128, 7, 5, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Warrior Guild Hall in New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "Warrior's Guild Hall",
+    "Priority": 50,
+    "Area": [[3520, 2528, -128, 23, 24, 256], [3520, 2552, -128, 14, 11, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "Warrior's Guild Hall",
+    "Name": "the New Haven Warrior",
+    "Priority": 50,
+    "Area": [[3523, 2546, -128, 6, 16, 256], [3529, 2550, -128, 4, 12, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "Warrior's Guild Hall",
+    "Name": "the New Haven Bowyer",
+    "Priority": 50,
+    "Area": [[3529, 2531, -128, 12, 19, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "A Stitch In Time in New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Tailor",
+    "Priority": 50,
+    "Area": [[3492, 2546, -128, 10, 11, 256], [3502, 2546, -128, 3, 4, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Carpenters of New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Carpenter",
+    "Priority": 50,
+    "Area": [[3439, 2632, -128, 9, 11, 256], [3440, 2643, -128, 7, 5, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Mapmakers of New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Mapmaker",
+    "Priority": 50,
+    "Area": [[3490, 2588, -128, 7, 7, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "New Haven Magery School",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Mage",
+    "Priority": 50,
+    "Area": [[3464, 2488, -128, 27, 16, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Bountiful Harvest Inn in New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Inn",
+    "Priority": 50,
+    "Area": [[3493, 2513, -128, 10, 10, 256], [3503, 2513, -128, 7, 17, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the docks in New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Docks",
+    "Priority": 50,
+    "Area": [
+      [3500, 2592, -128, 8, 25, 256],
+      [3508, 2592, -128, 8, 7, 256],
+      [3516, 2592, -128, 8, 16, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the First Bank of New Haven",
+    "MinExpansion": "ML",
+    "Map": "Trammel",
+    "Parent": "New Haven",
+    "Name": "the New Haven Bank",
+    "Priority": 50,
+    "Area": [[3479, 2565, -128, 13, 15, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "Haven City",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven Island",
+    "Name": "Haven",
+    "Priority": 50,
+    "Area": [
+      [3590, 2460, -128, 118, 225, 256],
+      [3568, 2552, -128, 22, 79, 256],
+      [3708, 2558, -128, 53, 154, 256],
+      [3695, 2685, -128, 13, 27, 256]
+    ],
+    "GoLocation": [3650, 2519, 0],
+    "Music": "Ocllo"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Woodsman in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Woodsman in Haven",
+    "Priority": 50,
+    "Area": [[3736, 2680, -128, 8, 16, 256], [3744, 2680, -128, 8, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Prime Cut Butcher Shop in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Prime Cut Butcher Shop in Haven",
+    "Priority": 50,
+    "Area": [[3704, 2648, -128, 16, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "a farm in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Priority": 50,
+    "Area": [[3728, 2632, -128, 8, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "a farm in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Priority": 50,
+    "Area": [[3704, 2584, -128, 8, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "a farm in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Priority": 50,
+    "Area": [[3736, 2561, -128, 8, 7, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Mapmakers of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Mapmakers of Haven",
+    "Priority": 50,
+    "Area": [[3624, 2632, -128, 16, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Haven Blacksmith",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Haven Blacksmith",
+    "Priority": 50,
+    "Area": [[3641, 2613, -128, 5, 11, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Second Bank of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Second Bank of Haven",
+    "Priority": 50,
+    "Area": [[3615, 2614, -128, 16, 9, 256], [3615, 2609, -128, 9, 5, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Uzeraan's Mansion",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Uzeraan's Mansion",
+    "Priority": 50,
+    "Area": [
+      [3583, 2567, -128, 25, 41, 256],
+      [3608, 2572, -128, 5, 31, 256],
+      [3572, 2592, -128, 11, 11, 256],
+      [3575, 2582, -128, 8, 10, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Uzeraan's Mansion",
+    "Priority": 50,
+    "Area": [
+      [3592, 2595, -128, 20, 4, 256],
+      [3595, 2599, -128, 17, 3, 256],
+      [3595, 2602, -128, 12, 5, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Last Chance Provisioners in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Last Chance Provisioners in Haven",
+    "Priority": 50,
+    "Area": [[3666, 2592, -128, 15, 8, 256], [3673, 2587, -128, 8, 5, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Healers of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Healers of Haven",
+    "Priority": 50,
+    "Area": [
+      [3659, 2577, -128, 15, 7, 256],
+      [3661, 2576, -128, 11, 1, 256],
+      [3663, 2575, -128, 7, 1, 256],
+      [3661, 2584, -128, 11, 1, 256],
+      [3663, 2585, -128, 7, 1, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Little Shop of Magic in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Little Shop of Magic in Haven",
+    "Priority": 50,
+    "Area": [
+      [3623, 2565, -128, 19, 12, 256],
+      [3623, 2577, -128, 5, 4, 256],
+      [3637, 2577, -128, 5, 4, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Shakin' Bakery in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Shakin' Bakery in Haven",
+    "Priority": 50,
+    "Area": [
+      [3624, 2528, -128, 8, 24, 256],
+      [3632, 2528, -128, 8, 8, 256],
+      [3632, 2544, -128, 8, 8, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Bardic Guild in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Bardic Guild in Haven",
+    "Priority": 50,
+    "Area": [[3672, 2528, -128, 7, 16, 256], [3655, 2528, -128, 17, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Carpenters of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Carpenters of Haven",
+    "Priority": 50,
+    "Area": [[3632, 2496, -128, 16, 8, 256], [3640, 2504, -128, 8, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Haven Clockworks and Tinker Shop",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Haven Clockworks and Tinker Shop",
+    "Priority": 50,
+    "Area": [[3656, 2504, -128, 16, 8, 256], [3664, 2495, -128, 8, 9, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Haven Thieves' Guild",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Haven Thieves' Guild",
+    "Priority": 50,
+    "Area": [[3688, 2504, -128, 8, 16, 256], [3696, 2504, -128, 8, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "A Stitch in Time in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "A Stitch in Time in Haven",
+    "Priority": 50,
+    "Area": [[3688, 2464, -128, 8, 24, 256], [3680, 2472, -128, 24, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Haven Public Library",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Haven Public Library",
+    "Priority": 50,
+    "Area": [[3608, 2464, -128, 8, 16, 256], [3616, 2472, -128, 8, 8, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Gentle Rest Inn in New Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Gentle Rest Inn in New Haven",
+    "Priority": 50,
+    "Area": [[3493, 2513, -128, 16, 7, 256], [3503, 2513, -128, 7, 16, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Albatross Bar and Grill in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Albatross Bar and Grill in Haven",
+    "Priority": 50,
+    "Area": [[3664, 2640, -128, 8, 16, 256], [3672, 2648, -128, 8, 8, 256]],
+    "Music": "Tavern01"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Proving Grounds in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Proving Grounds in Haven",
+    "Priority": 50,
+    "Area": [[3728, 2575, -128, 8, 17, 256], [3736, 2575, -128, 1, 7, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Bullseye Marksmen in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Bullseye Marksmen in Haven",
+    "Priority": 50,
+    "Area": [[3742, 2575, -128, 8, 11, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the docks in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the docks in Haven",
+    "Priority": 50,
+    "Area": [
+      [3645, 2657, -128, 27, 9, 256],
+      [3645, 2666, -128, 6, 18, 256],
+      [3659, 2666, -128, 6, 18, 256]
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Mystic Mines of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Mystic Mines of Haven",
+    "Priority": 50,
+    "Area": [[3752, 2698, -128, 5, 9, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Trinsic",
+    "Priority": 50,
+    "Area": [
+      [1856, 2636, -128, 75, 28, 256],
+      [1816, 2664, -128, 283, 231, 256],
+      [2099, 2782, -128, 18, 25, 256],
+      [1970, 2895, -128, 47, 32, 256],
+      [1796, 2696, -128, 20, 67, 256],
+      [1800, 2796, -128, 16, 52, 256]
+    ],
+    "GoLocation": [1867, 2780, 0],
+    "Music": "Trinsic"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Trinsic",
+    "Priority": 50,
+    "Area": [
+      [1834, 2728, -128, 22, 16, 256],
+      [2024, 2784, -128, 16, 20, 256],
+      [2026, 2804, -128, 14, 2, 256],
+      [2024, 2806, -128, 16, 7, 256],
+      [1923, 2786, -128, 12, 22, 256],
+      [1935, 2786, -128, 7, 14, 256]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Vesper",
+    "Priority": 50,
+    "Area": [
+      [2893, 598, -128, 121, 50, 256],
+      [2816, 648, -128, 249, 365, 256],
+      [2734, 944, -128, 82, 4, 256],
+      [2728, 948, -128, 88, 53, 256]
+    ],
+    "GoLocation": [2899, 676, 0],
+    "Music": "Vesper"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Vesper",
+    "Priority": 50,
+    "Area": [
+      [2952, 864, -128, 16, 32, 256],
+      [2968, 872, -128, 8, 16, 256],
+      [2776, 952, -128, 16, 32, 256],
+      [2768, 960, -128, 8, 16, 256],
+      [2892, 901, -128, 16, 19, 256],
+      [2908, 904, -128, 8, 8, 256]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Yew",
+    "Priority": 50,
+    "Area": [
+      [92, 656, 0, 349, 225, 39],
+      [441, 746, 0, 216, 135, 39],
+      [258, 881, 0, 399, 380, 39],
+      [657, 922, 0, 42, 307, 39],
+      [657, 806, 0, 17, 28, 39],
+      [718, 874, 0, 38, 22, 39]
+    ],
+    "GoLocation": [546, 992, 0],
+    "Music": "Yew"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Yew",
+    "Priority": 50,
+    "Area": [[600, 808, 0, 24, 24, 39]]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "A Field of Sheep in Yew",
+    "Map": "Trammel",
+    "Parent": "Yew",
+    "Name": "A Field of Sheep in Yew 1",
+    "Priority": 50,
+    "Area": [[664, 928, -128, 22, 22, 256]],
+    "GoLocation": [675, 939, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "A Field of Sheep in Yew",
+    "Map": "Trammel",
+    "Parent": "Yew",
+    "Name": "A Field of Sheep in Yew 2",
+    "Priority": 50,
+    "Area": [[664, 1168, -128, 22, 22, 256]],
+    "GoLocation": [675, 1179, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "A Farm in Yew",
+    "Map": "Trammel",
+    "Parent": "Yew",
+    "Name": "A Farm in Yew",
+    "Priority": 50,
+    "Area": [[560, 1088, -128, 22, 22, 256]],
+    "GoLocation": [571, 1099, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "A Wheatfield in Yew",
+    "Map": "Trammel",
+    "Parent": "Yew",
+    "Name": "A Wheatfield in Yew 1",
+    "Priority": 50,
+    "Area": [[560, 1232, -128, 16, 16, 256]],
+    "GoLocation": [567, 1239, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "A Wheatfield in Yew",
+    "Map": "Trammel",
+    "Parent": "Yew",
+    "Name": "A Wheatfield in Yew 2",
+    "Priority": 50,
+    "Area": [[368, 1176, -128, 14, 32, 256]],
+    "GoLocation": [375, 1191, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Wind",
+    "Priority": 50,
+    "Area": [
+      [5294, 19, -128, 72, 120, 256],
+      [5132, 58, -128, 81, 68, 256],
+      [5197, 126, -128, 55, 78, 256],
+      [5132, 3, -128, 70, 55, 256],
+      [5252, 112, -128, 42, 58, 256],
+      [5213, 98, -128, 39, 28, 256],
+      [5279, 57, -128, 15, 55, 256],
+      [5252, 170, -128, 32, 8, 256],
+      [5286, 25, -128, 8, 32, 256],
+      [5252, 178, -128, 20, 5, 256],
+      [5252, 183, -128, 10, 10, 256]
+    ],
+    "GoLocation": [5223, 190, 5],
+    "Music": "Wind"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Wind",
+    "Priority": 50,
+    "Area": [
+      [5159, 15, -128, 25, 9, 256],
+      [5159, 24, -128, 9, 16, 256],
+      [5175, 24, -128, 9, 8, 256],
+      [5212, 159, -128, 9, 24, 256],
+      [5221, 171, -128, 7, 12, 256],
+      [5206, 164, -128, 6, 15, 256],
+      [5303, 28, -128, 16, 14, 256]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Serpent's Hold",
+    "Priority": 50,
+    "Area": [[2868, 3324, 0, 205, 195, 128]],
+    "GoLocation": [3010, 3371, 15],
+    "Music": "Serpents"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Serpent's Hold",
+    "Priority": 50,
+    "Area": [
+      [2960, 3400, 0, 16, 16, 128],
+      [2968, 3416, 0, 8, 16, 128],
+      [3008, 3450, 0, 14, 14, 128]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Skara Brae",
+    "Priority": 50,
+    "Area": [[538, 2107, -128, 150, 190, 256]],
+    "GoLocation": [632, 2233, 0],
+    "Music": "Skarabra"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Skara Brae",
+    "Priority": 50,
+    "Area": [
+      [600, 2232, -128, 16, 24, 256],
+      [592, 2240, -128, 8, 16, 256],
+      [616, 2240, -128, 8, 16, 256],
+      [552, 2168, -128, 16, 24, 256],
+      [568, 2168, -128, 8, 8, 256]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Nujel'm",
+    "Priority": 50,
+    "Area": [[3475, 1000, 0, 360, 435, 128]],
+    "GoLocation": [3732, 1279, 0],
+    "Music": "Nujelm"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Nujel'm",
+    "Priority": 50,
+    "Area": [
+      [3736, 1184, 0, 16, 23, 128],
+      [3728, 1192, 0, 8, 15, 128],
+      [3728, 1288, 0, 23, 15, 128],
+      [3728, 1303, 0, 16, 9, 128],
+      [3728, 1312, 0, 12, 8, 128],
+      [3728, 1320, 0, 16, 23, 128],
+      [3744, 1328, 0, 7, 15, 128],
+      [3760, 1216, 0, 12, 24, 128],
+      [3772, 1220, 0, 4, 16, 128],
+      [3776, 1224, 0, 8, 8, 128],
+      [3728, 1248, 0, 16, 24, 128],
+      [3744, 1248, 0, 8, 8, 128],
+      [3744, 1264, 0, 8, 8, 128]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Moonglow",
+    "Priority": 50,
+    "Area": [
+      [4535, 844, 0, 20, 3, 128],
+      [4530, 847, 0, 31, 61, 128],
+      [4521, 914, 0, 56, 49, 128],
+      [4278, 915, 0, 54, 19, 128],
+      [4283, 944, 0, 53, 73, 128],
+      [4377, 1015, 0, 59, 37, 128],
+      [4367, 1050, 0, 142, 145, 128],
+      [4539, 1036, 0, 27, 18, 128],
+      [4517, 1053, 0, 23, 22, 128],
+      [4389, 1198, 0, 47, 39, 128],
+      [4466, 1211, 0, 32, 25, 128],
+      [4700, 1108, 0, 17, 18, 128],
+      [4656, 1127, 0, 26, 13, 128],
+      [4678, 1162, 0, 25, 25, 128],
+      [4613, 1196, 0, 23, 22, 128],
+      [4646, 1212, 0, 14, 17, 128],
+      [4677, 1214, 0, 26, 22, 128],
+      [4622, 1316, 0, 22, 24, 128],
+      [4487, 1353, 0, 59, 21, 128],
+      [4477, 1374, 0, 69, 35, 128],
+      [4659, 1387, 0, 40, 40, 128],
+      [4549, 1482, 0, 29, 27, 128],
+      [4405, 1451, 0, 23, 23, 128],
+      [4483, 1468, 0, 21, 13, 128]
+    ],
+    "GoLocation": [4442, 1172, 0],
+    "Music": "Moonglow"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Moonglow",
+    "Name": "The Scholar's Inn",
+    "Priority": 50,
+    "Area": [
+      [4384, 1152, 0, 8, 24, 128],
+      [4392, 1160, 0, 16, 8, 128],
+      [4400, 1152, 0, 8, 8, 128],
+      [4480, 1056, 0, 8, 16, 128],
+      [4488, 1060, 0, 4, 8, 128],
+      [4476, 1060, 0, 4, 8, 128]
+    ]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Magincia",
+    "Priority": 50,
+    "Area": [
+      [3653, 2046, -128, 27, 48, 256],
+      [3752, 2046, -128, 52, 48, 256],
+      [3680, 2045, -128, 72, 49, 256],
+      [3652, 2094, -128, 160, 180, 256],
+      [3649, 2256, -128, 54, 47, 256]
+    ],
+    "GoLocation": [3714, 2220, 20],
+    "Music": "Magincia"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Magincia",
+    "Priority": 50,
+    "Area": [[3680, 2152, -128, 24, 8, 256], [3720, 2216, -128, 16, 16, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Buccaneer's Den",
+    "Priority": 50,
+    "Area": [
+      [2612, 2057, -128, 164, 210, 256],
+      [2604, 2065, -128, 8, 189, 256]
+    ],
+    "GoLocation": [2706, 2163, 0],
+    "Music": "Bucsden"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Buccaneer's Den",
+    "Priority": 50,
+    "Area": [
+      [2712, 2080, -128, 16, 16, 256],
+      [2712, 2096, -128, 8, 8, 256],
+      [2664, 2232, -128, 24, 8, 256],
+      [2672, 2240, -128, 16, 8, 256]
+    ]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [2499, 916, 0],
+    "Map": "Trammel",
+    "Name": "Covetous",
+    "Priority": 50,
+    "Area": [
+      [5376, 1793, -128, 201, 255, 256],
+      [5576, 1791, -128, 57, 257, 256]
+    ],
+    "GoLocation": [5456, 1862, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [4111, 429, 0],
+    "Map": "Trammel",
+    "Name": "Deceit",
+    "Priority": 50,
+    "Area": [[5122, 518, -128, 248, 252, 256]],
+    "GoLocation": [5187, 635, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [1296, 1082, 0],
+    "Map": "Trammel",
+    "Name": "Despise",
+    "Priority": 50,
+    "Area": [[5377, 516, -128, 254, 506, 256]],
+    "GoLocation": [5501, 570, 59],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [1176, 2635, 0],
+    "Map": "Trammel",
+    "Name": "Destard",
+    "Priority": 50,
+    "Area": [[5120, 770, -128, 251, 258, 256]],
+    "GoLocation": [5243, 1004, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [4722, 3814, 0],
+    "Map": "Trammel",
+    "Name": "Hythloth",
+    "Priority": 50,
+    "Area": [[5898, 2, -128, 238, 244, 256]],
+    "GoLocation": [5905, 22, 44],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "JailRegion",
+    "Map": "Trammel",
+    "Name": "Jail",
+    "Priority": 50,
+    "Area": [[5271, 1159, -128, 41, 33, 256]],
+    "GoLocation": [5275, 1163, 0]
+  },
+  {
+    "$type": "GreenAcresRegion",
+    "Map": "Trammel",
+    "Name": "Green Acres",
+    "Priority": 1,
+    "Area": [[5376, 512, -128, 767, 767, 256]],
+    "GoLocation": [5445, 1153, 0]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [512, 1559, 0],
+    "Map": "Trammel",
+    "Name": "Shame",
+    "Priority": 50,
+    "Area": [[5377, 2, -128, 257, 260, 256], [5635, 2, -128, 260, 124, 256]],
+    "GoLocation": [5395, 126, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [2042, 226, 0],
+    "Map": "Trammel",
+    "Name": "Wrong",
+    "Priority": 50,
+    "Area": [[5633, 511, -128, 253, 510, 256]],
+    "GoLocation": [5825, 599, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "BaseRegion",
-    "Name": "Termir Flam",
+    "Map": "Trammel",
+    "Name": "Cave 1",
+    "Priority": 50,
+    "Area": [
+      [2373, 900, -128, 22, 28, 256],
+      [2395, 903, -128, 14, 16, 256],
+      [2373, 928, -128, 10, 9, 256],
+      [2359, 927, -128, 14, 18, 256]
+    ],
+    "GoLocation": [2367, 942, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Cave 2",
+    "Priority": 50,
+    "Area": [[1887, 354, -128, 33, 23, 256]],
+    "GoLocation": [1903, 365, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Cave 3",
+    "Priority": 50,
+    "Area": [[1925, 307, -128, 18, 18, 256]],
+    "GoLocation": [1934, 316, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Cave 4",
+    "Priority": 50,
+    "Area": [[2323, 809, -128, 45, 42, 256]],
+    "GoLocation": [2345, 830, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Britain Mine 1",
+    "Priority": 50,
+    "Area": [[1436, 1215, -128, 29, 37, 256]],
+    "GoLocation": [1443, 1228, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Britain Mine 2",
+    "Priority": 50,
+    "Area": [[1611, 1175, -128, 51, 29, 256]],
+    "GoLocation": [1629, 1189, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Minoc Cave 1",
+    "Priority": 50,
+    "Area": [[2406, 168, -128, 22, 16, 256]],
+    "GoLocation": [2426, 177, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Minoc Cave 2",
+    "Priority": 50,
+    "Area": [[2418, 81, -128, 24, 32, 256]],
+    "GoLocation": [2440, 94, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Minoc Cave 3",
+    "Priority": 50,
+    "Area": [[2447, 39, -128, 42, 28, 256]],
+    "GoLocation": [2471, 64, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Minoc Mine",
+    "Priority": 50,
+    "Area": [[2556, 501, -128, 6, 3, 256], [2556, 474, -128, 26, 27, 256]],
+    "GoLocation": [2558, 499, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Avatar Isle Cave",
+    "Priority": 50,
+    "Area": [[4594, 3807, -128, 23, 17, 256]],
+    "GoLocation": [4605, 3815, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Ice Isle Cave 1",
+    "Priority": 50,
+    "Area": [[4018, 421, -128, 49, 49, 256]],
+    "GoLocation": [4054, 440, 3]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Ice Isle Cave 2",
+    "Priority": 50,
+    "Area": [[4002, 310, -128, 43, 41, 256], [4005, 298, -128, 22, 12, 256]],
+    "GoLocation": [4030, 325, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "North Territory Cave",
+    "Priority": 50,
+    "Area": [[1973, 251, -128, 21, 23, 256]],
+    "GoLocation": [1984, 262, 8]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Yew Cave",
+    "Priority": 50,
+    "Area": [[766, 1683, -128, 12, 14, 256]],
+    "GoLocation": [773, 1684, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "North Territory Mine 1",
+    "Priority": 50,
+    "Area": [[1713, 1055, -128, 40, 25, 256]],
+    "GoLocation": [1723, 1065, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "North Territory Mine 2",
+    "Priority": 50,
+    "Area": [[1604, 958, -128, 46, 51, 256]],
+    "GoLocation": [1638, 974, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Mt Kendall",
+    "Priority": 50,
+    "Area": [
+      [2552, 448, -128, 71, 59, 256],
+      [2547, 380, -128, 43, 68, 256],
+      [2590, 413, -128, 33, 35, 256]
+    ],
+    "GoLocation": [2593, 477, 60]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "Covetous Mine",
+    "Priority": 50,
+    "Area": [
+      [2429, 866, -128, 19, 45, 256],
+      [2448, 879, -128, 27, 28, 256],
+      [2456, 907, -128, 19, 34, 256]
+    ],
+    "GoLocation": [2445, 880, 0]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [5426, 3120, 0],
+    "Map": "Trammel",
+    "Name": "Terathan Keep",
+    "Priority": 50,
+    "Area": [
+      [5404, 3099, -128, 77, 68, 256],
+      [5120, 1530, -128, 254, 258, 256]
+    ],
+    "GoLocation": [5451, 3143, -60],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [2922, 3402, 0],
+    "Map": "Trammel",
+    "Name": "Fire",
+    "Priority": 50,
+    "Area": [[5635, 1285, -128, 245, 235, 256]],
+    "GoLocation": [5760, 2908, 15],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [1996, 80, 0],
+    "Map": "Trammel",
+    "Name": "Ice",
+    "Priority": 50,
+    "Area": [
+      [5668, 130, -128, 220, 138, 256],
+      [5800, 319, -128, 63, 65, 256],
+      [5654, 300, -128, 54, 40, 256]
+    ],
+    "GoLocation": [5210, 2322, 30],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Delucia",
+    "Priority": 50,
+    "Area": [
+      [5123, 3942, -128, 192, 122, 256],
+      [5147, 4064, -128, 125, 20, 256],
+      [5235, 3930, -128, 80, 12, 256]
+    ],
+    "GoLocation": [5228, 3978, 37]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Delucia",
+    "Priority": 50,
+    "Area": [[5194, 4053, -128, 10, 20, 256]]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Name": "Papua",
+    "Priority": 50,
+    "Area": [
+      [5639, 3095, -128, 192, 223, 256],
+      [5831, 3237, -128, 20, 30, 256]
+    ],
+    "GoLocation": [5769, 3176, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Trammel",
+    "Parent": "Papua",
+    "Priority": 50,
+    "Area": [[5757, 3150, -128, 24, 24, 256]]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Wrong Entrance",
+    "Priority": 50,
+    "Area": [[1939, 215, -128, 134, 137, 256]],
+    "GoLocation": [2043, 236, 13],
+    "Music": "Mountn_a"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Covetous Entrance",
+    "Priority": 50,
+    "Area": [[2433, 846, -128, 128, 128, 256]],
+    "GoLocation": [2499, 918, 0],
+    "Music": "Vesper"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Despise Entrance",
+    "Priority": 50,
+    "Area": [[1289, 1064, -128, 32, 37, 256]],
+    "GoLocation": [1298, 1081, 0]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Name": "Despise Passage",
+    "Priority": 50,
+    "Area": [
+      [1338, 1060, -128, 51, 62, 256],
+      [1354, 1122, -128, 42, 121, 256],
+      [1349, 1122, -128, 5, 102, 256]
+    ],
+    "GoLocation": [1380, 1114, 0]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [1492, 1641, 0],
+    "Map": "Trammel",
+    "Name": "Misc Dungeons",
+    "Priority": 50,
+    "Area": [[5886, 1281, -128, 257, 254, 256]],
+    "GoLocation": [6032, 1499, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [1014, 1434, 0],
+    "Map": "Trammel",
+    "Name": "Orc Cave",
+    "Priority": 50,
+    "Area": [
+      [5281, 1283, -128, 92, 103, 256],
+      [5267, 1955, -128, 97, 91, 256],
+      [5127, 1941, -128, 37, 83, 256]
+    ],
+    "GoLocation": [5137, 2015, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "BaseRegion",
+    "RuneName": "A Cotton Field in Moonglow",
+    "Map": "Trammel",
+    "Name": "A Cotton Field in Moonglow",
+    "Priority": 50,
+    "Area": [[4557, 1471, -128, 20, 10, 256]],
+    "GoLocation": [4567, 1475, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "RuneName": "A Wheatfield in Skara Brae",
+    "Map": "Trammel",
+    "Name": "A Wheatfield in Skara Brae 1",
+    "Priority": 50,
+    "Area": [[796, 2152, -128, 36, 24, 256]],
+    "GoLocation": [813, 2163, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "A Carrot Field in Skara Brae",
+    "Priority": 50,
+    "Area": [[816, 2251, -128, 16, 8, 256]],
+    "GoLocation": [823, 2254, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "An Onion Field in Skara Brae",
+    "Priority": 50,
+    "Area": [[816, 2261, -128, 16, 8, 256]],
+    "GoLocation": [823, 2264, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "A Cabbage Field in Skara Brae 1",
+    "Priority": 50,
+    "Area": [[816, 2271, -128, 16, 8, 256]],
+    "GoLocation": [823, 2264, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "A Cabbage Field in Skara Brae 2",
+    "Priority": 50,
+    "Area": [[816, 2281, -128, 16, 8, 256]],
+    "GoLocation": [823, 2274, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "A Wheatfield in Skara Brae 2",
+    "Priority": 50,
+    "Area": [[835, 2344, -128, 16, 16, 256]],
+    "GoLocation": [843, 2352, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Trammel",
+    "Name": "A Cotton Field in Skara Brae",
+    "Priority": 50,
+    "Area": [[816, 2344, -128, 16, 24, 256]],
+    "GoLocation": [823, 2355, 0]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [1450, 1473, -23],
     "Map": "Ilshenar",
+    "Name": "Twisted Weald",
+    "Priority": 50,
+    "Area": [[2107, 1145, -128, 147, 135, 256]],
+    "GoLocation": [2189, 1253, 0],
+    "Music": "DreadHornArea"
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Sheep Farm",
+    "Priority": 50,
+    "Area": [[1298, 1307, -128, 38, 37, 256]]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Valor",
+    "Priority": 37,
+    "Area": [[512, 200, -128, 32, 32, 256]],
+    "GoLocation": [539, 221, -36]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Chaos Shrine",
+    "Priority": 50,
+    "Area": [[1736, 224, -128, 24, 24, 256]],
+    "GoLocation": [1748, 236, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Sacrifice",
+    "Priority": 50,
+    "Area": [[1160, 1280, -128, 32, 16, 256]],
+    "GoLocation": [1196, 1290, -25]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Honesty",
+    "Priority": 37,
+    "Area": [[712, 1344, -128, 24, 32, 256]],
+    "GoLocation": [725, 1355, -61]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Compassion",
+    "Priority": 50,
+    "Area": [[1200, 448, -128, 32, 40, 256]],
+    "GoLocation": [1223, 475, -16]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Spirituality",
+    "Priority": 50,
+    "Area": [[1520, 1336, -128, 16, 16, 256]],
+    "GoLocation": [1528, 1344, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Humility",
+    "Priority": 50,
+    "Area": [[272, 1008, -128, 24, 16, 256]],
+    "GoLocation": [284, 1016, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Shrine of Honor",
+    "Priority": 50,
+    "Area": [[736, 712, -128, 24, 32, 256]],
+    "GoLocation": [748, 728, 0]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Terort Skitas",
+    "Priority": 11,
+    "Area": [[528, 376, -128, 96, 88, 256]],
+    "GoLocation": [568, 430, 41]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Ilshenar",
+    "Name": "Gargoyle City",
+    "Priority": 50,
+    "Area": [
+      [824, 552, -128, 32, 176, 256],
+      [752, 576, -128, 72, 128, 256],
+      [856, 576, -128, 48, 128, 256],
+      [904, 624, -128, 24, 32, 256]
+    ],
+    "GoLocation": [840, 571, 0]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Ilshenar",
+    "Parent": "Gargoyle City",
+    "Priority": 50,
+    "Area": [[827, 694, -128, 26, 33, 256]]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Pormir Harm",
+    "Priority": 50,
+    "Area": [[736, 480, -128, 32, 24, 256]],
+    "GoLocation": [745, 492, -66],
+    "Music": "Stones2"
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Pormir Felwis",
+    "Priority": 50,
+    "Area": [[472, 336, -128, 40, 32, 256]],
+    "GoLocation": [472, 352, -78]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Cyclops Temple",
+    "Priority": 50,
+    "Area": [[880, 1256, -128, 56, 112, 256]],
+    "GoLocation": [901, 1297, -71]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Rat Fort",
+    "Priority": 50,
+    "Area": [[616, 792, -128, 56, 56, 256]],
+    "GoLocation": [642, 845, -58]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Rat Fort Cellar",
+    "Priority": 50,
+    "Area": [[160, 736, -128, 32, 32, 256]],
+    "GoLocation": [171, 750, -28]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Entrance to Central Ilshenar 1",
+    "Priority": 50,
+    "Area": [[1136, 584, -128, 16, 16, 256]],
+    "GoLocation": [1141, 594, -80]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Entrance to Central Ilshenar 2",
+    "Priority": 50,
+    "Area": [[1232, 576, -128, 8, 16, 256]],
+    "GoLocation": [1238, 583, -19]
+  },
+  {
+    "$type": "TownRegion",
+    "Map": "Ilshenar",
+    "Name": "Montor",
+    "Priority": 41,
+    "Area": [
+      [1576, 272, -128, 144, 96, 256],
+      [1616, 200, -128, 80, 72, 256],
+      [1696, 144, -128, 40, 128, 256],
+      [1736, 144, -128, 32, 64, 256]
+    ],
+    "GoLocation": [1646, 319, 48]
+  },
+  {
+    "$type": "BaseRegion",
+    "Map": "Ilshenar",
+    "Name": "Termir Flam",
     "Priority": 40,
     "Area": [
-      { "x1": 1520, "y1": 368, "x2": 1752, "y2": 496 },
-      { "x1": 1520, "y1": 296, "x2": 1576, "y2": 368 },
-      { "x1": 1752, "y1": 440, "x2": 1776, "y2": 480 }
+      [1520, 368, -128, 232, 128, 256],
+      [1520, 296, -128, 56, 72, 256],
+      [1752, 440, -128, 24, 40, 256]
     ],
-    "GoLocation": { "x": 1636, "y": 432, "z": 0 }
+    "GoLocation": [1636, 432, 0]
   },
   {
     "$type": "TownRegion",
+    "Map": "Ilshenar",
     "Name": "Ancient Citadel",
-    "Map": "Ilshenar",
     "Priority": 11,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1448, "y1": 496, "x2": 1552, "y2": 600 }],
-    "GoLocation": { "x": 1516, "y": 542, "z": 85 }
+    "Area": [[1448, 496, -128, 104, 104, 256]],
+    "GoLocation": [1516, 542, 85]
   },
   {
     "$type": "TownRegion",
+    "Map": "Ilshenar",
     "Name": "Alexandretta's Bowl",
-    "Map": "Ilshenar",
     "Priority": 41,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1272, "y1": 352, "x2": 1440, "y2": 592 }],
-    "GoLocation": { "x": 1396, "y": 432, "z": -17 }
+    "Area": [[1272, 352, -128, 168, 240, 256]],
+    "GoLocation": [1396, 432, -17]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Entrance to Rock Dungeon",
     "Map": "Ilshenar",
+    "Name": "Entrance to Rock Dungeon",
     "Priority": 2,
-    "Area": [{ "x1": 1784, "y1": 560, "x2": 1792, "y2": 576 }],
-    "GoLocation": { "x": 1784, "y": 568, "z": 100 }
+    "Area": [[1784, 560, -128, 8, 16, 256]],
+    "GoLocation": [1784, 568, 100]
   },
   {
     "$type": "DungeonRegion",
-    "Name": "Rock Dungeon",
+    "Entrance": [1788, 571, 0],
     "Map": "Ilshenar",
+    "Name": "Rock Dungeon",
     "Priority": 2,
-    "Area": [
-      { "x1": 2176, "y1": 288, "x2": 2200, "y2": 328 },
-      { "x1": 2088, "y1": 8, "x2": 2248, "y2": 184 }
-    ],
-    "GoLocation": { "x": 2187, "y": 316, "z": -7 },
-    "Entrance": { "x": 1788, "y": 571 }
+    "Area": [[2176, 288, -128, 24, 40, 256], [2088, 8, -128, 160, 176, 256]],
+    "GoLocation": [2187, 316, -7]
   },
   {
     "$type": "TownRegion",
-    "Name": "Lenmir Anfinmotas",
     "Map": "Ilshenar",
+    "Name": "Lenmir Anfinmotas",
     "Priority": 5,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1560, "y1": 792, "x2": 1792, "y2": 912 }],
-    "GoLocation": { "x": 1673, "y": 876, "z": -25 }
+    "Area": [[1560, 792, -128, 232, 120, 256]],
+    "GoLocation": [1673, 876, -25]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Entrance to Spider Cave",
     "Map": "Ilshenar",
+    "Name": "Entrance to Spider Cave",
     "Priority": 2,
-    "Area": [{ "x1": 1400, "y1": 896, "x2": 1440, "y2": 920 }],
-    "GoLocation": { "x": 1418, "y": 915, "z": -19 }
+    "Area": [[1400, 896, -128, 40, 24, 256]],
+    "GoLocation": [1418, 915, -19]
   },
   {
     "$type": "DungeonRegion",
-    "Name": "Spider Cave",
+    "Entrance": [1420, 910, 0],
     "Map": "Ilshenar",
+    "Name": "Spider Cave",
     "Priority": 50,
-    "Area": [
-      { "x1": 1752, "y1": 952, "x2": 1864, "y2": 1000 },
-      { "x1": 1480, "y1": 864, "x2": 1528, "y2": 896 }
-    ],
-    "GoLocation": { "x": 1785, "y": 991, "z": -28 },
-    "Entrance": { "x": 1420, "y": 910 }
+    "Area": [[1752, 952, -128, 112, 48, 256], [1480, 864, -128, 48, 32, 256]],
+    "GoLocation": [1785, 991, -28]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Twin Oaks",
     "Map": "Ilshenar",
+    "Name": "Twin Oaks",
     "Priority": 48,
-    "Area": [{ "x1": 1536, "y1": 1032, "x2": 1584, "y2": 1072 }],
-    "GoLocation": { "x": 1560, "y": 1052, "z": 0 }
+    "Area": [[1536, 1032, -128, 48, 40, 256]],
+    "GoLocation": [1560, 1052, 0]
   },
   {
     "$type": "BaseRegion",
     "Map": "Ilshenar",
     "Parent": "Twin Oaks",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 1546, "y1": 1037, "x2": 1567, "y2": 1057 }]
+    "Priority": 48,
+    "Area": [[1546, 1037, -128, 21, 20, 256]]
   },
   {
     "$type": "TownRegion",
+    "Map": "Ilshenar",
     "Name": "Reg Volon",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1328, "y1": 1008, "x2": 1408, "y2": 1120 }],
-    "GoLocation": { "x": 1363, "y": 1055, "z": -13 }
+    "Area": [[1328, 1008, -128, 80, 112, 256]],
+    "GoLocation": [1363, 1055, -13]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Entrance Spectre Dungeon",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 1360, "y1": 1030, "x2": 1366, "y2": 1034 }],
-    "GoLocation": { "x": 1363, "y": 1033, "z": -8 }
+    "Area": [[1360, 1030, -128, 6, 4, 256]],
+    "GoLocation": [1363, 1033, -8]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1362, 1031, 0],
+    "Map": "Ilshenar",
     "Name": "Spectre Dungeon",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 1936, "y1": 1000, "x2": 2032, "y2": 1120 }],
-    "GoLocation": { "x": 1983, "y": 1107, "z": -18 },
-    "Entrance": { "x": 1362, "y": 1031 }
+    "Area": [[1936, 1000, -128, 96, 120, 256]],
+    "GoLocation": [1983, 1107, -18]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Entrance Blood Dungeon",
     "Map": "Ilshenar",
+    "Name": "Entrance Blood Dungeon",
     "Priority": 2,
-    "Area": [{ "x1": 1736, "y1": 1224, "x2": 1760, "y2": 1240 }],
-    "GoLocation": { "x": 1747, "y": 1227, "z": -1 }
+    "Area": [[1736, 1224, -128, 24, 16, 256]],
+    "GoLocation": [1747, 1227, -1]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1745, 1236, 0],
+    "Map": "Ilshenar",
     "Name": "Blood Dungeon",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 2032, "y1": 808, "x2": 2200, "y2": 1064 }],
-    "GoLocation": { "x": 2114, "y": 839, "z": -28 },
-    "Entrance": { "x": 1745, "y": 1236 }
+    "Area": [[2032, 808, -128, 168, 256, 256]],
+    "GoLocation": [2114, 839, -28]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Entrance Mushroom Cave",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 1448, "y1": 1320, "x2": 1464, "y2": 1336 }],
-    "GoLocation": { "x": 1460, "y": 1329, "z": -25 }
+    "Area": [[1448, 1320, -128, 16, 16, 256]],
+    "GoLocation": [1460, 1329, -25]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Mushroom Cave",
-    "Map": "Ilshenar",
     "Priority": 11,
-    "Area": [{ "x1": 1392, "y1": 1448, "x2": 1496, "y2": 1568 }],
-    "GoLocation": { "x": 1476, "y": 1494, "z": -28 }
+    "Area": [[1392, 1448, -128, 104, 120, 256]],
+    "GoLocation": [1476, 1494, -28]
   },
   {
     "$type": "TownRegion",
+    "Map": "Ilshenar",
     "Name": "Lake Shire",
-    "Map": "Ilshenar",
     "Priority": 48,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1144, "y1": 1072, "x2": 1264, "y2": 1200 }],
-    "GoLocation": { "x": 1212, "y": 1144, "z": -25 }
+    "Area": [[1144, 1072, -128, 120, 128, 256]],
+    "GoLocation": [1212, 1144, -25]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Entrance Rat Cave",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 1024, "y1": 1152, "x2": 1032, "y2": 1160 }],
-    "GoLocation": { "x": 1031, "y": 1154, "z": -24 }
+    "Area": [[1024, 1152, -128, 8, 8, 256]],
+    "GoLocation": [1031, 1154, -24]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Rat Cave Territory",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 1144, "y1": 1440, "x2": 1368, "y2": 1584 }],
-    "GoLocation": { "x": 1345, "y": 1511, "z": -3 }
+    "Area": [[1144, 1440, -128, 224, 144, 256]],
+    "GoLocation": [1345, 1511, -3]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Ratman Cave",
-    "Map": "Ilshenar",
     "Priority": 2,
     "Area": [
-      { "x1": 1264, "y1": 1448, "x2": 1360, "y2": 1576 },
-      { "x1": 1152, "y1": 1456, "x2": 1256, "y2": 1560 }
+      [1264, 1448, -128, 96, 128, 256],
+      [1152, 1456, -128, 104, 104, 256]
     ],
-    "GoLocation": { "x": 1348, "y": 1511, "z": -3 }
+    "GoLocation": [1348, 1511, -3]
   },
   {
     "$type": "TownRegion",
+    "Map": "Ilshenar",
     "Name": "Bet-Lem Reg",
-    "Map": "Ilshenar",
     "Priority": 48,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1232, "y1": 936, "x2": 1272, "y2": 984 }],
-    "GoLocation": { "x": 1238, "y": 974, "z": -34 }
+    "Area": [[1232, 936, -128, 40, 48, 256]],
+    "GoLocation": [1238, 974, -34]
   },
   {
     "$type": "TownRegion",
-    "Name": "Mistas",
     "Map": "Ilshenar",
+    "Name": "Mistas",
     "Priority": 48,
-    "GuardsDisabled": true,
-    "Area": [
-      { "x1": 744, "y1": 984, "x2": 912, "y2": 1152 },
-      { "x1": 744, "y1": 1152, "x2": 792, "y2": 1176 }
-    ],
-    "GoLocation": { "x": 818, "y": 1073, "z": -30 }
+    "Area": [[744, 984, -128, 168, 168, 256], [744, 1152, -128, 48, 24, 256]],
+    "GoLocation": [818, 1073, -30]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
     "Map": "Ilshenar",
     "Parent": "Mistas",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 752, "y1": 1131, "x2": 768, "y2": 1152 }]
+    "Priority": 48,
+    "Area": [[752, 1131, -128, 16, 21, 256]]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Entrance Serpentine Passage",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 800, "y1": 864, "x2": 816, "y2": 880 }],
-    "GoLocation": { "x": 808, "y": 872, "z": 5 }
+    "Area": [[800, 864, -128, 16, 16, 256]],
+    "GoLocation": [808, 872, 5]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Serpentine Passage",
-    "Map": "Ilshenar",
     "Priority": 11,
-    "Area": [{ "x1": 368, "y1": 1488, "x2": 560, "y2": 1592 }],
-    "GoLocation": { "x": 533, "y": 1526, "z": -25 }
+    "Area": [[368, 1488, -128, 192, 104, 256]],
+    "GoLocation": [533, 1526, -25]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [668, 928, 0],
+    "Map": "Ilshenar",
     "Name": "Ankh Dungeon",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [
-      { "x1": 0, "y1": 1248, "x2": 176, "y2": 1592 },
-      { "x1": 568, "y1": 1152, "x2": 584, "y2": 1160 }
-    ],
-    "GoLocation": { "x": 156, "y": 1484, "z": -28 },
-    "Entrance": { "x": 668, "y": 928 }
+    "Area": [[0, 1248, -128, 176, 344, 256], [568, 1152, -128, 16, 8, 256]],
+    "GoLocation": [156, 1484, -28]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Kirin passage",
-    "Map": "Ilshenar",
     "Priority": 11,
-    "Area": [{ "x1": 0, "y1": 800, "x2": 192, "y2": 1200 }],
-    "GoLocation": { "x": 11, "y": 881, "z": -29 }
+    "Area": [[0, 800, -128, 192, 400, 256]],
+    "GoLocation": [11, 881, -29]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Entrance Lizards Passage",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 312, "y1": 1328, "x2": 320, "y2": 1336 }],
-    "GoLocation": { "x": 314, "y": 1331, "z": -37 }
+    "Area": [[312, 1328, -128, 8, 8, 256]],
+    "GoLocation": [314, 1331, -37]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [652, 1301, 0],
+    "Map": "Ilshenar",
     "Name": "Wisp Dungeon",
-    "Map": "Ilshenar",
     "Priority": 2,
     "Area": [
-      { "x1": 616, "y1": 1480, "x2": 704, "y2": 1576 },
-      { "x1": 704, "y1": 1544, "x2": 728, "y2": 1576 },
-      { "x1": 704, "y1": 1480, "x2": 744, "y2": 1520 },
-      { "x1": 816, "y1": 1448, "x2": 912, "y2": 1584 },
-      { "x1": 944, "y1": 1416, "x2": 1000, "y2": 1456 },
-      { "x1": 912, "y1": 1456, "x2": 1024, "y2": 1584 },
-      { "x1": 832, "y1": 1424, "x2": 880, "y2": 1448 },
-      { "x1": 744, "y1": 1504, "x2": 816, "y2": 1584 },
-      { "x1": 744, "y1": 1456, "x2": 800, "y2": 1504 }
+      [616, 1480, -128, 88, 96, 256],
+      [704, 1544, -128, 24, 32, 256],
+      [704, 1480, -128, 40, 40, 256],
+      [816, 1448, -128, 96, 136, 256],
+      [944, 1416, -128, 56, 40, 256],
+      [912, 1456, -128, 112, 128, 256],
+      [832, 1424, -128, 48, 24, 256],
+      [744, 1504, -128, 72, 80, 256],
+      [744, 1456, -128, 56, 48, 256]
     ],
-    "GoLocation": { "x": 628, "y": 1524, "z": -28 },
-    "Entrance": { "x": 652, "y": 1301 }
+    "GoLocation": [628, 1524, -28]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Lizard Passage",
-    "Map": "Ilshenar",
     "Priority": 11,
-    "Area": [{ "x1": 256, "y1": 1560, "x2": 336, "y2": 1592 }],
-    "GoLocation": { "x": 285, "y": 1585, "z": -27 }
+    "Area": [[256, 1560, -128, 80, 32, 256]],
+    "GoLocation": [285, 1585, -27]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [827, 777, 0],
+    "Map": "Ilshenar",
     "Name": "Exodus Dungeon",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 1832, "y1": 16, "x2": 2080, "y2": 216 }],
-    "GoLocation": { "x": 1966, "y": 117, "z": -28 },
-    "Entrance": { "x": 827, "y": 777 }
+    "Area": [[1832, 16, -128, 248, 200, 256]],
+    "GoLocation": [1966, 117, -28]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Lizard Man's Huts",
-    "Map": "Ilshenar",
     "Priority": 48,
-    "Area": [{ "x1": 264, "y1": 1280, "x2": 320, "y2": 1376 }],
-    "GoLocation": { "x": 298, "y": 1336, "z": -24 }
+    "Area": [[264, 1280, -128, 56, 96, 256]],
+    "GoLocation": [298, 1336, -24]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Nox Tereg",
     "Map": "Ilshenar",
+    "Name": "Nox Tereg",
     "Priority": 50,
-    "Area": [{ "x1": 344, "y1": 1112, "x2": 488, "y2": 1240 }],
-    "GoLocation": { "x": 416, "y": 1176, "z": 0 }
+    "Area": [[344, 1112, -128, 144, 128, 256]],
+    "GoLocation": [416, 1176, 0]
   },
   {
     "$type": "DungeonRegion",
-    "Name": "Sorcerer's Dungeon",
+    "Entrance": [546, 455, 0],
     "Map": "Ilshenar",
+    "Name": "Sorcerer's Dungeon",
     "Priority": 2,
     "Area": [
-      { "x1": 368, "y1": 0, "x2": 488, "y2": 120 },
-      { "x1": 200, "y1": 0, "x2": 368, "y2": 112 },
-      { "x1": 256, "y1": 120, "x2": 288, "y2": 152 },
-      { "x1": 48, "y1": 0, "x2": 184, "y2": 136 },
-      { "x1": 224, "y1": 112, "x2": 248, "y2": 144 }
+      [368, 0, -128, 120, 120, 256],
+      [200, 0, -128, 168, 112, 256],
+      [256, 120, -128, 32, 32, 256],
+      [48, 0, -128, 136, 136, 256],
+      [224, 112, -128, 24, 32, 256]
     ],
-    "GoLocation": { "x": 429, "y": 108, "z": -28 },
-    "Entrance": { "x": 546, "y": 455 }
+    "GoLocation": [429, 108, -28]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Entrance Ancient Lair",
     "Map": "Ilshenar",
+    "Name": "Entrance Ancient Lair",
     "Priority": 50,
-    "Area": [{ "x1": 936, "y1": 488, "x2": 944, "y2": 496 }],
-    "GoLocation": { "x": 940, "y": 503, "z": -30 }
+    "Area": [[936, 488, -128, 8, 8, 256]],
+    "GoLocation": [940, 503, -30]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [938, 494, 0],
+    "Map": "Ilshenar",
     "Name": "Ancient Lair",
-    "Map": "Ilshenar",
     "Priority": 2,
-    "Area": [{ "x1": 24, "y1": 664, "x2": 136, "y2": 760 }],
-    "GoLocation": { "x": 86, "y": 744, "z": -28 },
-    "Entrance": { "x": 938, "y": 494 }
+    "Area": [[24, 664, -128, 112, 96, 256]],
+    "GoLocation": [86, 744, -28]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Gypsy Camp",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 480, "y1": 520, "x2": 536, "y2": 568 }],
-    "GoLocation": { "x": 504, "y": 536, "z": -60 }
+    "Area": [[480, 520, -128, 56, 48, 256]],
+    "GoLocation": [504, 536, -60]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Gypsy Camp 1",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 1480, "y1": 600, "x2": 1536, "y2": 640 }],
-    "GoLocation": { "x": 1508, "y": 620, "z": 0 }
+    "Area": [[1480, 600, -128, 56, 40, 256]],
+    "GoLocation": [1508, 620, 0]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Gypsy Camp 2",
     "Map": "Ilshenar",
+    "Name": "Gypsy Camp 2",
     "Priority": 48,
-    "Area": [{ "x1": 1592, "y1": 528, "x2": 1632, "y2": 568 }],
-    "GoLocation": { "x": 1612, "y": 548, "z": 0 }
+    "Area": [[1592, 528, -128, 40, 40, 256]],
+    "GoLocation": [1612, 548, 0]
   },
   {
     "$type": "BaseRegion",
     "Map": "Ilshenar",
     "Parent": "Gypsy Camp 2",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 1617, "y1": 546, "x2": 1629, "y2": 554 }]
+    "Priority": 48,
+    "Area": [[1617, 546, -128, 12, 8, 256]]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Juka Camp",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 1192, "y1": 656, "x2": 1304, "y2": 792 }],
-    "GoLocation": { "x": 1248, "y": 724, "z": 0 }
+    "Area": [[1192, 656, -128, 112, 136, 256]],
+    "GoLocation": [1248, 724, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Gypsy Camp 3",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 928, "y1": 408, "x2": 968, "y2": 448 }],
-    "GoLocation": { "x": 948, "y": 428, "z": 0 }
+    "Area": [[928, 408, -128, 40, 40, 256]],
+    "GoLocation": [948, 428, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Gypsy Camp 4",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 840, "y1": 440, "x2": 880, "y2": 488 }],
-    "GoLocation": { "x": 860, "y": 464, "z": 0 }
+    "Area": [[840, 440, -128, 40, 48, 256]],
+    "GoLocation": [860, 464, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Gypsy Camp 5",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [
-      { "x1": 1216, "y1": 520, "x2": 1240, "y2": 568 },
-      { "x1": 1248, "y1": 568, "x2": 1264, "y2": 592 }
-    ],
-    "GoLocation": { "x": 1228, "y": 544, "z": 0 }
+    "Area": [[1216, 520, -128, 24, 48, 256], [1248, 568, -128, 16, 24, 256]],
+    "GoLocation": [1228, 544, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Gypsy Camp 6",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 1376, "y1": 416, "x2": 1408, "y2": 448 }],
-    "GoLocation": { "x": 1392, "y": 432, "z": 0 }
+    "Area": [[1376, 416, -128, 32, 32, 256]],
+    "GoLocation": [1392, 432, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Lord Blackthorn's Ilshenar Castle",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [
-      { "x1": 1048, "y1": 616, "x2": 1120, "y2": 688 },
-      { "x1": 1080, "y1": 688, "x2": 1104, "y2": 712 }
-    ],
-    "GoLocation": { "x": 1084, "y": 652, "z": 0 }
+    "Area": [[1048, 616, -128, 72, 72, 256], [1080, 688, -128, 24, 24, 256]],
+    "GoLocation": [1084, 652, 0]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Ilshenar",
     "Name": "Shrine of the Virtues",
-    "Map": "Ilshenar",
     "Priority": 50,
-    "Area": [{ "x1": 1072, "y1": 376, "x2": 1136, "y2": 432 }],
-    "GoLocation": { "x": 1104, "y": 404, "z": 0 }
+    "Area": [[1072, 376, -128, 64, 56, 256]],
+    "GoLocation": [1104, 404, 0]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Pass of Karnaugh",
     "Map": "Ilshenar",
+    "Name": "Pass of Karnaugh",
     "Priority": 50,
     "Area": [
-      { "x1": 848, "y1": 288, "x2": 968, "y2": 336 },
-      { "x1": 936, "y1": 232, "x2": 968, "y2": 288 },
-      { "x1": 968, "y1": 248, "x2": 1088, "y2": 304 },
-      { "x1": 1000, "y1": 304, "x2": 1024, "y2": 320 },
-      { "x1": 1048, "y1": 304, "x2": 1184, "y2": 360 },
-      { "x1": 1184, "y1": 336, "x2": 1248, "y2": 392 }
+      [848, 288, -128, 120, 48, 256],
+      [936, 232, -128, 32, 56, 256],
+      [968, 248, -128, 120, 56, 256],
+      [1000, 304, -128, 24, 16, 256],
+      [1048, 304, -128, 136, 56, 256],
+      [1184, 336, -128, 64, 56, 256]
     ],
-    "GoLocation": { "x": 908, "y": 312, "z": 0 }
+    "GoLocation": [908, 312, 0]
   },
   {
     "$type": "BaseRegion",
-    "Name": "Vinculum Inn",
     "Map": "Ilshenar",
+    "Name": "Vinculum Inn",
     "Priority": 50,
-    "Area": [{ "x1": 658, "y1": 654, "x2": 671, "y2": 678 }],
-    "GoLocation": { "x": 656, "y": 666, "z": -36 }
+    "Area": [[658, 654, -128, 13, 24, 256]],
+    "GoLocation": [656, 666, -36]
   },
   {
     "$type": "BaseRegion",
     "Map": "Ilshenar",
     "Parent": "Vinculum Inn",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 658, "y1": 654, "x2": 671, "y2": 678 }]
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "Gravewater Dock",
-    "Map": "Malas",
     "Priority": 50,
-    "Area": [{ "x1": 1692, "y1": 1551, "x2": 1708, "y2": 1567 }]
+    "Area": [[658, 654, -128, 13, 24, 256]]
   },
   {
-    "$type": "MondainRegion",
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Name": "Ilse of the Divide",
+    "Priority": 50,
+    "Area": [[1532, 857, -128, 300, 200, 256]],
+    "GoLocation": [1731, 981, -79]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [2068, 1372, -75],
+    "Map": "Malas",
     "Name": "Bedlam",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "GrizzleDungeon",
-    "Area": [{ "x1": 80, "y1": 1590, "x2": 210, "y2": 1690 }],
-    "GoLocation": { "x": 117, "y": 1681, "z": 0 },
-    "Entrance": { "x": 2068, "y": 1372 }
+    "Area": [[75, 1590, -128, 135, 170, 256]],
+    "GoLocation": [117, 1681, 0],
+    "Music": "GrizzleDungeon"
   },
   {
-    "$type": "MondainRegion",
-    "Name": "Labyrinth",
+    "$type": "DungeonRegion",
+    "Entrance": [1349, 769, 14],
     "Map": "Malas",
+    "Name": "The Citadel",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 255, "y1": 1791, "x2": 511, "y2": 2047 }],
-    "GoLocation": { "x": 331, "y": 1973, "z": 0 },
-    "Entrance": { "x": 1733, "y": 978 }
-  },
-  {
-    "$type": "MondainRegion",
-    "Name": "TheCitadel",
-    "Map": "Malas",
-    "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 65, "y1": 1865, "x2": 195, "y2": 1990 }],
-    "GoLocation": { "x": 106, "y": 1884, "z": 0 },
-    "Entrance": { "x": 1349, "y": 769 }
+    "Area": [[60, 1855, -128, 135, 135, 256]],
+    "GoLocation": [106, 1884, 0],
+    "Music": "Dungeon9"
   },
   {
     "$type": "TownRegion",
-    "Name": "Luna",
     "Map": "Malas",
+    "Name": "Luna",
     "Priority": 50,
-    "Music": "tavern04",
-    "Area": [{ "x1": 945, "y1": 490, "x2": 1036, "y2": 551 }],
-    "GoLocation": { "x": 989, "y": 520, "z": -50 }
+    "Area": [[945, 490, -128, 91, 61, 256]],
+    "GoLocation": [989, 520, -50],
+    "Music": "Tavern04"
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
     "Map": "Malas",
     "Parent": "Luna",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 986, "y1": 509, "x2": 1004, "y2": 530 }]
+    "Priority": 50,
+    "Area": [[986, 509, -128, 18, 21, 256]]
   },
   {
     "$type": "TownRegion",
-    "Name": "Umbra",
     "Map": "Malas",
+    "Name": "Umbra",
     "Priority": 50,
     "Area": [
-      { "x1": 2042, "y1": 1265, "x2": 2090, "y2": 1278 },
-      { "x1": 1960, "y1": 1278, "x2": 2106, "y2": 1413 },
-      { "x1": 2004, "y1": 1413, "x2": 2040, "y2": 1419 }
+      [2042, 1265, -128, 48, 13, 256],
+      [1960, 1278, -128, 146, 135, 256],
+      [2004, 1413, -128, 36, 6, 256]
     ],
-    "GoLocation": { "x": 2049, "y": 1344, "z": -85 }
+    "GoLocation": [2049, 1344, -85]
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
     "Map": "Malas",
     "Parent": "Umbra",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 2031, "y1": 1311, "x2": 2046, "y2": 1325 }]
+    "Priority": 50,
+    "Area": [[2031, 1311, -128, 15, 14, 256]]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [1731, 981, -79],
+    "Map": "Malas",
+    "Name": "Labyrinth",
+    "Priority": 50,
+    "Area": [[256, 1795, -128, 243, 230, 256]],
+    "GoLocation": [336, 1970, 0],
+    "Music": "Dungeon9"
+  },
+  {
+    "$type": "DungeonRegion",
+    "Entrance": [2357, 1268, 0],
+    "Map": "Malas",
     "Name": "Doom",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 256, "y1": 0, "x2": 512, "y2": 304 }],
-    "GoLocation": { "x": 2366, "y": 1268, "z": -85 },
-    "Entrance": { "x": 2357, "y": 1268 }
+    "Area": [[256, 0, -128, 256, 304, 256]],
+    "GoLocation": [2366, 1268, -85],
+    "Music": "Dungeon9"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [2357, 1268, 0],
+    "Map": "Malas",
     "Name": "Doom Gauntlet",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "Dungeon9",
-    "Area": [{ "x1": 256, "y1": 304, "x2": 512, "y2": 560 }],
-    "GoLocation": { "x": 429, "y": 340, "z": -1 },
-    "Entrance": { "x": 2357, "y": 1268 }
+    "Area": [[256, 304, -128, 256, 256, 256]],
+    "GoLocation": [429, 340, -1],
+    "Music": "Dungeon9"
   },
   {
     "$type": "BaseRegion",
+    "Map": "Malas",
     "Name": "Orc Fortress",
-    "Map": "Malas",
     "Priority": 50,
-    "Area": [{ "x1": 1295, "y1": 1189, "x2": 1395, "y2": 1294 }],
-    "GoLocation": { "x": 1340, "y": 1226, "z": -90 }
+    "Area": [[1295, 1189, -128, 100, 105, 256]],
+    "GoLocation": [1340, 1226, -90]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Malas",
     "Name": "Crystal Cave Entrance",
-    "Map": "Malas",
     "Priority": 50,
-    "Area": [{ "x1": 1176, "y1": 509, "x2": 1219, "y2": 522 }],
-    "GoLocation": { "x": 1195, "y": 515, "z": -90 }
+    "Area": [[1176, 509, -128, 43, 13, 256]],
+    "GoLocation": [1195, 515, -90]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Malas",
     "Name": "Protected Island",
-    "Map": "Malas",
     "Priority": 50,
     "Area": [
-      { "x1": 1976, "y1": 101, "x2": 2448, "y2": 345 },
-      { "x1": 2051, "y1": 345, "x2": 2356, "y2": 382 },
-      { "x1": 2026, "y1": 345, "x2": 2051, "y2": 370 },
-      { "x1": 2069, "y1": 382, "x2": 2144, "y2": 396 },
-      { "x1": 2254, "y1": 382, "x2": 2352, "y2": 420 },
-      { "x1": 2222, "y1": 382, "x2": 2254, "y2": 402 }
+      [1976, 101, -128, 472, 244, 256],
+      [2051, 345, -128, 305, 37, 256],
+      [2026, 345, -128, 25, 25, 256],
+      [2069, 382, -128, 75, 14, 256],
+      [2254, 382, -128, 98, 38, 256],
+      [2222, 382, -128, 32, 20, 256]
     ],
-    "GoLocation": { "x": 2104, "y": 380, "z": -90 }
+    "GoLocation": [2104, 380, -90]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Malas",
     "Name": "Grand Arena",
-    "Map": "Malas",
     "Priority": 50,
-    "Area": [{ "x1": 919, "y1": 622, "x2": 962, "y2": 652 }],
-    "GoLocation": { "x": 961, "y": 637, "z": -90 }
+    "Area": [[919, 622, -128, 43, 30, 256]],
+    "GoLocation": [961, 637, -90]
   },
   {
     "$type": "BaseRegion",
+    "Map": "Malas",
     "Name": "Hanse's Hostel",
-    "Map": "Malas",
     "Priority": 50,
-    "LogoutDelay": false,
     "Area": [
-      { "x1": 1049, "y1": 1420, "x2": 1062, "y2": 1445 },
-      { "x1": 1062, "y1": 1420, "x2": 1065, "y2": 1431 },
-      { "x1": 1062, "y1": 1439, "x2": 1065, "y2": 1445 }
+      [1049, 1420, -128, 13, 25, 256],
+      [1062, 1420, -128, 3, 11, 256],
+      [1062, 1439, -128, 3, 6, 256]
     ],
-    "GoLocation": { "x": 1063, "y": 1435, "z": -90 }
+    "GoLocation": [1063, 1435, -90]
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [259, 783, 0],
+    "Map": "Malas",
     "Name": "Yomotsu Mines",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "TokunoDungeon",
-    "Area": [{ "x1": 0, "y1": 0, "x2": 129, "y2": 129 }],
-    "GoLocation": { "x": 6, "y": 118, "z": 0 },
-    "Entrance": { "x": 259, "y": 783 }
+    "Area": [[0, 0, -128, 129, 129, 256]],
+    "GoLocation": [6, 118, 0],
+    "Music": "TokunoDungeon"
   },
   {
     "$type": "DungeonRegion",
+    "Entrance": [977, 223, 0],
+    "Map": "Malas",
     "Name": "Fan Dancer's Dojo",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "TokunoDungeon",
-    "Area": [{ "x1": 40, "y1": 320, "x2": 210, "y2": 720 }],
-    "GoLocation": { "x": 71, "y": 337, "z": 0 },
-    "Entrance": { "x": 977, "y": 223 }
+    "Area": [[40, 320, -128, 170, 400, 256]],
+    "GoLocation": [71, 337, 0],
+    "Music": "TokunoDungeon"
   },
   {
     "$type": "BaseRegion",
+    "Map": "Malas",
     "Name": "Samurai start location",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "Zento",
-    "Area": [{ "x1": 320, "y1": 690, "x2": 435, "y2": 790 }]
+    "Area": [[320, 690, -128, 115, 100, 256]],
+    "Music": "Zento"
   },
   {
     "$type": "BaseRegion",
+    "Map": "Malas",
     "Name": "Ninja start location",
-    "Map": "Malas",
     "Priority": 50,
-    "Music": "Zento",
-    "Area": [{ "x1": 360, "y1": 795, "x2": 440, "y2": 835 }]
+    "Area": [[360, 795, -128, 80, 40, 256]],
+    "Music": "Zento"
   },
   {
     "$type": "BaseRegion",
+    "Map": "Malas",
     "Name": "Ninja cave",
-    "Map": "Malas",
     "Priority": 50,
-    "Area": [{ "x1": 360, "y1": 960, "x2": 460, "y2": 1175 }]
-  },
-  {
-    "$type": "NoHousingRegion",
-    "Name": "Isle of the Divide",
-    "Map": "Malas",
-    "Priority": 50,
-    "Area": [{ "x1": 1533, "y1": 849, "x2": 1828, "y2": 1044 }],
-    "GoLocation": { "x": 1731, "y": 982, "z": -80 }
+    "Area": [[360, 960, -128, 100, 215, 256]]
   },
   {
     "$type": "GuardedRegion",
-    "Name": "Moongates",
     "Map": "Tokuno",
+    "Name": "Moongates",
     "Priority": 50,
     "Area": [
-      { "x1": 1167, "y1": 996, "x2": 1171, "y2": 1000 },
-      { "x1": 799, "y1": 1201, "x2": 805, "y2": 1207 },
-      { "x1": 267, "y1": 625, "x2": 274, "y2": 632 }
+      [1167, 996, -128, 4, 4, 256],
+      [799, 1201, -128, 6, 6, 256],
+      [267, 625, -128, 7, 7, 256]
     ]
   },
   {
     "$type": "TownRegion",
-    "Name": "Zento",
     "Map": "Tokuno",
+    "Name": "Zento",
     "Priority": 50,
-    "Music": "Zento",
-    "Area": [{ "x1": 656, "y1": 1192, "x2": 816, "y2": 1320 }],
-    "GoLocation": { "x": 736, "y": 1256, "z": 30 }
+    "Area": [[656, 1192, -128, 160, 128, 256]],
+    "GoLocation": [736, 1256, 30],
+    "Music": "Zento"
   },
   {
-    "$type": "BaseRegion",
+    "$type": "TownRegion",
     "Map": "Tokuno",
     "Parent": "Zento",
-    "LogoutDelay": false,
-    "Area": [{ "x1": 674, "y1": 1203, "x2": 699, "y2": 1219 }]
+    "Priority": 50,
+    "Area": [[674, 1203, -128, 25, 16, 256]]
   },
   {
     "$type": "NoHousingRegion",
+    "Map": "Tokuno",
     "Name": "Fan Dancer's Dojo",
-    "Map": "Tokuno",
     "Priority": 50,
-    "Area": [{ "x1": 969, "y1": 194, "x2": 992, "y2": 224 }],
-    "GoLocation": { "x": 977, "y": 223, "z": 23 }
+    "Area": [[969, 194, -128, 23, 30, 256]],
+    "GoLocation": [977, 223, 23]
   },
   {
     "$type": "NoHousingRegion",
-    "Name": "Bushido Dojo",
     "Map": "Tokuno",
+    "Name": "Bushido Dojo",
     "Priority": 50,
-    "Area": [{ "x1": 283, "y1": 361, "x2": 351, "y2": 463 }],
-    "GoLocation": { "x": 320, "y": 408, "z": 32 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Abyss",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Music": "StygianAbyss",
-    "Area": [
-      { "x1": 301, "y1": 328, "x2": 1076, "y2": 802 },
-      { "x1": 780, "y1": 32, "x2": 1076, "y2": 328 },
-      { "x1": 436, "y1": 802, "x2": 740, "y2": 980 },
-      { "x1": 754, "y1": 881, "x2": 862, "y2": 974 },
-      { "x1": 756, "y1": 1049, "x2": 860, "y2": 1142 },
-      { "x1": 756, "y1": 1214, "x2": 861, "y2": 1313 },
-      { "x1": 0, "y1": 684, "x2": 134, "y2": 860 },
-      { "x1": 0, "y1": 485, "x2": 134, "y2": 647 },
-      { "x1": 0, "y1": 286, "x2": 137, "y2": 445 },
-      { "x1": 254, "y1": 70, "x2": 500, "y2": 253 }
-    ],
-    "GoLocation": { "x": 946, "y": 72, "z": 72 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Abyssal Lair",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 931, "y1": 314, "x2": 1031, "y2": 454 }],
-    "GoLocation": { "x": 985, "y": 366, "z": -11 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "MedusasLair",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 100,
-    "Area": [
-      { "x1": 764, "y1": 894, "x2": 833, "y2": 983 },
-      { "x1": 816, "y1": 749, "x2": 829, "y2": 765 }
-    ],
-    "GoLocation": { "x": 771, "y": 928, "z": 0 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "NPC Encampment",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 100,
-    "LogoutDelay": false,
-    "GuardsDisabled": true,
-    "Area": [{ "x1": 1087, "y1": 1127, "z1": -42, "x2": 1096, "y2": 1133, "z2": 128 }],
-    "GoLocation": { "x": 1090, "y": 1130, "z": -42 },
-    "Entrance": { "x": 1090, "y": 1132 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Cavern of the Discarded",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [
-      { "x1": 887, "y1": 475, "x2": 1000, "y2": 575 },
-      { "x1": 926, "y1": 533, "x2": 971, "y2": 553 },
-      { "x1": 928, "y1": 543, "x2": 970, "y2": 573 },
-      { "x1": 929, "y1": 536, "x2": 970, "y2": 564 },
-      { "x1": 936, "y1": 559, "x2": 972, "y2": 573 },
-      { "x1": 938, "y1": 541, "x2": 958, "y2": 572 },
-      { "x1": 961, "y1": 527, "x2": 983, "y2": 559 }
-    ],
-    "GoLocation": { "x": 912, "y": 501, "z": -12 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Chamber of Virtue",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 739, "y1": 465, "x2": 760, "y2": 486 }],
-    "GoLocation": { "x": 747, "y": 474, "z": -17 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Crimson Veins",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 931, "y1": 135, "x2": 996, "y2": 200 }],
-    "GoLocation": { "x": 974, "y": 164, "z": -11 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Enslaved Goblins",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [
-      { "x1": 538, "y1": 806, "x2": 613, "y2": 856 },
-      { "x1": 539, "y1": 790, "x2": 614, "y2": 840 },
-      { "x1": 553, "y1": 791, "x2": 613, "y2": 841 },
-      { "x1": 560, "y1": 796, "x2": 581, "y2": 817 },
-      { "x1": 570, "y1": 773, "x2": 613, "y2": 857 },
-      { "x1": 571, "y1": 788, "x2": 596, "y2": 813 }
-    ],
-    "GoLocation": { "x": 581, "y": 815, "z": -45 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Fairy Dragon Lair",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 849, "y1": 254, "x2": 916, "y2": 297 }],
-    "GoLocation": { "x": 888, "y": 277, "z": 3 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Fire Temple Ruins",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [
-      { "x1": 474, "y1": 766, "x2": 563, "y2": 789 },
-      { "x1": 485, "y1": 760, "x2": 553, "y2": 789 },
-      { "x1": 495, "y1": 750, "x2": 560, "y2": 779 },
-      { "x1": 506, "y1": 750, "x2": 572, "y2": 782 },
-      { "x1": 520, "y1": 739, "x2": 584, "y2": 771 }
-    ],
-    "GoLocation": { "x": 519, "y": 765, "z": -92 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Fractured City",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [
-      { "x1": 664, "y1": 439, "x2": 731, "y2": 527 },
-      { "x1": 726, "y1": 505, "x2": 771, "y2": 527 },
-      { "x1": 712, "y1": 402, "x2": 820, "y2": 460 },
-      { "x1": 720, "y1": 504, "x2": 746, "y2": 527 },
-      { "x1": 771, "y1": 460, "x2": 810, "y2": 518 },
-      { "x1": 808, "y1": 480, "x2": 820, "y2": 512 }
-    ],
-    "GoLocation": { "x": 780, "y": 445, "z": -15 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Lands of the Lich",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [
-      { "x1": 499, "y1": 575, "x2": 570, "y2": 695 },
-      { "x1": 554, "y1": 600, "x2": 628, "y2": 642 }
-    ],
-    "GoLocation": { "x": 538, "y": 656, "z": 8 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Lava Caldera",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 553, "y1": 860, "x2": 639, "y2": 948 }],
-    "GoLocation": { "x": 587, "y": 895, "z": -73 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Passage of Tears",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 638, "y1": 530, "x2": 738, "y2": 635 }],
-    "GoLocation": { "x": 685, "y": 579, "z": -15 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Secret Garden",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 413, "y1": 678, "x2": 489, "y2": 749 }],
-    "GoLocation": { "x": 462, "y": 719, "z": 22 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Serpents Lair",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [
-      { "x1": 681, "y1": 679, "x2": 849, "y2": 790 },
-      { "x1": 703, "y1": 656, "x2": 850, "y2": 789 },
-      { "x1": 785, "y1": 640, "x2": 850, "y2": 775 }
-    ],
-    "GoLocation": { "x": 711, "y": 720, "z": -11 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Silver Sapling",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 311, "y1": 582, "x2": 379, "y2": 650 }],
-    "GoLocation": { "x": 341, "y": 619, "z": 26 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Skeletal Dragon",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 643, "y1": 809, "x2": 698, "y2": 872 }],
-    "GoLocation": { "x": 675, "y": 828, "z": -109 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Sutek the Mage",
-    "Map": "TerMur",
-    "Parent": "Abyss",
-    "Priority": 50,
-    "Area": [{ "x1": 901, "y1": 574, "x2": 954, "y2": 614 }],
-    "GoLocation": { "x": 924, "y": 595, "z": -14 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Underworld",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Music": "HumanLevel",
-    "Area": [{ "x1": 898, "y1": 808, "x2": 1280, "y2": 1231 }],
-    "GoLocation": { "x": 1128, "y": 1207, "z": -2 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Atoll Bend",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 1027, "y1": 3311, "x2": 1224, "y2": 3514 }],
-    "GoLocation": { "x": 1118, "y": 3408, "z": -42 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Chicken Chase",
-    "Map": "TerMur",
-    "Priority": 50,
-    "rune": "Chicken Chase",
-    "Area": [{ "x1": 448, "y1": 3352, "x2": 613, "y2": 3480 }],
-    "GoLocation": { "x": 560, "y": 3412, "z": 37 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Fishermans Reach",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 547, "y1": 2835, "x2": 745, "y2": 3102 }],
-    "GoLocation": { "x": 631, "y": 3035, "z": 36 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Gated Isle",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 603, "y1": 3836, "x2": 815, "y2": 4043 }],
-    "GoLocation": { "x": 703, "y": 3934, "z": -31 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "High Plain",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 748, "y1": 2843, "x2": 981, "y2": 3050 }],
-    "GoLocation": { "x": 863, "y": 2931, "z": 38 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Holy City",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Music": "Holycity",
-    "Area": [{ "x1": 922, "y1": 3838, "x2": 1071, "y2": 3965 }],
-    "GoLocation": { "x": 997, "y": 3869, "z": -42 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Kepetch Waste",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 356, "y1": 3143, "x2": 523, "y2": 3224 }],
-    "GoLocation": { "x": 447, "y": 3188, "z": 20 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Lost Settlement",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 454, "y1": 3708, "x2": 648, "y2": 3957 }],
-    "GoLocation": { "x": 526, "y": 3822, "z": -44 }
-  },
-  {
-    "$type": "GuardedRegion",
-    "Name": "Moongates",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [
-      { "x1": 852, "y1": 3525, "x2": 867, "y2": 3540 },
-      { "x1": 925, "y1": 3988, "x2": 940, "y2": 4003 }
-    ]
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Northern Steppes",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 694, "y1": 3020, "x2": 954, "y2": 3148 }],
-    "GoLocation": { "x": 822, "y": 3063, "z": 61 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Raptor Island",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [
-      { "x1": 712, "y1": 3765, "x2": 879, "y2": 3829 },
-      { "x1": 728, "y1": 3809, "x2": 839, "y2": 3923 },
-      { "x1": 769, "y1": 3721, "x2": 972, "y2": 3768 },
-      { "x1": 808, "y1": 3692, "x2": 930, "y2": 3732 }
-    ],
-    "GoLocation": { "x": 816, "y": 3778, "z": -42 }
-  },
-  {
-    "$type": "TownRegion",
-    "Name": "Royal City",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Music": "RoyalCity",
-    "Area": [{ "x1": 624, "y1": 3296, "x2": 927, "y2": 3583 }],
-    "GoLocation": { "x": 750, "y": 3440, "z": -20 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Queen's Palace",
-    "Map": "TerMur",
-    "Parent": "Royal City",
-    "Music": "QueenPalace",
-    "Area": [{ "x1": 717, "y1": 3339, "x2": 785, "y2": 3412 }],
-    "GoLocation": { "x": 748, "y": 3357, "z": 55 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Royal City Inn",
-    "Map": "TerMur",
-    "Parent": "Royal City",
-    "LogoutDelay": false,
-    "Area": [
-      { "x1": 724, "y1": 3463, "x2": 761, "y2": 3483 },
-      { "x1": 747, "y1": 3480, "x2": 760, "y2": 3493 }
-    ]
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Royal Park",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [
-      { "x1": 632, "y1": 3233, "x2": 808, "y2": 3268 },
-      { "x1": 753, "y1": 3161, "x2": 990, "y2": 3292 }
-    ],
-    "GoLocation": { "x": 711, "y": 3255, "z": -42 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Slith Valley",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 1028, "y1": 3263, "x2": 1221, "y2": 3404 }],
-    "GoLocation": { "x": 1078, "y": 3331, "z": -42 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Spider Island",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 1063, "y1": 3695, "x2": 1181, "y2": 3779 }],
-    "GoLocation": { "x": 1115, "y": 3730, "z": -42 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "StygianDragonLair",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Music": "StygianDragon",
-    "Area": [{ "x1": 258, "y1": 90, "x2": 489, "y2": 245 }],
-    "GoLocation": { "x": 367, "y": 155, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Talon Point",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [
-      { "x1": 632, "y1": 3830, "x2": 730, "y2": 3885 },
-      { "x1": 629, "y1": 3786, "x2": 705, "y2": 3826 },
-      { "x1": 656, "y1": 3750, "x2": 707, "y2": 3791 }
-    ],
-    "GoLocation": { "x": 676, "y": 3831, "z": -39 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Toxic Desert",
-    "Map": "TerMur",
-    "Priority": 50,
-    "rune": "Toxic Desert",
-    "Area": [{ "x1": 1010, "y1": 2929, "z1": 37, "x2": 1156, "y2": 3049, "z2": 128 }],
-    "GoLocation": { "x": 1047, "y": 2980, "z": 62 },
-    "Entrance": { "x": 1051, "y": 3022 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Void Island",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 314, "y1": 3473, "x2": 581, "y2": 3699 }],
-    "GoLocation": { "x": 440, "y": 3577, "z": 38 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Volcano",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 298, "y1": 2895, "x2": 499, "y2": 3117 }],
-    "GoLocation": { "x": 407, "y": 3010, "z": -24 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Walled Circus",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 291, "y1": 3207, "x2": 445, "y2": 3354 }],
-    "GoLocation": { "x": 370, "y": 3273, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "Waterfall Point",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 635, "y1": 2862, "x2": 731, "y2": 2926 }],
-    "GoLocation": { "x": 661, "y": 2894, "z": 39 }
-  },
-  {
-    "$type": "BaseRegion",
-    "Name": "Shrine of Singularity",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Music": "CodexShrine",
-    "Area": [{ "x1": 978, "y1": 3786, "x2": 1018, "y2": 3838 }],
-    "GoLocation": { "x": 995, "y": 3806, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "GreatApeLair",
-    "Map": "TerMur",
-    "Priority": 100,
-    "Area": [{ "x1": 832, "y1": 1363, "z1": -25, "x2": 938, "y2": 1474, "z2": 128 }],
-    "GoLocation": { "x": 926, "y": 1464, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "ZipactriotlLair",
-    "Map": "TerMur",
-    "Priority": 100,
-    "Area": [{ "x1": 831, "y1": 2239, "z1": -25, "x2": 959, "y2": 2367, "z2": 128 }],
-    "GoLocation": { "x": 896, "y": 2304, "z": -19 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "MyrmidexQueenLair",
-    "Map": "TerMur",
-    "Priority": 100,
-    "Area": [{ "x1": 704, "y1": 2248, "z1": -25, "x2": 828, "y2": 2363, "z2": 128 }],
-    "GoLocation": { "x": 766, "y": 2306, "z": 0 }
-  },
-  {
-    "$type": "DungeonRegion",
-    "Name": "KotlCity",
-    "Map": "TerMur",
-    "Priority": 50,
-    "Area": [{ "x1": 435, "y1": 2270, "z1": -25, "x2": 675, "y2": 2490, "z2": 128 }],
-    "GoLocation": { "x": 542, "y": 2473, "z": 0 }
+    "Area": [[283, 361, -128, 68, 102, 256]],
+    "GoLocation": [320, 408, 32]
   }
 ]
