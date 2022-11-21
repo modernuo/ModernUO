@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using Server.Json;
 using Server.Logging;
 using Server.Network;
 using Server.Targeting;
@@ -78,6 +76,42 @@ public enum MusicName
     SelimsBar,
     SerpentIsleCombat_U7,
     ValoriaShips,
+    TheWanderer,
+    Castle,
+    Festival,
+    Honor,
+    Medieval,
+    BattleOnStones,
+    Docktown,
+    GargoyleQueen,
+    GenericCombat,
+    Holycity,
+    HumanLevel,
+    LoginLoop,
+    NorthernForestBattleonStones,
+    PrimevalLich,
+    QueenPalace,
+    RoyalCity,
+    SlasherVeil,
+    StygianAbyss,
+    StygianDragon,
+    Void,
+    CodexShrine,
+    AnvilStrikeInMinoc,
+    ASkaranLullaby,
+    BlackthornsMarch,
+    DupresNightInTrinsic,
+    FayaxionAndTheSix,
+    FlightOfTheNexus,
+    GalehavenJaunt,
+    JhelomToArms,
+    MidnightInYew,
+    MoonglowSonata,
+    NewMaginciaMarch,
+    NujelmWaltz,
+    SherrysSong,
+    StarlightInBritain,
+    TheVesperMist,
     NoMusic = 0x1FFF
 }
 
@@ -98,7 +132,14 @@ public class Region : IComparable<Region>
     {
     }
 
+    public Region(string name, Map map, params Rectangle3D[] area) : this(name, map, null, area)
+    {
+    }
+
     public Region(string name, Map map, int priority, params Rectangle3D[] area) : this(name, map, null, area) =>
+        Priority = priority;
+
+    public Region(string name, Map map, Region parent, int priority, params Rectangle3D[] area) : this(name, map, parent, area) =>
         Priority = priority;
 
     public Region(string name, Map map, Region parent, params Rectangle2D[] area) : this(
@@ -129,54 +170,6 @@ public class Region : IComparable<Region>
             ChildLevel = Parent.ChildLevel + 1;
             Priority = Parent.Priority;
         }
-    }
-
-    public Region(DynamicJson json, JsonSerializerOptions options)
-    {
-        Map = json.GetProperty("map", options, out Map map) ? map : null;
-        Parent = json.GetProperty("parent", options, out string parent) ? Find(parent, Map) : null;
-        Name = json.GetProperty("name", options, out string name) ? name : null;
-
-        Dynamic = false;
-
-        if (Parent == null)
-        {
-            ChildLevel = 0;
-            Priority = DefaultPriority;
-        }
-        else
-        {
-            ChildLevel = Parent.ChildLevel + 1;
-            Priority = Parent.Priority;
-        }
-
-        Priority = json.GetProperty("priority", options, out int priority) ? priority : Priority;
-
-        Area = json.GetProperty("rects", options, out List<Rectangle3D> rects)
-            ? rects.ToArray()
-            : Array.Empty<Rectangle3D>();
-
-        if (Area.Length == 0)
-        {
-            logger.Debug("Empty area for region '{Region}'", this);
-        }
-
-        if (json.GetProperty("go", options, out Point3D go))
-        {
-            GoLocation = go;
-        }
-        else if (Area.Length > 0)
-        {
-            var start = Area[0].Start;
-            var end = Area[0].End;
-
-            var x = start.X + (end.X - start.X) / 2;
-            var y = start.Y + (end.Y - start.Y) / 2;
-
-            GoLocation = new Point3D(x, y, Map?.GetAverageZ(x, y) ?? start.Z + (end.Z - start.Z) / 2);
-        }
-
-        Music = json.GetEnumProperty("music", options, out MusicName music) ? music : DefaultMusic;
     }
 
     public static List<Region> Regions { get; } = new();
@@ -239,6 +232,11 @@ public class Region : IComparable<Region>
     // This is not optimized. Use sparingly
     public static Region Find(string name, Map map, bool insensitive = false)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
         if (insensitive)
         {
             name = name.ToLower();

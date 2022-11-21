@@ -109,7 +109,7 @@ namespace Server.Commands
 
             if (map != null)
             {
-                var reg = from.Region;
+                var reg = Region.Find(from.Location, from.Map);
 
                 if (!reg.IsDefault)
                 {
