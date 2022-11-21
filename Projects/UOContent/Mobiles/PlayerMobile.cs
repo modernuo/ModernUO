@@ -1091,7 +1091,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
+            if (_mountBlock == null || !_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
             {
                 _mountBlock?.RemoveBlock(this);
                 _mountBlock = new MountBlock(duration, type, this);
