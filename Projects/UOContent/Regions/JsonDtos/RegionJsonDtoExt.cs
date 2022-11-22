@@ -12,11 +12,11 @@ public static class RegionJsonDtoExt
         RegionJsonSerializer.Register<BaseRegionJsonDto<GreenAcresRegion>, GreenAcresRegion>();
         RegionJsonSerializer.Register<BaseRegionJsonDto<JailRegion>, JailRegion>();
         RegionJsonSerializer.Register<BaseRegionJsonDto<MondainRegion>, MondainRegion>();
-        RegionJsonSerializer.Register<BaseRegionJsonDto<NewMaginciaRegion>, NewMaginciaRegion>();
+        RegionJsonSerializer.Register<TownRegionJsonDto<NewMaginciaRegion>, NewMaginciaRegion>();
         RegionJsonSerializer.Register<BaseRegionJsonDto<NoHousingRegion>, NoHousingRegion>();
         RegionJsonSerializer.Register<BaseRegionJsonDto<NoHousingGuardedRegion>, NoHousingGuardedRegion>();
         RegionJsonSerializer.Register<BaseRegionJsonDto<NoTravelSpellsAllowedRegion>, NoTravelSpellsAllowedRegion>();
-        RegionJsonSerializer.Register<BaseRegionJsonDto<TownRegion>, TownRegion>();
+        RegionJsonSerializer.Register<TownRegionJsonDto<TownRegion>, TownRegion>();
         RegionJsonSerializer.Register<BaseRegionJsonDto<TwistedWealdDesertRegion>, TwistedWealdDesertRegion>();
 
         // Damage boost regions
