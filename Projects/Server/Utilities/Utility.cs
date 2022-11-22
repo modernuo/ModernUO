@@ -807,10 +807,9 @@ public static class Utility
     }
 
     public static bool ToBoolean(string value) =>
-        bool.TryParse(value, out var b) && b ||
-        value.InsensitiveEquals("enabled") ||
-        value.InsensitiveEquals("on") ||
-        !value.InsensitiveEquals("disabled") && !value.InsensitiveEquals("off");
+        bool.TryParse(value, out var b)
+            ? b
+            : value.InsensitiveEquals("enabled") || value.InsensitiveEquals("on");
 
     public static double ToDouble(string value)
     {
