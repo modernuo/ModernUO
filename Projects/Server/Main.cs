@@ -19,7 +19,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -509,7 +508,7 @@ public static class Core
 
         TileMatrixLoader.LoadTileMatrix();
 
-        RegionLoader.LoadRegions();
+        RegionJsonSerializer.LoadRegions();
         World.Load();
 
         AssemblyHandler.Invoke("Initialize");

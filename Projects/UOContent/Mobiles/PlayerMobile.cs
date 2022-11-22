@@ -1091,7 +1091,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
+            if (_mountBlock == null || !_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
             {
                 _mountBlock?.RemoveBlock(this);
                 _mountBlock = new MountBlock(duration, type, this);
@@ -4416,10 +4416,10 @@ namespace Server.Mobiles
             Map map;
 
             var dungeon = Region.GetRegion<DungeonRegion>();
-            if (dungeon != null && dungeon.EntranceLocation != Point3D.Zero)
+            if (dungeon != null && dungeon.Entrance != Point3D.Zero)
             {
-                loc = dungeon.EntranceLocation;
-                map = dungeon.EntranceMap;
+                loc = dungeon.Entrance;
+                map = dungeon.Map;
             }
             else
             {

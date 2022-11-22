@@ -1,18 +1,18 @@
-using System.Text.Json;
-using Server.Json;
+namespace Server.Regions;
 
-namespace Server.Regions
+public class NoHousingRegion : BaseRegion
 {
-    public class NoHousingRegion : BaseRegion
+    // We don't set AllowHousing to false because it is manually checked so that a part of a house cannot overlap
+
+    public NoHousingRegion(string name, Map map, Region parent, params Rectangle3D[] area)
+        : base(name, map, parent, area)
     {
-        public NoHousingRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options) =>
-            SmartChecking = json.GetProperty("smartNoHousing", options, out bool smartNoHousing) && smartNoHousing;
-
-        /*  False: this uses 'stupid OSI' house placement checking: part of the house may be placed here provided that the center is not in the region
-         *  True: this uses 'smart RunUO' house placement checking: no part of the house may be in the region
-         */
-        public bool SmartChecking { get; }
-
-        public override bool AllowHousing(Mobile from, Point3D p) => SmartChecking;
     }
+
+    public NoHousingRegion(string name, Map map, Region parent, int priority, params Rectangle3D[] area)
+        : base(name, map, parent, priority, area)
+    {
+    }
+
+    public override bool AllowHousing(Mobile from, Point3D p) => true;
 }

@@ -104,10 +104,13 @@ public class Point3DConverter : JsonConverter<Point3D>
 
     public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
     {
-        writer.WriteStartArray();
+        writer.WriteStartObject();
+        writer.WritePropertyName("x");
         writer.WriteNumberValue(value.X);
+        writer.WritePropertyName("y");
         writer.WriteNumberValue(value.Y);
+        writer.WritePropertyName("z");
         writer.WriteNumberValue(value.Z);
-        writer.WriteEndArray();
+        writer.WriteEndObject();
     }
 }

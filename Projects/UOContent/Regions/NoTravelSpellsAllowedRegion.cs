@@ -1,12 +1,16 @@
-using System.Text.Json;
 using Server;
-using Server.Json;
 using Server.Regions;
 using Server.Spells;
 
 public class NoTravelSpellsAllowedRegion : DungeonRegion
 {
-    public NoTravelSpellsAllowedRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
+    public NoTravelSpellsAllowedRegion(string name, Map map, Region parent, params Rectangle3D[] area)
+        : base(name, map, parent, area)
+    {
+    }
+
+    public NoTravelSpellsAllowedRegion(string name, Map map, Region parent, int priority, params Rectangle3D[] area)
+        : base(name, map, parent, priority, area)
     {
     }
 

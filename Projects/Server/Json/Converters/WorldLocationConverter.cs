@@ -80,7 +80,6 @@ public class WorldLocationConverter : JsonConverter<WorldLocation>
     private WorldLocation DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
     {
         Span<int> data = stackalloc int[3];
-        var count = 0;
         var hasLoc = false;
         var hasXYZ = false;
         var hasMap = false;
@@ -150,7 +149,6 @@ public class WorldLocationConverter : JsonConverter<WorldLocation>
                 data[0] = loc.X;
                 data[1] = loc.Y;
                 data[2] = loc.Z;
-                count = 3;
                 continue;
             }
 
@@ -160,7 +158,7 @@ public class WorldLocationConverter : JsonConverter<WorldLocation>
             hasMap = true;
         }
 
-        if (!hasMap || count != 3)
+        if (!hasMap)
         {
             throw new JsonException("WorldLocation must have an x, y, z, and map properties");
         }
