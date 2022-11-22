@@ -166,5 +166,14 @@ public class BaseRegion : Region
 
     public override string ToString() => Name ?? RuneName ?? GetType().Name;
 
-    public virtual bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType) => true;
+    public virtual bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType, out TextDefinition message)
+    {
+        if (Parent is BaseRegion parent)
+        {
+            return parent.CheckTravel(m, newLocation, travelType, out message);
+        }
+
+        message = null;
+        return true;
+    }
 }

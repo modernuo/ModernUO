@@ -17,8 +17,11 @@ public class GreenAcresRegion : BaseRegion
     public override bool AllowHousing(Mobile from, Point3D p) =>
         from.AccessLevel != AccessLevel.Player && base.AllowHousing(from, p);
 
-    public override bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType) =>
-        m.AccessLevel != AccessLevel.Player;
+    public override bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType, out TextDefinition message)
+    {
+        message = null; // Use default message
+        return m.AccessLevel != AccessLevel.Player;
+    }
 
     public override bool OnBeginSpellCast(Mobile m, ISpell s)
     {

@@ -43,15 +43,17 @@ public class JailRegion : BaseRegion
         global = LightCycle.JailLevel;
     }
 
-    public override bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType)
+    private static TextDefinition _jailBreakPlan = 1114345; // You'll need a better jailbreak plan than that!
+
+    public override bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType, out TextDefinition message)
     {
         if (m?.AccessLevel == AccessLevel.Player)
         {
-            m.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
+            message = _jailBreakPlan;
             return false;
         }
 
-        return base.CheckTravel(m, newLocation, travelType);
+        return base.CheckTravel(m, newLocation, travelType, out message);
     }
 
     public override bool OnBeginSpellCast(Mobile from, ISpell s)
