@@ -120,7 +120,7 @@ namespace Server.Mobiles
 
         public int GetValue(int index)
         {
-            if (index < 0 || index >= m_Values.Length)
+            if (index < 0 || index >= m_Values?.Length)
             {
                 return 0;
             }
@@ -130,7 +130,7 @@ namespace Server.Mobiles
 
         public DateTime GetLastDecay(int index)
         {
-            if (index < 0 || index >= m_Values.Length)
+            if (index < 0 || index >= m_Values?.Length)
             {
                 return DateTime.MinValue;
             }
