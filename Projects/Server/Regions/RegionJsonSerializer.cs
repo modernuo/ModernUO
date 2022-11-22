@@ -59,7 +59,7 @@ public static class RegionJsonSerializer
         }
     };
 
-    public static void RegisterRegionForSerialization<TDto, TRegion>()
+    public static void Register<TDto, TRegion>()
         where TDto : RegionJsonDto, new() where TRegion : Region
     {
         for (var i = 0; i < _derivedTypes.Length; i++)
@@ -91,10 +91,15 @@ public static class RegionJsonSerializer
             throw new JsonException($"Failed to deserialize {path}.");
         }
 
+        var count = 0;
         foreach (var dto in regions)
         {
-            var region = dto.ToRegion();
-            region.Register();
+            if (Core.Expansion >= dto.MinExpansion && Core.Expansion <= dto.MaxExpansion)
+            {
+                var region = dto.ToRegion();
+                region.Register();
+                count++;
+            }
         }
 
         stopwatch.Stop();
@@ -102,7 +107,7 @@ public static class RegionJsonSerializer
         logger.Information(
             "Loading regions {Status} ({Count} regions) ({Duration:F2} seconds)",
             "done",
-            regions.Count,
+            count,
             stopwatch.Elapsed.TotalSeconds
         );
     }
