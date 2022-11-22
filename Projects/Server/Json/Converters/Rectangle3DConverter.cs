@@ -172,13 +172,29 @@ public class Rectangle3DConverter : JsonConverter<Rectangle3D>
 
     public override void Write(Utf8JsonWriter writer, Rectangle3D value, JsonSerializerOptions options)
     {
-        writer.WriteStartArray();
+        var writeZ = value.Start.Z is > sbyte.MinValue and < sbyte.MaxValue || value.End.Z is > sbyte.MinValue and < sbyte.MaxValue;
+
+        writer.WriteStartObject();
+        writer.WritePropertyName("x1");
         writer.WriteNumberValue(value.Start.X);
+        writer.WritePropertyName("y1");
         writer.WriteNumberValue(value.Start.Y);
-        writer.WriteNumberValue(value.Start.Z);
-        writer.WriteNumberValue(value.Width);
-        writer.WriteNumberValue(value.Height);
-        writer.WriteNumberValue(value.Depth);
-        writer.WriteEndArray();
+
+        if (writeZ)
+        {
+            writer.WritePropertyName("z1");
+            writer.WriteNumberValue(value.Start.Z);
+        }
+
+        writer.WritePropertyName("x2");
+        writer.WriteNumberValue(value.End.X);
+        writer.WritePropertyName("y2");
+        writer.WriteNumberValue(value.End.Y);
+        if (writeZ)
+        {
+            writer.WritePropertyName("z2");
+            writer.WriteNumberValue(value.End.Z);
+        }
+        writer.WriteEndObject();
     }
 }
