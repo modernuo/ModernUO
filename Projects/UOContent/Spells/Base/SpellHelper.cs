@@ -49,17 +49,15 @@ namespace Server
 
 namespace Server.Spells
 {
-    [Flags]
     public enum TravelCheckType
     {
-        None = 0x00000000,
-        RecallFrom = 0x00000001,
-        RecallTo = 0x00000002,
-        GateFrom = 0x00000004,
-        GateTo = 0x00000008,
-        Mark = 0x00000010,
-        TeleportFrom = 0x00000020,
-        TeleportTo = 0x00000040
+        RecallFrom,
+        RecallTo,
+        GateFrom,
+        GateTo,
+        Mark,
+        TeleportFrom,
+        TeleportTo
     }
 
     public static class SpellHelper
