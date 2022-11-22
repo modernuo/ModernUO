@@ -1514,6 +1514,7 @@
   {
     "$type": "TownRegion",
     "RuneName": "New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "Haven Island",
     "Name": "New Haven",
@@ -1525,6 +1526,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "The Little Shop of Alchemy in New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Alchemist",
@@ -1534,6 +1536,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "the Bardic Guild in New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Bard",
@@ -1547,6 +1550,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "the Warrior Guild Hall in New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "Warrior's Guild Hall",
@@ -1558,6 +1562,7 @@
   },
   {
     "$type": "NoHousingRegion",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "Warrior's Guild Hall",
     "Name": "the New Haven Warrior",
@@ -1569,6 +1574,7 @@
   },
   {
     "$type": "NoHousingRegion",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "Warrior's Guild Hall",
     "Name": "the New Haven Bowyer",
@@ -1578,6 +1584,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "A Stitch In Time in New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Tailor",
@@ -1590,6 +1597,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "Carpenters of New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Carpenter",
@@ -1602,6 +1610,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "Mapmakers of New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Mapmaker",
@@ -1611,6 +1620,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "New Haven Magery School",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Mage",
@@ -1621,6 +1631,7 @@
     "$type": "NoHousingRegion",
     "RuneName": "the Bountiful Harvest Inn in New Haven",
     "NoLogoutDelay": true,
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Inn",
@@ -1633,6 +1644,7 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "the docks in New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Docks",
@@ -1646,11 +1658,350 @@
   {
     "$type": "NoHousingRegion",
     "RuneName": "the First Bank of New Haven",
+    "MinExpansion": "ML",
     "Map": "Trammel",
     "Parent": "New Haven",
     "Name": "the New Haven Bank",
     "Priority": 50,
     "Area": [{"x1": 3479, "y1": 2565, "x2": 3492, "y2": 2580}]
+  },
+  {
+    "$type": "TownRegion",
+    "RuneName": "Haven City",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven Island",
+    "Name": "Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3590, "y1": 2460, "x2": 3708, "y2": 2685},
+      {"x1": 3568, "y1": 2552, "x2": 3590, "y2": 2631},
+      {"x1": 3708, "y1": 2558, "x2": 3761, "y2": 2712},
+      {"x1": 3695, "y1": 2685, "x2": 3708, "y2": 2712}
+    ],
+    "GoLocation": {"x": 3650, "y": 2519, "z": 0},
+    "Music": "Ocllo"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Woodsman in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Woodsman in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3736, "y1": 2680, "x2": 3744, "y2": 2696},
+      {"x1": 3744, "y1": 2680, "x2": 3752, "y2": 2688}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Prime Cut Butcher Shop in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Prime Cut Butcher Shop in Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3704, "y1": 2648, "x2": 3720, "y2": 2656}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "a farm in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3728, "y1": 2632, "x2": 3736, "y2": 2640}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "a farm in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3704, "y1": 2584, "x2": 3712, "y2": 2592}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "a farm in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3736, "y1": 2561, "x2": 3744, "y2": 2568}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Mapmakers of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Mapmakers of Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3624, "y1": 2632, "x2": 3640, "y2": 2640}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Haven Blacksmith",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Haven Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 3641, "y1": 2613, "x2": 3646, "y2": 2624}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Second Bank of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Second Bank of Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3615, "y1": 2614, "x2": 3631, "y2": 2623},
+      {"x1": 3615, "y1": 2609, "x2": 3624, "y2": 2614}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Uzeraan's Mansion",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Uzeraan's Mansion",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3583, "y1": 2567, "x2": 3608, "y2": 2608},
+      {"x1": 3608, "y1": 2572, "x2": 3613, "y2": 2603},
+      {"x1": 3572, "y1": 2592, "x2": 3583, "y2": 2603},
+      {"x1": 3575, "y1": 2582, "x2": 3583, "y2": 2592}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Uzeraan's Mansion",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3592, "y1": 2595, "x2": 3612, "y2": 2599},
+      {"x1": 3595, "y1": 2599, "x2": 3612, "y2": 2602},
+      {"x1": 3595, "y1": 2602, "x2": 3607, "y2": 2607}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Last Chance Provisioners in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Last Chance Provisioners in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3666, "y1": 2592, "x2": 3681, "y2": 2600},
+      {"x1": 3673, "y1": 2587, "x2": 3681, "y2": 2592}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Healers of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Healers of Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3659, "y1": 2577, "x2": 3674, "y2": 2584},
+      {"x1": 3661, "y1": 2576, "x2": 3672, "y2": 2577},
+      {"x1": 3663, "y1": 2575, "x2": 3670, "y2": 2576},
+      {"x1": 3661, "y1": 2584, "x2": 3672, "y2": 2585},
+      {"x1": 3663, "y1": 2585, "x2": 3670, "y2": 2586}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Little Shop of Magic in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Little Shop of Magic in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3623, "y1": 2565, "x2": 3642, "y2": 2577},
+      {"x1": 3623, "y1": 2577, "x2": 3628, "y2": 2581},
+      {"x1": 3637, "y1": 2577, "x2": 3642, "y2": 2581}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Shakin' Bakery in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Shakin' Bakery in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3624, "y1": 2528, "x2": 3632, "y2": 2552},
+      {"x1": 3632, "y1": 2528, "x2": 3640, "y2": 2536},
+      {"x1": 3632, "y1": 2544, "x2": 3640, "y2": 2552}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Bardic Guild in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Bardic Guild in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3672, "y1": 2528, "x2": 3679, "y2": 2544},
+      {"x1": 3655, "y1": 2528, "x2": 3672, "y2": 2536}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Carpenters of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Carpenters of Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3632, "y1": 2496, "x2": 3648, "y2": 2504},
+      {"x1": 3640, "y1": 2504, "x2": 3648, "y2": 2512}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "Haven Clockworks and Tinker Shop",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "Haven Clockworks and Tinker Shop",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3656, "y1": 2504, "x2": 3672, "y2": 2512},
+      {"x1": 3664, "y1": 2495, "x2": 3672, "y2": 2504}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Haven Thieves' Guild",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Haven Thieves' Guild",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3688, "y1": 2504, "x2": 3696, "y2": 2520},
+      {"x1": 3696, "y1": 2504, "x2": 3704, "y2": 2512}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "A Stitch in Time in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "A Stitch in Time in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3688, "y1": 2464, "x2": 3696, "y2": 2488},
+      {"x1": 3680, "y1": 2472, "x2": 3704, "y2": 2480}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Haven Public Library",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Haven Public Library",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3608, "y1": 2464, "x2": 3616, "y2": 2480},
+      {"x1": 3616, "y1": 2472, "x2": 3624, "y2": 2480}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Gentle Rest Inn in New Haven",
+    "NoLogoutDelay": true,
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Gentle Rest Inn in New Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3493, "y1": 2513, "x2": 3509, "y2": 2520},
+      {"x1": 3503, "y1": 2513, "x2": 3510, "y2": 2529}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "The Albatross Bar and Grill in Haven",
+    "NoLogoutDelay": true,
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "The Albatross Bar and Grill in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3664, "y1": 2640, "x2": 3672, "y2": 2656},
+      {"x1": 3672, "y1": 2648, "x2": 3680, "y2": 2656}
+    ],
+    "Music": "Tavern01"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Proving Grounds in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Proving Grounds in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3728, "y1": 2575, "x2": 3736, "y2": 2592},
+      {"x1": 3736, "y1": 2575, "x2": 3737, "y2": 2582}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Bullseye Marksmen in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Bullseye Marksmen in Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3742, "y1": 2575, "x2": 3750, "y2": 2586}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the docks in Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the docks in Haven",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3645, "y1": 2657, "x2": 3672, "y2": 2666},
+      {"x1": 3645, "y1": 2666, "x2": 3651, "y2": 2684},
+      {"x1": 3659, "y1": 2666, "x2": 3665, "y2": 2684}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "RuneName": "the Mystic Mines of Haven",
+    "MaxExpansion": "SE",
+    "Map": "Trammel",
+    "Parent": "Haven",
+    "Name": "the Mystic Mines of Haven",
+    "Priority": 50,
+    "Area": [{"x1": 3752, "y1": 2698, "x2": 3757, "y2": 2707}]
   },
   {
     "$type": "TownRegion",
