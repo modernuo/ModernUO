@@ -2,7 +2,7 @@
 
 namespace Server.Mobiles;
 
-public abstract class SummonUndead : MonsterAbility
+public abstract class SummonUndeadCounter : MonsterAbility
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.SummonUndead;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage;

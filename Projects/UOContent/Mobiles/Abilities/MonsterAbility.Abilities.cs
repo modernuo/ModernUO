@@ -13,8 +13,8 @@ public abstract partial class MonsterAbility
     public static FanningFire FanningFire => new();
 
     // Summon Undead
-    public static SummonSkeletons SummonSkeletons => new();
-    public static SummonLesserUndead SummonLesserUndead => new();
+    public static SummonSkeletonsCounter SummonSkeletonsCounter => new();
+    public static SummonLesserUndeadCounter SummonLesserUndeadCounter => new();
 
     // Stun
     public static ColossalBlow ColossalBlow => new();
