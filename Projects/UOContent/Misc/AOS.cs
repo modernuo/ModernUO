@@ -304,6 +304,11 @@ namespace Server
         IncreasedKarmaLoss = 0x00800000
     }
 
+    public interface IAosItem
+    {
+        public AosAttributes Attributes { get; }
+    }
+
     public sealed class AosAttributes : BaseAttributes
     {
         public AosAttributes(Item owner) : base(owner)

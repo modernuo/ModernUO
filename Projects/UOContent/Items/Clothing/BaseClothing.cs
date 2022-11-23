@@ -24,7 +24,8 @@ namespace Server.Items
     }
 
     [SerializationGenerator(7, false)]
-    public abstract partial class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
+    public abstract partial class BaseClothing
+        : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem
     {
         [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;

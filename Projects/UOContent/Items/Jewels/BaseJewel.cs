@@ -19,7 +19,7 @@ public enum GemType
 }
 
 [SerializationGenerator(4, false)]
-public abstract partial class BaseJewel : Item, ICraftable
+public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 {
     [EncodedInt]
     [InvalidateProperties]
