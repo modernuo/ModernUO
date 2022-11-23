@@ -1,187 +1,186 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(2, false)]
+public abstract partial class BaseHides : Item, ICommodity
 {
-    [SerializationGenerator(2, false)]
-    public abstract partial class BaseHides : Item, ICommodity
+    [InvalidateProperties]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(0)]
+    private CraftResource _resource;
+
+    public BaseHides(CraftResource resource, int amount = 1) : base(0x1079)
     {
-        [InvalidateProperties]
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
-        [SerializableField(0)]
-        private CraftResource _resource;
+        Stackable = true;
+        Weight = 5.0;
+        Amount = amount;
+        Hue = CraftResources.GetHue(resource);
 
-        public BaseHides(CraftResource resource, int amount = 1) : base(0x1079)
+        _resource = resource;
+    }
+
+    public override int LabelNumber
+    {
+        get
         {
-            Stackable = true;
-            Weight = 5.0;
-            Amount = amount;
-            Hue = CraftResources.GetHue(resource);
-
-            _resource = resource;
-        }
-
-        public override int LabelNumber
-        {
-            get
+            if (_resource >= CraftResource.SpinedLeather && _resource <= CraftResource.BarbedLeather)
             {
-                if (_resource >= CraftResource.SpinedLeather && _resource <= CraftResource.BarbedLeather)
-                {
-                    return 1049687 + (_resource - CraftResource.SpinedLeather);
-                }
-
-                return 1047023;
+                return 1049687 + (_resource - CraftResource.SpinedLeather);
             }
+
+            return 1047023;
         }
+    }
 
-        int ICommodity.DescriptionNumber => LabelNumber;
-        bool ICommodity.IsDeedable => true;
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => true;
 
-        private void Deserialize(IGenericReader reader, int version)
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _resource = (CraftResource)reader.ReadInt();
+    }
+
+    public override void AddNameProperty(IPropertyList list)
+    {
+        if (Amount > 1)
         {
-            _resource = (CraftResource)reader.ReadInt();
+            list.Add(1050039, $"{Amount}\t{1024216:#}"); // ~1_NUMBER~ ~2_ITEMNAME~
         }
-
-        public override void AddNameProperty(IPropertyList list)
+        else
         {
-            if (Amount > 1)
+            list.Add(1024216); // pile of hides
+        }
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (!CraftResources.IsStandard(_resource))
+        {
+            var num = CraftResources.GetLocalizationNumber(_resource);
+
+            if (num > 0)
             {
-                list.Add(1050039, $"{Amount}\t{1024216:#}"); // ~1_NUMBER~ ~2_ITEMNAME~
+                list.Add(num);
             }
             else
             {
-                list.Add(1024216); // pile of hides
-            }
-        }
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            if (!CraftResources.IsStandard(_resource))
-            {
-                var num = CraftResources.GetLocalizationNumber(_resource);
-
-                if (num > 0)
-                {
-                    list.Add(num);
-                }
-                else
-                {
-                    list.Add(CraftResources.GetName(_resource));
-                }
+                list.Add(CraftResources.GetName(_resource));
             }
         }
     }
+}
 
-    [SerializationGenerator(0, false)]
-    [Flippable(0x1079, 0x1078)]
-    public partial class Hides : BaseHides, IScissorable
+[SerializationGenerator(0, false)]
+[Flippable(0x1079, 0x1078)]
+public partial class Hides : BaseHides, IScissorable
+{
+    [Constructible]
+    public Hides(int amount = 1) : base(CraftResource.RegularLeather, amount)
     {
-        [Constructible]
-        public Hides(int amount = 1) : base(CraftResource.RegularLeather, amount)
-        {
-        }
-
-        public bool Scissor(Mobile from, Scissors scissors)
-        {
-            if (Deleted || !from.CanSee(this))
-            {
-                return false;
-            }
-
-            if (Core.AOS && !IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
-                return false;
-            }
-
-            ScissorHelper(from, new Leather(), 1);
-
-            return true;
-        }
     }
 
-    [SerializationGenerator(0, false)]
-    [Flippable(0x1079, 0x1078)]
-    public partial class SpinedHides : BaseHides, IScissorable
+    public bool Scissor(Mobile from, Scissors scissors)
     {
-        [Constructible]
-        public SpinedHides(int amount = 1) : base(CraftResource.SpinedLeather, amount)
+        if (Deleted || !from.CanSee(this))
         {
+            return false;
         }
 
-        public bool Scissor(Mobile from, Scissors scissors)
+        if (Core.AOS && !IsChildOf(from.Backpack))
         {
-            if (Deleted || !from.CanSee(this))
-            {
-                return false;
-            }
-
-            if (Core.AOS && !IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
-                return false;
-            }
-
-            ScissorHelper(from, new SpinedLeather(), 1);
-
-            return true;
+            from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
+            return false;
         }
+
+        ScissorHelper(from, new Leather(), 1);
+
+        return true;
+    }
+}
+
+[SerializationGenerator(0, false)]
+[Flippable(0x1079, 0x1078)]
+public partial class SpinedHides : BaseHides, IScissorable
+{
+    [Constructible]
+    public SpinedHides(int amount = 1) : base(CraftResource.SpinedLeather, amount)
+    {
     }
 
-    [SerializationGenerator(0, false)]
-    [Flippable(0x1079, 0x1078)]
-    public partial class HornedHides : BaseHides, IScissorable
+    public bool Scissor(Mobile from, Scissors scissors)
     {
-        [Constructible]
-        public HornedHides(int amount = 1) : base(CraftResource.HornedLeather, amount)
+        if (Deleted || !from.CanSee(this))
         {
+            return false;
         }
 
-        public bool Scissor(Mobile from, Scissors scissors)
+        if (Core.AOS && !IsChildOf(from.Backpack))
         {
-            if (Deleted || !from.CanSee(this))
-            {
-                return false;
-            }
-
-            if (Core.AOS && !IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
-                return false;
-            }
-
-            ScissorHelper(from, new HornedLeather(), 1);
-
-            return true;
+            from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
+            return false;
         }
+
+        ScissorHelper(from, new SpinedLeather(), 1);
+
+        return true;
+    }
+}
+
+[SerializationGenerator(0, false)]
+[Flippable(0x1079, 0x1078)]
+public partial class HornedHides : BaseHides, IScissorable
+{
+    [Constructible]
+    public HornedHides(int amount = 1) : base(CraftResource.HornedLeather, amount)
+    {
     }
 
-    [SerializationGenerator(0, false)]
-    [Flippable(0x1079, 0x1078)]
-    public partial class BarbedHides : BaseHides, IScissorable
+    public bool Scissor(Mobile from, Scissors scissors)
     {
-        [Constructible]
-        public BarbedHides(int amount = 1) : base(CraftResource.BarbedLeather, amount)
+        if (Deleted || !from.CanSee(this))
         {
+            return false;
         }
 
-        public bool Scissor(Mobile from, Scissors scissors)
+        if (Core.AOS && !IsChildOf(from.Backpack))
         {
-            if (Deleted || !from.CanSee(this))
-            {
-                return false;
-            }
-
-            if (Core.AOS && !IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
-                return false;
-            }
-
-            ScissorHelper(from, new BarbedLeather(), 1);
-
-            return true;
+            from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
+            return false;
         }
+
+        ScissorHelper(from, new HornedLeather(), 1);
+
+        return true;
+    }
+}
+
+[SerializationGenerator(0, false)]
+[Flippable(0x1079, 0x1078)]
+public partial class BarbedHides : BaseHides, IScissorable
+{
+    [Constructible]
+    public BarbedHides(int amount = 1) : base(CraftResource.BarbedLeather, amount)
+    {
+    }
+
+    public bool Scissor(Mobile from, Scissors scissors)
+    {
+        if (Deleted || !from.CanSee(this))
+        {
+            return false;
+        }
+
+        if (Core.AOS && !IsChildOf(from.Backpack))
+        {
+            from.SendLocalizedMessage(502437); // Items you wish to cut must be in your backpack
+            return false;
+        }
+
+        ScissorHelper(from, new BarbedLeather(), 1);
+
+        return true;
     }
 }
