@@ -73,7 +73,7 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 2);
         }
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.SummonLesserUndeadCounter };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.SummonLesserUndeadCounter };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void Serialize(IGenericWriter writer)

@@ -48,7 +48,7 @@ namespace Server.Mobiles
         public override bool IsBondable => false;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override string ApplyNameSuffix(string suffix)

@@ -65,7 +65,7 @@ public class LesserHiryu : BaseMount
 
     public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.GraspingClaw };
+    private static MonsterAbility[] _abilities = { MonsterAbilities.GraspingClaw };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     private static int GetHue()

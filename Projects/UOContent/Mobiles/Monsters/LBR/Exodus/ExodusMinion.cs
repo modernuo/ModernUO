@@ -88,7 +88,7 @@ public class ExodusMinion : BaseCreature
     private static MonsterAbility[] _abilities =
     {
         // OSI changed the ability some time around UOML
-        Core.ML ? MonsterAbility.EnergyBoltCounter : MonsterAbility.MagicalBarrier
+        Core.ML ? MonsterAbilities.EnergyBoltCounter : MonsterAbilities.MagicalBarrier
     };
 
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;

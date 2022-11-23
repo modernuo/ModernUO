@@ -107,7 +107,7 @@ public class Golem : BaseCreature
     public override bool BardImmune => !Core.AOS || Controlled;
     public override Poison PoisonImmune => Poison.Lethal;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.ColossalBlow };
+    private static MonsterAbility[] _abilities = { MonsterAbilities.ColossalBlow };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void OnDeath(Container c)

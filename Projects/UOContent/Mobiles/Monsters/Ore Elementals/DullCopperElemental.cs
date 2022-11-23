@@ -51,7 +51,7 @@ public class DullCopperElemental : BaseCreature
     public override bool BleedImmune => true;
     public override int TreasureMapLevel => 1;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.DeathExplosion };
+    private static MonsterAbility[] _abilities = { MonsterAbilities.DeathExplosion };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void GenerateLoot()

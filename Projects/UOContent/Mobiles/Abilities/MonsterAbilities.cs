@@ -1,6 +1,6 @@
 ﻿namespace Server.Mobiles;
 
-public abstract partial class MonsterAbility
+public static class MonsterAbilities
 {
     // Fire Breath
     public static FireBreath FireBreath => new();

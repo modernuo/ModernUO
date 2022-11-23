@@ -62,7 +62,7 @@ namespace Server.Mobiles
         public override bool GivesMLMinorArtifact => true;
         public override bool AlwaysMurderer => true;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.ChaosBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ChaosBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

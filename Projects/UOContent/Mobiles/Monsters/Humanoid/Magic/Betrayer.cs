@@ -101,8 +101,8 @@ public class Betrayer : BaseCreature
     private static MonsterAbility[] _abilities =
     {
         new MonsterAbilityGroup(
-            (1, MonsterAbility.ColossalBlow),
-            (1, MonsterAbility.PoisonGasAreaAttack)
+            (1, MonsterAbilities.ColossalBlow),
+            (1, MonsterAbilities.PoisonGasAreaAttack)
         )
     };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;

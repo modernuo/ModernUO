@@ -62,9 +62,9 @@ public class FanDancer : BaseCreature
 
     private static MonsterAbility[] _abilities =
     {
-        MonsterAbility.ReflectPhysicalDamage,
-        MonsterAbility.FanningFire,
-        MonsterAbility.FanThrowCounter
+        MonsterAbilities.ReflectPhysicalDamage,
+        MonsterAbilities.FanningFire,
+        MonsterAbilities.FanThrowCounter
     };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 

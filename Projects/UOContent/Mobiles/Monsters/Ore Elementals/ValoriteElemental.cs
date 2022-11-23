@@ -54,7 +54,7 @@ public class ValoriteElemental : BaseCreature
     public override bool BleedImmune => true;
     public override int TreasureMapLevel => 1;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.PoisonGasCounter, MonsterAbility.DestroyEquipment };
+    private static MonsterAbility[] _abilities = { MonsterAbilities.PoisonGasCounter, MonsterAbilities.DestroyEquipment };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void GenerateLoot()

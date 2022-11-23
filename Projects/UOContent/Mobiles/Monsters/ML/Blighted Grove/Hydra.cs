@@ -48,7 +48,7 @@ namespace Server.Mobiles
         public override int Meat => 19;
         public override int TreasureMapLevel => 5;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
