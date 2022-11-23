@@ -49,54 +49,65 @@ public class HealerAI : BaseAI
             {
                 targ.Cancel(m_Mobile, TargetCancelType.Canceled);
             }
+
+            return true;
         }
-        else
+
+        var toHelp = Find(m_All);
+
+        if (toHelp != null)
         {
-            var toHelp = Find(m_All);
-
-            if (toHelp != null)
+            if (NeedCure(toHelp))
             {
-                if (NeedCure(toHelp))
+                if (m_Mobile.Debug)
                 {
-                    if (m_Mobile.Debug)
-                    {
-                        m_Mobile.DebugSay($"{toHelp.Name} needs a cure");
-                    }
-
-                    if (!new CureSpell(m_Mobile).Cast())
-                    {
-                        new CureSpell(m_Mobile).Cast();
-                    }
+                    m_Mobile.DebugSay($"{toHelp.Name} needs a cure");
                 }
-                else if (NeedGHeal(toHelp))
-                {
-                    if (m_Mobile.Debug)
-                    {
-                        m_Mobile.DebugSay("{toHelp.Name} needs a greater heal");
-                    }
 
-                    if (!new GreaterHealSpell(m_Mobile).Cast())
-                    {
-                        new HealSpell(m_Mobile).Cast();
-                    }
+                if (!new CureSpell(m_Mobile).Cast())
+                {
+                    new CureSpell(m_Mobile).Cast();
                 }
-                else if (NeedLHeal(toHelp))
+            }
+            else if (NeedGHeal(toHelp))
+            {
+                if (m_Mobile.Debug)
                 {
-                    if (m_Mobile.Debug)
-                    {
-                        m_Mobile.DebugSay("{toHelp.Name} needs a lesser heal");
-                    }
+                    m_Mobile.DebugSay($"{toHelp.Name} needs a greater heal");
+                }
 
+                if (!new GreaterHealSpell(m_Mobile).Cast())
+                {
                     new HealSpell(m_Mobile).Cast();
                 }
             }
-            else if (AcquireFocusMob(m_Mobile.RangePerception, FightMode.Weakest, false, true, false))
+            else if (NeedLHeal(toHelp))
             {
-                WalkMobileRange(m_Mobile.FocusMob, 1, false, 4, 7);
+                if (m_Mobile.Debug)
+                {
+                    m_Mobile.DebugSay($"{toHelp.Name} needs a lesser heal");
+                }
+
+                new HealSpell(m_Mobile).Cast();
             }
-            else
+
+            return true;
+        }
+
+        if (!AcquireFocusMob(m_Mobile.RangePerception, FightMode.Weakest, false, true, false))
+        {
+            WalkRandomInHome(3, 2, 1);
+            return true;
+        }
+
+        WalkMobileRange(m_Mobile.FocusMob, 1, false, 4, 7);
+
+        // TODO: Should it be able to do this?
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
+        {
+            if (m_Mobile.Debug)
             {
-                WalkRandomInHome(3, 2, 1);
+                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
             }
         }
 

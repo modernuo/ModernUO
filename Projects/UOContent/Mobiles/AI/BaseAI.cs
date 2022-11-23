@@ -993,18 +993,24 @@ public abstract class BaseAI
             {
                 m_Mobile.DebugSay("Praise the shepherd!");
             }
-        }
-        else
-        {
-            var c = m_Mobile.Combatant;
 
-            if (c?.Deleted != false || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
+            return true;
+        }
+
+        var c = m_Mobile.Combatant;
+
+        if (c?.Deleted != false || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
+        {
+            Action = ActionType.Wander;
+            return true;
+        }
+
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
+        {
+            if (m_Mobile.Debug)
             {
-                Action = ActionType.Wander;
-            }
-            else
-            {
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
+                m_Mobile.DebugSay($"I used my abilities on {c.Name}!");
             }
         }
 

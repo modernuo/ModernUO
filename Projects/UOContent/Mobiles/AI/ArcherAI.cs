@@ -80,6 +80,16 @@ public class ArcherAI : BaseAI
             }
         }
 
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
+            }
+
+            return true;
+        }
+
         // When we have no ammo, we flee
         var pack = m_Mobile.Backpack;
 

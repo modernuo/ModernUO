@@ -1159,23 +1159,27 @@ namespace Server.Mobiles
             return false;
         }
 
-        public virtual void TriggerAbility(MonsterAbilityTrigger trigger, Mobile defender)
+        public virtual bool TriggerAbility(MonsterAbilityTrigger trigger, Mobile defender)
         {
             var abilities = GetMonsterAbilities();
 
             if (abilities == null)
             {
-                return;
+                return false;
             }
 
+            var triggered = false;
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
                 if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
                 {
                     ability.Trigger(trigger, this, defender);
+                    triggered = true;
                 }
             }
+
+            return triggered;
         }
 
         public virtual void TriggerAbilityMove(MonsterAbilityTrigger trigger, Mobile defender, Direction d)
