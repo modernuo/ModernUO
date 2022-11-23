@@ -25,7 +25,18 @@ public class DestroyEquipment : MonsterAbilitySingleTarget
                 continue;
             }
 
-            if (!(Mobile.InsuranceEnabled && item.Insured) && item is IDurability { MaxHitPoints: > 0 })
+            if (Mobile.InsuranceEnabled && item.Insured)
+            {
+                continue;
+            }
+
+            // Late publish AOS, do not destroy equipment that mages use
+            if (item is IAosItem { Attributes.SpellChanneling: > 0 })
+            {
+                continue;
+            }
+
+            if (item is IDurability { MaxHitPoints: > 0 })
             {
                 queue.Enqueue(item);
             }
