@@ -60,7 +60,12 @@ public class FanDancer : BaseCreature
 
     public override bool Uncalmable => true;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.ReflectPhysicalDamage, MonsterAbility.FanningFire };
+    private static MonsterAbility[] _abilities =
+    {
+        MonsterAbility.ReflectPhysicalDamage,
+        MonsterAbility.FanningFire,
+        MonsterAbility.FanThrow
+    };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void GenerateLoot()
@@ -68,42 +73,6 @@ public class FanDancer : BaseCreature
         AddLoot(LootPack.FilthyRich);
         AddLoot(LootPack.Rich);
         AddLoot(LootPack.Gems, 2);
-    }
-
-    private void ThrowFan(Mobile to)
-    {
-        if (!(Utility.RandomDouble() < 0.8) || to.InRange(this, 1))
-        {
-            return;
-        }
-
-        /* Fan Throw
-         * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
-         * Damage: 50-65
-         */
-        Effects.SendMovingEffect(
-            to.Location,
-            to.Map,
-            0x27A3,
-            Location,
-            to.Location,
-            10,
-            0
-        );
-
-        AOS.Damage(to, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
-    }
-
-    public override void OnDamagedBySpell(Mobile attacker, int damage)
-    {
-        base.OnDamagedBySpell(attacker, damage);
-        ThrowFan(attacker);
-    }
-
-    public override void OnGotMeleeAttack(Mobile attacker, int damage)
-    {
-        base.OnGotMeleeAttack(attacker, damage);
-        ThrowFan(attacker);
     }
 
     public override void Serialize(IGenericWriter writer)

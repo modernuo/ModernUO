@@ -17,5 +17,6 @@ public enum MonsterAbilityType
     EnergyBoltCounter,
     ReflectPhysicalDamage,
     FanningFire, // Fire debuff
-    RuneCorruption
+    RuneCorruption,
+    FanThrow
 }
