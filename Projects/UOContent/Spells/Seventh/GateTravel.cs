@@ -39,11 +39,13 @@ namespace Server.Spells.Seventh
             {
                 Caster.SendLocalizedMessage(1005570); // You can not gate to another facet.
             }
-            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom))
+            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom, out var failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
             }
-            else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.GateTo))
+            else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.GateTo, out failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
             }
             else if (map == Map.Felucca && Caster is PlayerMobile mobile && mobile.Young)
             {
@@ -124,7 +126,13 @@ namespace Server.Spells.Seventh
                 return false;
             }
 
-            return SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom);
+            if (!SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom, out var failureMessage))
+            {
+                failureMessage.SendMessageTo(Caster);
+                return false;
+            }
+
+            return true;
         }
 
         private static bool GateExistsAt(Map map, Point3D loc)

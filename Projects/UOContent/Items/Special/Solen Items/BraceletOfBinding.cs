@@ -233,13 +233,15 @@ namespace Server.Items
                 return false;
             }
 
-            if (!SpellHelper.CheckTravel(from, TravelCheckType.RecallFrom))
+            if (!SpellHelper.CheckTravel(from, TravelCheckType.RecallFrom, out var failureMessage))
             {
+                failureMessage.SendMessageTo(from);
                 return false;
             }
 
-            if (!SpellHelper.CheckTravel(from, boundRoot.Map, boundRoot.Location, TravelCheckType.RecallTo))
+            if (!SpellHelper.CheckTravel(from, boundRoot.Map, boundRoot.Location, TravelCheckType.RecallTo, out failureMessage))
             {
+                failureMessage.SendMessageTo(from);
                 return false;
             }
 
