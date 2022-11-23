@@ -1,6 +1,6 @@
 ﻿namespace Server.Mobiles;
 
-public class FanThrow : MonsterAbilitySingleTarget
+public class FanThrowCounter : MonsterAbilitySingleTarget
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.EnergyBoltCounter;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage;

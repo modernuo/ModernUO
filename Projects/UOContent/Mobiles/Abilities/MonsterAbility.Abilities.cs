@@ -29,7 +29,7 @@ public abstract partial class MonsterAbility
     // Direct attack counters
     public static ThrowHatchetCounter ThrowHatchetCounter => new();
     public static EnergyBoltCounter EnergyBoltCounter => new();
-    public static FanThrow FanThrow => new();
+    public static FanThrowCounter FanThrowCounter => new();
 
     public static DestroyEquipment DestroyEquipment => new();
 
