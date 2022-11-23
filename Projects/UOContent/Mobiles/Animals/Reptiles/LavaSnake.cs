@@ -50,7 +50,7 @@ namespace Server.Mobiles
         public override bool DeathAdderCharmable => true;
         public override int Meat => 1;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

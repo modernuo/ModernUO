@@ -1,6 +1,6 @@
 ﻿namespace Server.Mobiles;
 
-public class SummonLesserUndead : SummonUndead
+public class SummonLesserUndeadCounter : SummonUndeadCounter
 {
     private int _group;
 

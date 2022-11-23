@@ -62,7 +62,7 @@ namespace Server.Mobiles
         public override ScaleType ScaleType => Utility.RandomBool() ? ScaleType.Black : ScaleType.White;
         public override int TreasureMapLevel => 4;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

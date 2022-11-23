@@ -48,7 +48,7 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.FireBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

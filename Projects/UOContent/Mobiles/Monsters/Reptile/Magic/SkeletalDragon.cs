@@ -58,7 +58,7 @@ namespace Server.Mobiles
         public override int Hides => 20;
         public override HideType HideType => HideType.Barbed;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.ColdBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ColdBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

@@ -52,7 +52,7 @@ public class BronzeElemental : BaseCreature
     public override bool AutoDispel => true;
     public override int TreasureMapLevel => 1;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.PoisonGasCounter };
+    private static MonsterAbility[] _abilities = { MonsterAbilities.PoisonGasCounter };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void GenerateLoot()

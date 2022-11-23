@@ -54,7 +54,7 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 2);
         }
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.DrainLifeAreaAttack };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.DrainLifeAreaAttack };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void Serialize(IGenericWriter writer)

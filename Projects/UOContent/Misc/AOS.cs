@@ -199,10 +199,10 @@ namespace Server
             if (from is { Deleted: false, Alive: true })
             {
                 var reflectPhys = AosAttributes.GetValue(m, AosAttribute.ReflectPhysical);
-                var reflectPhysAbility = bcFrom?.GetAbility(MonsterAbilityType.ReflectPhysicalDamage) as ReflectPhysicalDamage;
+                var reflectPhysAbility = bcFrom
+                    ?.GetAbility(MonsterAbilityType.ReflectPhysicalDamage) as ReflectPhysicalDamage;
 
-                if (reflectPhysAbility
-                        ?.CanTrigger(bcFrom, MonsterAbilityTrigger.CombatAction) == true)
+                if (reflectPhysAbility?.CanTrigger(bcFrom, MonsterAbilityTrigger.CombatAction) == true)
                 {
                     reflectPhys += reflectPhysAbility.PercentReflected;
                     m.SendLocalizedMessage(1070844); // The creature repels the attack back at you.

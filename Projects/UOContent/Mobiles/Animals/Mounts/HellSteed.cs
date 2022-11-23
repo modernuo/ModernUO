@@ -17,7 +17,7 @@ namespace Server.Mobiles
         public override string CorpseName => "a hellsteed corpse";
         public override Poison PoisonImmune => Poison.Lethal;
 
-        private static MonsterAbility[] _abilities = { MonsterAbility.ChaosBreath };
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ChaosBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public static void SetStats(BaseCreature steed)

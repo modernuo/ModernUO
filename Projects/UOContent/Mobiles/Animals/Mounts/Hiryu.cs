@@ -68,7 +68,7 @@ public class Hiryu : BaseMount
     public override FoodType FavoriteFood => FoodType.Meat;
     public override bool CanAngerOnTame => true;
 
-    private static MonsterAbility[] _abilities = { MonsterAbility.GraspingClaw };
+    private static MonsterAbility[] _abilities = { MonsterAbilities.GraspingClaw };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;

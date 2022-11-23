@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Server.Mobiles;
 
-namespace Server.Mobiles;
-
-public class GraspingClaw : MonsterAbility
+public class GraspingClaw : MonsterAbilitySingleTargetDoT
 {
-    private Dictionary<Mobile, ExpireTimer> _table;
-
     public override MonsterAbilityType AbilityType => MonsterAbilityType.GraspingClaw;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveMeleeDamage;
     public override double ChanceToTrigger => 0.10;
 
-    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
+    private const string Name = "GraspingClaw";
+
+    protected override void StartEffect(BaseCreature source, Mobile defender)
     {
-        if (_table.Remove(target, out var timer))
+        if (RemoveEffect(source, defender))
         {
-            timer.DoExpire();
-            target.SendLocalizedMessage(1070837); // The creature lands another blow in your weakened state.
+            defender.SendLocalizedMessage(1070837); // The creature lands another blow in your weakened state.
         }
         else
         {
             // The blow from the creature's claws has made you more susceptible to physical attacks.
-            target.SendLocalizedMessage(1070836);
+            defender.SendLocalizedMessage(1070836);
         }
 
         /**
@@ -30,7 +26,7 @@ public class GraspingClaw : MonsterAbility
          * Effect: Physical resistance -15% for 5 seconds
          * Refresh Cliloc: 1070837
          * End cliloc: 1070838
-         * Effect:
+         * Graphic:
          * - Type: "3"
          * - From: Player
          * - To: 0x0
@@ -42,46 +38,20 @@ public class GraspingClaw : MonsterAbility
          * - FixedDirection: "True"
          * - Explode: "False"
          */
-        var effect = -(target.PhysicalResistance * 15 / 100);
 
-        var mod = new ResistanceMod(ResistanceType.Physical, "GraspingClaw", effect);
+        var mod = new ResistanceMod(ResistanceType.Physical, Name, -(defender.PhysicalResistance * 15 / 100));
+        defender.AddResistanceMod(mod);
 
-        target.FixedEffect(0x37B9, 10, 5);
-        target.AddResistanceMod(mod);
-
-        timer = new ExpireTimer(this, target, mod, TimeSpan.FromSeconds(5.0));
-        timer.Start();
-
-        _table ??= new Dictionary<Mobile, ExpireTimer>();
-        _table[target] = timer;
-
-        base.Trigger(trigger, source, target);
+        defender.FixedEffect(0x37B9, 10, 5);
     }
 
-    private class ExpireTimer : Timer
+    protected override void EndEffect(BaseCreature source, Mobile defender)
     {
-        private GraspingClaw _graspingClaw;
-        private Mobile _mobile;
-        private ResistanceMod _mod;
+        defender.RemoveResistanceMod(Name);
+    }
 
-        public ExpireTimer(GraspingClaw claw, Mobile m, ResistanceMod mod, TimeSpan delay) : base(delay)
-        {
-            _mobile = m;
-            _mod = mod;
-            _graspingClaw = claw;
-        }
-
-        public void DoExpire()
-        {
-            _mobile.RemoveResistanceMod(_mod);
-            Stop();
-            _graspingClaw._table?.Remove(_mobile);
-        }
-
-        protected override void OnTick()
-        {
-            _mobile.SendLocalizedMessage(1070838); // Your resistance to physical attacks has returned.
-            DoExpire();
-        }
+    protected override void OnEffectExpired(BaseCreature source, Mobile defender)
+    {
+        defender.SendLocalizedMessage(1070838); // Your resistance to physical attacks has returned.
     }
 }
