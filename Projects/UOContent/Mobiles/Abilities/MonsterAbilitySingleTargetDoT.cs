@@ -34,11 +34,11 @@ public abstract class MonsterAbilitySingleTargetDoT : MonsterAbilitySingleTarget
     protected abstract void EndEffect(BaseCreature source, Mobile defender);
     protected abstract void OnEffectExpired(BaseCreature source, Mobile defender);
 
-    public bool IsUnderEffect(Mobile defender) => _table.ContainsKey(defender);
+    public bool IsUnderEffect(Mobile defender) => _table?.ContainsKey(defender) == true;
 
     protected bool RemoveEffect(BaseCreature source, Mobile defender)
     {
-        if (_table.Remove(defender, out var timer))
+        if (_table?.Remove(defender, out var timer) == true)
         {
             timer.Stop();
             EndEffect(source, defender);

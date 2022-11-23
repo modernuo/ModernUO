@@ -3,7 +3,7 @@
 public class FanningFire : MonsterAbilitySingleTargetDoT
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.FanningFire;
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.CombatAction;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveDamage;
     public override double ChanceToTrigger => 0.05;
 
     public const string Name = "FanningFire";

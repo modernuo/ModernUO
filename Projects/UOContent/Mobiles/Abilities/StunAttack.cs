@@ -9,7 +9,7 @@ public abstract class StunAttack : MonsterAbility
     // Prevents infinite loop
     private HashSet<BaseCreature> _stunning;
 
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.CombatAction;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveMeleeDamage;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.Stun;
     public override double ChanceToTrigger => 0.3;
 
