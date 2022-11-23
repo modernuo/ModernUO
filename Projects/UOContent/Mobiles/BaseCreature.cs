@@ -1130,7 +1130,15 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.AbilityType == type)
+                if (ability is MonsterAbilityGroup group)
+                {
+                    ability = group.GetAbilityWithType(type);
+                    if (ability != null)
+                    {
+                        return ability;
+                    }
+                }
+                else if (ability.AbilityType == type)
                 {
                     return ability;
                 }
@@ -1141,6 +1149,11 @@ namespace Server.Mobiles
 
         public virtual bool HasAbility(MonsterAbility ability)
         {
+            if (ability == null)
+            {
+                return false;
+            }
+
             var abilities = GetMonsterAbilities();
 
             if (abilities == null)
@@ -1150,7 +1163,7 @@ namespace Server.Mobiles
 
             for (var i = 0; i < abilities.Length; i++)
             {
-                if (abilities[i] == ability)
+                if (abilities[i] == ability || (ability as MonsterAbilityGroup)?.HasAbility(ability) == true)
                 {
                     return true;
                 }
@@ -4290,7 +4303,6 @@ namespace Server.Mobiles
 
         public virtual void OnActionCombat()
         {
-            TriggerAbility(MonsterAbilityTrigger.CombatAction, null);
         }
 
         public virtual void OnActionGuard()
