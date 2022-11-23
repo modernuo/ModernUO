@@ -1,146 +1,45 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class PottedCactus : Item
 {
-    public class PottedCactus : Item
-    {
-        [Constructible]
-        public PottedCactus() : base(0x1E0F) => Weight = 100;
+    [Constructible]
+    public PottedCactus() : base(0x1E0F) => Weight = 100;
+}
 
-        public PottedCactus(Serial serial) : base(serial)
-        {
-        }
+[SerializationGenerator(0, false)]
+public partial class PottedCactus1 : Item
+{
+    [Constructible]
+    public PottedCactus1() : base(0x1E10) => Weight = 100;
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+[SerializationGenerator(0, false)]
+public partial class PottedCactus2 : Item
+{
+    [Constructible]
+    public PottedCactus2() : base(0x1E11) => Weight = 100;
+}
 
-            writer.Write(0);
-        }
+[SerializationGenerator(0, false)]
+public partial class PottedCactus3 : Item
+{
+    [Constructible]
+    public PottedCactus3() : base(0x1E12) => Weight = 100;
+}
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+[SerializationGenerator(0, false)]
+public partial class PottedCactus4 : Item
+{
+    [Constructible]
+    public PottedCactus4() : base(0x1E13) => Weight = 100;
+}
 
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class PottedCactus1 : Item
-    {
-        [Constructible]
-        public PottedCactus1() : base(0x1E10) => Weight = 100;
-
-        public PottedCactus1(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class PottedCactus2 : Item
-    {
-        [Constructible]
-        public PottedCactus2() : base(0x1E11) => Weight = 100;
-
-        public PottedCactus2(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class PottedCactus3 : Item
-    {
-        [Constructible]
-        public PottedCactus3() : base(0x1E12) => Weight = 100;
-
-        public PottedCactus3(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class PottedCactus4 : Item
-    {
-        [Constructible]
-        public PottedCactus4() : base(0x1E13) => Weight = 100;
-
-        public PottedCactus4(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
-
-    public class PottedCactus5 : Item
-    {
-        [Constructible]
-        public PottedCactus5() : base(0x1E14) => Weight = 100;
-
-        public PottedCactus5(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
+[SerializationGenerator(0, false)]
+public partial class PottedCactus5 : Item
+{
+    [Constructible]
+    public PottedCactus5() : base(0x1E14) => Weight = 100;
 }
