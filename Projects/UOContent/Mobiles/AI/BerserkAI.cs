@@ -72,6 +72,14 @@ public class BerserkAI : BaseAI
             }
         }
 
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
+            }
+        }
+
         return true;
     }
 

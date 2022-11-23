@@ -60,7 +60,6 @@ public class AnimalAI : BaseAI
             }
 
             Action = ActionType.Wander;
-
             return true;
         }
 
@@ -74,7 +73,6 @@ public class AnimalAI : BaseAI
                 }
 
                 Action = ActionType.Wander;
-
                 return true;
             }
 
@@ -96,6 +94,15 @@ public class AnimalAI : BaseAI
                 }
 
                 Action = ActionType.Flee;
+                return true;
+            }
+        }
+
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
             }
         }
 
