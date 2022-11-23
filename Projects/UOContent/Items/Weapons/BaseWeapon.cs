@@ -23,7 +23,7 @@ namespace Server.Items
         SlayerName Slayer2 { get; set; }
     }
 
-    public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability
+    public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem
     {
         private static bool _enableInstaHit;
 

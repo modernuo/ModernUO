@@ -19,7 +19,7 @@ namespace Server.Items
         Wildfire = 2843
     }
 
-    public class BaseTalisman : Item
+    public class BaseTalisman : Item, IAosItem
     {
         private static readonly int[] m_ItemIDs =
         {

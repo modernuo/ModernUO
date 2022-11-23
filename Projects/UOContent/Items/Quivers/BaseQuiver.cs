@@ -3,7 +3,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-    public class BaseQuiver : Container, ICraftable
+    public class BaseQuiver : Container, ICraftable, IAosItem
     {
         private static readonly Type[] m_Ammo =
         {

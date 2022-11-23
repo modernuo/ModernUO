@@ -28,7 +28,7 @@ namespace Server.Items
         Exceptional
     }
 
-    public class Spellbook : Item, ICraftable, ISlayer
+    public class Spellbook : Item, ICraftable, ISlayer, IAosItem
     {
         private static readonly Dictionary<Mobile, List<Spellbook>> m_Table = new();
 
