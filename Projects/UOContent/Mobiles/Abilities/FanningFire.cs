@@ -8,8 +8,19 @@ public class FanningFire : MonsterAbilitySingleTargetDoT
 
     public const string Name = "FanningFire";
 
-    protected override void StartEffect(BaseCreature source, Mobile defender)
+    protected override void OnBeforeTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
+        // Renew the effects
+        RemoveEffect(source, defender);
+
+        // The creature fans you with fire, reducing your resistance to fire attacks.
+        defender.SendLocalizedMessage(1070833);
+    }
+
+    protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
+    {
+        base.OnTarget(trigger, source, defender);
+
         /**
          * Fanning Fire
          * Start cliloc: 1070833
@@ -38,11 +49,7 @@ public class FanningFire : MonsterAbilitySingleTargetDoT
          * - Unknown: "0x0"
          */
 
-        RemoveEffect(source, defender);
-
-        // The creature fans you with fire, reducing your resistance to fire attacks.
-        defender.SendLocalizedMessage(1070833);
-
+        source.DoHarmful(defender);
         var effect = -(defender.FireResistance / 10);
 
         var mod = new ResistanceMod(ResistanceType.Fire, Name, effect);

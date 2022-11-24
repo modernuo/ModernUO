@@ -40,7 +40,9 @@ public static class MonsterAbilities
 
     public static DestroyEquipment DestroyEquipment => new();
 
+    // Life Drain
     public static DrainLifeAreaAttack DrainLifeAreaAttack => new();
+    public static DrainLifeAttack DrainLifeAttack => new();
 
     public static MagicalBarrier MagicalBarrier => new();
 

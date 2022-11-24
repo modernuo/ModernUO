@@ -14,6 +14,7 @@ public class PoisonGasCounter : MonsterAbilitySingleTarget
     protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
         source.Animate(10, 4, 1, true, false, 0);
+        source.DoHarmful(defender);
         AOS.Damage(defender, source, 50, 100, 0, 0, 0, 0, 0);
 
         defender.FixedParticles(0x36BD, 1, 10, 0x1F78, 0xA6, 0, (EffectLayer)255);
