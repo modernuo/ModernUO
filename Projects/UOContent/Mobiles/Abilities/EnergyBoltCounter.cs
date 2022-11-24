@@ -10,8 +10,6 @@ public class EnergyBoltCounter : MonsterAbilitySingleTarget
 
     protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
-        base.OnTarget(trigger, source, defender);
-
         source.MovingParticles(defender, 0x379F, 7, 0, false, true, 0xBE3, 0xFCB, 0x211);
         defender.PlaySound(0x229);
 

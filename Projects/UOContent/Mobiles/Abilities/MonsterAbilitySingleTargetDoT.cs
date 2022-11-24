@@ -18,13 +18,9 @@ public abstract class MonsterAbilitySingleTargetDoT : MonsterAbilitySingleTarget
         var count = GetCount(source, defender);
         var timer = _table[defender] = new ExpireTimer(this, source, defender, duration, count);
         timer.Start();
-
-        StartEffect(source, defender);
     }
 
     protected virtual int GetCount(BaseCreature source, Mobile defender) => 1;
-
-    protected abstract void StartEffect(BaseCreature source, Mobile defender);
 
     protected virtual void EffectTick(BaseCreature source, Mobile defender, out TimeSpan nextDelay)
     {
@@ -72,8 +68,11 @@ public abstract class MonsterAbilitySingleTargetDoT : MonsterAbilitySingleTarget
             _ability.EffectTick(_source, _defender, out var delay);
             Delay = delay;
 
-            _ability.RemoveEffect(_source, _defender);
-            _ability.OnEffectExpired(_source, _defender);
+            if (RemainingCount == 0)
+            {
+                _ability.RemoveEffect(_source, _defender);
+                _ability.OnEffectExpired(_source, _defender);
+            }
         }
     }
 }

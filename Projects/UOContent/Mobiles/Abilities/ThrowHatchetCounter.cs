@@ -11,6 +11,7 @@ public class ThrowHatchetCounter : MonsterAbilitySingleTarget
     protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
         source.MovingEffect(defender, 0xF43, 10, 0, false, false);
+        source.DoHarmful(defender);
         AOS.Damage(defender, source, 50, 100, 0, 0, 0, 0, 0);
     }
 

@@ -8,7 +8,7 @@ public class GraspingClaw : MonsterAbilitySingleTargetDoT
 
     private const string Name = "GraspingClaw";
 
-    protected override void StartEffect(BaseCreature source, Mobile defender)
+    protected override void OnBeforeTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
         if (RemoveEffect(source, defender))
         {
@@ -19,6 +19,11 @@ public class GraspingClaw : MonsterAbilitySingleTargetDoT
             // The blow from the creature's claws has made you more susceptible to physical attacks.
             defender.SendLocalizedMessage(1070836);
         }
+    }
+
+    protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
+    {
+        base.OnTarget(trigger, source, defender);
 
         /**
          * Grasping Claw
@@ -39,6 +44,7 @@ public class GraspingClaw : MonsterAbilitySingleTargetDoT
          * - Explode: "False"
          */
 
+        source.DoHarmful(defender);
         var mod = new ResistanceMod(ResistanceType.Physical, Name, -(defender.PhysicalResistance * 15 / 100));
         defender.AddResistanceMod(mod);
 
