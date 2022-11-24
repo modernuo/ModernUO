@@ -431,7 +431,7 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
             _lowerAmmoCost = reader.ReadInt();
         }
 
-        if ((flags & 0x3) != 0)
+        if ((flags & 0x8) != 0)
         {
             _weightReduction = reader.ReadInt();
         }
