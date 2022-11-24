@@ -415,45 +415,43 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
         }
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
-
     private void Deserialize(IGenericReader reader, int version)
     {
-        var flags = (SaveFlag)reader.ReadEncodedInt();
+        var flags = reader.ReadEncodedInt();
 
         _attributes = new AosAttributes(this);
 
-        if (GetSaveFlag(flags, SaveFlag.Attributes))
+        if ((flags & 0x1) != 0)
         {
             _attributes.Deserialize(reader);
         }
 
-        if (GetSaveFlag(flags, SaveFlag.LowerAmmoCost))
+        if ((flags & 0x4) != 0)
         {
             _lowerAmmoCost = reader.ReadInt();
         }
 
-        if (GetSaveFlag(flags, SaveFlag.WeightReduction))
+        if ((flags & 0x3) != 0)
         {
             _weightReduction = reader.ReadInt();
         }
 
-        if (GetSaveFlag(flags, SaveFlag.DamageIncrease))
+        if ((flags & 0x80) != 0)
         {
             _damageIncrease = reader.ReadInt();
         }
 
-        if (GetSaveFlag(flags, SaveFlag.Crafter))
+        if ((flags & 0x10) != 0)
         {
             _crafter = reader.ReadEntity<Mobile>()?.RawName;
         }
 
-        if (GetSaveFlag(flags, SaveFlag.Quality))
+        if ((flags & 0x20) != 0)
         {
             _quality = (ClothingQuality)reader.ReadInt();
         }
 
-        if (GetSaveFlag(flags, SaveFlag.Capacity))
+        if ((flags & 0x40) != 0)
         {
             _capacity = reader.ReadInt();
         }
