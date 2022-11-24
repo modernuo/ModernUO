@@ -27,8 +27,8 @@ public static class TextDefinitionExtensions
         int y,
         int width,
         int height,
-        bool back,
-        bool scroll,
+        bool back = false,
+        bool scroll = false,
         int numberColor = -1,
         int stringColor = -1
     )
@@ -66,6 +66,51 @@ public static class TextDefinitionExtensions
             else
             {
                 g.AddHtml(x, y, width, height, def.String, back, scroll);
+            }
+        }
+    }
+
+    public static void AddHtmlText(
+        this TextDefinition def,
+        Gump g,
+        int x,
+        int y,
+        int width,
+        int height,
+        string args,
+        bool back = false,
+        bool scroll = false,
+        int numberColor = -1,
+        int stringColor = -1
+    )
+    {
+        if (def == null)
+        {
+            return;
+        }
+
+        if (def.Number > 0)
+        {
+            // 5 bits per RGB component (15 bit RGB)
+            g.AddHtmlLocalized(x, y, width, height, def.Number, args, numberColor >= 0 ? numberColor : 0x7FFF, back, scroll);
+        }
+        else if (def.String != null)
+        {
+            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
+            {
+                g.AddHtml(
+                    x,
+                    y,
+                    width,
+                    height,
+                    $"<BASEFONT COLOR=#{stringColor:X6}>{string.Format(def.String, args)}</BASEFONT>",
+                    back,
+                    scroll
+                );
+            }
+            else
+            {
+                g.AddHtml(x, y, width, height, string.Format(def.String, args), back, scroll);
             }
         }
     }
