@@ -1,4 +1,6 @@
-﻿namespace Server.Mobiles;
+﻿using System;
+
+namespace Server.Mobiles;
 
 public class RuneCorruption : MonsterAbilitySingleTargetDoT
 {
@@ -149,6 +151,10 @@ public class RuneCorruption : MonsterAbilitySingleTargetDoT
         }
 
         defender.FixedEffect(0x37B9, 10, 5);
+    }
+
+    protected override void EffectTick(BaseCreature source, Mobile defender, ref TimeSpan nextDelay)
+    {
     }
 
     protected override void EndEffect(BaseCreature source, Mobile defender)

@@ -22,10 +22,7 @@ public abstract class MonsterAbilitySingleTargetDoT : MonsterAbilitySingleTarget
 
     protected virtual int GetCount(BaseCreature source, Mobile defender) => 1;
 
-    protected virtual void EffectTick(BaseCreature source, Mobile defender, out TimeSpan nextDelay)
-    {
-        nextDelay = Utility.RandomMinMax(MinDelay, MaxDelay);
-    }
+    protected abstract void EffectTick(BaseCreature source, Mobile defender, ref TimeSpan nextDelay);
 
     protected abstract void EndEffect(BaseCreature source, Mobile defender);
     protected abstract void OnEffectExpired(BaseCreature source, Mobile defender);
@@ -65,8 +62,12 @@ public abstract class MonsterAbilitySingleTargetDoT : MonsterAbilitySingleTarget
 
         protected override void OnTick()
         {
-            _ability.EffectTick(_source, _defender, out var delay);
-            Delay = delay;
+            var delay = RemainingCount == 0
+                ? TimeSpan.MinValue
+                : Utility.RandomMinMax(_ability.MinDelay, _ability.MaxDelay);
+
+            _ability.EffectTick(_source, _defender, ref delay);
+            Interval = delay;
 
             if (RemainingCount == 0)
             {

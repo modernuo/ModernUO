@@ -19,5 +19,6 @@ public enum MonsterAbilityType
     ReflectPhysicalDamage,
     FanningFire, // Fire debuff
     RuneCorruption,
-    FanThrow
+    FanThrow,
+    BloodBath
 }
