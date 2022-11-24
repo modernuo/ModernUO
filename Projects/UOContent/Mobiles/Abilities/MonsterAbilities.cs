@@ -47,4 +47,6 @@ public static class MonsterAbilities
     public static MagicalBarrier MagicalBarrier => new();
 
     public static ReflectPhysicalDamage ReflectPhysicalDamage => new();
+
+    public static BloodBathAttack BloodBathAttack => new();
 }

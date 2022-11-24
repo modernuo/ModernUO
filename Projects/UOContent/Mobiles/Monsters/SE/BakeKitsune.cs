@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -7,8 +6,6 @@ namespace Server.Mobiles
 {
     public class BakeKitsune : BaseCreature
     {
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
-
         private TimerExecutionToken _disguiseTimerToken;
 
         [Constructible]
@@ -67,6 +64,9 @@ namespace Server.Mobiles
         public override bool ClickTitle => false;
         public override bool PropertyTitle => false;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.BloodBathAttack };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich);
@@ -87,38 +87,6 @@ namespace Server.Mobiles
             RemoveDisguise();
 
             return base.OnBeforeDeath();
-        }
-
-        public override void OnGaveMeleeAttack(Mobile defender, int damage)
-        {
-            base.OnGaveMeleeAttack(defender, damage);
-
-            if (Utility.RandomDouble() < 0.9)
-            {
-                return;
-            }
-
-            /* Blood Bath
-               * Start cliloc 1070826
-               * Sound: 0x52B
-               * 2-3 blood spots
-               * Damage: 2 hps per second for 5 seconds
-               * End cliloc: 1070824
-               */
-
-            if (m_Table.TryGetValue(defender, out var timer))
-            {
-                timer.DoExpire();
-                defender.SendLocalizedMessage(1070825); // The creature continues to rage!
-            }
-            else
-            {
-                defender.SendLocalizedMessage(1070826); // The creature goes into a rage, inflicting heavy damage!
-            }
-
-            timer = new ExpireTimer(defender, this);
-            timer.Start();
-            m_Table[defender] = timer;
         }
 
         public override int GetAngerSound() => 0x4DE;
@@ -187,17 +155,25 @@ namespace Server.Mobiles
             switch (Utility.Random(4))
             {
                 case 0:
-                    AddItem(new Shoes(Utility.RandomNeutralHue()));
-                    break;
+                    {
+                        AddItem(new Shoes(Utility.RandomNeutralHue()));
+                        break;
+                    }
                 case 1:
-                    AddItem(new Boots(Utility.RandomNeutralHue()));
-                    break;
+                    {
+                        AddItem(new Boots(Utility.RandomNeutralHue()));
+                        break;
+                    }
                 case 2:
-                    AddItem(new Sandals(Utility.RandomNeutralHue()));
-                    break;
+                    {
+                        AddItem(new Sandals(Utility.RandomNeutralHue()));
+                        break;
+                    }
                 case 3:
-                    AddItem(new ThighBoots(Utility.RandomNeutralHue()));
-                    break;
+                    {
+                        AddItem(new ThighBoots(Utility.RandomNeutralHue()));
+                        break;
+                    }
             }
 
             AddItem(new Robe(Utility.RandomNondyedHue()));
@@ -231,48 +207,6 @@ namespace Server.Mobiles
         public void DeleteItemOnLayer(Layer layer)
         {
             FindItemOnLayer(layer)?.Delete();
-        }
-
-        private class ExpireTimer : Timer
-        {
-            private readonly Mobile m_From;
-            private readonly Mobile m_Mobile;
-            private int m_Count;
-
-            public ExpireTimer(Mobile m, Mobile from) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
-            {
-                m_Mobile = m;
-                m_From = from;
-            }
-
-            public void DoExpire()
-            {
-                Stop();
-                m_Table.Remove(m_Mobile);
-            }
-
-            public void DrainLife()
-            {
-                if (m_Mobile.Alive)
-                {
-                    m_Mobile.Damage(2, m_From);
-                }
-                else
-                {
-                    DoExpire();
-                }
-            }
-
-            protected override void OnTick()
-            {
-                DrainLife();
-
-                if (++m_Count >= 5)
-                {
-                    DoExpire();
-                    m_Mobile.SendLocalizedMessage(1070824); // The creature's rage subsides.
-                }
-            }
         }
     }
 }

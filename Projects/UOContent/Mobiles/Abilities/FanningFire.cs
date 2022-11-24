@@ -1,4 +1,6 @@
-﻿namespace Server.Mobiles;
+﻿using System;
+
+namespace Server.Mobiles;
 
 public class FanningFire : MonsterAbilitySingleTargetDoT
 {
@@ -60,6 +62,10 @@ public class FanningFire : MonsterAbilitySingleTargetDoT
 
         // TODO: Trigger replaces a normal attack.
         AOS.Damage(defender, source, Utility.RandomMinMax(35, 45), 0, 100, 0, 0, 0);
+    }
+
+    protected override void EffectTick(BaseCreature source, Mobile defender, ref TimeSpan nextDelay)
+    {
     }
 
     protected override void EndEffect(BaseCreature source, Mobile defender)

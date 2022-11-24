@@ -14,8 +14,25 @@ public class DrainLifeAttack : MonsterAbilitySingleTargetDoT
 
     public override double ChanceToTrigger => 0.5;
 
+    private void DrainLife(BaseCreature source, Mobile defender)
+    {
+        source.DoHarmful(defender);
+        defender.Mana -= 15;
+
+        if (defender.Alive)
+        {
+            var damageGiven = AOS.Damage(defender, source, 5, 0, 0, 0, 0, 100);
+            source.Hits += damageGiven;
+        }
+        else
+        {
+            RemoveEffect(source, defender);
+            defender.SendLocalizedMessage(1070849); // The drain on your life force is gone.
+        }
+    }
+
     protected override bool CanEffectTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender) =>
-        base.CanEffectTarget(trigger, source, defender) && defender.Mana > 14 && !IsUnderEffect(defender);
+        base.CanEffectTarget(trigger, source, defender) && defender.Mana > 14;
 
     protected override void OnBeforeTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
@@ -32,20 +49,12 @@ public class DrainLifeAttack : MonsterAbilitySingleTargetDoT
     protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
         base.OnTarget(trigger, source, defender);
+        DrainLife(source, defender);
+    }
 
-        source.DoHarmful(defender);
-        defender.Mana -= 15;
-
-        if (defender.Alive)
-        {
-            var damageGiven = AOS.Damage(defender, source, 5, 0, 0, 0, 0, 100);
-            source.Hits += damageGiven;
-        }
-        else
-        {
-            RemoveEffect(source, defender);
-            defender.SendLocalizedMessage(1070849); // The drain on your life force is gone.
-        }
+    protected override void EffectTick(BaseCreature source, Mobile defender, ref TimeSpan nextDelay)
+    {
+        DrainLife(source, defender);
     }
 
     protected override void EndEffect(BaseCreature source, Mobile defender)
