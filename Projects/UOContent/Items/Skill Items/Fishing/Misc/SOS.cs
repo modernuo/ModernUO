@@ -127,18 +127,9 @@ public partial class SOS : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            TextDefinition entry;
+            var entry = MessageIndex >= 0 && MessageIndex < MessageEntries.Length ? MessageEntries[MessageIndex] : null;
 
-            if (MessageIndex >= 0 && MessageIndex < MessageEntries.Length)
-            {
-                entry = MessageEntries[MessageIndex];
-            }
-            else
-            {
-                entry = MessageEntries[MessageIndex = Utility.Random(MessageEntries.Length)];
-            }
-
-            if (UseNewMessages)
+            if (UseNewMessages || entry == null)
             {
                 from.SendGump(new MessageGump(TargetMap, TargetLocation));
             }
