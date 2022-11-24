@@ -4,7 +4,7 @@ namespace Server.Mobiles;
 
 public abstract class SummonUndeadCounter : MonsterAbility
 {
-    public override MonsterAbilityType AbilityType => MonsterAbilityType.SummonUndead;
+    public override MonsterAbilityType AbilityType => MonsterAbilityType.SummonCounter;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage;
 
     public override double ChanceToTrigger => 0.05;
@@ -19,7 +19,8 @@ public abstract class SummonUndeadCounter : MonsterAbility
 
     public abstract BaseCreature CreateSummon(BaseCreature source);
 
-    public virtual bool CanTrigger(BaseCreature source) => source.Followers < AmountToSummon && CanTrigger(source);
+    public override bool CanTrigger(BaseCreature source, MonsterAbilityTrigger trigger) =>
+        source.Followers < AmountToSummon && CanTrigger(source, trigger);
 
     public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {

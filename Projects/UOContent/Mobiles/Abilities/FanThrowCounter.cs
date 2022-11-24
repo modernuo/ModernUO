@@ -2,7 +2,7 @@
 
 public class FanThrowCounter : MonsterAbilitySingleTarget
 {
-    public override MonsterAbilityType AbilityType => MonsterAbilityType.EnergyBoltCounter;
+    public override MonsterAbilityType AbilityType => MonsterAbilityType.FanThrow;
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.TakeDamage;
     public override double ChanceToTrigger => 0.2;
 
