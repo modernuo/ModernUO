@@ -1,7 +1,11 @@
-﻿namespace Server.Mobiles;
+﻿using System;
+
+namespace Server.Mobiles;
 
 public static class MonsterAbilities
 {
+    public static MonsterAbility[] Empty => Array.Empty<MonsterAbility>();
+
     // Fire Breath
     public static FireBreath FireBreath => new();
     public static ChaosBreath ChaosBreath => new();
@@ -15,6 +19,9 @@ public static class MonsterAbilities
     // Summon Undead
     public static SummonSkeletonsCounter SummonSkeletonsCounter => new();
     public static SummonLesserUndeadCounter SummonLesserUndeadCounter => new();
+
+    // Summon Pixies
+    public static SummonPixiesCounter SummonPixiesCounter => new();
 
     // Stun
     public static ColossalBlow ColossalBlow => new();
