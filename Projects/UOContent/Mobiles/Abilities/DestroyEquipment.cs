@@ -14,7 +14,6 @@ public class DestroyEquipment : MonsterAbilitySingleTarget
 
     protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
-        base.OnTarget(trigger, source, defender);
         using var queue = PooledRefQueue<Item>.Create();
 
         for (var i = 0; i < defender.Items.Count; i++)
@@ -46,6 +45,8 @@ public class DestroyEquipment : MonsterAbilitySingleTarget
         {
             return;
         }
+
+        source.DoHarmful(defender);
 
         var toDestroy = queue.PeekRandom();
         var name = toDestroy.Name?.Trim().DefaultIfNullOrEmpty(toDestroy.ItemData.Name);

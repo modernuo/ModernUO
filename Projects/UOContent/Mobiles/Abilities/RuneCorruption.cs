@@ -8,7 +8,7 @@ public class RuneCorruption : MonsterAbilitySingleTargetDoT
 
     private const string Name = "RuneCorruption";
 
-    protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
+    protected override void OnBeforeTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
         if (RemoveEffect(source, defender))
         {
@@ -18,18 +18,20 @@ public class RuneCorruption : MonsterAbilitySingleTargetDoT
         {
             defender.SendLocalizedMessage(1070846); // The creature magically corrupts your armor!
         }
-
-        base.OnTarget(trigger, source, defender);
     }
 
-    protected override void StartEffect(BaseCreature source, Mobile defender)
+    protected override void OnTarget(MonsterAbilityTrigger trigger, BaseCreature source, Mobile defender)
     {
+        base.OnTarget(trigger, source, defender);
+
         /**
          * Rune Corruption
          * Start cliloc: 1070846 "The creature magically corrupts your armor!"
          * Effect: All resistances -70 (lowest 0) for 5 seconds
          * End ASCII: "The corruption of your armor has worn off"
          */
+
+        source.DoHarmful(defender);
 
         if (Core.ML)
         {
