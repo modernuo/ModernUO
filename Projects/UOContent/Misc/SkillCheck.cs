@@ -118,7 +118,7 @@ public static class SkillCheck
             return false; // Too difficult
         }
 
-        if (value >= maxSkill)
+        if (value >= maxSkill || minSkill >= maxSkill)
         {
             return true; // No challenge
         }
@@ -207,7 +207,7 @@ public static class SkillCheck
             return false; // Too difficult
         }
 
-        if (value >= maxSkill)
+        if (value >= maxSkill || minSkill >= maxSkill)
         {
             return true; // No challenge
         }
