@@ -658,7 +658,7 @@ public partial class TreasureMap : MapItem
                             _               => "northwest"
                         };
 
-                        from.SendAsciiMessage(0x44, "Try looking for the treasure chest more to the {0}.", sDir);
+                        from.SendAsciiMessage(0x44, $"Try looking for the treasure chest more to the {sDir}.");
                     }
                 }
             }

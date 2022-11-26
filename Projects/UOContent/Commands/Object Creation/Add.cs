@@ -103,10 +103,7 @@ namespace Server.Commands
             {
                 watch.Stop();
                 from.SendMessage(
-                    "{0} object{1} generated in {2:F2} seconds.",
-                    built,
-                    built != 1 ? "s" : "",
-                    watch.Elapsed.TotalSeconds
+                    $"{built} object{(built != 1 ? "s" : "")} generated in {watch.Elapsed.TotalSeconds:F2} seconds."
                 );
             }
             else
@@ -307,7 +304,7 @@ namespace Server.Commands
 
                 if (objectCount >= 20)
                 {
-                    from.SendMessage("Constructing {0} objects, please wait.", objectCount);
+                    from.SendMessage($"Constructing {objectCount} objects, please wait.");
                 }
 
                 var sendError = true;
@@ -468,8 +465,7 @@ namespace Server.Commands
             else
             {
                 from.SendMessage(
-                    "Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
+                    $"Format: {(outline ? "Outline" : "Tile")} <type> [params] [set {{<propertyName> <value> ...}}]"
                 );
             }
         }
@@ -493,8 +489,7 @@ namespace Server.Commands
             else
             {
                 e.Mobile.SendMessage(
-                    "Format: {0}RXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
+                    $"Format: {(outline ? "Outline" : "Tile")}RXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]"
                 );
             }
         }
@@ -518,8 +513,7 @@ namespace Server.Commands
             else
             {
                 e.Mobile.SendMessage(
-                    "Format: {0}XYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
+                    $"Format: {(outline ? "Outline" : "Tile")}XYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]"
                 );
             }
         }
@@ -546,8 +540,7 @@ namespace Server.Commands
             else
             {
                 from.SendMessage(
-                    "Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
+                    $"Format: {(outline ? "Outline" : "Tile")}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]"
                 );
             }
         }
@@ -567,8 +560,7 @@ namespace Server.Commands
             else
             {
                 from.SendMessage(
-                    "Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
+                    $"Format: {(outline ? "Outline" : "Tile")}Avg <type> [params] [set {{<propertyName> <value> ...}}]"
                 );
             }
         }

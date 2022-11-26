@@ -181,7 +181,7 @@ namespace Server.Gumps
 
                         if (text != null)
                         {
-                            focus.SendMessage(0x482, "{0} tells you:", from.Name);
+                            focus.SendMessage(0x482, $"{from.Name} tells you:");
                             focus.SendMessage(0x482, text.Text);
 
                             CommandLogging.WriteLine(

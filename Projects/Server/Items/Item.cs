@@ -2235,11 +2235,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         to.NetState.SendMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, false, "ENU", "", text);
     }
 
-    public void LabelTo(Mobile to, string format, params object[] args)
-    {
-        LabelTo(to, string.Format(format, args));
-    }
-
     public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args = "")
     {
         to.NetState.SendMessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args);

@@ -32,7 +32,7 @@ namespace Server.Commands
             {
 
                 var enabled = AutoSave.SavesEnabled = e.GetBoolean(0);
-                e.Mobile.SendMessage("Saves have been {0}.", enabled ? "enabled" : "disabled");
+                e.Mobile.SendMessage($"Saves have been {(enabled ? "enabled" : "disabled")}.");
             }
             else
             {

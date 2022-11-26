@@ -816,7 +816,7 @@ namespace Server.Factions
                 }
             }
 
-            e.Mobile.SendMessage("{0} items reset", count);
+            e.Mobile.SendMessage($"{count} items reset");
         }
 
         public static void FactionCommander_OnCommand(CommandEventArgs e)

@@ -123,7 +123,7 @@ namespace Server.Commands
 
                     try
                     {
-                        from.SendMessage("Duping {0}...", m_Amount);
+                        from.SendMessage($"Duping {m_Amount}...");
                         for (var i = 0; i < m_Amount; i++)
                         {
                             if (c.Invoke(args) is Item newItem)

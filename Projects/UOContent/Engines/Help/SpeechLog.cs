@@ -97,13 +97,12 @@ namespace Server.Engines.Help
                 else if (from != targeted && from.AccessLevel <= pm.AccessLevel && from.AccessLevel != AccessLevel.Owner)
                 {
                     from.SendMessage(
-                        "You don't have the required access level to view {0} speech log.",
-                        pm.Female ? "her" : "his"
+                        $"You don't have the required access level to view {(pm.Female ? "her" : "his")} speech log."
                     );
                 }
                 else if (pm.SpeechLog == null)
                 {
-                    from.SendMessage("{0} has no speech log.", pm.Female ? "She" : "He");
+                    from.SendMessage($"{(pm.Female ? "She" : "He")} has no speech log.");
                 }
                 else
                 {

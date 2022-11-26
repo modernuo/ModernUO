@@ -38,7 +38,7 @@ namespace Server.Commands
             Generate("Data/Decoration/Malas", Map.Malas);
             Generate("Data/Decoration/Tokuno", Map.Tokuno);
 
-            m_Mobile.SendMessage("World generating complete. {0} items were generated.", m_Count);
+            m_Mobile.SendMessage($"World generating complete. {m_Count} items were generated.");
         }
 
         public static void Generate(string folder, params Map[] maps)

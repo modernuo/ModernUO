@@ -556,8 +556,7 @@ namespace Server.Misc
                     if (!m_Poller.Active)
                     {
                         m_From.SendMessage(
-                            "Enter a title for the option. Escape to cancel.{0}",
-                            opt == null ? "" : " Use \"DEL\" to delete."
+                            $"Enter a title for the option. Escape to cancel.{(opt == null ? "" : " Use \"DEL\" to delete.")}"
                         );
                         m_From.Prompt = new ShardPollPrompt(m_Poller, opt);
                     }

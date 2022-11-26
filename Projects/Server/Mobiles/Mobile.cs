@@ -1004,7 +1004,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
                 Delta(MobileDelta.Noto);
                 InvalidateProperties();
 
-                SendMessage("Your access level has been changed. You are now {0}.", GetAccessLevelName(value));
+                SendMessage($"Your access level has been changed. You are now {GetAccessLevelName(value)}.");
 
                 ClearScreen();
                 SendEverything();
@@ -9105,25 +9105,13 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
     public void SendMessage(string text) => SendMessage(0x3B2, text);
 
-    public void SendMessage(string format, params object[] args) =>
-        SendMessage(0x3B2, string.Format(format, args));
-
     public void SendMessage(int hue, string text) =>
         m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, false, "ENU", "System", text);
 
-    public void SendMessage(int hue, string format, params object[] args) =>
-        SendMessage(hue, string.Format(format, args));
-
     public void SendAsciiMessage(string text) => SendAsciiMessage(0x3B2, text);
-
-    public void SendAsciiMessage(string format, params object[] args) =>
-        SendAsciiMessage(0x3B2, string.Format(format, args));
 
     public void SendAsciiMessage(int hue, string text) =>
         m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, true, null, "System", text);
-
-    public void SendAsciiMessage(int hue, string format, params object[] args) =>
-        SendAsciiMessage(hue, string.Format(format, args));
 
     /// <summary>
     ///     Overridable. Event invoked when the Mobile is double clicked. By default, this method can either dismount or open the

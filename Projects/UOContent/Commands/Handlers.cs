@@ -105,7 +105,7 @@ namespace Server.Commands
             var from = e.Mobile;
             var map = from.Map;
 
-            from.SendMessage("You are at {0} {1} {2} in {3}.", from.X, from.Y, from.Z, map);
+            from.SendMessage($"You are at {from.X} {from.Y} {from.Z} in {map}.");
 
             if (map != null)
             {
@@ -124,7 +124,7 @@ namespace Server.Commands
                         reg = reg.Parent;
                     }
 
-                    from.SendMessage("Your region is {0}.", builder.ToString());
+                    from.SendMessage($"Your region is {builder.ToString()}.");
                 }
             }
         }
@@ -206,7 +206,7 @@ namespace Server.Commands
                     list[i].Delete();
                 }
 
-                from.SendMessage("You have deleted {0} object{1}.", list.Count, list.Count == 1 ? "" : "s");
+                from.SendMessage($"You have deleted {list.Count} object{(list.Count == 1 ? "" : "s")}.");
             }
             else
             {
@@ -299,7 +299,7 @@ namespace Server.Commands
                         CommandLogging.Format(pm)
                     );
 
-                    from.SendMessage("That player has {0} pet{1}.", pets.Count, pets.Count != 1 ? "s" : "");
+                    from.SendMessage($"That player has {pets.Count} pet{(pets.Count != 1 ? "s" : "")}.");
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
@@ -343,7 +343,7 @@ namespace Server.Commands
                         CommandLogging.Format(master)
                     );
 
-                    from.SendMessage("That player has {0} pet{1}.", pets.Count, pets.Count != 1 ? "s" : "");
+                    from.SendMessage($"That player has {pets.Count} pet{(pets.Count != 1 ? "s" : "")}.");
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
@@ -773,7 +773,7 @@ namespace Server.Commands
 
             m.AutoPageNotify = !m.AutoPageNotify;
 
-            m.SendMessage("Your auto-page-notify has been turned {0}.", m.AutoPageNotify ? "on" : "off");
+            m.SendMessage($"Your auto-page-notify has been turned {(m.AutoPageNotify ? "on" : "off")}.");
         }
 
         [Usage("Animate <action> <frameCount> <repeatCount> <forward> <repeat> <delay>"),
@@ -843,9 +843,9 @@ namespace Server.Commands
         [Description("View some stats about the server.")]
         public static void Stats_OnCommand(CommandEventArgs e)
         {
-            e.Mobile.SendMessage("Open Connections: {0}", TcpServer.Instances.Count);
-            e.Mobile.SendMessage("Mobiles: {0}", World.Mobiles.Count);
-            e.Mobile.SendMessage("Items: {0}", World.Items.Count);
+            e.Mobile.SendMessage($"Open Connections: {TcpServer.Instances.Count}");
+            e.Mobile.SendMessage($"Mobiles: {World.Mobiles.Count}");
+            e.Mobile.SendMessage($"Items: {World.Items.Count}");
         }
 
         private class ViewEqTarget : Target

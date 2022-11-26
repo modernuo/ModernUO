@@ -103,7 +103,7 @@ namespace Server.Multis
                     _                   => "in danger of collapsing"
                 };
 
-                LabelTo(from, "This house is {0}.", message);
+                LabelTo(from, $"This house is {message}.");
             }
 
             base.OnSingleClick(from);

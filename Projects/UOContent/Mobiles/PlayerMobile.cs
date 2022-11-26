@@ -1643,11 +1643,11 @@ namespace Server.Mobiles
                 {
                     if (target.Title == null)
                     {
-                        SendMessage("{0} cannot be harmed.", target.Name);
+                        SendMessage($"{target.Name} cannot be harmed.");
                     }
                     else
                     {
-                        SendMessage("{0} {1} cannot be harmed.", target.Name, target.Title);
+                        SendMessage($"{target.Name} {target.Title} cannot be harmed.");
                     }
                 }
 

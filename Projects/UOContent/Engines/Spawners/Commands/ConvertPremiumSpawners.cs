@@ -69,7 +69,7 @@ namespace Server.Engines.Spawners
             for (var i = 0; i < files.Count; i++)
             {
                 var (file, stem) = files[i];
-                from.SendMessage("ConvertPremiumSpawners: Converting spawners for {0}...", stem);
+                from.SendMessage($"ConvertPremiumSpawners: Converting spawners for {stem}...");
 
                 NetState.FlushAll();
 

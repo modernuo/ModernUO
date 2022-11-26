@@ -137,7 +137,7 @@ namespace Server.Guilds
                                 }
                                 else
                                 {
-                                    pm.SendMessage("You can't demote a {0}.", RankDefinition.Lowest.Name);
+                                    pm.SendMessage($"You can't demote a {RankDefinition.Lowest.Name}.");
                                 }
                             }
                             else

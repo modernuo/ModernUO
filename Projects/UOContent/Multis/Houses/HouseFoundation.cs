@@ -1156,9 +1156,7 @@ namespace Server.Multis
                 if (from.AccessLevel >= AccessLevel.GameMaster && cost != 0)
                 {
                     from.SendMessage(
-                        "{0} gold would have been {1} your bank if you were not a GM.",
-                        cost.ToString(),
-                        cost > 0 ? "withdrawn from" : "deposited into"
+                        $"{cost.ToString()} gold would have been {(cost > 0 ? "withdrawn from" : "deposited into")} your bank if you were not a GM."
                     );
                 }
                 else

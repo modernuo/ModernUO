@@ -83,7 +83,7 @@ public partial class StrongBox : BaseContainer, IChoppable
 
         if (CheckContentDisplay(from))
         {
-            LabelTo(from, "({0} items, {1} stones)", TotalItems, TotalWeight);
+            LabelTo(from, $"({TotalItems} items, {TotalWeight} stones)");
         }
     }
 

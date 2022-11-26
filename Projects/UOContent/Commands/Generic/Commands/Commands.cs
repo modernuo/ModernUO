@@ -234,7 +234,7 @@ namespace Server.Commands.Generic
             {
                 if (echo)
                 {
-                    gm.SendMessage("{0} : has opened their web browser to : {1}", from.Name, url);
+                    gm.SendMessage($"{from.Name} : has opened their web browser to : {url}");
                 }
 
                 from.LaunchBrowser(url);
@@ -243,7 +243,7 @@ namespace Server.Commands.Generic
             {
                 if (echo)
                 {
-                    gm.SendMessage("{0} : has chosen not to open their web browser to : {1}", from.Name, url);
+                    gm.SendMessage($"{from.Name} : has chosen not to open their web browser to : {url}");
                 }
 
                 from.SendMessage("You have chosen not to open your web browser.");

@@ -13,13 +13,13 @@ namespace Server.Commands
         {
             if (e.Length == 0)
             {
-                e.Mobile.SendMessage("Drag effects are currently {0}.", Mobile.DragEffects ? "enabled" : "disabled");
+                e.Mobile.SendMessage($"Drag effects are currently {(Mobile.DragEffects ? "enabled" : "disabled")}.");
             }
             else
             {
                 Mobile.DragEffects = e.GetBoolean(0);
 
-                e.Mobile.SendMessage("Drag effects have been {0}.", Mobile.DragEffects ? "enabled" : "disabled");
+                e.Mobile.SendMessage($"Drag effects have been {(Mobile.DragEffects ? "enabled" : "disabled")}.");
             }
         }
     }

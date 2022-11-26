@@ -796,9 +796,7 @@ namespace Server.Accounting
                 var hours = Math.Max((int)ts.TotalHours, 0);
 
                 m.SendAsciiMessage(
-                    "You will enjoy the benefits and relatively safe status of a young player for {0} more hour{1}.",
-                    hours,
-                    hours != 1 ? "s" : ""
+                    $"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour{(hours != 1 ? "s" : "")}."
                 );
             }
         }

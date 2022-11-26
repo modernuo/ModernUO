@@ -219,7 +219,7 @@ namespace Server.Mobiles
 
                     if (!string.IsNullOrEmpty(vi.Description))
                     {
-                        item.LabelTo(from, "Description: {0}", vi.Description);
+                        item.LabelTo(from, $"Description: {vi.Description}");
                     }
                 }
             }

@@ -130,7 +130,7 @@ namespace Server.Commands
                         CommandLogging.LogChangeProperty(from, targ, $"{m_Skill}.Base", m_Value.ToString());
                     }
 
-                    from.SendMessage("{0} : {1} (Base: {2})", m_Skill, skill.Value, skill.Base);
+                    from.SendMessage($"{m_Skill} : {skill.Value} (Base: {skill.Base})");
                 }
                 else
                 {

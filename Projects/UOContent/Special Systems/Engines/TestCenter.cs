@@ -757,7 +757,7 @@ namespace Server.Misc
                         }
                     case 3: // Command list
                         {
-                            sender.Mobile.SendAsciiMessage(0x482, "The command prefix is \"{0}\"", CommandSystem.Prefix);
+                            sender.Mobile.SendAsciiMessage(0x482, $"The command prefix is \"{CommandSystem.Prefix}\"");
                             CommandHandlers.Help_OnCommand(new CommandEventArgs(sender.Mobile, "help", "", Array.Empty<string>()));
 
                             break;

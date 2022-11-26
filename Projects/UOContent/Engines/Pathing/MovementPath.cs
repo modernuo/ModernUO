@@ -78,11 +78,11 @@ namespace Server
 
             if (!path.Success)
             {
-                from.SendMessage("{0} path failed: {1}ms", name, watch.ElapsedMilliseconds);
+                from.SendMessage($"{name} path failed: {watch.ElapsedMilliseconds}ms");
             }
             else
             {
-                from.SendMessage("{0} path success: {1}ms", name, watch.ElapsedMilliseconds);
+                from.SendMessage($"{name} path success: {watch.ElapsedMilliseconds}ms");
 
                 var x = from.X;
                 var y = from.Y;

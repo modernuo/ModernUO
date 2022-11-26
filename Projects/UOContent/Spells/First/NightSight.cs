@@ -58,7 +58,7 @@ namespace Server.Spells.First
                     }
                     else
                     {
-                        from.SendMessage("{0} already have nightsight.", from == targ ? "You" : "They");
+                        from.SendMessage($"{(from == targ ? "You" : "They")} already have nightsight.");
                     }
                 }
 
