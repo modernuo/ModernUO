@@ -2033,7 +2033,7 @@ namespace Server.Items
                             if (from.AccessLevel >= AccessLevel.GameMaster)
                             {
                                 from.SendMessage(
-                                    $"{Cost.ToString()} gold would have been withdrawn from your bank if you were not a GM."
+                                    $"{Cost} gold would have been withdrawn from your bank if you were not a GM."
                                 );
                             }
                             else

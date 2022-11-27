@@ -1954,7 +1954,7 @@ namespace Server.Engines.ConPVP
                             mob.BankBox.DropItem(item);
                         }
 
-                        mob.SendMessage(
+                        mob.SendMessage( //There is no formatting flag for Lowercase, we may need a custom interface to get rid of it
                             $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this tournament."
                         );
                     }

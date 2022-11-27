@@ -393,10 +393,10 @@ namespace Server.Engines.ConPVP
                 case 2:
                 case 1:
                     {
-                        owner?.SendMessage(
-                            0x26,
-                            $"You have {m_ReturnCount} {(m_ReturnCount == 1 ? "second" : "seconds")} to capture the cookies!"
-                        );
+                        if(m_ReturnCount == 1)
+                            owner?.SendMessage(0x26, $"You have {m_ReturnCount} second to capture the cookies!");
+                        else
+                            owner?.SendMessage(0x26, $"You have {m_ReturnCount} seconds to capture the cookies!");
 
                         break;
                     }

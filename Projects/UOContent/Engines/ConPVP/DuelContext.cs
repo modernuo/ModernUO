@@ -1775,11 +1775,17 @@ namespace Server.Engines.ConPVP
                     {
                         if (mob == rejector)
                         {
-                            mob.SendMessage(0x22, $"You have rejected the {(Rematch ? "rematch" : page)}.");
+                            if(Rematch)
+                                mob.SendMessage(0x22, $"You have rejected the rematch.");
+                            else
+                                mob.SendMessage(0x22, $"You have rejected the {page}.");
                         }
                         else
                         {
-                            mob.SendMessage(0x22, $"{rejector.Name} has rejected the {(Rematch ? "rematch" : page)}.");
+                            if(Rematch)
+                                mob.SendMessage(0x22, $"{rejector.Name} has rejected the rematch.");
+                            else
+                                mob.SendMessage(0x22, $"{rejector.Name} has rejected the {page}.");
                         }
                     }
 
@@ -2125,7 +2131,10 @@ namespace Server.Engines.ConPVP
                             mob.SendMessage("Modifications:");
                         }
 
-                        mob.SendMessage($"{name}: {(opts[i] ? "enabled" : "disabled")}");
+                        if (opts[i])
+                            mob.SendMessage($"{name}: enabled");
+                        else
+                            mob.SendMessage($"{name}: disabled");
                     }
                 }
             }

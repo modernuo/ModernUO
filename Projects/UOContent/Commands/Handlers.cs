@@ -124,7 +124,7 @@ namespace Server.Commands
                         reg = reg.Parent;
                     }
 
-                    from.SendMessage($"Your region is {builder.ToString()}.");
+                    from.SendMessage($"Your region is {builder}.");
                 }
             }
         }
@@ -206,7 +206,10 @@ namespace Server.Commands
                     list[i].Delete();
                 }
 
-                from.SendMessage($"You have deleted {list.Count} object{(list.Count == 1 ? "" : "s")}.");
+                if(list.Count == 1)
+                    from.SendMessage($"You have deleted {list.Count} object.");
+                else
+                    from.SendMessage($"You have deleted {list.Count} objects.");
             }
             else
             {
@@ -299,7 +302,10 @@ namespace Server.Commands
                         CommandLogging.Format(pm)
                     );
 
-                    from.SendMessage($"That player has {pets.Count} pet{(pets.Count != 1 ? "s" : "")}.");
+                    if (pets.Count == 1)
+                        from.SendMessage($"That player has {pets.Count} pet.");
+                    else
+                        from.SendMessage($"That player has {pets.Count} pets.");
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
@@ -343,7 +349,10 @@ namespace Server.Commands
                         CommandLogging.Format(master)
                     );
 
-                    from.SendMessage($"That player has {pets.Count} pet{(pets.Count != 1 ? "s" : "")}.");
+                    if (pets.Count == 1)
+                        from.SendMessage($"That player has {pets.Count} pet.");
+                    else
+                        from.SendMessage($"That player has {pets.Count} pets.");
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
@@ -773,7 +782,10 @@ namespace Server.Commands
 
             m.AutoPageNotify = !m.AutoPageNotify;
 
-            m.SendMessage($"Your auto-page-notify has been turned {(m.AutoPageNotify ? "on" : "off")}.");
+            if(m.AutoPageNotify)
+                m.SendMessage($"Your auto-page-notify has been turned on.");
+            else
+                m.SendMessage($"Your auto-page-notify has been turned off.");
         }
 
         [Usage("Animate <action> <frameCount> <repeatCount> <forward> <repeat> <delay>"),

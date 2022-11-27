@@ -271,9 +271,11 @@ namespace Server.Engines.ConPVP
                         m_Challenger.SendMessage(
                             $"The participant list was full and so {m_Challenged.Name} could not join."
                         );
-                        m_Challenged.SendMessage(
-                            $"The participant list was full and so you could not join the fight {(m_Participant.Contains(m_Challenger) ? "with" : "against")} {m_Challenger.Name}."
-                        );
+
+                        if(m_Participant.Contains(m_Challenger))
+                            m_Challenged.SendMessage($"The participant list was full and so you could not join the fight with {m_Challenger.Name}.");
+                        else
+                            m_Challenged.SendMessage($"The participant list was full and so you could not join the fight against {m_Challenger.Name}.");
                     }
                 }
             }
@@ -285,9 +287,11 @@ namespace Server.Engines.ConPVP
                 }
 
                 m_Challenger.SendMessage($"{m_Challenged.Name} does not wish to fight.");
-                m_Challenged.SendMessage(
-                    $"You chose not to fight {(m_Participant.Contains(m_Challenger) ? "with" : "against")} {m_Challenger.Name}."
-                );
+
+                if(m_Participant.Contains(m_Challenger))
+                    m_Challenged.SendMessage($"You chose not to fight with {m_Challenger.Name}.");
+                else
+                    m_Challenged.SendMessage($"You chose not to fight against {m_Challenger.Name}.");
             }
         }
 

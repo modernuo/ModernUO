@@ -297,10 +297,10 @@ namespace Server.Items
                 }
                 else
                 {
-                    LabelTo(
-                        from,
-                        $"{string.Format(RuneFormat, desc)} ({m_TargetMap}){(House != null ? "(House)" : string.Empty)}"
-                    );
+                    if(House != null)
+                        LabelTo(from, $"{RuneFormat} {desc} ({m_TargetMap})(House)");
+                    else
+                        LabelTo(from, $"{RuneFormat} {desc} ({m_TargetMap})");
                 }
             }
             else

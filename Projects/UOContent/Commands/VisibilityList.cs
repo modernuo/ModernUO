@@ -43,7 +43,10 @@ namespace Server.Commands
 
                 if (list.Count > 0)
                 {
-                    pm.SendMessage($"You are visible to {list.Count} mobile{(list.Count == 1 ? "" : "s")}:");
+                    if(list.Count == 1)
+                        pm.SendMessage($"You are visible to {list.Count} mobile:");
+                    else
+                        pm.SendMessage($"You are visible to {list.Count} mobiles:");
 
                     for (var i = 0; i < list.Count; ++i)
                     {
