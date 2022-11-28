@@ -7,7 +7,7 @@ namespace Server.Factions
         Carpenter,
         Blacksmith,
         Bowyer,
-        Tialor
+        Tailor
     }
 
     public class MerchantTitleInfo
