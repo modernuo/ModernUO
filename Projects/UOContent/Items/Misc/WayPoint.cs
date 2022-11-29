@@ -57,7 +57,7 @@ public partial class WayPoint : Item
         }
         else
         {
-            LabelTo(from, "(Linked: {0})", _nextPoint.Location);
+            LabelTo(from, $"(Linked: {_nextPoint.Location})");
         }
     }
 }

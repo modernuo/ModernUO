@@ -527,7 +527,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    from.SendMessage(MessageHue, "You do not have the {0} required to enter the raffle.", FormatPrice());
+                    from.SendMessage(MessageHue, $"You do not have the {FormatPrice()} required to enter the raffle.");
                 }
             }
             else
@@ -555,9 +555,7 @@ namespace Server.Items
 
                     m_Winner.SendMessage(
                         MessageHue,
-                        "Congratulations, {0}!  You have won the raffle for the plot located at {1}.",
-                        m_Winner.Name,
-                        FormatLocation()
+                        $"Congratulations, {m_Winner.Name}!  You have won the raffle for the plot located at {FormatLocation()}."
                     );
 
                     if (m_Winner.AddToBackpack(Deed))

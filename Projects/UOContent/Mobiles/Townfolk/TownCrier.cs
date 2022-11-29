@@ -127,7 +127,7 @@ namespace Server.Mobiles
                 ts = TimeSpan.Zero;
             }
 
-            from.SendMessage("Duration set to: {0}", ts);
+            from.SendMessage($"Duration set to: {ts}");
             from.SendMessage("Enter the first line to shout:");
 
             from.Prompt = new TownCrierLinesPrompt(m_Owner, null, new List<string>(), ts);
@@ -284,7 +284,7 @@ namespace Server.Mobiles
                     var tce = entries[index];
                     var ts = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
 
-                    m_From.SendMessage("Editing entry #{0}.", index + 1);
+                    m_From.SendMessage($"Editing entry #{index + 1}.");
                     m_From.SendMessage("Enter the first line to shout:");
                     m_From.Prompt = new TownCrierLinesPrompt(m_Owner, tce, new List<string>(), ts);
                 }

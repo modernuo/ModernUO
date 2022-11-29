@@ -50,16 +50,6 @@ namespace Server.Commands
                 _         => o
             };
 
-        public static void WriteLine(Mobile from, string format, params object[] args)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-
-            WriteLine(from, string.Format(format, args));
-        }
-
         public static void WriteLine(Mobile from, string text)
         {
             if (!Enabled)
@@ -132,27 +122,13 @@ namespace Server.Commands
 
         public static void EventSink_Command(CommandEventArgs e)
         {
-            WriteLine(
-                e.Mobile,
-                "{0} {1} used command '{2} {3}'",
-                e.Mobile.AccessLevel,
-                Format(e.Mobile),
-                e.Command,
-                e.ArgString
-            );
+            var from = e.Mobile;
+            WriteLine(from, $"{from.AccessLevel} {Format(from)} used command '{e.Command} {e.ArgString}'");
         }
 
         public static void LogChangeProperty(Mobile from, object o, string name, string value)
         {
-            WriteLine(
-                from,
-                "{0} {1} set property '{2}' of {3} to '{4}'",
-                from.AccessLevel,
-                Format(from),
-                name,
-                Format(o),
-                value
-            );
+            WriteLine(from, $"{from.AccessLevel} {Format(from)} set property '{name}' of {Format(o)} to '{value}'");
         }
     }
 }

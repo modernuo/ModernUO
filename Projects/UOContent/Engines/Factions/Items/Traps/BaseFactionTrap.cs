@@ -83,9 +83,7 @@ namespace Server.Factions
                         if (from.Alive)
                         {
                             Placer.SendMessage(
-                                "You have earned {0} silver pieces because {1} fell for your trap.",
-                                silverGiven,
-                                from.Name
+                                $"You have earned {silverGiven} silver pieces because {from.Name} fell for your trap."
                             );
                         }
                         else

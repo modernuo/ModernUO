@@ -116,16 +116,6 @@ namespace Server.Factions
             }
         }
 
-        public void Broadcast(string format, params object[] args)
-        {
-            Broadcast(string.Format(format, args));
-        }
-
-        public void Broadcast(int hue, string format, params object[] args)
-        {
-            Broadcast(hue, string.Format(format, args));
-        }
-
         public void BeginBroadcast(Mobile from)
         {
             from.SendLocalizedMessage(1010265); // Enter Faction Message
@@ -139,7 +129,7 @@ namespace Server.Factions
                 State.RegisterBroadcast();
             }
 
-            Broadcast(Definition.HueBroadcast, "{0} [Commander] {1} : {2}", from.Name, Definition.FriendlyName, text);
+            Broadcast(Definition.HueBroadcast, $"{from.Name} [Commander] {Definition.FriendlyName} : {text}");
         }
 
         public static void HandleAtrophy()
@@ -816,7 +806,7 @@ namespace Server.Factions
                 }
             }
 
-            e.Mobile.SendMessage("{0} items reset", count);
+            e.Mobile.SendMessage($"{count} items reset");
         }
 
         public static void FactionCommander_OnCommand(CommandEventArgs e)

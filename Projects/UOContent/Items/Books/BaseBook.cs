@@ -202,8 +202,8 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
-            LabelTo(from, "{0} by {1}", _title, _author);
-            LabelTo(from, "[{0} pages]", _pages.Length);
+            LabelTo(from, $"{_title} by {_author}");
+            LabelTo(from, $"[{_pages.Length} pages]");
         }
 
         public override void OnDoubleClick(Mobile from)

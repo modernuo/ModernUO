@@ -1161,9 +1161,7 @@ namespace Server.Engines.Craft
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "Crafting {0} with craft system {1}",
-                            CommandLogging.Format(item),
-                            craftSystem.GetType().Name
+                            $"Crafting {CommandLogging.Format(item)} with craft system {craftSystem.GetType().Name}"
                         );
                     }
 

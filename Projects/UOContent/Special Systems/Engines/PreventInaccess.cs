@@ -61,9 +61,7 @@ namespace Server.Misc
             else if (m_MoveHistory.Remove(from, out var orig))
             {
                 from.SendMessage(
-                    "Your character was moved from {0} ({1}) due to a detected client crash.",
-                    orig.Location,
-                    orig.Map
+                    $"Your character was moved from {orig.Location} ({orig.Map}) due to a detected client crash."
                 );
             }
         }

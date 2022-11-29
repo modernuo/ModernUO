@@ -34,7 +34,7 @@ namespace Server.Commands
             Generate("Data/Decoration/RuinedMaginciaTram", Map.Trammel);
             Generate("Data/Decoration/RuinedMaginciaFel", Map.Felucca);
 
-            m_Mobile.SendMessage("World generating complete. {0} items were generated.", m_Count);
+            m_Mobile.SendMessage($"World generating complete. {m_Count} items were generated.");
         }
 
         public static void Generate(string folder, params Map[] maps)

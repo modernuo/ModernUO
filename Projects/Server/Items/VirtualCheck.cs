@@ -117,7 +117,7 @@ public sealed class VirtualCheck : Item
 
     public override void OnSingleClick(Mobile from)
     {
-        LabelTo(from, "Offer: {0:#,0} platinum, {1:#,0} gold", Plat, Gold);
+        LabelTo(from, $"Offer: {Plat:#,0} platinum, {Gold:#,0} gold");
     }
 
     public override void GetProperties(IPropertyList list)

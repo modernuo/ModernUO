@@ -162,11 +162,11 @@ public partial class Teleporter : Item
         {
             if (_mapDest != null && _pointDest != Point3D.Zero)
             {
-                LabelTo(from, "{0} [{1}]", _pointDest, _mapDest);
+                LabelTo(from, $"{_pointDest} [{_mapDest}]");
             }
             else if (_mapDest != null)
             {
-                LabelTo(from, "[{0}]", _mapDest);
+                LabelTo(from, $"[{_mapDest}]");
             }
             else if (_pointDest != Point3D.Zero)
             {

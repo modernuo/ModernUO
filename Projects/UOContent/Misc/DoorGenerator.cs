@@ -392,11 +392,7 @@ namespace Server
             World.Broadcast(
                 0x35,
                 true,
-                "Door generation complete. Trammel: {0}; Felucca: {1}; Ilshenar: {2}; Malas: {3};",
-                trammelCount,
-                feluccaCount,
-                ilshenarCount,
-                malasCount
+                $"Door generation complete. Trammel: {trammelCount}; Felucca: {feluccaCount}; Ilshenar: {ilshenarCount}; Malas: {malasCount};"
             );
         }
 

@@ -140,29 +140,19 @@ namespace Server.Factions
 
                 var warning = Utility.Random(6) switch
                 {
-                    0 => "I warn you, {0}, you would do well to leave this area before someone shows you the world of gray.",
-                    1 => "It would be wise to leave this area, {0}, lest your head become my commanders' trophy.",
-                    2 => "You are bold, {0}, for one of the meager {1}. Leave now, lest you be taught the taste of dirt.",
-                    3 => "Your presence here is an insult, {0}. Be gone now, knave.",
-                    4 => "Dost thou wish to be hung by your toes, {0}? Nay? Then come no closer.",
-                    _ => "Hey, {0}. Yeah, you. Get out of here before I beat you with a stick." // 5
+                    0 => $"I warn you, {m.Name}, you would do well to leave this area before someone shows you the world of gray.",
+                    1 => $"It would be wise to leave this area, {m.Name}, lest your head become my commanders' trophy.",
+                    2 => $"You are bold, {m.Name}, for one of the meager {Faction.Find(m)?.Definition.FriendlyName ?? "civilians"}. Leave now, lest you be taught the taste of dirt.",
+                    3 => $"Your presence here is an insult, {m.Name}. Be gone now, knave.",
+                    4 => $"Dost thou wish to be hung by your toes, {m.Name}? Nay? Then come no closer.",
+                    _ => $"Hey, {m.Name}. Yeah, you. Get out of here before I beat you with a stick." // 5
                 };
 
-                var faction = Faction.Find(m);
-
-                Say(warning, m.Name, faction == null ? "civilians" : faction.Definition.FriendlyName);
+                Say(warning);
             }
         }
 
-        public override bool HandlesOnSpeech(Mobile from)
-        {
-            if (InRange(from, ListenRange))
-            {
-                return true;
-            }
-
-            return base.HandlesOnSpeech(from);
-        }
+        public override bool HandlesOnSpeech(Mobile from) => InRange(from, ListenRange) || base.HandlesOnSpeech(from);
 
         private void ChangeReaction(Faction faction, ReactionType type)
         {
@@ -171,12 +161,19 @@ namespace Server.Factions
                 switch (type)
                 {
                     case ReactionType.Ignore:
-                        Say(1005179);
-                        break; // Civilians will now be ignored.
+                        {
+                            Say(1005179);
+                            break; // Civilians will now be ignored.
+                        }
                     case ReactionType.Warn:
-                        Say(1005180);
-                        break; // Civilians will now be warned of their impending deaths.
-                    case ReactionType.Attack: return;
+                        {
+                            Say(1005180);
+                            break; // Civilians will now be warned of their impending deaths.
+                        }
+                    case ReactionType.Attack:
+                        {
+                            return;
+                        }
                 }
             }
             else

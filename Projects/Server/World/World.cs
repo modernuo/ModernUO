@@ -246,10 +246,6 @@ public static class World
         NetState.FlushAll();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Broadcast(int hue, bool ascii, string format, params object[] args) =>
-        Broadcast(hue, ascii, string.Format(format, args));
-
     internal static void LoadEntities(string basePath, Dictionary<ulong, string> typesDb)
     {
         IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");

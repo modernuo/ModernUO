@@ -7,7 +7,6 @@ namespace Server.Items
     [Flippable(0x1f14, 0x1f15, 0x1f16, 0x1f17)]
     public class RecallRune : Item
     {
-        private const string RuneFormat = "a recall rune for {0}";
         private string m_Description;
         private BaseHouse m_House;
         private bool m_Marked;
@@ -268,7 +267,7 @@ namespace Server.Items
                     LabelTo(
                         from,
                         House != null ? 1063260 : 1063259, // ~1_val~ (Tokuno Islands)[(House)]
-                        string.Format(RuneFormat, desc)
+                        $"a recall rune for {desc}"
                     );
                 }
                 else if (m_TargetMap == Map.Malas)
@@ -276,7 +275,7 @@ namespace Server.Items
                     LabelTo(
                         from,
                         House != null ? 1062454 : 1060804, // ~1_val~ (Malas)[(House)]
-                        string.Format(RuneFormat, desc)
+                        $"a recall rune for {desc}"
                     );
                 }
                 else if (m_TargetMap == Map.Felucca)
@@ -284,7 +283,7 @@ namespace Server.Items
                     LabelTo(
                         from,
                         House != null ? 1062452 : 1060805, // ~1_val~ (Felucca)[(House)]
-                        string.Format(RuneFormat, desc)
+                        $"a recall rune for {desc}"
                     );
                 }
                 else if (m_TargetMap == Map.Trammel)
@@ -292,17 +291,19 @@ namespace Server.Items
                     LabelTo(
                         from,
                         House != null ? 1062453 : 1060806, // ~1_val~ (Trammel)[(House)]
-                        string.Format(RuneFormat, desc)
+                        $"a recall rune for {desc}"
                     );
                 }
                 else
                 {
-                    LabelTo(
-                        from,
-                        House != null ? "{0} ({1})(House)" : "{0} ({1})",
-                        string.Format(RuneFormat, desc),
-                        m_TargetMap
-                    );
+                    if (House != null)
+                    {
+                        LabelTo(from, $"a recall rune for {desc} ({m_TargetMap})(House)");
+                    }
+                    else
+                    {
+                        LabelTo(from, $"a recall rune for {desc} ({m_TargetMap})");
+                    }
                 }
             }
             else

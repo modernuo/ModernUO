@@ -1643,11 +1643,11 @@ namespace Server.Mobiles
                 {
                     if (target.Title == null)
                     {
-                        SendMessage("{0} cannot be harmed.", target.Name);
+                        SendMessage($"{target.Name} cannot be harmed.");
                     }
                     else
                     {
-                        SendMessage("{0} {1} cannot be harmed.", target.Name, target.Title);
+                        SendMessage($"{target.Name} {target.Title} cannot be harmed.");
                     }
                 }
 
@@ -2747,7 +2747,7 @@ namespace Server.Mobiles
                     {
                         // g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
                         g.Alliance.AllianceChat(this, text);
-                        SendToStaffMessage(this, "[Alliance]: {0}", text);
+                        SendToStaffMessage(this, $"[Alliance]: {text}");
 
                         AllianceMessageHue = hue;
                     }
@@ -2761,7 +2761,7 @@ namespace Server.Mobiles
                     GuildMessageHue = hue;
 
                     g.GuildChat(this, text);
-                    SendToStaffMessage(this, "[Guild]: {0}", text);
+                    SendToStaffMessage(this, $"[Guild]: {text}");
                 }
             }
             else
@@ -2801,11 +2801,6 @@ namespace Server.Mobiles
                     ns.Send(buffer);
                 }
             }
-        }
-
-        private static void SendToStaffMessage(Mobile from, string format, params object[] args)
-        {
-            SendToStaffMessage(from, string.Format(format, args));
         }
 
         public override void Damage(int amount, Mobile from = null, bool informMount = true)

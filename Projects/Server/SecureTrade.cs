@@ -378,19 +378,16 @@ public class SecureTrade
             if (platSend > 0 && goldSend > 0)
             {
                 left.SendMessage(
-                    "You traded {0:#,0} platinum and {1:#,0} gold to {2}.",
-                    platSend,
-                    goldSend,
-                    right.RawName
+                    $"You traded {platSend:#,0} platinum and {goldSend:#,0} gold to {right.RawName}."
                 );
             }
             else if (platSend > 0)
             {
-                left.SendMessage("You traded {0:#,0} platinum to {1}.", platSend, right.RawName);
+                left.SendMessage($"You traded {platSend:#,0} platinum to {right.RawName}.");
             }
             else if (goldSend > 0)
             {
-                left.SendMessage("You traded {0:#,0} gold to {1}.", goldSend, right.RawName);
+                left.SendMessage($"You traded {goldSend:#,0} gold to {right.RawName}.");
             }
         }
 
@@ -399,19 +396,16 @@ public class SecureTrade
             if (platRecv > 0 && goldRecv > 0)
             {
                 left.SendMessage(
-                    "You received {0:#,0} platinum and {1:#,0} gold from {2}.",
-                    platRecv,
-                    goldRecv,
-                    right.RawName
+                    $"You received {platRecv:#,0} platinum and {goldRecv:#,0} gold from {right.RawName}."
                 );
             }
             else if (platRecv > 0)
             {
-                left.SendMessage("You received {0:#,0} platinum from {1}.", platRecv, right.RawName);
+                left.SendMessage($"You received {platRecv:#,0} platinum from {right.RawName}.");
             }
             else if (goldRecv > 0)
             {
-                left.SendMessage("You received {0:#,0} gold from {1}.", goldRecv, right.RawName);
+                left.SendMessage($"You received {goldRecv:#,0} gold from {right.RawName}.");
             }
         }
     }

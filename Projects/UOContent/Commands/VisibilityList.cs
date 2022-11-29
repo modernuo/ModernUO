@@ -43,11 +43,18 @@ namespace Server.Commands
 
                 if (list.Count > 0)
                 {
-                    pm.SendMessage("You are visible to {0} mobile{1}:", list.Count, list.Count == 1 ? "" : "s");
+                    if (list.Count == 1)
+                    {
+                        pm.SendMessage($"You are visible to {list.Count} mobile:");
+                    }
+                    else
+                    {
+                        pm.SendMessage($"You are visible to {list.Count} mobiles:");
+                    }
 
                     for (var i = 0; i < list.Count; ++i)
                     {
-                        pm.SendMessage("#{0}: {1}", i + 1, list[i].Name);
+                        pm.SendMessage($"#{i + 1}: {list[i].Name}");
                     }
                 }
                 else
@@ -103,12 +110,12 @@ namespace Server.Commands
                         if (list.Contains(targ))
                         {
                             list.Remove(targ);
-                            pm.SendMessage("{0} has been removed from your visibility list.", targ.Name);
+                            pm.SendMessage($"{targ.Name} has been removed from your visibility list.");
                         }
                         else
                         {
                             list.Add(targ);
-                            pm.SendMessage("{0} has been added to your visibility list.", targ.Name);
+                            pm.SendMessage($"{targ.Name} has been added to your visibility list.");
                         }
 
                         if (Utility.InUpdateRange(targ.Location, from.Location))
