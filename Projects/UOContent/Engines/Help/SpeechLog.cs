@@ -120,10 +120,7 @@ namespace Server.Engines.Help
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} viewing speech log of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(targeted)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} viewing speech log of {CommandLogging.Format(targeted)}"
                     );
 
                     Gump gump = new SpeechLogGump(pm, pm.SpeechLog);

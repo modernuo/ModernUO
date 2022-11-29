@@ -192,11 +192,7 @@ namespace Server.Commands
             {
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} deleting {2} object{3}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    list.Count,
-                    list.Count == 1 ? "" : "s"
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} deleting {list.Count} object{(list.Count == 1 ? "" : "s")}"
                 );
 
                 NetState.FlushAll();
@@ -256,12 +252,7 @@ namespace Server.Commands
             {
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} starting facet clear of {2} ({3} object{4})",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    map,
-                    list.Count,
-                    list.Count == 1 ? "" : "s"
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} starting facet clear of {map} ({list.Count} object{(list.Count == 1 ? "" : "s")})"
                 );
 
                 from.SendGump(
@@ -300,10 +291,7 @@ namespace Server.Commands
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} getting all followers of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(pm)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} getting all followers of {CommandLogging.Format(pm)}"
                     );
 
                     if (pets.Count == 1)
@@ -351,10 +339,7 @@ namespace Server.Commands
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} getting all followers of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(master)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} getting all followers of {CommandLogging.Format(master)}"
                     );
 
                     if (pets.Count == 1)
@@ -426,11 +411,7 @@ namespace Server.Commands
 
             CommandLogging.WriteLine(
                 m,
-                "{0} {1} playing sound {2} (toAll={3})",
-                m.AccessLevel,
-                CommandLogging.Format(m),
-                index,
-                toAll
+                $"{m.AccessLevel} {CommandLogging.Format(m)} playing sound {index} (toAll={toAll})"
             );
 
             Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
@@ -920,10 +901,7 @@ namespace Server.Commands
 
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} viewing equipment of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(m)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} viewing equipment of {CommandLogging.Format(m)}"
                     );
                 }
 
@@ -962,11 +940,7 @@ namespace Server.Commands
                         {
                             CommandLogging.WriteLine(
                                 state.Mobile,
-                                "{0} {1} moving equipment item {2} of {3}",
-                                state.Mobile.AccessLevel,
-                                CommandLogging.Format(state.Mobile),
-                                CommandLogging.Format(m_Item),
-                                CommandLogging.Format(m_Mobile)
+                                $"{state.Mobile.AccessLevel} {CommandLogging.Format(state.Mobile)} moving equipment item {CommandLogging.Format(m_Item)} of {CommandLogging.Format(m_Mobile)}"
                             );
                             state.Mobile.Target = new MoveTarget(m_Item);
                         }
@@ -974,11 +948,7 @@ namespace Server.Commands
                         {
                             CommandLogging.WriteLine(
                                 state.Mobile,
-                                "{0} {1} deleting equipment item {2} of {3}",
-                                state.Mobile.AccessLevel,
-                                CommandLogging.Format(state.Mobile),
-                                CommandLogging.Format(m_Item),
-                                CommandLogging.Format(m_Mobile)
+                                $"{state.Mobile.AccessLevel} {CommandLogging.Format(state.Mobile)} deleting equipment item {CommandLogging.Format(m_Item)} of {CommandLogging.Format(m_Mobile)}"
                             );
                             m_Item.Delete();
                         }
@@ -986,11 +956,7 @@ namespace Server.Commands
                         {
                             CommandLogging.WriteLine(
                                 state.Mobile,
-                                "{0} {1} opening properties for equipment item {2} of {3}",
-                                state.Mobile.AccessLevel,
-                                CommandLogging.Format(state.Mobile),
-                                CommandLogging.Format(m_Item),
-                                CommandLogging.Format(m_Mobile)
+                                $"{state.Mobile.AccessLevel} {CommandLogging.Format(state.Mobile)} opening properties for equipment item {CommandLogging.Format(m_Item)} of {CommandLogging.Format(m_Mobile)}"
                             );
                             state.Mobile.SendGump(new PropertiesGump(state.Mobile, m_Item));
                         }
@@ -1015,10 +981,7 @@ namespace Server.Commands
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} opening bank box of {2}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            CommandLogging.Format(m)
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} opening bank box of {CommandLogging.Format(m)}"
                         );
 
                         if (from == m)
@@ -1050,10 +1013,7 @@ namespace Server.Commands
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} opening client menu of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(targ)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} opening client menu of {CommandLogging.Format(targ)}"
                     );
                     from.SendGump(new ClientGump(from, targ.NetState));
                 }

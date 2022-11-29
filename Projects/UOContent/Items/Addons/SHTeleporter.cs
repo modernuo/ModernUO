@@ -183,9 +183,7 @@ namespace Server.Items
             World.Broadcast(
                 0x35,
                 true,
-                "{0} solen hives teleporters have been created. The entire process took {1:0.#} seconds.",
-                count,
-                (endTime - startTime).TotalSeconds
+                $"{count} solen hives teleporters have been created. The entire process took {(endTime - startTime).TotalSeconds:0.#} seconds."
             );
         }
 

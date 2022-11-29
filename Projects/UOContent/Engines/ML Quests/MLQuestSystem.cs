@@ -832,10 +832,7 @@ namespace Server.Engines.MLQuests
 
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} viewing quest overview of {2}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    CommandLogging.Format(pm)
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} viewing quest overview of {CommandLogging.Format(pm)}"
                 );
                 from.SendGump(new QuestLogGump(pm, false));
             }

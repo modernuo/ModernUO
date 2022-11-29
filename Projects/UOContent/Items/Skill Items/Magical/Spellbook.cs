@@ -283,10 +283,7 @@ namespace Server.Items
 
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} filling spellbook {2}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    CommandLogging.Format(book)
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} filling spellbook {CommandLogging.Format(book)}"
                 );
             }
             else

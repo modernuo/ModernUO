@@ -111,7 +111,7 @@ public partial class PublicMoongate : Item
         count += MoonGen(PMList.Malas);
         count += MoonGen(PMList.Tokuno);
 
-        World.Broadcast(0x35, true, "{0} moongates generated.", count);
+        World.Broadcast(0x35, true, $"{count} moongates generated.");
     }
 
     private static void DeleteAll()
@@ -133,7 +133,7 @@ public partial class PublicMoongate : Item
 
         if (list.Count > 0)
         {
-            World.Broadcast(0x35, true, "{0} moongates removed.", list.Count);
+            World.Broadcast(0x35, true, $"{list.Count} moongates removed.");
         }
     }
 

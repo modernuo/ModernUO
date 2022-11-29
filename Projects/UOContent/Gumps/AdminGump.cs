@@ -1706,10 +1706,7 @@ namespace Server.Gumps
             {
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} deleting account {2}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    a.Username
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} deleting account {a.Username}"
                 );
                 a.Delete();
 
@@ -1770,10 +1767,7 @@ namespace Server.Gumps
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} banning account {2}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            acct.Username
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} banning account {acct.Username}"
                         );
                         acct.SetUnspecifiedBan(from);
                         acct.Banned = true;
@@ -1782,10 +1776,7 @@ namespace Server.Gumps
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} deleting account {2}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            acct.Username
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} deleting account {acct.Username}"
                         );
                         acct.Delete();
                         rads.RemoveAt(i--);
@@ -2816,10 +2807,7 @@ namespace Server.Gumps
                                             notice = $"{un} : Account added.";
                                             CommandLogging.WriteLine(
                                                 from,
-                                                "{0} {1} adding new account: {2}",
-                                                from.AccessLevel,
-                                                CommandLogging.Format(from),
-                                                un
+                                                $"{from.AccessLevel} {CommandLogging.Format(from)} adding new account: {un}"
                                             );
                                         }
                                     }
@@ -2931,11 +2919,7 @@ namespace Server.Gumps
                                     a.Banned = index == 10;
                                     CommandLogging.WriteLine(
                                         from,
-                                        "{0} {1} {3} account {2}",
-                                        from.AccessLevel,
-                                        CommandLogging.Format(from),
-                                        a.Username,
-                                        a.Banned ? "banning" : "unbanning"
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} {a.Username} account {(a.Banned ? "banning" : "unbanning")}"
                                     );
                                     from.SendGump(
                                         new AdminGump(
@@ -2987,10 +2971,7 @@ namespace Server.Gumps
                                         page = AdminGumpPage.AccountDetails_Information;
                                         CommandLogging.WriteLine(
                                             from,
-                                            "{0} {1} changing password of account {2}",
-                                            from.AccessLevel,
-                                            CommandLogging.Format(from),
-                                            a.Username
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} changing password of account {a.Username}"
                                         );
                                     }
 
@@ -3238,11 +3219,7 @@ namespace Server.Gumps
 
                                         CommandLogging.WriteLine(
                                             from,
-                                            "{0} {1} changing access level of account {2} to {3}",
-                                            from.AccessLevel,
-                                            CommandLogging.Format(from),
-                                            a.Username,
-                                            a.AccessLevel
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} changing access level of account {a.Username} to {a.AccessLevel}"
                                         );
                                         from.SendGump(
                                             new AdminGump(
@@ -3759,10 +3736,7 @@ namespace Server.Gumps
 
                                         CommandLogging.WriteLine(
                                             from,
-                                            "{0} {1} firewalling {2}",
-                                            from.AccessLevel,
-                                            CommandLogging.Format(from),
-                                            toAdd
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {toAdd}"
                                         );
 
                                         Firewall.Add(toAdd);
@@ -3801,10 +3775,7 @@ namespace Server.Gumps
                                     {
                                         CommandLogging.WriteLine(
                                             from,
-                                            "{0} {1} removing {2} from firewall list",
-                                            from.AccessLevel,
-                                            CommandLogging.Format(from),
-                                            m_State
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} removing {m_State} from firewall list"
                                         );
 
                                         Firewall.Remove(m_State);
@@ -3883,11 +3854,7 @@ namespace Server.Gumps
                                     {
                                         CommandLogging.WriteLine(
                                             from,
-                                            "{0} {1} {2} {3}",
-                                            from.AccessLevel,
-                                            CommandLogging.Format(from),
-                                            "kicking",
-                                            CommandLogging.Format(m)
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} kicking {CommandLogging.Format(m)}"
                                         );
                                         ns.Disconnect($"Kicked by {from}.");
                                         notice = "They have been kicked.";
@@ -3905,11 +3872,7 @@ namespace Server.Gumps
                                     {
                                         CommandLogging.WriteLine(
                                             from,
-                                            "{0} {1} {2} {3}",
-                                            from.AccessLevel,
-                                            CommandLogging.Format(from),
-                                            "banning",
-                                            CommandLogging.Format(m)
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} banning {CommandLogging.Format(m)}"
                                         );
                                         a.Banned = true;
 
@@ -3962,10 +3925,7 @@ namespace Server.Gumps
                                 {
                                     CommandLogging.WriteLine(
                                         from,
-                                        "{0} {1} killing {2}",
-                                        from.AccessLevel,
-                                        CommandLogging.Format(from),
-                                        CommandLogging.Format(m)
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} killing {CommandLogging.Format(m)}"
                                     );
                                     m.Kill();
                                     notice = "They have been killed.";
@@ -3975,10 +3935,7 @@ namespace Server.Gumps
                                 {
                                     CommandLogging.WriteLine(
                                         from,
-                                        "{0} {1} resurrecting {2}",
-                                        from.AccessLevel,
-                                        CommandLogging.Format(from),
-                                        CommandLogging.Format(m)
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} resurrecting {CommandLogging.Format(m)}"
                                     );
                                     m.Resurrect();
                                     notice = "They have been resurrected.";
@@ -4167,11 +4124,7 @@ namespace Server.Gumps
         {
             CommandLogging.WriteLine(
                 m_From,
-                "{0} {1} shutting down server (Restart: {2}) (Save: {3})",
-                m_From.AccessLevel,
-                CommandLogging.Format(m_From),
-                restart,
-                save
+                $"{m_From.AccessLevel} {CommandLogging.Format(m_From)} shutting down server (Restart: {restart}) (Save: {save})"
             );
 
             if (save)
