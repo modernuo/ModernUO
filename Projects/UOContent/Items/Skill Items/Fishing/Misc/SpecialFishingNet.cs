@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Spells;
@@ -6,7 +7,8 @@ using Server.Targeting;
 
 namespace Server.Items;
 
-public class SpecialFishingNet : Item
+[SerializationGenerator(0, false)]
+public partial class SpecialFishingNet : Item
 {
     private static int[] _hues =
     {
@@ -37,6 +39,10 @@ public class SpecialFishingNet : Item
         0x1797, 0x179C
     };
 
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _inUse;
+
     [Constructible]
     public SpecialFishingNet() : base(0x0DCA)
     {
@@ -44,14 +50,7 @@ public class SpecialFishingNet : Item
         Hue = Utility.RandomDouble() < 0.01 ? _hues.RandomElement() : 0x8A0;
     }
 
-    public SpecialFishingNet(Serial serial) : base(serial)
-    {
-    }
-
     public override int LabelNumber => 1041079; // a special fishing net
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool InUse { get; set; }
 
     public virtual bool RequireDeepWater => true;
 
@@ -68,42 +67,18 @@ public class SpecialFishingNet : Item
         list.Add(1017410); // Special Fishing Net
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        base.Serialize(writer);
-
-        writer.Write(1); // version
-
-        writer.Write(InUse);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
+        if (_inUse)
         {
-            case 1:
-                {
-                    InUse = reader.ReadBool();
-
-                    if (InUse)
-                    {
-                        Delete();
-                    }
-
-                    break;
-                }
+            Delete();
         }
-
-        Stackable = false;
     }
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (InUse)
+        if (_inUse)
         {
             from.SendLocalizedMessage(1010483); // Someone is already using that net!
         }
@@ -120,7 +95,7 @@ public class SpecialFishingNet : Item
 
     public void OnTarget(Mobile from, object obj)
     {
-        if (Deleted || InUse)
+        if (Deleted || _inUse)
         {
             return;
         }
@@ -422,14 +397,11 @@ public class SpecialFishingNet : Item
     }
 }
 
-public class FabledFishingNet : SpecialFishingNet
+[SerializationGenerator(0, false)]
+public partial class FabledFishingNet : SpecialFishingNet
 {
     [Constructible]
     public FabledFishingNet() => Hue = 0x481;
-
-    public FabledFishingNet(Serial serial) : base(serial)
-    {
-    }
 
     public override int LabelNumber => 1063451; // a fabled fishing net
 
@@ -444,19 +416,5 @@ public class FabledFishingNet : SpecialFishingNet
         Spawn(p, map, new Leviathan(from));
 
         base.FinishEffect(p, map, from);
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
