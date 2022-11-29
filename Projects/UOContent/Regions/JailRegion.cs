@@ -14,6 +14,8 @@ public class JailRegion : BaseRegion
     {
     }
 
+    public override bool AllowGain(Mobile m, Skill skill, object obj) => m.AccessLevel > AccessLevel.Player;
+
     public override bool AllowBeneficial(Mobile from, Mobile target)
     {
         if (from.AccessLevel == AccessLevel.Player)

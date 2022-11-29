@@ -160,29 +160,40 @@ public static class SkillCheck
         }
 
         var success = chance >= Utility.RandomDouble();
-        var gc = (double)(from.Skills.Cap - from.Skills.Total) / from.Skills.Cap;
-        gc += (skill.Cap - skill.Base) / skill.Cap;
-        gc /= 2;
 
-        gc += (1.0 - chance) * (success ? 0.5 :
-            Core.AOS ? 0.0 : 0.2);
-        gc /= 2;
-
-        gc *= skill.Info.GainFactor;
-
-        if (gc < 0.01)
+        var region = from.Region;
+        if (from.Alive && region.AllowGain(from, skill, amObj))
         {
-            gc = 0.01;
-        }
+            if (skill.Base < 10.0) // Gain regardless of the AllowGain check
+            {
+                Gain(from, skill);
+            }
+            else if (AllowGain(from, skill, amObj))
+            {
+                var gc = (double)(from.Skills.Cap - from.Skills.Total) / from.Skills.Cap;
+                gc += (skill.Cap - skill.Base) / skill.Cap;
+                gc /= 2;
 
-        if (from is BaseCreature creature && creature.Controlled)
-        {
-            gc *= 2;
-        }
+                gc += (1.0 - chance) * (success ? 0.5 : Core.AOS ? 0.0 : 0.2);
+                gc /= 2;
 
-        if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
-        {
-            Gain(from, skill);
+                gc *= skill.Info.GainFactor;
+
+                if (gc < 0.01)
+                {
+                    gc = 0.01;
+                }
+
+                if (from is BaseCreature { Controlled: true })
+                {
+                    gc *= 2;
+                }
+
+                if (gc >= Utility.RandomDouble())
+                {
+                    Gain(from, skill);
+                }
+            }
         }
 
         return success;
@@ -256,12 +267,7 @@ public static class SkillCheck
 
     public static void Gain(Mobile from, Skill skill)
     {
-        if (from.Region.IsPartOf<JailRegion>())
-        {
-            return;
-        }
-
-        if (from is BaseCreature creature && creature.IsDeadPet)
+        if (from is BaseCreature { IsDeadPet: true })
         {
             return;
         }

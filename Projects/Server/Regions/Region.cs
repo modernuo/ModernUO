@@ -758,6 +758,8 @@ public class Region : IComparable<Region>
         Parent?.OnSpeech(args);
     }
 
+    public virtual bool AllowGain(Mobile m, Skill skill, object obj) => Parent?.AllowGain(m, skill, obj) ?? true;
+
     public virtual bool OnSkillUse(Mobile m, int skill) => Parent?.OnSkillUse(m, skill) ?? true;
 
     public virtual bool OnBeginSpellCast(Mobile m, ISpell s) => Parent?.OnBeginSpellCast(m, s) ?? true;
