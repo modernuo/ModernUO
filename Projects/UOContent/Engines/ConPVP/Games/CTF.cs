@@ -317,7 +317,7 @@ namespace Server.Engines.ConPVP
                         SendHome();
 
                         from.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You returned the cookies!");
-                        m_TeamInfo.Game.Alert("The {1} cookies have been returned by {0}.", from.Name, ourTeam.Name);
+                        m_TeamInfo.Game.Alert($"The {from.Name} cookies have been returned by {ourTeam.Name}.");
                     }
                 }
                 else if (!from.PlaceInBackpack(this))
@@ -329,12 +329,7 @@ namespace Server.Engines.ConPVP
                     from.RevealingAction();
 
                     from.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You stole the cookies!");
-                    m_TeamInfo.Game.Alert(
-                        "The {1} cookies have been stolen by {0} ({2}).",
-                        from.Name,
-                        ourTeam.Name,
-                        useTeam.Name
-                    );
+                    m_TeamInfo.Game.Alert($"The {ourTeam.Name} cookies have been stolen by {from.Name} ({useTeam.Name}).");
 
                     BeginCountdown(120);
                 }
@@ -415,7 +410,7 @@ namespace Server.Engines.ConPVP
 
                         SendHome();
 
-                        m_TeamInfo?.Game?.Alert("The {0} cookies have been returned.", m_TeamInfo.Name);
+                        m_TeamInfo?.Game?.Alert($"The {m_TeamInfo.Name} cookies have been returned.");
 
                         return;
                     }
@@ -444,7 +439,7 @@ namespace Server.Engines.ConPVP
                 if (obj == useTeam.Flag)
                 {
                     from.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You captured the cookies!");
-                    m_TeamInfo.Game.Alert("{0} captured the {1} cookies!", from.Name, ourTeam.Name);
+                    m_TeamInfo.Game.Alert($"{from.Name} captured the {ourTeam.Name} cookies!");
 
                     SendHome();
 
@@ -934,11 +929,6 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-        }
-
-        public void Alert(string format, params object[] args)
-        {
-            Alert(string.Format(format, args));
         }
 
         public CTFTeamInfo GetTeamInfo(Mobile mob)

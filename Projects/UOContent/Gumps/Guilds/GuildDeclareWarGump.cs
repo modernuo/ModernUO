@@ -62,26 +62,15 @@ namespace Server.Gumps
                                 if (!m_Guild.WarDeclarations.Contains(g))
                                 {
                                     m_Guild.WarDeclarations.Add(g);
-                                    m_Guild.GuildMessage(
-                                        1018019,
-                                        true,
-                                        "{0} ({1})",
-                                        g.Name,
-                                        g.Abbreviation
-                                    ); // Guild Message: Your guild has sent an invitation for war:
+                                    // Guild Message: Your guild has sent an invitation for war:
+                                    m_Guild.GuildMessage(1018019, true, $"{g.Name} ({g.Abbreviation})");
                                 }
 
                                 if (!g.WarInvitations.Contains(m_Guild))
                                 {
                                     g.WarInvitations.Add(m_Guild);
-                                    g.GuildMessage(
-                                        1018021,
-                                        true,
-                                        "{0} ({1})",
-                                        m_Guild.Name,
-                                        m_Guild
-                                            .Abbreviation
-                                    ); // Guild Message: Your guild has received an invitation to war:
+                                    // Guild Message: Your guild has received an invitation to war:
+                                    g.GuildMessage(1018021, true, $"{m_Guild.Name} ({m_Guild.Abbreviation})");
                                 }
                             }
 

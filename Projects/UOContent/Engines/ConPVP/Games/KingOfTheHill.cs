@@ -149,7 +149,7 @@ namespace Server.Engines.ConPVP
                 var kingName = king.Name ?? "";
                 var killerName = killer.Name ?? "";
 
-                m_Game.Alert("{0} ({1}) was dethroned by {2} ({3})!", kingName, kingTeam.Name, killerName, killerTeam.Name);
+                m_Game.Alert($"{kingName} ({kingTeam.Name}) was dethroned by {killerName} ({killerTeam.Name})!");
             }
 
             DeKingify();
@@ -251,7 +251,7 @@ namespace Server.Engines.ConPVP
                     var hill = m_Hill.Name.DefaultIfNullOrEmpty("the hill");
                     var king = m_Hill.King.Name ?? "";
 
-                    m_Hill.Game.Alert("{0} ({1}) is king of {2}!", king, ti.Name, hill);
+                    m_Hill.Game.Alert($"{king} ({ti.Name}) is king of {hill}!");
 
                     m_Hill.PublicOverheadMessage(MessageType.Regular, 0x0481, false, "Capture!");
 
@@ -903,11 +903,6 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-        }
-
-        public void Alert(string format, params object[] args)
-        {
-            Alert(string.Format(format, args));
         }
 
         public KHTeamInfo GetTeamInfo(Mobile mob)
