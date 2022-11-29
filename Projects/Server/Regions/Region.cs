@@ -758,33 +758,33 @@ public class Region : IComparable<Region>
         Parent?.OnSpeech(args);
     }
 
-    public virtual bool OnSkillUse(Mobile m, int skill) => Parent?.OnSkillUse(m, skill) != false;
+    public virtual bool OnSkillUse(Mobile m, int skill) => Parent?.OnSkillUse(m, skill) ?? true;
 
-    public virtual bool OnBeginSpellCast(Mobile m, ISpell s) => Parent?.OnBeginSpellCast(m, s) != false;
+    public virtual bool OnBeginSpellCast(Mobile m, ISpell s) => Parent?.OnBeginSpellCast(m, s) ?? true;
 
     public virtual void OnSpellCast(Mobile m, ISpell s)
     {
         Parent?.OnSpellCast(m, s);
     }
 
-    public virtual bool OnResurrect(Mobile m) => Parent?.OnResurrect(m) != false;
+    public virtual bool OnResurrect(Mobile m) => Parent?.OnResurrect(m) ?? true;
 
-    public virtual bool OnBeforeDeath(Mobile m) => Parent?.OnBeforeDeath(m) != false;
+    public virtual bool OnBeforeDeath(Mobile m) => Parent?.OnBeforeDeath(m) ?? true;
 
     public virtual void OnDeath(Mobile m)
     {
         Parent?.OnDeath(m);
     }
 
-    public virtual bool OnDamage(Mobile m, ref int damage) => Parent?.OnDamage(m, ref damage) != false;
+    public virtual bool OnDamage(Mobile m, ref int damage) => Parent?.OnDamage(m, ref damage) ?? true;
 
-    public virtual bool OnHeal(Mobile m, ref int heal) => Parent?.OnHeal(m, ref heal) != false;
+    public virtual bool OnHeal(Mobile m, ref int heal) => Parent?.OnHeal(m, ref heal) ?? true;
 
-    public virtual bool OnDoubleClick(Mobile m, object o) => Parent?.OnDoubleClick(m, o) != false;
+    public virtual bool OnDoubleClick(Mobile m, object o) => Parent?.OnDoubleClick(m, o) ?? true;
 
-    public virtual bool OnSingleClick(Mobile m, object o) => Parent?.OnSingleClick(m, o) != false;
+    public virtual bool OnSingleClick(Mobile m, object o) => Parent?.OnSingleClick(m, o) ?? true;
 
-    public virtual bool AllowSpawn() => Parent?.AllowSpawn() != false;
+    public virtual bool AllowSpawn() => Parent?.AllowSpawn() ?? true;
 
     public virtual void AlterLightLevel(Mobile m, ref int global, ref int personal)
     {
