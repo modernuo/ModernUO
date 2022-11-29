@@ -228,10 +228,14 @@ namespace Server.Engines.MLQuests
 
             quest.SaveEnabled = enable;
 
-            if(enable)
+            if (enable)
+            {
                 m.SendMessage($"Serialization for quest {quest.GetType().Name} is now enabled.");
+            }
             else
+            {
                 m.SendMessage($"Serialization for quest {quest.GetType().Name} is now disabled.");
+            }
 
             if (AutoGenerateNew && !enable)
             {
@@ -260,10 +264,14 @@ namespace Server.Engines.MLQuests
                 quest.SaveEnabled = enable;
             }
 
-            if(enable)
+            if (enable)
+            {
                 m.SendMessage($"Serialization for all quests is now enabled.");
+            }
             else
+            {
                 m.SendMessage($"Serialization for all quests is now disabled.");
+            }
 
             if (AutoGenerateNew && !enable)
             {

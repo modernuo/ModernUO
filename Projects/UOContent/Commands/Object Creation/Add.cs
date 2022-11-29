@@ -102,10 +102,14 @@ namespace Server.Commands
             if (built > 0)
             {
                 watch.Stop();
-                if(built == 1)
+                if (built == 1)
+                {
                     from.SendMessage($"{built} object generated in {watch.Elapsed.TotalSeconds:F2} seconds.");
+                }
                 else
+                {
                     from.SendMessage($"{built} objects generated in {watch.Elapsed.TotalSeconds:F2} seconds.");
+                }
             }
             else
             {
@@ -465,10 +469,14 @@ namespace Server.Commands
             }
             else
             {
-                if(outline)
+                if (outline)
+                {
                     from.SendMessage($"Format: Outline <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
                 else
+                {
                     from.SendMessage($"Format: Tile <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -490,10 +498,14 @@ namespace Server.Commands
             }
             else
             {
-                if(outline)
+                if (outline)
+                {
                     e.Mobile.SendMessage($"Format: OutlineRXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
                 else
+                {
                     e.Mobile.SendMessage($"Format: TileRXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -515,10 +527,14 @@ namespace Server.Commands
             }
             else
             {
-                if(outline)
+                if (outline)
+                {
                     e.Mobile.SendMessage($"Format: OutlineXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]" );
+                }
                 else
+                {
                     e.Mobile.SendMessage($"Format: TileXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -543,10 +559,14 @@ namespace Server.Commands
             }
             else
             {
-                if(outline)
+                if (outline)
+                {
                     from.SendMessage($"Format: OutlineZ <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
                 else
+                {
                     from.SendMessage($"Format: TileZ <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -564,10 +584,14 @@ namespace Server.Commands
             }
             else
             {
-                if(outline)
+                if (outline)
+                {
                     from.SendMessage($"Format: OutlineAvg <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
                 else
+                {
                     from.SendMessage($"Format: TileAvg <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 

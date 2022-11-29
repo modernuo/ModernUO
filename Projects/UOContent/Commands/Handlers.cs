@@ -206,10 +206,14 @@ namespace Server.Commands
                     list[i].Delete();
                 }
 
-                if(list.Count == 1)
+                if (list.Count == 1)
+                {
                     from.SendMessage($"You have deleted {list.Count} object.");
+                }
                 else
+                {
                     from.SendMessage($"You have deleted {list.Count} objects.");
+                }
             }
             else
             {
@@ -303,9 +307,13 @@ namespace Server.Commands
                     );
 
                     if (pets.Count == 1)
+                    {
                         from.SendMessage($"That player has {pets.Count} pet.");
+                    }
                     else
+                    {
                         from.SendMessage($"That player has {pets.Count} pets.");
+                    }
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
@@ -350,9 +358,13 @@ namespace Server.Commands
                     );
 
                     if (pets.Count == 1)
+                    {
                         from.SendMessage($"That player has {pets.Count} pet.");
+                    }
                     else
+                    {
                         from.SendMessage($"That player has {pets.Count} pets.");
+                    }
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
@@ -782,10 +794,14 @@ namespace Server.Commands
 
             m.AutoPageNotify = !m.AutoPageNotify;
 
-            if(m.AutoPageNotify)
+            if (m.AutoPageNotify)
+            {
                 m.SendMessage($"Your auto-page-notify has been turned on.");
+            }
             else
+            {
                 m.SendMessage($"Your auto-page-notify has been turned off.");
+            }
         }
 
         [Usage("Animate <action> <frameCount> <repeatCount> <forward> <repeat> <delay>"),

@@ -59,9 +59,13 @@ namespace Server.Spells.First
                     else
                     {
                         if (from == targ)
+                        {
                             from.SendMessage("You already have nightsight.");
+                        }
                         else
+                        {
                             from.SendMessage("They already have nightsight.");
+                        }
                     }
                 }
 

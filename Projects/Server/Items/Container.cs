@@ -672,10 +672,14 @@ public class Container : Item
 
         if (CheckContentDisplay(from))
         {
-            if(TotalItems == 1)
+            if (TotalItems == 1)
+            {
                 LabelTo(from, $"({TotalItems} item, {TotalWeight} stones)");
+            }
             else
+            {
                 LabelTo(from, $"({TotalItems} items, {TotalWeight} stones)");
+            }
         }
 
         // LabelTo( from, 1050044, String.Format( "{0}\t{1}", TotalItems.ToString(), TotalWeight.ToString() ) );

@@ -96,17 +96,25 @@ namespace Server.Engines.Help
                 }
                 else if (from != targeted && from.AccessLevel <= pm.AccessLevel && from.AccessLevel != AccessLevel.Owner)
                 {
-                    if(pm.Female)
+                    if (pm.Female)
+                    {
                         from.SendMessage($"You don't have the required access level to view her speech log.");
+                    }
                     else
+                    {
                         from.SendMessage($"You don't have the required access level to view his speech log.");
+                    }
                 }
                 else if (pm.SpeechLog == null)
                 {
-                    if(pm.Female)
+                    if (pm.Female)
+                    {
                         from.SendMessage($"She has no speech log.");
+                    }
                     else
+                    {
                         from.SendMessage($"He has no speech log.");
+                    }
                 }
                 else
                 {

@@ -259,10 +259,14 @@ namespace Server.Engines.ConPVP
                     }
                     else
                     {
-                        if(m_Participant.Find(from) == null)
+                        if (m_Participant.Find(from) == null)
+                        {
                             from.SendMessage($"You send a challenge to {mob.Name}.");
+                        }
                         else
+                        {
                             from.SendMessage($"You send an invitation to {mob.Name}.");
+                        }
 
                         mob.SendGump(new AcceptDuelGump(from, mob, m_Context, m_Participant, m_Index));
                     }
