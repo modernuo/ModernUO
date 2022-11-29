@@ -1,108 +1,74 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(2, false)]
+public partial class DecayedCorpse : Container
 {
-    public class DecayedCorpse : Container
+    private static TimeSpan _defaultDecayTime = TimeSpan.FromMinutes(7.0);
+
+    [TimerDrift]
+    [SerializableField(0, getter: "private", setter: "private")]
+    private Timer _decayTimer;
+
+    [DeserializeTimerField(0)]
+    private void DeserializeDecayTimer(TimeSpan delay) => BeginDecay(delay);
+
+    public DecayedCorpse(string name) : base(Utility.Random(0xECA, 9))
     {
-        private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
-        private DateTime m_DecayTime;
-        private Timer m_DecayTimer;
+        Movable = false;
+        Name = name;
 
-        public DecayedCorpse(string name) : base(Utility.Random(0xECA, 9))
+        BeginDecay(_defaultDecayTime);
+    }
+
+    // Do not display (x items, y stones)
+    public override bool DisplaysContent => false;
+
+    public void BeginDecay(TimeSpan delay)
+    {
+        _decayTimer?.Stop();
+        DecayTimer = new InternalTimer(this, delay);
+        DecayTimer.Start();
+    }
+
+    public override void OnAfterDelete()
+    {
+        _decayTimer?.Stop();
+        _decayTimer = null;
+    }
+
+    // Do not display (x items, y stones)
+    public override bool CheckContentDisplay(Mobile from) => false;
+
+    public override void AddNameProperty(IPropertyList list)
+    {
+        list.Add(1046414, Name); // the remains of ~1_NAME~
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        LabelTo(from, 1046414, Name); // the remains of ~1_NAME~
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        if (reader.ReadBool())
         {
-            Movable = false;
-            Name = name;
-
-            BeginDecay(m_DefaultDecayTime);
+            BeginDecay(reader.ReadDeltaTime() - Core.Now);
         }
+    }
 
-        public DecayedCorpse(Serial serial) : base(serial)
+    private class InternalTimer : Timer
+    {
+        private DecayedCorpse _corpse;
+
+        public InternalTimer(DecayedCorpse c, TimeSpan delay) : base(delay) => _corpse = c;
+
+        protected override void OnTick()
         {
-        }
-
-        // Do not display (x items, y stones)
-        public override bool DisplaysContent => false;
-
-        public void BeginDecay(TimeSpan delay)
-        {
-            m_DecayTimer?.Stop();
-
-            m_DecayTime = Core.Now + delay;
-
-            m_DecayTimer = new InternalTimer(this, delay);
-            m_DecayTimer.Start();
-        }
-
-        public override void OnAfterDelete()
-        {
-            m_DecayTimer?.Stop();
-
-            m_DecayTimer = null;
-        }
-
-        // Do not display (x items, y stones)
-        public override bool CheckContentDisplay(Mobile from) => false;
-
-        public override void AddNameProperty(IPropertyList list)
-        {
-            list.Add(1046414, Name); // the remains of ~1_NAME~
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            LabelTo(from, 1046414, Name); // the remains of ~1_NAME~
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(m_DecayTimer != null);
-
-            if (m_DecayTimer != null)
-            {
-                writer.WriteDeltaTime(m_DecayTime);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        BeginDecay(m_DefaultDecayTime);
-
-                        break;
-                    }
-                case 1:
-                    {
-                        if (reader.ReadBool())
-                        {
-                            BeginDecay(reader.ReadDeltaTime() - Core.Now);
-                        }
-
-                        break;
-                    }
-            }
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly DecayedCorpse m_Corpse;
-
-            public InternalTimer(DecayedCorpse c, TimeSpan delay) : base(delay) => m_Corpse = c;
-
-            protected override void OnTick()
-            {
-                m_Corpse.Delete();
-            }
+            _corpse.Delete();
         }
     }
 }
