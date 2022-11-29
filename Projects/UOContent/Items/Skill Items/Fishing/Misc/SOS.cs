@@ -87,10 +87,6 @@ public partial class SOS : Item
         UpdateHue();
     }
 
-    public SOS(Serial serial) : base(serial)
-    {
-    }
-
     public override int LabelNumber
     {
         get
