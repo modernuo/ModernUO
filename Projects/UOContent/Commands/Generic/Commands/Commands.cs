@@ -1195,7 +1195,7 @@ namespace Server.Commands.Generic
                             $"{from.AccessLevel} {CommandLogging.Format(from)} {(m_Ban ? "banning" : "kicking")} {(CommandLogging.Format(targ))}"
                         );
 
-                        targ.Say("I've been {0}!", m_Ban ? "banned" : "kicked");
+                        targ.Say(m_Ban ? "I've been banned." : "I've been kicked");
 
                         AddResponse($"They have been {(m_Ban ? "banned" : "kicked")}.");
 
