@@ -46,50 +46,53 @@ namespace Server.SkillHandlers
                     }
                     else
                     {
-                        from.SendLocalizedMessage(501001); // You cannot determain anything useful.
+                        from.SendLocalizedMessage(501001); // You cannot determine anything useful.
                     }
                 }
                 else if (target is Corpse c)
                 {
                     if (from.CheckTargetSkill(SkillName.Forensics, c, 0.0, 100.0))
                     {
-                        if (c.m_Forensicist != null)
+                        if (c.Forensicist != null)
                         {
-                            from.SendLocalizedMessage(
-                                1042750,
-                                c.m_Forensicist
-                            ); // The forensicist  ~1_NAME~ has already discovered that:
+                            // The forensicist ~1_NAME~ has already discovered that:
+                            from.SendLocalizedMessage(1042750, c.Forensicist);
                         }
                         else
                         {
-                            c.m_Forensicist = from.Name;
+                            c.Forensicist = from.Name;
                         }
 
                         if (((Body)c.Amount).IsHuman)
                         {
-                            from.SendLocalizedMessage(
-                                1042751,
-                                c.Killer == null ? "no one" : c.Killer.Name
-                            ); // This person was killed by ~1_KILLER_NAME~
+                            // This person was killed by ~1_KILLER_NAME~
+                            from.SendLocalizedMessage(1042751, c.Killer == null ? "no one" : c.Killer.Name);
                         }
 
                         if (c.Looters.Count > 0)
                         {
                             using var sb = new ValueStringBuilder(stackalloc char[128]);
-                            for (var i = 0; i < c.Looters.Count; i++)
+                            int i = 0;
+                            foreach (var looter in c.Looters)
                             {
-                                if (i > 0)
+                                if (i == c.Looters.Count - 1)
                                 {
-                                    sb.Append(i == c.Looters.Count - 1 ? ", and " : ", ");
+                                    sb.Append($", and {looter.Name}");
+                                }
+                                else if (i > 0)
+                                {
+                                    sb.Append($", {looter.Name}");
+                                }
+                                else
+                                {
+                                    sb.Append(looter.Name);
                                 }
 
-                                sb.Append(c.Looters[i].Name);
+                                i++;
                             }
 
-                            from.SendLocalizedMessage(
-                                1042752,
-                                sb.ToString()
-                            ); // This body has been disturbed by ~1_PLAYER_NAMES~
+                            // This body has been disturbed by ~1_PLAYER_NAMES~
+                            from.SendLocalizedMessage(1042752, sb.ToString());
                         }
                         else
                         {
@@ -98,7 +101,7 @@ namespace Server.SkillHandlers
                     }
                     else
                     {
-                        from.SendLocalizedMessage(501001); // You cannot determain anything useful.
+                        from.SendLocalizedMessage(501001); // You cannot determine anything useful.
                     }
                 }
                 else if (target is ILockpickable p)
