@@ -660,7 +660,6 @@ namespace Server.Spells
             m_TravelType = type;
 
             var v = (int)type;
-            var isValid = true;
 
             if (caster != null)
             {
@@ -669,16 +668,21 @@ namespace Server.Spells
 
                 if (destination?.CheckTravel(caster, loc, type, out message) == false || current?.CheckTravel(caster, loc, type, out message) == false)
                 {
-                    isValid = false;
+                    return false;
                 }
             }
 
-            for (var i = 0; isValid && i < m_Validators.Length; ++i)
+            for (var i = 0; i < m_Validators.Length; ++i)
             {
-                isValid = m_Rules[v, i] || !m_Validators[i](map, loc);
+                var isValid = m_Rules[v, i] || !m_Validators[i](map, loc);
+                if (!isValid)
+                {
+                    message = InvalidTravelMessage(type);
+                    return false;
+                }
             }
 
-            return !isValid;
+            return true;
         }
 
         public static bool IsWindLoc(Point3D loc)
