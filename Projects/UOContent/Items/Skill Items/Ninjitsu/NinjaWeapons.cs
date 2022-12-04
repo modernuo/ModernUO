@@ -217,10 +217,7 @@ namespace Server.Items
 
             double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
 
-            if (DivineFurySpell.UnderEffect(attacker))
-            {
-                attackValue += 10;
-            }
+            attackValue += DivineFurySpell.GetAttackBonus(attacker);
 
             if (AnimalForm.UnderTransformation(attacker, typeof(GreyWolf)) ||
                 AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune)))
@@ -242,10 +239,7 @@ namespace Server.Items
 
             double defenseValue = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
 
-            if (DivineFurySpell.UnderEffect(defender))
-            {
-                defenseValue -= 20;
-            }
+            defenseValue -= DivineFurySpell.GetDefendMalus(defender);
 
             if (HitLower.IsUnderDefenseEffect(defender))
             {
