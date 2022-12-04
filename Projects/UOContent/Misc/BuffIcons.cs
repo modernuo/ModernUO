@@ -70,23 +70,19 @@ namespace Server
         public BuffInfo(
             BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
             TextDefinition args
-        )
-            : this(iconID, titleCliloc, secondaryCliloc, length, m) =>
-            Args = args;
+        ) : this(iconID, titleCliloc, secondaryCliloc, length, m) => Args = args;
 
         public BuffInfo(
             BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args,
             bool retainThroughDeath
-        )
-            : this(iconID, titleCliloc, titleCliloc + 1, length, m, args, retainThroughDeath)
+        ) : this(iconID, titleCliloc, titleCliloc + 1, length, m, args, retainThroughDeath)
         {
         }
 
         public BuffInfo(
             BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
             TextDefinition args, bool retainThroughDeath
-        )
-            : this(iconID, titleCliloc, secondaryCliloc, length, m)
+        ) : this(iconID, titleCliloc, secondaryCliloc, length, m)
         {
             Args = args;
             RetainThroughDeath = retainThroughDeath;
