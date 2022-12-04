@@ -305,15 +305,9 @@ namespace Server.Spells
 
             var mod = target.GetStatMod(name);
 
-            if (mod?.Offset < 0)
+            if (mod == null || mod.Offset < bonus)
             {
-                target.AddStatMod(new StatMod(type, name, mod.Offset + bonus, duration));
-                return true;
-            }
-
-            if (mod == null || mod.Offset <= bonus)
-            {
-                target.AddStatMod(new StatMod(type, name, bonus, duration));
+                target.AddStatMod(new StatMod(type, name, bonus - (mod?.Offset ?? 0), duration));
                 return true;
             }
 
@@ -336,15 +330,9 @@ namespace Server.Spells
 
             var mod = target.GetStatMod(name);
 
-            if (mod?.Offset > 0)
+            if (mod == null || mod.Offset < offset)
             {
-                target.AddStatMod(new StatMod(type, name, mod.Offset + offset, duration));
-                return true;
-            }
-
-            if (mod == null || mod.Offset > offset)
-            {
-                target.AddStatMod(new StatMod(type, name, offset, duration));
+                target.AddStatMod(new StatMod(type, name, offset - (mod?.Offset ?? 0), duration));
                 return true;
             }
 
