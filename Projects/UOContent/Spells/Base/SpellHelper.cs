@@ -305,13 +305,18 @@ namespace Server.Spells
 
             var mod = target.GetStatMod(name);
 
-            if (mod == null || mod.Offset < bonus)
+            if (mod != null)
             {
-                target.AddStatMod(new StatMod(type, name, bonus - (mod?.Offset ?? 0), duration));
-                return true;
+                if (mod.Offset >= bonus)
+                {
+                    return false;
+                }
+
+                target.RemoveStatMod(mod);
             }
 
-            return false;
+            target.AddStatMod(new StatMod(type, name, bonus, duration));
+            return true;
         }
 
         public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, TimeSpan duration, bool skillCheck = true) =>
@@ -325,18 +330,23 @@ namespace Server.Spells
 
         public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration)
         {
-            var offset = -curse;
+            var malus = -curse;
             var name = $"[Magic] {type} Curse";
 
             var mod = target.GetStatMod(name);
 
-            if (mod == null || mod.Offset < offset)
+            if (mod != null)
             {
-                target.AddStatMod(new StatMod(type, name, offset - (mod?.Offset ?? 0), duration));
-                return true;
+                if (mod.Offset <= malus)
+                {
+                    return false;
+                }
+
+                target.RemoveStatMod(mod);
             }
 
-            return false;
+            target.AddStatMod(new StatMod(type, name, malus, duration));
+            return true;
         }
 
         public static TimeSpan GetDuration(Mobile caster, Mobile target) =>
