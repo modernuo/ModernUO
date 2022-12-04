@@ -116,6 +116,7 @@ public class DivineFurySpell : PaladinSpell
         RemoveTimer(m);
         m.Delta(MobileDelta.WeaponDamage);
         m.PlaySound(0xF8);
+        BuffInfo.RemoveBuff(m, BuffIcon.DivineFury);
     }
 
     public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
