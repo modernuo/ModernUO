@@ -22,7 +22,7 @@ namespace Server.Network;
 
 public static class OutgoingVendorSellPackets
 {
-    public static void SendVendorSellList(this NetState ns, Serial vendor, List<SellItemState> list)
+    public static void SendVendorSellList(this NetState ns, Serial vendor, HashSet<SellItemState> set)
     {
         if (ns.CannotSendPackets())
         {
@@ -30,9 +30,8 @@ public static class OutgoingVendorSellPackets
         }
 
         var maxLength = 9;
-        for (int i = 0; i < list.Count; i++)
+        foreach (var sis in set)
         {
-            var sis = list[i];
             var item = sis.Item;
             maxLength += 14 + Math.Max(item.Name?.Length ?? 0, sis.Name?.Length ?? 0);
         }
@@ -42,11 +41,10 @@ public static class OutgoingVendorSellPackets
         writer.Seek(2, SeekOrigin.Current);
 
         writer.Write(vendor);
-        writer.Write((ushort)list.Count);
+        writer.Write((ushort)set.Count);
 
-        for (var i = 0; i < list.Count; i++)
+        foreach (var sis in set)
         {
-            var sis = list[i];
             var item = sis.Item;
             writer.Write(item.Serial);
             writer.Write((ushort)item.ItemID);

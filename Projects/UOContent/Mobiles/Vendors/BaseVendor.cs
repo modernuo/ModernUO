@@ -1042,7 +1042,7 @@ namespace Server.Mobiles
 
             var info = GetSellInfo();
 
-            var list = new List<SellItemState>();
+            var set = new HashSet<SellItemState>(new SellItemStateComparer());
 
             foreach (var ssi in info)
             {
@@ -1055,16 +1055,16 @@ namespace Server.Mobiles
 
                     if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
                     {
-                        list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
+                        set.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
                     }
                 }
             }
 
-            if (list.Count > 0)
+            if (set.Count > 0)
             {
                 SendPacksTo(from);
 
-                from.NetState.SendVendorSellList(Serial, list);
+                from.NetState.SendVendorSellList(Serial, set);
             }
             else
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 using Xunit;
 
@@ -18,14 +19,14 @@ namespace Server.Tests.Network
             var item2 = new Item(World.NewItem) { Name = "Second Item" };
             var item3 = new Item(World.NewItem);
 
-            var sellStates = new List<SellItemState>
+            var sellStates = new HashSet<SellItemState>
             {
                 new(item1, 100, "Item 1"),
                 new(item2, 100000, "Item 2"),
                 new(item3, 1, "Item 3")
             };
 
-            var expected = new VendorSellList(vendor, sellStates).Compile();
+            var expected = new VendorSellList(vendor, sellStates.ToList()).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendVendorSellList(vendor.Serial, sellStates);
