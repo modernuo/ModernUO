@@ -51,6 +51,14 @@ public class SellItemResponse
     public int Amount { get; }
 }
 
+public class SellItemStateComparer : IEqualityComparer<SellItemState>
+{
+    public bool Equals(SellItemState l, SellItemState r) =>
+        l == null && r == null || l != null && r != null && l.Item == r.Item;
+
+    public int GetHashCode(SellItemState obj) => obj.Item.GetHashCode();
+}
+
 public class SellItemState
 {
     public SellItemState(Item item, int price, string name)
