@@ -6935,8 +6935,9 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         {
             Region.OnRegionChange(this, m_Region, newRegion);
 
+            var oldRegion = m_Region;
             m_Region = newRegion;
-            OnRegionChange(m_Region, newRegion);
+            OnRegionChange(oldRegion, newRegion);
         }
     }
 
