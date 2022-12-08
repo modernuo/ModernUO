@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "type": "Server.Items.PotionKeg",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Items.PotionEffect",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Held",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
