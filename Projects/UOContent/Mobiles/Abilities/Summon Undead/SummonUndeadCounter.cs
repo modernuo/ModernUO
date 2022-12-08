@@ -20,7 +20,7 @@ public abstract class SummonUndeadCounter : MonsterAbility
     public abstract BaseCreature CreateSummon(BaseCreature source);
 
     public override bool CanTrigger(BaseCreature source, MonsterAbilityTrigger trigger) =>
-        source.Followers < AmountToSummon && CanTrigger(source, trigger);
+        source.Followers < AmountToSummon && base.CanTrigger(source, trigger);
 
     public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
