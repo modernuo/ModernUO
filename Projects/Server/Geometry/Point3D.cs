@@ -248,7 +248,7 @@ public struct Point3D
         var offset = firstComma + 1;
 
         var secondComma = s[offset..].IndexOfOrdinal(',');
-        if (secondComma == -1 || offset == secondComma)
+        if (secondComma == -1)
         {
             result = default;
             return false;
