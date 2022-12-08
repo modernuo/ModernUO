@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.ProspectorsTool",
+  "properties": [
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
