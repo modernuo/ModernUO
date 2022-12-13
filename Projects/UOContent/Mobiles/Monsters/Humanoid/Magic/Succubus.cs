@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Succubus : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Succubus : BaseCreature
     {
         [Constructible]
         public Succubus() : base(AIType.AI_Mage)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             VirtualArmor = 80;
         }
 
-        public Succubus(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a succubus corpse";
         public override string DefaultName => "a succubus";
 
@@ -56,17 +55,5 @@ namespace Server.Mobiles
 
         private static MonsterAbility[] _abilities = { MonsterAbilities.DrainLifeAreaAttack };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Balron : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Balron : BaseCreature
     {
         [Constructible]
         public Balron() : base(AIType.AI_Mage)
@@ -45,10 +47,6 @@ namespace Server.Mobiles
             PackItem(new Longsword());
         }
 
-        public Balron(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a balron corpse";
 
         public override bool CanRummageCorpses => true;
@@ -61,18 +59,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich, 2);
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.MedScrolls, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

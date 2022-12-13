@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class LichLord : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class LichLord : BaseCreature
     {
         [Constructible]
         public LichLord() : base(AIType.AI_Mage)
@@ -44,11 +46,6 @@ namespace Server.Mobiles
             PackItem(new GnarledStaff());
             PackNecroReg(12, 40);
         }
-
-        public LichLord(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a lich's corpse";
         public override string DefaultName => "a lich lord";
 
@@ -66,18 +63,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.MedScrolls, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

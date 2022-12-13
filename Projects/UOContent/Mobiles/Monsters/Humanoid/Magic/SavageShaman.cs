@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Items;
@@ -5,7 +6,8 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-    public class SavageShaman : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SavageShaman : BaseCreature
     {
         [Constructible]
         public SavageShaman() : base(AIType.AI_Mage)
@@ -59,10 +61,6 @@ namespace Server.Mobiles
             AddItem(new BoneArms());
             AddItem(new BoneLegs());
             AddItem(new DeerMask());
-        }
-
-        public SavageShaman(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a savage corpse";
@@ -309,18 +307,6 @@ namespace Server.Mobiles
             }
 
             eable.Free();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
