@@ -1,10 +1,12 @@
 using System;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Misc;
 
 namespace Server.Mobiles
 {
-    public class OrcBomber : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class OrcBomber : BaseCreature
     {
         private DateTime m_NextBomb;
         private int m_Thrown;
@@ -52,10 +54,6 @@ namespace Server.Mobiles
             {
                 PackItem(new BolaBall());
             }
-        }
-
-        public OrcBomber(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "an orcish corpse";
@@ -123,18 +121,6 @@ namespace Server.Mobiles
             MovingParticles(m, 0x1C19, 1, 0, false, true, 0, 0, 9502, 6014, 0x11D, EffectLayer.Waist, 0);
 
             new InternalTimer(m, this).Start();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
 
         private class InternalTimer : Timer

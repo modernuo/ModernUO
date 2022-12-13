@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Cyclops : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Cyclops : BaseCreature
     {
         [Constructible]
         public Cyclops() : base(AIType.AI_Melee)
@@ -35,10 +38,6 @@ namespace Server.Mobiles
             VirtualArmor = 48;
         }
 
-        public Cyclops(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a cyclopean corpse";
         public override string DefaultName => "a cyclopean warrior";
 
@@ -49,18 +48,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

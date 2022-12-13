@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class GreaterMongbat : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GreaterMongbat : BaseCreature
     {
         [Constructible]
         public GreaterMongbat() : base(AIType.AI_Melee)
@@ -36,10 +39,6 @@ namespace Server.Mobiles
             MinTameSkill = 71.1;
         }
 
-        public GreaterMongbat(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a mongbat corpse";
         public override string DefaultName => "a greater mongbat";
 
@@ -50,18 +49,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Poor);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

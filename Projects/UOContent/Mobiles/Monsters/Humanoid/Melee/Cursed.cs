@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Cursed : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Cursed : BaseCreature
     {
         [Constructible]
         public Cursed() : base(AIType.AI_Melee)
@@ -46,10 +48,6 @@ namespace Server.Mobiles
             Karma = -2000;
         }
 
-        public Cursed(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an inhuman corpse";
         public override bool ClickTitle => false;
         public override bool ShowFameTitle => false;
@@ -62,20 +60,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Meager);
             // AddLoot( LootPack.Miscellaneous );
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
