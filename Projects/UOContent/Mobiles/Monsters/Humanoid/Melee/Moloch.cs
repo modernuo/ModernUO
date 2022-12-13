@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Moloch : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Moloch : BaseCreature
     {
         [Constructible]
         public Moloch() : base(AIType.AI_Melee)
@@ -34,10 +36,6 @@ namespace Server.Mobiles
             VirtualArmor = 32;
         }
 
-        public Moloch(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a moloch corpse";
 
         public override string DefaultName => "a moloch";
@@ -49,18 +47,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

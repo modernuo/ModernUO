@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class OgreLord : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class OgreLord : BaseCreature
     {
         [Constructible]
         public OgreLord() : base(AIType.AI_Melee)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             PackItem(new Club());
         }
 
-        public OgreLord(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ogre lords corpse";
         public override Faction FactionAllegiance => Minax.Instance;
         public override Ethic EthicAllegiance => Ethic.Evil;
@@ -58,18 +56,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
