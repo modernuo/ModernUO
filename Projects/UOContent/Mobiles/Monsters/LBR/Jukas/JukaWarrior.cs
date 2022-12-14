@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class JukaWarrior : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class JukaWarrior : BaseCreature
     {
         [Constructible]
         public JukaWarrior() : base(AIType.AI_Melee)
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             {
                 PackItem(new ArcaneGem());
             }
-        }
-
-        public JukaWarrior(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a jukan corpse";
@@ -101,18 +99,6 @@ namespace Server.Mobiles
                         break;
                     }
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
