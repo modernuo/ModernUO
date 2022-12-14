@@ -266,12 +266,14 @@ namespace Server.Items
                 }
 
                 Potion.Internalize();
-                if (Potion._timer.RemainingCount <= 1)
+
+                var delay = TimeSpan.FromSeconds(0.1 * from.GetDistanceToSqrt(loc));
+
+                // If the potion is about to explode, stop the timer so it doesn't explode on you, while it is mid-air
+                if (Potion._timer.RemainingCount <= 1 && Potion._timer.Next <= Core.Now + delay)
                 {
                     Potion._timer.Stop();
                 }
-
-                var delay = TimeSpan.FromSeconds(0.1 * from.GetDistanceToSqrt(loc));
 
                 Timer.StartTimer(delay, () => Potion.Reposition_OnTick(from, loc, map));
             }
