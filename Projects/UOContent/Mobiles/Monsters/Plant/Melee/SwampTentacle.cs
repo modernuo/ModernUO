@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class SwampTentacle : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SwampTentacle : BaseCreature
     {
         [Constructible]
         public SwampTentacle() : base(AIType.AI_Melee)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             PackReg(3);
         }
 
-        public SwampTentacle(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a swamp tentacle corpse";
         public override string DefaultName => "a swamp tentacle";
 
@@ -50,18 +49,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
