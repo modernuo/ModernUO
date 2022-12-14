@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-    public class TerathanWarrior : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class TerathanWarrior : BaseCreature
     {
         [Constructible]
         public TerathanWarrior() : base(AIType.AI_Melee)
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             }
         }
 
-        public TerathanWarrior(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a terathan warrior corpse";
         public override string DefaultName => "a terathan warrior";
 
@@ -58,18 +56,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
