@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Gibberling : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Gibberling : BaseCreature
     {
         [Constructible]
         public Gibberling() : base(AIType.AI_Melee)
@@ -38,10 +40,6 @@ namespace Server.Mobiles
             VirtualArmor = 27;
         }
 
-        public Gibberling(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a gibberling corpse";
 
         public override string DefaultName => "a gibberling";
@@ -53,18 +51,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

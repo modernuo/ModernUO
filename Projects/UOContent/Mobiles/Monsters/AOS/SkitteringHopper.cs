@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class SkitteringHopper : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SkitteringHopper : BaseCreature
     {
         [Constructible]
         public SkitteringHopper() : base(AIType.AI_Melee, FightMode.Aggressor)
@@ -36,10 +39,6 @@ namespace Server.Mobiles
             VirtualArmor = 12;
         }
 
-        public SkitteringHopper(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a skittering hopper corpse";
         public override string DefaultName => "a skittering hopper";
 
@@ -48,18 +47,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class AbysmalHorror : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class AbysmalHorror : BaseCreature
     {
         [Constructible]
         public AbysmalHorror() : base(AIType.AI_Mage)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             VirtualArmor = 54;
         }
 
-        public AbysmalHorror(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an abysmal horror corpse";
 
         public override bool IgnoreYoungProtection => Core.ML;
@@ -74,17 +72,9 @@ namespace Server.Mobiles
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
             if (BaseSoundID == 357)
             {
                 BaseSoundID = 0x451;

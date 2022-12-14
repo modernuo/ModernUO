@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Impaler : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Impaler : BaseCreature
     {
         [Constructible]
         public Impaler() : base(AIType.AI_Melee)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             VirtualArmor = 49;
         }
 
-        public Impaler(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an impaler corpse";
 
         public override bool IgnoreYoungProtection => Core.ML;
@@ -75,17 +73,9 @@ namespace Server.Mobiles
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
             if (BaseSoundID == 1200)
             {
                 BaseSoundID = 0x2A7;
