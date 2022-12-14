@@ -1,10 +1,15 @@
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class RedSolenQueen : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RedSolenQueen : BaseCreature
     {
+        [SerializableField(0, setter: "private")]
+        private bool _burstSac;
+
         [Constructible]
         public RedSolenQueen() : base(AIType.AI_Melee)
         {
@@ -47,12 +52,7 @@ namespace Server.Mobiles
             }
         }
 
-        public RedSolenQueen(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a solen queen corpse";
-        public bool BurstSac { get; private set; }
 
         public override string DefaultName => "a red solen queen";
 
@@ -109,28 +109,6 @@ namespace Server.Mobiles
             SpillAcid(4);
 
             return base.OnBeforeDeath();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-            writer.Write(BurstSac);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        BurstSac = reader.ReadBool();
-                        break;
-                    }
-            }
         }
     }
 }
