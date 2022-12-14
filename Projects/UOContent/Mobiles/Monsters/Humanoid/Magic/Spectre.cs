@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Spectre : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Spectre : BaseCreature
     {
         [Constructible]
         public Spectre() : base(AIType.AI_Mage)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             PackReg(10);
         }
 
-        public Spectre(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a ghostly corpse";
         public override string DefaultName => "a spectre";
 
@@ -54,18 +53,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
