@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 using Server.Items;
@@ -5,9 +6,11 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class PlagueBeast : BaseCreature, IDevourer
+    [SerializationGenerator(0, false)]
+    public partial class PlagueBeast : BaseCreature, IDevourer
     {
-        private int m_DevourGoal;
+        [SerializableField(0)]
+        private int _devourGoal;
 
         [Constructible]
         public PlagueBeast() : base(AIType.AI_Melee)
@@ -51,26 +54,24 @@ namespace Server.Mobiles
             }
 
             TotalDevoured = 0;
-            m_DevourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
-        }
-
-        public PlagueBeast(Serial serial) : base(serial)
-        {
+            _devourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
         }
 
         public override string CorpseName => "a plague beast corpse";
 
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(1)]
         public int TotalDevoured { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int DevourGoal
         {
-            get => IsParagon ? m_DevourGoal + 25 : m_DevourGoal;
-            set => m_DevourGoal = value;
+            get => IsParagon ? _devourGoal + 25 : _devourGoal;
+            set => _devourGoal = value;
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(2)]
         public bool HasMetalChest { get; private set; }
 
         public override string DefaultName => "a plague beast";
@@ -163,33 +164,6 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x1C1;
 
         public override int GetDeathSound() => 0x1C2;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-
-            writer.Write(HasMetalChest);
-            writer.Write(TotalDevoured);
-            writer.Write(m_DevourGoal);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        HasMetalChest = reader.ReadBool();
-                        TotalDevoured = reader.ReadInt();
-                        m_DevourGoal = reader.ReadInt();
-                        break;
-                    }
-            }
-        }
 
         public override void OnThink()
         {
