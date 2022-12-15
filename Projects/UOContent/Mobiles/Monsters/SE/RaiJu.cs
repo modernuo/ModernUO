@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class RaiJu : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RaiJu : BaseCreature
     {
         private static readonly HashSet<Mobile> m_Table = new();
 
@@ -40,10 +42,6 @@ namespace Server.Mobiles
 
             Fame = 8000;
             Karma = -8000;
-        }
-
-        public RaiJu(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a rai-ju corpse";
@@ -84,20 +82,6 @@ namespace Server.Mobiles
             var timer = new ExpireTimer(defender, TimeSpan.FromSeconds(4.0));
             timer.Start();
             m_Table.Add(defender);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         private class ExpireTimer : Timer

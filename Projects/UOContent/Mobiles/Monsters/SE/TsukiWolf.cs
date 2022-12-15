@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 using Server.Items;
 
-namespace Server.Mobiles;
-
-public class TsukiWolf : BaseCreature
+namespace Server.Mobiles
+{
+    [SerializationGenerator(0, false)]
+    public partial class TsukiWolf : BaseCreature
 {
     [Constructible]
     public TsukiWolf() : base(AIType.AI_Melee)
@@ -57,11 +59,6 @@ public class TsukiWolf : BaseCreature
         );
     }
 
-    public TsukiWolf(Serial serial)
-        : base(serial)
-    {
-    }
-
     public override string CorpseName => "a tsuki wolf corpse";
     public override string DefaultName => "a tsuki wolf";
     public override int Meat => 4;
@@ -75,20 +72,6 @@ public class TsukiWolf : BaseCreature
     {
         AddLoot(LootPack.Average);
         AddLoot(LootPack.Rich);
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 
     public override int GetAngerSound() => 0x52D;

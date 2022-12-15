@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-    public class Oni : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Oni : BaseCreature
     {
         [Constructible]
         public Oni() : base(AIType.AI_Mage)
@@ -54,10 +56,6 @@ namespace Server.Mobiles
          *  85: 51/17/17 -> 28 + 8 + 5 = 41
          */
 
-        public Oni(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an oni corpse";
         public override string DefaultName => "an oni";
 
@@ -77,20 +75,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 3);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
