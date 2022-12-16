@@ -17,7 +17,7 @@ namespace Server.Mobiles
         private int _deadline;
 
         [SerializableProperty(2)]
-        private bool IsNotNullTimer { get => m_Timer != null; };
+        private bool IsNotNullTimer { get => m_Timer != null; }
 
         [Constructible]
         public PlagueBeastLord() : base(AIType.AI_Melee)

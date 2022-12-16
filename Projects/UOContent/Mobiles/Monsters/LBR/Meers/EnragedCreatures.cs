@@ -72,18 +72,6 @@ namespace Server.Mobiles
 
         public override string CorpseName => "an eagle corpse";
         public override string DefaultName => "an eagle";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 
     [SerializationGenerator(0, false)]

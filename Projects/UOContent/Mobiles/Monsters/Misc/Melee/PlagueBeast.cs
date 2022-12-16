@@ -9,8 +9,21 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class PlagueBeast : BaseCreature, IDevourer
     {
-        [SerializableField(0)]
-        private int _devourGoal;
+        [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(1)]
+        public int TotalDevoured { get; set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(2)]
+        public bool HasMetalChest { get; private set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(0)]
+        public int DevourGoal
+        {
+            get => IsParagon ? DevourGoal + 25 : DevourGoal;
+            set => DevourGoal = value;
+        }
 
         [Constructible]
         public PlagueBeast() : base(AIType.AI_Melee)
@@ -54,28 +67,11 @@ namespace Server.Mobiles
             }
 
             TotalDevoured = 0;
-            _devourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
+            DevourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
         }
 
         public override string CorpseName => "a plague beast corpse";
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        [SerializableProperty(1)]
-        public int TotalDevoured { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int DevourGoal
-        {
-            get => IsParagon ? _devourGoal + 25 : _devourGoal;
-            set => _devourGoal = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        [SerializableProperty(2)]
-        public bool HasMetalChest { get; private set; }
-
         public override string DefaultName => "a plague beast";
-
         public override bool AutoDispel => true;
         public override Poison PoisonImmune => Poison.Lethal;
 
