@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-    public class MLDryad : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class MLDryad : BaseCreature
     {
         private DateTime m_NextPeace;
 
@@ -52,10 +54,6 @@ namespace Server.Mobiles
             PackArcanceScroll(0.05);
         }
 
-        public MLDryad(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a dryad's corpse";
         public override bool InitialInnocent => true;
 
@@ -76,20 +74,6 @@ namespace Server.Mobiles
 
             AreaPeace();
             AreaUndress();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public void AreaPeace()

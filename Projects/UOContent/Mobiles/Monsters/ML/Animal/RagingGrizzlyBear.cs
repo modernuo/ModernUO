@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class RagingGrizzlyBear : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RagingGrizzlyBear : BaseCreature
     {
         [Constructible]
         public RagingGrizzlyBear() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -37,29 +40,11 @@ namespace Server.Mobiles
             Tamable = false;
         }
 
-        public RagingGrizzlyBear(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a grizzly bear corpse";
         public override string DefaultName => "a raging grizzly bear";
 
         public override int Meat => 4;
         public override int Hides => 32;
         public override PackInstinct PackInstinct => PackInstinct.Bear;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

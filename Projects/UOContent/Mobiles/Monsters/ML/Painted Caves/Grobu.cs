@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Grobu : BlackBear
+    [SerializationGenerator(0, false)]
+    public partial class Grobu : BlackBear
     {
         [Constructible]
         public Grobu()
@@ -40,11 +42,6 @@ namespace Server.Mobiles
             Karma = 1000;
         }
 
-        public Grobu(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Grobu corpse";
         public override string DefaultName => "Grobu";
 
@@ -60,20 +57,6 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             c.DropItem(new GrobusFur());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

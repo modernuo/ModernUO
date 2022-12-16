@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class CrystalLatticeSeeker : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class CrystalLatticeSeeker : BaseCreature
     {
         [Constructible]
         public CrystalLatticeSeeker()
@@ -37,11 +40,6 @@ namespace Server.Mobiles
             Karma = -17000;
 
             PackArcaneScroll(0, 2);
-        }
-
-        public CrystalLatticeSeeker(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a Crystal Lattice Seeker corpse";
@@ -140,19 +138,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x2F9;
 
         public override int GetIdleSound() => 0x2FA;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

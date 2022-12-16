@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class MasterJonath : BoneMagi
+    [SerializationGenerator(0, false)]
+    public partial class MasterJonath : BoneMagi
     {
         [Constructible]
         public MasterJonath()
@@ -50,11 +53,6 @@ namespace Server.Mobiles
             PackReg(8);
         }
 
-        public MasterJonath(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Master Jonath corpse";
         public override string DefaultName => "Master Jonath";
 
@@ -80,20 +78,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 3);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

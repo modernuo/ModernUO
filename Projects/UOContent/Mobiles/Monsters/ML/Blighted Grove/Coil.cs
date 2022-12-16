@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Coil : SilverSerpent
+    [SerializationGenerator(0, false)]
+    public partial class Coil : SilverSerpent
     {
         [Constructible]
         public Coil()
@@ -38,11 +40,6 @@ namespace Server.Mobiles
 
             PackGem(2);
             PackItem(new Bone());
-        }
-
-        public Coil(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a Coil corpse";
@@ -83,20 +80,6 @@ namespace Server.Mobiles
               }
             }
             */
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

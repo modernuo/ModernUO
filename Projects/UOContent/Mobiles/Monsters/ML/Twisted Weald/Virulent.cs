@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Virulent : DreadSpider
+    [SerializationGenerator(0, false)]
+    public partial class Virulent : DreadSpider
     {
         [Constructible]
         public Virulent()
@@ -40,11 +42,6 @@ namespace Server.Mobiles
             Karma = -21000;
         }
 
-        public Virulent(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Virulent corpse";
         public override string DefaultName => "Virulent";
 
@@ -76,19 +73,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

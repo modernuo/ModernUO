@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class RedDeath : SkeletalMount
+    [SerializationGenerator(0, false)]
+    public partial class RedDeath : SkeletalMount
     {
         [Constructible]
         public RedDeath() : base()
@@ -51,10 +53,6 @@ namespace Server.Mobiles
             }
         }
 
-        public RedDeath(Serial serial) : base(serial)
-        {
-        }
-
         public override string DefaultName => "Red Death";
 
         public override string CorpseName => "a Red Death corpse";
@@ -77,20 +75,6 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             c.DropItem(new ResolvesBridle());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

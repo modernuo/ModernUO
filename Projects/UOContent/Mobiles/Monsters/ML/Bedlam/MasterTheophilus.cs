@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class MasterTheophilus : EvilMageLord
+    [SerializationGenerator(0, false)]
+    public partial class MasterTheophilus : EvilMageLord
     {
         [Constructible]
         public MasterTheophilus()
@@ -60,11 +62,6 @@ namespace Server.Mobiles
             PackReg(8);
         }
 
-        public MasterTheophilus(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Master Theophilus corpse";
         public override string DefaultName => "Master Theophilus";
 
@@ -77,19 +74,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
