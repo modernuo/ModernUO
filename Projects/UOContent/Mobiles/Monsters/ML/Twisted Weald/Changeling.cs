@@ -99,6 +99,7 @@ namespace Server.Mobiles
 
                     _morphedInto = value;
                     Delta(MobileDelta.Noto);
+                    this.MarkDirty();
                 }
             }
         }

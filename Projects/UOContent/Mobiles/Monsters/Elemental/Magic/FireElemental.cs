@@ -61,14 +61,5 @@ namespace Server.Mobiles
             AddLoot(LootPack.Meager);
             AddLoot(LootPack.Gems);
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 274)
-            {
-                BaseSoundID = 838;
-            }
-        }
     }
 }

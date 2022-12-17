@@ -291,14 +291,14 @@ namespace Server.Mobiles
             Movable = false;
             Hue = 0x95;
 
-            Corrosive = corrosive;
+            _corrosive = corrosive;
             Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = 0;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        [SerializableProperty(0)]
-        public bool Corrosive { get; set; }
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0)]
+        public bool _corrosive;
 
         public override void OnAfterDelete()
         {
@@ -349,7 +349,7 @@ namespace Server.Mobiles
 
         public void Damage(Mobile m)
         {
-            if (Corrosive)
+            if (_corrosive)
             {
                 var items = m.Items;
                 var damaged = false;

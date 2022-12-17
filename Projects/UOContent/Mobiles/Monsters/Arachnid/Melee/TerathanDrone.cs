@@ -54,14 +54,5 @@ namespace Server.Mobiles
             AddLoot(LootPack.Meager);
             // TODO: weapon?
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 589)
-            {
-                BaseSoundID = 594;
-            }
-        }
     }
 }

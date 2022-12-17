@@ -100,7 +100,7 @@ namespace Server.Mobiles
 
             public override string DefaultName => "a mysterious rabbit hole";
 
-            [AfterDeserialization]
+            [AfterDeserialization(false)]
             private void AfterDeserialization()
             {
                 Delete();

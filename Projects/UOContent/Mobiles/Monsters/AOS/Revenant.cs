@@ -173,7 +173,7 @@ namespace Server.Mobiles
             return false;
         }
 
-        [AfterDeserialization]
+        [AfterDeserialization(false)]
         private void AfterDeserialization()
         {
             Delete();

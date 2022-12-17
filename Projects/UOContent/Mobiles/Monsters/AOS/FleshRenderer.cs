@@ -81,14 +81,5 @@ namespace Server.Mobiles
         public override int GetIdleSound() => 0x34C;
 
         public override int GetDeathSound() => 0x354;
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 660)
-            {
-                BaseSoundID = -1;
-            }
-        }
     }
 }

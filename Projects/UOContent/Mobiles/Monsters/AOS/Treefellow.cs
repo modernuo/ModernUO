@@ -57,14 +57,5 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Average);
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 442)
-            {
-                BaseSoundID = -1;
-            }
-        }
     }
 }

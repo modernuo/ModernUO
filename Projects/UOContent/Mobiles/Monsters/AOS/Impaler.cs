@@ -72,14 +72,5 @@ namespace Server.Mobiles
                 DemonKnight.DistributeArtifact(this);
             }
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 1200)
-            {
-                BaseSoundID = 0x2A7;
-            }
-        }
     }
 }

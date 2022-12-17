@@ -74,16 +74,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
-
-        [AfterDeserialization]
-        public void AfterDeserialization()
-        {
-            SetDamage(24, 33);
-                AnimalTaming.ScaleStats(this, 0.50);
-                AnimalTaming.ScaleSkills(this, 0.80, 0.90); // 90% * 80% = 72% of original skills trainable to 90%
-                Skills.Magery.Base =
-                    Skills.Magery
-                        .Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
-        }
     }
 }

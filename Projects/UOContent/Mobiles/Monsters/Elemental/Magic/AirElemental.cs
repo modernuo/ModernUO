@@ -59,14 +59,5 @@ namespace Server.Mobiles
             AddLoot(LootPack.LowScrolls);
             AddLoot(LootPack.MedScrolls);
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 263)
-            {
-                BaseSoundID = 655;
-            }
-        }
     }
 }

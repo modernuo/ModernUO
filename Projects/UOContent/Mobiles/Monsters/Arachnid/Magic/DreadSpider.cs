@@ -55,14 +55,5 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.FilthyRich);
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 263)
-            {
-                BaseSoundID = 1170;
-            }
-        }
     }
 }
