@@ -1,0 +1,35 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.PlagueBeastLord",
+  "properties": [
+    {
+      "name": "Count",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Deadline",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IsNotNullTimer",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "OpenedBy",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
