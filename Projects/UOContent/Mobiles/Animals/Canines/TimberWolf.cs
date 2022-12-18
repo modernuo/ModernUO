@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Timberwolf")]
-    public class TimberWolf : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class TimberWolf : BaseCreature
     {
         [Constructible]
         public TimberWolf() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -40,10 +43,6 @@ namespace Server.Mobiles
             MinTameSkill = 23.1;
         }
 
-        public TimberWolf(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a timber wolf corpse";
         public override string DefaultName => "a timber wolf";
 
@@ -51,19 +50,5 @@ namespace Server.Mobiles
         public override int Hides => 5;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
