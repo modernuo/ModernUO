@@ -12,6 +12,8 @@ public class Point3DTests
         var successful = Point3D.TryParse(text, null, out var p);
         Assert.True(successful);
         Assert.Equal(new Point3D(x, y, z), p);
+
+        Assert.Equal(new Point3D(x, y, z), Point3D.Parse(text, null));
     }
 
     [Fact]
