@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Gaman : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Gaman : BaseCreature
     {
         [Constructible]
         public Gaman() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -38,10 +40,6 @@ namespace Server.Mobiles
             MinTameSkill = 68.7;
         }
 
-        public Gaman(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a gaman corpse";
         public override string DefaultName => "a gaman";
 
@@ -63,18 +61,6 @@ namespace Server.Mobiles
         {
             base.OnDeath(c);
             c.DropItem(new GamanHorns(Utility.RandomBool() ? 1 : 2));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

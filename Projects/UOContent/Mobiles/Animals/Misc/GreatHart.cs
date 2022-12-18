@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Greathart")]
-    public class GreatHart : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GreatHart : BaseCreature
     {
         [Constructible]
         public GreatHart() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -36,10 +39,6 @@ namespace Server.Mobiles
             MinTameSkill = 59.1;
         }
 
-        public GreatHart(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a deer corpse";
         public override string DefaultName => "a great hart";
 
@@ -52,19 +51,6 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x83;
 
         public override int GetDeathSound() => 0x84;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
+
