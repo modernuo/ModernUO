@@ -282,6 +282,10 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class StainedOoze : Item
     {
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0)]
+        public bool _corrosive;
+
         private int m_Ticks;
         private TimerExecutionToken _timerToken;
 
@@ -295,10 +299,6 @@ namespace Server.Mobiles
             Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = 0;
         }
-
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
-        [SerializableField(0)]
-        public bool _corrosive;
 
         public override void OnAfterDelete()
         {
@@ -378,7 +378,7 @@ namespace Server.Mobiles
         }
 
         [AfterDeserialization]
-        public void AfterDeserialize()
+        private void AfterDeserialize()
         {
             Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = ItemID == 0x122A ? 0 : 30;

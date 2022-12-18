@@ -258,7 +258,7 @@ namespace Server.Mobiles
         }
 
         [AfterDeserialization]
-        public void AfterDeserialize()
+        private void AfterDeserialize()
         {
             if (_morphedInto != null)
             {
