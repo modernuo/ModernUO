@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Lavaserpant")]
-    public class LavaSerpent : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class LavaSerpent : BaseCreature
     {
         [Constructible]
         public LavaSerpent() : base(AIType.AI_Melee)
@@ -42,10 +44,6 @@ namespace Server.Mobiles
             // TODO: body parts, armour
         }
 
-        public LavaSerpent(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a lava serpent corpse";
         public override string DefaultName => "a lava serpent";
 
@@ -60,25 +58,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == -1)
-            {
-                BaseSoundID = 219;
-            }
         }
     }
 }
