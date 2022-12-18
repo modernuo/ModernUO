@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.OphidianAvenger")]
-    public class OphidianKnight : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class OphidianKnight : BaseCreature
     {
         private static readonly string[] m_Names =
         {
@@ -48,10 +50,6 @@ namespace Server.Mobiles
             PackItem(new LesserPoisonPotion());
         }
 
-        public OphidianKnight(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ophidian corpse";
 
         public override int Meat => 2;
@@ -65,18 +63,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

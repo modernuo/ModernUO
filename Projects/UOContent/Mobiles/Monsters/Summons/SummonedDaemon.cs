@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class SummonedDaemon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SummonedDaemon : BaseCreature
     {
         [Constructible]
         public SummonedDaemon() : base(AIType.AI_Mage)
@@ -35,27 +38,11 @@ namespace Server.Mobiles
             ControlSlots = Core.SE ? 4 : 5;
         }
 
-        public SummonedDaemon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a daemon corpse";
         public override double DispelDifficulty => 125.0;
         public override double DispelFocus => 45.0;
 
         public override Poison PoisonImmune => Poison.Regular; // TODO: Immune to poison?
         public override bool CanFly => true;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class TerathanDrone : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class TerathanDrone : BaseCreature
     {
         [Constructible]
         public TerathanDrone() : base(AIType.AI_Melee)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             PackItem(new SpidersSilk(2));
         }
 
-        public TerathanDrone(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a terathan drone corpse";
         public override string DefaultName => "a terathan drone";
 
@@ -55,23 +53,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Meager);
             // TODO: weapon?
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 589)
-            {
-                BaseSoundID = 594;
-            }
         }
     }
 }

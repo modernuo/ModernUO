@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Spite : Changeling
+    [SerializationGenerator(0, false)]
+    public partial class Spite : Changeling
     {
         [Constructible]
         public Spite()
@@ -38,11 +41,6 @@ namespace Server.Mobiles
             Karma = -21000;
         }
 
-        public Spite(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Spite corpse";
         public override string DefaultName => "Spite";
         public override int DefaultHue => 0x21;
@@ -52,20 +50,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

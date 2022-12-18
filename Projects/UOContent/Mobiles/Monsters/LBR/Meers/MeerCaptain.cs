@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Spells;
 
 namespace Server.Mobiles
 {
-    public class MeerCaptain : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class MeerCaptain : BaseCreature
     {
         private DateTime m_NextAbilityTime;
 
@@ -84,10 +86,6 @@ namespace Server.Mobiles
             m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
         }
 
-        public MeerCaptain(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a meer corpse";
         public override string DefaultName => "a meer captain";
 
@@ -146,18 +144,6 @@ namespace Server.Mobiles
             }
 
             base.OnThink();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

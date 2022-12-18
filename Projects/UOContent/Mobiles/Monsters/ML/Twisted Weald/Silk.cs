@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Silk : GiantBlackWidow
+    [SerializationGenerator(0, false)]
+    public partial class Silk : GiantBlackWidow
     {
         [Constructible]
         public Silk()
@@ -38,11 +40,6 @@ namespace Server.Mobiles
             Karma = -18900;
         }
 
-        public Silk(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Silk corpse";
         public override string DefaultName => "Silk";
 
@@ -54,19 +51,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 using Server.Ethics;
@@ -7,7 +8,8 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-    public class Wisp : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Wisp : BaseCreature
     {
         [Constructible]
         public Wisp() : base(AIType.AI_Mage, FightMode.Aggressor)
@@ -51,10 +53,6 @@ namespace Server.Mobiles
             AddItem(new LightSource());
         }
 
-        public Wisp(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a wisp corpse";
         public override InhumanSpeech SpeechType => InhumanSpeech.Wisp;
 
@@ -71,18 +69,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

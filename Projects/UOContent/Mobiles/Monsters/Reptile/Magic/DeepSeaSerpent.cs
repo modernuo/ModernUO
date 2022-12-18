@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class DeepSeaSerpent : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class DeepSeaSerpent : BaseCreature
     {
         [Constructible]
         public DeepSeaSerpent() : base(AIType.AI_Mage)
@@ -51,10 +53,6 @@ namespace Server.Mobiles
             // PackItem( new SpecialFishingNet() );
         }
 
-        public DeepSeaSerpent(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a deep sea serpents corpse";
         public override string DefaultName => "a deep sea serpent";
         public override int Meat => 1;
@@ -67,18 +65,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class DarknightCreeper : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class DarknightCreeper : BaseCreature
     {
         [Constructible]
         public DarknightCreeper() : base(AIType.AI_Mage)
@@ -45,10 +47,6 @@ namespace Server.Mobiles
             VirtualArmor = 34;
         }
 
-        public DarknightCreeper(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a darknight creeper corpse";
         public override bool IgnoreYoungProtection => Core.ML;
 
@@ -73,23 +71,6 @@ namespace Server.Mobiles
             if (!Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance(this))
             {
                 DemonKnight.DistributeArtifact(this);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 471)
-            {
-                BaseSoundID = 0xE0;
             }
         }
     }

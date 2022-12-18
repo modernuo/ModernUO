@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class WailingBanshee : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class WailingBanshee : BaseCreature
     {
         [Constructible]
         public WailingBanshee() : base(AIType.AI_Melee)
@@ -38,10 +40,6 @@ namespace Server.Mobiles
             VirtualArmor = 19;
         }
 
-        public WailingBanshee(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a wailing banshee corpse";
 
         public override string DefaultName => "a wailing banshee";
@@ -53,18 +51,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

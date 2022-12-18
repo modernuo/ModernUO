@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class FleshRenderer : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class FleshRenderer : BaseCreature
     {
         [Constructible]
         public FleshRenderer() : base(AIType.AI_Melee)
@@ -36,10 +38,6 @@ namespace Server.Mobiles
             Karma = -23000;
 
             VirtualArmor = 24;
-        }
-
-        public FleshRenderer(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a fleshrenderer corpse";
@@ -83,22 +81,5 @@ namespace Server.Mobiles
         public override int GetIdleSound() => 0x34C;
 
         public override int GetDeathSound() => 0x354;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 660)
-            {
-                BaseSoundID = -1;
-            }
-        }
     }
 }

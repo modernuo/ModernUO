@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class DemonKnight : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class DemonKnight : BaseCreature
     {
         private static bool m_InHere;
 
@@ -51,10 +53,6 @@ namespace Server.Mobiles
             Karma = -28000;
 
             VirtualArmor = 64;
-        }
-
-        public DemonKnight(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a demon knight corpse";
@@ -283,18 +281,6 @@ namespace Server.Mobiles
 
                 bone.MoveToWorld(new Point3D(x, y, z), map);
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

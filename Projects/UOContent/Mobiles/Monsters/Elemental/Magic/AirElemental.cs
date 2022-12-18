@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class AirElemental : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class AirElemental : BaseCreature
     {
         [Constructible]
         public AirElemental() : base(AIType.AI_Mage)
@@ -40,10 +43,6 @@ namespace Server.Mobiles
             ControlSlots = 2;
         }
 
-        public AirElemental(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an air elemental corpse";
         public override double DispelDifficulty => 117.5;
         public override double DispelFocus => 45.0;
@@ -59,23 +58,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.Meager);
             AddLoot(LootPack.LowScrolls);
             AddLoot(LootPack.MedScrolls);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 263)
-            {
-                BaseSoundID = 655;
-            }
         }
     }
 }

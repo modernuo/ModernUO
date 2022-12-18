@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Minotaur : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Minotaur : BaseCreature
     {
         [Constructible]
         public Minotaur() : base(AIType.AI_Melee) // NEED TO CHECK
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             VirtualArmor = 28; // Don't know what it should be
         }
 
-        public Minotaur(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a minotaur corpse";
 
         public override string DefaultName => "a minotaur";
@@ -65,17 +63,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x59a;
 
         public override int GetDeathSound() => 0x59c;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

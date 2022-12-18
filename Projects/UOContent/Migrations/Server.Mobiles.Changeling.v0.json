@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.Changeling",
+  "properties": [
+    {
+      "name": "MorphedInto",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

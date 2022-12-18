@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Putrefier : Balron
+    [SerializationGenerator(0, false)]
+    public partial class Putrefier : Balron
     {
         [Constructible]
         public Putrefier()
@@ -44,11 +47,6 @@ namespace Server.Mobiles
             PackScroll(4, 7);
         }
 
-        public Putrefier(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Putrefier corpse";
         public override string DefaultName => "Putrefier";
 
@@ -72,20 +70,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 3);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

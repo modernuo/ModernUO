@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class LadySabrix : GiantBlackWidow
+    [SerializationGenerator(0, false)]
+    public partial class LadySabrix : GiantBlackWidow
     {
         [Constructible]
         public LadySabrix()
@@ -36,11 +38,6 @@ namespace Server.Mobiles
 
             Fame = 18900;
             Karma = -18900;
-        }
-
-        public LadySabrix(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a Lady Sabrix corpse";
@@ -77,19 +74,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.ArmorIgnore;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

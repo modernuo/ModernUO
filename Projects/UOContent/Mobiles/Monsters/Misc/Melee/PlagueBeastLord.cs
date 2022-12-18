@@ -1,12 +1,23 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class PlagueBeastLord : BaseCreature, ICarvable, IScissorable
+    [SerializationGenerator(0, false)]
+    public partial class PlagueBeastLord : BaseCreature, ICarvable, IScissorable
     {
         private DecayTimer m_Timer;
+
+        [SerializableField(0, getter: "private", setter: "private")]
+        private int _count;
+
+        [SerializableField(1, getter: "private", setter: "private")]
+        private int _deadline;
+
+        [SerializableProperty(2)]
+        private bool IsNotNullTimer { get => m_Timer != null; }
 
         [Constructible]
         public PlagueBeastLord() : base(AIType.AI_Melee)
@@ -42,15 +53,10 @@ namespace Server.Mobiles
             VirtualArmor = 50;
         }
 
-        public PlagueBeastLord(Serial serial) : base(serial)
-        {
-        }
-
-        public override string CorpseName => "a plague beast lord corpse";
-        public override Poison PoisonImmune => Poison.Lethal;
-
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(3)]
         public Mobile OpenedBy { get; set; }
+
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsBleeding
@@ -73,6 +79,10 @@ namespace Server.Mobiles
                 return false;
             }
         }
+
+        public override string CorpseName => "a plague beast lord corpse";
+
+        public override Poison PoisonImmune => Poison.Lethal;
 
         public override string DefaultName => "a plague beast lord";
 
@@ -283,40 +293,12 @@ namespace Server.Mobiles
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(OpenedBy);
-
-            if (m_Timer != null)
+            if (IsNotNullTimer)
             {
-                writer.Write(true);
-                writer.Write(m_Timer.Count);
-                writer.Write(m_Timer.Deadline);
-            }
-            else
-            {
-                writer.Write(false);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            OpenedBy = reader.ReadEntity<Mobile>();
-
-            if (reader.ReadBool())
-            {
-                var count = reader.ReadInt();
-                var deadline = reader.ReadInt();
-
-                m_Timer = new DecayTimer(this, count, deadline);
+                m_Timer = new DecayTimer(this, Count, Deadline);
                 m_Timer.Start();
             }
 
@@ -326,27 +308,25 @@ namespace Server.Mobiles
             }
         }
 
-        private class DecayTimer : Timer
+        public class DecayTimer : Timer
         {
-            private readonly PlagueBeastLord m_Lord;
+            private readonly PlagueBeastLord _lord;
 
             public DecayTimer(PlagueBeastLord lord, int count = 0, int deadline = 120) : base(
                 TimeSpan.Zero,
                 TimeSpan.FromSeconds(1)
             )
             {
-                m_Lord = lord;
+                _lord = lord;
                 Count = count;
                 Deadline = deadline;
             }
-
             public int Count { get; private set; }
-
             public int Deadline { get; private set; }
 
             protected override void OnTick()
             {
-                if (m_Lord?.Deleted != false)
+                if (_lord?.Deleted != false)
                 {
                     Stop();
                     return;
@@ -354,39 +334,39 @@ namespace Server.Mobiles
 
                 if (Count + 15 == Deadline)
                 {
-                    if (m_Lord.OpenedBy != null)
+                    if (_lord.OpenedBy != null)
                     {
-                        m_Lord.PublicOverheadMessage(
+                        _lord.PublicOverheadMessage(
                             MessageType.Regular,
                             0x3B2,
                             1071921
                         ); // * The plague beast begins to bubble and dissolve! *
                     }
 
-                    m_Lord.PlaySound(0x103);
+                    _lord.PlaySound(0x103);
                 }
                 else if (Count + 10 == Deadline)
                 {
-                    m_Lord.PlaySound(0x21);
+                    _lord.PlaySound(0x21);
                 }
                 else if (Count + 5 == Deadline)
                 {
-                    m_Lord.PlaySound(0x1C2);
+                    _lord.PlaySound(0x1C2);
                 }
                 else if (Count == Deadline)
                 {
-                    m_Lord.Unfreeze();
+                    _lord.Unfreeze();
 
-                    if (m_Lord.OpenedBy != null)
+                    if (_lord.OpenedBy != null)
                     {
-                        m_Lord.Kill();
+                        _lord.Kill();
                     }
 
                     Stop();
                 }
                 else if (Count % 15 == 0)
                 {
-                    m_Lord.PlaySound(0x1BF);
+                    _lord.PlaySound(0x1BF);
                 }
 
                 Count++;

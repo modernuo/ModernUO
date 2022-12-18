@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class DreadSpider : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class DreadSpider : BaseCreature
     {
         [Constructible]
         public DreadSpider() : base(AIType.AI_Mage)
@@ -42,10 +44,6 @@ namespace Server.Mobiles
             PackItem(new SpidersSilk(8));
         }
 
-        public DreadSpider(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a dread spider corpse";
         public override string DefaultName => "a dread spider";
 
@@ -56,23 +54,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 263)
-            {
-                BaseSoundID = 1170;
-            }
         }
     }
 }

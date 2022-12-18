@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.StainedOoze",
+  "properties": [
+    {
+      "name": "Corrosive",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Engines.Plants;
@@ -5,7 +6,8 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class LadyOfTheSnow : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class LadyOfTheSnow : BaseCreature
     {
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
@@ -49,11 +51,6 @@ namespace Server.Mobiles
             {
                 PackItem(Seed.RandomBonsaiSeed());
             }
-        }
-
-        public LadyOfTheSnow(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a lady of the snow corpse";
@@ -103,20 +100,6 @@ namespace Server.Mobiles
             timer = new ExpireTimer(defender, this);
             timer.Start();
             m_Table[defender] = timer;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         private class ExpireTimer : Timer

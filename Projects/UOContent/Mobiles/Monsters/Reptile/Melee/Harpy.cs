@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Harpy : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Harpy : BaseCreature
     {
         [Constructible]
         public Harpy() : base(AIType.AI_Melee)
@@ -34,10 +37,6 @@ namespace Server.Mobiles
             VirtualArmor = 28;
         }
 
-        public Harpy(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a harpy corpse";
         public override string DefaultName => "a harpy";
 
@@ -61,17 +60,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 919;
 
         public override int GetIdleSound() => 918;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

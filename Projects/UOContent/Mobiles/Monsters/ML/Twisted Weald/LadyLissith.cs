@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class LadyLissith : GiantBlackWidow
+    [SerializationGenerator(0, false)]
+    public partial class LadyLissith : GiantBlackWidow
     {
         [Constructible]
         public LadyLissith()
@@ -38,11 +40,6 @@ namespace Server.Mobiles
             Karma = -18900;
         }
 
-        public LadyLissith(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Lady Lissith corpse";
         public override string DefaultName => "Lady Lissith";
 
@@ -71,19 +68,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

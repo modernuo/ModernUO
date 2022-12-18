@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Rend : Reptalon
+    [SerializationGenerator(0, false)]
+    public partial class Rend : Reptalon
     {
         [Constructible]
         public Rend()
@@ -38,11 +40,6 @@ namespace Server.Mobiles
             Karma = -21000;
         }
 
-        public Rend(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Rend corpse";
         public override string DefaultName => "Rend";
 
@@ -61,20 +58,6 @@ namespace Server.Mobiles
             }
 
             return WeaponAbility.BleedAttack;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

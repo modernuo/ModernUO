@@ -1,8 +1,10 @@
-﻿using System;
+using ModernUO.Serialization;
+using System;
 
 namespace Server.Mobiles
 {
-    public class AnimatedWeapon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class AnimatedWeapon : BaseCreature
     {
         [Constructible]
         public AnimatedWeapon(Mobile caster, int level) : base(AIType.AI_Melee)
@@ -71,11 +73,6 @@ namespace Server.Mobiles
             ControlSlots = 4;
         }
 
-        public AnimatedWeapon(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "an animated weapon corpse";
         public override bool DeleteCorpseOnDeath => true;
         public override bool IsHouseSummonable => true;
@@ -96,20 +93,5 @@ namespace Server.Mobiles
         public override int GetAttackSound() => 0x3B8;
 
         public override int GetHurtSound() => 0x23A;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            /*int version = */
-            reader.ReadInt();
-        }
     }
 }

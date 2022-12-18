@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-    public class PlagueSpawn : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class PlagueSpawn : BaseCreature
     {
         [Constructible]
         public PlagueSpawn(Mobile owner = null) : base(AIType.AI_Melee)
@@ -67,10 +69,6 @@ namespace Server.Mobiles
             VirtualArmor = 20;
         }
 
-        public PlagueSpawn(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a plague spawn corpse";
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -117,18 +115,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Poor);
             AddLoot(LootPack.Gems);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

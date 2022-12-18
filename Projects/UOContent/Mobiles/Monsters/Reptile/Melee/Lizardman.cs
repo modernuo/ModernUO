@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Misc;
 
 namespace Server.Mobiles
 {
-    public class Lizardman : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Lizardman : BaseCreature
     {
         [Constructible]
         public Lizardman() : base(AIType.AI_Melee)
@@ -36,10 +38,6 @@ namespace Server.Mobiles
             VirtualArmor = 28;
         }
 
-        public Lizardman(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a lizardman corpse";
         public override InhumanSpeech SpeechType => InhumanSpeech.Lizardman;
 
@@ -52,18 +50,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Meager);
             // TODO: weapon
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class ShadowWyrm : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class ShadowWyrm : BaseCreature
     {
         [Constructible]
         public ShadowWyrm() : base(AIType.AI_Mage)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             VirtualArmor = 70;
         }
 
-        public ShadowWyrm(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a shadow wyrm corpse";
         public override string DefaultName => "a shadow wyrm";
         public override bool ReacquireOnMovement => true;
@@ -69,17 +68,5 @@ namespace Server.Mobiles
         public override int GetIdleSound() => 0x2D5;
 
         public override int GetHurtSound() => 0x2D1;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

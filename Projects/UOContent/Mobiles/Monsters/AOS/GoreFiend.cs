@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class GoreFiend : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GoreFiend : BaseCreature
     {
         [Constructible]
         public GoreFiend() : base(AIType.AI_Melee)
@@ -35,10 +38,6 @@ namespace Server.Mobiles
             VirtualArmor = 24;
         }
 
-        public GoreFiend(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a gore fiend corpse";
         public override string DefaultName => "a gore fiend";
 
@@ -50,17 +49,5 @@ namespace Server.Mobiles
         }
 
         public override int GetDeathSound() => 1218;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

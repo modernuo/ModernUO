@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class StoneHarpy : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class StoneHarpy : BaseCreature
     {
         [Constructible]
         public StoneHarpy() : base(AIType.AI_Melee)
@@ -36,10 +39,6 @@ namespace Server.Mobiles
             VirtualArmor = 50;
         }
 
-        public StoneHarpy(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a stone harpy corpse";
         public override string DefaultName => "a stone harpy";
 
@@ -62,17 +61,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 919;
 
         public override int GetIdleSound() => 918;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

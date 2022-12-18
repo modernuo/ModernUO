@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Engines.CannedEvil;
@@ -6,7 +7,8 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Ilhenir : BaseChampion
+    [SerializationGenerator(0, false)]
+    public partial class Ilhenir : BaseChampion
     {
         private static readonly HashSet<Mobile> m_Table = new();
 
@@ -56,11 +58,6 @@ namespace Server.Mobiles
                 PackResources(8);
                 PackTalismans(5);
             }
-        }
-
-        public Ilhenir(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a corpse of Ilhenir";
@@ -202,20 +199,6 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x584;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public virtual void CacophonicAttack(Mobile to)
         {
             if (to.Alive && to.Player && !UnderCacophonicAttack(to))
@@ -296,8 +279,13 @@ namespace Server.Mobiles
         }
     }
 
-    public class StainedOoze : Item
+    [SerializationGenerator(0, false)]
+    public partial class StainedOoze : Item
     {
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0)]
+        public bool _corrosive;
+
         private int m_Ticks;
         private TimerExecutionToken _timerToken;
 
@@ -307,18 +295,10 @@ namespace Server.Mobiles
             Movable = false;
             Hue = 0x95;
 
-            Corrosive = corrosive;
+            _corrosive = corrosive;
             Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = 0;
         }
-
-        public StainedOoze(Serial serial)
-            : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Corrosive { get; set; }
 
         public override void OnAfterDelete()
         {
@@ -369,7 +349,7 @@ namespace Server.Mobiles
 
         public void Damage(Mobile m)
         {
-            if (Corrosive)
+            if (_corrosive)
             {
                 var items = m.Items;
                 var damaged = false;
@@ -397,23 +377,9 @@ namespace Server.Mobiles
             AOS.Damage(m, 40, 0, 0, 0, 100, 0);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialize()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Corrosive);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            Corrosive = reader.ReadBool();
-
             Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
             m_Ticks = ItemID == 0x122A ? 0 : 30;
         }

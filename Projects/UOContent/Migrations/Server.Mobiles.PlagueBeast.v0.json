@@ -1,0 +1,30 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.PlagueBeast",
+  "properties": [
+    {
+      "name": "HasMetalChest",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TotalDevoured",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DevourGoal",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

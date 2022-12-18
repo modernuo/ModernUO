@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Ravager : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Ravager : BaseCreature
     {
         [Constructible]
         public Ravager() : base(AIType.AI_Melee)
@@ -36,10 +38,6 @@ namespace Server.Mobiles
             VirtualArmor = 54;
         }
 
-        public Ravager(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a ravager corpse";
 
         public override string DefaultName => "a ravager";
@@ -50,18 +48,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
