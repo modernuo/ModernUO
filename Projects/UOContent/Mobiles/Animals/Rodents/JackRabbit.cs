@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Jackrabbit")]
-    public class JackRabbit : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class JackRabbit : BaseCreature
     {
         [Constructible]
         public JackRabbit() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -36,10 +39,6 @@ namespace Server.Mobiles
             MinTameSkill = -18.9;
         }
 
-        public JackRabbit(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a jack rabbit corpse";
         public override string DefaultName => "a jack rabbit";
 
@@ -52,19 +51,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0xCA;
 
         public override int GetDeathSound() => 0xCB;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
