@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Unicorn : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Unicorn : BaseMount
     {
         public override string DefaultName => "a unicorn";
 
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 2;
             MinTameSkill = 95.1;
-        }
-
-        public Unicorn(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a unicorn corpse";
@@ -126,20 +124,6 @@ namespace Server.Mobiles
             {
                 c.DropItem(new UnicornRibs());
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
