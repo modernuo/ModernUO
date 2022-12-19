@@ -11,11 +11,11 @@ namespace Server.Items
     {
         private const int ExplosionRange = 2; // How long is the blast radius?
 
-        private static readonly bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
-        private static readonly bool InstantExplosion = false; // Should explosion potions explode on impact?
-        private static readonly bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
+        private const bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
+        private const bool InstantExplosion = false; // Should explosion potions explode on impact?
+        private const bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
 
-        private TimerExecutionToken _timerToken;
+        private Timer _timer;
 
         public BaseExplosionPotion(PotionEffect effect) : base(0xF0D, effect)
         {
@@ -89,79 +89,20 @@ namespace Server.Items
 
             from.Target = new ThrowTarget(this);
 
-            if (!_timerToken.Running)
+            if (_timer?.Running != true)
             {
                 from.SendLocalizedMessage(500236); // You should throw it now!
 
-                var timer = 3;
-
                 if (Core.ML)
                 {
-                    // 3.6 seconds explosion delay
-                    Timer.StartTimer(
-                        TimeSpan.FromSeconds(1.0),
-                        TimeSpan.FromSeconds(1.25),
-                        5, // TODO: Should this be 4?
-                        () => Detonate_OnTick(from, timer--),
-                        out _timerToken
-                    );
+                    _timer = new DetonateTimer(this, from, TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.25), 5);
                 }
                 else
                 {
-                    // 2.6 seconds explosion delay
-                    Timer.StartTimer(
-                        TimeSpan.FromSeconds(0.75),
-                        TimeSpan.FromSeconds(1.0),
-                        4,
-                        () => Detonate_OnTick(from, timer--),
-                        out _timerToken
-                    );
-                }
-            }
-        }
-
-        private void Detonate_OnTick(Mobile from, int timer)
-        {
-            if (Deleted)
-            {
-                return;
-            }
-
-            var parent = FindParent(from);
-
-            if (timer == 0)
-            {
-                Point3D loc;
-                Map map;
-
-                if (parent is Item item)
-                {
-                    loc = item.GetWorldLocation();
-                    map = item.Map;
-                }
-                else if (parent is Mobile m)
-                {
-                    loc = m.Location;
-                    map = m.Map;
-                }
-                else
-                {
-                    return;
+                    _timer = new DetonateTimer(this, from, TimeSpan.FromSeconds(0.75), TimeSpan.FromSeconds(1.0), 4);
                 }
 
-                Explode(from, true, loc, map);
-                _timerToken.Cancel();
-            }
-            else
-            {
-                if (parent is Item item)
-                {
-                    item.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
-                }
-                else if (parent is Mobile mobile)
-                {
-                    mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
-                }
+                _timer.Start();
             }
         }
 
@@ -172,7 +113,7 @@ namespace Server.Items
                 return;
             }
 
-            if (InstantExplosion)
+            if (InstantExplosion || _timer?.Running != true)
             {
                 Explode(from, true, loc, map);
             }
@@ -275,7 +216,7 @@ namespace Server.Items
 
         private class ThrowTarget : Target
         {
-            public ThrowTarget(BaseExplosionPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
+            public ThrowTarget(BaseExplosionPotion potion) : base(Core.ML ? 12 : 10, true, TargetFlags.None) => Potion = potion;
 
             public BaseExplosionPotion Potion { get; }
 
@@ -325,7 +266,72 @@ namespace Server.Items
                 }
 
                 Potion.Internalize();
-                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, loc, map));
+
+                var delay = TimeSpan.FromSeconds(0.1 * from.GetDistanceToSqrt(loc));
+
+                // If the potion is about to explode, stop the timer so it doesn't explode on you, while it is mid-air
+                if (Potion._timer.RemainingCount <= 1 && Potion._timer.Next <= Core.Now + delay)
+                {
+                    Potion._timer.Stop();
+                }
+
+                Timer.StartTimer(delay, () => Potion.Reposition_OnTick(from, loc, map));
+            }
+        }
+
+        private class DetonateTimer : Timer
+        {
+            private BaseExplosionPotion _potion;
+            private Mobile _from;
+
+            public DetonateTimer(BaseExplosionPotion potion, Mobile from, TimeSpan delay, TimeSpan interval, int count) : base(delay, interval, count)
+            {
+                _from = from;
+                _potion = potion;
+            }
+
+            protected override void OnTick()
+            {
+                if (_potion.Deleted)
+                {
+                    return;
+                }
+
+                var parent = _potion.FindParent(_from);
+
+                if (RemainingCount == 0)
+                {
+                    Point3D loc;
+                    Map map;
+
+                    if (parent is Item item)
+                    {
+                        loc = item.GetWorldLocation();
+                        map = item.Map;
+                    }
+                    else if (parent is Mobile m)
+                    {
+                        loc = m.Location;
+                        map = m.Map;
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                    _potion.Explode(_from, true, loc, map);
+                }
+                else if (RemainingCount <= 3)
+                {
+                    if (parent is Item item)
+                    {
+                        item.PublicOverheadMessage(MessageType.Regular, 0x22, false, RemainingCount.ToString());
+                    }
+                    else if (parent is Mobile mobile)
+                    {
+                        mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, RemainingCount.ToString());
+                    }
+                }
             }
         }
     }
