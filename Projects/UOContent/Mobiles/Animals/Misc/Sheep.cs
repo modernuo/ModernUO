@@ -2,6 +2,7 @@ using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Network;
+using System.Runtime.CompilerServices;
 
 namespace Server.Mobiles
 {
@@ -51,9 +52,13 @@ namespace Server.Mobiles
             set
             {
                 _nextWoolTime = value;
-                Body = Core.Now >= _nextWoolTime ? 0xCF : 0xDF;
+                SheepBody();
+                this.MarkDirty();
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SheepBody() => Body = Core.Now >= _nextWoolTime ? 0xCF : 0xDF;
 
         public override string DefaultName => "a sheep";
 
@@ -81,7 +86,13 @@ namespace Server.Mobiles
         public override void OnThink()
         {
             base.OnThink();
-            Body = Core.Now >= _nextWoolTime ? 0xCF : 0xDF;
+            SheepBody();
+        }
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
+        {
+            SheepBody();
         }
     }
 }

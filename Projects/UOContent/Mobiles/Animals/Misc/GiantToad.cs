@@ -52,12 +52,5 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Poor);
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialize()
-        {
-            AI = AIType.AI_Melee;
-            FightMode = FightMode.Closest;
-        }
     }
 }
