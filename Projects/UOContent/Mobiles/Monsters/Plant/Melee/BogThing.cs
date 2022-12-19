@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class BogThing : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class BogThing : BaseCreature
     {
         [Constructible]
         public BogThing() : base(AIType.AI_Melee)
@@ -51,10 +53,6 @@ namespace Server.Mobiles
             PackItem(new Seed());
         }
 
-        public BogThing(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a plant corpse";
         public override string DefaultName => "a bog thing";
 
@@ -64,18 +62,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
 
         public void SpawnBogling(Mobile m)

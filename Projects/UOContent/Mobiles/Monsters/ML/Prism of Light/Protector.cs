@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Protector : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Protector : BaseCreature
     {
         [Constructible]
         public Protector()
@@ -53,11 +55,6 @@ namespace Server.Mobiles
             AddItem(shroud);
         }
 
-        public Protector(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a human corpse";
         public override string DefaultName => "a Protector";
 
@@ -91,19 +88,5 @@ namespace Server.Mobiles
             c.DropItem( new ProtectorsEssence() );
         }
         */
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

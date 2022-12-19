@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Dragon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Dragon : BaseCreature
     {
         [Constructible]
         public Dragon() : base(AIType.AI_Mage)
@@ -40,10 +43,6 @@ namespace Server.Mobiles
             MinTameSkill = 93.9;
         }
 
-        public Dragon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a dragon corpse";
         public override string DefaultName => "a dragon";
 
@@ -66,18 +65,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.FilthyRich, 2);
             AddLoot(LootPack.Gems, 8);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

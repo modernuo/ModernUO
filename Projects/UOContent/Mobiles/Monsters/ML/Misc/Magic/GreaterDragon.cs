@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Items;
 using Server.SkillHandlers;
 
 namespace Server.Mobiles
 {
-    public class GreaterDragon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GreaterDragon : BaseCreature
     {
         [Constructible]
         public GreaterDragon() : base(AIType.AI_Mage)
@@ -47,10 +49,6 @@ namespace Server.Mobiles
             MinTameSkill = 104.7;
         }
 
-        public GreaterDragon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a dragon corpse";
         public override bool StatLossAfterTame => true;
         public override string DefaultName => "a greater dragon";
@@ -76,28 +74,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            SetDamage(24, 33);
-
-            if (version == 0)
-            {
-                AnimalTaming.ScaleStats(this, 0.50);
-                AnimalTaming.ScaleSkills(this, 0.80, 0.90); // 90% * 80% = 72% of original skills trainable to 90%
-                Skills.Magery.Base =
-                    Skills.Magery
-                        .Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
-            }
-        }
     }
 }

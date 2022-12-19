@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Reptalon : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Reptalon : BaseMount
     {
         public override string DefaultName => "a reptalon";
 
@@ -39,12 +41,7 @@ namespace Server.Mobiles
             MinTameSkill = 101.1;
         }
 
-        public Reptalon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a reptalon corpse";
-
         public override int TreasureMapLevel => 5;
         public override int Meat => 5;
         public override int Hides => 10;
@@ -62,19 +59,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

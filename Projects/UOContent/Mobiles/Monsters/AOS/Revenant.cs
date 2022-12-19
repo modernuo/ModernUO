@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Revenant : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Revenant : BaseCreature
     {
         private readonly DateTime m_ExpireTime;
         private readonly Mobile m_Target;
@@ -53,10 +55,6 @@ namespace Server.Mobiles
 
             AddItem(new DeathShroud { Hue = 0x455, Movable = false });
             AddItem(new Halberd { Hue = 1, Movable = false });
-        }
-
-        public Revenant(Serial serial) : base(serial)
-        {
         }
 
         public override Mobile ConstantFocus => m_Target;
@@ -175,19 +173,9 @@ namespace Server.Mobiles
             return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization(false)]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             Delete();
         }
     }

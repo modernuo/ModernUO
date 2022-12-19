@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class EliteNinja : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class EliteNinja : BaseCreature
     {
         [Constructible]
         public EliteNinja() : base(AIType.AI_Melee)
@@ -80,10 +82,6 @@ namespace Server.Mobiles
             Utility.AssignRandomHair(this);
         }
 
-        public EliteNinja(Serial serial) : base(serial)
-        {
-        }
-
         public override bool ClickTitle => false;
         public override string DefaultName => "an elite ninja";
 
@@ -102,20 +100,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.Gems, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

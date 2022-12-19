@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 using Server.Items;
@@ -5,9 +6,24 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class PlagueBeast : BaseCreature, IDevourer
+    [SerializationGenerator(0, false)]
+    public partial class PlagueBeast : BaseCreature, IDevourer
     {
-        private int m_DevourGoal;
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0, setter: "private")]
+        private bool _hasMetalChest;
+
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(1)]
+        private int _totalDevoured;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(2)]
+        public int DevourGoal
+        {
+            get => IsParagon ? _devourGoal + 25 : _devourGoal;
+            set => _devourGoal = value;
+        }
 
         [Constructible]
         public PlagueBeast() : base(AIType.AI_Melee)
@@ -50,31 +66,12 @@ namespace Server.Mobiles
                 PackItem(Seed.RandomPeculiarSeed(4));
             }
 
-            TotalDevoured = 0;
-            m_DevourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
-        }
-
-        public PlagueBeast(Serial serial) : base(serial)
-        {
+            _totalDevoured = 0;
+            _devourGoal = Utility.RandomMinMax(15, 25); // How many corpses must be devoured before a metal chest is awarded
         }
 
         public override string CorpseName => "a plague beast corpse";
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int TotalDevoured { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int DevourGoal
-        {
-            get => IsParagon ? m_DevourGoal + 25 : m_DevourGoal;
-            set => m_DevourGoal = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool HasMetalChest { get; private set; }
-
         public override string DefaultName => "a plague beast";
-
         public override bool AutoDispel => true;
         public override Poison PoisonImmune => Poison.Lethal;
 
@@ -91,7 +88,7 @@ namespace Server.Mobiles
             }
 
             IncreaseHits((int)Math.Ceiling(corpse.Owner.HitsMax * 0.75));
-            TotalDevoured++;
+            _totalDevoured++;
 
             PublicOverheadMessage(
                 MessageType.Emote,
@@ -99,10 +96,10 @@ namespace Server.Mobiles
                 1053033
             ); // * The plague beast absorbs the fleshy remains of the corpse *
 
-            if (!HasMetalChest && TotalDevoured >= DevourGoal)
+            if (!_hasMetalChest && _totalDevoured >= _devourGoal)
             {
                 PackItem(new MetalChest());
-                HasMetalChest = true;
+                _hasMetalChest = true;
             }
 
             return true;
@@ -163,33 +160,6 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x1C1;
 
         public override int GetDeathSound() => 0x1C2;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-
-            writer.Write(HasMetalChest);
-            writer.Write(TotalDevoured);
-            writer.Write(m_DevourGoal);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        HasMetalChest = reader.ReadBool();
-                        TotalDevoured = reader.ReadInt();
-                        m_DevourGoal = reader.ReadInt();
-                        break;
-                    }
-            }
-        }
 
         public override void OnThink()
         {

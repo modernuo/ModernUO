@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Quests;
 
 namespace Server.Mobiles
 {
-    public class Ferret : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Ferret : BaseCreature
     {
         private static readonly string[] m_Vocabulary =
         {
@@ -44,10 +46,6 @@ namespace Server.Mobiles
             MinTameSkill = -21.3;
 
             m_CanTalk = true;
-        }
-
-        public Ferret(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a ferret corpse";
@@ -96,19 +94,9 @@ namespace Server.Mobiles
             m_CanTalk = true;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        public void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             m_CanTalk = true;
         }
     }

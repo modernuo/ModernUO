@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class CuSidhe : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class CuSidhe : BaseMount
     {
         [Constructible]
         public CuSidhe() : base(277, 0x3E91, AIType.AI_Animal, FightMode.Aggressor)
@@ -66,10 +68,6 @@ namespace Server.Mobiles
             // TODO 0-2 spellweaving scroll
         }
 
-        public CuSidhe(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a cu sidhe corpse";
         public override string DefaultName => "a cu sidhe";
 
@@ -117,24 +115,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x576;
 
         public override int GetDeathSound() => 0x579;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version < 1 && Name == "a Cu Sidhe")
-            {
-                Name = null;
-            }
-        }
     }
 }

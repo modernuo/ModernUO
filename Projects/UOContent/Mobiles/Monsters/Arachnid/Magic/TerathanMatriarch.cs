@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class TerathanMatriarch : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class TerathanMatriarch : BaseCreature
     {
         [Constructible]
         public TerathanMatriarch() : base(AIType.AI_Mage)
@@ -39,10 +41,6 @@ namespace Server.Mobiles
             PackNecroReg(Utility.RandomMinMax(4, 10));
         }
 
-        public TerathanMatriarch(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a terathan matriarch corpse";
         public override string DefaultName => "a terathan matriarch";
 
@@ -56,18 +54,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.Average, 2);
             AddLoot(LootPack.MedScrolls, 2);
             AddLoot(LootPack.Potions);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

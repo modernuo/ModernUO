@@ -10,7 +10,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
 <br />
-[![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build?logo=github)](https://github.com/modernuo/ModernUO/actions)
+[![GitHub build](https://img.shields.io/github/actions/workflow/status/modernuo/ModernUO/build-test.yml?branch=main&logo=github)](https://github.com/modernuo/ModernUO/actions)
 [![AzurePipelines build](https://dev.azure.com/modernuo/modernuo/_apis/build/status/Build?branchName=main)](https://dev.azure.com/modernuo/modernuo/_build/latest?definitionId=1&branchName=main)
 
 ## Requirements

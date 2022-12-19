@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class VorpalBunny : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class VorpalBunny : BaseCreature
     {
         [Constructible]
         public VorpalBunny() : base(AIType.AI_Melee)
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             PackStatue();
 
             DelayBeginTunnel();
-        }
-
-        public VorpalBunny(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a vorpal bunny corpse";
@@ -89,23 +87,8 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0xCB;
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            DelayBeginTunnel();
-        }
-
-        public class BunnyHole : Item
+        [SerializationGenerator(0, false)]
+        public partial class BunnyHole : Item
         {
             public BunnyHole() : base(0x913)
             {
@@ -115,25 +98,11 @@ namespace Server.Mobiles
                 Timer.StartTimer(TimeSpan.FromSeconds(40.0), Delete);
             }
 
-            public BunnyHole(Serial serial) : base(serial)
-            {
-            }
-
             public override string DefaultName => "a mysterious rabbit hole";
 
-            public override void Serialize(IGenericWriter writer)
+            [AfterDeserialization(false)]
+            private void AfterDeserialization()
             {
-                base.Serialize(writer);
-
-                writer.Write(0);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
                 Delete();
             }
         }

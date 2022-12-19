@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using System;
 
 namespace Server.Mobiles
 {
-    public class CorporealBrume : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class CorporealBrume : BaseCreature
     {
         [Constructible]
         public CorporealBrume()
@@ -36,11 +38,6 @@ namespace Server.Mobiles
             Karma = -12000;
         }
 
-        public CorporealBrume(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a corporeal brume corpse";
         public override string DefaultName => "a corporeal brume";
 
@@ -63,20 +60,6 @@ namespace Server.Mobiles
         {
             m.FixedParticles(0x374A, 10, 15, 5038, 1181, 2, EffectLayer.Head);
             m.PlaySound(0x213);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

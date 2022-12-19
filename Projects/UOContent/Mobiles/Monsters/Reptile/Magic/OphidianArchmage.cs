@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.OphidianJusticar", "Server.Mobiles.OphidianZealot")]
-    public class OphidianArchmage : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class OphidianArchmage : BaseCreature
     {
         private static readonly string[] m_Names =
         {
@@ -48,10 +51,6 @@ namespace Server.Mobiles
             PackNecroReg(5, 15);
         }
 
-        public OphidianArchmage(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ophidian corpse";
 
         public override int Meat => 1;
@@ -62,18 +61,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.MedScrolls, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

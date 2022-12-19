@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-    public class SerpentineDragon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SerpentineDragon : BaseCreature
     {
         [Constructible]
         public SerpentineDragon() : base(AIType.AI_Mage, FightMode.Evil)
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             {
                 PackItem(Seed.RandomPeculiarSeed(2));
             }
-        }
-
-        public SerpentineDragon(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a dragon corpse";
@@ -92,18 +90,6 @@ namespace Server.Mobiles
                 c.ControlOrder = OrderType.Attack;
                 c.Combatant = c.ControlMaster;
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

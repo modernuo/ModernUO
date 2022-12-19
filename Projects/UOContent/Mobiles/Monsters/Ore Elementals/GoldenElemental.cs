@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class GoldenElemental : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GoldenElemental : BaseCreature
     {
         [Constructible]
         public GoldenElemental(int oreAmount = 2) : base(AIType.AI_Melee)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             PackItem(ore);
         }
 
-        public GoldenElemental(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ore elemental corpse";
         public override string DefaultName => "a golden elemental";
 
@@ -55,18 +53,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Average);
             AddLoot(LootPack.Gems, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

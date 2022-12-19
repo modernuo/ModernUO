@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Malefic : DreadSpider
+    [SerializationGenerator(0, false)]
+    public partial class Malefic : DreadSpider
     {
         [Constructible]
         public Malefic()
@@ -46,11 +48,6 @@ namespace Server.Mobiles
             */
         }
 
-        public Malefic(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Malefic corpse";
         public override string DefaultName => "Malefic";
 
@@ -62,19 +59,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

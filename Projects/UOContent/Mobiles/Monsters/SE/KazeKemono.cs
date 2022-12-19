@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class KazeKemono : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class KazeKemono : BaseCreature
     {
         private static readonly Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new();
 
@@ -42,11 +44,6 @@ namespace Server.Mobiles
 
             Fame = 8000;
             Karma = -8000;
-        }
-
-        public KazeKemono(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a kaze kemono corpse";
@@ -127,18 +124,6 @@ namespace Server.Mobiles
                 timer.Start();
                 m_ChlorophylBlastTable[defender] = timer;
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
 
         private class ExpireTimer : Timer

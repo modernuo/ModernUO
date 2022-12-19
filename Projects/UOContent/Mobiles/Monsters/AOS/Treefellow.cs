@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Treefellow : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Treefellow : BaseCreature
     {
         [Constructible]
         public Treefellow() : base(AIType.AI_Melee, FightMode.Evil)
@@ -35,10 +37,6 @@ namespace Server.Mobiles
             PackItem(new Log(Utility.RandomMinMax(23, 34)));
         }
 
-        public Treefellow(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a treefellow corpse";
 
         public override string DefaultName => "a treefellow";
@@ -58,23 +56,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 442)
-            {
-                BaseSoundID = -1;
-            }
         }
     }
 }

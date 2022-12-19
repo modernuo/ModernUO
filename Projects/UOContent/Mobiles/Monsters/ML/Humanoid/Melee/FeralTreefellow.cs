@@ -1,9 +1,12 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.FerelTreefellow")]
-    public class FeralTreefellow : BaseCreature
+
+    [SerializationGenerator(0, false)]
+    public partial class FeralTreefellow : BaseCreature
     {
         [Constructible]
         public FeralTreefellow() : base(AIType.AI_Melee, FightMode.Evil)
@@ -36,10 +39,6 @@ namespace Server.Mobiles
             PackItem(new Log(Utility.RandomMinMax(23, 34)));
         }
 
-        public FeralTreefellow(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a treefellow corpse";
 
         public override string DefaultName => "a feral treefellow";
@@ -59,18 +58,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average); // Unknown
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

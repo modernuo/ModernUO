@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Tangle : BogThing
+    [SerializationGenerator(0, false)]
+    public partial class Tangle : BogThing
     {
         [Constructible]
         public Tangle()
@@ -37,11 +39,6 @@ namespace Server.Mobiles
             // TODO: Fame/Karma?
         }
 
-        public Tangle(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Tangle corpse";
         public override string DefaultName => "Tangle";
 
@@ -60,20 +57,6 @@ namespace Server.Mobiles
             {
                 c.DropItem(new TaintedSeeds());
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

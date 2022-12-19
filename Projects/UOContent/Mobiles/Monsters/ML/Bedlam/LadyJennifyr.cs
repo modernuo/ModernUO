@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class LadyJennifyr : SkeletalKnight
+    [SerializationGenerator(0, false)]
+    public partial class LadyJennifyr : SkeletalKnight
     {
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
@@ -38,11 +40,6 @@ namespace Server.Mobiles
 
             Fame = 18000;
             Karma = -18000;
-        }
-
-        public LadyJennifyr(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a Lady Jennifyr corpse";
@@ -93,20 +90,6 @@ namespace Server.Mobiles
 
             m_Table[defender] = timer = new ExpireTimer(defender, mod);
             timer.Start();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         private class ExpireTimer : Timer

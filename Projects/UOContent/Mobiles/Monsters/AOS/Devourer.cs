@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Devourer : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Devourer : BaseCreature
     {
         [Constructible]
         public Devourer() : base(AIType.AI_Mage)
@@ -41,10 +44,6 @@ namespace Server.Mobiles
             PackNecroReg(24, 45);
         }
 
-        public Devourer(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a devourer of souls corpse";
         public override string DefaultName => "a devourer of souls";
 
@@ -55,18 +54,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class YomotsuElder : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class YomotsuElder : BaseCreature
     {
         [Constructible]
         public YomotsuElder() : base(AIType.AI_Melee)
@@ -65,10 +67,6 @@ namespace Server.Mobiles
             }
         }
 
-        public YomotsuElder(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a wrinkly yomotsu corpse";
         public override string DefaultName => "a yomotsu elder";
 
@@ -106,18 +104,6 @@ namespace Server.Mobiles
 
                 defender.Paralyze(TimeSpan.FromSeconds(4.0));
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
 
         public override int GetIdleSound() => 0x42A;

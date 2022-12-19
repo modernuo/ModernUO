@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [Forge]
-    public class FireBeetle : BaseMount
+    [SerializationGenerator(0,false)]
+    public partial class FireBeetle : BaseMount
     {
         public override string DefaultName => "a fire beetle";
 
@@ -46,10 +48,6 @@ namespace Server.Mobiles
             Hue = 0x489;
         }
 
-        public FireBeetle(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a fire beetle corpse";
         public override bool SubdueBeforeTame => true; // Must be beaten into submission
         public override bool StatLossAfterTame => true;
@@ -89,23 +87,10 @@ namespace Server.Mobiles
 
         public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version == 0)
-            {
-                Hue = 0x489;
-            }
+            Hue = 0x489;
         }
     }
 }

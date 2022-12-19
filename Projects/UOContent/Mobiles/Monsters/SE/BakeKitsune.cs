@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class BakeKitsune : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class BakeKitsune : BaseCreature
     {
         private TimerExecutionToken _disguiseTimerToken;
 
@@ -47,10 +49,6 @@ namespace Server.Mobiles
             {
                 PackItem(Seed.RandomBonsaiSeed());
             }
-        }
-
-        public BakeKitsune(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a bake kitsune corpse";
@@ -99,18 +97,10 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x4DB;
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version == 0 && PhysicalResistance > 60)
+            if (PhysicalResistance > 60)
             {
                 SetResistance(ResistanceType.Physical, 40, 60);
                 SetResistance(ResistanceType.Fire, 70, 90);

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class PatchworkSkeleton : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class PatchworkSkeleton : BaseCreature
     {
         [Constructible]
         public PatchworkSkeleton() : base(AIType.AI_Melee)
@@ -37,10 +39,6 @@ namespace Server.Mobiles
             VirtualArmor = 54;
         }
 
-        public PatchworkSkeleton(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a patchwork skeletal corpse";
 
         public override string DefaultName => "a patchwork skeleton";
@@ -55,18 +53,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }
