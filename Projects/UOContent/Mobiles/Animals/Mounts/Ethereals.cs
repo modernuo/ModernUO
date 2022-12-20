@@ -3,6 +3,7 @@ using System;
 using Server.Engines.VeteranRewards;
 using Server.Multis;
 using Server.Spells;
+using Org.BouncyCastle.Bcpg;
 
 namespace Server.Mobiles
 {
@@ -27,18 +28,9 @@ namespace Server.Mobiles
 
         public override double DefaultWeight => 1.0;
 
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        [SerializableProperty(0)]
-        public bool IsDonationItem
-        {
-            get => _isDonationItem;
-            set
-            {
-                _isDonationItem = value;
-                InvalidateProperties();
-                this.MarkDirty();
-            }
-        }
+        [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        [SerializableField(0)]
+        public bool _isDonationItem;
 
         [CommandProperty(AccessLevel.GameMaster)]
         [SerializableProperty(2)]
@@ -55,8 +47,8 @@ namespace Server.Mobiles
                     {
                         ItemID = value;
                     }
+                    this.MarkDirty();
                 }
-                this.MarkDirty();
             }
         }
 
@@ -75,8 +67,8 @@ namespace Server.Mobiles
                     {
                         ItemID = value;
                     }
+                    this.MarkDirty();
                 }
-                this.MarkDirty();
             }
         }
 
@@ -118,8 +110,8 @@ namespace Server.Mobiles
 
                         MountMe();
                     }
+                    this.MarkDirty();
                 }
-                this.MarkDirty();
             }
         }
 
@@ -218,42 +210,20 @@ namespace Server.Mobiles
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            switch (version)
+            _isDonationItem = reader.ReadBool();
+            _isRewardItem = reader.ReadBool();
+            _mountedID = reader.ReadInt();
+            _regularID = reader.ReadInt();
+            _rider = reader.ReadEntity<Mobile>();
+            if (_mountedID == 0x3EA2)
             {
-                case 3:
-                    {
-                        _isDonationItem = reader.ReadBool();
-                        goto case 2;
-                    }
-                case 2:
-                    {
-                        _isRewardItem = reader.ReadBool();
-                        goto case 0;
-                    }
-                case 1:
-                    reader.ReadInt();
-                    goto case 0;
-                case 0:
-                    {
-                        _mountedID = reader.ReadInt();
-                        _regularID = reader.ReadInt();
-                        _rider = reader.ReadEntity<Mobile>();
-                        if (_mountedID == 0x3EA2)
-                        {
-                            _mountedID = 0x3EAA;
-                        }
-                        break;
-                    }
+                _mountedID = 0x3EAA;
             }
             AddFollowers();
-            if (version < 3 && Weight == 0)
-            {
-                Weight = -1;
-            }
         }
 
         [AfterDeserialization]
-        private void Deserialize()
+        private void AfterDeserialize()
         {
             AddFollowers();
         }

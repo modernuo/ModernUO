@@ -56,6 +56,7 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
         }
+
         private void Deserialize(IGenericReader reader, int version)
         {
             if (version < 1)
@@ -68,15 +69,6 @@ namespace Server.Mobiles
                         Skills[i].Base = Skills[i].Cap;
                     }
                 }
-            }
-        }
-
-        [AfterDeserialization]
-        private void AfterDeserialize()
-        {
-            if (BaseSoundID <= 0)
-            {
-                BaseSoundID = 0xA8;
             }
         }
     }

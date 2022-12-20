@@ -122,44 +122,5 @@ namespace Server.Mobiles
 
             return bushidoChance > tamingChance ? bushidoChance : tamingChance;
         }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            if (version <= 1)
-            {
-                Timer.StartTimer(() => Fix(version));
-            }
-            if (version < 2)
-            {
-                for (var i = 0; i < Skills.Length; ++i)
-                {
-                    Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
-                    if (Skills[i].Base > Skills[i].Cap)
-                    {
-                        Skills[i].Base = Skills[i].Cap;
-                    }
-                }
-            }
-        }
-
-        private void Fix(int version)
-        {
-            switch (version)
-            {
-                case 1:
-                    {
-                        if (InternalItem != null)
-                        {
-                            InternalItem.Hue = Hue;
-                        }
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        Hue = GetHue();
-                        break;
-                    }
-            }
-        }
     }
 }
