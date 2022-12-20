@@ -168,10 +168,6 @@ namespace Server.Mobiles
                     {
                         _rider = reader.ReadEntity<Mobile>();
                         InternalItem = reader.ReadEntity<Item>();
-                        if (InternalItem == null)
-                        {
-                            Delete();
-                        }
                         break;
                     }
             }
