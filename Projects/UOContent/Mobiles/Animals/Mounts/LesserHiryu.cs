@@ -5,7 +5,7 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(2, false)]
+    [SerializationGenerator(0, false)]
     public partial class LesserHiryu : BaseMount
     {
         public override string DefaultName => "a lesser hiryu";
