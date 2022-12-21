@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Nightmare : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Nightmare : BaseMount
     {
         public override string DefaultName => "a nightmare";
 
@@ -87,10 +89,6 @@ namespace Server.Mobiles
             PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));
         }
 
-        public Nightmare(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a nightmare corpse";
         public override int Meat => 5;
         public override int Hides => 10;
@@ -117,29 +115,6 @@ namespace Server.Mobiles
             }
 
             return base.GetAngerSound();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Core.AOS && BaseSoundID == 0x16A)
-            {
-                BaseSoundID = 0xA8;
-            }
-            else if (!Core.AOS && BaseSoundID == 0xA8)
-            {
-                BaseSoundID = 0x16A;
-            }
         }
     }
 }

@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class HellSteed : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class HellSteed : BaseMount
     {
         public override string DefaultName => "a frenzied ostard";
 
@@ -8,10 +11,6 @@ namespace Server.Mobiles
         public HellSteed() : base(793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor)
         {
             SetStats(this);
-        }
-
-        public HellSteed(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a hellsteed corpse";
@@ -43,20 +42,6 @@ namespace Server.Mobiles
 
             steed.Fame = 0;
             steed.Karma = 0;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

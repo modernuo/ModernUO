@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Beetle : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Beetle : BaseMount
     {
         public override string DefaultName => "a giant beetle";
 
@@ -48,10 +50,6 @@ namespace Server.Mobiles
             AddItem(pack);
         }
 
-        public Beetle(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a giant beetle corpse";
         public virtual double BoostedSpeed => 0.1;
 
@@ -84,20 +82,6 @@ namespace Server.Mobiles
             {
                 CurrentSpeed = PassiveSpeed;
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override bool OnBeforeDeath()

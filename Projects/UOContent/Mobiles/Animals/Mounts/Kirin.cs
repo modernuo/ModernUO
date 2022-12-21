@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Kirin : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Kirin : BaseMount
     {
         public override string DefaultName => "a ki-rin";
 
@@ -45,10 +47,6 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 2;
             MinTameSkill = 95.1;
-        }
-
-        public Kirin(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a ki-rin corpse";
@@ -111,25 +109,6 @@ namespace Server.Mobiles
             if (Utility.RandomDouble() < 0.35)
             {
                 c.DropItem(new KirinBrains());
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version == 0)
-            {
-                AI = AIType.AI_Mage;
             }
         }
     }

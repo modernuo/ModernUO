@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public abstract class BaseWarHorse : BaseMount
+    [SerializationGenerator(0,false)]
+    public abstract partial class BaseWarHorse : BaseMount
     {
         public override string DefaultName => "a war horse";
 
@@ -49,26 +52,8 @@ namespace Server.Mobiles
             MinTameSkill = 29.1;
         }
 
-        public BaseWarHorse(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a war horse corpse";
 
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.VeteranRewards;
 using Server.Multis;
@@ -5,75 +6,67 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-    public class EtherealMount : Item, IMount, IMountItem, IRewardItem
+    [SerializationGenerator(3, false)]
+    public partial class EtherealMount : Item, IMount, IMountItem, IRewardItem
     {
-        private bool m_IsDonationItem;
-        private int m_MountedID;
-        private int m_RegularID;
-        private Mobile m_Rider;
+        [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool _isDonationItem;
+        
+        [SerializableField(1)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        public bool _isRewardItem;
 
         [Constructible]
         public EtherealMount(int itemID, int mountID) : base(itemID)
         {
-            m_MountedID = mountID;
-            m_RegularID = itemID;
-            m_Rider = null;
+            _mountedID = mountID;
+            _regularID = itemID;
+            _rider = null;
 
             Layer = Layer.Invalid;
 
             LootType = LootType.Blessed;
         }
 
-        public EtherealMount(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override double DefaultWeight => 1.0;
 
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public bool IsDonationItem
-        {
-            get => m_IsDonationItem;
-            set
-            {
-                m_IsDonationItem = value;
-                InvalidateProperties();
-            }
-        }
-
+        [SerializableProperty(2)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int MountedID
         {
-            get => m_MountedID;
+            get => _mountedID;
             set
             {
-                if (m_MountedID != value)
+                if (_mountedID != value)
                 {
-                    m_MountedID = value;
+                    _mountedID = value;
 
-                    if (m_Rider != null)
+                    if (_rider != null)
                     {
                         ItemID = value;
                     }
+                    this.MarkDirty();
                 }
             }
         }
 
+        [SerializableProperty(3)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int RegularID
         {
-            get => m_RegularID;
+            get => _regularID;
             set
             {
-                if (m_RegularID != value)
+                if (_regularID != value)
                 {
-                    m_RegularID = value;
+                    _regularID = value;
 
-                    if (m_Rider == null)
+                    if (_rider == null)
                     {
                         ItemID = value;
                     }
+                    this.MarkDirty();
                 }
             }
         }
@@ -84,13 +77,14 @@ namespace Server.Mobiles
 
         public virtual int EtherealHue => 0x4001;
 
+        [SerializableProperty(4)]
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile Rider
         {
-            get => m_Rider;
+            get => _rider;
             set
             {
-                if (value != m_Rider)
+                if (value != _rider)
                 {
                     if (value == null)
                     {
@@ -98,23 +92,25 @@ namespace Server.Mobiles
                         UnmountMe();
 
                         RemoveFollowers();
-                        m_Rider = null;
+                        _rider = null;
                     }
                     else
                     {
-                        if (m_Rider != null)
+                        if (_rider != null)
                         {
-                            Dismount(m_Rider);
+                            Dismount(_rider);
                         }
 
                         Dismount(value);
 
                         RemoveFollowers();
-                        m_Rider = value;
+                        _rider = value;
                         AddFollowers();
 
                         MountMe();
                     }
+
+                    this.MarkDirty();
                 }
             }
         }
@@ -125,14 +121,11 @@ namespace Server.Mobiles
 
         public IMount Mount => this;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsRewardItem { get; set; }
-
         public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
 
-            if (m_IsDonationItem)
+            if (_isDonationItem)
             {
                 list.Add("Donation Ethereal");
                 list.Add("7.5 sec slower cast time if not a 9mo. Veteran");
@@ -146,17 +139,17 @@ namespace Server.Mobiles
 
         public void RemoveFollowers()
         {
-            if (m_Rider != null)
+            if (_rider != null)
             {
-                m_Rider.Followers -= Math.Min(m_Rider.Followers, FollowerSlots);
+                _rider.Followers -= Math.Min(_rider.Followers, FollowerSlots);
             }
         }
 
         public void AddFollowers()
         {
-            if (m_Rider != null)
+            if (_rider != null)
             {
-                m_Rider.Followers += FollowerSlots;
+                _rider.Followers += FollowerSlots;
             }
         }
 
@@ -212,66 +205,26 @@ namespace Server.Mobiles
         {
             base.OnSingleClick(from);
 
-            LabelTo(from, m_IsDonationItem ? "Donation Ethereal" : "Veteran Reward");
+            LabelTo(from, _isDonationItem ? "Donation Ethereal" : "Veteran Reward");
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
-
-            writer.Write(3); // version
-
-            writer.Write(m_IsDonationItem);
-            writer.Write(IsRewardItem);
-
-            writer.Write(m_MountedID);
-            writer.Write(m_RegularID);
-            writer.Write(m_Rider);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            LootType = LootType.Blessed;
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            _isDonationItem = reader.ReadBool();
+            _isRewardItem = reader.ReadBool();
+            _mountedID = reader.ReadInt();
+            _regularID = reader.ReadInt();
+            _rider = reader.ReadEntity<Mobile>();
+            if (_mountedID == 0x3EA2)
             {
-                case 3:
-                    {
-                        m_IsDonationItem = reader.ReadBool();
-                        goto case 2;
-                    }
-                case 2:
-                    {
-                        IsRewardItem = reader.ReadBool();
-                        goto case 0;
-                    }
-                case 1:
-                    reader.ReadInt();
-                    goto case 0;
-                case 0:
-                    {
-                        m_MountedID = reader.ReadInt();
-                        m_RegularID = reader.ReadInt();
-                        m_Rider = reader.ReadEntity<Mobile>();
-
-                        if (m_MountedID == 0x3EA2)
-                        {
-                            m_MountedID = 0x3EAA;
-                        }
-
-                        break;
-                    }
+                _mountedID = 0x3EAA;
             }
+        }
 
+        [AfterDeserialization]
+        private void AfterDeserialize()
+        {
             AddFollowers();
-
-            if (version < 3 && Weight == 0)
-            {
-                Weight = -1;
-            }
         }
 
         public override DeathMoveResult OnParentDeath(Mobile parent)
@@ -293,9 +246,9 @@ namespace Server.Mobiles
 
         public void UnmountMe()
         {
-            var bp = m_Rider.Backpack;
+            var bp = _rider.Backpack;
 
-            ItemID = m_RegularID;
+            ItemID = _regularID;
             Layer = Layer.Invalid;
             Movable = true;
 
@@ -310,13 +263,13 @@ namespace Server.Mobiles
             }
             else
             {
-                var loc = m_Rider.Location;
-                var map = m_Rider.Map;
+                var loc = _rider.Location;
+                var map = _rider.Map;
 
                 if (map == null || map == Map.Internal)
                 {
-                    loc = m_Rider.LogoutLocation;
-                    map = m_Rider.LogoutMap;
+                    loc = _rider.LogoutLocation;
+                    map = _rider.LogoutMap;
                 }
 
                 MoveToWorld(loc, map);
@@ -325,7 +278,7 @@ namespace Server.Mobiles
 
         public void MountMe()
         {
-            ItemID = m_MountedID;
+            ItemID = _mountedID;
             Layer = Layer.Mount;
             Movable = false;
 
@@ -335,9 +288,9 @@ namespace Server.Mobiles
             }
 
             ProcessDelta();
-            m_Rider.ProcessDelta();
-            m_Rider.EquipItem(this);
-            m_Rider.ProcessDelta();
+            _rider.ProcessDelta();
+            _rider.EquipItem(this);
+            _rider.ProcessDelta();
             ProcessDelta();
         }
 
@@ -429,47 +382,19 @@ namespace Server.Mobiles
         }
     }
 
-    public class EtherealHorse : EtherealMount
+
+    [SerializationGenerator(0, false)]
+    public partial class EtherealHorse : EtherealMount
     {
         [Constructible]
         public EtherealHorse()
             : base(0x20DD, 0x3EAA)
         {
         }
-
-        public EtherealHorse(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1041298; // Ethereal Horse Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal horse")
-            {
-                Name = null;
-            }
-
-            if (ItemID == 0x2124)
-            {
-                ItemID = 0x20DD;
-            }
-        }
     }
 
-    public class EtherealLlama : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealLlama : EtherealMount
     {
         [Constructible]
         public EtherealLlama()
@@ -477,34 +402,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealLlama(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1041300; // Ethereal Llama Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal llama")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class EtherealOstard : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealOstard : EtherealMount
     {
         [Constructible]
         public EtherealOstard()
@@ -512,34 +414,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealOstard(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1041299; // Ethereal Ostard Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal ostard")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class EtherealRidgeback : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealRidgeback : EtherealMount
     {
         [Constructible]
         public EtherealRidgeback()
@@ -547,34 +426,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealRidgeback(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1049747; // Ethereal Ridgeback Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal ridgeback")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class EtherealUnicorn : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealUnicorn : EtherealMount
     {
         [Constructible]
         public EtherealUnicorn()
@@ -582,34 +438,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealUnicorn(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1049745; // Ethereal Unicorn Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal unicorn")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class EtherealBeetle : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealBeetle : EtherealMount
     {
         [Constructible]
         public EtherealBeetle()
@@ -617,34 +450,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealBeetle(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1049748; // Ethereal Beetle Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal beetle")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class EtherealKirin : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealKirin : EtherealMount
     {
         [Constructible]
         public EtherealKirin()
@@ -652,34 +462,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealKirin(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1049746; // Ethereal Ki-Rin Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal kirin")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class EtherealSwampDragon : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class EtherealSwampDragon : EtherealMount
     {
         [Constructible]
         public EtherealSwampDragon()
@@ -687,34 +474,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealSwampDragon(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1049749; // Ethereal Swamp Dragon Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Name == "an ethereal swamp dragon")
-            {
-                Name = null;
-            }
-        }
     }
 
-    public class RideablePolarBear : EtherealMount
+    [SerializationGenerator(0)]
+    public partial class RideablePolarBear : EtherealMount
     {
         [Constructible]
         public RideablePolarBear()
@@ -722,30 +486,12 @@ namespace Server.Mobiles
         {
         }
 
-        public RideablePolarBear(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1076159; // Rideable Polar Bear
         public override int EtherealHue => 0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class EtherealCuSidhe : EtherealMount
+    [SerializationGenerator(0)]
+    public partial class EtherealCuSidhe : EtherealMount
     {
         [Constructible]
         public EtherealCuSidhe()
@@ -753,29 +499,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealCuSidhe(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1080386; // Ethereal Cu Sidhe Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class EtherealHiryu : EtherealMount
+    [SerializationGenerator(0)]
+    public partial class EtherealHiryu : EtherealMount
     {
         [Constructible]
         public EtherealHiryu()
@@ -783,29 +511,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealHiryu(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1113813; // Ethereal Hiryu Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class EtherealReptalon : EtherealMount
+    [SerializationGenerator(0)]
+    public partial class EtherealReptalon : EtherealMount
     {
         [Constructible]
         public EtherealReptalon()
@@ -813,29 +523,11 @@ namespace Server.Mobiles
         {
         }
 
-        public EtherealReptalon(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1113812; // Ethereal Reptalon Statuette
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class ChargerOfTheFallen : EtherealMount
+    [SerializationGenerator(0, false)]
+    public partial class ChargerOfTheFallen : EtherealMount
     {
         [Constructible]
         public ChargerOfTheFallen()
@@ -843,32 +535,8 @@ namespace Server.Mobiles
         {
         }
 
-        public ChargerOfTheFallen(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override int LabelNumber => 1074816; // Charger of the Fallen Statuette
 
         public override int EtherealHue => 0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version <= 1 && Hue != 0)
-            {
-                Hue = 0;
-            }
-        }
     }
 }

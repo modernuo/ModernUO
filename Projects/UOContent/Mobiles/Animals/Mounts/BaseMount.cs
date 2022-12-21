@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Multis;
@@ -6,10 +7,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-    public abstract class BaseMount : BaseCreature, IMount
+    [SerializationGenerator(0, false)]
+    public abstract partial class BaseMount : BaseCreature, IMount
     {
-        private Mobile m_Rider;
-
         public BaseMount(
             int bodyID, int itemID, AIType aiType, FightMode fightMode = FightMode.Closest,
             int rangePerception = 10, int rangeFight = 1
@@ -20,17 +20,15 @@ namespace Server.Mobiles
             InternalItem = new MountItem(this, itemID);
         }
 
-        public BaseMount(Serial serial)
-            : base(serial)
-        {
-        }
-
         public virtual TimeSpan MountAbilityDelay => TimeSpan.Zero;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime NextMountAbility { get; set; }
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0)]
+        public DateTime _nextMountAbility;
 
-        protected Item InternalItem { get; private set; }
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(2)]
+        protected Item _internalItem;
 
         public virtual bool AllowMaleRider => true;
         public virtual bool AllowFemaleRider => true;
@@ -65,25 +63,26 @@ namespace Server.Mobiles
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(1)]
         public Mobile Rider
         {
-            get => m_Rider;
+            get => _rider;
             set
             {
-                if (m_Rider != value)
+                if (_rider != value)
                 {
                     if (value == null)
                     {
-                        var loc = m_Rider.Location;
-                        var map = m_Rider.Map;
+                        var loc = _rider.Location;
+                        var map = _rider.Map;
 
                         if (map == null || map == Map.Internal)
                         {
-                            loc = m_Rider.LogoutLocation;
-                            map = m_Rider.LogoutMap;
+                            loc = _rider.LogoutLocation;
+                            map = _rider.LogoutMap;
                         }
 
-                        Direction = m_Rider.Direction;
+                        Direction = _rider.Direction;
                         Location = loc;
                         Map = map;
 
@@ -91,9 +90,9 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        if (m_Rider != null)
+                        if (_rider != null)
                         {
-                            Dismount(m_Rider);
+                            Dismount(_rider);
                         }
 
                         Dismount(value);
@@ -113,21 +112,22 @@ namespace Server.Mobiles
                         }
                     }
 
-                    m_Rider = value;
+                    _rider = value;
+                    this.MarkDirty();
                 }
             }
         }
 
         public virtual void OnRiderDamaged(int amount, Mobile from, bool willKill)
         {
-            if (m_Rider == null)
+            if (_rider == null)
             {
                 return;
             }
 
-            var attacker = from ?? m_Rider.FindMostRecentDamager(true);
+            var attacker = from ?? _rider.FindMostRecentDamager(true);
 
-            if (!(attacker == this || attacker == m_Rider || willKill || Core.Now < NextMountAbility)
+            if (!(attacker == this || attacker == _rider || willKill || Core.Now < NextMountAbility)
                 && DoMountAbility(amount, from))
             {
                 NextMountAbility = Core.Now + MountAbilityDelay;
@@ -155,43 +155,12 @@ namespace Server.Mobiles
             base.OnDelete();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization(false)]
+        private void AfterDeserialize()
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(NextMountAbility);
-
-            writer.Write(m_Rider);
-            writer.Write(InternalItem);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            if (InternalItem == null)
             {
-                case 1:
-                    {
-                        NextMountAbility = reader.ReadDateTime();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        m_Rider = reader.ReadEntity<Mobile>();
-                        InternalItem = reader.ReadEntity<Item>();
-
-                        if (InternalItem == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
-                    }
+                Delete();
             }
         }
 
@@ -327,72 +296,48 @@ namespace Server.Mobiles
         public virtual bool DoMountAbility(int damage, Mobile attacker) => false;
     }
 
-    public class MountItem : Item, IMountItem
+    [SerializationGenerator(0, false)]
+    public partial class MountItem : Item, IMountItem
     {
-        private BaseMount m_Mount;
+        private BaseMount _mount;
 
         public MountItem(BaseMount mount, int itemID) : base(itemID)
         {
             Layer = Layer.Mount;
             Movable = false;
 
-            m_Mount = mount;
-        }
-
-        public MountItem(Serial serial) : base(serial)
-        {
+            _mount = mount;
         }
 
         public override double DefaultWeight => 0;
 
-        public IMount Mount => m_Mount;
+        [SerializableProperty(0, useField: nameof(_mount))]
+        public IMount Mount => _mount;
 
         public override void OnAfterDelete()
         {
-            m_Mount?.Delete();
-            m_Mount = null;
+            _mount?.Delete();
+            _mount = null;
 
             base.OnAfterDelete();
         }
 
         public override DeathMoveResult OnParentDeath(Mobile parent)
         {
-            if (m_Mount != null)
+            if (_mount != null)
             {
-                m_Mount.Rider = null;
+                _mount.Rider = null;
             }
 
             return DeathMoveResult.RemainEquipped;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization(false)]
+        private void AfterDeserialize()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Mount);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            if (_mount == null)
             {
-                case 0:
-                    {
-                        m_Mount = reader.ReadEntity<BaseMount>();
-
-                        if (m_Mount == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
-                    }
+                Delete();
             }
         }
     }

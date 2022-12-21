@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class FireSteed : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class FireSteed : BaseMount
     {
         public override string DefaultName => "a fire steed";
 
@@ -44,10 +46,6 @@ namespace Server.Mobiles
             PackItem(new Ruby(Utility.RandomMinMax(16, 30)));
         }
 
-        public FireSteed(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a fire steed corpse";
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Daemon | PackInstinct.Equine;
@@ -57,38 +55,6 @@ namespace Server.Mobiles
 
         public override void GenerateLoot()
         {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (BaseSoundID <= 0)
-            {
-                BaseSoundID = 0xA8;
-            }
-
-            if (version < 1)
-            {
-                for (var i = 0; i < Skills.Length; ++i)
-                {
-                    Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
-
-                    if (Skills[i].Base > Skills[i].Cap)
-                    {
-                        Skills[i].Base = Skills[i].Cap;
-                    }
-                }
-            }
         }
     }
 }

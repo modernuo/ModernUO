@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Lavalizard")]
-    public class LavaLizard : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class LavaLizard : BaseCreature
     {
         [Constructible]
         public LavaLizard() : base(AIType.AI_Melee)
@@ -44,10 +46,6 @@ namespace Server.Mobiles
             PackItem(new SulfurousAsh(Utility.Random(4, 10)));
         }
 
-        public LavaLizard(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a lava lizard corpse";
         public override string DefaultName => "a lava lizard";
         public override int Hides => 12;
@@ -59,20 +57,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

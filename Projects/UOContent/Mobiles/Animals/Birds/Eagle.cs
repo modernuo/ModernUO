@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Eagle : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Eagle : BaseCreature
     {
         [Constructible]
         public Eagle() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -39,10 +42,6 @@ namespace Server.Mobiles
             MinTameSkill = 17.1;
         }
 
-        public Eagle(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a bird corpse";
         public override string DefaultName => "an eagle";
 
@@ -51,19 +50,5 @@ namespace Server.Mobiles
         public override int Feathers => 36;
         public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
         public override bool CanFly => true;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

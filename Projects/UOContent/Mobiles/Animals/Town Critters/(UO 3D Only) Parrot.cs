@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Parrot : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Parrot : BaseCreature
     {
         [Constructible]
         public Parrot() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -22,10 +25,6 @@ namespace Server.Mobiles
             MinTameSkill = 0.0;
         }
 
-        public Parrot(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a parrot corpse";
         public override string DefaultName => "a parrot";
 
@@ -38,19 +37,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x1E;
 
         public override int GetDeathSound() => 0x1F;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "type": "Server.Mobiles.SwampDragon",
+  "properties": [
+    {
+      "name": "BardingExceptional",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "BardingCraftedBy",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "HasBarding",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "BardingHP",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "BardingResource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
