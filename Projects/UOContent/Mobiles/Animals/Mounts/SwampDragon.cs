@@ -143,43 +143,11 @@ namespace Server.Mobiles
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            switch (version)
-            {
-                case 2:
-                    {
-                        _bardingExceptional = reader.ReadBool();
-                        _bardingCraftedBy = reader.ReadString();
-                        _hasBarding = reader.ReadBool();
-                        _bardingHP = reader.ReadInt();
-                        _bardingResource = (CraftResource)reader.ReadInt();
-                        break;
-                    }
-                case 1:
-                    {
-                        _bardingExceptional = reader.ReadBool();
-                        var crafter = reader.ReadEntity<Mobile>();
-                        // Name might not be set during this deserialization
-                        Timer.StartTimer(() => _bardingCraftedBy = crafter?.RawName);
-                        _hasBarding = reader.ReadBool();
-                        _bardingHP = reader.ReadInt();
-                        _bardingResource = (CraftResource)reader.ReadInt();
-                        break;
-                    }
-            }
-        }
-
-        [AfterDeserialization]
-        private void AfterDeserialize()
-        {
-            if (Hue == 0 && !_hasBarding)
-            {
-                Hue = 0x851;
-            }
-
-            if (BaseSoundID == -1)
-            {
-                BaseSoundID = 0x16A;
-            }
+            _bardingExceptional = reader.ReadBool();
+            _bardingCraftedBy = reader.ReadString();
+            _hasBarding = reader.ReadBool();
+            _bardingHP = reader.ReadInt();
+            _bardingResource = (CraftResource)reader.ReadInt();
         }
     }
 }
