@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(1, false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseMount : BaseCreature, IMount
     {
         public BaseMount(
@@ -153,24 +153,6 @@ namespace Server.Mobiles
             Rider = null;
 
             base.OnDelete();
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            switch (version)
-            {
-                case 1:
-                    {
-                        NextMountAbility = reader.ReadDateTime();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        _rider = reader.ReadEntity<Mobile>();
-                        InternalItem = reader.ReadEntity<Item>();
-                        break;
-                    }
-            }
         }
 
         [AfterDeserialization(false)]
