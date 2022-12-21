@@ -57,15 +57,6 @@ namespace Server.Mobiles
         public override int Meat => 1;
         public override int Feathers => 25;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        [AfterDeserialization()]
-        private void AfterDeserialize()
-        {
-            if (Hue == 0)
-            {
-                Hue = Utility.RandomBirdHue();
-            }
-        }
     }
 
     [SerializationGenerator(0, false)]
