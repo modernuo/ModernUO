@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(1, false)]
+    [SerializationGenerator(0, false)]
     public partial class FireSteed : BaseMount
     {
         public override string DefaultName => "a fire steed";
@@ -55,21 +55,6 @@ namespace Server.Mobiles
 
         public override void GenerateLoot()
         {
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            if (version < 1)
-            {
-                for (var i = 0; i < Skills.Length; ++i)
-                {
-                    Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
-                    if (Skills[i].Base > Skills[i].Cap)
-                    {
-                        Skills[i].Base = Skills[i].Cap;
-                    }
-                }
-            }
         }
     }
 }
