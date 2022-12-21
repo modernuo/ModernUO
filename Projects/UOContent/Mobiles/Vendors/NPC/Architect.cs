@@ -1,17 +1,15 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class Architect : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Architect : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Architect() : base("the architect")
-        {
-        }
-
-        public Architect(Serial serial) : base(serial)
         {
         }
 
@@ -27,20 +25,6 @@ namespace Server.Mobiles
             }
 
             m_SBInfos.Add(new SBArchitect());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

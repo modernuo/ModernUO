@@ -1,9 +1,12 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.GargoyleAlchemist")]
-    public class Glassblower : BaseVendor
+
+    [SerializationGenerator(0, false)]
+    public partial class Glassblower : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -12,10 +15,6 @@ namespace Server.Mobiles
         {
             SetSkill(SkillName.Alchemy, 85.0, 100.0);
             SetSkill(SkillName.TasteID, 85.0, 100.0);
-        }
-
-        public Glassblower(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -28,19 +27,9 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBAlchemist());
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialize()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             if (Body == 0x2F2)
             {
                 Body = 0x2F6;

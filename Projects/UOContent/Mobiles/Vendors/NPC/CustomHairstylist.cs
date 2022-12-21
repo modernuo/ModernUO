@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Gumps;
@@ -7,7 +8,8 @@ using Server.Utilities;
 
 namespace Server.Mobiles
 {
-    public class CustomHairstylist : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class CustomHairstylist : BaseVendor
     {
         public static readonly object From = new();
         public static readonly object Vendor = new();
@@ -86,10 +88,6 @@ namespace Server.Mobiles
         {
         }
 
-        public CustomHairstylist(Serial serial) : base(serial)
-        {
-        }
-
         protected override List<SBInfo> SBInfos { get; } = new();
 
         public override bool ClickTitle => false;
@@ -117,20 +115,6 @@ namespace Server.Mobiles
 
         public override void InitSBInfo()
         {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 

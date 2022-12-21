@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class Bard : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Bard : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -17,10 +19,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Swords, 36.0, 68.0);
         }
 
-        public Bard(Serial serial) : base(serial)
-        {
-        }
-
         protected override List<SBInfo> SBInfos => m_SBInfos;
 
         public override NpcGuild NpcGuild => NpcGuild.BardsGuild;
@@ -28,20 +26,6 @@ namespace Server.Mobiles
         public override void InitSBInfo()
         {
             m_SBInfos.Add(new SBBard());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
