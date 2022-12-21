@@ -47,15 +47,15 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a swamp dragon corpse";
 
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
-        [InvalidateProperties]
-        [SerializableField(1)]
-        private string _bardingCraftedBy;
-
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
         [InvalidateProperties]
         [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _bardingExceptional;
+
+        [InvalidateProperties]
+        [SerializableField(1)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private string _bardingCraftedBy;
 
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         [InvalidateProperties]
