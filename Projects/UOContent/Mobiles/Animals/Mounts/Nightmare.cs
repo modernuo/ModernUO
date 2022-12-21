@@ -116,18 +116,5 @@ namespace Server.Mobiles
 
             return base.GetAngerSound();
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialize()
-        {
-            if (Core.AOS && BaseSoundID == 0x16A)
-            {
-                BaseSoundID = 0xA8;
-            }
-            else if (!Core.AOS && BaseSoundID == 0xA8)
-            {
-                BaseSoundID = 0x16A;
-            }
-        }
     }
 }
