@@ -476,7 +476,7 @@ namespace Server.Mobiles
         public override int LabelNumber => 1049749; // Ethereal Swamp Dragon Statuette
     }
 
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(0)]
     public partial class RideablePolarBear : EtherealMount
     {
         [Constructible]
@@ -489,7 +489,7 @@ namespace Server.Mobiles
         public override int EtherealHue => 0;
     }
 
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(0)]
     public partial class EtherealCuSidhe : EtherealMount
     {
         [Constructible]
@@ -501,7 +501,7 @@ namespace Server.Mobiles
         public override int LabelNumber => 1080386; // Ethereal Cu Sidhe Statuette
     }
 
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(0)]
     public partial class EtherealHiryu : EtherealMount
     {
         [Constructible]
@@ -513,7 +513,7 @@ namespace Server.Mobiles
         public override int LabelNumber => 1113813; // Ethereal Hiryu Statuette
     }
 
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(0)]
     public partial class EtherealReptalon : EtherealMount
     {
         [Constructible]
