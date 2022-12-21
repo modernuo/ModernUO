@@ -9,8 +9,12 @@ namespace Server.Mobiles
     [SerializationGenerator(3, false)]
     public partial class EtherealMount : Item, IMount, IMountItem, IRewardItem
     {
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+        public bool _isDonationItem;
+        
         [SerializableField(1)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         public bool _isRewardItem;
 
         [Constructible]
@@ -27,12 +31,8 @@ namespace Server.Mobiles
 
         public override double DefaultWeight => 1.0;
 
-        [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        [SerializableField(0)]
-        public bool _isDonationItem;
-
-        [CommandProperty(AccessLevel.GameMaster)]
         [SerializableProperty(2)]
+        [CommandProperty(AccessLevel.GameMaster)]
         public int MountedID
         {
             get => _mountedID;
@@ -51,8 +51,8 @@ namespace Server.Mobiles
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
         [SerializableProperty(3)]
+        [CommandProperty(AccessLevel.GameMaster)]
         public int RegularID
         {
             get => _regularID;
@@ -77,8 +77,8 @@ namespace Server.Mobiles
 
         public virtual int EtherealHue => 0x4001;
 
-        [CommandProperty(AccessLevel.GameMaster)]
         [SerializableProperty(4)]
+        [CommandProperty(AccessLevel.GameMaster)]
         public Mobile Rider
         {
             get => _rider;
@@ -109,6 +109,7 @@ namespace Server.Mobiles
 
                         MountMe();
                     }
+
                     this.MarkDirty();
                 }
             }
