@@ -218,7 +218,6 @@ namespace Server.Mobiles
             {
                 _mountedID = 0x3EAA;
             }
-            AddFollowers();
         }
 
         [AfterDeserialization]
