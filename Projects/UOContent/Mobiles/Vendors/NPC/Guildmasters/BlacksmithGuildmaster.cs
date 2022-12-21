@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class BlacksmithGuildmaster : BaseGuildmaster
+    [SerializationGenerator(0, false)]
+    public partial class BlacksmithGuildmaster : BaseGuildmaster
     {
         [Constructible]
         public BlacksmithGuildmaster() : base("blacksmith")
@@ -11,10 +13,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Blacksmith, 90.0, 100.0);
             SetSkill(SkillName.Macing, 36.0, 68.0);
             SetSkill(SkillName.Parry, 36.0, 68.0);
-        }
-
-        public BlacksmithGuildmaster(Serial serial) : base(serial)
-        {
         }
 
         public override NpcGuild NpcGuild => NpcGuild.BlacksmithsGuild;
@@ -49,20 +47,6 @@ namespace Server.Mobiles
 
             AddItem(new Bascinet());
             AddItem(new SmithHammer());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
