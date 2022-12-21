@@ -2,7 +2,7 @@ using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(1, false)]
+    [SerializationGenerator(0, false)]
     public partial class SkeletalMount : BaseMount
     {
         [Constructible]
@@ -37,19 +37,5 @@ namespace Server.Mobiles
 
         public override Poison PoisonImmune => Poison.Lethal;
         public override bool BleedImmune => true;
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            switch (version)
-            {
-                case 0:
-                    {
-                        Tamable = false;
-                        MinTameSkill = 0.0;
-                        ControlSlots = 0;
-                        break;
-                    }
-            }
-        }
     }
 }
