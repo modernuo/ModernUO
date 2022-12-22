@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Monk : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Monk : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -17,10 +19,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Macing, 70.0, 90.0);
         }
 
-        public Monk(Serial serial) : base(serial)
-        {
-        }
-
         protected override List<SBInfo> SBInfos => m_SBInfos;
 
         public override void InitSBInfo()
@@ -32,20 +30,6 @@ namespace Server.Mobiles
         {
             AddItem(new Sandals());
             AddItem(new MonkRobe());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

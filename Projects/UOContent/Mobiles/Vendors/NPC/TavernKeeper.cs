@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class TavernKeeper : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class TavernKeeper : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -11,11 +13,6 @@ namespace Server.Mobiles
         public TavernKeeper() : base("the tavern keeper")
         {
         }
-
-        public TavernKeeper(Serial serial) : base(serial)
-        {
-        }
-
         protected override List<SBInfo> SBInfos => m_SBInfos;
 
         public override void InitSBInfo()
@@ -28,20 +25,6 @@ namespace Server.Mobiles
             base.InitOutfit();
 
             AddItem(new HalfApron());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

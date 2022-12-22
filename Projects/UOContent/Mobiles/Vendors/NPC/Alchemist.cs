@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Alchemist : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Alchemist : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -12,10 +14,6 @@ namespace Server.Mobiles
         {
             SetSkill(SkillName.Alchemy, 85.0, 100.0);
             SetSkill(SkillName.TasteID, 65.0, 88.0);
-        }
-
-        public Alchemist(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -34,20 +32,6 @@ namespace Server.Mobiles
             base.InitOutfit();
 
             AddItem(new Robe(Utility.RandomPinkHue()));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

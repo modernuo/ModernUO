@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class HolyMage : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class HolyMage : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -16,10 +18,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Meditation, 60.0, 83.0);
             SetSkill(SkillName.MagicResist, 65.0, 88.0);
             SetSkill(SkillName.Wrestling, 36.0, 68.0);
-        }
-
-        public HolyMage(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -63,20 +61,6 @@ namespace Server.Mobiles
             HairHue = 0x47E;
 
             PackGold(100, 200);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

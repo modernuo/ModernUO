@@ -1,17 +1,15 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class LeatherWorker : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class LeatherWorker : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public LeatherWorker() : base("the leather worker")
-        {
-        }
-
-        public LeatherWorker(Serial serial) : base(serial)
         {
         }
 
@@ -22,20 +20,6 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBLeatherArmor());
             m_SBInfos.Add(new SBStuddedArmor());
             m_SBInfos.Add(new SBLeatherWorker());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
