@@ -46,6 +46,8 @@ jobs:
           - container: debian:bullseye
             name: Debian 11
             packageManager: apt
+          - container: fedora:37
+            name: Fedora 37
           - container: fedora:36
             name: Fedora 36
             packageManager: dnf
