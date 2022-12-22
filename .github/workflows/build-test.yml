@@ -48,6 +48,7 @@ jobs:
             packageManager: apt
           - container: fedora:37
             name: Fedora 37
+            packageManager: dnf
           - container: fedora:36
             name: Fedora 36
             packageManager: dnf
