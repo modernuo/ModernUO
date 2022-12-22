@@ -36,6 +36,7 @@ public class BufferReader : IGenericReader
     private int _position;
 
     public long Position => _position;
+    public long BufferSize => _buffer.Length;
 
     public BufferReader(byte[] buffer, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {

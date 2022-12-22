@@ -122,7 +122,7 @@ namespace Server.Mobiles
             base.OnDamage(amount, from, willKill);
         }
 
-        public override Item NewHarmfulItem() => new PoolOfAcid(TimeSpan.FromSeconds(10), 5, 10)
+        public override Item NewHarmfulItem() => new Acid(TimeSpan.FromSeconds(10), 5, 10)
         {
             Name = "slime"
         };
