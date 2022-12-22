@@ -31,3 +31,6 @@ publish.cmd             text eol=lf
 /.github export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
+
+# Collapse in Github
+**/Migrations/*.v*.json linguist-generated=true

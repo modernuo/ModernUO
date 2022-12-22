@@ -18,9 +18,11 @@ jobs:
     displayName: 'Install .NET 7'
     inputs:
       packageType: sdk
-      version: 7.0.100
+      version: 7.0.101
   - task: NuGetAuthenticate@1
   - script: ./publish.cmd Release
     displayName: 'Build'
+  - script: git diff --exit-code ./**/Migrations/*.v*.json
+    displayName: Migration Changes
   - script: dotnet test --no-restore
     displayName: 'Test'

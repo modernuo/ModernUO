@@ -30,7 +30,7 @@
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
-        <PackageReference Include="MailKit" Version="3.4.2" />
+        <PackageReference Include="MailKit" Version="3.4.3" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="7.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
         <PackageReference Include="Zlib.Bindings" Version="1.10.1" />

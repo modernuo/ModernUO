@@ -16,8 +16,8 @@ jobs:
         token: ${{ secrets.WORKFLOW_TOKEN }}
     - name: Setup .NET 7
       uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.100
+      with
+        dotnet-version: 7.0.101
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv
