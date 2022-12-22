@@ -2,17 +2,15 @@ using System;
 using System.Collections.Generic;
 using Server.Items;
 using Server.Network;
+using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    public abstract class BaseGuildmaster : BaseVendor
+    [SerializationGenerator(0, false)]
+    public abstract partial class BaseGuildmaster : BaseVendor
     {
         public BaseGuildmaster(string title) : base(title) =>
             Title = $"the {title} {(Female ? "guildmistress" : "guildmaster")}";
-
-        public BaseGuildmaster(Serial serial) : base(serial)
-        {
-        }
 
         protected override List<SBInfo> SBInfos { get; } = new();
 
@@ -161,20 +159,6 @@ namespace Server.Mobiles
             }
 
             return base.OnGoldGiven(from, dropped);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
