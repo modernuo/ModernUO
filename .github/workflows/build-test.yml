@@ -27,6 +27,8 @@ jobs:
         dotnet-version: 7.0.101
     - name: Build
       run: ./publish.cmd Release
+    - name: Migration Changes
+      run: git diff --exit-code ./**/Migrations/*.v*.json
     - name: Test
       run: dotnet test --no-restore
 
@@ -73,5 +75,7 @@ jobs:
           dotnet-version: 7.0.101
       - name: Build
         run: ./publish.sh Release
+      - name: Migration Changes
+        run: git diff --exit-code ./**/Migrations/*.v*.json
       - name: Test
         run: dotnet test --no-restore
