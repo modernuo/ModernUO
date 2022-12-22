@@ -26,14 +26,5 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBCarpenter());
             m_SBInfos.Add(new SBWoodenShields());
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialize()
-        {
-            if (Title == "the stonecrafter")
-            {
-                Title = "the stone crafter";
-            }
-        }
     }
 }

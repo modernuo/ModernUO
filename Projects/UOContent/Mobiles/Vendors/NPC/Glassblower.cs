@@ -26,14 +26,5 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBGlassblower());
             m_SBInfos.Add(new SBAlchemist());
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialize()
-        {
-            if (Body == 0x2F2)
-            {
-                Body = 0x2F6;
-            }
-        }
     }
 }
