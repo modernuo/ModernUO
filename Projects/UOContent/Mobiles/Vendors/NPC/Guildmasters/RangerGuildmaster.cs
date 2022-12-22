@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class RangerGuildmaster : BaseGuildmaster
+    [SerializationGenerator(0, false)]
+    public partial class RangerGuildmaster : BaseGuildmaster
     {
         [Constructible]
         public RangerGuildmaster() : base("ranger")
@@ -18,24 +21,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Swords, 45.0, 68.0);
         }
 
-        public RangerGuildmaster(Serial serial) : base(serial)
-        {
-        }
-
         public override NpcGuild NpcGuild => NpcGuild.RangersGuild;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }
