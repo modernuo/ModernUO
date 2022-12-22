@@ -1,26 +1,31 @@
 using System;
+using ModernUO.Serialization;
 using Server.Collections;
 using Server.Mobiles;
 
 namespace Server.Items;
 
-[ManualDirtyChecking]
-[TypeAlias("Server.Items.AcidSlime")]
-public class PoolOfAcid : Item
+[SerializationGenerator(0)]
+public partial class Acid : Item
 {
-    private readonly TimeSpan _duration;
-    private readonly int _maxDamage;
-    private readonly int _minDamage;
+    private TimeSpan _duration;
+    private int _maxDamage;
+    private int _minDamage;
     private TimerExecutionToken _timerToken;
     private bool _drying;
 
     [Constructible]
-    public PoolOfAcid() : this(TimeSpan.FromSeconds(10.0), 2, 5)
+    public Acid() : this(TimeSpan.FromSeconds(10.0), 2, 5)
     {
     }
 
     [Constructible]
-    public PoolOfAcid(TimeSpan duration, int minDamage, int maxDamage) : base(0x122A)
+    public Acid(TimeSpan duration, int minDamage, int maxDamage) : this(duration, TimeSpan.FromSeconds(1), minDamage, maxDamage)
+    {
+    }
+
+    [Constructible]
+    public Acid(TimeSpan duration, TimeSpan tickRate, int minDamage, int maxDamage) : base(0x122A)
     {
         Hue = 0x3F;
         Movable = false;
@@ -29,11 +34,7 @@ public class PoolOfAcid : Item
         _maxDamage = maxDamage;
         _duration = duration;
 
-        Timer.StartTimer(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick, out _timerToken);
-    }
-
-    public PoolOfAcid(Serial serial) : base(serial)
-    {
+        Timer.StartTimer(TimeSpan.Zero, tickRate, OnTick, out _timerToken);
     }
 
     public override string DefaultName => "a pool of acid";
@@ -54,6 +55,7 @@ public class PoolOfAcid : Item
             return;
         }
 
+        // Dries half way through duration
         if (!_drying && age > _duration - age)
         {
             _drying = true;
@@ -64,7 +66,8 @@ public class PoolOfAcid : Item
 
         foreach (var m in GetMobilesInRange(0))
         {
-            if (m.Alive && !m.IsDeadBondedPet && (m is not BaseCreature bc || bc.Controlled || bc.Summoned))
+            if (m.AccessLevel == AccessLevel.Player &&
+                m.Alive && !m.IsDeadBondedPet && (m is not BaseCreature bc || bc.Controlled || bc.Summoned))
             {
                 queue.Enqueue(m);
             }
@@ -87,11 +90,9 @@ public class PoolOfAcid : Item
         m.Damage(Utility.RandomMinMax(_minDamage, _maxDamage));
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
     {
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
+        Delete();
     }
 }

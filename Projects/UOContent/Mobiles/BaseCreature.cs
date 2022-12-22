@@ -4072,7 +4072,7 @@ namespace Server.Mobiles
           kappa+acidslime, grizzles+whatever, etc.
         */
 
-        public virtual Item NewHarmfulItem() => new PoolOfAcid(TimeSpan.FromSeconds(10), 30, 30);
+        public virtual Item NewHarmfulItem() => new Acid(TimeSpan.FromSeconds(10), 30, 30);
 
         public virtual void StopFlee()
         {
