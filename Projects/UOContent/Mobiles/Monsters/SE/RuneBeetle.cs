@@ -5,7 +5,7 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(0,false)]
+    [SerializationGenerator(0, false)]
     public partial class RuneBeetle : BaseCreature
     {
         [Constructible]
@@ -92,21 +92,6 @@ namespace Server.Mobiles
 
         private static MonsterAbility[] _abilities = { MonsterAbilities.RuneCorruption };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            for (var i = 0; i < Skills.Length; ++i)
-            {
-                var skill = Skills[i];
-                skill.Cap = Math.Max(100.0, skill.Cap * 0.9);
-
-                if (skill.Base > skill.Cap)
-                {
-                    skill.Base = skill.Cap;
-                }
-            }
-        }
     }
 }
 

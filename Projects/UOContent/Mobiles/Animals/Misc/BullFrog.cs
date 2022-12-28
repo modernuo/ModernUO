@@ -3,7 +3,7 @@ using ModernUO.Serialization;
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Bullfrog")]
-    [SerializationGenerator(0,false)]
+    [SerializationGenerator(0, false)]
     public partial class BullFrog : BaseCreature
     {
         [Constructible]

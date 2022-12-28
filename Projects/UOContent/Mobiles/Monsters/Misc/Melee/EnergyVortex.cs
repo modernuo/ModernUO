@@ -103,14 +103,5 @@ namespace Server.Mobiles
 
             base.OnThink();
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
-        {
-            if (BaseSoundID == 263)
-            {
-                BaseSoundID = 0;
-            }
-        }
     }
 }
