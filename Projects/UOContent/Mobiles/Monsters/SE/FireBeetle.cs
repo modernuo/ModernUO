@@ -5,7 +5,7 @@ using Server.Items;
 namespace Server.Mobiles
 {
     [Forge]
-    [SerializationGenerator(0,false)]
+    [SerializationGenerator(0, false)]
     public partial class FireBeetle : BaseMount
     {
         public override string DefaultName => "a fire beetle";

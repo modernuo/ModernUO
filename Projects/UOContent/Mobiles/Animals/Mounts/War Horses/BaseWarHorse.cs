@@ -2,7 +2,7 @@ using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(0,false)]
+    [SerializationGenerator(0, false)]
     public abstract partial class BaseWarHorse : BaseMount
     {
         public override string DefaultName => "a war horse";

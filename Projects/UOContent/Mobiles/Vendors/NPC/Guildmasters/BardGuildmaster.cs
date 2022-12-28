@@ -2,7 +2,7 @@ using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(0,false)]
+    [SerializationGenerator(0, false)]
     public partial class BardGuildmaster : BaseGuildmaster
     {
         [Constructible]
