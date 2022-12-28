@@ -187,6 +187,7 @@ public ref struct ValueStringBuilder
                 while (!((ISpanFormattable)value).TryFormat(destination, out charsWritten, format, default))
                 {
                     Grow(1);
+                    destination = _chars[_length..];
                 }
 
                 if ((uint)charsWritten > (uint)destination.Length)
