@@ -176,7 +176,7 @@ namespace Server.Commands.Generic
             }
         }
 
-        public string GenerateArgString(string[] args)
+        public static string GenerateArgString(string[] args)
         {
             if (args.Length == 0)
             {
