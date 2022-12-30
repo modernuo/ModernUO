@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Shipwright : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Shipwright : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
