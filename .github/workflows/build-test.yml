@@ -64,10 +64,10 @@ jobs:
         run: dnf upgrade --refresh -y && dnf install -y epel-release epel-next-release
         if: ${{ startsWith(matrix.name, 'CentOS')  }}
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu zlib-devel zstd libargon2-devel
+        run: dnf makecache --refresh && dnf install -y findutils libicu zlib-devel zstd libargon2-devel tzdata
         if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libz-dev zstd libargon2-dev
+        run: apt-get update -y && apt-get install -y curl libicu-dev libz-dev zstd libargon2-dev tzdata
         if: ${{ matrix.packageManager == 'apt' }}
       - uses: actions/checkout@v3
         with:
