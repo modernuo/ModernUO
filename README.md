@@ -72,13 +72,13 @@ dnf upgrade --refresh -y
 dnf install -y epel-release epel-next-release
 # Note: libargon2 is old.
 # Download/symlink from here: https://github.com/modernuo/Argon2.Bindings/tree/main/runtimes
-dnf install -y findutils libicu zlib-devel zstd libargon2-devel
+dnf install -y findutils libicu zlib-devel zstd libargon2-devel tzdata
 ```
 
 ### Ubuntu, Debian, etc
 ```shell
 apt-get update -y
-apt-get install -y libicu-dev libz-dev zstd libargon2-dev
+apt-get install -y libicu-dev libz-dev zstd libargon2-dev tzdata
 ```
 
 ## Running the Server
