@@ -2,6 +2,7 @@ using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
+    [SerializationGenerator(0, false)]
     public partial class ForestOstard : BaseMount
     {
         public override string DefaultName => "a forest ostard";
