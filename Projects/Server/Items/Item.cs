@@ -2269,39 +2269,44 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     public virtual bool CanStackWith(Item dropped) =>
-        dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.ItemID == ItemID &&
-        dropped.Hue == Hue && dropped.Name == Name && dropped.Amount + Amount <= 60000 && dropped != this;
+        dropped.Stackable && Stackable &&
+        dropped.GetType() == GetType() &&
+        dropped.ItemID == ItemID &&
+        dropped.Hue == Hue &&
+        dropped.Name == Name &&
+        dropped.Amount + Amount <= 60000 &&
+        dropped != this;
 
     public bool StackWith(Mobile from, Item dropped) => StackWith(from, dropped, true);
 
     public virtual bool StackWith(Mobile from, Item dropped, bool playSound)
     {
-        if (CanStackWith(dropped))
+        if (!CanStackWith(dropped))
         {
-            if (m_LootType != dropped.m_LootType)
-            {
-                m_LootType = LootType.Regular;
-            }
-
-            Amount += dropped.Amount;
-            dropped.Delete();
-
-            if (playSound && from != null)
-            {
-                var soundID = GetDropSound();
-
-                if (soundID == -1)
-                {
-                    soundID = 0x42;
-                }
-
-                from.SendSound(soundID, GetWorldLocation());
-            }
-
-            return true;
+            return false;
         }
 
-        return false;
+        if (m_LootType != dropped.m_LootType)
+        {
+            m_LootType = LootType.Regular;
+        }
+
+        Amount += dropped.Amount;
+        dropped.Delete();
+
+        if (playSound && from != null)
+        {
+            var soundID = GetDropSound();
+
+            if (soundID == -1)
+            {
+                soundID = 0x42;
+            }
+
+            from.SendSound(soundID, GetWorldLocation());
+        }
+
+        return true;
     }
 
     public virtual bool OnDragDrop(Mobile from, Item dropped)

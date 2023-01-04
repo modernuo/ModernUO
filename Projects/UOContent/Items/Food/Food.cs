@@ -49,17 +49,9 @@ public abstract partial class Food : Item
         }
     }
 
-    public override bool CanStackWith(Item dropped)
-    {
-        if (dropped is Food food)
-        {
-            if (Poison != food.Poison || Poisoner != food.Poisoner)
-            {
-                return false;
-            }
-        }
-        return base.CanStackWith(dropped);
-    }
+    public override bool CanStackWith(Item dropped) =>
+        (dropped is not Food food || Poison == food.Poison && Poisoner == food.Poisoner) &&
+        base.CanStackWith(dropped);
 
 
     public virtual bool Eat(Mobile from)

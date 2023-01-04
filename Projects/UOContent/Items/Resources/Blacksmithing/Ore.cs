@@ -54,10 +54,8 @@ public abstract partial class BaseOre : Item
         };
 
     public override bool CanStackWith(Item dropped) =>
-        dropped.Stackable && Stackable && dropped.Hue == Hue &&
-        dropped.GetType() == GetType() && dropped.ItemID == ItemID &&
-        (dropped as BaseOre)?._resource == _resource && dropped.Name == Name &&
-        dropped.Amount + Amount <= 60000 && dropped != this;
+        base.CanStackWith(dropped) &&
+        (dropped as BaseOre)?._resource == _resource;
 
     public override void AddNameProperty(IPropertyList list)
     {
