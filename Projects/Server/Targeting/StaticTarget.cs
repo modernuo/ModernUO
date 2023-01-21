@@ -11,6 +11,14 @@ public class StaticTarget : IPoint3D
         m_Location.Z += TileData.ItemTable[ItemID].CalcHeight;
     }
 
+    public StaticTarget(Point3D location, int itemID, int hue)
+    {
+        m_Location = location;
+        ItemID = itemID & TileData.MaxItemValue;
+        m_Location.Z += TileData.ItemTable[ItemID].CalcHeight;
+        Hue = hue;
+    }
+
     [CommandProperty(AccessLevel.Counselor)]
     public Point3D Location => m_Location;
 
@@ -31,4 +39,7 @@ public class StaticTarget : IPoint3D
 
     [CommandProperty(AccessLevel.Counselor)]
     public int Z => m_Location.Z;
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Hue { get; }
 }

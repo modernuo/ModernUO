@@ -95,11 +95,15 @@ public static class IncomingTargetingPackets
                                 }
                             }
 
+                            int hue = 0;
+
                             for (var i = 0; !valid && i < tiles.Length; ++i)
                             {
-                                if (tiles[i].Z == z && tiles[i].ID == graphic)
+                                var tile = tiles[i];
+                                if (tile.Z == z && tile.ID == graphic)
                                 {
                                     valid = true;
+                                    hue = tile.Hue;
                                 }
                             }
 
@@ -110,7 +114,7 @@ public static class IncomingTargetingPackets
                             }
                             else
                             {
-                                toTarget = new StaticTarget(new Point3D(x, y, z), graphic);
+                                toTarget = new StaticTarget(new Point3D(x, y, z), graphic, hue);
                             }
                         }
                     }
