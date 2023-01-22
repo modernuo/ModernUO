@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Server.Json;
+using Server.Logging;
 
 namespace Server;
 
@@ -39,6 +40,8 @@ namespace Server;
      */
 public static class TimeZoneHandler
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(TimeZoneHandler));
+
     private static readonly Dictionary<string, TimeZoneInfo> _timeZoneById = new();
     public static TimeZoneInfo SystemTimeZone { get; private set; }
 
@@ -47,17 +50,24 @@ public static class TimeZoneHandler
         var timezones = JsonConfig.Deserialize<TimeZoneWithRegions[]>(Path.Combine(Core.BaseDirectory, "Data/timezones.json"));
         foreach (var tz in timezones)
         {
-            // Get the timezone if we are on Windows
-            var tzInfo = Core.IsWindows ? TimeZoneInfo.FindSystemTimeZoneById(tz.TimeZone) : null;
-
-            foreach (var region in tz.Regions)
+            try
             {
-                // Get the timezone by region if we are on linux
-                tzInfo ??= TimeZoneInfo.FindSystemTimeZoneById(region);
-                _timeZoneById[region] = tzInfo;
-            }
+                // Get the timezone if we are on Windows
+                var tzInfo = Core.IsWindows ? TimeZoneInfo.FindSystemTimeZoneById(tz.TimeZone) : null;
 
-            _timeZoneById[tz.TimeZone] = tzInfo;
+                foreach (var region in tz.Regions)
+                {
+                    // Get the timezone by region if we are on linux
+                    tzInfo ??= TimeZoneInfo.FindSystemTimeZoneById(region);
+                    _timeZoneById[region] = tzInfo;
+                }
+
+                _timeZoneById[tz.TimeZone] = tzInfo;
+            }
+            catch (TimeZoneNotFoundException e)
+            {
+                logger.Warning(e, $"Timezone '{tz.TimeZone}' was not found.");
+            }
         }
     }
 
