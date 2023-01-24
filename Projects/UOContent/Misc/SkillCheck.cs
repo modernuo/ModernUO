@@ -21,10 +21,9 @@ public static class SkillCheck
     // Publish 16 changed max stats from 100 to 125
     private static int StatMax = Core.LBR ? 125 : 100;
 
-    // Default values used to make the configuration.
+    // *** NOTE ***: Modifying these values will not change an already created antimacro.json file!
     private static readonly bool[] _skillThatUseAntiMacro =
     {
-        // true if this skill uses the anti-macro code, false if it does not
         false, // Alchemy = 0,
         true,  // Anatomy = 1,
         true,  // AnimalLore = 2,
