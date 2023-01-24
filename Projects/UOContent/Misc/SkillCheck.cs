@@ -533,7 +533,7 @@ public static class SkillCheck
         // How long do we remember targets/locations?
         public TimeSpan Expire { get; init; }
 
-        [JsonConverter(typeof(BitArrayEnumFlagsConverter<SkillName>))]
+        [JsonConverter(typeof(BitArrayEnumIndexConverter<SkillName>))]
         public BitArray SkillsThatUseAntiMacro { get; init; }
 
         public bool UseAntiMacro(int skillId) =>
