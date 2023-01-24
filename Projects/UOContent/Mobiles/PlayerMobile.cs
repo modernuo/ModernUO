@@ -2886,14 +2886,14 @@ namespace Server.Mobiles
 
             if (tbl.TryGetValue(obj, out var count))
             {
-                if (count.TimeStamp + SkillCheck.AntiMacroExpire <= Core.Now)
+                if (count.TimeStamp + SkillCheck.AntiMacro.Expire <= Core.Now)
                 {
                     count.Count = 1;
                     return true;
                 }
 
                 ++count.Count;
-                return count.Count <= SkillCheck.Allowance;
+                return count.Count <= SkillCheck.AntiMacro.Allowance;
             }
 
             tbl[obj] = count = new CountAndTimeStamp();
@@ -3229,7 +3229,7 @@ namespace Server.Mobiles
 
                 foreach (var (k, v) in t)
                 {
-                    if (v.TimeStamp + SkillCheck.AntiMacroExpire <= Core.Now)
+                    if (v.TimeStamp + SkillCheck.AntiMacro.Expire <= Core.Now)
                     {
                         toRemove.Add(k);
                     }

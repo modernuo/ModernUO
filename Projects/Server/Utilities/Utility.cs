@@ -1703,4 +1703,20 @@ public static class Utility
 
         return center;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetUnderlyingNumericBitLength(this TypeCode typeCode) =>
+        typeCode switch
+        {
+            TypeCode.Byte   => 8,
+            TypeCode.SByte  => 8,
+            TypeCode.Int16  => 16,
+            TypeCode.UInt16 => 16,
+            TypeCode.Char   => 16,
+            TypeCode.Int32  => 32,
+            TypeCode.UInt32 => 32,
+            TypeCode.Int64  => 64,
+            TypeCode.UInt64 => 64,
+            _               => 64
+        };
 }
