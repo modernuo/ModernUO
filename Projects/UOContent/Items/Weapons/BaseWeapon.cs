@@ -1686,22 +1686,19 @@ namespace Server.Items
                     percentageBonus += 100;
                 }
             }
-            else if (!defender.Player)
+            else if (!defender.Player && attacker is PlayerMobile pm)
             {
-                if (attacker is PlayerMobile pm)
+                if (pm.WaitingForEnemy)
                 {
-                    if (pm.WaitingForEnemy)
-                    {
-                        pm.EnemyOfOneType = defender.GetType();
-                        pm.WaitingForEnemy = false;
-                    }
+                    pm.EnemyOfOneType = defender.GetType();
+                    pm.WaitingForEnemy = false;
+                }
 
-                    if (pm.EnemyOfOneType == defender.GetType())
-                    {
-                        defender.FixedEffect(0x37B9, 10, 5, 1160, 0);
+                if (pm.EnemyOfOneType == defender.GetType())
+                {
+                    defender.FixedEffect(0x37B9, 10, 5, 1160, 0);
 
-                        percentageBonus += 50;
-                    }
+                    percentageBonus += 50;
                 }
             }
 
@@ -1762,8 +1759,6 @@ namespace Server.Items
             // Parried
             else if (Core.AOS && damage == 0 && a?.Validate(attacker) == true)
             {
-                /*&& a.CheckMana( attacker, true )*/
-                // Parried special moves have no mana cost
                 a = null;
                 WeaponAbility.ClearCurrentAbility(attacker);
                 attacker.SendLocalizedMessage(1061140); // Your attack was parried!
@@ -1847,7 +1842,7 @@ namespace Server.Items
             }
 
             // TODO: Scale damage, alongside the leech effects below, to weapon speed.
-            if (ImmolatingWeaponSpell.IsImmolating(this) && damage > 0)
+            if (damage > 0 && ImmolatingWeaponSpell.IsImmolating(this))
             {
                 ImmolatingWeaponSpell.DoEffect(this, defender);
             }
@@ -1885,8 +1880,11 @@ namespace Server.Items
                 this is BaseRanged
             );
 
-            var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
+            if (damageGiven > 0)
+            {
+                var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
 
+            // Leech abilities
             if (Core.AOS)
             {
                 var lifeLeech = 0;
@@ -2078,6 +2076,7 @@ namespace Server.Items
                 {
                     DoLowerDefense(attacker, defender);
                 }
+            }
             }
 
             bcAtt?.OnGaveMeleeAttack(defender, damage);
