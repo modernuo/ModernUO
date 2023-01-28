@@ -1686,22 +1686,19 @@ namespace Server.Items
                     percentageBonus += 100;
                 }
             }
-            else if (!defender.Player)
+            else if (!defender.Player && attacker is PlayerMobile pm)
             {
-                if (attacker is PlayerMobile pm)
+                if (pm.WaitingForEnemy)
                 {
-                    if (pm.WaitingForEnemy)
-                    {
-                        pm.EnemyOfOneType = defender.GetType();
-                        pm.WaitingForEnemy = false;
-                    }
+                    pm.EnemyOfOneType = defender.GetType();
+                    pm.WaitingForEnemy = false;
+                }
 
-                    if (pm.EnemyOfOneType == defender.GetType())
-                    {
-                        defender.FixedEffect(0x37B9, 10, 5, 1160, 0);
+                if (pm.EnemyOfOneType == defender.GetType())
+                {
+                    defender.FixedEffect(0x37B9, 10, 5, 1160, 0);
 
-                        percentageBonus += 50;
-                    }
+                    percentageBonus += 50;
                 }
             }
 
@@ -1762,8 +1759,6 @@ namespace Server.Items
             // Parried
             else if (Core.AOS && damage == 0 && a?.Validate(attacker) == true)
             {
-                /*&& a.CheckMana( attacker, true )*/
-                // Parried special moves have no mana cost
                 a = null;
                 WeaponAbility.ClearCurrentAbility(attacker);
                 attacker.SendLocalizedMessage(1061140); // Your attack was parried!
@@ -1847,7 +1842,7 @@ namespace Server.Items
             }
 
             // TODO: Scale damage, alongside the leech effects below, to weapon speed.
-            if (ImmolatingWeaponSpell.IsImmolating(this) && damage > 0)
+            if (damage > 0 && ImmolatingWeaponSpell.IsImmolating(this))
             {
                 ImmolatingWeaponSpell.DoEffect(this, defender);
             }
@@ -1885,198 +1880,202 @@ namespace Server.Items
                 this is BaseRanged
             );
 
-            var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
-
-            if (Core.AOS)
+            if (damageGiven > 0)
             {
-                var lifeLeech = 0;
-                var stamLeech = 0;
-                var manaLeech = 0;
+                var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
 
-                if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
-                    Utility.Random(100))
+                // Leech abilities
+                if (Core.AOS)
                 {
-                    lifeLeech += 30; // HitLeechHits% chance to leech 30% of damage as hit points
-                }
+                    var lifeLeech = 0;
+                    var stamLeech = 0;
+                    var manaLeech = 0;
 
-                if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechStam) * propertyBonus) >
-                    Utility.Random(100))
-                {
-                    stamLeech += 100; // HitLeechStam% chance to leech 100% of damage as stamina
-                }
-
-                if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechMana) * propertyBonus) >
-                    Utility.Random(100))
-                {
-                    manaLeech += 40; // HitLeechMana% chance to leech 40% of damage as mana
-                }
-
-                if (Cursed)
-                {
-                    lifeLeech += 50; // Additional 50% life leech for cursed weapons (necro spell)
-                }
-
-                if (lifeLeech != 0)
-                {
-                    attacker.Hits += AOS.Scale(damageGiven, lifeLeech);
-                }
-
-                if (stamLeech != 0)
-                {
-                    attacker.Stam += AOS.Scale(damageGiven, stamLeech);
-                }
-
-                if (manaLeech != 0)
-                {
-                    attacker.Mana += AOS.Scale(damageGiven, manaLeech);
-                }
-
-                if (lifeLeech != 0 || stamLeech != 0 || manaLeech != 0)
-                {
-                    attacker.PlaySound(0x44D);
-                }
-            }
-
-            var isAcidMonster =
-                m_MaxHits > 0 && MaxRange <= 1 && Attributes.SpellChanneling == 0 &&
-                defender is Slime or AcidElemental;
-
-            // Stratics says 50% chance, seems more like 4%..
-            if (isAcidMonster || Utility.Random(25) == 0)
-            {
-                if (isAcidMonster)
-                {
-                    attacker.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500263); // *Acid blood scars your weapon!*
-                }
-
-                if (Core.AOS && WeaponAttributes.SelfRepair > Utility.Random(10))
-                {
-                    HitPoints += 2;
-                }
-                else if (m_Hits > 0)
-                {
-                    --HitPoints;
-                }
-                else if (m_MaxHits > 1)
-                {
-                    --MaxHitPoints;
-
-                    if (Parent is Mobile mobile)
+                    if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
+                        Utility.Random(100))
                     {
-                        // Your equipment is severely damaged.
-                        mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
+                        lifeLeech += 30; // HitLeechHits% chance to leech 30% of damage as hit points
+                    }
+
+                    if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechStam) * propertyBonus) >
+                        Utility.Random(100))
+                    {
+                        stamLeech += 100; // HitLeechStam% chance to leech 100% of damage as stamina
+                    }
+
+                    if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechMana) * propertyBonus) >
+                        Utility.Random(100))
+                    {
+                        manaLeech += 40; // HitLeechMana% chance to leech 40% of damage as mana
+                    }
+
+                    if (Cursed)
+                    {
+                        lifeLeech += 50; // Additional 50% life leech for cursed weapons (necro spell)
+                    }
+
+                    if (lifeLeech != 0)
+                    {
+                        attacker.Hits += AOS.Scale(damageGiven, lifeLeech);
+                    }
+
+                    if (stamLeech != 0)
+                    {
+                        attacker.Stam += AOS.Scale(damageGiven, stamLeech);
+                    }
+
+                    if (manaLeech != 0)
+                    {
+                        attacker.Mana += AOS.Scale(damageGiven, manaLeech);
+                    }
+
+                    if (lifeLeech != 0 || stamLeech != 0 || manaLeech != 0)
+                    {
+                        attacker.PlaySound(0x44D);
                     }
                 }
-                else
+
+                var isAcidMonster =
+                    m_MaxHits > 0 && MaxRange <= 1 && Attributes.SpellChanneling == 0 &&
+                    defender is Slime or AcidElemental;
+
+                // Stratics says 50% chance, seems more like 4%..
+                if (isAcidMonster || Utility.Random(25) == 0)
                 {
-                    Delete();
-                }
-            }
+                    if (isAcidMonster)
+                    {
+                        attacker.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500263); // *Acid blood scars your weapon!*
+                    }
 
-            if (attacker is VampireBatFamiliar bc)
-            {
-                var caster = bc.ControlMaster ?? bc.SummonMaster;
+                    if (Core.AOS && WeaponAttributes.SelfRepair > Utility.Random(10))
+                    {
+                        HitPoints += 2;
+                    }
+                    else if (m_Hits > 0)
+                    {
+                        --HitPoints;
+                    }
+                    else if (m_MaxHits > 1)
+                    {
+                        --MaxHitPoints;
 
-                if (caster != null && caster.Map == bc.Map && caster.InRange(bc, 2))
-                {
-                    caster.Hits += damage;
-                }
-                else
-                {
-                    bc.Hits += damage;
-                }
-            }
-
-            if (Core.AOS)
-            {
-                var physChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitPhysicalArea) * propertyBonus);
-
-                var fireChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireArea) * propertyBonus);
-
-                var coldChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitColdArea) * propertyBonus);
-
-                var poisChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitPoisonArea) * propertyBonus);
-
-                var nrgyChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitEnergyArea) * propertyBonus);
-
-                if (physChance != 0 && physChance > Utility.Random(100))
-                {
-                    DoAreaAttack(attacker, defender, 0x10E, 50, 100, 0, 0, 0, 0);
+                        if (Parent is Mobile mobile)
+                        {
+                            // Your equipment is severely damaged.
+                            mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
+                        }
+                    }
+                    else
+                    {
+                        Delete();
+                    }
                 }
 
-                if (fireChance != 0 && fireChance > Utility.Random(100))
+                if (attacker is VampireBatFamiliar bc)
                 {
-                    DoAreaAttack(attacker, defender, 0x11D, 1160, 0, 100, 0, 0, 0);
+                    var caster = bc.ControlMaster ?? bc.SummonMaster;
+
+                    if (caster != null && caster.Map == bc.Map && caster.InRange(bc, 2))
+                    {
+                        caster.Hits += damage;
+                    }
+                    else
+                    {
+                        bc.Hits += damage;
+                    }
                 }
 
-                if (coldChance != 0 && coldChance > Utility.Random(100))
+                if (Core.AOS)
                 {
-                    DoAreaAttack(attacker, defender, 0x0FC, 2100, 0, 0, 100, 0, 0);
-                }
+                    var physChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitPhysicalArea) * propertyBonus);
 
-                if (poisChance != 0 && poisChance > Utility.Random(100))
-                {
-                    DoAreaAttack(attacker, defender, 0x205, 1166, 0, 0, 0, 100, 0);
-                }
+                    var fireChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireArea) * propertyBonus);
 
-                if (nrgyChance != 0 && nrgyChance > Utility.Random(100))
-                {
-                    DoAreaAttack(attacker, defender, 0x1F1, 120, 0, 0, 0, 0, 100);
-                }
+                    var coldChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitColdArea) * propertyBonus);
 
-                var maChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitMagicArrow) * propertyBonus);
-                var harmChance = (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitHarm) * propertyBonus);
-                var fireballChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireball) * propertyBonus);
-                var lightningChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLightning) * propertyBonus);
-                var dispelChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitDispel) * propertyBonus);
+                    var poisChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitPoisonArea) * propertyBonus);
 
-                if (maChance != 0 && maChance > Utility.Random(100))
-                {
-                    DoMagicArrow(attacker, defender);
-                }
+                    var nrgyChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitEnergyArea) * propertyBonus);
 
-                if (harmChance != 0 && harmChance > Utility.Random(100))
-                {
-                    DoHarm(attacker, defender);
-                }
+                    if (physChance != 0 && physChance > Utility.Random(100))
+                    {
+                        DoAreaAttack(attacker, defender, 0x10E, 50, 100, 0, 0, 0, 0);
+                    }
 
-                if (fireballChance != 0 && fireballChance > Utility.Random(100))
-                {
-                    DoFireball(attacker, defender);
-                }
+                    if (fireChance != 0 && fireChance > Utility.Random(100))
+                    {
+                        DoAreaAttack(attacker, defender, 0x11D, 1160, 0, 100, 0, 0, 0);
+                    }
 
-                if (lightningChance != 0 && lightningChance > Utility.Random(100))
-                {
-                    DoLightning(attacker, defender);
-                }
+                    if (coldChance != 0 && coldChance > Utility.Random(100))
+                    {
+                        DoAreaAttack(attacker, defender, 0x0FC, 2100, 0, 0, 100, 0, 0);
+                    }
 
-                if (dispelChance != 0 && dispelChance > Utility.Random(100))
-                {
-                    DoDispel(attacker, defender);
-                }
+                    if (poisChance != 0 && poisChance > Utility.Random(100))
+                    {
+                        DoAreaAttack(attacker, defender, 0x205, 1166, 0, 0, 0, 100, 0);
+                    }
 
-                var laChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLowerAttack) * propertyBonus);
-                var ldChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLowerDefend) * propertyBonus);
+                    if (nrgyChance != 0 && nrgyChance > Utility.Random(100))
+                    {
+                        DoAreaAttack(attacker, defender, 0x1F1, 120, 0, 0, 0, 0, 100);
+                    }
 
-                if (laChance != 0 && laChance > Utility.Random(100))
-                {
-                    DoLowerAttack(attacker, defender);
-                }
+                    var maChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitMagicArrow) * propertyBonus);
+                    var harmChance = (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitHarm) * propertyBonus);
+                    var fireballChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireball) * propertyBonus);
+                    var lightningChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLightning) * propertyBonus);
+                    var dispelChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitDispel) * propertyBonus);
 
-                if (ldChance != 0 && ldChance > Utility.Random(100))
-                {
-                    DoLowerDefense(attacker, defender);
+                    if (maChance != 0 && maChance > Utility.Random(100))
+                    {
+                        DoMagicArrow(attacker, defender);
+                    }
+
+                    if (harmChance != 0 && harmChance > Utility.Random(100))
+                    {
+                        DoHarm(attacker, defender);
+                    }
+
+                    if (fireballChance != 0 && fireballChance > Utility.Random(100))
+                    {
+                        DoFireball(attacker, defender);
+                    }
+
+                    if (lightningChance != 0 && lightningChance > Utility.Random(100))
+                    {
+                        DoLightning(attacker, defender);
+                    }
+
+                    if (dispelChance != 0 && dispelChance > Utility.Random(100))
+                    {
+                        DoDispel(attacker, defender);
+                    }
+
+                    var laChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLowerAttack) * propertyBonus);
+                    var ldChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLowerDefend) * propertyBonus);
+
+                    if (laChance != 0 && laChance > Utility.Random(100))
+                    {
+                        DoLowerAttack(attacker, defender);
+                    }
+
+                    if (ldChance != 0 && ldChance > Utility.Random(100))
+                    {
+                        DoLowerDefense(attacker, defender);
+                    }
                 }
             }
 
