@@ -15,14 +15,10 @@ namespace Server.Guilds
 
             AddBackground(0, 0, 500, 300, 0x2422);
             AddHtmlLocalized(25, 20, 450, 25, 1062939, 0x0, true); // <center>GUILD MENU</center>
-            AddHtmlLocalized(
-                25,
-                60,
-                450,
-                60,
-                1062940,
-                0x0
-            ); // As you are not a member of any guild, you can create your own by providing a unique guild name and paying the standard guild registration fee.
+
+            // As you are not a member of any guild, you can create your own by providing a unique guild name and paying the standard guild registration fee.
+            AddHtmlLocalized(25, 60, 450, 60, 1062940, 0x0);
+
             AddHtmlLocalized(25, 135, 120, 25, 1062941, 0x0); // Registration Fee:
             AddLabel(155, 135, 0x481, Guild.RegistrationFee.ToString());
             AddHtmlLocalized(25, 165, 120, 25, 1011140, 0x0); // Enter Guild Name:
@@ -48,7 +44,7 @@ namespace Server.Guilds
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            if (sender.Mobile is not PlayerMobile pm || pm.Guild != null)
+            if (sender.Mobile is not PlayerMobile { Guild: null } pm)
             {
                 return; // Sanity
             }
@@ -60,11 +56,11 @@ namespace Server.Guilds
                         var tName = info.GetTextEntry(5);
                         var tAbbrev = info.GetTextEntry(6);
 
-                        var guildName = tName == null ? "" : tName.Text;
-                        var guildAbbrev = tAbbrev == null ? "" : tAbbrev.Text;
+                        var guildName = tName?.Text?.Trim() ?? "";
+                        var guildAbbrev = tAbbrev?.Text?.Trim() ?? "";
 
-                        guildName = Utility.FixHtml(guildName.Trim());
-                        guildAbbrev = Utility.FixHtml(guildAbbrev.Trim());
+                        guildName = Utility.FixHtml(guildName);
+                        guildAbbrev = Utility.FixHtml(guildAbbrev);
 
                         if (guildName.Length <= 0)
                         {
@@ -76,17 +72,13 @@ namespace Server.Guilds
                         }
                         else if (guildName.Length > Guild.NameLimit)
                         {
-                            pm.SendLocalizedMessage(
-                                1063036,
-                                Guild.NameLimit.ToString()
-                            ); // A guild name cannot be more than ~1_val~ characters in length.
+                            // A guild name cannot be more than ~1_val~ characters in length.
+                            pm.SendLocalizedMessage(1063036, Guild.NameLimit.ToString());
                         }
                         else if (guildAbbrev.Length > Guild.AbbrevLimit)
                         {
-                            pm.SendLocalizedMessage(
-                                1063037,
-                                Guild.AbbrevLimit.ToString()
-                            ); // An abbreviation cannot exceed ~1_val~ characters in length.
+                            // An abbreviation cannot exceed ~1_val~ characters in length.
+                            pm.SendLocalizedMessage(1063037, Guild.AbbrevLimit.ToString());
                         }
                         else if (BaseGuild.FindByAbbrev(guildAbbrev) != null || !BaseGuildGump.CheckProfanity(guildAbbrev))
                         {
@@ -98,18 +90,14 @@ namespace Server.Guilds
                         }
                         else if (!Banker.Withdraw(pm, Guild.RegistrationFee))
                         {
-                            pm.SendLocalizedMessage(
-                                1063001,
-                                Guild.RegistrationFee
-                                    .ToString()
-                            ); // You do not possess the ~1_val~ gold piece fee required to create a guild.
+                            // You do not possess the ~1_val~ gold piece fee required to create a guild.
+                            pm.SendLocalizedMessage(1063001, Guild.RegistrationFee.ToString());
                         }
                         else
                         {
-                            pm.SendLocalizedMessage(
-                                1060398,
-                                Guild.RegistrationFee.ToString()
-                            );                                // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                            // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                            pm.SendLocalizedMessage(1060398, Guild.RegistrationFee.ToString());
+
                             pm.SendLocalizedMessage(1063238); // Your new guild has been founded.
                             pm.Guild = new Guild(pm, guildName, guildAbbrev);
                         }

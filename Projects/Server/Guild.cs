@@ -71,7 +71,7 @@ public abstract class BaseGuild : ISerializable
     {
         foreach (var g in World.Guilds.Values)
         {
-            if (g.Name == name)
+            if (g.Name.InsensitiveEquals(name))
             {
                 return g;
             }
@@ -84,7 +84,7 @@ public abstract class BaseGuild : ISerializable
     {
         foreach (var g in World.Guilds.Values)
         {
-            if (g.Abbreviation == abbr)
+            if (g.Abbreviation.InsensitiveEquals(abbr))
             {
                 return g;
             }
