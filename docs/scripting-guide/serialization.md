@@ -193,6 +193,6 @@ title: Serialization
 
 
     !!! Note
-      Non-entity classes cannot be serialized by reference since that would require a reference Serial or ID. This means if the object is a serializable property on multiple objects, it will be serialized
-      multiple times and will effectively get duplicated on world load. Consider either making it an `ISerializable` type and building world load/save mechanisms, or do not serialize the nested object directly.
-      Instead opt for a global lookup, serialize with generic persistence, and then reattach to the objects using the `WorldLoad` event sink.
+        Non-entity classes cannot be serialized by reference since that would require a reference Serial or ID. This means if the object is a serializable property on multiple objects, it will be serialized
+        multiple times and will effectively get duplicated on world load. Consider either making it an `ISerializable` type and building world load/save mechanisms, or do not serialize the nested object directly.
+        Instead opt for a global lookup, serialize with generic persistence, and then reattach to the objects using the `WorldLoad` event sink.
