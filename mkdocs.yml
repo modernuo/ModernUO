@@ -9,7 +9,7 @@ edit_uri: edit/main/docs/
 repo_name: modernuo/modernuo
 repo_url: https://github.com/modernuo/modernuo
 site_description: The Ultima Online Server Emulator for the modern era!
-copyright: Copyright 2019-2022 ModernUO Development Team
+copyright: Copyright 2019-2023 ModernUO Development Team
 theme:
   name: material
   favicon: branding/favicon.png
@@ -24,19 +24,19 @@ extra_css:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/modernuo/modernuo
+      link: https://muo.gg/github
       name: ModernUO on Github
     - icon: fontawesome/brands/discord
-      link: https://discord.gg/DHkNUsq
+      link: https://muo.gg/discord
       name: ModernUO on Discord
     - icon: fontawesome/brands/patreon
-      link: https://patreon.com/modernuo
+      link: https://muo.gg/patreon
       name: Sponsor ModernUO on Patreon
     - icon: fontawesome/brands/reddit
-      link: https://reddit.com/r/modernuo
+      link: https://muo.gg/reddit
       name: /r/modernuo
     - icon: fontawesome/brands/twitter
-      link: https://twitter.com/modernuo
+      link: https://muo.gg/twitter
       name: "@modernuo"
 markdown_extensions:
   - admonition
