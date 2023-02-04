@@ -1097,7 +1097,7 @@ namespace Server.Engines.Craft
                 if (craftSystem is DefBlacksmithy)
                 {
                     var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
-                    if (hammer != tool)
+                    if (hammer != null && hammer != tool)
                     {
                         hammer.UsesRemaining--;
                         if (hammer.UsesRemaining < 1)
