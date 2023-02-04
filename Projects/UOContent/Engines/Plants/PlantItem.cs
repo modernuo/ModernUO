@@ -56,8 +56,14 @@ namespace Server.Engines.Plants
 
         public PlantSystem PlantSystem { get; private set; }
 
-        public ObjectPropertyList OldClientPropertyList =>
-            _oldClientPropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+        public ObjectPropertyList OldClientPropertyList
+        {
+            get
+            {
+                InitializePropertyList(_oldClientPropertyList ??= new ObjectPropertyList(this));
+                return _oldClientPropertyList;
+            }
+        }
 
         public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
@@ -239,12 +245,11 @@ namespace Server.Engines.Plants
             InvalidateProperties();
         }
 
-        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
+        private void InitializePropertyList(ObjectPropertyList list)
         {
             GetProperties(list);
             AppendChildProperties(list);
             list.Terminate();
-            return list;
         }
 
         // Overridden to support new and old client localization
