@@ -369,7 +369,7 @@ namespace Server.Engines.Plants
             if (m_PlantStatus < PlantStatus.Seed)
             {
                 // Clients above 7.0.12.0 use the regular PropertyList
-                if (list != OldClientPropertyList)
+                if (list != _oldClientPropertyList)
                 {
                     // a ~1_val~ of ~2_val~ dirt
                     list.Add(1060830, $"{container:#}\t{dirt:#}");
