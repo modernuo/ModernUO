@@ -30,6 +30,7 @@ namespace Server
         private static int[] Load()
         {
             var path = "Data/shrink.json";
+
             var table = JsonConfig.Deserialize<Dictionary<string, string>>(path);
             if (table == null)
             {
