@@ -1091,6 +1091,12 @@ public partial class NetState : IComparable<NetState>
             }
 #endif
 
+        var m = Mobile;
+        if (m?.NetState == this)
+        {
+            m.NetState = null;
+        }
+
         TcpServer.Instances.Remove(this);
         try
         {
@@ -1104,13 +1110,7 @@ public partial class NetState : IComparable<NetState>
         Connection.Close();
         _handle.Free();
 
-        var m = Mobile;
         Mobile = null;
-
-        if (m?.NetState == this)
-        {
-            m.NetState = null;
-        }
 
         var a = Account;
 
@@ -1120,6 +1120,7 @@ public partial class NetState : IComparable<NetState>
         Account = null;
         ServerInfo = null;
         CityInfo = null;
+        Connection = null;
 
         var count = TcpServer.Instances.Count;
 
