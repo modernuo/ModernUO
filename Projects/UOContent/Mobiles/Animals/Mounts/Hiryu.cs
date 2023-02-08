@@ -1,16 +1,17 @@
+using ModernUO.Serialization;
 using System;
-using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Hiryu : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Hiryu : BaseMount
     {
-        private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
+        public override string DefaultName => "a hiryu";
 
         [Constructible]
-        public Hiryu() : base("a hiryu", 243, 0x3E94, AIType.AI_Melee)
+        public Hiryu() : base(243, 0x3E94, AIType.AI_Melee)
         {
             Hue = GetHue();
 
@@ -54,11 +55,6 @@ namespace Server.Mobiles
             }
         }
 
-        public Hiryu(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a hiryu corpse";
         public override double WeaponAbilityChance => 0.07; /* 1 in 15 chance of using per landed hit */
 
@@ -70,78 +66,30 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.GraspingClaw };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
         private static int GetHue()
         {
-            var rand = Utility.Random(1075);
-
-            if (rand <= 0)
+            return Utility.Random(1075) switch
             {
-                return 0x855C;
-            }
-
-            if (rand <= 1)
-            {
-                return 0x8490;
-            }
-
-            if (rand <= 3)
-            {
-                return 0x8030;
-            }
-
-            if (rand <= 5)
-            {
-                return 0x8037;
-            }
-
-            if (rand <= 8)
-            {
-                return 0x8295;
-            }
-
-            if (rand <= 11)
-            {
-                return 0x8123;
-            }
-
-            if (rand <= 16)
-            {
-                return 0x8482;
-            }
-
-            if (rand <= 24)
-            {
-                return 0x8487;
-            }
-
-            if (rand <= 34)
-            {
-                return 0x8032;
-            }
-
-            if (rand <= 44)
-            {
-                return 0x8899;
-            }
-
-            if (rand <= 54)
-            {
-                return 0x8495;
-            }
-
-            if (rand <= 64)
-            {
-                return 0x848D;
-            }
-
-            if (rand <= 74)
-            {
-                return 0x847F;
-            }
-
-            return 0;
+                1074 => 0x85C,                                        // Strong Green     0.09%
+                1073 => 0x490,                                        // Strong Purple    0.09%
+                >= 1071 => 0x030,                                        // Green            0.19%
+                >= 1069 => 0x037,                                        // Strong Yellow    0.19%
+                >= 1066 => 0x295,                                        // Light Green      0.28%
+                >= 1063 => 0x123,                                        // Cyan             0.28%
+                >= 1058 => 0x482,                                        // Ice Blue         0.47%
+                >= 1050 => 0x487,                                        // Blue/Yellow      0.74%
+                >= 1040 => CraftResources.GetHue(CraftResource.Gold),    // Gold             0.93%
+                >= 1030 => CraftResources.GetHue(CraftResource.Agapite), // Agapite          0.93%
+                >= 1020 => 0x495,                                        // Strong Cyan      0.93%
+                >= 1010 => 0x48D,                                        // Light Blue       0.93%
+                >= 1000 => 0x47F,                                        // Ice Green        0.93%
+                _ => 0                                             // No Hue          93.02%
+            } | 0x8000;
         }
 
         public override int GetAngerSound() => 0x4FE;
@@ -158,123 +106,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.FilthyRich, 3);
             AddLoot(LootPack.Gems, 4);
-        }
-
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
-
-            if (Utility.RandomDouble() >= 0.1)
-            {
-                return;
-            }
-
-            /* Grasping Claw
-               * Start cliloc: 1070836
-               * Effect: Physical resistance -15% for 5 seconds
-               * End cliloc: 1070838
-               * Effect: Type: "3" - From: "0x57D4F5B" (player) - To: "0x0" - ItemId: "0x37B9" - ItemIdName: "glow" - FromLocation: "(1149 808, 32)" - ToLocation: "(1149 808, 32)" - Speed: "10" - Duration: "5" - FixedDirection: "True" - Explode: "False"
-               */
-
-            if (m_Table.TryGetValue(defender, out var timer))
-            {
-                timer.DoExpire();
-                defender.SendLocalizedMessage(1070837); // The creature lands another blow in your weakened state.
-            }
-            else
-            {
-                defender.SendLocalizedMessage(
-                    1070836
-                ); // The blow from the creature's claws has made you more susceptible to physical attacks.
-            }
-
-            var effect = -(defender.PhysicalResistance * 15 / 100);
-
-            var mod = new ResistanceMod(ResistanceType.Physical, effect);
-
-            defender.FixedEffect(0x37B9, 10, 5);
-            defender.AddResistanceMod(mod);
-
-            timer = new ExpireTimer(defender, mod, TimeSpan.FromSeconds(5.0));
-            timer.Start();
-            m_Table[defender] = timer;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(2);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (version <= 1)
-            {
-                Timer.StartTimer(() => Fix(version));
-            }
-
-            if (version < 2)
-            {
-                for (var i = 0; i < Skills.Length; ++i)
-                {
-                    Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
-
-                    if (Skills[i].Base > Skills[i].Cap)
-                    {
-                        Skills[i].Base = Skills[i].Cap;
-                    }
-                }
-            }
-        }
-
-        private void Fix(int version)
-        {
-            switch (version)
-            {
-                case 1:
-                    {
-                        if (InternalItem != null)
-                        {
-                            InternalItem.Hue = Hue;
-                        }
-
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        Hue = GetHue();
-                        break;
-                    }
-            }
-        }
-
-        private class ExpireTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-            private readonly ResistanceMod m_Mod;
-
-            public ExpireTimer(Mobile m, ResistanceMod mod, TimeSpan delay)
-                : base(delay)
-            {
-                m_Mobile = m;
-                m_Mod = mod;
-            }
-
-            public void DoExpire()
-            {
-                m_Mobile.RemoveResistanceMod(m_Mod);
-                Stop();
-                m_Table.Remove(m_Mobile);
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.SendLocalizedMessage(1070838); // Your resistance to physical attacks has returned.
-                DoExpire();
-            }
         }
     }
 }

@@ -245,26 +245,29 @@ namespace Server.Engines.ConPVP
 
                     if (pm.DuelContext != null)
                     {
-                        from.SendMessage("{0} cannot fight because they are already assigned to another duel.", pm.Name);
+                        from.SendMessage($"{pm.Name} cannot fight because they are already assigned to another duel.");
                     }
                     else if (DuelContext.CheckCombat(pm))
                     {
                         from.SendMessage(
-                            "{0} cannot fight because they have recently been in combat with another player.",
-                            pm.Name
+                            $"{pm.Name} cannot fight because they have recently been in combat with another player."
                         );
                     }
                     else if (mob.HasGump<AcceptDuelGump>())
                     {
-                        from.SendMessage("{0} has already been offered a duel.");
+                        from.SendMessage($"{mob.Name} has already been offered a duel.");
                     }
                     else
                     {
-                        from.SendMessage(
-                            "You send {0} to {1}.",
-                            m_Participant.Find(from) == null ? "a challenge" : "an invitation",
-                            mob.Name
-                        );
+                        if (m_Participant.Find(from) == null)
+                        {
+                            from.SendMessage($"You send a challenge to {mob.Name}.");
+                        }
+                        else
+                        {
+                            from.SendMessage($"You send an invitation to {mob.Name}.");
+                        }
+
                         mob.SendGump(new AcceptDuelGump(from, mob, m_Context, m_Participant, m_Index));
                     }
                 }

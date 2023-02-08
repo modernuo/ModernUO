@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class VampireBat : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class VampireBat : BaseCreature
     {
         [Constructible]
         public VampireBat() : base(AIType.AI_Melee)
@@ -35,10 +38,6 @@ namespace Server.Mobiles
             VirtualArmor = 14;
         }
 
-        public VampireBat(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a vampire bat corpse";
         public override string DefaultName => "a vampire bat";
 
@@ -48,17 +47,5 @@ namespace Server.Mobiles
         }
 
         public override int GetIdleSound() => 0x29B;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

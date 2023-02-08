@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.RedSolenWarrior",
+  "properties": [
+    {
+      "name": "BurstSac",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

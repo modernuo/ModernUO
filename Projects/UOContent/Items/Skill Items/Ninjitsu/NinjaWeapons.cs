@@ -53,31 +53,33 @@ namespace Server.Items
 
         private static void Shoot(PlayerMobile from, Mobile target, INinjaWeapon weapon)
         {
-            if (from != target && CanUseWeapon(from, weapon) && from.CanBeHarmful(target))
+            if (from == target || !CanUseWeapon(from, weapon) || !from.CanBeHarmful(target))
             {
-                if (weapon.WeaponMinRange == 0 || !from.InRange(target, weapon.WeaponMinRange))
+                return;
+            }
+
+            if (weapon.WeaponMinRange == 0 || !from.InRange(target, weapon.WeaponMinRange))
+            {
+                from.NinjaWepCooldown = true;
+
+                from.Direction = from.GetDirectionTo(target);
+
+                from.RevealingAction();
+
+                weapon.AttackAnimation(from, target);
+
+                ConsumeUse(weapon);
+
+                if (CombatCheck(from, target))
                 {
-                    from.NinjaWepCooldown = true;
-
-                    from.Direction = from.GetDirectionTo(target);
-
-                    from.RevealingAction();
-
-                    weapon.AttackAnimation(from, target);
-
-                    ConsumeUse(weapon);
-
-                    if (CombatCheck(from, target))
-                    {
-                        Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
-                    }
-
-                    Timer.StartTimer(TimeSpan.FromSeconds(2.5), () => from.NinjaWepCooldown = false);
+                    Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
                 }
-                else
-                {
-                    from.SendLocalizedMessage(1063303); // Your target is too close!
-                }
+
+                Timer.StartTimer(TimeSpan.FromSeconds(2.5), () => from.NinjaWepCooldown = false);
+            }
+            else
+            {
+                from.SendLocalizedMessage(1063303); // Your target is too close!
             }
         }
 
@@ -215,10 +217,7 @@ namespace Server.Items
 
             double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
 
-            if (DivineFurySpell.UnderEffect(attacker))
-            {
-                attackValue += 10;
-            }
+            attackValue += DivineFurySpell.GetAttackBonus(attacker);
 
             if (AnimalForm.UnderTransformation(attacker, typeof(GreyWolf)) ||
                 AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune)))
@@ -240,10 +239,7 @@ namespace Server.Items
 
             double defenseValue = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
 
-            if (DivineFurySpell.UnderEffect(defender))
-            {
-                defenseValue -= 20;
-            }
+            defenseValue -= DivineFurySpell.GetDefendMalus(defender);
 
             if (HitLower.IsUnderDefenseEffect(defender))
             {
@@ -292,7 +288,7 @@ namespace Server.Items
 
             if (weapon.Poison != null && weapon.PoisonCharges > 0)
             {
-                if (EvilOmenSpell.TryEndEffect(target))
+                if (EvilOmenSpell.EndEffect(target))
                 {
                     target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
                 }

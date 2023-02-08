@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingTargetingPackets.cs                                     *
  *                                                                       *
@@ -61,11 +61,7 @@ public static class IncomingTargetingPackets
                 // User pressed escape
                 t.Cancel(from, TargetCancelType.Canceled);
             }
-            else if (t.TargetID != targetID)
-            {
-                // Sanity, prevent fake target
-            }
-            else
+            else if (t.TargetID == targetID)
             {
                 object toTarget;
 
@@ -99,11 +95,15 @@ public static class IncomingTargetingPackets
                                 }
                             }
 
+                            int hue = 0;
+
                             for (var i = 0; !valid && i < tiles.Length; ++i)
                             {
-                                if (tiles[i].Z == z && tiles[i].ID == graphic)
+                                var tile = tiles[i];
+                                if (tile.Z == z && tile.ID == graphic)
                                 {
                                     valid = true;
+                                    hue = tile.Hue;
                                 }
                             }
 
@@ -114,7 +114,7 @@ public static class IncomingTargetingPackets
                             }
                             else
                             {
-                                toTarget = new StaticTarget(new Point3D(x, y, z), graphic);
+                                toTarget = new StaticTarget(new Point3D(x, y, z), graphic, hue);
                             }
                         }
                     }

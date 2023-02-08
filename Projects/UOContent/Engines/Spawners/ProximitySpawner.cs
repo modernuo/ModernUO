@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ProximitySpawner.cs                                             *
  *                                                                       *
@@ -145,7 +145,7 @@ namespace Server.Engines.Spawners
             if (IsEmpty && End <= Core.Now && m.InRange(GetWorldLocation(), TriggerRange) &&
                 m.Location != oldLocation && ValidTrigger(m))
             {
-                TextDefinition.SendMessageTo(m, SpawnMessage);
+                SpawnMessage.SendMessageTo(m);
 
                 DoTimer();
                 Spawn();
@@ -170,7 +170,7 @@ namespace Server.Engines.Spawners
             writer.WriteEncodedInt(0); // version
 
             writer.Write(TriggerRange);
-            TextDefinition.Serialize(writer, SpawnMessage);
+            writer.Write(SpawnMessage);
             writer.Write(InstantFlag);
         }
 
@@ -181,7 +181,7 @@ namespace Server.Engines.Spawners
             var version = reader.ReadEncodedInt();
 
             TriggerRange = reader.ReadInt();
-            SpawnMessage = TextDefinition.Deserialize(reader);
+            SpawnMessage = reader.ReadTextDefinition();
             InstantFlag = reader.ReadBool();
         }
     }

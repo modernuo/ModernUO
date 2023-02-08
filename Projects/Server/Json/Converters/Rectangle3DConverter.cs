@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Rectangle3DConverter.cs                                         *
  *                                                                       *
@@ -164,6 +164,7 @@ public class Rectangle3DConverter : JsonConverter<Rectangle3D>
     public override Rectangle3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         reader.TokenType switch
         {
+            JsonTokenType.String      => Rectangle3D.Parse(reader.GetString(), null),
             JsonTokenType.StartArray  => DeserializeArray(ref reader),
             JsonTokenType.StartObject => DeserializeObj(ref reader, options),
             _                         => throw new JsonException("Invalid Json for Point3D")
@@ -171,13 +172,29 @@ public class Rectangle3DConverter : JsonConverter<Rectangle3D>
 
     public override void Write(Utf8JsonWriter writer, Rectangle3D value, JsonSerializerOptions options)
     {
-        writer.WriteStartArray();
+        var writeZ = value.Start.Z is > sbyte.MinValue and < sbyte.MaxValue || value.End.Z is > sbyte.MinValue and < sbyte.MaxValue;
+
+        writer.WriteStartObject();
+        writer.WritePropertyName("x1");
         writer.WriteNumberValue(value.Start.X);
+        writer.WritePropertyName("y1");
         writer.WriteNumberValue(value.Start.Y);
-        writer.WriteNumberValue(value.Start.Z);
-        writer.WriteNumberValue(value.Width);
-        writer.WriteNumberValue(value.Height);
-        writer.WriteNumberValue(value.Depth);
-        writer.WriteEndArray();
+
+        if (writeZ)
+        {
+            writer.WritePropertyName("z1");
+            writer.WriteNumberValue(value.Start.Z);
+        }
+
+        writer.WritePropertyName("x2");
+        writer.WriteNumberValue(value.End.X);
+        writer.WritePropertyName("y2");
+        writer.WriteNumberValue(value.End.Y);
+        if (writeZ)
+        {
+            writer.WritePropertyName("z2");
+            writer.WriteNumberValue(value.End.Z);
+        }
+        writer.WriteEndObject();
     }
 }

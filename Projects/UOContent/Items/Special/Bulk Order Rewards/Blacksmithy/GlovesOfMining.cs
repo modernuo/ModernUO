@@ -164,7 +164,7 @@ namespace Server.Items
                 }
                 else if (m_SkillMod == null && Parent is Mobile mobile)
                 {
-                    m_SkillMod = new DefaultSkillMod(SkillName.Mining, true, m_Bonus);
+                    m_SkillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, m_Bonus);
                     mobile.AddSkillMod(m_SkillMod);
                 }
                 else if (m_SkillMod != null)
@@ -182,7 +182,7 @@ namespace Server.Items
             {
                 m_SkillMod?.Remove();
 
-                m_SkillMod = new DefaultSkillMod(SkillName.Mining, true, m_Bonus);
+                m_SkillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, m_Bonus);
                 mobile.AddSkillMod(m_SkillMod);
             }
         }
@@ -234,7 +234,7 @@ namespace Server.Items
             {
                 m_SkillMod?.Remove();
 
-                m_SkillMod = new DefaultSkillMod(SkillName.Mining, true, m_Bonus);
+                m_SkillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, m_Bonus);
                 mobile.AddSkillMod(m_SkillMod);
             }
         }

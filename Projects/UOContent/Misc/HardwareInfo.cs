@@ -113,10 +113,7 @@ namespace Server
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} viewing hardware info of {2}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            CommandLogging.Format(m)
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} viewing hardware info of {CommandLogging.Format(m)}"
                         );
                     }
 

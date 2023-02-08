@@ -1,16 +1,15 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Nightmare : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Nightmare : BaseMount
     {
+        public override string DefaultName => "a nightmare";
+
         [Constructible]
-        public Nightmare(string name = "a nightmare") : base(
-            name,
-            0x74,
-            0x3EA7,
-            AIType.AI_Mage
-        )
+        public Nightmare() : base(0x74, 0x3EA7, AIType.AI_Mage)
         {
             BaseSoundID = Core.AOS ? 0xA8 : 0x16A;
 
@@ -90,18 +89,15 @@ namespace Server.Mobiles
             PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));
         }
 
-        public Nightmare(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a nightmare corpse";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 5;
         public override int Hides => 10;
         public override HideType HideType => HideType.Barbed;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -119,29 +115,6 @@ namespace Server.Mobiles
             }
 
             return base.GetAngerSound();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Core.AOS && BaseSoundID == 0x16A)
-            {
-                BaseSoundID = 0xA8;
-            }
-            else if (!Core.AOS && BaseSoundID == 0xA8)
-            {
-                BaseSoundID = 0x16A;
-            }
         }
     }
 }

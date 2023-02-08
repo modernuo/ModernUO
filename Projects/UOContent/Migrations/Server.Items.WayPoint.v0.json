@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.WayPoint",
+  "properties": [
+    {
+      "name": "NextPoint",
+      "type": "Server.Items.WayPoint",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class IceElemental : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class IceElemental : BaseCreature
     {
         [Constructible]
         public IceElemental() : base(AIType.AI_Mage)
@@ -41,11 +43,6 @@ namespace Server.Mobiles
             PackItem(new BlackPearl());
             PackReg(3);
         }
-
-        public IceElemental(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ice elemental corpse";
         public override string DefaultName => "an ice elemental";
         public override bool BleedImmune => true;
@@ -54,18 +51,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Average, 2);
             AddLoot(LootPack.Gems, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Jwilson : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Jwilson : BaseCreature
     {
         [Constructible]
         public Jwilson() : base(AIType.AI_Melee)
@@ -20,10 +23,6 @@ namespace Server.Mobiles
             Karma = Utility.Random(0, -624);
         }
 
-        public Jwilson(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a jwilson corpse";
         public override string DefaultName => "a jwilson";
 
@@ -36,19 +35,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x1CB;
 
         public override int GetDeathSound() => 0x1CC;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

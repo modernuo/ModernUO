@@ -182,7 +182,7 @@ namespace Server.Items
             }
             else if (!VerifyRegion(from))
             {
-                TextDefinition.SendMessageTo(from, RepairSkillInfo.GetInfo(m_Skill).NotNearbyMessage);
+                RepairSkillInfo.GetInfo(m_Skill).NotNearbyMessage.SendMessageTo(from);
             }
             else
             {

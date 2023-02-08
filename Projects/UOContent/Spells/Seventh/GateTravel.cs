@@ -39,11 +39,13 @@ namespace Server.Spells.Seventh
             {
                 Caster.SendLocalizedMessage(1005570); // You can not gate to another facet.
             }
-            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom))
+            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom, out var failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
             }
-            else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.GateTo))
+            else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.GateTo, out failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
             }
             else if (map == Map.Felucca && Caster is PlayerMobile mobile && mobile.Young)
             {
@@ -69,8 +71,8 @@ namespace Server.Spells.Seventh
             {
                 Caster.SendLocalizedMessage(501942); // That location is blocked.
             }
-            else if (Core.SE && (GateExistsAt(map, loc) || GateExistsAt(Caster.Map, Caster.Location))
-            ) // SE restricted stacking gates
+            // SE restricted stacking gates
+            else if (Core.SE && (GateExistsAt(map, loc) || GateExistsAt(Caster.Map, Caster.Location)))
             {
                 Caster.SendLocalizedMessage(1071242); // There is already a gate there.
             }
@@ -124,10 +126,16 @@ namespace Server.Spells.Seventh
                 return false;
             }
 
-            return SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom);
+            if (!SpellHelper.CheckTravel(Caster, TravelCheckType.GateFrom, out var failureMessage))
+            {
+                failureMessage.SendMessageTo(Caster);
+                return false;
+            }
+
+            return true;
         }
 
-        private bool GateExistsAt(Map map, Point3D loc)
+        private static bool GateExistsAt(Map map, Point3D loc)
         {
             var eable = map.GetItemsInRange(loc, 0);
 
@@ -182,7 +190,7 @@ namespace Server.Spells.Seventh
             {
                 private readonly Item m_Item;
 
-                public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
+                public InternalTimer(Item item) : base(TimeSpan.FromSeconds(Core.T2A ? 30.0 : 10.0))
                 {
                     m_Item = item;
                 }

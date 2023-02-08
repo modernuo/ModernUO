@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class PackLlama : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class PackLlama : BaseCreature
     {
         [Constructible]
         public PackLlama() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -53,29 +55,11 @@ namespace Server.Mobiles
             AddItem(pack);
         }
 
-        public PackLlama(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a llama corpse";
         public override string DefaultName => "a pack llama";
 
         public override int Meat => 1;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
 
         public override bool OnBeforeDeath()
         {

@@ -68,7 +68,14 @@ namespace Server.Commands
                 Core.Profiling = !Core.Profiling;
             }
 
-            e.Mobile.SendMessage("Profiling has been {0}.", Core.Profiling ? "enabled" : "disabled");
+            if (Core.Profiling)
+            {
+                e.Mobile.SendMessage($"Profiling has been enabled.");
+            }
+            else
+            {
+                e.Mobile.SendMessage($"Profiling has been disabled.");
+            }
         }
 
         [Usage("DumpTimers"),

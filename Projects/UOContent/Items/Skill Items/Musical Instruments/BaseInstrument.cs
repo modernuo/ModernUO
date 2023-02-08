@@ -247,7 +247,7 @@ namespace Server.Items
 
         public static bool IsMageryCreature(BaseCreature bc) => bc?.AI == AIType.AI_Mage && bc.Skills.Magery.Base > 5.0;
 
-        public static bool IsFireBreathingCreature(BaseCreature bc) => bc?.HasBreath == true;
+        public static bool IsFireBreathingCreature(BaseCreature bc) => bc?.GetAbility(MonsterAbilityType.FireBreath) != null;
 
         public static bool IsPoisonImmune(BaseCreature bc) => bc?.PoisonImmune != null;
 

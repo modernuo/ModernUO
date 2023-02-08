@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Rabbit : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Rabbit : BaseCreature
     {
         [Constructible]
         public Rabbit() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -39,10 +42,6 @@ namespace Server.Mobiles
             MinTameSkill = -18.9;
         }
 
-        public Rabbit(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a hare corpse";
         public override string DefaultName => "a rabbit";
 
@@ -55,19 +54,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0xCA;
 
         public override int GetDeathSound() => 0xCB;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

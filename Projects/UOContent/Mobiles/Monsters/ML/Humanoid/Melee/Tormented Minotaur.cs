@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class TormentedMinotaur : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class TormentedMinotaur : BaseCreature
     {
         [Constructible]
         public TormentedMinotaur() : base(AIType.AI_Melee)
@@ -33,17 +35,10 @@ namespace Server.Mobiles
             Karma = -20000;
         }
 
-        public TormentedMinotaur(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a tormented minotaur corpse";
-
         public override string DefaultName => "Tormented Minotaur";
-
         public override Poison PoisonImmune => Poison.Deadly;
         public override int TreasureMapLevel => 3;
-
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
         public override void GenerateLoot()
@@ -60,19 +55,5 @@ namespace Server.Mobiles
         public override int GetAngerSound() => 0x599;
 
         public override int GetHurtSound() => 0x59A;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

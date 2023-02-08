@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class ParoxysmusDinner : Item
 {
-    public class ParoxysmusDinner : Item
+    [Constructible]
+    public ParoxysmusDinner() : base(0x1E95)
     {
-        [Constructible]
-        public ParoxysmusDinner() : base(0x1E95)
-        {
-        }
-
-        public ParoxysmusDinner(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1072086; // Paroxysmus' Dinner
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+
+    public override int LabelNumber => 1072086; // Paroxysmus' Dinner
 }

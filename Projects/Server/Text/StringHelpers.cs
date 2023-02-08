@@ -303,4 +303,12 @@ public static class StringHelpers
             chars = chars[(indexOf + 1)..];
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static char[] ToPooledArray(this string str)
+    {
+        var chars = STArrayPool<char>.Shared.Rent(str.Length);
+        str.CopyTo(chars);
+        return chars;
+    }
 }

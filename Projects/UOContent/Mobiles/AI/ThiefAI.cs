@@ -48,7 +48,6 @@ public class ThiefAI : BaseAI
             }
 
             Action = ActionType.Guard;
-
             return true;
         }
 
@@ -86,90 +85,69 @@ public class ThiefAI : BaseAI
             }
             else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
             {
-                var cpack = combatant.Backpack;
-
-                if (cpack != null)
+                if (m_Mobile.Debug)
                 {
-                    Item steala = cpack.FindItemByType<Bandage>();
-                    if (steala != null)
-                    {
-                        if (m_Mobile.Debug)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                        }
+                    m_Mobile.DebugSay($"Trying to steal from {combatant.Name}.");
+                }
 
-                        m_Mobile.UseSkill(SkillName.Stealing);
-                        m_Mobile.Target?.Invoke(m_Mobile, steala);
+                bool didSteal = TryStealFrom<Bandage>(combatant);
+                didSteal = TryStealFrom<Nightshade>(combatant) || didSteal;
+                didSteal = TryStealFrom<BlackPearl>(combatant) || didSteal;
+                didSteal = TryStealFrom<MandrakeRoot>(combatant) || didSteal;
+
+                if (!didSteal)
+                {
+                    if (m_Mobile.Debug)
+                    {
+                        m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
                     }
 
-                    Item stealb = cpack.FindItemByType<Nightshade>();
-                    if (stealb != null)
-                    {
-                        if (m_Mobile.Debug)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                        }
-
-                        m_Mobile.UseSkill(SkillName.Stealing);
-                        m_Mobile.Target?.Invoke(m_Mobile, stealb);
-                    }
-
-                    Item stealc = cpack.FindItemByType<BlackPearl>();
-                    if (stealc != null)
-                    {
-                        if (m_Mobile.Debug)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                        }
-
-                        m_Mobile.UseSkill(SkillName.Stealing);
-                        m_Mobile.Target?.Invoke(m_Mobile, stealc);
-                    }
-
-                    Item steald = cpack.FindItemByType<MandrakeRoot>();
-                    if (steald != null)
-                    {
-                        if (m_Mobile.Debug)
-                        {
-                            m_Mobile.DebugSay("Trying to steal from combatant.");
-                        }
-
-                        m_Mobile.UseSkill(SkillName.Stealing);
-                        m_Mobile.Target?.Invoke(m_Mobile, steald);
-                    }
-                    else if (steala == null && stealb == null && stealc == null)
-                    {
-                        if (m_Mobile.Debug)
-                        {
-                            m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
-                        }
-
-                        Action = ActionType.Flee;
-                    }
+                    Action = ActionType.Flee;
+                    return true;
                 }
             }
         }
 
-        if (m_Mobile.Hits >= m_Mobile.HitsMax * 20 / 100 || !m_Mobile.CanFlee)
+        // We are low on health, should we flee?
+        // (10 + diff)% chance to flee
+        if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100 && m_Mobile.CanFlee)
         {
+            var fleeChance = 10 + Math.Max(0, combatant.Hits - m_Mobile.Hits);
+
+            if (Utility.Random(0, 100) > fleeChance)
+            {
+                if (m_Mobile.Debug)
+                {
+                    m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
+                }
+
+                Action = ActionType.Flee;
+            }
+
             return true;
         }
 
-        // We are low on health, should we flee?
-        // (10 + diff)% chance to flee
-        var fleeChance = 10 + Math.Max(0, combatant.Hits - m_Mobile.Hits);
-
-        if (Utility.Random(0, 100) > fleeChance)
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
         {
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
+                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
             }
+        }
+        return true;
+    }
 
-            Action = ActionType.Flee;
+    private bool TryStealFrom<T>(Mobile combatant) where T : Item
+    {
+        Item steal = combatant.Backpack?.FindItemByType<T>();
+        if (steal != null)
+        {
+            m_Mobile.UseSkill(SkillName.Stealing);
+            m_Mobile.Target?.Invoke(m_Mobile, steal);
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public override bool DoActionGuard()

@@ -243,7 +243,7 @@ namespace Server.Engines.MLQuests.Mobiles
                         }
                     }
 
-                    TextDefinition.PublicOverheadMessage(m_Owner, MessageType.Regular, 0x3B2, m_Conversation[m_Index++]);
+                    m_Conversation[m_Index++].PublicOverheadMessage(m_Owner, MessageType.Regular, 0x3B2);
                     Interval = GetDelay();
                 }
             }
@@ -257,9 +257,9 @@ namespace Server.Engines.MLQuests.Mobiles
             1073998, // Blessings of Sosaria to you and merry met, friend.
             1073999, // I am glad for your company and wonder if you seek the heritage of your people?  I sense within you an elven bloodline -- the purity of which was lost when our brothers and sisters were exiled here in the Rupture.
             1074000, // If it is your desire to reclaim your place amongst the people, you must demonstrate that you understand and embrace the responsibilities expected of you as an elf.
-            1074001, // The most basic lessons of our Sosaria are taught by her humblest children.  Seek Maul, the great bear, who understands instictively the seasons.
+            1074001, // The most basic lessons of our Sosaria are taught by her humblest children.  Seek Maul, the great bear, who understands instinctively the seasons.
             1074398, // Seek Strongroot, the great treefellow, whose very roots reach to the heart of the world.  Seek Enigma, whose wisdom can only be conveyed in riddles and rhymes.  Seek Bravehorn, the great hart, who exemplifies the fierce dedication of a protector of his people.
-            1074399, // Seek the Huntsman, the centuar tasked with maintaining the balance.  And lastly seek Arielle, the pixie, who has perhaps the most important lesson -- not to take yourself too seriously.
+            1074399, // Seek the Huntsman, the centaur tasked with maintaining the balance.  And lastly seek Arielle, the pixie, who has perhaps the most important lesson -- not to take yourself too seriously.
             1074400 // Or do none of these things.  You must choose your own path in the world, and what use you'll make of your existence.
         };
 

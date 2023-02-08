@@ -1,13 +1,17 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Kirin : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Kirin : BaseMount
     {
+        public override string DefaultName => "a ki-rin";
+
         [Constructible]
-        public Kirin(string name = "a ki-rin") : base(name, 132, 0x3EAD, AIType.AI_Mage, FightMode.Evil)
+        public Kirin() : base(132, 0x3EAD, AIType.AI_Mage, FightMode.Evil)
         {
             BaseSoundID = 0x3C5;
 
@@ -45,10 +49,6 @@ namespace Server.Mobiles
             MinTameSkill = 95.1;
         }
 
-        public Kirin(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a ki-rin corpse";
         public override bool AllowFemaleRider => false;
         public override bool AllowFemaleTamer => false;
@@ -76,22 +76,17 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18)
-            ) // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+            // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+            if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18))
             {
                 attacker.BoltEffect(0);
                 // 35~100 damage, unresistable, by the Ki-rin.
-                attacker.Damage(
-                    Utility.RandomMinMax(35, 100),
-                    this,
-                    false
-                ); // Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.  If changed to player, without the extra bool it'd be an infinite loop
+                // Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.
+                // If changed to player, without the extra bool it'd be an infinite loop
+                attacker.Damage(Utility.RandomMinMax(35, 100), this, false);
 
-                Rider.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    1042534
-                ); // Your mount calls down the forces of nature on your opponent.
+                // Your mount calls down the forces of nature on your opponent.
+                Rider.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1042534);
                 Rider.FixedParticles(0, 0, 0, 0x13A7, EffectLayer.Waist);
                 Rider.PlaySound(0xA9); // Ki-rin's whinny.
                 return true;
@@ -114,25 +109,6 @@ namespace Server.Mobiles
             if (Utility.RandomDouble() < 0.35)
             {
                 c.DropItem(new KirinBrains());
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version == 0)
-            {
-                AI = AIType.AI_Mage;
             }
         }
     }

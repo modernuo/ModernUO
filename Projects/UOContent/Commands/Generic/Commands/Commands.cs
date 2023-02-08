@@ -234,7 +234,7 @@ namespace Server.Commands.Generic
             {
                 if (echo)
                 {
-                    gm.SendMessage("{0} : has opened their web browser to : {1}", from.Name, url);
+                    gm.SendMessage($"{from.Name} : has opened their web browser to : {url}");
                 }
 
                 from.LaunchBrowser(url);
@@ -243,7 +243,7 @@ namespace Server.Commands.Generic
             {
                 if (echo)
                 {
-                    gm.SendMessage("{0} : has chosen not to open their web browser to : {1}", from.Name, url);
+                    gm.SendMessage($"{from.Name} : has chosen not to open their web browser to : {url}");
                 }
 
                 from.SendMessage("You have chosen not to open your web browser.");
@@ -271,11 +271,7 @@ namespace Server.Commands.Generic
 
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} requesting to open web browser of {2} to {3}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            CommandLogging.Format(mob),
-                            url
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} requesting to open web browser of {CommandLogging.Format(mob)} to {url}"
                         );
 
                         if (echo)
@@ -386,11 +382,7 @@ namespace Server.Commands.Generic
 
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} playing sound {2} for {3}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    index,
-                    CommandLogging.Format(mob)
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} playing sound {index} for {CommandLogging.Format(mob)}"
                 );
                 mob.SendSound(index);
             }
@@ -434,12 +426,7 @@ namespace Server.Commands.Generic
 
             CommandLogging.WriteLine(
                 from,
-                "{0} {1} {2} {3} \"{4}\"",
-                from.AccessLevel,
-                CommandLogging.Format(from),
-                m_InGump ? "messaging" : "telling",
-                CommandLogging.Format(mob),
-                e.ArgString
+                $"{from.AccessLevel} {CommandLogging.Format(from)} {(m_InGump ? "messaging" : "telling")} {CommandLogging.Format(mob)} \"{e.ArgString}\""
             );
 
             if (m_InGump)
@@ -642,10 +629,7 @@ namespace Server.Commands.Generic
 
             CommandLogging.WriteLine(
                 from,
-                "{0} {1} dismounting {2}",
-                from.AccessLevel,
-                CommandLogging.Format(from),
-                CommandLogging.Format(mob)
+                $"{from.AccessLevel} {CommandLogging.Format(from)} dismounting {CommandLogging.Format(mob)}"
             );
 
             var takenAction = false;
@@ -713,10 +697,7 @@ namespace Server.Commands.Generic
             {
                 CommandLogging.WriteLine(
                     e.Mobile,
-                    "{0} {1} restocking {2}",
-                    e.Mobile.AccessLevel,
-                    CommandLogging.Format(e.Mobile),
-                    CommandLogging.Format(vendor)
+                    $"{e.Mobile.AccessLevel} {CommandLogging.Format(e.Mobile)} restocking {CommandLogging.Format(vendor)}"
                 );
 
                 vendor.Restock();
@@ -955,10 +936,7 @@ namespace Server.Commands.Generic
             {
                 CommandLogging.WriteLine(
                     e.Mobile,
-                    "{0} {1} deleting {2}",
-                    e.Mobile.AccessLevel,
-                    CommandLogging.Format(e.Mobile),
-                    CommandLogging.Format(item)
+                    $"{e.Mobile.AccessLevel} {CommandLogging.Format(e.Mobile)} deleting {CommandLogging.Format(item)}"
                 );
                 item.Delete();
                 AddResponse("The item has been deleted.");
@@ -967,10 +945,7 @@ namespace Server.Commands.Generic
             {
                 CommandLogging.WriteLine(
                     e.Mobile,
-                    "{0} {1} deleting {2}",
-                    e.Mobile.AccessLevel,
-                    CommandLogging.Format(e.Mobile),
-                    CommandLogging.Format(mobile)
+                    $"{e.Mobile.AccessLevel} {CommandLogging.Format(e.Mobile)} deleting {CommandLogging.Format(mobile)}"
                 );
                 mobile.Delete();
                 AddResponse("The mobile has been deleted.");
@@ -1026,10 +1001,7 @@ namespace Server.Commands.Generic
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} killing {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(mob)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} killing {CommandLogging.Format(mob)}"
                     );
                     mob.Kill();
 
@@ -1044,10 +1016,7 @@ namespace Server.Commands.Generic
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} resurrecting {2}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            CommandLogging.Format(mob)
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} resurrecting {CommandLogging.Format(mob)}"
                         );
 
                         bc.PlaySound(0x214);
@@ -1062,10 +1031,7 @@ namespace Server.Commands.Generic
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} resurrecting {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(mob)
+                        $"{ from.AccessLevel} {CommandLogging.Format(from)} resurrecting {CommandLogging.Format(mob)}"
                     );
 
                     mob.PlaySound(0x214);
@@ -1114,11 +1080,7 @@ namespace Server.Commands.Generic
 
             CommandLogging.WriteLine(
                 e.Mobile,
-                "{0} {1} {2} {3}",
-                e.Mobile.AccessLevel,
-                CommandLogging.Format(e.Mobile),
-                m_Value ? "hiding" : "unhiding",
-                CommandLogging.Format(m)
+                $"{e.Mobile.AccessLevel} {CommandLogging.Format(e.Mobile)} {(m_Value ? "hiding" : "unhiding")} {CommandLogging.Format(m)}"
             );
 
             Effects.SendLocationEffect(new Point3D(m.X + 1, m.Y, m.Z + 4), m.Map, 0x3728, 13);
@@ -1170,10 +1132,7 @@ namespace Server.Commands.Generic
             {
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} firewalling {2}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    CommandLogging.Format(targ)
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {CommandLogging.Format(targ)}"
                 );
 
                 try
@@ -1233,14 +1192,10 @@ namespace Server.Commands.Generic
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "{0} {1} {2} {3}",
-                            from.AccessLevel,
-                            CommandLogging.Format(from),
-                            m_Ban ? "banning" : "kicking",
-                            CommandLogging.Format(targ)
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} {(m_Ban ? "banning" : "kicking")} {(CommandLogging.Format(targ))}"
                         );
 
-                        targ.Say("I've been {0}!", m_Ban ? "banned" : "kicked");
+                        targ.Say(m_Ban ? "I've been banned." : "I've been kicked");
 
                         AddResponse($"They have been {(m_Ban ? "banned" : "kicked")}.");
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IRandomSource.cs                                                *
  *                                                                       *
@@ -15,27 +15,26 @@
 
 using System;
 
-namespace Server.Random
+namespace Server.Random;
+
+public interface IRandomSource
 {
-    public interface IRandomSource
-    {
-        int Next();
-        int Next(int maxValue);
-        int Next(int minValue, int count);
-        uint Next(uint maxValue);
-        uint Next(uint minValue, uint count);
-        long Next(long maxValue);
-        long Next(long minValue, long count);
-        double NextDouble();
-        void NextBytes(Span<byte> buffer);
-        int NextInt();
-        uint NextUInt();
-        ulong NextULong();
-        bool NextBool();
-        byte NextByte();
-        float NextFloat();
-        float NextFloatNonZero();
-        double NextDoubleNonZero();
-        double NextDoubleHighRes();
-    }
+    int Next();
+    int Next(int maxValue);
+    int Next(int minValue, int count);
+    uint Next(uint maxValue);
+    uint Next(uint minValue, uint count);
+    long Next(long maxValue);
+    long Next(long minValue, long count);
+    double NextDouble();
+    void NextBytes(Span<byte> buffer);
+    int NextInt();
+    uint NextUInt();
+    ulong NextULong();
+    bool NextBool();
+    byte NextByte();
+    float NextFloat();
+    float NextFloatNonZero();
+    double NextDoubleNonZero();
+    double NextDoubleHighRes();
 }

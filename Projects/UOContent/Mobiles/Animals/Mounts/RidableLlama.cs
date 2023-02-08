@@ -1,9 +1,14 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class RidableLlama : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class RidableLlama : BaseMount
     {
+        public override string DefaultName => "a ridable llama";
+
         [Constructible]
-        public RidableLlama(string name = "a ridable llama") : base(name, 0xDC, 0x3EA6, AIType.AI_Animal, FightMode.Aggressor
+        public RidableLlama() : base(0xDC, 0x3EA6, AIType.AI_Animal, FightMode.Aggressor
         )
         {
             BaseSoundID = 0x3F3;
@@ -37,28 +42,10 @@ namespace Server.Mobiles
             MinTameSkill = 29.1;
         }
 
-        public RidableLlama(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a llama corpse";
 
         public override int Meat => 1;
         public override int Hides => 12;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

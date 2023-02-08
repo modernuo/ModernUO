@@ -29,14 +29,11 @@ namespace Server.Items
 
         public override bool Nontransferable => true;
 
-        public virtual TextDefinition InvalidTransferMessage => null;
+        public virtual TextDefinition InvalidTransferMessage => TextDefinition.Empty;
 
         public override void HandleInvalidTransfer(Mobile from)
         {
-            if (InvalidTransferMessage != null)
-            {
-                TextDefinition.SendMessageTo(from, InvalidTransferMessage);
-            }
+            InvalidTransferMessage.SendMessageTo(from);
 
             Delete();
         }

@@ -44,7 +44,7 @@ namespace Server.Items
 
             var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-            if (toDisarm?.Movable != false)
+            if (toDisarm?.Movable != true)
             {
                 toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
             }

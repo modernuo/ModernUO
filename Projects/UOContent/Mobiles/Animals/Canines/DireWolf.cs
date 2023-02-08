@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Direwolf")]
-    public class DireWolf : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class DireWolf : BaseCreature
     {
         [Constructible]
         public DireWolf() : base(AIType.AI_Melee)
@@ -40,10 +43,6 @@ namespace Server.Mobiles
             MinTameSkill = 83.1;
         }
 
-        public DireWolf(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a dire wolf corpse";
         public override string DefaultName => "a dire wolf";
 
@@ -52,19 +51,5 @@ namespace Server.Mobiles
         public override HideType HideType => HideType.Spined;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

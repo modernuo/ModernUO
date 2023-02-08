@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class HordeMinion : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class HordeMinion : BaseCreature
     {
         [Constructible]
         public HordeMinion() : base(AIType.AI_Melee)
@@ -38,10 +40,6 @@ namespace Server.Mobiles
             // TODO: Body parts
         }
 
-        public HordeMinion(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a horde minion corpse";
         public override string DefaultName => "a horde minion";
 
@@ -54,17 +52,5 @@ namespace Server.Mobiles
         public override int GetAttackSound() => 406;
 
         public override int GetHurtSound() => 194;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

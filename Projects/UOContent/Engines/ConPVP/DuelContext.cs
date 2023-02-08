@@ -134,16 +134,12 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            string title = null;
-
-            if (move is NinjaMove)
+            string title = move switch
             {
-                title = "Bushido";
-            }
-            else if (move is SamuraiMove)
-            {
-                title = "Ninjitsu";
-            }
+                NinjaMove   => "Bushido",
+                SamuraiMove => "Ninjitsu",
+                _           => null
+            };
 
             if (title == null || name == null || Ruleset.GetOption(title, name))
             {
@@ -721,10 +717,7 @@ namespace Server.Engines.ConPVP
             {
                 mob.Resurrect();
 
-                if (mob.FindItemOnLayer(Layer.OuterTorso) is DeathRobe robe)
-                {
-                    robe.Delete();
-                }
+                mob.FindItemOnLayer<DeathRobe>(Layer.OuterTorso)?.Delete();
 
                 if (cont is Corpse corpse)
                 {
@@ -900,11 +893,11 @@ namespace Server.Engines.ConPVP
 
             if (newLevel > oldLevel)
             {
-                us.SendMessage(0x59, "You have achieved level {0}!", newLevel);
+                us.SendMessage(0x59, $"You have achieved level {newLevel}!");
             }
             else if (newLevel < oldLevel)
             {
-                us.SendMessage(0x22, "You have lost a level. You are now at {0}.", newLevel);
+                us.SendMessage(0x22, $"You have lost a level. You are now at {newLevel}.");
             }
         }
 
@@ -1775,18 +1768,32 @@ namespace Server.Engines.ConPVP
                     {
                         if (mob != rejector)
                         {
-                            mob.SendMessage(0x22, "{0} has yielded.", rejector.Name);
+                            mob.SendMessage(0x22, $"{rejector.Name} has yielded.");
                         }
                     }
                     else
                     {
                         if (mob == rejector)
                         {
-                            mob.SendMessage(0x22, "You have rejected the {0}.", Rematch ? "rematch" : page);
+                            if (Rematch)
+                            {
+                                mob.SendMessage(0x22, $"You have rejected the rematch.");
+                            }
+                            else
+                            {
+                                mob.SendMessage(0x22, $"You have rejected the {page}.");
+                            }
                         }
                         else
                         {
-                            mob.SendMessage(0x22, "{0} has rejected the {1}.", rejector.Name, Rematch ? "rematch" : page);
+                            if (Rematch)
+                            {
+                                mob.SendMessage(0x22, $"{rejector.Name} has rejected the rematch.");
+                            }
+                            else
+                            {
+                                mob.SendMessage(0x22, $"{rejector.Name} has rejected the {page}.");
+                            }
                         }
                     }
 
@@ -2093,7 +2100,7 @@ namespace Server.Engines.ConPVP
             var ruleset = Ruleset;
             var basedef = ruleset.Base;
 
-            mob.SendMessage("Ruleset: {0}", basedef.Title);
+            mob.SendMessage($"Ruleset: {basedef.Title}");
 
             BitArray defs;
 
@@ -2105,7 +2112,7 @@ namespace Server.Engines.ConPVP
                 {
                     defs.Or(ruleset.Flavors[i].Options);
 
-                    mob.SendMessage(" + {0}", ruleset.Flavors[i].Title);
+                    mob.SendMessage($" + {ruleset.Flavors[i].Title}");
                 }
             }
             else
@@ -2132,7 +2139,14 @@ namespace Server.Engines.ConPVP
                             mob.SendMessage("Modifications:");
                         }
 
-                        mob.SendMessage("{0}: {1}", name, opts[i] ? "enabled" : "disabled");
+                        if (opts[i])
+                        {
+                            mob.SendMessage($"{name}: enabled");
+                        }
+                        else
+                        {
+                            mob.SendMessage($"{name}: disabled");
+                        }
                     }
                 }
             }
@@ -2344,7 +2358,7 @@ namespace Server.Engines.ConPVP
                         {
                             var dp = p.Players[j];
 
-                            dp?.Mobile.SendMessage("The duel could not be started because {0}.", error);
+                            dp?.Mobile.SendMessage($"The duel could not be started because {error}.");
                         }
                     }
 

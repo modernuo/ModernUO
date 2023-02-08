@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.Plants;
 using Server.Items;
@@ -5,7 +6,8 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-    public class JukaMage : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class JukaMage : BaseCreature
     {
         private DateTime m_NextAbilityTime;
 
@@ -72,10 +74,6 @@ namespace Server.Mobiles
             }
 
             m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
-        }
-
-        public JukaMage(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a jukan corpse";
@@ -190,18 +188,6 @@ namespace Server.Mobiles
 
             toDebuff.Hits = toDebuff.Hits;
             toDebuff.Stam = toDebuff.Stam;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

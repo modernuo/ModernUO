@@ -1,8 +1,10 @@
 using Server.Items;
+using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    public class EnslavedGargoyle : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class EnslavedGargoyle : BaseCreature
     {
         [Constructible]
         public EnslavedGargoyle() : base(AIType.AI_Melee)
@@ -39,10 +41,6 @@ namespace Server.Mobiles
             }
         }
 
-        public EnslavedGargoyle(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an enslaved gargoyle corpse";
         public override string DefaultName => "an enslaved gargoyle";
 
@@ -53,18 +51,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Average, 2);
             AddLoot(LootPack.Gems);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

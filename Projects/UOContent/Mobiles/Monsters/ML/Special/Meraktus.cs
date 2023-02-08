@@ -1,10 +1,12 @@
 using System;
 using Server.Engines.CannedEvil;
 using Server.Items;
+using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    public class Meraktus : BaseChampion
+    [SerializationGenerator(0, false)]
+    public partial class Meraktus : BaseChampion
     {
         [Constructible]
         public Meraktus()
@@ -52,10 +54,6 @@ namespace Server.Mobiles
             }
 
             Timer.StartTimer(TimeSpan.FromSeconds(1), SpawnTormented);
-        }
-
-        public Meraktus(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "the remains of Meraktus";
@@ -163,11 +161,11 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x59c;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() <= 0.2)
+            if (Utility.RandomDouble() < 0.2)
             {
                 Earthquake();
             }
@@ -209,18 +207,6 @@ namespace Server.Mobiles
             }
 
             eable.Free();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
 
         public void SpawnTormented()

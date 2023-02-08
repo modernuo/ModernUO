@@ -1,18 +1,16 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Barkeeper : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Barkeeper : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
         [Constructible]
         public Barkeeper() : base("the barkeeper")
-        {
-        }
-
-        public Barkeeper(Serial serial) : base(serial)
         {
         }
 
@@ -30,20 +28,6 @@ namespace Server.Mobiles
             base.InitOutfit();
 
             AddItem(new HalfApron(Utility.RandomBrightHue()));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

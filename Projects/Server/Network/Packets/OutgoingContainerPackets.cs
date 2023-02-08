@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingContainerPackets.cs                                     *
  *                                                                       *
@@ -33,7 +33,7 @@ public static class OutgoingContainerPackets
             return;
         }
 
-        if (ObjectPropertyList.Enabled && ns.NewSpellbook)
+        if (ns.NewSpellbook)
         {
             ns.SendNewSpellbookContent(book, graphic, offset, content);
         }

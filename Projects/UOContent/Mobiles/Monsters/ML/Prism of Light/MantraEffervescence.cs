@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class MantraEffervescence : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class MantraEffervescence : BaseCreature
     {
         [Constructible]
         public MantraEffervescence()
@@ -37,11 +40,6 @@ namespace Server.Mobiles
             Karma = -6500;
         }
 
-        public MantraEffervescence(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a mantra effervescence corpse";
         public override string DefaultName => "a mantra effervescence";
 
@@ -49,20 +47,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.Rich);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

@@ -181,16 +181,12 @@ namespace Server.Gumps
 
                         if (text != null)
                         {
-                            focus.SendMessage(0x482, "{0} tells you:", from.Name);
+                            focus.SendMessage(0x482, $"{from.Name} tells you:");
                             focus.SendMessage(0x482, text.Text);
 
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} telling {2} \"{3}\" ",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus),
-                                text.Text
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} telling {CommandLogging.Format(focus)} \"{text.Text}\""
                             );
                         }
 
@@ -211,10 +207,7 @@ namespace Server.Gumps
                             from.SendGump(new PropertiesGump(from, focus));
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} opening properties gump of {2} ",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus)
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} opening properties gump of {CommandLogging.Format(focus)}"
                             );
                         }
 
@@ -233,12 +226,7 @@ namespace Server.Gumps
 
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} going to {2}, Location {3}, Map {4}",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus),
-                                focus.Location,
-                                focus.Map
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} going to {CommandLogging.Format(focus)}, {focus.Location} ({focus.Map})"
                             );
                         }
 
@@ -257,12 +245,7 @@ namespace Server.Gumps
 
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} bringing {2} to Location {3}, Map {4}",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus),
-                                from.Location,
-                                from.Map
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} bringing {CommandLogging.Format(focus)} to {focus.Location} ({focus.Map})"
                             );
                         }
 
@@ -285,10 +268,7 @@ namespace Server.Gumps
 
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} kicking {2} ",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus)
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} kicking {CommandLogging.Format(focus)}"
                             );
                         }
 
@@ -301,10 +281,7 @@ namespace Server.Gumps
                             focus.Kill();
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} killing {2} ",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus)
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} killing {CommandLogging.Format(focus)}"
                             );
                         }
 
@@ -323,10 +300,7 @@ namespace Server.Gumps
 
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} resurrecting {2} ",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus)
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} resurrecting {CommandLogging.Format(focus)}"
                             );
                         }
 
@@ -343,10 +317,7 @@ namespace Server.Gumps
                             from.SendGump(new SkillsGump(from, focus));
                             CommandLogging.WriteLine(
                                 from,
-                                "{0} {1} Opening Skills gump of {2} ",
-                                from.AccessLevel,
-                                CommandLogging.Format(from),
-                                CommandLogging.Format(focus)
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} opening Skills gump of {CommandLogging.Format(focus)}"
                             );
                         }
 

@@ -62,8 +62,7 @@ namespace Server.Engines.Quests.Hag
                 {
                     PlaySound(Utility.RandomBool() ? 0x42E : 0x43F);
 
-                    var hat = player.FindItemOnLayer(Layer.Helm);
-                    var tricorne = hat is TricorneHat;
+                    var tricorne = player.FindItemOnLayer<TricorneHat>(Layer.Helm) != null;
 
                     if (tricorne && player.BAC >= 20)
                     {

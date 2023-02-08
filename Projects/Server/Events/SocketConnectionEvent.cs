@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SocketConnectionEvent.cs                                        *
  *                                                                       *
@@ -17,26 +17,25 @@ using System;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server;
+
+public class SocketConnectEventArgs
 {
-    public class SocketConnectEventArgs
+    public SocketConnectEventArgs(Socket c)
     {
-        public SocketConnectEventArgs(Socket c)
-        {
-            Connection = c;
-            AllowConnection = true;
-        }
-
-        public Socket Connection { get; }
-
-        public bool AllowConnection { get; set; }
+        Connection = c;
+        AllowConnection = true;
     }
 
-    public static partial class EventSink
-    {
-        public static event Action<SocketConnectEventArgs> SocketConnect;
+    public Socket Connection { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
-    }
+    public bool AllowConnection { get; set; }
+}
+
+public static partial class EventSink
+{
+    public static event Action<SocketConnectEventArgs> SocketConnect;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
 }

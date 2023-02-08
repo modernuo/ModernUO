@@ -60,7 +60,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 3
   },
   {
     "Name": "The Second Age",
@@ -123,7 +124,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 3
   },
   {
     "Name": "Renaissance",
@@ -186,7 +188,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 3
   },
   {
     "Name": "Third Dawn",
@@ -249,7 +252,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 3
   },
   {
     "Name": "Blackthorn's Revenge",
@@ -312,7 +316,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 3
   },
   {
     "Name": "Age of Shadows",
@@ -375,7 +380,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Samurai Empire",
@@ -438,7 +444,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Mondain's Legacy",
@@ -501,7 +508,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Stygian Abyss",
@@ -564,7 +572,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 6
   },
   {
     "Name": "High Seas",
@@ -627,7 +636,8 @@
       "Shadowguard": false,
       "TOL": false,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Time of Legends",
@@ -690,7 +700,8 @@
       "Shadowguard": true,
       "TOL": true,
       "EJ": false
-    }
+    },
+    "MobileStatusVersion": 6
   },
   {
     "Name": "Endless Journey",
@@ -753,6 +764,7 @@
       "Shadowguard": true,
       "TOL": true,
       "EJ": true
-    }
+    },
+    "MobileStatusVersion": 6
   }
 ]

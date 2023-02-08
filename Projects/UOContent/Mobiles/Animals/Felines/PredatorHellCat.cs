@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Preditorhellcat")]
-    public class PredatorHellCat : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class PredatorHellCat : BaseCreature
     {
         [Constructible]
         public PredatorHellCat() : base(AIType.AI_Melee)
@@ -38,36 +41,19 @@ namespace Server.Mobiles
             MinTameSkill = 89.1;
         }
 
-        public PredatorHellCat(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a hell cat corpse";
         public override string DefaultName => "a hell cat";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Hides => 10;
         public override HideType HideType => HideType.Spined;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Feline;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

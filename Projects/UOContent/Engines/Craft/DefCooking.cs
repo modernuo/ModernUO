@@ -16,7 +16,7 @@ public class DefCooking : CraftSystem
 
     public override SkillName MainSkill => SkillName.Cooking;
 
-    public override TextDefinition GumpTitle => 1044003;
+    public override TextDefinition GumpTitle { get; } = 1044003;
 
     public static CraftSystem CraftSystem { get; private set; }
 

@@ -387,8 +387,7 @@ namespace Server.Mobiles
                     SayTo(
                         buyer,
                         true,
-                        "The total of thy purchase is {0} gold, which has been withdrawn from your bank account.  My thanks for the patronage.  Unfortunately, I could not sell you all the goods you requested.",
-                        totalCost
+                        $"The total of thy purchase is {totalCost} gold, which has been withdrawn from your bank account.  My thanks for the patronage.  Unfortunately, I could not sell you all the goods you requested."
                     );
                 }
                 else
@@ -396,8 +395,7 @@ namespace Server.Mobiles
                     SayTo(
                         buyer,
                         true,
-                        "The total of thy purchase is {0} gold.  My thanks for the patronage.  Unfortunately, I could not sell you all the goods you requested.",
-                        totalCost
+                        $"The total of thy purchase is {totalCost} gold.  My thanks for the patronage.  Unfortunately, I could not sell you all the goods you requested."
                     );
                 }
             }
@@ -450,7 +448,7 @@ namespace Server.Mobiles
 
             if (Sold > MaxSell)
             {
-                SayTo(seller, true, "You may only sell {0} items at a time!", MaxSell);
+                SayTo(seller, true, $"You may only sell {MaxSell} items at a time!");
                 return false;
             }
 
@@ -1044,7 +1042,7 @@ namespace Server.Mobiles
 
             var info = GetSellInfo();
 
-            var list = new List<SellItemState>();
+            var set = new HashSet<SellItemState>(new SellItemStateComparer());
 
             foreach (var ssi in info)
             {
@@ -1057,16 +1055,16 @@ namespace Server.Mobiles
 
                     if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
                     {
-                        list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
+                        set.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
                     }
                 }
             }
 
-            if (list.Count > 0)
+            if (set.Count > 0)
             {
                 SendPacksTo(from);
 
-                from.NetState.SendVendorSellList(Serial, list);
+                from.NetState.SendVendorSellList(Serial, set);
             }
             else
             {

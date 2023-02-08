@@ -58,7 +58,7 @@ namespace Server.Items
                 {
                     var maxCheck = 1000000;
 
-                    from.SendMessage(0x35, "You win the {0}gp jackpot!", m_GamblePot);
+                    from.SendMessage(0x35, $"You win the {m_GamblePot}gp jackpot!");
 
                     while (m_GamblePot > maxCheck)
                     {

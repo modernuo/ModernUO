@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Gorilla : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Gorilla : BaseCreature
     {
         [Constructible]
         public Gorilla() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -37,29 +40,11 @@ namespace Server.Mobiles
             MinTameSkill = -18.9;
         }
 
-        public Gorilla(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a gorilla corpse";
         public override string DefaultName => "a gorilla";
 
         public override int Meat => 1;
         public override int Hides => 6;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -45,7 +45,7 @@ namespace Server.Gumps
                             g.WarDeclarations.Remove(m_Guild);
 
                             m_Guild.AddEnemy(g);
-                            m_Guild.GuildMessage(1018020, true, "{0} ({1})", g.Name, g.Abbreviation);
+                            m_Guild.GuildMessage(1018020, true, $"{g.Name} ({g.Abbreviation})");
 
                             GuildGump.EnsureClosed(m_Mobile);
 

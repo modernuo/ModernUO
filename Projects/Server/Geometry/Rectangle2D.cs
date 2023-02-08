@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Rectangle2D.cs                                                  *
  *                                                                       *
@@ -14,134 +14,197 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server;
+
+[NoSort]
+[PropertyObject]
+public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable, ISpanParsable<Rectangle2D>
 {
-    [NoSort]
-    [Parsable]
-    [PropertyObject]
-    public struct Rectangle2D
+    private Point2D _start;
+    private Point2D _end;
+
+    public Rectangle2D(Point2D start, Point2D end)
     {
-        private Point2D m_Start;
-        private Point2D m_End;
+        _start = start;
+        _end = end;
+    }
 
-        public Rectangle2D(Point2D start, Point2D end)
+    public Rectangle2D(int x, int y, int width, int height)
+    {
+        _start = new Point2D(x, y);
+        _end = new Point2D(x + width, y + height);
+    }
+
+    public void Set(int x, int y, int width, int height)
+    {
+        _start = new Point2D(x, y);
+        _end = new Point2D(x + width, y + height);
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public Point2D Start
+    {
+        get => _start;
+        set => _start = value;
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public Point2D End
+    {
+        get => _end;
+        set => _end = value;
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int X
+    {
+        get => _start.m_X;
+        set => _start.m_X = value;
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Y
+    {
+        get => _start.m_Y;
+        set => _start.m_Y = value;
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Width
+    {
+        get => _end.m_X - _start.m_X;
+        set => _end.m_X = _start.m_X + value;
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Height
+    {
+        get => _end.m_Y - _start.m_Y;
+        set => _end.m_Y = _start.m_Y + value;
+    }
+
+    public void MakeHold(Rectangle2D r)
+    {
+        if (r._start.m_X < _start.m_X)
         {
-            m_Start = start;
-            m_End = end;
+            _start.m_X = r._start.m_X;
         }
 
-        public Rectangle2D(int x, int y, int width, int height)
+        if (r._start.m_Y < _start.m_Y)
         {
-            m_Start = new Point2D(x, y);
-            m_End = new Point2D(x + width, y + height);
+            _start.m_Y = r._start.m_Y;
         }
 
-        public void Set(int x, int y, int width, int height)
+        if (r._end.m_X > _end.m_X)
         {
-            m_Start = new Point2D(x, y);
-            m_End = new Point2D(x + width, y + height);
+            _end.m_X = r._end.m_X;
         }
 
-        public static Rectangle2D Parse(string value)
+        if (r._end.m_Y > _end.m_Y)
         {
-            var start = value.IndexOfOrdinal('(');
-            var end = value.IndexOf(',', start + 1);
+            _end.m_Y = r._end.m_Y;
+        }
+    }
 
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
+    public bool Equals(Rectangle2D other) => _start == other._start && _end == other._end;
 
-            start = end;
-            end = value.IndexOf(',', start + 1);
+    public override bool Equals(object obj) => obj is Rectangle2D other && Equals(other);
 
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
+    public override int GetHashCode() => HashCode.Combine(_start, _end);
 
-            start = end;
-            end = value.IndexOf(',', start + 1);
+    public static bool operator ==(Rectangle2D l, Rectangle2D r) => l._start == r._start && l._end == r._end;
 
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var w);
+    public static bool operator !=(Rectangle2D l, Rectangle2D r) => l._start != r._start || l._end != r._end;
 
-            start = end;
-            end = value.IndexOf(')', start + 1);
+    public bool Contains(Point3D p) =>
+        _start.m_X <= p.m_X && _start.m_Y <= p.m_Y && _end.m_X > p.m_X && _end.m_Y > p.m_Y;
 
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var h);
+    public bool Contains(Point2D p) =>
+        _start.m_X <= p.m_X && _start.m_Y <= p.m_Y && _end.m_X > p.m_X && _end.m_Y > p.m_Y;
 
-            return new Rectangle2D(x, y, w, h);
+    public bool Contains(int x, int y) =>
+        _start.m_X <= x && _start.m_Y <= y && _end.m_X > x && _end.m_Y > y;
+
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+        => destination.TryWrite(provider, $"({X}, {Y})+({Width}, {Height})", out charsWritten);
+
+    public override string ToString()
+    {
+        // Maximum number of characters that are needed to represent this:
+        // 9 characters for (, )+(, )
+        // Up to 11 characters to represent each integer
+        const int maxLength = 9 + 11 * 4;
+        Span<char> span = stackalloc char[maxLength];
+        TryFormat(span, out var charsWritten, null, null);
+        return span[..charsWritten].ToString();
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle2D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Rectangle2D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Rectangle2D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Rectangle2D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        var delimiter = s.IndexOfOrdinal('+');
+        if (delimiter == -1)
+        {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public Point2D Start
+        if (!Point2D.TryParse(s[..delimiter], provider, out var start))
         {
-            get => m_Start;
-            set => m_Start = value;
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public Point2D End
+        if (!Point2D.TryParse(s[(delimiter + 1)..], provider, out var end))
         {
-            get => m_End;
-            set => m_End = value;
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int X
+        return new Rectangle2D(start, end);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Rectangle2D result)
+    {
+        s = s.Trim();
+
+        var delimiter = s.IndexOfOrdinal('+');
+        if (delimiter == -1)
         {
-            get => m_Start.m_X;
-            set => m_Start.m_X = value;
+            result = default;
+            return false;
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int Y
+        if (!Point2D.TryParse(s[..delimiter], provider, out var start))
         {
-            get => m_Start.m_Y;
-            set => m_Start.m_Y = value;
+            result = default;
+            return false;
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int Width
+        if (!Point2D.TryParse(s[(delimiter + 1)..], provider, out var end))
         {
-            get => m_End.m_X - m_Start.m_X;
-            set => m_End.m_X = m_Start.m_X + value;
+            result = default;
+            return false;
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int Height
-        {
-            get => m_End.m_Y - m_Start.m_Y;
-            set => m_End.m_Y = m_Start.m_Y + value;
-        }
-
-        public void MakeHold(Rectangle2D r)
-        {
-            if (r.m_Start.m_X < m_Start.m_X)
-            {
-                m_Start.m_X = r.m_Start.m_X;
-            }
-
-            if (r.m_Start.m_Y < m_Start.m_Y)
-            {
-                m_Start.m_Y = r.m_Start.m_Y;
-            }
-
-            if (r.m_End.m_X > m_End.m_X)
-            {
-                m_End.m_X = r.m_End.m_X;
-            }
-
-            if (r.m_End.m_Y > m_End.m_Y)
-            {
-                m_End.m_Y = r.m_End.m_Y;
-            }
-        }
-
-        public readonly bool Contains(Point3D p) =>
-            m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
-
-        public readonly bool Contains(Point2D p) =>
-            m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
-
-        public readonly bool Contains(int x, int y) =>
-            m_Start.m_X <= x && m_Start.m_Y <= y && m_End.m_X > x && m_End.m_Y > y;
-
-        public override string ToString() => $"({X}, {Y})+({Width}, {Height})";
+        result = new Rectangle2D(start, end);
+        return true;
     }
 }

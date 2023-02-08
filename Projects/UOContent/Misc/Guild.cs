@@ -35,11 +35,11 @@ namespace Server.Guilds
             new(1062963, 0, RankFlags.None),   // Ronin
             new(1062962, 1, RankFlags.Member), // Member
             new(
-                1062961,
+                1062961, // Emmissary
                 2,
                 RankFlags.Member | RankFlags.RemovePlayers | RankFlags.CanInvitePlayer | RankFlags.CanSetGuildTitle |
                 RankFlags.CanPromoteDemote
-            ),                                                              // Emmissary
+            ),
             new(1062960, 3, RankFlags.Member | RankFlags.ControlWarStatus), // Warlord
             new(1062959, 4, RankFlags.All)                                  // Leader
         };
@@ -92,8 +92,6 @@ namespace Server.Guilds
 
             leader.Alliance = this;
             partner.Alliance = this;
-
-            Alliances.TryAdd(Name.ToLower(), this);
         }
 
         public AllianceInfo(IGenericReader reader)
@@ -113,6 +111,8 @@ namespace Server.Guilds
                         break;
                     }
             }
+
+            Timer.DelayCall((alliances, alliance) => alliances.TryAdd(alliance.Name.ToLower(), alliance), Alliances, this);
         }
 
         public static Dictionary<string, AllianceInfo> Alliances { get; } = new();
@@ -176,8 +176,6 @@ namespace Server.Guilds
 
             Guild.Tidy(m_PendingMembers);
             writer.Write(m_PendingMembers);
-
-            Alliances.TryAdd(Name.ToLower(), this);
         }
 
         public void AddPendingGuild(Guild g)
@@ -276,11 +274,6 @@ namespace Server.Guilds
             }
         }
 
-        public void AllianceMessage(int num, bool append, string format, params object[] args)
-        {
-            AllianceMessage(num, append, string.Format(format, args));
-        }
-
         public void AllianceMessage(int number)
         {
             for (var i = 0; i < m_Members.Count; ++i)
@@ -305,15 +298,7 @@ namespace Server.Guilds
             }
         }
 
-        public void AllianceTextMessage(string text)
-        {
-            AllianceTextMessage(0x3B2, text);
-        }
-
-        public void AllianceTextMessage(string format, params object[] args)
-        {
-            AllianceTextMessage(0x3B2, string.Format(format, args));
-        }
+        public void AllianceTextMessage(string text) => AllianceTextMessage(0x3B2, text);
 
         public void AllianceTextMessage(int hue, string text)
         {
@@ -321,11 +306,6 @@ namespace Server.Guilds
             {
                 m_Members[i].GuildTextMessage(hue, text);
             }
-        }
-
-        public void AllianceTextMessage(int hue, string format, params object[] args)
-        {
-            AllianceTextMessage(hue, string.Format(format, args));
         }
 
         public void AllianceChat(Mobile from, int hue, string text)
@@ -1148,10 +1128,6 @@ namespace Server.Guilds
             list.TrimExcess();
         }
 
-        public override void BeforeSerialize()
-        {
-        }
-
         public override void Serialize(IGenericWriter writer)
         {
             if (LastFealty + TimeSpan.FromDays(1.0) < Core.Now)
@@ -1229,6 +1205,12 @@ namespace Server.Guilds
 
             writer.Write(Charter);
             writer.Write(Website);
+        }
+
+        public override bool ShouldExecuteAfterSerialize => false;
+
+        public override void AfterSerialize()
+        {
         }
 
         public override void Delete()
@@ -1462,11 +1444,6 @@ namespace Server.Guilds
             }
         }
 
-        public void GuildMessage(int num, bool append, string format, params object[] args)
-        {
-            GuildMessage(num, append, string.Format(format, args));
-        }
-
         public void GuildMessage(int number)
         {
             for (var i = 0; i < Members.Count; ++i)
@@ -1491,15 +1468,7 @@ namespace Server.Guilds
             }
         }
 
-        public void GuildTextMessage(string text)
-        {
-            GuildTextMessage(0x3B2, text);
-        }
-
-        public void GuildTextMessage(string format, params object[] args)
-        {
-            GuildTextMessage(0x3B2, string.Format(format, args));
-        }
+        public void GuildTextMessage(string text) => GuildTextMessage(0x3B2, text);
 
         public void GuildTextMessage(int hue, string text)
         {
@@ -1507,11 +1476,6 @@ namespace Server.Guilds
             {
                 Members[i].SendMessage(hue, text);
             }
-        }
-
-        public void GuildTextMessage(int hue, string format, params object[] args)
-        {
-            GuildTextMessage(hue, string.Format(format, args));
         }
 
         public void GuildChat(Mobile from, int hue, string text)

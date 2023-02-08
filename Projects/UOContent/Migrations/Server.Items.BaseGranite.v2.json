@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.BaseGranite",
+  "properties": [
+    {
+      "name": "Resource",
+      "type": "Server.Items.CraftResource",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

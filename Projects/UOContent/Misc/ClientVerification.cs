@@ -53,7 +53,9 @@ namespace Server.Misc
             if (MinRequired != null || MaxRequired != null)
             {
                 logger.Information(
-                    $"Restricting client version to {GetVersionExpression()}. Action to be taken: {_invalidClientResponse}"
+                    "Restricting client version to {ClientVersion}. Action to be taken: {Action}",
+                    GetVersionExpression(),
+                    _invalidClientResponse
                 );
             }
         }
@@ -143,7 +145,7 @@ namespace Server.Misc
 
             if (shouldKick)
             {
-                state.Mobile.SendMessage(0x22, "You will be disconnected in {0} seconds.", KickDelay.TotalSeconds);
+                state.Mobile.SendMessage(0x22, $"You will be disconnected in {KickDelay.TotalSeconds} seconds.");
                 Timer.StartTimer(KickDelay, () => OnKick(state));
                 return;
             }
@@ -187,9 +189,7 @@ namespace Server.Misc
             if (_invalidClientResponse == InvalidClientResponse.LenientKick)
             {
                 from.SendMessage(
-                    "Invalid clients will be kicked after {0} days of character age and {1} hours of play time",
-                    _ageLeniency,
-                    _gameTimeLeniency
+                    $"Invalid clients will be kicked after {_ageLeniency} days of character age and {_gameTimeLeniency} hours of play time"
                 );
             }
 

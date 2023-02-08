@@ -319,7 +319,7 @@ namespace Server.Commands
             }
             else if (IsText(type))
             {
-                toString = ((TextDefinition)value).Format(false);
+                toString = ((TextDefinition)value).Format() ?? "empty";
             }
             else
             {

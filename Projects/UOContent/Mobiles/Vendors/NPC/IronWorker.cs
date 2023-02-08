@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class IronWorker : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class IronWorker : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -17,10 +19,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Swords, 60.0, 83.0);
             SetSkill(SkillName.Tactics, 60.0, 83.0);
             SetSkill(SkillName.Parry, 61.0, 93.0);
-        }
-
-        public IronWorker(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -112,20 +110,6 @@ namespace Server.Mobiles
             {
                 item.Hue = Utility.RandomBrightHue();
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

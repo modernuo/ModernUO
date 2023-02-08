@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IMount.cs                                                       *
  *                                                                       *
@@ -13,16 +13,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Mobiles
-{
-    public interface IMount
-    {
-        Mobile Rider { get; set; }
-        void OnRiderDamaged(int amount, Mobile from, bool willKill);
-    }
+namespace Server.Mobiles;
 
-    public interface IMountItem
-    {
-        IMount Mount { get; }
-    }
+public interface IMount
+{
+    Mobile Rider { get; set; }
+    void OnRiderDamaged(int amount, Mobile from, bool willKill);
+}
+
+public interface IMountItem
+{
+    IMount Mount { get; }
 }

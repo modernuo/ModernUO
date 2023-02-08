@@ -20,6 +20,7 @@ namespace Server.Mobiles
         public override bool BardImmune => true;
         public override Poison PoisonImmune => Poison.Lethal;
         public override bool Commandable => false;
+        public override bool IgnoreMobiles => true;
 
         public override bool PlayerRangeSensitive => false;
 

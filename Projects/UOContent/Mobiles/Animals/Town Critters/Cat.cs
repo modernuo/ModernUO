@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Housecat")]
-    public class Cat : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Cat : BaseCreature
     {
         [Constructible]
         public Cat() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -37,29 +40,11 @@ namespace Server.Mobiles
             MinTameSkill = -0.9;
         }
 
-        public Cat(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a cat corpse";
         public override string DefaultName => "a cat";
 
         public override int Meat => 1;
         public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
         public override PackInstinct PackInstinct => PackInstinct.Feline;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

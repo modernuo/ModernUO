@@ -12,12 +12,12 @@ namespace Server.Items
     {
         [SerializableField(0)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _showUsesRemaining;
 
         [SerializableField(1)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _usesRemaining;
 
         public BasePoleArm(int itemID) : base(itemID) => _usesRemaining = 150;

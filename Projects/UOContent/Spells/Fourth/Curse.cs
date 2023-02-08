@@ -15,7 +15,7 @@ namespace Server.Spells.Fourth
             Reagent.SulfurousAsh
         );
 
-        private static readonly HashSet<Mobile> _underEffect = new();
+        private static readonly Dictionary<Mobile, Timer> _table = new();
 
         public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -30,20 +30,16 @@ namespace Server.Spells.Fourth
                 SpellHelper.Turn(Caster, m);
 
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
+                var length = SpellHelper.GetDuration(Caster, m);
 
-                SpellHelper.AddStatCurse(Caster, m, StatType.Str);
-                SpellHelper.DisableSkillCheck = true;
-                SpellHelper.AddStatCurse(Caster, m, StatType.Dex);
-                SpellHelper.AddStatCurse(Caster, m, StatType.Int);
-                SpellHelper.DisableSkillCheck = false;
+                SpellHelper.AddStatCurse(Caster, m, StatType.Str, length, false);
+                SpellHelper.AddStatCurse(Caster, m, StatType.Dex, length);
+                SpellHelper.AddStatCurse(Caster, m, StatType.Int, length);
 
-                // On OSI you CAN curse yourself and get this effect.
-                if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m))
+                if (Caster.Player && m.Player)
                 {
-                    var duration = SpellHelper.GetDuration(Caster, m);
-                    _underEffect.Add(m);
-                    Timer.StartTimer(duration, () => RemoveEffect(m));
-                    m.UpdateResistances();
+                    RemoveEffect(m);
+                    _table[m] = Timer.DelayCall(length, () => RemoveEffect(m));
                 }
 
                 m.Spell?.OnCasterHurt();
@@ -54,8 +50,6 @@ namespace Server.Spells.Fourth
                 m.PlaySound(0x1E1);
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
-                var length = SpellHelper.GetDuration(Caster, m);
-
                 var args = $"{percentage}\t{percentage}\t{percentage}\t{10}\t{10}\t{10}\t{10}";
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Curse, 1075835, 1075836, length, m, args));
@@ -73,11 +67,16 @@ namespace Server.Spells.Fourth
 
         public static bool RemoveEffect(Mobile m)
         {
-            var effectRemoved = _underEffect.Remove(m);
-            m.UpdateResistances();
-            return effectRemoved;
+            if (_table.Remove(m, out var timer))
+            {
+                timer.Stop();
+                m.UpdateResistances();
+                return true;
+            }
+
+            return false;
         }
 
-        public static bool UnderEffect(Mobile m) => _underEffect.Contains(m);
+        public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
     }
 }

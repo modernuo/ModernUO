@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Server
 {
     public static class Types
     {
-        private static readonly Type[] _parseStringParamTypes = { typeof(string) };
-        private static readonly object[] _parseParams = new object[1];
+        public static readonly Type[] ParseStringParamTypes = { typeof(string), typeof(IFormatProvider) };
+        public static readonly Type[] ParseStringNumericParamTypes = { typeof(string), typeof(NumberStyles) };
+        private static object[] _parseParams = { null, null };
 
         public static readonly Type OfByte = typeof(byte);
         public static readonly Type OfSByte = typeof(sbyte);
@@ -33,7 +37,6 @@ namespace Server
 
         public static readonly Type OfCPA = typeof(CommandPropertyAttribute);
         public static readonly Type OfText = typeof(TextDefinition);
-        public static readonly Type OfParsable = typeof(ParsableAttribute);
         public static readonly Type OfMobile = typeof(Mobile);
         public static readonly Type OfItem = typeof(Item);
         public static readonly Type OfCustomEnum = typeof(CustomEnumAttribute);
@@ -72,6 +75,8 @@ namespace Server
             OfULong
         };
 
+        private static Dictionary<Type, bool> _isParsable;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsType(Type type, Type check) => check.IsAssignableFrom(type);
 
@@ -84,10 +89,25 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsText(Type t) => IsType(t, OfText);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsParsable(Type t) =>
-            IsChar(t) || IsType(t, OfGuid) ||
-            IsType(t, OfTimeSpan) || IsNumeric(t) || IsDecimal(t) || t.IsDefined(OfParsable, false);
+        public static bool IsParsable(Type t)
+        {
+            _isParsable ??= new();
+            if (_isParsable.TryGetValue(t, out var isParsable))
+            {
+                return isParsable;
+            }
+
+            foreach (var x in t.GetInterfaces())
+            {
+                if (x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IParsable<>))
+                {
+                    isParsable = true;
+                    break;
+                }
+            }
+
+            return _isParsable[t] = isParsable;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDecimal(Type t) => Array.IndexOf(DecimalTypes, t) >= 0;
@@ -98,9 +118,16 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
 
+        private static Dictionary<Type, MethodInfo> _parseMethods;
+
         public static object Parse(Type t, string value)
         {
-            var method = t.GetMethod("Parse", _parseStringParamTypes);
+            _parseMethods ??= new();
+            if (!_parseMethods.TryGetValue(t, out var method))
+            {
+                _parseMethods[t] = method = t.GetMethod("Parse", ParseStringParamTypes);
+            }
+
             _parseParams[0] = value;
             return method?.Invoke(null, _parseParams);
         }
@@ -160,11 +187,11 @@ namespace Server
                 return null;
             }
 
-            if (value.StartsWithOrdinal("0x") && IsNumeric(type))
+            if (IsNumeric(type))
             {
                 try
                 {
-                    constructed = Convert.ChangeType(Convert.ToUInt64(value[2..], 16), type);
+                    constructed = Convert.ChangeType(Convert.ToUInt64(value), type);
                     return null;
                 }
                 catch

@@ -1,12 +1,16 @@
-using System.Text.Json;
-using Server.Json;
+namespace Server.Regions;
 
-namespace Server.Regions
+public class TownRegion : GuardedRegion
 {
-    public class TownRegion : GuardedRegion
+    public Point3D Entrance { get; set; }
+
+    public TownRegion(string name, Map map, Region parent, params Rectangle3D[] area)
+        : base(name, map, parent, area)
     {
-        public TownRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-        {
-        }
+    }
+
+    public TownRegion(string name, Map map, Region parent, int priority, params Rectangle3D[] area)
+        : base(name, map, parent, priority, area)
+    {
     }
 }

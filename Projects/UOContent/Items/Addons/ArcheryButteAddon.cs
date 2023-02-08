@@ -21,11 +21,11 @@ namespace Server.Items
         }
 
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _minSkill;
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _maxSkill;
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -39,11 +39,11 @@ namespace Server.Items
         }
 
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _arrows;
 
         [SerializableField(3)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _bolts;
 
         public override void OnDoubleClick(Mobile from)

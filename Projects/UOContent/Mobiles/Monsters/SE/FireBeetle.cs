@@ -1,13 +1,17 @@
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [Forge]
-    public class FireBeetle : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class FireBeetle : BaseMount
     {
+        public override string DefaultName => "a fire beetle";
+
         [Constructible]
-        public FireBeetle() : base("a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee)
+        public FireBeetle() : base(0xA9, 0x3E95, AIType.AI_Melee)
         {
             SetStam(100);
             SetStr(300);
@@ -42,10 +46,6 @@ namespace Server.Mobiles
             PackItem(new IronIngot(2));
 
             Hue = 0x489;
-        }
-
-        public FireBeetle(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a fire beetle corpse";
@@ -87,23 +87,10 @@ namespace Server.Mobiles
 
         public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version == 0)
-            {
-                Hue = 0x489;
-            }
+            Hue = 0x489;
         }
     }
 }

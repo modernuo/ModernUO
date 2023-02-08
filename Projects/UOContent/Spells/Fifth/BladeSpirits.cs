@@ -34,17 +34,7 @@ namespace Server.Spells.Fifth
             }
             else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds(120);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
-                }
-
+                var duration = TimeSpan.FromSeconds(Core.AOS ? 120 : Utility.Random(80, 40));
                 BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
             }
 
@@ -53,12 +43,23 @@ namespace Server.Spells.Fifth
 
         public override TimeSpan GetCastDelay()
         {
-            if (Core.AOS)
+            var scalar = Core.Expansion switch
             {
-                return TimeSpan.FromTicks(base.GetCastDelay().Ticks * (Core.SE ? 3 : 5));
+                >= Expansion.SE  => 3,
+                >= Expansion.AOS => 5,
+                _                => 4
+            };
+
+            var delay = base.GetCastDelay() * scalar;
+
+            // SA made everything 0.25s slower, but that is applied after the scalar
+            // So remove 0.25 * scalar to compensate
+            if (Core.SA)
+            {
+                delay -= TimeSpan.FromSeconds(0.25 * scalar);
             }
 
-            return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
+            return delay;
         }
 
         public override bool CheckCast()

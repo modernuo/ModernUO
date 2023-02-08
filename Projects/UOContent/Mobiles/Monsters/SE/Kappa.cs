@@ -1,14 +1,13 @@
+using ModernUO.Serialization;
 using System;
-using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Kappa : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Kappa : BaseCreature
     {
-        private static readonly Dictionary<Mobile, InternalTimer> m_Table = new();
-
         [Constructible]
         public Kappa() : base(AIType.AI_Melee)
         {
@@ -45,29 +44,34 @@ namespace Server.Mobiles
                 switch (Utility.Random(6))
                 {
                     case 0:
-                        PackItem(new Gears());
-                        break;
+                        {
+                            PackItem(new Gears());
+                            break;
+                        }
                     case 1:
-                        PackItem(new Hinge());
-                        break;
+                        {
+                            PackItem(new Hinge());
+                            break;
+                        }
                     case 2:
-                        PackItem(new Axle());
-                        break;
+                        {
+                            PackItem(new Axle());
+                            break;
+                        }
                 }
             }
 
-            if (Core.ML && Utility.RandomDouble() < .33)
+            if (Core.ML && Utility.Random(3) == 0)
             {
                 PackItem(Seed.RandomPeculiarSeed(4));
             }
         }
 
-        public Kappa(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a kappa corpse";
         public override string DefaultName => "a kappa";
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.DrainLifeAttack };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -85,56 +89,9 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x508;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
-
-            if (Utility.RandomBool())
-            {
-                if (!IsBeingDrained(defender) && Mana > 14)
-                {
-                    defender.SendLocalizedMessage(1070848); // You feel your life force being stolen away.
-                    BeginLifeDrain(defender, this);
-                    Mana -= 15;
-                }
-            }
-        }
-
-        public static bool IsBeingDrained(Mobile m) => m_Table.ContainsKey(m);
-
-        public static void BeginLifeDrain(Mobile m, Mobile from)
-        {
-            m_Table.TryGetValue(m, out var timer);
-            timer?.Stop();
-            m_Table[m] = timer = new InternalTimer(from, m);
-
-            timer.Start();
-        }
-
-        public static void DrainLife(Mobile m, Mobile from)
-        {
-            if (m.Alive)
-            {
-                var damageGiven = AOS.Damage(m, from, 5, 0, 0, 0, 0, 100);
-                from.Hits += damageGiven;
-            }
-            else
-            {
-                EndLifeDrain(m);
-            }
-        }
-
-        public static void EndLifeDrain(Mobile m)
-        {
-            if (m_Table.Remove(m, out var timer))
-            {
-                timer?.Stop();
-                m.SendLocalizedMessage(1070849); // The drain on your life force is gone.
-            }
-        }
-
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
+            // Acid Blood ability
             if (from?.Map != null)
             {
                 var amt = 0;
@@ -154,7 +111,7 @@ namespace Server.Mobiles
                 if (amt > 0)
                 {
                     SpillAcid(target, amt);
-                    from.SendLocalizedMessage(1070820);
+                    from.SendLocalizedMessage(1070820); // The creature spills a pool of acidic slime!
                     if (Mana > 14)
                     {
                         Mana -= 15;
@@ -165,44 +122,9 @@ namespace Server.Mobiles
             base.OnDamage(amount, from, willKill);
         }
 
-        public override Item NewHarmfulItem() => new PoolOfAcid(TimeSpan.FromSeconds(10), 5, 10)
+        public override Item NewHarmfulItem() => new Acid(TimeSpan.FromSeconds(10), 5, 10)
         {
             Name = "slime"
         };
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly Mobile m_From;
-            private readonly Mobile m_Mobile;
-            private int m_Count;
-
-            public InternalTimer(Mobile from, Mobile m) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
-            {
-                m_From = from;
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                DrainLife(m_Mobile, m_From);
-
-                if (Running && ++m_Count == 5)
-                {
-                    EndLifeDrain(m_Mobile);
-                }
-            }
-        }
     }
 }

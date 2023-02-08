@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
+    [SerializationGenerator(0, false)]
     [TypeAlias("Server.Mobiles.DeathWatchBeetle")]
-    public class DeathwatchBeetle : BaseCreature
+    public partial class DeathwatchBeetle : BaseCreature
     {
         [Constructible]
         public DeathwatchBeetle() : base(AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest)
@@ -68,10 +70,6 @@ namespace Server.Mobiles
             ControlSlots = 1;
         }
 
-        public DeathwatchBeetle(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a deathwatchbeetle corpse";
 
         public override string DefaultName => "a deathwatch beetle";
@@ -100,7 +98,7 @@ namespace Server.Mobiles
         {
             if (Utility.RandomBool() && Mana > 14 && to != null)
             {
-                damage = damage + damage / 2;
+                damage += damage / 2;
                 to.SendLocalizedMessage(1060091); // You take extra damage from the crushing attack!
                 to.PlaySound(0x1E1);
                 to.FixedParticles(0x377A, 1, 32, 0x26da, 0, 0, 0);
@@ -132,18 +130,6 @@ namespace Server.Mobiles
             MovingParticles(m, 0x36D4, 1, 0, false, false, 0x3F, 0, 0x1F73, 1, 0, (EffectLayer)255, 0x100);
             m.ApplyPoison(this, Poison.Regular);
             m.SendLocalizedMessage(1070821, Name); // %s spits a poisonous substance at you!
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

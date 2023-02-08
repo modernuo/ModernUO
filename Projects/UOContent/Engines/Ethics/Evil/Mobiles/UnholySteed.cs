@@ -4,9 +4,10 @@ namespace Server.Mobiles
 {
     public class UnholySteed : BaseMount
     {
+        public override string DefaultName => "a dark steed";
+
         [Constructible]
-        public UnholySteed()
-            : base("a dark steed", 0x74, 0x3EA7, AIType.AI_Melee, FightMode.Aggressor)
+        public UnholySteed() : base(0x74, 0x3EA7, AIType.AI_Melee, FightMode.Aggressor)
         {
             SetStr(496, 525);
             SetDex(86, 105);
@@ -39,32 +40,26 @@ namespace Server.Mobiles
             ControlSlots = 1;
         }
 
-        public UnholySteed(Serial serial)
-            : base(serial)
+        public UnholySteed(Serial serial) : base(serial)
         {
         }
 
         public override string CorpseName => "an unholy corpse";
         public override bool IsDispellable => false;
         public override bool IsBondable => false;
-
-        public override bool HasBreath => true;
-        public override bool CanBreath => true;
-
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override string ApplyNameSuffix(string suffix)
         {
             if (suffix.Length == 0)
             {
-                suffix = Ethic.Evil.Definition.Adjunct.String;
-            }
-            else
-            {
-                suffix = $"{suffix} {Ethic.Evil.Definition.Adjunct.String}";
+                return base.ApplyNameSuffix(Ethic.Evil.Definition.Adjunct.String);
             }
 
-            return base.ApplyNameSuffix(suffix);
+            return base.ApplyNameSuffix($"{suffix} {Ethic.Evil.Definition.Adjunct.String}");
         }
 
         public override void OnDoubleClick(Mobile from)

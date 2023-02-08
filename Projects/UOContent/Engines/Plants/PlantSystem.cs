@@ -315,25 +315,14 @@ namespace Server.Engines.Plants
             m_LeftResources = 8;
         }
 
-        public int GetLocalizedDirtStatus()
-        {
-            if (Water <= 1)
+        public int GetLocalizedDirtStatus() =>
+            Water switch
             {
-                return 1060826; // hard
-            }
-
-            if (Water <= 2)
-            {
-                return 1060827; // soft
-            }
-
-            if (Water <= 3)
-            {
-                return 1060828; // squishy
-            }
-
-            return 1060829;     // sopping wet
-        }
+                <= 1 => 1060826, // hard
+                <= 2 => 1060827, // soft
+                <= 3 => 1060828, // squishy
+                _    => 1060829  // sappy wet
+            };
 
         public int GetLocalizedHealth()
         {
@@ -342,7 +331,7 @@ namespace Server.Engines.Plants
                 PlantHealth.Dying   => 1060825, // dying
                 PlantHealth.Wilted  => 1060824, // wilted
                 PlantHealth.Healthy => 1060823, // healthy
-                _                   => 1060822
+                _                   => 1060822  // vibrant
             };
         }
 

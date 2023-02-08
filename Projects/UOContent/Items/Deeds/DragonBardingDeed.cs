@@ -12,28 +12,26 @@ public partial class DragonBardingDeed : Item, ICraftable
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _craftedBy;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _exceptional;
-
-    [SerializableField(2, "private", "private")]
-    private CraftResource _rawResource;
 
     public DragonBardingDeed() : base(0x14F0) => Weight = 1.0;
 
     public override int LabelNumber => _exceptional ? 1053181 : 1053012; // dragon barding deed
 
+    [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
-        get => _rawResource;
+        get => _resource;
         set
         {
-            _rawResource = value;
+            _resource = value;
             Hue = CraftResources.GetHue(value);
             InvalidateProperties();
         }
@@ -134,6 +132,6 @@ public partial class DragonBardingDeed : Item, ICraftable
             reader.ReadInt();
         }
 
-        _rawResource = (CraftResource)reader.ReadInt();
+        _resource = (CraftResource)reader.ReadInt();
     }
 }

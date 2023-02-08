@@ -142,11 +142,8 @@ namespace Server.Engines.Plants
                     }
                     else if (dirt.Amount < _dirtNeeded)
                     {
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1061896
-                        ); // You need more dirt to fill a plant bowl!
+                        // You need more dirt to fill a plant bowl!
+                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061896);
                     }
                     else
                     {
@@ -157,21 +154,15 @@ namespace Server.Engines.Plants
                             dirt.Consume(_dirtNeeded);
                             m_PlantBowl.Delete();
 
-                            from.LocalOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                1061895
-                            ); // You fill the bowl with fresh dirt.
+                            // You fill the bowl with fresh dirt.
+                            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061895);
                         }
                         else
                         {
                             fullBowl.Delete();
 
-                            from.LocalOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                1061894
-                            ); // There is no room in your backpack for a bowl full of dirt!
+                            // There is no room in your backpack for a bowl full of dirt!
+                            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061894);
                         }
                     }
                 }
@@ -189,20 +180,14 @@ namespace Server.Engines.Plants
                     {
                         fullBowl.Delete();
 
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1061894
-                        ); // There is no room in your backpack for a bowl full of dirt!
+                        // There is no room in your backpack for a bowl full of dirt!
+                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061894);
                     }
                 }
                 else
                 {
-                    from.LocalOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1061893
-                    ); // You'll want to gather fresh dirt in order to raise a healthy plant!
+                    // You'll want to gather fresh dirt in order to raise a healthy plant!
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061893);
                 }
             }
 

@@ -38,9 +38,9 @@ namespace Server.Spells.Necromancy
                 SpellHelper.Turn(Caster, m);
 
                 // SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );
-                // Irrelevent after AoS
+                // Irrelevant after AoS
 
-                /* Temporarily chokes off the air suply of the target with poisonous fumes.
+                /* Temporarily chokes off the air supply of the target with poisonous fumes.
                  * The target is inflicted with poison damage over time.
                  * The amount of damage dealt each "hit" is based off of the caster's Spirit Speak skill and the Target's current Stamina.
                  * The less Stamina the target has, the more damage is done by Strangle.
@@ -60,52 +60,52 @@ namespace Server.Spells.Necromancy
                 m.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
                 m.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-                if (!_table.TryGetValue(m, out var timer))
+                // According to testing on OSI, it is refreshed.
+                if (_table.TryGetValue(m, out var timer))
                 {
-                    _table[m] = timer = new InternalTimer(m, Caster);
-                    timer.Start();
+                    timer.Stop();
                 }
+
+                timer = new InternalTimer(m, Caster);
+                _table[m] = timer;
+                timer.Start();
 
                 HarmfulSpell(m);
             }
 
             // Calculations for the buff bar
-            var spiritlevel = Caster.Skills.SpiritSpeak.Value / 10;
-            if (spiritlevel < 4)
+            var spiritlevel = Math.Max(4, Caster.Skills.SpiritSpeak.Value / 10);
+
+            const int minDamage = 4;
+            var maxDamage = ((int)spiritlevel + 1) * 3;
+            var args = $"{minDamage}\t{maxDamage}";
+
+            var count = (int)spiritlevel;
+            var maxCount = count;
+            var hitDelay = 5;
+            var length = hitDelay;
+
+            while (count >= 1)
             {
-                spiritlevel = 4;
-            }
-
-            var d_MinDamage = 4;
-            var d_MaxDamage = ((int)spiritlevel + 1) * 3;
-            var args = $"{d_MinDamage}\t{d_MaxDamage}";
-
-            var i_Count = (int)spiritlevel;
-            var i_MaxCount = i_Count;
-            var i_HitDelay = 5;
-            var i_Length = i_HitDelay;
-
-            while (i_Count > 1)
-            {
-                --i_Count;
-                if (i_HitDelay > 1)
+                --count;
+                if (hitDelay > 1)
                 {
-                    if (i_MaxCount < 5)
+                    if (maxCount < 5)
                     {
-                        --i_HitDelay;
+                        --hitDelay;
                     }
                     else
                     {
-                        var delay = (int)Math.Ceiling((1.0 + 5 * i_Count) / i_MaxCount);
+                        var delay = (int)Math.Ceiling((1.0 + 5 * count) / maxCount);
 
-                        i_HitDelay = delay <= 5 ? delay : 5;
+                        hitDelay = delay <= 5 ? delay : 5;
                     }
                 }
 
-                i_Length += i_HitDelay;
+                length += hitDelay;
             }
 
-            var t_Duration = TimeSpan.FromSeconds(i_Length);
+            var t_Duration = TimeSpan.FromSeconds(length);
             BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args));
 
             FinishSequence();
@@ -130,106 +130,98 @@ namespace Server.Spells.Necromancy
 
         private class InternalTimer : Timer
         {
-            private readonly Mobile m_From;
-            private readonly double m_MaxBaseDamage;
-            private readonly int m_MaxCount;
-            private readonly double m_MinBaseDamage;
-            private readonly Mobile m_Target;
-            private int m_Count;
-            private int m_HitDelay;
-
-            private DateTime m_NextHit;
+            private Mobile _from;
+            private double _maxBaseDamage;
+            private int _maxCount;
+            private double _minBaseDamage;
+            private Mobile _target;
+            private int _count;
+            private int _hitDelay;
+            private DateTime _nextHit;
 
             public InternalTimer(Mobile target, Mobile from) : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1))
             {
 
-                m_Target = target;
-                m_From = from;
+                _target = target;
+                _from = from;
 
                 var spiritLevel = from.Skills.SpiritSpeak.Value / 10;
 
-                m_MinBaseDamage = spiritLevel - 2;
-                m_MaxBaseDamage = spiritLevel + 1;
+                _minBaseDamage = spiritLevel - 2;
+                _maxBaseDamage = spiritLevel + 1;
 
-                m_HitDelay = 5;
-                m_NextHit = Core.Now + TimeSpan.FromSeconds(m_HitDelay);
+                _hitDelay = 5;
+                _nextHit = Core.Now + TimeSpan.FromSeconds(_hitDelay);
 
-                m_Count = (int)spiritLevel;
-
-                if (m_Count < 4)
-                {
-                    m_Count = 4;
-                }
-
-                m_MaxCount = m_Count;
+                _maxCount = _count = Math.Max(4, (int)spiritLevel);
             }
 
             protected override void OnTick()
             {
-                if (!m_Target.Alive)
+                if (!_target.Alive)
                 {
-                    _table.Remove(m_Target);
+                    _table.Remove(_target);
                     Stop();
                 }
 
-                if (!m_Target.Alive || Core.Now < m_NextHit)
+                if (!_target.Alive || Core.Now < _nextHit)
                 {
                     return;
                 }
 
-                --m_Count;
+                --_count;
 
-                if (m_HitDelay > 1)
+                if (_hitDelay > 1)
                 {
-                    if (m_MaxCount < 5)
+                    if (_maxCount < 5)
                     {
-                        --m_HitDelay;
+                        --_hitDelay;
                     }
                     else
                     {
-                        var delay = (int)Math.Ceiling((1.0 + 5 * m_Count) / m_MaxCount);
+                        var delay = (int)Math.Ceiling((1.0 + 5 * _count) / _maxCount);
 
                         if (delay <= 5)
                         {
-                            m_HitDelay = delay;
+                            _hitDelay = delay;
                         }
                         else
                         {
-                            m_HitDelay = 5;
+                            _hitDelay = 5;
                         }
                     }
                 }
 
-                if (m_Count == 0)
+                if (_count == 0)
                 {
-                    m_Target.SendLocalizedMessage(1061687); // You can breath normally again.
-                    _table.Remove(m_Target);
+                    _target.SendLocalizedMessage(1061687); // You can breath normally again.
+                    _table.Remove(_target);
                     Stop();
                 }
                 else
                 {
-                    m_NextHit = Core.Now + TimeSpan.FromSeconds(m_HitDelay);
+                    _nextHit = Core.Now + TimeSpan.FromSeconds(_hitDelay);
 
-                    var damage = m_MinBaseDamage + Utility.RandomDouble() * (m_MaxBaseDamage - m_MinBaseDamage);
+                    var damage = _minBaseDamage + Utility.RandomDouble() * (_maxBaseDamage - _minBaseDamage);
 
-                    damage *= 3 - (double)m_Target.Stam / m_Target.StamMax * 2;
+                    damage *= 3 - (double)_target.Stam / _target.StamMax * 2;
 
                     if (damage < 1)
                     {
                         damage = 1;
                     }
 
-                    if (!m_Target.Player)
+                    if (!_target.Player)
                     {
                         damage *= 1.75;
                     }
 
-                    AOS.Damage(m_Target, m_From, (int)damage, 0, 0, 0, 100, 0);
+                    AOS.Damage(_target, _from, (int)damage, 0, 0, 0, 100, 0);
 
-                    if (Utility.RandomDouble() >= 0.60
-                    ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+                    // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+                    if (Utility.RandomDouble() < 0.40)
                     {
-                        m_Target.RevealingAction();
+                        _target.RevealingAction();
                     }
                 }
             }

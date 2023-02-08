@@ -7,11 +7,8 @@ namespace Server.Items
     [SerializationGenerator(0, false)]
     public partial class SHTeleComponent : AddonComponent
     {
-        private bool _active;
-        private SHTeleComponent _teleDest;
-
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Point3D _teleOffset;
 
         [Constructible]
@@ -26,21 +23,17 @@ namespace Server.Items
             Hue = 1;
 
             _active = true;
-            TeleOffset = offset;
+            _teleOffset = offset;
         }
 
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Active
         {
             get => _active;
             set
             {
-                if (value != _active)
-                {
-                    _active = value;
-                    this.MarkDirty();
-                }
+                _active = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -49,18 +42,14 @@ namespace Server.Items
             }
         }
 
-        [SerializableField(1)]
+        [SerializableProperty(1)]
         [CommandProperty(AccessLevel.GameMaster)]
         public SHTeleComponent TeleDest
         {
             get => _teleDest;
             set
             {
-                if (value != _teleDest)
-                {
-                    _teleDest = value;
-                    this.MarkDirty();
-                }
+                _teleDest = value;
 
                 if (Addon is SHTeleporter sourceAddon)
                 {
@@ -112,23 +101,23 @@ namespace Server.Items
         private bool m_Changing;
 
         [SerializableField(0, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _external;
 
         [SerializableField(1, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _upTele;
 
         [SerializableField(2, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _rightTele;
 
         [SerializableField(3, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _downTele;
 
         [SerializableField(4, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SHTeleComponent _leftTele;
 
         [Constructible]
@@ -194,9 +183,7 @@ namespace Server.Items
             World.Broadcast(
                 0x35,
                 true,
-                "{0} solen hives teleporters have been created. The entire process took {1:0.#} seconds.",
-                count,
-                (endTime - startTime).TotalSeconds
+                $"{count} solen hives teleporters have been created. The entire process took {(endTime - startTime).TotalSeconds:0.#} seconds."
             );
         }
 

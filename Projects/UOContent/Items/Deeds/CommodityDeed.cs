@@ -13,7 +13,7 @@ public interface ICommodity /* added IsDeedable prop so expansion-based deedable
 public partial class CommodityDeed : Item
 {
     [SerializableField(0, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     public Item _commodity;
 
     [Constructible]

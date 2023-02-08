@@ -1,237 +1,162 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(1, false)]
+public partial class WarningItem : Item
 {
-    public class WarningItem : Item
+    private bool m_Broadcasting;
+
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _warningMessage;
+
+    // Field 1
+    private int _range;
+
+    [SerializableField(2)]
+    private TimeSpan _resetDelay;
+
+    private DateTime m_LastBroadcast;
+
+    [Constructible]
+    public WarningItem(int itemID, int range, int warning) : base(itemID)
     {
-        private bool m_Broadcasting;
+        Movable = false;
 
-        private DateTime m_LastBroadcast;
-        private int m_Range;
+        _warningMessage = warning;
+        _range = Math.Min(range, 18);
+    }
 
-        [Constructible]
-        public WarningItem(int itemID, int range, int warning) : base(itemID)
+    [Constructible]
+    public WarningItem(int itemID, int range, string warning) : base(itemID)
+    {
+        Movable = false;
+
+        _warningMessage = warning;
+        _range = Math.Min(range, 18);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    [SerializableProperty(1, useField: nameof(_range))]
+    public int Range
+    {
+        get => _range;
+        set
         {
-            if (range > 18)
-            {
-                range = 18;
-            }
-
-            Movable = false;
-
-            WarningNumber = warning;
-            m_Range = range;
-        }
-
-        [Constructible]
-        public WarningItem(int itemID, int range, string warning) : base(itemID)
-        {
-            if (range > 18)
-            {
-                range = 18;
-            }
-
-            Movable = false;
-
-            WarningString = warning;
-            m_Range = range;
-        }
-
-        public WarningItem(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string WarningString { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int WarningNumber { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Range
-        {
-            get => m_Range;
-            set
-            {
-                if (value > 18)
-                {
-                    value = 18;
-                }
-
-                m_Range = value;
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan ResetDelay { get; set; }
-
-        public virtual bool OnlyToTriggerer => false;
-        public virtual int NeighborRange => 5;
-
-        public override bool HandlesOnMovement => true;
-
-        public virtual void SendMessage(Mobile triggerer, bool onlyToTriggerer, string messageString, int messageNumber)
-        {
-            if (onlyToTriggerer)
-            {
-                if (messageString != null)
-                {
-                    triggerer.SendMessage(messageString);
-                }
-                else
-                {
-                    triggerer.SendLocalizedMessage(messageNumber);
-                }
-            }
-            else
-            {
-                if (messageString != null)
-                {
-                    PublicOverheadMessage(MessageType.Regular, 0x3B2, false, messageString);
-                }
-                else
-                {
-                    PublicOverheadMessage(MessageType.Regular, 0x3B2, messageNumber);
-                }
-            }
-        }
-
-        public virtual void Broadcast(Mobile triggerer)
-        {
-            if (m_Broadcasting || Core.Now < m_LastBroadcast + ResetDelay)
-            {
-                return;
-            }
-
-            m_LastBroadcast = Core.Now;
-
-            m_Broadcasting = true;
-
-            SendMessage(triggerer, OnlyToTriggerer, WarningString, WarningNumber);
-
-            if (NeighborRange >= 0)
-            {
-                var list = new List<WarningItem>();
-
-                foreach (var item in GetItemsInRange(NeighborRange))
-                {
-                    if (item != this && item is WarningItem warningItem)
-                    {
-                        list.Add(warningItem);
-                    }
-                }
-
-                for (var i = 0; i < list.Count; i++)
-                {
-                    list[i].Broadcast(triggerer);
-                }
-            }
-
-            Timer.StartTimer(StopBroadcasting);
-        }
-
-        private void StopBroadcasting()
-        {
-            m_Broadcasting = false;
-        }
-
-        public override void OnMovement(Mobile m, Point3D oldLocation)
-        {
-            if (m.Player && Utility.InRange(m.Location, Location, m_Range) &&
-                !Utility.InRange(oldLocation, Location, m_Range))
-            {
-                Broadcast(m);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(WarningString);
-            writer.Write(WarningNumber);
-            writer.Write(m_Range);
-
-            writer.Write(ResetDelay);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        WarningString = reader.ReadString();
-                        WarningNumber = reader.ReadInt();
-                        m_Range = reader.ReadInt();
-                        ResetDelay = reader.ReadTimeSpan();
-
-                        break;
-                    }
-            }
+            _range = Math.Min(value, 18);
+            this.MarkDirty();
         }
     }
 
-    public class HintItem : WarningItem
+    public virtual bool OnlyToTriggerer => false;
+    public virtual int NeighborRange => 5;
+
+    public override bool HandlesOnMovement => true;
+
+    public virtual void SendMessage(Mobile triggerer, bool onlyToTriggerer, TextDefinition warningMessage)
     {
-        [Constructible]
-        public HintItem(int itemID, int range, int warning, int hint) : base(itemID, range, warning) => HintNumber = hint;
-
-        [Constructible]
-        public HintItem(int itemID, int range, string warning, string hint) : base(itemID, range, warning) =>
-            HintString = hint;
-
-        public HintItem(Serial serial) : base(serial)
+        if (onlyToTriggerer)
         {
+            warningMessage.SendMessageTo(triggerer);
+        }
+        else
+        {
+            warningMessage.PublicOverheadMessage(this, MessageType.Regular, 0x3B2);
+        }
+    }
+
+    public virtual void Broadcast(Mobile triggerer)
+    {
+        if (m_Broadcasting || Core.Now < m_LastBroadcast + ResetDelay)
+        {
+            return;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string HintString { get; set; }
+        m_LastBroadcast = Core.Now;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int HintNumber { get; set; }
+        m_Broadcasting = true;
 
-        public override bool OnlyToTriggerer => true;
+        SendMessage(triggerer, OnlyToTriggerer, _warningMessage);
 
-        public override void OnDoubleClick(Mobile from)
+        if (NeighborRange >= 0)
         {
-            SendMessage(from, true, HintString, HintNumber);
-        }
+            var list = new List<WarningItem>();
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(HintString);
-            writer.Write(HintNumber);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            foreach (var item in GetItemsInRange(NeighborRange))
             {
-                case 0:
-                    {
-                        HintString = reader.ReadString();
-                        HintNumber = reader.ReadInt();
+                if (item != this && item is WarningItem warningItem)
+                {
+                    list.Add(warningItem);
+                }
+            }
 
-                        break;
-                    }
+            for (var i = 0; i < list.Count; i++)
+            {
+                list[i].Broadcast(triggerer);
             }
         }
+
+        Timer.StartTimer(StopBroadcasting);
+    }
+
+    private void StopBroadcasting()
+    {
+        m_Broadcasting = false;
+    }
+
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+        if (m.Player && Utility.InRange(m.Location, Location, _range) &&
+            !Utility.InRange(oldLocation, Location, _range))
+        {
+            Broadcast(m);
+        }
+    }
+
+    public void Deserialize(IGenericReader reader, int version)
+    {
+        var warningMessageString = reader.ReadString();
+        var warningMessageInt = reader.ReadInt();
+
+        _range = reader.ReadInt();
+        ResetDelay = reader.ReadTimeSpan();
+
+        _warningMessage = warningMessageInt > 0 ? warningMessageInt : warningMessageString;
+    }
+}
+
+
+[SerializationGenerator(1, false)]
+public partial class HintItem : WarningItem
+{
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _hintMessage;
+
+    [Constructible]
+    public HintItem(int itemID, int range, int warning, int hint) : base(itemID, range, warning) =>
+        _hintMessage = hint;
+
+    [Constructible]
+    public HintItem(int itemID, int range, string warning, string hint) : base(itemID, range, warning) =>
+        _hintMessage = hint;
+
+    public override bool OnlyToTriggerer => true;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        SendMessage(from, true, _hintMessage);
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        var hintMessageString = reader.ReadString();
+        var hintMessageInt = reader.ReadInt();
+
+        _hintMessage = hintMessageInt > 0 ? hintMessageInt : hintMessageString;
     }
 }

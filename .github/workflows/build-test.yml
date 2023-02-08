@@ -7,27 +7,76 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-macos:
     runs-on: ${{ matrix.os }}
     name: Build (${{ matrix.name }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: macos-11
-            name: MacOS 11
           - os: macos-12
             name: MacOS 12
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET 7
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.300
+        dotnet-version: 7.0.101
     - name: Build
-      run: ./publish.cmd
+      run: ./publish.cmd Release
+    - name: Migration Changes
+      run: git diff --exit-code ./**/Migrations/*.v*.json
     - name: Test
       run: dotnet test --no-restore
+
+  build-linux:
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    name: Build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - container: ubuntu:jammy
+            name: Ubuntu 22
+            packageManager: apt
+          - container: debian:bullseye
+            name: Debian 11
+            packageManager: apt
+          - container: fedora:37
+            name: Fedora 37
+            packageManager: dnf
+          - container: fedora:36
+            name: Fedora 36
+            packageManager: dnf
+          - container: quay.io/centos/centos:stream8
+            name: CentOS 8 Stream
+            packageManager: dnf
+          - container: quay.io/centos/centos:stream9
+            name: CentOS 9 Stream
+            packageManager: dnf
+
+    steps:
+      - name: Enable EPEL
+        run: dnf upgrade --refresh -y && dnf install -y epel-release epel-next-release
+        if: ${{ startsWith(matrix.name, 'CentOS')  }}
+      - name: Install Prerequisites using dnf
+        run: dnf makecache --refresh && dnf install -y findutils libicu zlib-devel zstd libargon2-devel tzdata
+        if: ${{ matrix.packageManager == 'dnf' }}
+      - name: Install Prerequisites using apt
+        run: apt-get update -y && apt-get install -y curl libicu-dev libz-dev zstd libargon2-dev tzdata
+        if: ${{ matrix.packageManager == 'apt' }}
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+      - name: Setup .NET 7
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.101
+      - name: Build
+        run: ./publish.sh Release
+      - name: Test
+        run: dotnet test --no-restore

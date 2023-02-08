@@ -112,13 +112,12 @@ namespace Server.Engines.Craft
             if (craftItem.RequiredExpansion != Expansion.None)
             {
                 var supportsEx = from.NetState?.SupportsExpansion(craftItem.RequiredExpansion) == true;
-                TextDefinition.AddHtmlText(
+                RequiredExpansionMessage(craftItem.RequiredExpansion).AddHtmlText(
                     this,
                     170,
                     302 + m_OtherCount++ * 20,
                     310,
                     18,
-                    RequiredExpansionMessage(craftItem.RequiredExpansion),
                     false,
                     false,
                     supportsEx ? LabelColor : RedLabelColor,
@@ -153,7 +152,7 @@ namespace Server.Engines.Craft
         {
             var type = m_CraftItem.ItemType;
 
-            AddItem(20, 50, m_CraftItem.NameNumber, m_CraftItem.ItemHue);
+            AddItem(20, 50, m_CraftItem.ItemId, m_CraftItem.ItemHue);
 
             if (m_CraftItem.IsMarkable(type))
             {

@@ -51,9 +51,13 @@ namespace Server.Spells.Ninjitsu
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
             }
-            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.TeleportFrom) ||
-                     !SpellHelper.CheckTravel(Caster, map, to, TravelCheckType.TeleportTo))
+            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.TeleportFrom, out var failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
+            }
+            else if (!SpellHelper.CheckTravel(Caster, map, to, TravelCheckType.TeleportTo, out failureMessage))
+            {
+                failureMessage.SendMessageTo(Caster);
             }
             else if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
             {
@@ -86,7 +90,7 @@ namespace Server.Spells.Ninjitsu
 
                 m.PlaySound(0x512);
 
-                Stealth.OnUse(m); // stealth check after the a jump
+                Stealth.OnUse(m); // stealth check after the shadow jump
             }
 
             FinishSequence();

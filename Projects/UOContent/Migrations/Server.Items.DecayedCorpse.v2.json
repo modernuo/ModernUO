@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "type": "Server.Items.DecayedCorpse",
+  "properties": [
+    {
+      "name": "DecayTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@TimerDrift"
+      ]
+    }
+  ]
+}

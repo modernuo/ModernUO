@@ -56,8 +56,14 @@ namespace Server.Engines.Plants
 
         public PlantSystem PlantSystem { get; private set; }
 
-        public ObjectPropertyList OldClientPropertyList =>
-            _oldClientPropertyList ??= InitializePropertyList(_oldClientPropertyList);
+        public ObjectPropertyList OldClientPropertyList
+        {
+            get
+            {
+                InitializePropertyList(_oldClientPropertyList ??= new ObjectPropertyList(this));
+                return _oldClientPropertyList;
+            }
+        }
 
         public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
@@ -202,22 +208,13 @@ namespace Server.Engines.Plants
 
         public int GetLocalizedPlantStatus()
         {
-            if (m_PlantStatus >= PlantStatus.Plant)
+            return m_PlantStatus switch
             {
-                return 1060812; // plant
-            }
-
-            if (m_PlantStatus >= PlantStatus.Sapling)
-            {
-                return 1023305; // sapling
-            }
-
-            if (m_PlantStatus >= PlantStatus.Seed)
-            {
-                return 1060810; // seed
-            }
-
-            return 1026951;     // dirt
+                >= PlantStatus.Plant   => 1060812, // plant
+                >= PlantStatus.Sapling => 1023305, // sapling
+                >= PlantStatus.Seed    => 1060810, // seed
+                _                      => 1026951 // dirt
+            };
         }
 
         public int GetLocalizedContainerType() => 1150435;
@@ -248,12 +245,11 @@ namespace Server.Engines.Plants
             InvalidateProperties();
         }
 
-        private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
+        private void InitializePropertyList(ObjectPropertyList list)
         {
             GetProperties(list);
             AppendChildProperties(list);
             list.Terminate();
-            return list;
         }
 
         // Overridden to support new and old client localization
@@ -292,29 +288,31 @@ namespace Server.Engines.Plants
 
         public override void InvalidateProperties()
         {
+            base.InvalidateProperties();
+
             if (!ObjectPropertyList.Enabled)
             {
                 return;
             }
 
-            base.InvalidateProperties();
-
             if (Map != null && Map != Map.Internal && !World.Loading)
             {
-                int? oldHash = _oldClientPropertyList?.Hash;
-
-                if (oldHash != null)
+                int? oldHash;
+                int newHash;
+                if (_oldClientPropertyList != null)
                 {
+                    oldHash = _oldClientPropertyList.Hash;
                     _oldClientPropertyList.Reset();
+                    InitializePropertyList(_oldClientPropertyList);
+                    newHash = _oldClientPropertyList.Hash;
                 }
                 else
                 {
-                    _oldClientPropertyList = new ObjectPropertyList(this);
+                    oldHash = null;
+                    newHash = OldClientPropertyList.Hash;
                 }
 
-                InitializePropertyList(_oldClientPropertyList);
-
-                if (oldHash != _oldClientPropertyList.Hash)
+                if (oldHash != newHash)
                 {
                     Delta(ItemDelta.Properties);
                 }
@@ -359,6 +357,15 @@ namespace Server.Engines.Plants
                 return;
             }
 
+            var typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
+            var hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
+
+            if (m_PlantStatus >= PlantStatus.DecorativePlant)
+            {
+                list.Add(typeInfo.GetPlantLabelDecorative(hueInfo), $"{hueInfo.Name:#}\t{typeInfo.Name:#}");
+                return;
+            }
+
             var container = GetLocalizedContainerType();
             var dirt = PlantSystem.GetLocalizedDirtStatus();
             var health = PlantSystem.GetLocalizedHealth();
@@ -378,15 +385,6 @@ namespace Server.Engines.Plants
                     list.Add(1060830, $"{dirt:#}");
                 }
 
-                return;
-            }
-
-            var typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
-            var hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
-
-            if (m_PlantStatus >= PlantStatus.DecorativePlant)
-            {
-                list.Add(typeInfo.GetPlantLabelDecorative(hueInfo), $"{hueInfo.Name:#}\t{typeInfo.Name:#}");
                 return;
             }
 
@@ -430,7 +428,7 @@ namespace Server.Engines.Plants
                 }
                 else
                 {
-                    list.Add(plantNumber,$"{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}");
+                    list.Add(plantNumber, $"{dirt:#}\t{health:#}\t{category:#}\t{plantStatus:#}");
                 }
             }
         }
@@ -475,10 +473,8 @@ namespace Server.Engines.Plants
             }
             else if (m_PlantStatus != PlantStatus.BowlOfDirt)
             {
-                from.SendLocalizedMessage(
-                    1080389,
-                    $"#{GetLocalizedPlantStatus()}"
-                ); // This bowl of dirt already has a ~1_val~ in it!
+                // This bowl of dirt already has a ~1_val~ in it!
+                from.SendLocalizedMessage(1080389, $"#{GetLocalizedPlantStatus()}");
             }
             else if (PlantSystem.Water < 2)
             {

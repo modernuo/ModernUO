@@ -1,13 +1,14 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class ValoriteElemental : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class ValoriteElemental : BaseCreature
     {
         [Constructible]
         public ValoriteElemental(int oreAmount = 2) : base(AIType.AI_Melee)
         {
-            // TODO: Gas attack
             Body = 112;
             BaseSoundID = 268;
 
@@ -44,16 +45,15 @@ namespace Server.Mobiles
             PackItem(ore);
         }
 
-        public ValoriteElemental(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ore elemental corpse";
         public override string DefaultName => "a valorite elemental";
 
         public override bool AutoDispel => true;
         public override bool BleedImmune => true;
         public override int TreasureMapLevel => 1;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.PoisonGasCounter, MonsterAbilities.DestroyEquipment };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -63,30 +63,19 @@ namespace Server.Mobiles
 
         public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
         {
-            if (from is BaseCreature bc)
+            if (from is BaseCreature bc && (bc.Controlled || bc.BardTarget == this))
             {
-                if (bc.Controlled || bc.BardTarget == this)
-                {
-                    damage = 0; // Immune to pets and provoked creatures
-                }
+                damage = 0; // Immune to pets and provoked creatures
+            }
+            else
+            {
+                damage /= 2; // 50% melee damage
             }
         }
 
         public override void CheckReflect(Mobile caster, ref bool reflect)
         {
             reflect = true; // Every spell is reflected back to the caster
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

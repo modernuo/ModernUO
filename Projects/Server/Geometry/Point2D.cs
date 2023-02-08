@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point2D.cs                                                      *
  *                                                                       *
@@ -14,103 +14,180 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server;
+
+public struct Point2D
+    : IPoint2D, IComparable<Point2D>, IComparable<IPoint2D>, IEquatable<object>, IEquatable<Point2D>,
+        IEquatable<IPoint2D>, ISpanFormattable, ISpanParsable<Point2D>
 {
-    [Parsable]
-    public struct Point2D
-        : IPoint2D, IComparable<Point2D>, IComparable<IPoint2D>, IEquatable<object>, IEquatable<Point2D>,
-            IEquatable<IPoint2D>
+    internal int m_X;
+    internal int m_Y;
+
+    public static readonly Point2D Zero = new(0, 0);
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int X
     {
-        internal int m_X;
-        internal int m_Y;
+        get => m_X;
+        set => m_X = value;
+    }
 
-        public static readonly Point2D Zero = new(0, 0);
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Y
+    {
+        get => m_Y;
+        set => m_Y = value;
+    }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int X
+    public Point2D(int x, int y)
+    {
+        m_X = x;
+        m_Y = y;
+    }
+
+    public Point2D(Point2D p) : this(p.X, p.Y)
+    {
+    }
+
+    public bool Equals(Point2D other) => m_X == other.m_X && m_Y == other.m_Y;
+
+    public bool Equals(IPoint2D other) => m_X == other?.X && m_Y == other.Y;
+
+    public override bool Equals(object obj) => obj is Point2D other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(m_X, m_Y);
+
+    public static bool operator ==(Point2D l, Point2D r) => l.m_X == r.m_X && l.m_Y == r.m_Y;
+
+    public static bool operator !=(Point2D l, Point2D r) => l.m_X != r.m_X || l.m_Y != r.m_Y;
+
+    public static bool operator ==(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y;
+
+    public static bool operator !=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y);
+
+    public static bool operator >(Point2D l, Point2D r) => l.m_X > r.m_X && l.m_Y > r.m_Y;
+
+    public static bool operator >(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y;
+
+    public static bool operator <(Point2D l, Point2D r) => l.m_X < r.m_X && l.m_Y < r.m_Y;
+
+    public static bool operator <(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y;
+
+    public static bool operator >=(Point2D l, Point2D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y;
+
+    public static bool operator >=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y;
+
+    public static bool operator <=(Point2D l, Point2D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y;
+
+    public static bool operator <=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y;
+
+    public int CompareTo(Point2D other)
+    {
+        var xComparison = m_X.CompareTo(other.m_X);
+        return xComparison != 0 ? xComparison : m_Y.CompareTo(other.m_Y);
+    }
+
+    public int CompareTo(IPoint2D other)
+    {
+        var xComparison = m_X.CompareTo(other.X);
+        return xComparison != 0 ? xComparison : m_Y.CompareTo(other.Y);
+    }
+
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+        => destination.TryWrite(provider, $"({m_X}, {m_Y})", out charsWritten);
+
+    public override string ToString()
+    {
+        // Maximum number of characters that are needed to represent this:
+        // 4 characters for (, )
+        // Up to 11 characters to represent each integer
+        const int maxLength = 4 + 11 * 2;
+        Span<char> span = stackalloc char[maxLength];
+        TryFormat(span, out var charsWritten, null, null);
+        return span[..charsWritten].ToString();
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point2D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point2D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Point2D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Point2D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
         {
-            get => m_X;
-            set => m_X = value;
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int Y
+        var comma = s.IndexOfOrdinal(',');
+        if (comma == -1)
         {
-            get => m_Y;
-            set => m_Y = value;
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public Point2D(int x, int y)
+        var first = s.Slice(1, comma - 1).Trim();
+        if (!Utility.ToInt32(first, out var x))
         {
-            m_X = x;
-            m_Y = y;
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public Point2D(Point2D p) : this(p.X, p.Y)
+        var second = s.Slice(comma + 1, s.Length - comma - 2).Trim();
+        if (!Utility.ToInt32(second, out var y))
         {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public override string ToString() => $"({m_X}, {m_Y})";
+        return new Point2D(x, y);
+    }
 
-        public static Point2D Parse(string value)
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Point2D result)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
         {
-            var start = value.IndexOfOrdinal('(');
-            var end = value.IndexOf(',', start + 1);
-
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
-
-            start = end;
-            end = value.IndexOf(')', start + 1);
-
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
-
-            return new Point2D(x, y);
+            result = default;
+            return false;
         }
 
-        public bool Equals(Point2D other) => m_X == other.m_X && m_Y == other.m_Y;
-
-        public bool Equals(IPoint2D other) =>
-            m_X == other?.X && m_Y == other.Y;
-
-        public override bool Equals(object obj) => obj is Point2D other && Equals(other);
-
-        public override int GetHashCode() => HashCode.Combine(m_X, m_Y);
-
-        public static bool operator ==(Point2D l, Point2D r) => l.m_X == r.m_X && l.m_Y == r.m_Y;
-
-        public static bool operator !=(Point2D l, Point2D r) => l.m_X != r.m_X || l.m_Y != r.m_Y;
-
-        public static bool operator ==(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y;
-
-        public static bool operator !=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y);
-
-        public static bool operator >(Point2D l, Point2D r) => l.m_X > r.m_X && l.m_Y > r.m_Y;
-
-        public static bool operator >(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y;
-
-        public static bool operator <(Point2D l, Point2D r) => l.m_X < r.m_X && l.m_Y < r.m_Y;
-
-        public static bool operator <(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y;
-
-        public static bool operator >=(Point2D l, Point2D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y;
-
-        public static bool operator >=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y;
-
-        public static bool operator <=(Point2D l, Point2D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y;
-
-        public static bool operator <=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y;
-
-        public int CompareTo(Point2D other)
+        var comma = s.IndexOfOrdinal(',');
+        if (comma == -1)
         {
-            var xComparison = m_X.CompareTo(other.m_X);
-            return xComparison != 0 ? xComparison : m_Y.CompareTo(other.m_Y);
+            result = default;
+            return false;
         }
 
-        public int CompareTo(IPoint2D other)
+        var first = s.Slice(1, comma - 1).Trim();
+        if (!Utility.ToInt32(first, out var x))
         {
-            var xComparison = m_X.CompareTo(other.X);
-            return xComparison != 0 ? xComparison : m_Y.CompareTo(other.Y);
+            result = default;
+            return false;
         }
+
+        var second = s.Slice(comma + 1, s.Length - comma - 2).Trim();
+        if (!Utility.ToInt32(second, out var y))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new Point2D(x, y);
+        return true;
     }
 }

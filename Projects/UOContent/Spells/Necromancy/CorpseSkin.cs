@@ -71,10 +71,10 @@ namespace Server.Spells.Necromancy
 
                 ResistanceMod[] mods =
                 {
-                    new(ResistanceType.Fire, -15),
-                    new(ResistanceType.Poison, -15),
-                    new(ResistanceType.Cold, +10),
-                    new(ResistanceType.Physical, +10)
+                    new(ResistanceType.Fire, "FireResistCorpseSkinSpell", -15),
+                    new(ResistanceType.Poison, "PoisonResistCorpseSkinSpell", -15),
+                    new(ResistanceType.Cold, "ColdResistCorpseSkinSpell", +10),
+                    new(ResistanceType.Physical, "PhysicalResistCorpseSkinSpell", +10)
                 };
 
                 timer = new ExpireTimer(m, mods, duration);
@@ -114,30 +114,30 @@ namespace Server.Spells.Necromancy
 
         private class ExpireTimer : Timer
         {
-            private readonly Mobile m_Mobile;
-            private readonly ResistanceMod[] m_Mods;
+            private Mobile _mobile;
+            private ResistanceMod[] _mods;
 
             public ExpireTimer(Mobile m, ResistanceMod[] mods, TimeSpan delay) : base(delay)
             {
-                m_Mobile = m;
-                m_Mods = mods;
+                _mobile = m;
+                _mods = mods;
             }
 
             public void DoExpire()
             {
-                for (var i = 0; i < m_Mods.Length; ++i)
+                for (var i = 0; i < _mods.Length; ++i)
                 {
-                    m_Mobile.RemoveResistanceMod(m_Mods[i]);
+                    _mobile.RemoveResistanceMod(_mods[i]);
                 }
 
                 Stop();
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.CorpseSkin);
-                _table.Remove(m_Mobile);
+                BuffInfo.RemoveBuff(_mobile, BuffIcon.CorpseSkin);
+                _table.Remove(_mobile);
             }
 
             protected override void OnTick()
             {
-                m_Mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
+                _mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
                 DoExpire();
             }
         }

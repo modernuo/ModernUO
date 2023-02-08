@@ -88,9 +88,9 @@ namespace Server.Mobiles
             Instances.Add(this);
         }
 
-        public Type[] UniqueList => new[] { typeof(AcidProofRobe) };
-        public Type[] SharedList => new[] { typeof(TheRobeOfBritanniaAri) };
-        public Type[] DecorativeList => new[] { typeof(EvilIdolSkull), typeof(SkullPole) };
+        public static Type[] UniqueList => new[] { typeof(AcidProofRobe) };
+        public static Type[] SharedList => new[] { typeof(TheRobeOfBritanniaAri) };
+        public static Type[] DecorativeList => new[] { typeof(EvilIdolSkull), typeof(SkullPole) };
 
         public static List<Harrower> Instances { get; } = new();
 
@@ -269,29 +269,14 @@ namespace Server.Mobiles
 
             for (var i = 0; i < 16; ++i)
             {
-                int level;
-                var random = Utility.RandomDouble();
-
-                if (random <= 0.1)
+                var level = Utility.RandomDouble() switch
                 {
-                    level = 25;
-                }
-                else if (random <= 0.25)
-                {
-                    level = 20;
-                }
-                else if (random <= 0.45)
-                {
-                    level = 15;
-                }
-                else if (random <= 0.70)
-                {
-                    level = 10;
-                }
-                else
-                {
-                    level = 5;
-                }
+                    < 0.1  => 25,
+                    < 0.25 => 20,
+                    < 0.45 => 15,
+                    < 0.70 => 10,
+                    _       => 5
+                };
 
                 var m = toGive[i % toGive.Count];
 
@@ -482,9 +467,8 @@ namespace Server.Mobiles
             }
             else
             {
-                to.SendLocalizedMessage(
-                    1062317
-                ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+                // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+                to.SendLocalizedMessage(1062317);
             }
         }
 
@@ -492,26 +476,14 @@ namespace Server.Mobiles
             m.Player && m.Alive && m.InRange(Location, 32) &&
             m.Backpack?.CheckHold(m, artifact, false) == true;
 
-        public Item GetArtifact()
-        {
-            var random = Utility.RandomDouble();
-            if (random <= 0.05)
+        public Item GetArtifact() =>
+            Utility.RandomDouble() switch
             {
-                return CreateArtifact(UniqueList);
-            }
-
-            if (random <= 0.15)
-            {
-                return CreateArtifact(SharedList);
-            }
-
-            if (random <= 0.30)
-            {
-                return CreateArtifact(DecorativeList);
-            }
-
-            return null;
-        }
+                < 0.05 => CreateArtifact(UniqueList),
+                < 0.15 => CreateArtifact(SharedList),
+                < 0.30 => CreateArtifact(DecorativeList),
+                _      => null
+            };
 
         public Item CreateArtifact(Type[] list) => Loot.Construct(list.RandomElement());
 
@@ -564,7 +536,7 @@ namespace Server.Mobiles
                     return;
                 }
 
-                if (Utility.RandomDouble() > 0.25)
+                if (Utility.RandomDouble() < 0.75)
                 {
                     return;
                 }
@@ -678,49 +650,51 @@ namespace Server.Mobiles
 
                 g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
-                if (Utility.RandomDouble() <= 0.5)
+                if (Utility.RandomDouble() < 0.05)
                 {
-                    switch (Utility.Random(3))
-                    {
-                        case 0: // Fire column
-                            {
-                                Effects.SendLocationParticles(
-                                    EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                                    0x3709,
-                                    10,
-                                    30,
-                                    5052
-                                );
-                                Effects.PlaySound(g, 0x208);
+                    return;
+                }
 
-                                break;
-                            }
-                        case 1: // Explosion
-                            {
-                                Effects.SendLocationParticles(
-                                    EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                                    0x36BD,
-                                    20,
-                                    10,
-                                    5044
-                                );
-                                Effects.PlaySound(g, 0x307);
+                switch (Utility.Random(3))
+                {
+                    case 0: // Fire column
+                        {
+                            Effects.SendLocationParticles(
+                                EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                                0x3709,
+                                10,
+                                30,
+                                5052
+                            );
+                            Effects.PlaySound(g, 0x208);
 
-                                break;
-                            }
-                        case 2: // Ball of fire
-                            {
-                                Effects.SendLocationParticles(
-                                    EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                                    0x36FE,
-                                    10,
-                                    10,
-                                    5052
-                                );
+                            break;
+                        }
+                    case 1: // Explosion
+                        {
+                            Effects.SendLocationParticles(
+                                EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                                0x36BD,
+                                20,
+                                10,
+                                5044
+                            );
+                            Effects.PlaySound(g, 0x307);
 
-                                break;
-                            }
-                    }
+                            break;
+                        }
+                    case 2: // Ball of fire
+                        {
+                            Effects.SendLocationParticles(
+                                EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                                0x36FE,
+                                10,
+                                10,
+                                5052
+                            );
+
+                            break;
+                        }
                 }
             }
         }

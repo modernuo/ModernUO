@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ISerializable.cs                                                *
  *                                                                       *
@@ -14,71 +14,77 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 
-namespace Server
+namespace Server;
+
+public interface ISerializable
 {
-    public interface ISerializable
+    // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
+    DateTime Created { get; set; }
+
+    // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
+    DateTime LastSerialized { get; protected internal set; }
+    long SavePosition { get; protected internal set; }
+    BufferWriter SaveBuffer { get; protected internal set; }
+
+    Serial Serial { get; }
+
+    void Deserialize(IGenericReader reader);
+    void Serialize(IGenericWriter writer);
+
+    // Determines if AfterSerialize should execute. This is checked on a worker thread.
+    bool ShouldExecuteAfterSerialize { get; }
+
+    // Executes after serialization if ShouldExecuteAfterSerialize is true. This is run on the game thread synchronously.
+    void AfterSerialize();
+
+    bool Deleted { get; }
+    void Delete();
+
+    public void InitializeSaveBuffer(byte[] buffer, ConcurrentQueue<Type> types)
     {
-        // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
-        DateTime Created { get; set; }
-
-        // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
-        DateTime LastSerialized { get; protected internal set; }
-        long SavePosition { get; protected internal set; }
-        BufferWriter SaveBuffer { get; protected internal set; }
-
-        int TypeRef { get; }
-        Serial Serial { get; }
-
-        // Executed on every entity, before it's serialized.
-        // For example, this is used to clean up weak references and mark them dirty.
-        void BeforeSerialize();
-        void Deserialize(IGenericReader reader);
-        void Serialize(IGenericWriter writer);
-        void Delete();
-        bool Deleted { get; }
-
-        void SetTypeRef(Type type);
-
-        public void InitializeSaveBuffer(byte[] buffer)
+        SaveBuffer = new BufferWriter(buffer, true, types);
+        if (World.DirtyTrackingEnabled)
         {
-            SaveBuffer = new BufferWriter(buffer, true);
-            if (World.DirtyTrackingEnabled)
-            {
-                SavePosition = SaveBuffer.Position;
-            }
-            else
-            {
-                SavePosition = -1;
-            }
+            SavePosition = SaveBuffer.Position;
+        }
+        else
+        {
+            SavePosition = -1;
+        }
+    }
+
+    public void Serialize(ConcurrentQueue<Type> types)
+    {
+        SaveBuffer ??= new BufferWriter(true, types);
+
+        // Queue for post serialization if this entity has it enabled
+        // This will run AfterSerialize in the main game thread after the world is done saving
+        if (ShouldExecuteAfterSerialize)
+        {
+            World.EnqueueAfterSerialization(this);
         }
 
-        public void Serialize()
+        // Clean, don't bother serializing
+        if (SavePosition > -1)
         {
-            SaveBuffer ??= new BufferWriter(true);
+            SaveBuffer.Seek(SavePosition, SeekOrigin.Begin);
+            return;
+        }
 
-            BeforeSerialize();
+        LastSerialized = Core.Now;
+        SaveBuffer.Seek(0, SeekOrigin.Begin);
+        Serialize(SaveBuffer);
 
-            // Clean, don't bother serializing
-            if (SavePosition > -1)
-            {
-                SaveBuffer.Seek(SavePosition, SeekOrigin.Begin);
-                return;
-            }
-
-            LastSerialized = Core.Now;
-            SaveBuffer.Seek(0, SeekOrigin.Begin);
-            Serialize(SaveBuffer);
-
-            if (World.DirtyTrackingEnabled)
-            {
-                SavePosition = SaveBuffer.Position;
-            }
-            else
-            {
-                this.MarkDirty();
-            }
+        if (World.DirtyTrackingEnabled)
+        {
+            SavePosition = SaveBuffer.Position;
+        }
+        else
+        {
+            this.MarkDirty();
         }
     }
 }

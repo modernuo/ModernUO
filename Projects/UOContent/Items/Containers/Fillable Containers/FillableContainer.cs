@@ -6,9 +6,6 @@ namespace Server.Items;
 [SerializationGenerator(2, false)]
 public abstract partial class FillableContainer : LockableContainer
 {
-    [SerializableField(0)]
-    protected FillableContentType _rawContentType;
-
     [TimerDrift]
     [SerializableField(1)]
     private Timer _respawnTimer;
@@ -35,19 +32,20 @@ public abstract partial class FillableContainer : LockableContainer
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime NextRespawnTime => _respawnTimer?.Next ?? DateTime.MinValue;
 
+    [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]
     public FillableContentType ContentType
     {
-        get => _rawContentType;
+        get => _contentType;
         set
         {
-            if (_rawContentType == value)
+            if (_contentType == value)
             {
                 return;
             }
 
             ClearContents();
-            _rawContentType = value;
+            _contentType = value;
             Respawn();
         }
     }
@@ -77,14 +75,15 @@ public abstract partial class FillableContainer : LockableContainer
 
     public virtual void AcquireContent()
     {
-        if (_rawContentType != FillableContentType.None)
+        if (_contentType != FillableContentType.None)
         {
             return;
         }
 
-        RawContentType = FillableContent.Acquire(GetWorldLocation(), Map);
+        // Don't trigger serialization code
+        _contentType = FillableContent.Acquire(GetWorldLocation(), Map);
 
-        if (_rawContentType != FillableContentType.None)
+        if (_contentType != FillableContentType.None)
         {
             Respawn();
         }
@@ -118,7 +117,7 @@ public abstract partial class FillableContainer : LockableContainer
     public void CheckRespawn()
     {
         var canSpawn =
-            _rawContentType != FillableContentType.None &&
+            _contentType != FillableContentType.None &&
             !Deleted && !Movable && Parent == null && !IsLockedDown && !IsSecure &&
             (
                 GetItemsCount() <= SpawnThreshold ||
@@ -147,14 +146,14 @@ public abstract partial class FillableContainer : LockableContainer
         _respawnTimer?.Stop();
         _respawnTimer = null;
 
-        if (_rawContentType == FillableContentType.None || Deleted)
+        if (_contentType == FillableContentType.None || Deleted)
         {
             return;
         }
 
         GenerateContent();
 
-        var level = FillableContent.Lookup(_rawContentType).Level;
+        var level = FillableContent.Lookup(_contentType).Level;
 
         if (IsLockable)
         {
@@ -199,12 +198,12 @@ public abstract partial class FillableContainer : LockableContainer
 
     public virtual void GenerateContent()
     {
-        if (_rawContentType == FillableContentType.None || Deleted)
+        if (_contentType == FillableContentType.None || Deleted)
         {
             return;
         }
 
-        var content = FillableContent.Lookup(_rawContentType);
+        var content = FillableContent.Lookup(_contentType);
 
         var toSpawn = GetSpawnCount();
 
@@ -238,7 +237,7 @@ public abstract partial class FillableContainer : LockableContainer
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        _rawContentType = (FillableContentType)reader.ReadInt();
+        _contentType = (FillableContentType)reader.ReadInt();
         var respawnTimerNext = reader.ReadDeltaTime();
         DeserializeRespawnTimer(respawnTimerNext == DateTime.MinValue ? TimeSpan.MinValue : respawnTimerNext - Core.Now);
     }

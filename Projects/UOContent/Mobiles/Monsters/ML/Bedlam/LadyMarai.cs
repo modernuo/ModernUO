@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class LadyMarai : SkeletalKnight
+    [SerializationGenerator(0, false)]
+    partial class LadyMarai : SkeletalKnight
     {
         [Constructible]
         public LadyMarai()
@@ -37,11 +39,6 @@ namespace Server.Mobiles
             Karma = -18000;
         }
 
-        public LadyMarai(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Lady Marai corpse";
         public override string DefaultName => "Lady Marai";
 
@@ -49,12 +46,12 @@ namespace Server.Mobiles
         // TODO: Uncomment once added
         public override void OnDeath( Container c )
         {
-          base.OnDeath( c );
+            base.OnDeath( c );
     
-          if (Utility.RandomDouble() < 0.15)
+            if (Utility.RandomDouble() < 0.15)
             c.DropItem( new DisintegratingThesisNotes() );
     
-          if (Utility.RandomDouble() < 0.1)
+            if (Utility.RandomDouble() < 0.1)
             c.DropItem( new ParrotItem() );
         }
         */
@@ -67,19 +64,5 @@ namespace Server.Mobiles
         }
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

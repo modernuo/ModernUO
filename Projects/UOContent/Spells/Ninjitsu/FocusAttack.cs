@@ -7,27 +7,23 @@ namespace Server.Spells.Ninjitsu
         public override int BaseMana => Core.ML ? 10 : 20;
         public override double RequiredSkill => Core.ML ? 30.0 : 60;
 
-        public override TextDefinition AbilityMessage =>
-            new(1063095); // You prepare to focus all of your abilities into your next strike.
+        // You prepare to focus all of your abilities into your next strike.
+        public override TextDefinition AbilityMessage { get; } = 1063095;
 
         public override bool Validate(Mobile from)
         {
-            if (from.FindItemOnLayer(Layer.TwoHanded) is BaseShield)
+            var twoHanded = from.FindItemOnLayer(Layer.TwoHanded);
+            if (twoHanded is BaseShield)
             {
                 from.SendLocalizedMessage(1063096); // You cannot use this ability while holding a shield.
                 return false;
             }
 
-            Item handOne = from.FindItemOnLayer(Layer.OneHanded) as BaseWeapon;
+            var meleeWeapon =
+                twoHanded is BaseWeapon and not BaseRanged ||
+                from.FindItemOnLayer(Layer.OneHanded) is BaseWeapon and not BaseRanged;
 
-            if (handOne != null && handOne is not BaseRanged)
-            {
-                return base.Validate(from);
-            }
-
-            Item handTwo = from.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
-
-            if (handTwo != null && handTwo is not BaseRanged)
+            if (meleeWeapon)
             {
                 return base.Validate(from);
             }

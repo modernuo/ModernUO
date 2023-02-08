@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "type": "Server.Items.WarningItem",
+  "properties": [
+    {
+      "name": "WarningMessage",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "TextDefinition"
+      ]
+    },
+    {
+      "name": "Range",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ResetDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    }
+  ]
+}

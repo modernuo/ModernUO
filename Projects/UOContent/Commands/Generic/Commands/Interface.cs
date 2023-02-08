@@ -382,10 +382,7 @@ namespace Server.Commands.Generic
                     {
                         CommandLogging.WriteLine(
                             m_From,
-                            "{0} {1} deleting {2}",
-                            m_From.AccessLevel,
-                            CommandLogging.Format(m_From),
-                            CommandLogging.Format(m_Item)
+                            $"{m_From.AccessLevel} {CommandLogging.Format(m_From)} deleting {CommandLogging.Format(m_Item)}"
                         );
                         m_Item.Delete();
                         m_From.SendGump(new InterfaceGump(m_From, m_Columns, m_List, m_Page, m_Item));
@@ -553,10 +550,7 @@ namespace Server.Commands.Generic
                         {
                             CommandLogging.WriteLine(
                                 m_From,
-                                "{0} {1} deleting {2}",
-                                m_From.AccessLevel,
-                                CommandLogging.Format(m_From),
-                                CommandLogging.Format(m_Mobile)
+                                $"{m_From.AccessLevel} {CommandLogging.Format(m_From)} deleting {CommandLogging.Format(m_Mobile)}"
                             );
                             m_Mobile.Delete();
                             m_From.SendGump(new InterfaceGump(m_From, m_Columns, m_List, m_Page, m_Mobile));

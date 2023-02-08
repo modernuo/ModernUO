@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ManualDirtyCheckingAttribute.cs                                 *
  *                                                                       *
@@ -15,14 +15,13 @@
 
 using System;
 
-namespace Server
-{
-    /// <summary>
-    /// Indicates that the applied class has dirty checking. This is necessary for classes that are not code genned.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ManualDirtyCheckingAttribute : Attribute
-    {
+namespace Server;
 
-    }
+/// <summary>
+/// Indicates that the applied class has dirty checking. This is necessary for classes that are not code genned.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public class ManualDirtyCheckingAttribute : Attribute
+{
+
 }

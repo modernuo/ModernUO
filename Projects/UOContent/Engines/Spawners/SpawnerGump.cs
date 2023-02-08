@@ -254,7 +254,7 @@ public class SpawnerGump : Gump
 
                 if (type == null)
                 {
-                    from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
+                    from.SendMessage($"{str} is not a valid type name for entry #{i}.");
                     return;
                 }
 

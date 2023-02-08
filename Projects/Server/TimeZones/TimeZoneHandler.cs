@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TimeZoneHandler.cs                                              *
  *                                                                       *
@@ -18,10 +18,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Server.Json;
+using Server.Logging;
 
-namespace Server
-{
-    /**
+namespace Server;
+
+/**
      * TimeZoneHandler provides a cross platform compatible way to handle system timezones.
      *
      * By default the system timezone is used.
@@ -37,15 +38,19 @@ namespace Server
      * Example:
      * "system.localTimeZone": "Europe/Lisbon"
      */
-    public static class TimeZoneHandler
-    {
-        private static readonly Dictionary<string, TimeZoneInfo> _timeZoneById = new();
-        public static TimeZoneInfo SystemTimeZone { get; private set; }
+public static class TimeZoneHandler
+{
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(TimeZoneHandler));
 
-        static TimeZoneHandler()
+    private static readonly Dictionary<string, TimeZoneInfo> _timeZoneById = new();
+    public static TimeZoneInfo SystemTimeZone { get; private set; }
+
+    static TimeZoneHandler()
+    {
+        var timezones = JsonConfig.Deserialize<TimeZoneWithRegions[]>(Path.Combine(Core.BaseDirectory, "Data/timezones.json"));
+        foreach (var tz in timezones)
         {
-            var timezones = JsonConfig.Deserialize<TimeZoneWithRegions[]>(Path.Combine(Core.BaseDirectory, "Data/timezones.json"));
-            foreach (var tz in timezones)
+            try
             {
                 // Get the timezone if we are on Windows
                 var tzInfo = Core.IsWindows ? TimeZoneInfo.FindSystemTimeZoneById(tz.TimeZone) : null;
@@ -59,22 +64,26 @@ namespace Server
 
                 _timeZoneById[tz.TimeZone] = tzInfo;
             }
+            catch (TimeZoneNotFoundException e)
+            {
+                logger.Warning(e, $"Timezone '{tz.TimeZone}' was not found.");
+            }
         }
+    }
 
-        public static void Configure()
-        {
-            var tzId = ServerConfiguration.GetSetting("system.localTimeZone", TimeZoneInfo.Local.Id);
-            SystemTimeZone = FindTimeZoneById(tzId);
-        }
+    public static void Configure()
+    {
+        var tzId = ServerConfiguration.GetSetting("system.localTimeZone", TimeZoneInfo.Local.Id);
+        SystemTimeZone = FindTimeZoneById(tzId);
+    }
 
-        /**
+    /**
          * Cross platform version of TimeZoneInfo.FindSystemTimeZoneById
          */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TimeZoneInfo FindTimeZoneById(string id) => _timeZoneById[id];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TimeZoneInfo FindTimeZoneById(string id) => _timeZoneById[id];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime ToSystemLocalTime(this DateTime date) =>
-            TimeZoneInfo.ConvertTimeFromUtc(date, SystemTimeZone);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static DateTime ToSystemLocalTime(this DateTime date) =>
+        TimeZoneInfo.ConvertTimeFromUtc(date, SystemTimeZone);
 }

@@ -83,8 +83,7 @@ namespace Server.Items
         public static readonly WeaponAbility InfusedThrow = Abilities[30];
         public static readonly WeaponAbility MysticArc = Abilities[31];
 
-        private static readonly Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable =
-            new();
+        private static readonly Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable = new();
 
         public virtual int BaseMana => 0;
 

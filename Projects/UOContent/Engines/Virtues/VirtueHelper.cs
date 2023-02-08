@@ -187,7 +187,7 @@ namespace Server
                     }
                     else
                     {
-                        pm.SendMessage("You have gained a path in {0}!", virtueName);
+                        pm.SendMessage($"You have gained a path in {virtueName}!");
                     }
                 }
                 else
@@ -199,7 +199,7 @@ namespace Server
                     }
                     else
                     {
-                        pm.SendMessage("You have gained in {0}.", virtueName);
+                        pm.SendMessage($"You have gained in {virtueName}.");
                     }
                 }
 
@@ -223,7 +223,7 @@ namespace Server
                 }
                 else
                 {
-                    pm.SendMessage("You have achieved the highest path in {0} and can no longer gain any further.", virtueName);
+                    pm.SendMessage($"You have achieved the highest path in {virtueName} and can no longer gain any further.");
                 }
 
             }

@@ -712,11 +712,11 @@ namespace Server.Engines.ConPVP
 
             if (points > 3)
             {
-                m_Game.Alert("Touchdown {0} ({1})!", team.Name, m.Name);
+                m_Game.Alert($"Touchdown {team.Name} ({m.Name})!");
             }
             else
             {
-                m_Game.Alert("Field goal {0} ({1})!", team.Name, m.Name);
+                m_Game.Alert($"Field goal {team.Name} ({m.Name})!");
             }
 
             for (var i = m_Helpers.Count - 1; i >= 0; i--)
@@ -761,7 +761,7 @@ namespace Server.Engines.ConPVP
                 m.RevealingAction();
 
                 m.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You got the bomb!");
-                m_Game.Alert("{1} ({2}) {0} the bomb!", verb, m.Name, team.Name);
+                m_Game.Alert($"{verb} ({m.Name}) {team.Name} the bomb!");
 
                 m.Target = new BombTarget(this, m);
 
@@ -1661,11 +1661,6 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public void Alert(string format, params object[] args)
-        {
-            Alert(string.Format(format, args));
-        }
-
         public BRTeamInfo GetTeamInfo(Mobile mob)
         {
             var teamID = GetTeamID(mob);
@@ -1954,17 +1949,14 @@ namespace Server.Engines.ConPVP
                             mob.BankBox.DropItem(item);
                         }
 
-                        mob.SendMessage(
-                            "You have been awarded a {0} trophy and {1:N0}gp for your participation in this tournament.",
-                            rank.ToString().ToLower(),
-                            cash
+                        mob.SendMessage( //There is no formatting flag for Lowercase, we may need a custom interface to get rid of it
+                            $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this tournament."
                         );
                     }
                     else
                     {
                         mob.SendMessage(
-                            "You have been awarded a {0} trophy for your participation in this tournament.",
-                            rank.ToString().ToLower()
+                            $"You have been awarded a {rank.ToString().ToLower()} trophy for your participation in this tournament."
                         );
                     }
                 }

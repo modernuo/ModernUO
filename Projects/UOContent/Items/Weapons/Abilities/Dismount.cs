@@ -23,6 +23,8 @@ public class Dismount : WeaponAbility
             return;
         }
 
+        ClearCurrentAbility(attacker);
+
         if (defender is ChaosDragoon or ChaosDragoonElite)
         {
             return;
@@ -33,10 +35,9 @@ public class Dismount : WeaponAbility
             if (attacker.Weapon is not Lance || !defender.Mounted && !defender.Flying && defender.Weapon is not Lance)
             {
                 attacker.SendLocalizedMessage(1061283); // You cannot perform that attack while mounted!
+                return;
             }
         }
-
-        ClearCurrentAbility(attacker);
 
         var mount = defender.Mount;
 
@@ -46,7 +47,7 @@ public class Dismount : WeaponAbility
             return;
         }
 
-        if (Core.ML && attacker is LesserHiryu && Utility.RandomDouble() <= 0.8)
+        if (Core.ML && attacker is LesserHiryu && Utility.RandomDouble() < 0.8)
         {
             return; // Lesser Hiryu have an 80% chance of missing this attack
         }

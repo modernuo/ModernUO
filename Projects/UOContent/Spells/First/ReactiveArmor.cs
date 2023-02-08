@@ -83,12 +83,13 @@ namespace Server.Spells.First
                         {
                             new ResistanceMod(
                                 ResistanceType.Physical,
+                                "PhysicalResistReactiveArmorSpell",
                                 15 + (int)(targ.Skills.Inscribe.Value / 20)
                             ),
-                            new ResistanceMod(ResistanceType.Fire, -5),
-                            new ResistanceMod(ResistanceType.Cold, -5),
-                            new ResistanceMod(ResistanceType.Poison, -5),
-                            new ResistanceMod(ResistanceType.Energy, -5)
+                            new ResistanceMod(ResistanceType.Fire, "FireResistReactiveArmorSpell", -5),
+                            new ResistanceMod(ResistanceType.Cold, "ColdResistReactiveArmorSpell", -5),
+                            new ResistanceMod(ResistanceType.Poison, "PoisonResistReactiveArmorSpell", -5),
+                            new ResistanceMod(ResistanceType.Energy, "EnergyResistReactiveArmorSpell", -5)
                         };
 
                         _table[targ] = mods;

@@ -72,16 +72,11 @@ namespace Server.Spells.Fifth
 
                     // creature.ControlSlots = 2;
 
-                    TimeSpan duration;
-
-                    if (Core.AOS)
+                    var duration = Core.Expansion switch
                     {
-                        duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
-                    }
-                    else
-                    {
-                        duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
-                    }
+                        Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
+                        _ => TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0)
+                    };
 
                     SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
                 }
@@ -96,12 +91,16 @@ namespace Server.Spells.Fifth
 
         public override TimeSpan GetCastDelay()
         {
-            if (Core.AOS)
+            var delay = base.GetCastDelay() * (Core.AOS ? 5 : 4);
+
+            // SA made everything 0.25 slower, but that is applied after the scalar
+            // So remove 0.25 * 5 to compensate
+            if (Core.SA)
             {
-                return TimeSpan.FromTicks(base.GetCastDelay().Ticks * 5);
+                delay -= TimeSpan.FromSeconds(1.25);
             }
 
-            return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
+            return delay;
         }
     }
 }

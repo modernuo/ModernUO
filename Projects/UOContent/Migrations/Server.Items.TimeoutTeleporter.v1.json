@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.TimeoutTeleporter",
+  "properties": [
+    {
+      "name": "TimeoutDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    }
+  ]
+}

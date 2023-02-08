@@ -35,16 +35,8 @@ namespace Server.Spells.Eighth
             }
             else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
             {
-                TimeSpan duration;
-
-                if (Core.AOS)
-                {
-                    duration = TimeSpan.FromSeconds(90.0);
-                }
-                else
-                {
-                    duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
-                }
+                // TODO: Check Demo for pre-T2A.
+                var duration = Core.T2A ? TimeSpan.FromSeconds(90.0) : TimeSpan.FromSeconds(Utility.Random(80, 40));
 
                 BaseCreature.Summon(new EnergyVortex(), false, Caster, new Point3D(p), 0x212, duration);
             }

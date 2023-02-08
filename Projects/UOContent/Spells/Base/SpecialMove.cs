@@ -17,7 +17,7 @@ namespace Server.Spells
         public virtual SkillName MoveSkill => SkillName.Bushido;
         public virtual double RequiredSkill => 0.0;
 
-        public virtual TextDefinition AbilityMessage => 0;
+        public virtual TextDefinition AbilityMessage => TextDefinition.Empty;
 
         public virtual bool BlockedByAnimalForm => true;
         public virtual bool DelayedContext => false;
@@ -64,11 +64,8 @@ namespace Server.Spells
         {
             if (m.Skills[MoveSkill].Value < RequiredSkill)
             {
-                var args = $"{RequiredSkill:F1}\t{MoveSkill.ToString()}\t ";
-                m.SendLocalizedMessage(
-                    1063013,
-                    args
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                m.SendLocalizedMessage(1063013, $"{RequiredSkill:F1}\t{MoveSkill}\t ");
                 return false;
             }
 
@@ -105,10 +102,8 @@ namespace Server.Spells
 
             if (from.Mana < mana)
             {
-                from.SendLocalizedMessage(
-                    1060181,
-                    mana.ToString()
-                ); // You need ~1_MANA_REQUIREMENT~ mana to perform that attack
+                // You need ~1_MANA_REQUIREMENT~ mana to perform that attack
+                from.SendLocalizedMessage(1060181, mana.ToString());
                 return false;
             }
 
@@ -257,7 +252,7 @@ namespace Server.Spells
                     m.NetState.SendToggleSpecialAbility(moveID + 1, true);
                 }
 
-                TextDefinition.SendMessageTo(m, move.AbilityMessage);
+                move.AbilityMessage.SendMessageTo(m);
             }
 
             return true;

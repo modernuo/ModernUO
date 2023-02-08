@@ -1,159 +1,127 @@
 using System;
+using ModernUO.Serialization;
 using Server.Multis;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class TrashBarrel : Container, IChoppable
 {
-    public class TrashBarrel : Container, IChoppable
+    private Timer m_Timer;
+
+    [Constructible]
+    public TrashBarrel() : base(0xE77)
     {
-        private Timer m_Timer;
+        Hue = 0x3B2;
+        Movable = false;
+    }
 
-        [Constructible]
-        public TrashBarrel() : base(0xE77)
+    public override int LabelNumber => 1041064; // a trash barrel
+
+    public override int DefaultMaxWeight => 0; // A value of 0 signals unlimited weight
+
+    public override bool IsDecoContainer => false;
+
+    public void OnChop(Mobile from)
+    {
+        var house = BaseHouse.FindHouseAt(from);
+
+        if (house?.IsCoOwner(from) == true)
         {
-            Hue = 0x3B2;
-            Movable = false;
+            Effects.PlaySound(Location, Map, 0x3B3);
+            from.SendLocalizedMessage(500461); // You destroy the item.
+            Destroy();
         }
+    }
 
-        public TrashBarrel(Serial serial) : base(serial)
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        if (Items.Count > 0)
         {
+            m_Timer = new EmptyTimer(this);
+            m_Timer.Start();
         }
+    }
 
-        public override int LabelNumber => 1041064; // a trash barrel
-
-        public override int DefaultMaxWeight => 0; // A value of 0 signals unlimited weight
-
-        public override bool IsDecoContainer => false;
-
-        public void OnChop(Mobile from)
+    private void InvalidateContents(Mobile from)
+    {
+        if (TotalItems >= 50)
         {
-            var house = BaseHouse.FindHouseAt(from);
+            Empty(501478); // The trash is full!  Emptying!
+        }
+        else
+        {
+            SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
-            if (house?.IsCoOwner(from) == true)
+            if (m_Timer != null)
             {
-                Effects.PlaySound(Location, Map, 0x3B3);
-                from.SendLocalizedMessage(500461); // You destroy the item.
-                Destroy();
+                m_Timer.Stop();
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Items.Count > 0)
+            else
             {
                 m_Timer = new EmptyTimer(this);
-                m_Timer.Start();
             }
+
+            m_Timer.Start();
         }
+    }
 
-        public override bool OnDragDrop(Mobile from, Item dropped)
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+        if (base.OnDragDrop(from, dropped))
         {
-            if (!base.OnDragDrop(from, dropped))
-            {
-                return false;
-            }
-
-            if (TotalItems >= 50)
-            {
-                Empty(501478); // The trash is full!  Emptying!
-            }
-            else
-            {
-                SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
-
-                if (m_Timer != null)
-                {
-                    m_Timer.Stop();
-                }
-                else
-                {
-                    m_Timer = new EmptyTimer(this);
-                }
-
-                m_Timer.Start();
-            }
-
+            InvalidateContents(from);
             return true;
         }
 
-        public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+        return false;
+    }
+
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+        if (base.OnDragDropInto(from, item, p))
         {
-            if (!base.OnDragDropInto(from, item, p))
-            {
-                return false;
-            }
-
-            if (TotalItems >= 50)
-            {
-                Empty(501478); // The trash is full!  Emptying!
-            }
-            else
-            {
-                SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
-
-                if (m_Timer != null)
-                {
-                    m_Timer.Stop();
-                }
-                else
-                {
-                    m_Timer = new EmptyTimer(this);
-                }
-
-                m_Timer.Start();
-            }
-
+            InvalidateContents(from);
             return true;
         }
 
-        public void Empty(int message)
+        return false;
+    }
+
+    public void Empty(int message)
+    {
+        var items = Items;
+
+        if (items.Count > 0)
         {
-            var items = Items;
+            PublicOverheadMessage(MessageType.Regular, 0x3B2, message);
 
-            if (items.Count > 0)
+            for (var i = items.Count - 1; i >= 0; --i)
             {
-                PublicOverheadMessage(MessageType.Regular, 0x3B2, message);
-
-                for (var i = items.Count - 1; i >= 0; --i)
+                if (i >= items.Count)
                 {
-                    if (i >= items.Count)
-                    {
-                        continue;
-                    }
-
-                    items[i].Delete();
+                    continue;
                 }
+
+                items[i].Delete();
             }
-
-            m_Timer?.Stop();
-
-            m_Timer = null;
         }
 
-        private class EmptyTimer : Timer
+        m_Timer?.Stop();
+        m_Timer = null;
+    }
+
+    private class EmptyTimer : Timer
+    {
+        private TrashBarrel _barrel;
+
+        public EmptyTimer(TrashBarrel barrel) : base(TimeSpan.FromMinutes(3.0)) => _barrel = barrel;
+
+        protected override void OnTick()
         {
-            private readonly TrashBarrel m_Barrel;
-
-            public EmptyTimer(TrashBarrel barrel) : base(TimeSpan.FromMinutes(3.0))
-            {
-                m_Barrel = barrel;
-            }
-
-            protected override void OnTick()
-            {
-                m_Barrel.Empty(501479); // Emptying the trashcan!
-            }
+            _barrel.Empty(501479); // Emptying the trashcan!
         }
     }
 }

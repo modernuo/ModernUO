@@ -28,11 +28,9 @@ namespace Server.Items
         [DirtyTrackingEntity]
         private Aquarium _aquarium;
 
-        private int _state;
-
         public AquariumState(Aquarium parent) => _aquarium = parent;
 
-        [SerializableField(0)]
+        [SerializableProperty(0)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int State
         {
@@ -48,15 +46,15 @@ namespace Server.Items
         }
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maintain;
 
         [SerializableField(2)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _improve;
 
         [SerializableField(3)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _added;
 
         public override string ToString() => "...";

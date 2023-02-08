@@ -37,7 +37,7 @@ namespace Server.Mobiles
         public override string CorpseName => "a death adder corpse";
         public override string DefaultName => "a death adder";
 
-        public override Poison HitPoison => Utility.RandomDouble() <= 0.8 ? Poison.Greater : Poison.Deadly;
+        public override Poison HitPoison => Utility.RandomDouble() < 0.8 ? Poison.Greater : Poison.Deadly;
 
         public override void Serialize(IGenericWriter writer)
         {

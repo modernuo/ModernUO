@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class AncientLich : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class AncientLich : BaseCreature
     {
         [Constructible]
         public AncientLich() : base(AIType.AI_Mage)
@@ -44,10 +47,6 @@ namespace Server.Mobiles
             PackNecroReg(30, 275);
         }
 
-        public AncientLich(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ancient lich's corpse";
 
         public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
@@ -73,16 +72,7 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 2);
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        private static MonsterAbility[] _abilities = { MonsterAbilities.SummonLesserUndeadCounter };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
     }
 }

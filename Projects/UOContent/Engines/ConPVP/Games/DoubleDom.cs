@@ -503,18 +503,7 @@ namespace Server.Engines.ConPVP
 
         public DDController Controller { get; }
 
-        public Map Facet
-        {
-            get
-            {
-                if (m_Context.Arena != null)
-                {
-                    return m_Context.Arena.Facet;
-                }
-
-                return Controller.Map;
-            }
-        }
+        public Map Facet => m_Context.Arena?.Facet ?? Controller.Map;
 
         public void Alert(string text)
         {
@@ -532,11 +521,6 @@ namespace Server.Engines.ConPVP
                     }
                 }
             }
-        }
-
-        public void Alert(string format, params object[] args)
-        {
-            Alert(string.Format(format, args));
         }
 
         public DDTeamInfo GetTeamInfo(Mobile mob)
@@ -847,16 +831,13 @@ namespace Server.Engines.ConPVP
                         }
 
                         mob.SendMessage(
-                            "You have been awarded a {0} trophy and {1:N0}gp for your participation in this tournament.",
-                            rank.ToString().ToLower(),
-                            cash
+                            $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this tournament."
                         );
                     }
                     else
                     {
                         mob.SendMessage(
-                            "You have been awarded a {0} trophy for your participation in this tournament.",
-                            rank.ToString().ToLower()
+                            $"You have been awarded a {rank.ToString().ToLower()} trophy for your participation in this tournament."
                         );
                     }
                 }
@@ -945,7 +926,7 @@ namespace Server.Engines.ConPVP
                          Controller.PointA?.TeamOwner != null;
 
             point.TeamOwner = team;
-            Alert("{0} has captured {1}!", team.Name, point.Name);
+            Alert($"{team.Name} has captured {point.Name}!");
 
             var isDom = Controller.PointA?.TeamOwner == Controller.PointB?.TeamOwner && Controller.PointA?.TeamOwner != null;
 
@@ -978,14 +959,14 @@ namespace Server.Engines.ConPVP
 
             if (++m_CapStage < 10)
             {
-                Alert("{0} is dominating... {1}", team.Name, 10 - m_CapStage);
+                Alert($"{team.Name} is dominating... {10 - m_CapStage}");
 
                 Controller.PointA?.SetCaptureHue(m_CapStage);
                 Controller.PointB?.SetCaptureHue(m_CapStage);
             }
             else
             {
-                Alert("{0} has scored!", team.Name);
+                Alert($"{team.Name} has scored!");
 
                 team.Score += 100;
                 team.Captures += 1;

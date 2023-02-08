@@ -19,15 +19,11 @@ namespace Server.Spells.Mysticism
 
         private static readonly Dictionary<Mobile, SpellPlagueTimer> _table = new();
 
-        public SpellPlagueSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public SpellPlagueSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.25);
-
-        public override double RequiredSkill => 70.0;
-        public override int RequiredMana => 40;
+        public override SpellCircle Circle => SpellCircle.Seventh;
 
         public static void Initialize()
         {
@@ -202,23 +198,22 @@ namespace Server.Spells.Mysticism
 
         private class InternalTarget : Target
         {
-            private readonly SpellPlagueSpell m_Owner;
+            private readonly SpellPlagueSpell _owner;
 
-            public InternalTarget(SpellPlagueSpell owner)
-                : base(12, false, TargetFlags.Harmful) =>
-                m_Owner = owner;
+            public InternalTarget(SpellPlagueSpell owner) : base(12, false, TargetFlags.Harmful) =>
+                _owner = owner;
 
             protected override void OnTarget(Mobile from, object o)
             {
                 if (o is Mobile mobile)
                 {
-                    m_Owner.Target(mobile);
+                    _owner.Target(mobile);
                 }
             }
 
             protected override void OnTargetFinish(Mobile from)
             {
-                m_Owner.FinishSequence();
+                _owner.FinishSequence();
             }
         }
     }

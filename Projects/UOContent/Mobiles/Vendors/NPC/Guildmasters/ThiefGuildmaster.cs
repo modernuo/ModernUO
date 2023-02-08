@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class ThiefGuildmaster : BaseGuildmaster
+    [SerializationGenerator(0, false)]
+    public partial class ThiefGuildmaster : BaseGuildmaster
     {
         [Constructible]
         public ThiefGuildmaster() : base("thief")
@@ -17,10 +19,6 @@ namespace Server.Mobiles
             SetSkill(SkillName.Fencing, 75.0, 98.0);
             SetSkill(SkillName.Stealth, 85.0, 100.0);
             SetSkill(SkillName.RemoveTrap, 85.0, 100.0);
-        }
-
-        public ThiefGuildmaster(Serial serial) : base(serial)
-        {
         }
 
         public override NpcGuild NpcGuild => NpcGuild.ThievesGuild;
@@ -114,20 +112,6 @@ namespace Server.Mobiles
             }
 
             return base.OnGoldGiven(from, dropped);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GenChamps.cs                                                    *
  *                                                                       *
@@ -106,9 +106,15 @@ namespace Server.Engines.CannedEvil
                         }
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    logger.Warning($"Failed to generate champion spawn {entry.m_ChampType.FullName} at {entry.m_SignLocation} ({entry.m_Map})");
+                    logger.Error(
+                        e,
+                        "Failed to generate champion \"{Type}\" at {Location} ({Map}).",
+                        entry.m_ChampType.FullName,
+                        entry.m_SignLocation,
+                        entry.m_Map
+                    );
                 }
             }
         }

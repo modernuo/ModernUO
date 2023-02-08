@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Leviathan : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Leviathan : BaseCreature
     {
         [Constructible]
         public Leviathan(Mobile fisher = null) : base(AIType.AI_Mage)
@@ -49,18 +51,8 @@ namespace Server.Mobiles
             CantWalk = true;
 
             PackItem(new MessageInABottle());
-
-            var rope = new Rope();
-            rope.ItemID = 0x14F8;
-            PackItem(rope);
-
-            rope = new Rope();
-            rope.ItemID = 0x14FA;
-            PackItem(rope);
-        }
-
-        public Leviathan(Serial serial) : base(serial)
-        {
+            PackItem(new Rope { ItemID = 0x14F8 });
+            PackItem(new Rope { ItemID = 0x14FA });
         }
 
         public override string CorpseName => "a leviathan corpse";
@@ -68,15 +60,6 @@ namespace Server.Mobiles
         public Mobile Fisher { get; set; }
 
         public override string DefaultName => "a leviathan";
-
-        public override bool HasBreath => true;
-        public override int BreathPhysicalDamage => 70; // TODO: Verify damage type
-        public override int BreathColdDamage => 30;
-        public override int BreathFireDamage => 0;
-        public override int BreathEffectHue => 0x1ED;
-        public override double BreathDamageScalar => 0.05;
-        public override double BreathMinDelay => 5.0;
-        public override double BreathMaxDelay => 7.5;
 
         public override int TreasureMapLevel => 5;
 
@@ -109,23 +92,12 @@ namespace Server.Mobiles
             typeof(VioletCourage)
         };
 
+        private static MonsterAbility[] _abilities = { new LeviathanBreath() };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 5);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public static void GiveArtifactTo(Mobile m)
@@ -175,6 +147,17 @@ namespace Server.Mobiles
             }
 
             Fisher = null;
+        }
+
+        private class LeviathanBreath : FireBreath
+        {
+            public override int PhysicalDamage => 70;
+            public override int ColdDamage => 30;
+            public override int FireDamage => 0;
+            public override int BreathEffectHue => 0x1ED;
+            public override double BreathDamageScalar => 0.05;
+            public override TimeSpan MinTriggerCooldown => TimeSpan.FromSeconds(5.0);
+            public override TimeSpan MaxTriggerCooldown => TimeSpan.FromSeconds(7.5);
         }
     }
 }

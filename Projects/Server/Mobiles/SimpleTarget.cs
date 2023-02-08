@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SimpleTarget.cs                                                 *
  *                                                                       *
@@ -15,40 +15,39 @@
 
 using Server.Targeting;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class SimpleTarget : Target
 {
-    public class SimpleTarget : Target
+    private readonly TargetCallback m_Callback;
+
+    public SimpleTarget(int range, TargetFlags flags, bool allowGround, TargetCallback callback)
+        : base(range, allowGround, flags) =>
+        m_Callback = callback;
+
+    protected override void OnTarget(Mobile from, object targeted)
     {
-        private readonly TargetCallback m_Callback;
+        m_Callback?.Invoke(from, targeted);
+    }
+}
 
-        public SimpleTarget(int range, TargetFlags flags, bool allowGround, TargetCallback callback)
-            : base(range, allowGround, flags) =>
-            m_Callback = callback;
+public class SimpleStateTarget<T> : Target
+{
+    private readonly TargetStateCallback<T> m_Callback;
+    private readonly T m_State;
 
-        protected override void OnTarget(Mobile from, object targeted)
-        {
-            m_Callback?.Invoke(from, targeted);
-        }
+    public SimpleStateTarget(
+        int range, TargetFlags flags, bool allowGround, TargetStateCallback<T> callback,
+        T state
+    )
+        : base(range, allowGround, flags)
+    {
+        m_Callback = callback;
+        m_State = state;
     }
 
-    public class SimpleStateTarget<T> : Target
+    protected override void OnTarget(Mobile from, object targeted)
     {
-        private readonly TargetStateCallback<T> m_Callback;
-        private readonly T m_State;
-
-        public SimpleStateTarget(
-            int range, TargetFlags flags, bool allowGround, TargetStateCallback<T> callback,
-            T state
-        )
-            : base(range, allowGround, flags)
-        {
-            m_Callback = callback;
-            m_State = state;
-        }
-
-        protected override void OnTarget(Mobile from, object targeted)
-        {
-            m_Callback?.Invoke(from, targeted, m_State);
-        }
+        m_Callback?.Invoke(from, targeted, m_State);
     }
 }

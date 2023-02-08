@@ -47,13 +47,12 @@ namespace Server.Engines.MLQuests.Gumps
                         numberColor = stringColor = 0xFFFFFF;
                     }
 
-                    TextDefinition.AddHtmlText(
+                    instances[i].Quest.Title.AddHtmlText(
                         this,
                         98,
                         140 + 21 * i,
                         270,
                         21,
-                        instances[i].Quest.Title,
                         false,
                         false,
                         numberColor,

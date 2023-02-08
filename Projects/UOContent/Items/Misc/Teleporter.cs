@@ -1,1284 +1,1029 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Buffers;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flags]
+public enum TeleporterFlags
 {
-    public class Teleporter : Item
+    None = 0x00000000,
+    Active = 0x00000001,
+    Creatures = 0x00000002,
+    CombatCheck = 0x00000004,
+    CriminalCheck = 0x00000008,
+    SourceEffect = 0x00000010,
+    DestEffect = 0x00000020
+}
+
+[SerializationGenerator(5, false)]
+public partial class Teleporter : Item
+{
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TeleporterFlags _flags;
+
+    [InvalidateProperties]
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TimeSpan _delay;
+
+    [EncodedInt]
+    [InvalidateProperties]
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _soundID;
+
+    [InvalidateProperties]
+    [SerializableField(3)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Point3D _pointDest;
+
+    [InvalidateProperties]
+    [SerializableField(4)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Map _mapDest;
+
+    [Constructible]
+    public Teleporter() : this(new Point3D(0, 0, 0))
     {
-        private bool m_Active, m_Creatures, m_CombatCheck, m_CriminalCheck;
-        private TimeSpan m_Delay;
-        private bool m_DestEffect;
-        private Map m_MapDest;
-        private Point3D m_PointDest;
-        private int m_SoundID;
-        private bool m_SourceEffect;
+    }
 
-        [Constructible]
-        public Teleporter() : this(new Point3D(0, 0, 0))
+    [Constructible]
+    public Teleporter(Point3D pointDest, Map mapDest = null, bool creatures = false) : base(0x1BC3)
+    {
+        Movable = false;
+        Visible = false;
+
+        _flags = TeleporterFlags.Active;
+        Creatures = creatures;
+
+        _pointDest = pointDest;
+        _mapDest = mapDest;
+    }
+
+    public bool GetFlag(TeleporterFlags flag) => (Flags & flag) != 0;
+
+    public void SetFlag(TeleporterFlags flag, bool value)
+    {
+        if (value)
         {
+            Flags |= flag;
+        }
+        else
+        {
+            Flags &= ~flag;
         }
 
-        [Constructible]
-        public Teleporter(Point3D pointDest, Map mapDest = null, bool creatures = false) : base(0x1BC3)
+        InvalidateProperties();
+        this.MarkDirty();
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool SourceEffect
+    {
+        get => GetFlag(TeleporterFlags.SourceEffect);
+        set => SetFlag(TeleporterFlags.SourceEffect, value);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DestEffect
+    {
+        get => GetFlag(TeleporterFlags.DestEffect);
+        set => SetFlag(TeleporterFlags.DestEffect, value);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Active
+    {
+        get => GetFlag(TeleporterFlags.Active);
+        set => SetFlag(TeleporterFlags.Active, value);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Creatures
+    {
+        get => GetFlag(TeleporterFlags.Creatures);
+        set => SetFlag(TeleporterFlags.Creatures, value);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool CombatCheck
+    {
+        get => GetFlag(TeleporterFlags.CombatCheck);
+        set => SetFlag(TeleporterFlags.CombatCheck, value);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool CriminalCheck
+    {
+        get => GetFlag(TeleporterFlags.CriminalCheck);
+        set => SetFlag(TeleporterFlags.CriminalCheck, value);
+    }
+
+    public override int LabelNumber => 1026095; // teleporter
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (Active)
         {
-            Movable = false;
-            Visible = false;
-
-            m_Active = true;
-            m_PointDest = pointDest;
-            m_MapDest = mapDest;
-            m_Creatures = creatures;
-
-            m_CombatCheck = false;
-            m_CriminalCheck = false;
+            list.Add(1060742); // active
+        }
+        else
+        {
+            list.Add(1060743); // inactive
         }
 
-        public Teleporter(Serial serial) : base(serial)
+        if (_mapDest != null)
         {
+            list.Add(1060658, $"{"Map"}\t{_mapDest}");
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool SourceEffect
+        if (_pointDest != Point3D.Zero)
         {
-            get => m_SourceEffect;
-            set
-            {
-                m_SourceEffect = value;
-                InvalidateProperties();
-            }
+            list.Add(1060659, $"{"Coords"}\t{_pointDest}");
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DestEffect
+        list.Add(1060660, $"{"Creatures"}\t{(Creatures ? "Yes" : "No")}");
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        base.OnSingleClick(from);
+
+        if (Active)
         {
-            get => m_DestEffect;
-            set
+            if (_mapDest != null && _pointDest != Point3D.Zero)
             {
-                m_DestEffect = value;
-                InvalidateProperties();
+                LabelTo(from, $"{_pointDest} [{_mapDest}]");
+            }
+            else if (_mapDest != null)
+            {
+                LabelTo(from, $"[{_mapDest}]");
+            }
+            else if (_pointDest != Point3D.Zero)
+            {
+                LabelTo(from, _pointDest.ToString());
             }
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int SoundID
+        else
         {
-            get => m_SoundID;
-            set
-            {
-                m_SoundID = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan Delay
-        {
-            get => m_Delay;
-            set
-            {
-                m_Delay = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Active
-        {
-            get => m_Active;
-            set
-            {
-                m_Active = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D PointDest
-        {
-            get => m_PointDest;
-            set
-            {
-                m_PointDest = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Map MapDest
-        {
-            get => m_MapDest;
-            set
-            {
-                m_MapDest = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Creatures
-        {
-            get => m_Creatures;
-            set
-            {
-                m_Creatures = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool CombatCheck
-        {
-            get => m_CombatCheck;
-            set
-            {
-                m_CombatCheck = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool CriminalCheck
-        {
-            get => m_CriminalCheck;
-            set
-            {
-                m_CriminalCheck = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override int LabelNumber => 1026095; // teleporter
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            if (m_Active)
-            {
-                list.Add(1060742); // active
-            }
-            else
-            {
-                list.Add(1060743); // inactive
-            }
-
-            if (m_MapDest != null)
-            {
-                list.Add(1060658, $"{"Map"}\t{m_MapDest}");
-            }
-
-            if (m_PointDest != Point3D.Zero)
-            {
-                list.Add(1060659, $"{"Coords"}\t{m_PointDest}");
-            }
-
-            list.Add(1060660, $"{"Creatures"}\t{(m_Creatures ? "Yes" : "No")}");
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            base.OnSingleClick(from);
-
-            if (m_Active)
-            {
-                if (m_MapDest != null && m_PointDest != Point3D.Zero)
-                {
-                    LabelTo(from, "{0} [{1}]", m_PointDest, m_MapDest);
-                }
-                else if (m_MapDest != null)
-                {
-                    LabelTo(from, "[{0}]", m_MapDest);
-                }
-                else if (m_PointDest != Point3D.Zero)
-                {
-                    LabelTo(from, m_PointDest.ToString());
-                }
-            }
-            else
-            {
-                LabelTo(from, "(inactive)");
-            }
-        }
-
-        public virtual bool CanTeleport(Mobile m)
-        {
-            if (!m_Creatures && !m.Player)
-            {
-                return false;
-            }
-
-            if (m_CriminalCheck && m.Criminal)
-            {
-                m.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
-                return false;
-            }
-
-            if (m_CombatCheck && SpellHelper.CheckCombat(m))
-            {
-                m.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
-                return false;
-            }
-
-            return true;
-        }
-
-        public virtual void StartTeleport(Mobile m)
-        {
-            if (m_Delay == TimeSpan.Zero)
-            {
-                DoTeleport(m);
-            }
-            else
-            {
-                Timer.StartTimer(m_Delay, () => DoTeleport(m));
-            }
-        }
-
-        public virtual void DoTeleport(Mobile m)
-        {
-            var map = m_MapDest;
-
-            if (map == null || map == Map.Internal)
-            {
-                map = m.Map;
-            }
-
-            var p = m_PointDest;
-
-            if (p == Point3D.Zero)
-            {
-                p = m.Location;
-            }
-
-            BaseCreature.TeleportPets(m, p, map);
-
-            var sendEffect = !m.Hidden || m.AccessLevel == AccessLevel.Player;
-
-            if (m_SourceEffect && sendEffect)
-            {
-                Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
-            }
-
-            m.MoveToWorld(p, map);
-
-            if (m_DestEffect && sendEffect)
-            {
-                Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
-            }
-
-            if (m_SoundID > 0 && sendEffect)
-            {
-                Effects.PlaySound(m.Location, m.Map, m_SoundID);
-            }
-        }
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            if (m_Active && CanTeleport(m))
-            {
-                StartTeleport(m);
-                return false;
-            }
-
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(4); // version
-
-            writer.Write(m_CriminalCheck);
-            writer.Write(m_CombatCheck);
-
-            writer.Write(m_SourceEffect);
-            writer.Write(m_DestEffect);
-            writer.Write(m_Delay);
-            writer.WriteEncodedInt(m_SoundID);
-
-            writer.Write(m_Creatures);
-
-            writer.Write(m_Active);
-            writer.Write(m_PointDest);
-            writer.Write(m_MapDest);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 4:
-                    {
-                        m_CriminalCheck = reader.ReadBool();
-                        goto case 3;
-                    }
-                case 3:
-                    {
-                        m_CombatCheck = reader.ReadBool();
-                        goto case 2;
-                    }
-                case 2:
-                    {
-                        m_SourceEffect = reader.ReadBool();
-                        m_DestEffect = reader.ReadBool();
-                        m_Delay = reader.ReadTimeSpan();
-                        m_SoundID = reader.ReadEncodedInt();
-
-                        goto case 1;
-                    }
-                case 1:
-                    {
-                        m_Creatures = reader.ReadBool();
-
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        m_Active = reader.ReadBool();
-                        m_PointDest = reader.ReadPoint3D();
-                        m_MapDest = reader.ReadMap();
-
-                        break;
-                    }
-            }
+            LabelTo(from, "(inactive)");
         }
     }
 
-    public class SkillTeleporter : Teleporter
+    public virtual bool CanTeleport(Mobile m)
     {
-        private int m_MessageNumber;
-        private string m_MessageString;
-        private double m_Required;
-        private SkillName m_Skill;
-
-        [Constructible]
-        public SkillTeleporter()
+        if (!Creatures && !m.Player)
         {
+            return false;
         }
 
-        public SkillTeleporter(Serial serial)
-            : base(serial)
+        if (CriminalCheck && m.Criminal)
         {
+            m.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SkillName Skill
+        if (CombatCheck && SpellHelper.CheckCombat(m))
         {
-            get => m_Skill;
-            set
-            {
-                m_Skill = value;
-                InvalidateProperties();
-            }
+            m.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double Required
+        return true;
+    }
+
+    public virtual void StartTeleport(Mobile m)
+    {
+        if (_delay == TimeSpan.Zero)
         {
-            get => m_Required;
-            set
-            {
-                m_Required = value;
-                InvalidateProperties();
-            }
+            DoTeleport(m);
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string MessageString
+        else
         {
-            get => m_MessageString;
-            set
-            {
-                m_MessageString = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MessageNumber
-        {
-            get => m_MessageNumber;
-            set
-            {
-                m_MessageNumber = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override bool CanTeleport(Mobile m)
-        {
-            if (!base.CanTeleport(m))
-            {
-                return false;
-            }
-
-            var sk = m.Skills[m_Skill];
-
-            if (sk == null || sk.Base < m_Required)
-            {
-                if (m.BeginAction(this))
-                {
-                    if (m_MessageString != null)
-                    {
-                        m.NetState.SendMessage(
-                            Serial,
-                            ItemID,
-                            MessageType.Regular,
-                            0x3B2,
-                            3,
-                            false,
-                            "ENU",
-                            null,
-                            m_MessageString
-                        );
-                    }
-                    else if (m_MessageNumber != 0)
-                    {
-                        m.NetState.SendMessageLocalized(
-                            Serial,
-                            ItemID,
-                            MessageType.Regular,
-                            0x3B2,
-                            3,
-                            m_MessageNumber,
-                            null
-                        );
-                    }
-
-                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            var skillIndex = (int)m_Skill;
-            string skillName;
-
-            if (skillIndex >= 0 && skillIndex < SkillInfo.Table.Length)
-            {
-                skillName = SkillInfo.Table[skillIndex].Name;
-            }
-            else
-            {
-                skillName = "(Invalid)";
-            }
-
-            list.Add(1060661, $"{skillName}\t{m_Required:F1}");
-
-            if (m_MessageString != null)
-            {
-                list.Add(1060662, $"{"Message"}\t{m_MessageString}");
-            }
-            else if (m_MessageNumber != 0)
-            {
-                list.Add(1060662, $"{"Message"}\t{m_MessageNumber:#}");
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write((int)m_Skill);
-            writer.Write(m_Required);
-            writer.Write(m_MessageString);
-            writer.Write(m_MessageNumber);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Skill = (SkillName)reader.ReadInt();
-                        m_Required = reader.ReadDouble();
-                        m_MessageString = reader.ReadString();
-                        m_MessageNumber = reader.ReadInt();
-
-                        break;
-                    }
-            }
+            Timer.StartTimer(_delay, () => DoTeleport(m));
         }
     }
 
-    public class KeywordTeleporter : Teleporter
+    public virtual void DoTeleport(Mobile m)
     {
-        private int m_Keyword;
-        private int m_Range;
-        private string m_Substring;
+        var map = _mapDest;
 
-        [Constructible]
-        public KeywordTeleporter()
+        if (map == null || map == Map.Internal)
         {
-            m_Keyword = -1;
-            m_Substring = null;
+            map = m.Map;
         }
 
-        public KeywordTeleporter(Serial serial)
-            : base(serial)
+        var p = _pointDest;
+
+        if (p == Point3D.Zero)
         {
+            p = m.Location;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Substring
+        BaseCreature.TeleportPets(m, p, map);
+
+        var sendEffect = !m.Hidden || m.AccessLevel == AccessLevel.Player;
+
+        if (SourceEffect && sendEffect)
         {
-            get => m_Substring;
-            set
-            {
-                m_Substring = value;
-                InvalidateProperties();
-            }
+            Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Keyword
+        m.MoveToWorld(p, map);
+
+        if (DestEffect && sendEffect)
         {
-            get => m_Keyword;
-            set
-            {
-                m_Keyword = value;
-                InvalidateProperties();
-            }
+            Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Range
+        if (_soundID > 0 && sendEffect)
         {
-            get => m_Range;
-            set
-            {
-                m_Range = value;
-                InvalidateProperties();
-            }
+            Effects.PlaySound(m.Location, m.Map, _soundID);
+        }
+    }
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (Active && CanTeleport(m))
+        {
+            StartTeleport(m);
+            return false;
         }
 
-        public override bool HandlesOnSpeech => true;
+        return true;
+    }
 
-        public override void OnSpeech(SpeechEventArgs e)
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        if (reader.ReadBool())
         {
-            if (!e.Handled && Active)
-            {
-                var m = e.Mobile;
-
-                if (!m.InRange(GetWorldLocation(), m_Range))
-                {
-                    return;
-                }
-
-                var isMatch = false;
-
-                if (m_Keyword >= 0 && e.HasKeyword(m_Keyword))
-                {
-                    isMatch = true;
-                }
-                else if (m_Substring != null && e.Speech.InsensitiveContains(m_Substring))
-                {
-                    isMatch = true;
-                }
-
-                if (!isMatch || !CanTeleport(m))
-                {
-                    return;
-                }
-
-                e.Handled = true;
-                StartTeleport(m);
-            }
+            _flags |= TeleporterFlags.CriminalCheck;
         }
 
-        public override void DoTeleport(Mobile m)
+        if (reader.ReadBool())
         {
-            if (!m.InRange(GetWorldLocation(), m_Range) || m.Map != Map)
+            _flags |= TeleporterFlags.CombatCheck;
+        }
+
+        if (reader.ReadBool())
+        {
+            _flags |= TeleporterFlags.SourceEffect;
+        }
+
+        if (reader.ReadBool())
+        {
+            _flags |= TeleporterFlags.DestEffect;
+        }
+
+        _delay = reader.ReadTimeSpan();
+        _soundID = reader.ReadEncodedInt();
+
+        if (reader.ReadBool())
+        {
+            _flags |= TeleporterFlags.Creatures;
+        }
+
+        if (reader.ReadBool())
+        {
+            _flags |= TeleporterFlags.Active;
+        }
+
+        _pointDest = reader.ReadPoint3D();
+        _mapDest = reader.ReadMap();
+    }
+}
+
+[SerializationGenerator(1, false)]
+public partial class SkillTeleporter : Teleporter
+{
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private SkillName _skill;
+
+    [InvalidateProperties]
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private double _required;
+
+    [CanBeNull]
+    [InvalidateProperties]
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _message;
+
+    [Constructible]
+    public SkillTeleporter()
+    {
+    }
+
+    public override bool CanTeleport(Mobile m)
+    {
+        if (!base.CanTeleport(m))
+        {
+            return false;
+        }
+
+        var sk = m.Skills[_skill];
+
+        if (sk?.Base >= _required)
+        {
+            return true;
+        }
+
+        if (!m.BeginAction(this))
+        {
+            return false;
+        }
+
+        if (_message?.Number > 0)
+        {
+            m.NetState.SendMessageLocalized(
+                Serial,
+                ItemID,
+                MessageType.Regular,
+                0x3B2,
+                3,
+                _message.Number,
+                null
+            );
+        }
+        else if (!string.IsNullOrWhiteSpace(_message?.String))
+        {
+            m.NetState.SendMessage(
+                Serial,
+                ItemID,
+                MessageType.Regular,
+                0x3B2,
+                3,
+                false,
+                "ENU",
+                null,
+                _message.String
+            );
+        }
+
+        Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
+
+        return false;
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        var skillIndex = (int)_skill;
+        string skillName;
+
+        if (skillIndex >= 0 && skillIndex < SkillInfo.Table.Length)
+        {
+            skillName = SkillInfo.Table[skillIndex].Name;
+        }
+        else
+        {
+            skillName = "(Invalid)";
+        }
+
+        list.Add(1060661, $"{skillName}\t{_required:F1}");
+
+        if (_message?.Number > 0)
+        {
+            list.Add(1060662, $"{"Message"}\t{_message.Number:#}");
+        }
+        else if (!string.IsNullOrWhiteSpace(_message?.String))
+        {
+            list.Add(1060662, $"{"Message"}\t{_message.String}");
+        }
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _skill = (SkillName)reader.ReadInt();
+        _required = reader.ReadDouble();
+        _message = reader.ReadString();
+
+        var localNumber = reader.ReadInt();
+        if (localNumber > 0)
+        {
+            _message = localNumber;
+        }
+    }
+}
+
+[SerializationGenerator(0, false)]
+public partial class KeywordTeleporter : Teleporter
+{
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _substring;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _keyword;
+
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _range;
+
+    [Constructible]
+    public KeywordTeleporter()
+    {
+        _keyword = -1;
+        _substring = null;
+    }
+
+    public override bool HandlesOnSpeech => true;
+
+    public override void OnSpeech(SpeechEventArgs e)
+    {
+        if (!e.Handled && Active)
+        {
+            var m = e.Mobile;
+
+            if (!m.InRange(GetWorldLocation(), _range))
             {
                 return;
             }
 
-            base.DoTeleport(m);
-        }
+            var isMatch = false;
 
-        public override bool OnMoveOver(Mobile m) => true;
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            list.Add(1060661, $"{"Range"}\t{m_Range}");
-
-            if (m_Keyword >= 0)
+            if (_keyword >= 0 && e.HasKeyword(_keyword))
             {
-                list.Add(1060662, $"{"Keyword"}\t{m_Keyword}");
+                isMatch = true;
+            }
+            else if (_substring != null && e.Speech.InsensitiveContains(_substring))
+            {
+                isMatch = true;
             }
 
-            if (m_Substring != null)
+            if (!isMatch || !CanTeleport(m))
             {
-                list.Add(1060663, $"{"Substring"}\t{m_Substring}");
+                return;
             }
-        }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Substring);
-            writer.Write(m_Keyword);
-            writer.Write(m_Range);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Substring = reader.ReadString();
-                        m_Keyword = reader.ReadInt();
-                        m_Range = reader.ReadInt();
-
-                        break;
-                    }
-            }
+            e.Handled = true;
+            StartTeleport(m);
         }
     }
 
-    public class WaitTeleporter : KeywordTeleporter
+    public override void DoTeleport(Mobile m)
     {
-        private static Dictionary<Mobile, TeleportingInfo> m_Table = new Dictionary<Mobile, TeleportingInfo>();
-
-        [Constructible]
-        public WaitTeleporter()
+        if (!m.InRange(GetWorldLocation(), _range) || m.Map != Map)
         {
+            return;
         }
 
-        public WaitTeleporter(Serial serial)
-            : base(serial)
+        base.DoTeleport(m);
+    }
+
+    public override bool OnMoveOver(Mobile m) => true;
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        list.Add(1060661, $"{"Range"}\t{_range}");
+
+        if (_keyword >= 0)
         {
+            list.Add(1060662, $"{"Keyword"}\t{_keyword}");
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int StartNumber { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string StartMessage { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ProgressNumber { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string ProgressMessage { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool ShowTimeRemaining { get; set; }
-
-        public static void Initialize()
+        if (_substring != null)
         {
-            EventSink.Logout += EventSink_Logout;
+            list.Add(1060663, $"{"Substring"}\t{_substring}");
+        }
+    }
+}
+
+[SerializationGenerator(1, false)]
+public partial class WaitTeleporter : KeywordTeleporter
+{
+    private static Dictionary<Mobile, TeleportingInfo> _table = new();
+
+    [CanBeNull]
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _startMessage;
+
+    [CanBeNull]
+    [InvalidateProperties]
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _progressMessage;
+
+    [InvalidateProperties]
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _showTimeRemaining;
+
+    [Constructible]
+    public WaitTeleporter()
+    {
+    }
+
+    public static void Initialize()
+    {
+        EventSink.Logout += EventSink_Logout;
+    }
+
+    public static void EventSink_Logout(Mobile from)
+    {
+        if (from != null && _table.Remove(from, out var info))
+        {
+            info.TimerToken.Cancel();
+        }
+    }
+
+    public static string FormatTime(TimeSpan ts)
+    {
+        if (ts.TotalHours >= 1)
+        {
+            var h = (int)Math.Round(ts.TotalHours);
+            return $"{h} hour{(h == 1 ? "" : "s")}";
         }
 
-        public static void EventSink_Logout(Mobile from)
+        if (ts.TotalMinutes >= 1)
         {
-            if (from != null && m_Table.Remove(from, out var info))
+            var m = (int)Math.Round(ts.TotalMinutes);
+            return $"{m} minute{(m == 1 ? "" : "s")}";
+        }
+
+        var s = Math.Max((int)Math.Round(ts.TotalSeconds), 0);
+        return $"{s} second{(s == 1 ? "" : "s")}";
+    }
+
+    public override void StartTeleport(Mobile m)
+    {
+        if (_table.TryGetValue(m, out var info))
+        {
+            if (info.Teleporter == this)
             {
-                info.TimerToken.Cancel();
-            }
-        }
-
-        public static string FormatTime(TimeSpan ts)
-        {
-            if (ts.TotalHours >= 1)
-            {
-                var h = (int)Math.Round(ts.TotalHours);
-                return $"{h} hour{(h == 1 ? "" : "s")}";
-            }
-
-            if (ts.TotalMinutes >= 1)
-            {
-                var m = (int)Math.Round(ts.TotalMinutes);
-                return $"{m} minute{(m == 1 ? "" : "s")}";
-            }
-
-            var s = Math.Max((int)Math.Round(ts.TotalSeconds), 0);
-            return $"{s} second{(s == 1 ? "" : "s")}";
-        }
-
-        public override void StartTeleport(Mobile m)
-        {
-            if (m_Table.TryGetValue(m, out var info))
-            {
-                if (info.Teleporter == this)
+                if (!m.BeginAction(this))
                 {
-                    if (m.BeginAction(this))
-                    {
-                        if (ProgressMessage != null)
-                        {
-                            m.SendMessage(ProgressMessage);
-                        }
-                        else if (ProgressNumber != 0)
-                        {
-                            m.SendLocalizedMessage(ProgressNumber);
-                        }
-
-                        if (ShowTimeRemaining)
-                        {
-                            m.SendMessage("Time remaining: {0}", FormatTime(info.TimerToken.Next - Core.Now));
-                        }
-
-                        Timer.StartTimer(TimeSpan.FromSeconds(5), () => m.EndAction(this));
-                    }
-
                     return;
                 }
 
-                info.TimerToken.Cancel();
+                _progressMessage.SendMessageTo(m);
+
+                if (_showTimeRemaining)
+                {
+                    m.SendMessage($"Time remaining: {FormatTime(info.TimerToken.Next - Core.Now)}");
+                }
+
+                Timer.StartTimer(TimeSpan.FromSeconds(5), () => m.EndAction(this));
+
+                return;
             }
 
-            if (StartMessage != null)
-            {
-                m.SendMessage(StartMessage);
-            }
-            else if (StartNumber != 0)
-            {
-                m.SendLocalizedMessage(StartNumber);
-            }
-
-            if (Delay == TimeSpan.Zero)
-            {
-                DoTeleport(m);
-            }
-            else
-            {
-                Timer.StartTimer(Delay, () => DoTeleport(m), out var timerToken);
-                m_Table[m] = new TeleportingInfo(this, timerToken);
-            }
+            info.TimerToken.Cancel();
         }
 
-        public override void DoTeleport(Mobile m)
-        {
-            m_Table.Remove(m);
+        _startMessage.SendMessageTo(m);
 
-            base.DoTeleport(m);
+        if (Delay == TimeSpan.Zero)
+        {
+            DoTeleport(m);
         }
-
-        public override void Serialize(IGenericWriter writer)
+        else
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(StartNumber);
-            writer.Write(StartMessage);
-            writer.Write(ProgressNumber);
-            writer.Write(ProgressMessage);
-            writer.Write(ShowTimeRemaining);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            StartNumber = reader.ReadInt();
-            StartMessage = reader.ReadString();
-            ProgressNumber = reader.ReadInt();
-            ProgressMessage = reader.ReadString();
-            ShowTimeRemaining = reader.ReadBool();
-        }
-
-        private class TeleportingInfo
-        {
-            public TeleportingInfo(WaitTeleporter tele, TimerExecutionToken token)
-            {
-                Teleporter = tele;
-                TimerToken = token;
-            }
-
-            public WaitTeleporter Teleporter { get; }
-
-            public TimerExecutionToken TimerToken { get; }
+            Timer.StartTimer(Delay, () => DoTeleport(m), out var timerToken);
+            _table[m] = new TeleportingInfo(this, timerToken);
         }
     }
 
-    public class TimeoutTeleporter : Teleporter
+    public override void DoTeleport(Mobile m)
     {
-        private Dictionary<Mobile, TimerExecutionToken> m_Teleporting;
+        _table.Remove(m);
 
-        [Constructible]
-        public TimeoutTeleporter() : this(new Point3D(0, 0, 0))
+        base.DoTeleport(m);
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        var number = reader.ReadInt();
+        var message = reader.ReadString();
+
+        _startMessage = number > 0 ? number : message;
+
+        number = reader.ReadInt();
+        message = reader.ReadString();
+
+        _progressMessage = number > 0 ? number : message;
+
+        _showTimeRemaining = reader.ReadBool();
+    }
+
+    private class TeleportingInfo
+    {
+        public TeleportingInfo(WaitTeleporter tele, TimerExecutionToken token)
         {
+            Teleporter = tele;
+            TimerToken = token;
         }
 
-        [Constructible]
-        public TimeoutTeleporter(Point3D pointDest, Map mapDest = null, bool creatures = false)
-            : base(pointDest, mapDest, creatures) =>
-            m_Teleporting = new Dictionary<Mobile, TimerExecutionToken>();
+        public WaitTeleporter Teleporter { get; }
 
-        public TimeoutTeleporter(Serial serial)
-            : base(serial)
+        public TimerExecutionToken TimerToken { get; }
+    }
+}
+
+[SerializationGenerator(1, false)]
+public partial class TimeoutTeleporter : Teleporter
+{
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TimeSpan _timeoutDelay;
+
+    private Dictionary<Mobile, TimerExecutionToken> _teleporting;
+
+    [Constructible]
+    public TimeoutTeleporter() : this(new Point3D(0, 0, 0))
+    {
+    }
+
+    [Constructible]
+    public TimeoutTeleporter(Point3D pointDest, Map mapDest = null, bool creatures = false)
+        : base(pointDest, mapDest, creatures) => _teleporting = new Dictionary<Mobile, TimerExecutionToken>();
+
+    public void StartTimer(Mobile m)
+    {
+        StartTimer(m, _timeoutDelay);
+    }
+
+    private void StartTimer(Mobile m, TimeSpan delay)
+    {
+        StopTimer(m);
+        Timer.StartTimer(delay, () => StartTeleport(m), out var timerToken);
+        _teleporting[m] = timerToken;
+    }
+
+    public void StopTimer(Mobile m)
+    {
+        if (_teleporting.Remove(m, out var t))
         {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan TimeoutDelay { get; set; }
-
-        public void StartTimer(Mobile m)
-        {
-            StartTimer(m, TimeoutDelay);
-        }
-
-        private void StartTimer(Mobile m, TimeSpan delay)
-        {
-            StopTimer(m);
-            Timer.StartTimer(delay, () => StartTeleport(m), out var timerToken);
-            m_Teleporting[m] = timerToken;
-        }
-
-        public void StopTimer(Mobile m)
-        {
-            if (m_Teleporting.Remove(m, out var t))
-            {
-                t.Cancel();
-            }
-        }
-
-        public override void DoTeleport(Mobile m)
-        {
-            m_Teleporting.Remove(m);
-
-            base.DoTeleport(m);
-        }
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            if (Active)
-            {
-                if (!CanTeleport(m))
-                {
-                    return false;
-                }
-
-                StartTimer(m);
-            }
-
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(TimeoutDelay);
-            writer.Write(m_Teleporting.Count);
-
-            foreach (var kvp in m_Teleporting)
-            {
-                writer.Write(kvp.Key);
-                writer.Write(kvp.Value.Next);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            TimeoutDelay = reader.ReadTimeSpan();
-            m_Teleporting = new Dictionary<Mobile, TimerExecutionToken>();
-
-            var count = reader.ReadInt();
-
-            for (var i = 0; i < count; ++i)
-            {
-                var m = reader.ReadEntity<Mobile>();
-                var end = reader.ReadDateTime();
-
-                StartTimer(m, end - Core.Now);
-            }
+            t.Cancel();
         }
     }
 
-    public class TimeoutGoal : Item
+    public override void DoTeleport(Mobile m)
     {
-        [Constructible]
-        public TimeoutGoal()
-            : base(0x1822)
-        {
-            Movable = false;
-            Visible = false;
+        _teleporting.Remove(m);
 
-            Hue = 1154;
+        base.DoTeleport(m);
+    }
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (Active)
+        {
+            if (!CanTeleport(m))
+            {
+                return false;
+            }
+
+            StartTimer(m);
         }
 
-        public TimeoutGoal(Serial serial)
-            : base(serial)
+        return true;
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _timeoutDelay = reader.ReadTimeSpan();
+        _teleporting = new Dictionary<Mobile, TimerExecutionToken>();
+
+        var count = reader.ReadInt();
+
+        for (var i = 0; i < count; ++i)
         {
+            reader.ReadEntity<Mobile>();
+            reader.ReadDateTime();
         }
+    }
+}
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TimeoutTeleporter Teleporter { get; set; }
+[SerializationGenerator(0, false)]
+public partial class TimeoutGoal : Item
+{
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TimeoutTeleporter _teleporter;
 
-        public override string DefaultName => "timeout teleporter goal";
+    [Constructible]
+    public TimeoutGoal() : base(0x1822)
+    {
+        Movable = false;
+        Visible = false;
 
-        public override bool OnMoveOver(Mobile m)
+        Hue = 1154;
+    }
+
+    public override string DefaultName => "timeout teleporter goal";
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        Teleporter?.StopTimer(m);
+        return true;
+    }
+}
+
+[SerializationGenerator(1, false)]
+public partial class ConditionTeleporter : Teleporter
+{
+    [SerializableField(0, getter: "protected", setter: "protected")]
+    private ConditionFlag _flags;
+
+    [Constructible]
+    public ConditionTeleporter()
+    {
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyMounted
+    {
+        get => GetFlag(ConditionFlag.DenyMounted);
+        set
         {
-            Teleporter?.StopTimer(m);
-
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Teleporter);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            Teleporter = reader.ReadEntity<TimeoutTeleporter>();
+            SetFlag(ConditionFlag.DenyMounted, value);
+            InvalidateProperties();
         }
     }
 
-    public class ConditionTeleporter : Teleporter
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyFollowers
     {
-        private ConditionFlag m_Flags;
-
-        [Constructible]
-        public ConditionTeleporter()
+        get => GetFlag(ConditionFlag.DenyFollowers);
+        set
         {
+            SetFlag(ConditionFlag.DenyFollowers, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyPackContents
+    {
+        get => GetFlag(ConditionFlag.DenyPackContents);
+        set
+        {
+            SetFlag(ConditionFlag.DenyPackContents, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyHolding
+    {
+        get => GetFlag(ConditionFlag.DenyHolding);
+        set
+        {
+            SetFlag(ConditionFlag.DenyHolding, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyEquipment
+    {
+        get => GetFlag(ConditionFlag.DenyEquipment);
+        set
+        {
+            SetFlag(ConditionFlag.DenyEquipment, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyTransformed
+    {
+        get => GetFlag(ConditionFlag.DenyTransformed);
+        set
+        {
+            SetFlag(ConditionFlag.DenyTransformed, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool StaffOnly
+    {
+        get => GetFlag(ConditionFlag.StaffOnly);
+        set
+        {
+            SetFlag(ConditionFlag.StaffOnly, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DenyPackEthereals
+    {
+        get => GetFlag(ConditionFlag.DenyPackEthereals);
+        set
+        {
+            SetFlag(ConditionFlag.DenyPackEthereals, value);
+            InvalidateProperties();
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool DeadOnly
+    {
+        get => GetFlag(ConditionFlag.DeadOnly);
+        set
+        {
+            SetFlag(ConditionFlag.DeadOnly, value);
+            InvalidateProperties();
+        }
+    }
+
+    public override bool CanTeleport(Mobile m)
+    {
+        if (!base.CanTeleport(m))
+        {
+            return false;
         }
 
-        public ConditionTeleporter(Serial serial)
-            : base(serial)
+        if (GetFlag(ConditionFlag.StaffOnly) && m.AccessLevel < AccessLevel.Counselor)
         {
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyMounted
+        if (GetFlag(ConditionFlag.DenyMounted) && m.Mounted)
         {
-            get => GetFlag(ConditionFlag.DenyMounted);
-            set
+            m.SendLocalizedMessage(1077252); // You must dismount before proceeding.
+            return false;
+        }
+
+        if (GetFlag(ConditionFlag.DenyFollowers) &&
+            (m.Followers != 0 || m is PlayerMobile mobile && mobile.AutoStabled.Count != 0))
+        {
+            m.SendLocalizedMessage(1077250); // No pets permitted beyond this point.
+            return false;
+        }
+
+        var pack = m.Backpack;
+
+        if (pack != null)
+        {
+            if (GetFlag(ConditionFlag.DenyPackContents) && pack.TotalItems != 0)
             {
-                SetFlag(ConditionFlag.DenyMounted, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyFollowers
-        {
-            get => GetFlag(ConditionFlag.DenyFollowers);
-            set
-            {
-                SetFlag(ConditionFlag.DenyFollowers, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyPackContents
-        {
-            get => GetFlag(ConditionFlag.DenyPackContents);
-            set
-            {
-                SetFlag(ConditionFlag.DenyPackContents, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyHolding
-        {
-            get => GetFlag(ConditionFlag.DenyHolding);
-            set
-            {
-                SetFlag(ConditionFlag.DenyHolding, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyEquipment
-        {
-            get => GetFlag(ConditionFlag.DenyEquipment);
-            set
-            {
-                SetFlag(ConditionFlag.DenyEquipment, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyTransformed
-        {
-            get => GetFlag(ConditionFlag.DenyTransformed);
-            set
-            {
-                SetFlag(ConditionFlag.DenyTransformed, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool StaffOnly
-        {
-            get => GetFlag(ConditionFlag.StaffOnly);
-            set
-            {
-                SetFlag(ConditionFlag.StaffOnly, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DenyPackEthereals
-        {
-            get => GetFlag(ConditionFlag.DenyPackEthereals);
-            set
-            {
-                SetFlag(ConditionFlag.DenyPackEthereals, value);
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool DeadOnly
-        {
-            get => GetFlag(ConditionFlag.DeadOnly);
-            set
-            {
-                SetFlag(ConditionFlag.DeadOnly, value);
-                InvalidateProperties();
-            }
-        }
-
-        public override bool CanTeleport(Mobile m)
-        {
-            if (!base.CanTeleport(m))
-            {
+                m.SendMessage("You must empty your backpack before proceeding.");
                 return false;
             }
 
-            if (GetFlag(ConditionFlag.StaffOnly) && m.AccessLevel < AccessLevel.Counselor)
+            if (GetFlag(ConditionFlag.DenyPackEthereals) &&
+                pack.FindItemByType(new[] { typeof(EtherealMount), typeof(BaseImprisonedMobile) }) != null)
             {
+                m.SendMessage("You must empty your backpack of ethereal mounts before proceeding.");
                 return false;
             }
+        }
 
-            if (GetFlag(ConditionFlag.DenyMounted) && m.Mounted)
+        if (GetFlag(ConditionFlag.DenyHolding) && m.Holding != null)
+        {
+            m.SendMessage("You must let go of what you are holding before proceeding.");
+            return false;
+        }
+
+        if (GetFlag(ConditionFlag.DenyEquipment))
+        {
+            foreach (var item in m.Items)
             {
-                m.SendLocalizedMessage(1077252); // You must dismount before proceeding.
-                return false;
-            }
-
-            if (GetFlag(ConditionFlag.DenyFollowers) &&
-                (m.Followers != 0 || m is PlayerMobile mobile && mobile.AutoStabled.Count != 0))
-            {
-                m.SendLocalizedMessage(1077250); // No pets permitted beyond this point.
-                return false;
-            }
-
-            var pack = m.Backpack;
-
-            if (pack != null)
-            {
-                if (GetFlag(ConditionFlag.DenyPackContents) && pack.TotalItems != 0)
+                switch (item.Layer)
                 {
-                    m.SendMessage("You must empty your backpack before proceeding.");
-                    return false;
-                }
-
-                if (GetFlag(ConditionFlag.DenyPackEthereals) &&
-                    pack.FindItemByType(new[] { typeof(EtherealMount), typeof(BaseImprisonedMobile) }) != null)
-                {
-                    m.SendMessage("You must empty your backpack of ethereal mounts before proceeding.");
-                    return false;
-                }
-            }
-
-            if (GetFlag(ConditionFlag.DenyHolding) && m.Holding != null)
-            {
-                m.SendMessage("You must let go of what you are holding before proceeding.");
-                return false;
-            }
-
-            if (GetFlag(ConditionFlag.DenyEquipment))
-            {
-                foreach (var item in m.Items)
-                {
-                    switch (item.Layer)
-                    {
-                        case Layer.Hair:
-                        case Layer.FacialHair:
-                        case Layer.Backpack:
-                        case Layer.Mount:
-                        case Layer.Bank:
-                            {
-                                continue; // ignore
-                            }
-                        default:
-                            {
-                                m.SendMessage("You must remove all of your equipment before proceeding.");
-                                return false;
-                            }
-                    }
+                    case Layer.Hair:
+                    case Layer.FacialHair:
+                    case Layer.Backpack:
+                    case Layer.Mount:
+                    case Layer.Bank:
+                        {
+                            continue; // ignore
+                        }
+                    default:
+                        {
+                            m.SendMessage("You must remove all equipment before proceeding.");
+                            return false;
+                        }
                 }
             }
-
-            if (GetFlag(ConditionFlag.DenyTransformed) && m.IsBodyMod)
-            {
-                m.SendMessage("You cannot go there in this form.");
-                return false;
-            }
-
-            if (GetFlag(ConditionFlag.DeadOnly) && m.Alive)
-            {
-                m.SendLocalizedMessage(1060014); // Only the dead may pass.
-                return false;
-            }
-
-            return true;
         }
 
-        public override void GetProperties(IPropertyList list)
+        if (GetFlag(ConditionFlag.DenyTransformed) && m.IsBodyMod)
         {
-            base.GetProperties(list);
-
-            using var props = new ValueStringBuilder(stackalloc char[128]);
-
-            if (GetFlag(ConditionFlag.DenyMounted))
-            {
-                props.Append("<BR>Deny Mounted");
-            }
-
-            if (GetFlag(ConditionFlag.DenyFollowers))
-            {
-                props.Append("<BR>Deny Followers");
-            }
-
-            if (GetFlag(ConditionFlag.DenyPackContents))
-            {
-                props.Append("<BR>Deny Pack Contents");
-            }
-
-            if (GetFlag(ConditionFlag.DenyPackEthereals))
-            {
-                props.Append("<BR>Deny Pack Ethereals");
-            }
-
-            if (GetFlag(ConditionFlag.DenyHolding))
-            {
-                props.Append("<BR>Deny Holding");
-            }
-
-            if (GetFlag(ConditionFlag.DenyEquipment))
-            {
-                props.Append("<BR>Deny Equipment");
-            }
-
-            if (GetFlag(ConditionFlag.DenyTransformed))
-            {
-                props.Append("<BR>Deny Transformed");
-            }
-
-            if (GetFlag(ConditionFlag.StaffOnly))
-            {
-                props.Append("<BR>Staff Only");
-            }
-
-            if (GetFlag(ConditionFlag.DeadOnly))
-            {
-                props.Append("<BR>Dead Only");
-            }
-
-            if (props.Length != 0)
-            {
-                props.Remove(0, 4);
-                list.Add(props.ToString());
-            }
+            m.SendMessage("You cannot go there in this form.");
+            return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        if (GetFlag(ConditionFlag.DeadOnly) && m.Alive)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write((int)m_Flags);
+            m.SendLocalizedMessage(1060014); // Only the dead may pass.
+            return false;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        return true;
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        using var props = new ValueStringBuilder(stackalloc char[128]);
+
+        if (GetFlag(ConditionFlag.DenyMounted))
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Flags = (ConditionFlag)reader.ReadInt();
+            props.Append("<BR>Deny Mounted");
         }
 
-        protected bool GetFlag(ConditionFlag flag) => (m_Flags & flag) != 0;
-
-        protected void SetFlag(ConditionFlag flag, bool value)
+        if (GetFlag(ConditionFlag.DenyFollowers))
         {
-            if (value)
-            {
-                m_Flags |= flag;
-            }
-            else
-            {
-                m_Flags &= ~flag;
-            }
+            props.Append("<BR>Deny Followers");
         }
 
-        [Flags]
-        protected enum ConditionFlag
+        if (GetFlag(ConditionFlag.DenyPackContents))
         {
-            None = 0x000,
-            DenyMounted = 0x001,
-            DenyFollowers = 0x002,
-            DenyPackContents = 0x004,
-            DenyHolding = 0x008,
-            DenyEquipment = 0x010,
-            DenyTransformed = 0x020,
-            StaffOnly = 0x040,
-            DenyPackEthereals = 0x080,
-            DeadOnly = 0x100
+            props.Append("<BR>Deny Pack Contents");
         }
+
+        if (GetFlag(ConditionFlag.DenyPackEthereals))
+        {
+            props.Append("<BR>Deny Pack Ethereals");
+        }
+
+        if (GetFlag(ConditionFlag.DenyHolding))
+        {
+            props.Append("<BR>Deny Holding");
+        }
+
+        if (GetFlag(ConditionFlag.DenyEquipment))
+        {
+            props.Append("<BR>Deny Equipment");
+        }
+
+        if (GetFlag(ConditionFlag.DenyTransformed))
+        {
+            props.Append("<BR>Deny Transformed");
+        }
+
+        if (GetFlag(ConditionFlag.StaffOnly))
+        {
+            props.Append("<BR>Staff Only");
+        }
+
+        if (GetFlag(ConditionFlag.DeadOnly))
+        {
+            props.Append("<BR>Dead Only");
+        }
+
+        if (props.Length != 0)
+        {
+            props.Remove(0, 4);
+            list.Add(props.ToString());
+        }
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _flags = (ConditionFlag)reader.ReadInt();
+    }
+
+    protected bool GetFlag(ConditionFlag flag) => (_flags & flag) != 0;
+
+    protected void SetFlag(ConditionFlag flag, bool value)
+    {
+        if (value)
+        {
+            _flags |= flag;
+        }
+        else
+        {
+            _flags &= ~flag;
+        }
+    }
+
+    [Flags]
+    protected enum ConditionFlag
+    {
+        None = 0x000,
+        DenyMounted = 0x001,
+        DenyFollowers = 0x002,
+        DenyPackContents = 0x004,
+        DenyHolding = 0x008,
+        DenyEquipment = 0x010,
+        DenyTransformed = 0x020,
+        StaffOnly = 0x040,
+        DenyPackEthereals = 0x080,
+        DeadOnly = 0x100
     }
 }

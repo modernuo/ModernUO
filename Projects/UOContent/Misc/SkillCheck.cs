@@ -1,7 +1,10 @@
 using System;
+using System.IO;
+using System.Text.Json.Serialization;
+using Server.Collections;
 using Server.Factions;
+using Server.Json;
 using Server.Mobiles;
-using Server.Regions;
 
 namespace Server.Misc;
 
@@ -18,18 +21,9 @@ public static class SkillCheck
     // Publish 16 changed max stats from 100 to 125
     private static int StatMax = Core.LBR ? 125 : 100;
 
-    public const int Allowance = 3; // How many times may we use the same location/target for gain
-
-    private const int
-        LocationSize = 5; // The size of eeach location, make this smaller so players dont have to move as far
-
-    private static readonly bool AntiMacroCode = !Core.ML; // Change this to false to disable anti-macro code
-
-    public static TimeSpan AntiMacroExpire = TimeSpan.FromMinutes(5.0); // How long do we remember targets/locations?
-
-    private static readonly bool[] UseAntiMacro =
+    // *** NOTE ***: Modifying these values will not change an already created antimacro.json file!
+    private static readonly bool[] _skillThatUseAntiMacro =
     {
-        // true if this skill uses the anti-macro code, false if it does not
         false, // Alchemy = 0,
         true,  // Anatomy = 1,
         true,  // AnimalLore = 2,
@@ -93,6 +87,32 @@ public static class SkillCheck
     private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
     private static readonly TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes(5.0);
 
+    private const string _antiMacroPath = "Configuration/antimacro.json";
+    public static AntiMacroSettings AntiMacro { get; private set; }
+
+    public static void Configure()
+    {
+        var path = Path.Combine(Core.BaseDirectory, _antiMacroPath);
+
+        if (File.Exists(path))
+        {
+            AntiMacro = JsonConfig.Deserialize<AntiMacroSettings>(path);
+        }
+        else
+        {
+            AntiMacro = new AntiMacroSettings
+            {
+                Enabled = false,
+                Allowance = 3,
+                LocationSize = 5,
+                Expire = TimeSpan.FromMinutes(5.0),
+                SkillsThatUseAntiMacro = new BitArray(_skillThatUseAntiMacro)
+            };
+
+            JsonConfig.Serialize(Path.Join(Core.BaseDirectory, _antiMacroPath), AntiMacro);
+        }
+    }
+
     public static void Initialize()
     {
         Mobile.SkillCheckLocationHandler = Mobile_SkillCheckLocation;
@@ -118,14 +138,15 @@ public static class SkillCheck
             return false; // Too difficult
         }
 
-        if (value >= maxSkill)
+        if (value >= maxSkill || minSkill >= maxSkill)
         {
             return true; // No challenge
         }
 
         var chance = (value - minSkill) / (maxSkill - minSkill);
 
-        var loc = new Point2D(from.Location.X / LocationSize, from.Location.Y / LocationSize);
+        var size = AntiMacro.LocationSize;
+        var loc = new Point2D(from.Location.X / size, from.Location.Y / size);
         return CheckSkill(from, skill, loc, chance);
     }
 
@@ -148,7 +169,8 @@ public static class SkillCheck
             return true; // No challenge
         }
 
-        var loc = new Point2D(from.Location.X / LocationSize, from.Location.Y / LocationSize);
+        var size = AntiMacro.LocationSize;
+        var loc = new Point2D(from.Location.X / size, from.Location.Y / size);
         return CheckSkill(from, skill, loc, chance);
     }
 
@@ -160,29 +182,40 @@ public static class SkillCheck
         }
 
         var success = chance >= Utility.RandomDouble();
-        var gc = (double)(from.Skills.Cap - from.Skills.Total) / from.Skills.Cap;
-        gc += (skill.Cap - skill.Base) / skill.Cap;
-        gc /= 2;
 
-        gc += (1.0 - chance) * (success ? 0.5 :
-            Core.AOS ? 0.0 : 0.2);
-        gc /= 2;
-
-        gc *= skill.Info.GainFactor;
-
-        if (gc < 0.01)
+        var region = from.Region;
+        if (from.Alive && region.AllowGain(from, skill, amObj))
         {
-            gc = 0.01;
-        }
+            if (skill.Base < 10.0) // Gain regardless of the AllowGain check
+            {
+                Gain(from, skill);
+            }
+            else if (AllowGain(from, skill, amObj))
+            {
+                var gc = (double)(from.Skills.Cap - from.Skills.Total) / from.Skills.Cap;
+                gc += (skill.Cap - skill.Base) / skill.Cap;
+                gc /= 2;
 
-        if (from is BaseCreature creature && creature.Controlled)
-        {
-            gc *= 2;
-        }
+                gc += (1.0 - chance) * (success ? 0.5 : Core.AOS ? 0.0 : 0.2);
+                gc /= 2;
 
-        if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
-        {
-            Gain(from, skill);
+                gc *= skill.Info.GainFactor;
+
+                if (gc < 0.01)
+                {
+                    gc = 0.01;
+                }
+
+                if (from is BaseCreature { Controlled: true })
+                {
+                    gc *= 2;
+                }
+
+                if (gc >= Utility.RandomDouble())
+                {
+                    Gain(from, skill);
+                }
+            }
         }
 
         return success;
@@ -207,7 +240,7 @@ public static class SkillCheck
             return false; // Too difficult
         }
 
-        if (value >= maxSkill)
+        if (value >= maxSkill || minSkill >= maxSkill)
         {
             return true; // No challenge
         }
@@ -246,7 +279,7 @@ public static class SkillCheck
             return false;
         }
 
-        if (AntiMacroCode && from is PlayerMobile mobile && UseAntiMacro[skill.Info.SkillID])
+        if (AntiMacro.Enabled && from is PlayerMobile mobile && AntiMacro.UseAntiMacro(skill.Info.SkillID))
         {
             return mobile.AntiMacroCheck(skill, obj);
         }
@@ -256,12 +289,7 @@ public static class SkillCheck
 
     public static void Gain(Mobile from, Skill skill)
     {
-        if (from.Region.IsPartOf<JailRegion>())
-        {
-            return;
-        }
-
-        if (from is BaseCreature creature && creature.IsDeadPet)
+        if (from is BaseCreature { IsDeadPet: true })
         {
             return;
         }
@@ -282,7 +310,7 @@ public static class SkillCheck
 
             var skills = from.Skills;
 
-            if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble())
+            if (from.Player && skills.Total / (double)skills.Cap >= Utility.RandomDouble())
             {
                 for (var i = 0; i < skills.Length; ++i)
                 {
@@ -489,5 +517,25 @@ public static class SkillCheck
         var atrophy = from.RawStatTotal / (double)from.StatCap >= Utility.RandomDouble();
 
         IncreaseStat(from, stat, atrophy);
+    }
+
+    public record AntiMacroSettings
+    {
+        // How many times may we use the same location/target for gain
+        public int Allowance { get; init; }
+
+        // The size of each location, make this smaller so players dont have to move as far
+        public int LocationSize { get; init; }
+
+        public bool Enabled { get; init; }
+
+        // How long do we remember targets/locations?
+        public TimeSpan Expire { get; init; }
+
+        [JsonConverter(typeof(BitArrayEnumIndexConverter<SkillName>))]
+        public BitArray SkillsThatUseAntiMacro { get; init; }
+
+        public bool UseAntiMacro(int skillId) =>
+            skillId < SkillsThatUseAntiMacro.Length && SkillsThatUseAntiMacro[skillId];
     }
 }

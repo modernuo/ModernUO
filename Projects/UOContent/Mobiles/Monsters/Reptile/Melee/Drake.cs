@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Drake : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Drake : BaseCreature
     {
         [Constructible]
         public Drake() : base(AIType.AI_Melee)
@@ -41,15 +44,10 @@ namespace Server.Mobiles
             PackReg(3);
         }
 
-        public Drake(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a drake corpse";
         public override string DefaultName => "a drake";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override int TreasureMapLevel => 2;
         public override int Meat => 10;
         public override int Hides => 20;
@@ -59,22 +57,13 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
         public override bool CanFly => true;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich);
             AddLoot(LootPack.MedScrolls, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

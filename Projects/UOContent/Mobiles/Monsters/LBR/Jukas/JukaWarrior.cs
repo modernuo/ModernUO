@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class JukaWarrior : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class JukaWarrior : BaseCreature
     {
         [Constructible]
         public JukaWarrior() : base(AIType.AI_Melee)
@@ -45,10 +47,6 @@ namespace Server.Mobiles
             }
         }
 
-        public JukaWarrior(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a jukan corpse";
         public override string DefaultName => "a juka warrior";
 
@@ -71,11 +69,11 @@ namespace Server.Mobiles
 
         public override int GetDeathSound() => 0x28D;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() > 0.2)
+            if (Utility.RandomDouble() < 0.80)
             {
                 return;
             }
@@ -90,7 +88,7 @@ namespace Server.Mobiles
                     }
                 case 1:
                     {
-                        defender.SendAsciiMessage("You have been hit by a paralyzing blow!");
+                        defender.SendLocalizedMessage(1072221); // You have been hit by a paralyzing blow!
                         defender.Freeze(TimeSpan.FromSeconds(3.0));
                         break;
                     }
@@ -101,18 +99,6 @@ namespace Server.Mobiles
                         break;
                     }
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

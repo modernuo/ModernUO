@@ -1,6 +1,7 @@
 using System;
 using Server.Multis;
 using Server.Network;
+using Server.Spells.Sixth;
 using Server.Targeting;
 
 namespace Server.SkillHandlers
@@ -49,10 +50,8 @@ namespace Server.SkillHandlers
             }
 
             // int range = 18 - (int)(m.Skills.Hiding.Value / 10);
-            var range = Math.Min(
-                (int)((100 - m.Skills.Hiding.Value) / 2) + 8,
-                18
-            ); // Cap of 18 not OSI-exact, intentional difference
+            // Cap of 18 not OSI-exact, intentional difference
+            var range = Math.Min((int)((100 - m.Skills.Hiding.Value) / 2) + 8, 18);
 
             var badCombat = !CombatOverride && m.Combatant != null && m.InRange(m.Combatant.Location, range) &&
                             m.Combatant.InLOS(m);
@@ -92,11 +91,11 @@ namespace Server.SkillHandlers
                 m.Hidden = true;
                 m.Warmode = false;
                 m.LocalOverheadMessage(MessageType.Regular, 0x1F4, 501240); // You have hidden yourself well.
+                InvisibilitySpell.StopTimer(m);
             }
             else
             {
                 m.RevealingAction();
-
                 m.LocalOverheadMessage(MessageType.Regular, 0x22, 501241); // You can't seem to hide here.
             }
 

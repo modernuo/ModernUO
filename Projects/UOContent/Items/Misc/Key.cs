@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
@@ -18,10 +19,26 @@ public interface ILockable
     uint KeyValue { get; set; }
 }
 
-public class Key : Item
+[SerializationGenerator(0, false)]
+public partial class Key : Item
 {
-    private string m_Description;
-    private uint m_KeyVal;
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _maxRange;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Item _link;
+
+    [SerializableField(2)]
+    [InvalidateProperties]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _description;
+
+    [SerializableField(3)]
+    [InvalidateProperties]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private uint _keyValue;
 
     [Constructible]
     public Key(uint val = 0) : this(KeyType.Iron, val)
@@ -32,43 +49,10 @@ public class Key : Item
     {
         Weight = 1.0;
 
-        MaxRange = 3;
-        m_KeyVal = val;
-        Link = link;
+        _maxRange = 3;
+        _keyValue = val;
+        _link = link;
     }
-
-    public Key(Serial serial) : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public string Description
-    {
-        get => m_Description;
-        set
-        {
-            m_Description = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int MaxRange { get; set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public uint KeyValue
-    {
-        get => m_KeyVal;
-
-        set
-        {
-            m_KeyVal = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Item Link { get; set; }
 
     public static uint RandomValue() => (uint)(0xFFFFFFFE * Utility.RandomDouble()) + 1;
 
@@ -105,7 +89,7 @@ public class Key : Item
             {
                 var keyRing = (KeyRing)item;
 
-                keyRing.RemoveKeys(keyValue);
+                keyRing.RemoveKey(keyValue);
             }
         }
     }
@@ -142,56 +126,6 @@ public class Key : Item
         return false;
     }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(2); // version
-
-        writer.Write(MaxRange);
-
-        writer.Write(Link);
-
-        writer.Write(m_Description);
-        writer.Write(m_KeyVal);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 2:
-                {
-                    MaxRange = reader.ReadInt();
-
-                    goto case 1;
-                }
-            case 1:
-                {
-                    Link = reader.ReadEntity<Item>();
-
-                    goto case 0;
-                }
-            case 0:
-                {
-                    if (version < 2 || MaxRange == 0)
-                    {
-                        MaxRange = 3;
-                    }
-
-                    m_Description = reader.ReadString();
-
-                    m_KeyVal = reader.ReadUInt();
-
-                    break;
-                }
-        }
-    }
-
     public override void OnDoubleClick(Mobile from)
     {
         if (!IsChildOf(from.Backpack))
@@ -203,7 +137,7 @@ public class Key : Item
         Target t;
         int number;
 
-        if (m_KeyVal != 0)
+        if (_keyValue != 0)
         {
             number = 501662; // What shall I use this key on?
             t = new UnlockTarget(this);
@@ -224,14 +158,7 @@ public class Key : Item
 
         string desc;
 
-        if (m_KeyVal == 0)
-        {
-            desc = "(blank)";
-        }
-        else if ((desc = m_Description) == null || (desc = desc.Trim()).Length <= 0)
-        {
-            desc = null;
-        }
+        desc = _keyValue == 0 ? "(blank)" : _description.DefaultIfNullOrEmpty(null)?.Trim();
 
         if (desc != null)
         {
@@ -243,18 +170,9 @@ public class Key : Item
     {
         base.OnSingleClick(from);
 
-        string desc;
+        var desc = _keyValue == 0 ? "(blank)" : _description.DefaultIfNullOrEmpty(null)?.Trim();
 
-        if (m_KeyVal == 0)
-        {
-            desc = "(blank)";
-        }
-        else
-        {
-            desc = m_Description?.Trim() ?? "";
-        }
-
-        if (desc.Length > 0)
+        if (desc != null)
         {
             from.NetState.SendMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, false, "ENU", "", desc);
         }
@@ -262,85 +180,85 @@ public class Key : Item
 
     public bool UseOn(Mobile from, ILockable o)
     {
-        if (o.KeyValue == KeyValue)
+        if (o.KeyValue != KeyValue)
         {
-            if (o is BaseDoor door && !door.UseLocks())
-            {
-                return false;
-            }
-
-            o.Locked = !o.Locked;
-
-            if (o is Item item)
-            {
-                if (o.Locked)
-                {
-                    item.SendLocalizedMessageTo(from, 1048000); // You lock it.
-                }
-                else
-                {
-                    item.SendLocalizedMessageTo(from, 1048001); // You unlock it.
-                }
-
-                if (item is LockableContainer cont)
-                {
-                    if (cont.LockLevel == ILockpickable.MagicLock)
-                    {
-                        cont.LockLevel = cont.RequiredSkill - 10;
-                    }
-
-                    if (cont.TrapType != TrapType.None && cont.TrapOnLockpick)
-                    {
-                        if (o.Locked)
-                        {
-                            cont.SendLocalizedMessageTo(from, 501673); // You re-enable the trap.
-                        }
-                        else
-                        {
-                            // You disable the trap temporarily.  Lock it again to re-enable it.
-                            cont.SendLocalizedMessageTo(from, 501672);
-                        }
-                    }
-                }
-            }
-
-            return true;
+            return false;
         }
 
-        return false;
+        if (o is BaseDoor door && !door.UseLocks())
+        {
+            return false;
+        }
+
+        o.Locked = !o.Locked;
+
+        if (o is Item item)
+        {
+            if (o.Locked)
+            {
+                item.SendLocalizedMessageTo(from, 1048000); // You lock it.
+            }
+            else
+            {
+                item.SendLocalizedMessageTo(from, 1048001); // You unlock it.
+            }
+
+            if (item is LockableContainer cont)
+            {
+                if (cont.LockLevel == ILockpickable.MagicLock)
+                {
+                    cont.LockLevel = cont.RequiredSkill - 10;
+                }
+
+                if (cont.TrapType != TrapType.None && cont.TrapOnLockpick)
+                {
+                    if (o.Locked)
+                    {
+                        cont.SendLocalizedMessageTo(from, 501673); // You re-enable the trap.
+                    }
+                    else
+                    {
+                        // You disable the trap temporarily.  Lock it again to re-enable it.
+                        cont.SendLocalizedMessageTo(from, 501672);
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private class RenamePrompt : Prompt
     {
-        private readonly Key m_Key;
+        private Key _key;
 
-        public RenamePrompt(Key key) => m_Key = key;
+        public RenamePrompt(Key key) => _key = key;
 
         public override void OnResponse(Mobile from, string text)
         {
-            if (m_Key.Deleted || !m_Key.IsChildOf(from.Backpack))
+            if (_key.Deleted || !_key.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(501661); // That key is unreachable.
                 return;
             }
 
-            m_Key.Description = Utility.FixHtml(text);
+            _key.Description = Utility.FixHtml(text);
         }
     }
 
     private class UnlockTarget : Target
     {
-        private readonly Key m_Key;
+        private Key _key;
 
         public UnlockTarget(Key key) : base(key.MaxRange, false, TargetFlags.None)
         {
-            m_Key = key;
+            _key = key;
             CheckLOS = false;
         }
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (m_Key.Deleted || !m_Key.IsChildOf(from.Backpack))
+            if (_key.Deleted || !_key.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(501661); // That key is unreachable.
                 return;
@@ -348,15 +266,15 @@ public class Key : Item
 
             int number;
 
-            if (targeted == m_Key)
+            if (targeted == _key)
             {
                 number = 501665; // Enter a description for this key.
 
-                from.Prompt = new RenamePrompt(m_Key);
+                from.Prompt = new RenamePrompt(_key);
             }
             else if (targeted is ILockable lockable)
             {
-                if (m_Key.UseOn(from, lockable))
+                if (_key.UseOn(from, lockable))
                 {
                     number = -1;
                 }
@@ -379,13 +297,13 @@ public class Key : Item
 
     private class CopyTarget : Target
     {
-        private readonly Key m_Key;
+        private Key _key;
 
-        public CopyTarget(Key key) : base(3, false, TargetFlags.None) => m_Key = key;
+        public CopyTarget(Key key) : base(3, false, TargetFlags.None) => _key = key;
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (m_Key.Deleted || !m_Key.IsChildOf(from.Backpack))
+            if (_key.Deleted || !_key.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(501661); // That key is unreachable.
                 return;
@@ -395,7 +313,7 @@ public class Key : Item
 
             if (targeted is Key k)
             {
-                if (k.m_KeyVal == 0)
+                if (k._keyValue == 0)
                 {
                     number = 501675; // This key is also blank.
                 }
@@ -403,18 +321,18 @@ public class Key : Item
                 {
                     number = 501676; // You make a copy of the key.
 
-                    m_Key.Description = k.Description;
-                    m_Key.KeyValue = k.KeyValue;
-                    m_Key.Link = k.Link;
-                    m_Key.MaxRange = k.MaxRange;
+                    _key.Description = k.Description;
+                    _key.KeyValue = k.KeyValue;
+                    _key.Link = k.Link;
+                    _key.MaxRange = k.MaxRange;
                 }
-                else if (Utility.RandomDouble() <= 0.1) // 10% chance to destroy the key
+                else if (Utility.RandomDouble() < 0.1) // 10% chance to destroy the key
                 {
                     from.SendLocalizedMessage(501677); // You fail to make a copy of the key.
 
                     number = 501678; // The key was destroyed in the attempt.
 
-                    m_Key.Delete();
+                    _key.Delete();
                 }
                 else
                 {

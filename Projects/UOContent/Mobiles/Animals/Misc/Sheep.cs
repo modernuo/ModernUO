@@ -1,13 +1,14 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Network;
+using System.Runtime.CompilerServices;
 
 namespace Server.Mobiles
 {
-    public class Sheep : BaseCreature, ICarvable
+    [SerializationGenerator(0, false)]
+    public partial class Sheep : BaseCreature, ICarvable
     {
-        private DateTime m_NextWoolTime;
-
         [Constructible]
         public Sheep() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
@@ -41,22 +42,23 @@ namespace Server.Mobiles
             MinTameSkill = 11.1;
         }
 
-        public Sheep(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a sheep corpse";
 
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(0)]
         public DateTime NextWoolTime
         {
-            get => m_NextWoolTime;
+            get => _nextWoolTime;
             set
             {
-                m_NextWoolTime = value;
-                Body = Core.Now >= m_NextWoolTime ? 0xCF : 0xDF;
+                _nextWoolTime = value;
+                SheepBody();
+                this.MarkDirty();
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SheepBody() => Body = Core.Now >= _nextWoolTime ? 0xCF : 0xDF;
 
         public override string DefaultName => "a sheep";
 
@@ -68,7 +70,7 @@ namespace Server.Mobiles
 
         public void Carve(Mobile from, Item item)
         {
-            if (Core.Now < m_NextWoolTime)
+            if (Core.Now < _nextWoolTime)
             {
                 // This sheep is not yet ready to be shorn.
                 PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500449, from.NetState);
@@ -84,32 +86,13 @@ namespace Server.Mobiles
         public override void OnThink()
         {
             base.OnThink();
-            Body = Core.Now >= m_NextWoolTime ? 0xCF : 0xDF;
+            SheepBody();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(1);
-
-            writer.WriteDeltaTime(m_NextWoolTime);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        NextWoolTime = reader.ReadDeltaTime();
-                        break;
-                    }
-            }
+            SheepBody();
         }
     }
 }

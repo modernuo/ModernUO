@@ -1,43 +1,27 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class OrcishVisage : OrcHelm
 {
-    public class OrcishVisage : OrcHelm
+    [Constructible]
+    public OrcishVisage()
     {
-        [Constructible]
-        public OrcishVisage()
-        {
-            Hue = 0x592;
-            ArmorAttributes.SelfRepair = 3;
-            Attributes.BonusStr = 10;
-            Attributes.BonusStam = 5;
-        }
-
-        public OrcishVisage(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1070691;
-
-        public override int BasePhysicalResistance => 8;
-        public override int BaseFireResistance => 5;
-        public override int BaseColdResistance => 3;
-        public override int BasePoisonResistance => 3;
-        public override int BaseEnergyResistance => 5;
-
-        public override int InitMinHits => 255;
-        public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Hue = 0x592;
+        ArmorAttributes.SelfRepair = 3;
+        Attributes.BonusStr = 10;
+        Attributes.BonusStam = 5;
     }
+
+    public override int LabelNumber => 1070691;
+
+    public override int BasePhysicalResistance => 8;
+    public override int BaseFireResistance => 5;
+    public override int BaseColdResistance => 3;
+    public override int BasePoisonResistance => 3;
+    public override int BaseEnergyResistance => 5;
+
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SimplePrompt.cs                                                 *
  *                                                                       *
@@ -15,77 +15,76 @@
 
 using Server.Prompts;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public class SimplePrompt : Prompt
 {
-    public class SimplePrompt : Prompt
+    private readonly PromptCallback m_Callback;
+    private readonly bool m_CallbackHandlesCancel;
+    private readonly PromptCallback m_CancelCallback;
+
+    public SimplePrompt(PromptCallback callback, PromptCallback cancelCallback)
     {
-        private readonly PromptCallback m_Callback;
-        private readonly bool m_CallbackHandlesCancel;
-        private readonly PromptCallback m_CancelCallback;
-
-        public SimplePrompt(PromptCallback callback, PromptCallback cancelCallback)
-        {
-            m_Callback = callback;
-            m_CancelCallback = cancelCallback;
-        }
-
-        public SimplePrompt(PromptCallback callback, bool callbackHandlesCancel = false)
-        {
-            m_Callback = callback;
-            m_CallbackHandlesCancel = callbackHandlesCancel;
-        }
-
-        public override void OnResponse(Mobile from, string text)
-        {
-            m_Callback?.Invoke(from, text);
-        }
-
-        public override void OnCancel(Mobile from)
-        {
-            if (m_CallbackHandlesCancel && m_Callback != null)
-            {
-                m_Callback(from, "");
-            }
-            else
-            {
-                m_CancelCallback?.Invoke(from, "");
-            }
-        }
+        m_Callback = callback;
+        m_CancelCallback = cancelCallback;
     }
 
-    public class SimpleStatePrompt<T> : Prompt
+    public SimplePrompt(PromptCallback callback, bool callbackHandlesCancel = false)
     {
-        private readonly PromptStateCallback<T> m_Callback;
-        private readonly PromptStateCallback<T> m_CancelCallback;
+        m_Callback = callback;
+        m_CallbackHandlesCancel = callbackHandlesCancel;
+    }
 
-        private readonly T m_State;
+    public override void OnResponse(Mobile from, string text)
+    {
+        m_Callback?.Invoke(from, text);
+    }
 
-        public SimpleStatePrompt(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
+    public override void OnCancel(Mobile from)
+    {
+        if (m_CallbackHandlesCancel && m_Callback != null)
         {
-            m_Callback = callback;
-            m_CancelCallback = cancelCallback;
-            m_State = state;
+            m_Callback(from, "");
         }
-
-        public SimpleStatePrompt(PromptStateCallback<T> callback, bool callbackHandlesCancel, T state)
+        else
         {
-            m_Callback = callback;
-            m_State = state;
-            m_CancelCallback = callbackHandlesCancel ? callback : null;
+            m_CancelCallback?.Invoke(from, "");
         }
+    }
+}
 
-        public SimpleStatePrompt(PromptStateCallback<T> callback, T state) : this(callback, false, state)
-        {
-        }
+public class SimpleStatePrompt<T> : Prompt
+{
+    private readonly PromptStateCallback<T> m_Callback;
+    private readonly PromptStateCallback<T> m_CancelCallback;
 
-        public override void OnResponse(Mobile from, string text)
-        {
-            m_Callback?.Invoke(from, text, m_State);
-        }
+    private readonly T m_State;
 
-        public override void OnCancel(Mobile from)
-        {
-            m_CancelCallback?.Invoke(from, "", m_State);
-        }
+    public SimpleStatePrompt(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
+    {
+        m_Callback = callback;
+        m_CancelCallback = cancelCallback;
+        m_State = state;
+    }
+
+    public SimpleStatePrompt(PromptStateCallback<T> callback, bool callbackHandlesCancel, T state)
+    {
+        m_Callback = callback;
+        m_State = state;
+        m_CancelCallback = callbackHandlesCancel ? callback : null;
+    }
+
+    public SimpleStatePrompt(PromptStateCallback<T> callback, T state) : this(callback, false, state)
+    {
+    }
+
+    public override void OnResponse(Mobile from, string text)
+    {
+        m_Callback?.Invoke(from, text, m_State);
+    }
+
+    public override void OnCancel(Mobile from)
+    {
+        m_CancelCallback?.Invoke(from, "", m_State);
     }
 }

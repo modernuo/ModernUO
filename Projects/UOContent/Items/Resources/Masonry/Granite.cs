@@ -1,318 +1,129 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(2, false)]
+public abstract partial class BaseGranite : Item
 {
-    public abstract class BaseGranite : Item
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private CraftResource _resource;
+
+    public BaseGranite(CraftResource resource) : base(0x1779)
     {
-        private CraftResource m_Resource;
+        Hue = CraftResources.GetHue(resource);
+        Stackable = Core.ML;
 
-        public BaseGranite(CraftResource resource) : base(0x1779)
+        _resource = resource;
+    }
+
+    public override double DefaultWeight => Core.ML ? 1.0 : 10.0;
+
+    public override int LabelNumber => 1044607; // high quality granite
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _resource = (CraftResource)reader.ReadInt();
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (!CraftResources.IsStandard(_resource))
         {
-            Hue = CraftResources.GetHue(resource);
-            Stackable = Core.ML;
+            var num = CraftResources.GetLocalizationNumber(_resource);
 
-            m_Resource = resource;
-        }
-
-        public BaseGranite(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => m_Resource;
-            set
+            if (num > 0)
             {
-                m_Resource = value;
-                InvalidateProperties();
+                list.Add(num);
             }
-        }
-
-        public override double DefaultWeight => Core.ML ? 1.0 : 10.0;
-
-        public override int LabelNumber => 1044607; // high quality granite
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write((int)m_Resource);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            else
             {
-                case 1:
-                case 0:
-                    {
-                        m_Resource = (CraftResource)reader.ReadInt();
-                        break;
-                    }
-            }
-
-            if (version < 1)
-            {
-                Stackable = Core.ML;
-            }
-        }
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            if (!CraftResources.IsStandard(m_Resource))
-            {
-                var num = CraftResources.GetLocalizationNumber(m_Resource);
-
-                if (num > 0)
-                {
-                    list.Add(num);
-                }
-                else
-                {
-                    list.Add(CraftResources.GetName(m_Resource));
-                }
+                list.Add(CraftResources.GetName(_resource));
             }
         }
     }
+}
 
-    public class Granite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class Granite : BaseGranite
+{
+    [Constructible]
+    public Granite() : base(CraftResource.Iron)
     {
-        [Constructible]
-        public Granite() : base(CraftResource.Iron)
-        {
-        }
-
-        public Granite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class DullCopperGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class DullCopperGranite : BaseGranite
+{
+    [Constructible]
+    public DullCopperGranite() : base(CraftResource.DullCopper)
     {
-        [Constructible]
-        public DullCopperGranite() : base(CraftResource.DullCopper)
-        {
-        }
-
-        public DullCopperGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class ShadowIronGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class ShadowIronGranite : BaseGranite
+{
+    [Constructible]
+    public ShadowIronGranite() : base(CraftResource.ShadowIron)
     {
-        [Constructible]
-        public ShadowIronGranite() : base(CraftResource.ShadowIron)
-        {
-        }
-
-        public ShadowIronGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class CopperGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class CopperGranite : BaseGranite
+{
+    [Constructible]
+    public CopperGranite() : base(CraftResource.Copper)
     {
-        [Constructible]
-        public CopperGranite() : base(CraftResource.Copper)
-        {
-        }
-
-        public CopperGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class BronzeGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class BronzeGranite : BaseGranite
+{
+    [Constructible]
+    public BronzeGranite() : base(CraftResource.Bronze)
     {
-        [Constructible]
-        public BronzeGranite() : base(CraftResource.Bronze)
-        {
-        }
-
-        public BronzeGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class GoldGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class GoldGranite : BaseGranite
+{
+    [Constructible]
+    public GoldGranite() : base(CraftResource.Gold)
     {
-        [Constructible]
-        public GoldGranite() : base(CraftResource.Gold)
-        {
-        }
-
-        public GoldGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class AgapiteGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class AgapiteGranite : BaseGranite
+{
+    [Constructible]
+    public AgapiteGranite() : base(CraftResource.Agapite)
     {
-        [Constructible]
-        public AgapiteGranite() : base(CraftResource.Agapite)
-        {
-        }
-
-        public AgapiteGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class VeriteGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class VeriteGranite : BaseGranite
+{
+    [Constructible]
+    public VeriteGranite() : base(CraftResource.Verite)
     {
-        [Constructible]
-        public VeriteGranite() : base(CraftResource.Verite)
-        {
-        }
-
-        public VeriteGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
+}
 
-    public class ValoriteGranite : BaseGranite
+[SerializationGenerator(0, false)]
+public partial class ValoriteGranite : BaseGranite
+{
+    [Constructible]
+    public ValoriteGranite() : base(CraftResource.Valorite)
     {
-        [Constructible]
-        public ValoriteGranite() : base(CraftResource.Valorite)
-        {
-        }
-
-        public ValoriteGranite(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

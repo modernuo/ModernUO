@@ -186,7 +186,7 @@ namespace Server.Engines.MLQuests
 
             if (e.Length == 0)
             {
-                m.SendMessage("Quest table length: {0}", Quests.Count);
+                m.SendMessage($"Quest table length: {Quests.Count}");
                 return;
             }
 
@@ -198,10 +198,10 @@ namespace Server.Engines.MLQuests
                 return;
             }
 
-            m.SendMessage("Activated: {0}", quest.Activated);
-            m.SendMessage("Number of objectives: {0}", quest.Objectives.Count);
-            m.SendMessage("Objective type: {0}", quest.ObjectiveType);
-            m.SendMessage("Number of active instances: {0}", quest.Instances.Count);
+            m.SendMessage($"Activated: {quest.Activated}");
+            m.SendMessage($"Number of objectives: {quest.Objectives.Count}");
+            m.SendMessage($"Objective type: {quest.ObjectiveType}");
+            m.SendMessage($"Number of active instances: {quest.Instances.Count}");
         }
 
         [Usage("SaveQuest <type> [saveEnabled=true]"),
@@ -227,7 +227,15 @@ namespace Server.Engines.MLQuests
             var enable = e.Length == 2 ? e.GetBoolean(1) : true;
 
             quest.SaveEnabled = enable;
-            m.SendMessage("Serialization for quest {0} is now {1}.", quest.GetType().Name, enable ? "enabled" : "disabled");
+
+            if (enable)
+            {
+                m.SendMessage($"Serialization for quest {quest.GetType().Name} is now enabled.");
+            }
+            else
+            {
+                m.SendMessage($"Serialization for quest {quest.GetType().Name} is now disabled.");
+            }
 
             if (AutoGenerateNew && !enable)
             {
@@ -256,7 +264,14 @@ namespace Server.Engines.MLQuests
                 quest.SaveEnabled = enable;
             }
 
-            m.SendMessage("Serialization for all quests is now {0}.", enable ? "enabled" : "disabled");
+            if (enable)
+            {
+                m.SendMessage($"Serialization for all quests is now enabled.");
+            }
+            else
+            {
+                m.SendMessage($"Serialization for all quests is now disabled.");
+            }
 
             if (AutoGenerateNew && !enable)
             {
@@ -817,10 +832,7 @@ namespace Server.Engines.MLQuests
 
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} viewing quest overview of {2}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    CommandLogging.Format(pm)
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} viewing quest overview of {CommandLogging.Format(pm)}"
                 );
                 from.SendGump(new QuestLogGump(pm, false));
             }

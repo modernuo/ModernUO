@@ -16,8 +16,7 @@ namespace Server.Spells.Spellweaving
 
         private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
-        public GiftOfLifeSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public GiftOfLifeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -34,7 +33,7 @@ namespace Server.Spells.Spellweaving
             {
                 // As per Osi: Nothing happens.
             }
-            else if (m != Caster && !(m is BaseCreature bc && bc.IsBonded && bc.ControlMaster == Caster))
+            else if (m != Caster && !(m is BaseCreature { IsBonded: true } bc && bc.ControlMaster == Caster))
             {
                 Caster.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
             }
@@ -148,12 +147,11 @@ namespace Server.Spells.Spellweaving
 
         private class ExpireTimer : Timer
         {
-            private readonly Mobile m_Mobile;
+            private Mobile _mobile;
 
-            public ExpireTimer(Mobile m, TimeSpan delay, GiftOfLifeSpell spell)
-                : base(delay)
+            public ExpireTimer(Mobile m, TimeSpan delay, GiftOfLifeSpell spell) : base(delay)
             {
-                m_Mobile = m;
+                _mobile = m;
                 Spell = spell;
             }
 
@@ -168,10 +166,10 @@ namespace Server.Spells.Spellweaving
             {
                 Stop();
 
-                m_Mobile.SendLocalizedMessage(1074776); // You are no longer protected with Gift of Life.
-                _table.Remove(m_Mobile);
+                _mobile.SendLocalizedMessage(1074776); // You are no longer protected with Gift of Life.
+                _table.Remove(_mobile);
 
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.GiftOfLife);
+                BuffInfo.RemoveBuff(_mobile, BuffIcon.GiftOfLife);
             }
         }
     }

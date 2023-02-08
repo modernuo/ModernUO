@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Misc;
 
 namespace Server.Mobiles
 {
-    public class RatmanArcher : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RatmanArcher : BaseCreature
     {
         [Constructible]
         public RatmanArcher() : base(AIType.AI_Archer)
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             PackItem(new Arrow(Utility.RandomMinMax(50, 70)));
         }
 
-        public RatmanArcher(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a ratman archer corpse";
         public override InhumanSpeech SpeechType => InhumanSpeech.Ratman;
 
@@ -57,24 +55,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (Body == 42)
-            {
-                Body = 0x8E;
-                Hue = 0;
-            }
         }
     }
 }

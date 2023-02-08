@@ -1,4 +1,3 @@
-using System;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -35,11 +34,10 @@ namespace Server.Mobiles
 {
     public class GrizzledMare : HellSteed
     {
-        private static readonly string m_Myname = "a grizzled mare";
+        public override string DefaultName => "a grizzled mare";
 
         [Constructible]
         public GrizzledMare()
-            : base(m_Myname)
         {
         }
 
@@ -49,18 +47,11 @@ namespace Server.Mobiles
 
         public override bool DeleteOnRelease => true;
 
-        public virtual void OnAfterDeserialize_Callback()
-        {
-            SetStats(this);
-
-            Name = m_Myname;
-        }
-
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write(0); // version
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -68,11 +59,6 @@ namespace Server.Mobiles
             base.Deserialize(reader);
 
             var version = reader.ReadInt();
-
-            if (version < 1)
-            {
-                Timer.StartTimer(TimeSpan.FromSeconds(0), OnAfterDeserialize_Callback);
-            }
         }
     }
 }

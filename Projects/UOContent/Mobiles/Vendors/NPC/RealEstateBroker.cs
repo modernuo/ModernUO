@@ -1,3 +1,4 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Multis.Deeds;
@@ -6,17 +7,14 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-    public class RealEstateBroker : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class RealEstateBroker : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
         private DateTime m_NextCheckPack;
 
         [Constructible]
         public RealEstateBroker() : base("the real estate broker")
-        {
-        }
-
-        public RealEstateBroker(Serial serial) : base(serial)
         {
         }
 
@@ -157,20 +155,6 @@ namespace Server.Mobiles
         public override void InitSBInfo()
         {
             m_SBInfos.Add(new SBRealEstateBroker());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

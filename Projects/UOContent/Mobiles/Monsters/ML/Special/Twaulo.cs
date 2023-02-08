@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Engines.CannedEvil;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Twaulo : BaseChampion
+    [SerializationGenerator(0, false)]
+    public partial class Twaulo : BaseChampion
     {
         [Constructible]
         public Twaulo()
@@ -49,11 +51,6 @@ namespace Server.Mobiles
             PackItem(new Arrow(Utility.RandomMinMax(500, 700)));
         }
 
-        public Twaulo(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a corpse of Twaulo";
         public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
@@ -74,6 +71,9 @@ namespace Server.Mobiles
         public override int Hides => 8;
         public override HideType HideType => HideType.Spined;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.SummonPixiesCounter };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
@@ -81,64 +81,13 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems);
         }
 
-        public void SpawnPixies(Mobile target)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            var map = Map;
-
-            if (map == null)
-            {
-                return;
-            }
-
-            var newPixies = Utility.RandomMinMax(3, 6);
-
-            for (var i = 0; i < newPixies; ++i)
-            {
-                var pixie = new Pixie { Team = Team, FightMode = FightMode.Closest };
-
-                pixie.MoveToWorld(map.GetRandomNearbyLocation(Location), map);
-                pixie.Combatant = target;
-            }
-        }
-
-        public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
-        {
-            if (Utility.RandomDouble() <= 0.1)
-            {
-                SpawnPixies(caster);
-            }
-        }
-
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
             defender.Damage(Utility.Random(20, 10), this);
             defender.Stam -= Utility.Random(20, 10);
             defender.Mana -= Utility.Random(20, 10);
-        }
-
-        public override void OnGotMeleeAttack(Mobile attacker)
-        {
-            base.OnGotMeleeAttack(attacker);
-
-            if (Utility.RandomDouble() <= 0.1)
-            {
-                SpawnPixies(attacker);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

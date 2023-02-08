@@ -9,59 +9,20 @@ variables:
 
 jobs:
 - job: BuildWindows
-  displayName: 'Windows Server 2019'
+  displayName: 'Windows Server 2022'
   pool:
     vmImage: 'windows-latest'
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Install .NET 6'
+    displayName: 'Install .NET 7'
     inputs:
       packageType: sdk
-      version: 6.0.300
-  - task: NuGetAuthenticate@0
-  - script: ./publish.cmd Release win
+      version: 7.0.101
+  - task: NuGetAuthenticate@1
+  - script: ./publish.cmd Release
     displayName: 'Build'
-  - script: dotnet test --no-restore
-    displayName: 'Test'
-
-- job: BuildLinux
-  strategy:
-    matrix:
-      'CentOS 8':
-        containerImage: centos:8
-        os: centos.8
-      'CentOS 7':
-        containerImage: centos:7
-        os: centos.7
-      'Debian 11':
-        containerImage: mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim
-        os: debian.11
-      'Ubuntu 20':
-        containerImage: mcr.microsoft.com/dotnet/sdk:6.0-focal
-        os: ubuntu.20.04
-      'Fedora 35':
-        containerImage: fedora:35
-        os: fedora.35
-      'Fedora 36':
-        containerImage: fedora:36
-        os: fedora.36
-
-  displayName: Linux
-
-  pool:
-    vmImage: 'ubuntu-latest'
-
-  container: $[ variables['containerImage'] ]
-
-  steps:
-  - task: UseDotNet@2
-    displayName: 'Install .NET 6'
-    inputs:
-      packageType: sdk
-      version: 6.0.300
-  - task: NuGetAuthenticate@0
-  - script: ./publish.cmd Release $(os)
-    displayName: 'Build'
+  - script: git diff --exit-code ./**/Migrations/*.v*.json
+    displayName: Migration Changes
   - script: dotnet test --no-restore
     displayName: 'Test'

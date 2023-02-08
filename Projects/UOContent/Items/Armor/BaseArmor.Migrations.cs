@@ -20,7 +20,7 @@ public partial class BaseArmor
         Timer.StartTimer(() => _crafter = crafter?.RawName);
         _quality = content.Quality ?? ArmorQuality.Regular;
         _durability = content.Durability ?? ArmorDurabilityLevel.Regular;
-        _rawResource = content.RawResource ?? DefaultResource;
+        _resource = content.RawResource ?? DefaultResource;
         _armorBase = content.BaseArmorRating ?? -1;
         _strBonus = content.StrBonus ?? -1;
         _dexBonus = content.DexBonus ?? -1;
@@ -107,12 +107,12 @@ public partial class BaseArmor
 
         if (GetSaveFlag(flags, OldSaveFlag.Protection))
         {
-            _protection = (ArmorProtectionLevel)reader.ReadEncodedInt();
+            _protectionLevel = (ArmorProtectionLevel)reader.ReadEncodedInt();
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.Resource))
         {
-            _rawResource = (CraftResource)reader.ReadEncodedInt();
+            _resource = (CraftResource)reader.ReadEncodedInt();
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.BaseArmor))

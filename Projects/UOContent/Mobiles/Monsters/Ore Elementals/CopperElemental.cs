@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class CopperElemental : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class CopperElemental : BaseCreature
     {
         [Constructible]
         public CopperElemental(int oreAmount = 2) : base(AIType.AI_Melee)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             PackItem(ore);
         }
 
-        public CopperElemental(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ore elemental corpse";
         public override string DefaultName => "a copper elemental";
 
@@ -57,21 +55,16 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems, 2);
         }
 
+        public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
+        {
+            base.AlterMeleeDamageFrom(from, ref damage);
+
+            damage /= 2; // 50% melee damage
+        }
+
         public override void CheckReflect(Mobile caster, ref bool reflect)
         {
             reflect = true; // Every spell is reflected back to the caster
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

@@ -16,12 +16,12 @@
       "rule": "SerializableInterfaceMigrationRule"
     },
     {
-      "name": "RawContent",
+      "name": "Content",
       "type": "Server.Items.BeverageType",
       "rule": "EnumMigrationRule"
     },
     {
-      "name": "RawQuantity",
+      "name": "Quantity",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [

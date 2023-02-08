@@ -2,7 +2,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items
 {
-    [SerializationGenerator(1)]
+    [SerializationGenerator(0)]
     public partial class ArcaneCircleAddon : BaseAddon
     {
         [Constructible]
@@ -20,26 +20,6 @@ namespace Server.Items
         }
 
         public override BaseAddonDeed Deed => new ArcaneCircleDeed();
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
-            if (version == 0)
-            {
-                ValidationQueue<ArcaneCircleAddon>.Add(this);
-            }
-        }
-
-        public void Validate()
-        {
-            foreach (var c in Components)
-            {
-                if (c.ItemID == 0x3083)
-                {
-                    c.Offset = new Point3D(-1, -1, 0);
-                    c.MoveToWorld(new Point3D(X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z), Map);
-                }
-            }
-        }
     }
 
     [SerializationGenerator(0)]

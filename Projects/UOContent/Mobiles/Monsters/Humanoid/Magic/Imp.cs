@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Imp : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Imp : BaseCreature
     {
         [Constructible]
         public Imp() : base(AIType.AI_Mage)
@@ -42,10 +45,6 @@ namespace Server.Mobiles
             MinTameSkill = 83.1;
         }
 
-        public Imp(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an imp corpse";
         public override string DefaultName => "an imp";
 
@@ -60,18 +59,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Meager);
             AddLoot(LootPack.MedScrolls, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

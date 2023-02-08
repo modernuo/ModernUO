@@ -11,8 +11,8 @@ namespace Server.Spells.Ninjitsu
         public override int BaseMana => 25;
         public override double RequiredSkill => 80.0;
 
-        public override TextDefinition AbilityMessage =>
-            new(1063099); // Your Ki Attack must be complete within 2 seconds for the damage bonus!
+        // Your Ki Attack must be complete within 2 seconds for the damage bonus!
+        public override TextDefinition AbilityMessage { get; } = 1063099;
 
         public override void OnUse(Mobile from)
         {
@@ -53,7 +53,6 @@ namespace Server.Spells.Ninjitsu
             /*
              * Pub40 changed pvp damage max to 55%
              */
-
             return 1.0 + GetBonus(attacker) / (Core.ML && attacker.Player && defender.Player ? 40 : 10);
         }
 
@@ -64,6 +63,8 @@ namespace Server.Spells.Ninjitsu
                 return;
             }
 
+            ClearCurrentMove(attacker);
+
             if (GetBonus(attacker) == 0.0)
             {
                 attacker.SendLocalizedMessage(1063101); // You were too close to your target to cause any additional damage.
@@ -73,15 +74,12 @@ namespace Server.Spells.Ninjitsu
                 attacker.FixedParticles(0x37BE, 1, 5, 0x26BD, 0x0, 0x1, EffectLayer.Waist);
                 attacker.PlaySound(0x510);
 
-                attacker.SendLocalizedMessage(
-                    1063100
-                ); // Your quick flight to your target causes extra damage as you strike!
+                // Your quick flight to your target causes extra damage as you strike!
+                attacker.SendLocalizedMessage(1063100);
                 defender.FixedParticles(0x37BE, 1, 5, 0x26BD, 0, 0x1, EffectLayer.Waist);
 
                 CheckGain(attacker);
             }
-
-            ClearCurrentMove(attacker);
         }
 
         public override void OnClearMove(Mobile from)
@@ -99,29 +97,29 @@ namespace Server.Spells.Ninjitsu
                 return 0;
             }
 
-            var xDelta = t.m_Location.X - from.X;
-            var yDelta = t.m_Location.Y - from.Y;
+            var xDelta = t._location.X - from.X;
+            var yDelta = t._location.Y - from.Y;
 
             return Math.Min(Math.Sqrt(xDelta * xDelta + yDelta * yDelta), 20.0);
         }
 
         private class KiAttackTimer : Timer
         {
-            public readonly Mobile m_Mobile;
-            public Point3D m_Location;
+            public Mobile _mobile;
+            public Point3D _location;
 
             public KiAttackTimer(Mobile m) : base(TimeSpan.FromSeconds(2.0))
             {
-                m_Mobile = m;
-                m_Location = m.Location;
+                _mobile = m;
+                _location = m.Location;
             }
 
             protected override void OnTick()
             {
-                ClearCurrentMove(m_Mobile);
-                m_Mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
+                ClearCurrentMove(_mobile);
+                _mobile.SendLocalizedMessage(1063102); // You failed to complete your Ki Attack in time.
 
-                _table.Remove(m_Mobile);
+                _table.Remove(_mobile);
             }
         }
     }

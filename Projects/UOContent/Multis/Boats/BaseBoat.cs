@@ -29,36 +29,36 @@ namespace Server.Multis
             Decaying
         }
 
-        private static readonly Rectangle2D[] m_BritWrap =
+        private static Rectangle2D[] m_BritWrap =
             { new(16, 16, 5120 - 32, 4096 - 32), new(5136, 2320, 992, 1760) };
 
-        private static readonly Rectangle2D[] m_IlshWrap = { new(16, 16, 2304 - 32, 1600 - 32) };
-        private static readonly Rectangle2D[] m_TokunoWrap = { new(16, 16, 1448 - 32, 1448 - 32) };
+        private static Rectangle2D[] m_IlshWrap = { new(16, 16, 2304 - 32, 1600 - 32) };
+        private static Rectangle2D[] m_TokunoWrap = { new(16, 16, 1448 - 32, 1448 - 32) };
 
-        private static readonly TimeSpan BoatDecayDelay = TimeSpan.FromDays(9.0);
+        private static TimeSpan BoatDecayDelay = TimeSpan.FromDays(9.0);
 
-        private static readonly TimeSpan SlowInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 0.75);
-        private static readonly TimeSpan FastInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
+        private static TimeSpan SlowInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 0.75);
+        private static TimeSpan FastInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
 
-        private static readonly int SlowSpeed = 1;
-        private static readonly int FastSpeed = NewBoatMovement ? 1 : 3;
+        private const int SlowSpeed = 1;
+        private static int FastSpeed = NewBoatMovement ? 1 : 3;
 
-        private static readonly TimeSpan SlowDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 1.50);
-        private static readonly TimeSpan FastDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
+        private static TimeSpan SlowDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.50 : 1.50);
+        private static TimeSpan FastDriftInterval = TimeSpan.FromSeconds(NewBoatMovement ? 0.25 : 0.75);
 
-        private static readonly int SlowDriftSpeed = 1;
-        private static readonly int FastDriftSpeed = 1;
+        private const int SlowDriftSpeed = 1;
+        private const int FastDriftSpeed = 1;
 
-        private static readonly Direction Forward = Direction.North;
-        private static readonly Direction ForwardLeft = Direction.Up;
-        private static readonly Direction ForwardRight = Direction.Right;
-        private static readonly Direction Backward = Direction.South;
-        private static readonly Direction BackwardLeft = Direction.Left;
-        private static readonly Direction BackwardRight = Direction.Down;
-        private static readonly Direction Left = Direction.West;
-        private static readonly Direction Right = Direction.East;
-        private static Direction Port = Left;
-        private static Direction Starboard = Right;
+        private const Direction Forward = Direction.North;
+        private const Direction ForwardLeft = Direction.Up;
+        private const Direction ForwardRight = Direction.Right;
+        private const Direction Backward = Direction.South;
+        private const Direction BackwardLeft = Direction.Left;
+        private const Direction BackwardRight = Direction.Down;
+        private const Direction Left = Direction.West;
+        private const Direction Right = Direction.East;
+        private const Direction Port = Left;
+        private const Direction Starboard = Right;
 
         private int m_ClientSpeed;
 
@@ -67,11 +67,12 @@ namespace Server.Multis
         private DateTime m_DecayTime;
 
         private Direction m_Facing;
-        private TimerExecutionToken _moveTimerToken;
 
         private string m_ShipName;
 
-        private TimerExecutionToken _turnTimerToken;
+
+        private TurnTimer _turnTimer;
+        private MoveTimer _moveTimer;
 
         public BaseBoat() : base(0x0)
         {
@@ -125,7 +126,7 @@ namespace Server.Multis
         public Direction Moving { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsMoving => _moveTimerToken.Running;
+        public bool IsMoving => _moveTimer?.Running == true;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int Speed { get; set; }
@@ -296,6 +297,14 @@ namespace Server.Multis
             }
         }
 
+        public override bool ShouldExecuteAfterSerialize => !m_Decaying && CheckDecay();
+
+        public override void AfterSerialize()
+        {
+            base.AfterSerialize();
+            CheckDecay();
+        }
+
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
@@ -316,8 +325,6 @@ namespace Server.Multis
             writer.Write(Hold);
             writer.Write(Anchored);
             writer.Write(m_ShipName);
-
-            CheckDecay();
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -453,8 +460,8 @@ namespace Server.Multis
             Hold?.Delete();
             PPlank?.Delete();
             SPlank?.Delete();
-            _turnTimerToken.Cancel();
-            _moveTimerToken.Cancel();
+            _turnTimer?.Stop();
+            _moveTimer?.Stop();
 
             Boats.Remove(this);
         }
@@ -527,6 +534,8 @@ namespace Server.Multis
             TillerMan?.InvalidateProperties();
         }
 
+        private bool ShouldDecay => !IsMoving && Core.Now >= m_DecayTime;
+
         public bool CheckDecay()
         {
             if (m_Decaying)
@@ -534,12 +543,10 @@ namespace Server.Multis
                 return true;
             }
 
-            if (!IsMoving && Core.Now >= m_DecayTime)
+            if (ShouldDecay)
             {
                 new DecayTimer(this).Start();
-
                 m_Decaying = true;
-
                 return true;
             }
 
@@ -1085,8 +1092,10 @@ namespace Server.Multis
             Speed = FastSpeed;
             Order = single ? BoatOrder.Single : BoatOrder.Course;
 
-            _moveTimerToken.Cancel();
-            Timer.StartTimer(FastInterval, FastInterval, StopBoat, out _moveTimerToken);
+            if (!SafelyStartMoveTimer(FastInterval, single))
+            {
+                return false;
+            }
 
             if (message)
             {
@@ -1273,11 +1282,27 @@ namespace Server.Multis
 
             if (Order != BoatOrder.Move)
             {
-                _moveTimerToken.Cancel();
+                _turnTimer?.Stop();
             }
 
-            _turnTimerToken.Cancel();
-            Timer.StartTimer(TimeSpan.FromMilliseconds(500), () => Turn(offset), out _turnTimerToken);
+            _turnTimer ??= new TurnTimer(offset, this, TimeSpan.FromMilliseconds(500), message);
+
+            if (_turnTimer.Running && _turnTimer._turn == offset)
+            {
+                // Dont let them spin around in circles like crazy
+                return true;
+            }
+
+            // Have they issued a new command too soon? Ignore it if so
+            var turnTimerNext = (_turnTimer.Next - Core.Now).TotalMilliseconds;
+            if (turnTimerNext is < 0 and > -250)
+            {
+                return true;
+            }
+
+            _turnTimer._turn = offset;
+            _turnTimer.Stop();
+            _turnTimer.Start();
 
             if (message)
             {
@@ -1289,7 +1314,7 @@ namespace Server.Multis
 
         public bool Turn(int offset, bool message = true)
         {
-            _turnTimerToken.Cancel();
+            _turnTimer?.Stop();
 
             if (CheckDecay())
             {
@@ -1341,9 +1366,48 @@ namespace Server.Multis
             m_ClientSpeed = clientSpeed;
             Order = BoatOrder.Move;
 
-            _moveTimerToken.Cancel();
-            Timer.StartTimer(interval, single ? 1 : 0, StopBoat, out _moveTimerToken);
+            SafelyStartMoveTimer(interval, single);
 
+            return true;
+        }
+
+        private bool SafelyStartMoveTimer(TimeSpan interval, bool single)
+        {
+            var singleNum = single ? 1 : 0;
+
+            if (_moveTimer != null)
+            {
+                // Do not allow them to travel faster simply by respamming the command
+                if (_moveTimer.Running && _moveTimer.Interval == interval && _moveTimer.Single == singleNum)
+                {
+                    return false;
+                }
+
+                // Have they issued a new command too soon? Ignore it if so
+                var moverTimerNext = (_moveTimer.Next - Core.Now).TotalMilliseconds;
+                if (moverTimerNext is < 0 and > -500)
+                {
+                    return false;
+                }
+
+                // Changing the interval or flipping between commands: "Forward" and "Forward One"
+                TimeSpan delay = TimeSpan.Zero;
+                if (interval.TotalMilliseconds > Math.Abs(moverTimerNext))
+                {
+                    var addedDelay = (int)(interval.TotalMilliseconds - Math.Abs(moverTimerNext));
+                    delay = TimeSpan.FromMilliseconds(addedDelay);
+                }
+
+                _moveTimer.Stop();
+                _moveTimer.Delay = delay;
+                _moveTimer.Interval = interval;
+            }
+            else
+            {
+                _moveTimer = new MoveTimer(this, interval, interval, singleNum);
+            }
+
+            _moveTimer.Start();
             return true;
         }
 
@@ -1354,7 +1418,7 @@ namespace Server.Multis
                 return false;
             }
 
-            if (!_moveTimerToken.Running)
+            if (_moveTimer?.Running == false)
             {
                 if (message)
                 {
@@ -1367,7 +1431,7 @@ namespace Server.Multis
             Moving = Direction.North;
             Speed = 0;
             m_ClientSpeed = 0;
-            _moveTimerToken.Cancel();
+            _moveTimer?.Stop();
 
             if (message)
             {
@@ -1885,7 +1949,7 @@ namespace Server.Multis
                             continue;
                         }
 
-                         // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
+                        // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
                         if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
                         {
                             _current = current;
@@ -2039,6 +2103,45 @@ namespace Server.Multis
         {
             EventSink.WorldLoad += UpdateAllComponents;
             EventSink.WorldSave += UpdateAllComponents;
+        }
+
+        private class TurnTimer : Timer
+        {
+            internal int _turn;
+            private bool _message;
+            private BaseBoat _boat;
+
+            public TurnTimer(int turn, BaseBoat boat, TimeSpan delay, bool message = true) : base(delay)
+            {
+                _turn = turn;
+                _message = message;
+                _boat = boat;
+            }
+            protected override void OnTick()
+            {
+                _boat?.Turn(_turn, _message);
+                Stop();
+            }
+        }
+
+        private class MoveTimer : Timer
+        {
+            public TimeSpan BoatMoveDelay;
+            public TimeSpan BoatMoveInterval;
+            public int Single;
+            private BaseBoat _boat;
+
+            public MoveTimer(BaseBoat boat, TimeSpan delay, TimeSpan interval, int single = 0) : base(delay, interval, single)
+            {
+                BoatMoveInterval = interval;
+                BoatMoveDelay = delay;
+                Single = single;
+                _boat = boat;
+            }
+            protected override void OnTick()
+            {
+                _boat?.StopBoat();
+            }
         }
 
         private class DecayTimer : Timer

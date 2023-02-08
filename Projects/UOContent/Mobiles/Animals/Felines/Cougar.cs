@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Cougar : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Cougar : BaseCreature
     {
         [Constructible]
         public Cougar() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             MinTameSkill = 41.1;
         }
 
-        public Cougar(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a cougar corpse";
         public override string DefaultName => "a cougar";
 
@@ -49,19 +48,5 @@ namespace Server.Mobiles
         public override int Hides => 10;
         public override FoodType FavoriteFood => FoodType.Fish | FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Feline;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Saliva : Harpy
+    [SerializationGenerator(0, false)]
+    public partial class Saliva : Harpy
     {
         [Constructible]
         public Saliva()
@@ -35,11 +37,6 @@ namespace Server.Mobiles
             // TODO: Fame/Karma?
         }
 
-        public Saliva(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Saliva corpse";
         public override string DefaultName => "Saliva";
 
@@ -57,20 +54,6 @@ namespace Server.Mobiles
             // TODO: uncomment once added
             // if (Utility.RandomDouble() < 0.1)
             // c.DropItem( new ParrotItem() );
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

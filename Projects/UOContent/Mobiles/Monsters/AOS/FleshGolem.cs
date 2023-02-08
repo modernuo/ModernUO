@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class FleshGolem : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class FleshGolem : BaseCreature
     {
         [Constructible]
         public FleshGolem() : base(AIType.AI_Melee)
@@ -36,10 +38,6 @@ namespace Server.Mobiles
             VirtualArmor = 34;
         }
 
-        public FleshGolem(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a flesh golem corpse";
 
         public override string DefaultName => "a flesh golem";
@@ -52,18 +50,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

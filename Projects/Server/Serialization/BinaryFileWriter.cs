@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BufferedFileWriter.cs                                           *
+ * File: BinaryFileWriter.cs                                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,57 +14,57 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 
-namespace Server
+namespace Server;
+
+public class BinaryFileWriter : BufferWriter, IDisposable
 {
-    public class BinaryFileWriter : BufferWriter, IDisposable
+    private readonly Stream _file;
+    private long _position;
+
+    public BinaryFileWriter(string filename, bool prefixStr, ConcurrentQueue<Type> types = null) :
+        this(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None), prefixStr, types)
+    {}
+
+    public BinaryFileWriter(Stream stream, bool prefixStr, ConcurrentQueue<Type> types = null) : base(prefixStr, types)
     {
-        private readonly Stream _file;
-        private long _position;
+        _file = stream;
+        _position = _file.Position;
+    }
 
-        public BinaryFileWriter(string filename, bool prefixStr) :
-            this(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None), prefixStr)
-        {}
+    public override long Position => _position + Index;
 
-        public BinaryFileWriter(Stream stream, bool prefixStr) : base(prefixStr)
+    protected override int BufferSize => 81920;
+
+    public override void Flush()
+    {
+        if (Index > 0)
         {
-            _file = stream;
-            _position = _file.Position;
+            _position += Index;
+
+            _file.Write(Buffer, 0, (int)Index);
+            Index = 0;
         }
+    }
 
-        public override long Position => _position + Index;
-
-        protected override int BufferSize => 81920;
-
-        public override void Flush()
-        {
-            if (Index > 0)
-            {
-                _position += Index;
-
-                _file.Write(Buffer, 0, (int)Index);
-                Index = 0;
-            }
-        }
-
-        public override void Close()
-        {
-            if (Index > 0)
-            {
-                Flush();
-            }
-
-            _file.Close();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
+    public override void Close()
+    {
+        if (Index > 0)
         {
             Flush();
-
-            return _position = _file.Seek(offset, origin);
         }
 
-        public void Dispose() => Close();
+        _file.Close();
     }
+
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        Flush();
+
+        return _position = _file.Seek(offset, origin);
+    }
+
+    public void Dispose() => Close();
 }

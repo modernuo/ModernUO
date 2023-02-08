@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Guile : Changeling
+    [SerializationGenerator(0, false)]
+    public partial class Guile : Changeling
     {
         [Constructible]
         public Guile()
@@ -38,49 +41,17 @@ namespace Server.Mobiles
             Karma = -21000;
         }
 
-        public Guile(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Guile corpse";
         public override string DefaultName => "Guile";
         public override int DefaultHue => 0x3F;
-
         public override bool GivesMLMinorArtifact => true;
 
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
-
-            if (Utility.RandomBool())
-            {
-                if (!Kappa.IsBeingDrained(defender) && Mana > 14)
-                {
-                    defender.SendLocalizedMessage(1070848); // You feel your life force being stolen away.
-                    Kappa.BeginLifeDrain(defender, this);
-                    Mana -= 15;
-                }
-            }
-        }
+        private static MonsterAbility[] _abilities = { MonsterAbilities.DrainLifeAttack };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

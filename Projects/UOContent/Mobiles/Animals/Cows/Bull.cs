@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Bull : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Bull : BaseCreature
     {
         [Constructible]
         public Bull() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -8,7 +11,7 @@ namespace Server.Mobiles
             Body = Utility.RandomList(0xE8, 0xE9);
             BaseSoundID = 0x64;
 
-            if (Utility.RandomDouble() <= 0.5)
+            if (Utility.RandomBool())
             {
                 Hue = 0x901;
             }
@@ -41,10 +44,6 @@ namespace Server.Mobiles
             MinTameSkill = 71.1;
         }
 
-        public Bull(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a bull corpse";
         public override string DefaultName => "a bull";
 
@@ -52,19 +51,5 @@ namespace Server.Mobiles
         public override int Hides => 15;
         public override FoodType FavoriteFood => FoodType.GrainsAndHay;
         public override PackInstinct PackInstinct => PackInstinct.Bull;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

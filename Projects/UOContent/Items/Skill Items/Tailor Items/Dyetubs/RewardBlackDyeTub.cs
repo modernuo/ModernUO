@@ -7,7 +7,7 @@ namespace Server.Items
     public partial class RewardBlackDyeTub : DyeTub, IRewardItem
     {
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _isRewardItem;
 
         [Constructible]

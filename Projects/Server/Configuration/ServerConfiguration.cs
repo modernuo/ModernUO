@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ServerConfiguration.cs                                          *
  *                                                                       *
@@ -36,6 +36,8 @@ public static class ServerConfiguration
     public static HashSet<string> DataDirectories => m_Settings.DataDirectories;
 
     public static List<IPEndPoint> Listeners => m_Settings.Listeners;
+
+    public static string ConfigurationFilePath => _relPath;
 
     public static ClientVersion GetSetting(string key, ClientVersion defaultValue) =>
         m_Settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
@@ -226,7 +228,7 @@ public static class ServerConfiguration
                 throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
             }
 
-            logger.Information("Reading server configuration done");
+            logger.Information("Reading server configuration {Status}", "done");
         }
         else
         {
@@ -262,35 +264,10 @@ public static class ServerConfiguration
             m_Settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
         }
 
-        bool? isPre60000 = null;
-
         if (m_Settings.Expansion == null)
         {
-            var expansion = GetSetting<Expansion>("currentExpansion");
-            var hasExpansion = expansion != null;
-
-            expansion ??= ServerConfigurationPrompts.GetExpansion();
-
-            if (expansion <= Expansion.ML && !hasExpansion)
-            {
-                isPre60000 = ServerConfigurationPrompts.GetIsClientPre6000();
-                if (isPre60000 == true)
-                {
-                    SetSetting("maps.enablePre6000Trammel", true);
-                }
-            }
-
+            m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ServerConfigurationPrompts.GetExpansion();
             updated = true;
-            m_Settings.Expansion = expansion;
-        }
-
-        if (isPre60000 != true)
-        {
-            if (ServerConfigurationPrompts.GetIsClient7090())
-            {
-                updated = true;
-                SetSetting("maps.enablePostHSMultiComponentFormat", true);
-            }
         }
 
         Core.Expansion = m_Settings.Expansion.Value;

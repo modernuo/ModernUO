@@ -28,7 +28,7 @@ namespace Server.Items
         Exceptional
     }
 
-    public class Spellbook : Item, ICraftable, ISlayer
+    public class Spellbook : Item, ICraftable, ISlayer, IAosItem
     {
         private static readonly Dictionary<Mobile, List<Spellbook>> m_Table = new();
 
@@ -283,10 +283,7 @@ namespace Server.Items
 
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} filling spellbook {2}",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    CommandLogging.Format(book)
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} filling spellbook {CommandLogging.Format(book)}"
                 );
             }
             else
@@ -530,20 +527,13 @@ namespace Server.Items
             return list;
         }
 
-        public static Spellbook FindEquippedSpellbook(Mobile from) => from.FindItemOnLayer(Layer.OneHanded) as Spellbook;
+        public static Spellbook FindEquippedSpellbook(Mobile from) => from.FindItemOnLayer<Spellbook>(Layer.OneHanded);
 
         public static bool ValidateSpellbook(Spellbook book, int spellID, SpellbookType type) =>
             book.SpellbookType == type && (spellID == -1 || book.HasSpell(spellID));
 
-        public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
-        {
-            if (!Ethic.CheckTrade(from, to, newOwner, this))
-            {
-                return false;
-            }
-
-            return base.AllowSecureTrade(from, to, newOwner, accepted);
-        }
+        public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) =>
+            Ethic.CheckTrade(from, to, newOwner, this) && base.AllowSecureTrade(from, to, newOwner, accepted);
 
         public override bool CanEquip(Mobile from)
         {

@@ -48,15 +48,14 @@ namespace Server.Commands
                     if (command == null)
                     {
                         e.Mobile.SendMessage(
-                            "That is either an invalid command name or one that does not support this modifier: {0}.",
-                            commandString
+                            $"That is either an invalid command name or one that does not support this modifier: {commandString}."                            
                         );
                         return;
                     }
 
                     if (e.Mobile.AccessLevel < command.AccessLevel)
                     {
-                        e.Mobile.SendMessage("You do not have access to that command: {0}.", commandString);
+                        e.Mobile.SendMessage($"You do not have access to that command: {commandString}.");
                         return;
                     }
 

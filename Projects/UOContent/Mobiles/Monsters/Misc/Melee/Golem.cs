@@ -1,13 +1,11 @@
-using System;
+using ModernUO.Serialization;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Golem : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Golem : BaseCreature
     {
-        private bool m_Stunning;
-
         [Constructible]
         public Golem(bool summoned = false, double scalar = 1.0) : base(AIType.AI_Melee)
         {
@@ -86,10 +84,6 @@ namespace Server.Mobiles
             ControlSlots = 3;
         }
 
-        public Golem(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a golem corpse";
 
         public override bool IsScaredOfScaryThings => false;
@@ -110,6 +104,9 @@ namespace Server.Mobiles
 
         public override bool BardImmune => !Core.AOS || Controlled;
         public override Poison PoisonImmune => Poison.Lethal;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ColossalBlow };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void OnDeath(Container c)
         {
@@ -137,75 +134,13 @@ namespace Server.Mobiles
 
         public override int GetAngerSound() => 541;
 
-        public override int GetIdleSound()
-        {
-            if (!Controlled)
-            {
-                return 542;
-            }
+        public override int GetIdleSound() => !Controlled ? 542 : base.GetIdleSound();
 
-            return base.GetIdleSound();
-        }
-
-        public override int GetDeathSound()
-        {
-            if (!Controlled)
-            {
-                return 545;
-            }
-
-            return base.GetDeathSound();
-        }
+        public override int GetDeathSound() => !Controlled ? 545 : base.GetDeathSound();
 
         public override int GetAttackSound() => 562;
 
-        public override int GetHurtSound()
-        {
-            if (Controlled)
-            {
-                return 320;
-            }
-
-            return base.GetHurtSound();
-        }
-
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
-
-            if (!m_Stunning && Utility.RandomDouble() < 0.3)
-            {
-                m_Stunning = true;
-
-                defender.Animate(21, 6, 1, true, false, 0);
-                PlaySound(0xEE);
-                defender.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    false,
-                    "You have been stunned by a colossal blow!"
-                );
-
-                if (Weapon is BaseWeapon weapon)
-                {
-                    weapon.OnHit(this, defender);
-                }
-
-                if (defender.Alive)
-                {
-                    defender.Frozen = true;
-                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => Recover_Callback(defender));
-                }
-            }
-        }
-
-        private void Recover_Callback(Mobile defender)
-        {
-            defender.Frozen = false;
-            defender.Combatant = null;
-            defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
-            m_Stunning = false;
-        }
+        public override int GetHurtSound() => Controlled ? 320 : base.GetHurtSound();
 
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
@@ -229,18 +164,6 @@ namespace Server.Mobiles
             }
 
             base.OnDamage(amount, from, willKill);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

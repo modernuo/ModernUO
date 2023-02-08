@@ -261,7 +261,7 @@ namespace Server.Engines.MLQuests.Gumps
             }
             else
             {
-                pm.SendMessage("You have fully changed your race to {0}.", targetRace.Name);
+                pm.SendMessage($"You have fully changed your race to {targetRace.Name}.");
             }
 
             owner?.ConsumeNeeded(pm);

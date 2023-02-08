@@ -19,35 +19,29 @@ public enum GemType
 }
 
 [SerializationGenerator(4, false)]
-public abstract partial class BaseJewel : Item, ICraftable
+public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 {
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxHitPoints;
-
-    // Field 1
-    private int _hitPoints;
-
-    [SerializableField(2, "private", "private")]
-    private CraftResource _rawResource;
 
     [SerializableField(3)]
     [InvalidateProperties]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private GemType _gemType;
 
     [SerializableField(4, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;
 
     [SerializableField(5, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosElementAttributes _resistances;
 
     [SerializableField(6, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
 
     public BaseJewel(int itemID, Layer layer) : base(itemID)
@@ -55,8 +49,8 @@ public abstract partial class BaseJewel : Item, ICraftable
         _attributes = new AosAttributes(this);
         _resistances = new AosElementAttributes(this);
         _skillBonuses = new AosSkillBonuses(this);
-        _rawResource = CraftResource.Iron;
-        Hue = CraftResources.GetHue(_rawResource);
+        _resource = CraftResource.Iron;
+        Hue = CraftResources.GetHue(_resource);
         _gemType = GemType.None;
 
         Layer = layer;
@@ -65,7 +59,7 @@ public abstract partial class BaseJewel : Item, ICraftable
     }
 
     [EncodedInt]
-    [SerializableField(1)]
+    [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitPoints
     {
@@ -91,14 +85,15 @@ public abstract partial class BaseJewel : Item, ICraftable
         }
     }
 
+    [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
-        get => _rawResource;
+        get => _resource;
         set
         {
-            _rawResource = value;
-            Hue = CraftResources.GetHue(_rawResource);
+            _resource = value;
+            Hue = CraftResources.GetHue(_resource);
         }
     }
 
@@ -395,7 +390,7 @@ public abstract partial class BaseJewel : Item, ICraftable
     {
         _maxHitPoints = reader.ReadEncodedInt();
         _hitPoints = reader.ReadEncodedInt();
-        _rawResource = (CraftResource)reader.ReadEncodedInt();
+        _resource = (CraftResource)reader.ReadEncodedInt();
         _gemType = (GemType)reader.ReadEncodedInt();
         _attributes = new AosAttributes(this);
         _attributes.Deserialize(reader);

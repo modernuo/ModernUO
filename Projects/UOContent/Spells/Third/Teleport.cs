@@ -43,11 +43,13 @@ namespace Server.Spells.Third
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
             }
-            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.TeleportFrom))
+            else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.TeleportFrom, out var failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
             }
-            else if (!SpellHelper.CheckTravel(Caster, map, to, TravelCheckType.TeleportTo))
+            else if (!SpellHelper.CheckTravel(Caster, map, to, TravelCheckType.TeleportTo, out failureMessage))
             {
+                failureMessage.SendMessageTo(Caster);
             }
             else if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
             {
@@ -125,7 +127,13 @@ namespace Server.Spells.Third
                 return false;
             }
 
-            return SpellHelper.CheckTravel(Caster, TravelCheckType.TeleportFrom);
+            if (!SpellHelper.CheckTravel(Caster, TravelCheckType.TeleportFrom, out var failureMessage))
+            {
+                failureMessage.SendMessageTo(Caster);
+                return false;
+            }
+
+            return true;
         }
 
         public override void OnCast()

@@ -102,12 +102,14 @@ namespace Server.Commands
             if (built > 0)
             {
                 watch.Stop();
-                from.SendMessage(
-                    "{0} object{1} generated in {2:F2} seconds.",
-                    built,
-                    built != 1 ? "s" : "",
-                    watch.Elapsed.TotalSeconds
-                );
+                if (built == 1)
+                {
+                    from.SendMessage($"{built} object generated in {watch.Elapsed.TotalSeconds:F2} seconds.");
+                }
+                else
+                {
+                    from.SendMessage($"{built} objects generated in {watch.Elapsed.TotalSeconds:F2} seconds.");
+                }
             }
             else
             {
@@ -307,7 +309,7 @@ namespace Server.Commands
 
                 if (objectCount >= 20)
                 {
-                    from.SendMessage("Constructing {0} objects, please wait.", objectCount);
+                    from.SendMessage($"Constructing {objectCount} objects, please wait.");
                 }
 
                 var sendError = true;
@@ -467,10 +469,14 @@ namespace Server.Commands
             }
             else
             {
-                from.SendMessage(
-                    "Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
-                );
+                if (outline)
+                {
+                    from.SendMessage($"Format: Outline <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
+                else
+                {
+                    from.SendMessage($"Format: Tile <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -492,10 +498,14 @@ namespace Server.Commands
             }
             else
             {
-                e.Mobile.SendMessage(
-                    "Format: {0}RXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
-                );
+                if (outline)
+                {
+                    e.Mobile.SendMessage($"Format: OutlineRXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
+                else
+                {
+                    e.Mobile.SendMessage($"Format: TileRXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -517,10 +527,14 @@ namespace Server.Commands
             }
             else
             {
-                e.Mobile.SendMessage(
-                    "Format: {0}XYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
-                );
+                if (outline)
+                {
+                    e.Mobile.SendMessage($"Format: OutlineXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]" );
+                }
+                else
+                {
+                    e.Mobile.SendMessage($"Format: TileXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -545,10 +559,14 @@ namespace Server.Commands
             }
             else
             {
-                from.SendMessage(
-                    "Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
-                );
+                if (outline)
+                {
+                    from.SendMessage($"Format: OutlineZ <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
+                else
+                {
+                    from.SendMessage($"Format: TileZ <z> <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 
@@ -566,10 +584,14 @@ namespace Server.Commands
             }
             else
             {
-                from.SendMessage(
-                    "Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
-                    outline ? "Outline" : "Tile"
-                );
+                if (outline)
+                {
+                    from.SendMessage($"Format: OutlineAvg <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
+                else
+                {
+                    from.SendMessage($"Format: TileAvg <type> [params] [set {{<propertyName> <value> ...}}]");
+                }
             }
         }
 

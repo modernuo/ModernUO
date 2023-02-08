@@ -1,9 +1,14 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class SavageRidgeback : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class SavageRidgeback : BaseMount
     {
+        public override string DefaultName => "a savage ridgeback";
+
         [Constructible]
-        public SavageRidgeback(string name = "a savage ridgeback") : base(name, 188, 0x3EB8, AIType.AI_Melee, FightMode.Aggressor)
+        public SavageRidgeback() : base(188, 0x3EB8, AIType.AI_Melee, FightMode.Aggressor)
         {
             BaseSoundID = 0x3F3;
 
@@ -36,10 +41,6 @@ namespace Server.Mobiles
             MinTameSkill = 83.1;
         }
 
-        public SavageRidgeback(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a savage ridgeback corpse";
 
         public override int Meat => 1;
@@ -50,19 +51,5 @@ namespace Server.Mobiles
         public override bool OverrideBondingReqs() => true;
 
         public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

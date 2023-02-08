@@ -1,0 +1,38 @@
+{
+  "version": 0,
+  "type": "Server.Items.BasePlayerBB",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Title",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Greeting",
+      "type": "Server.Items.PlayerBBMessage",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "",
+        "@CanBeNull"
+      ]
+    },
+    {
+      "name": "Messages",
+      "type": "System.Collections.Generic.List\u003CServer.Items.PlayerBBMessage\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.PlayerBBMessage",
+        "RawSerializableMigrationRule",
+        ""
+      ]
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "type": "Server.Items.FillableContainer",
   "properties": [
     {
-      "name": "RawContentType",
+      "name": "ContentType",
       "type": "Server.Items.FillableContentType",
       "rule": "EnumMigrationRule"
     },

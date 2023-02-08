@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Engines.BulkOrders;
 
 namespace Server.Mobiles
 {
-    public class Weaver : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Weaver : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -12,10 +14,6 @@ namespace Server.Mobiles
         public Weaver() : base("the weaver")
         {
             SetSkill(SkillName.Tailoring, 65.0, 88.0);
-        }
-
-        public Weaver(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -27,20 +25,6 @@ namespace Server.Mobiles
         public override void InitSBInfo()
         {
             m_SBInfos.Add(new SBWeaver());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)

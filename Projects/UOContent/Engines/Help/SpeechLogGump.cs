@@ -46,7 +46,7 @@ namespace Server.Engines.Help
                 10,
                 280,
                 20,
-                $"<basefont color=#A0A0FF><center>SPEECH LOG - {playerName} (<i>{Utility.FixHtml(playerAccount)}</i>)</center></basefont>"
+                $"<basefont color=#A0A0FF><center>SPEECH LOG - {playerName} (<i>{Utility.FixHtmlFormattable(playerAccount)}</i>)</center></basefont>"
             );
 
             var lastPage = (log.Count - 1) / MaxEntriesPerPage;

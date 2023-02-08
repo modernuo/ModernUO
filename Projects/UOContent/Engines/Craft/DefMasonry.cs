@@ -17,7 +17,7 @@ public class DefMasonry : CraftSystem
 
     public override SkillName MainSkill => SkillName.Carpentry;
 
-    public override TextDefinition GumpTitle => 1044500;
+    public override TextDefinition GumpTitle { get; } = 1044500;
 
     public static CraftSystem CraftSystem { get; private set; }
 

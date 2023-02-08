@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class AncientWyrm : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class AncientWyrm : BaseCreature
     {
         [Constructible]
         public AncientWyrm() : base(AIType.AI_Mage)
@@ -38,15 +41,10 @@ namespace Server.Mobiles
             VirtualArmor = 70;
         }
 
-        public AncientWyrm(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a dragon corpse";
         public override string DefaultName => "an ancient wyrm";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
         public override bool AutoDispel => true;
         public override HideType HideType => HideType.Barbed;
         public override int Hides => 40;
@@ -58,6 +56,9 @@ namespace Server.Mobiles
         public override int TreasureMapLevel => 5;
         public override bool CanFly => true;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 3);
@@ -67,17 +68,5 @@ namespace Server.Mobiles
         public override int GetIdleSound() => 0x2D3;
 
         public override int GetHurtSound() => 0x2D1;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

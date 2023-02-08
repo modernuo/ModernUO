@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class SandVortex : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SandVortex : BaseCreature
     {
         private DateTime m_NextAttack;
 
@@ -41,10 +43,6 @@ namespace Server.Mobiles
             PackItem(new Bone());
         }
 
-        public SandVortex(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a sand vortex corpse";
         public override string DefaultName => "a sand vortex";
 
@@ -77,20 +75,6 @@ namespace Server.Mobiles
             m.FixedParticles(0x36B0, 10, 25, 9540, 2413, 0, EffectLayer.Waist);
 
             new InternalTimer(m, this).Start();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         private class InternalTimer : Timer

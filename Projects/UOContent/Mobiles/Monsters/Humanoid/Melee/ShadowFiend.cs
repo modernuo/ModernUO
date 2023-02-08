@@ -1,9 +1,11 @@
 using System;
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class ShadowFiend : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class ShadowFiend : BaseCreature
     {
         private UnhideTimer m_Timer;
 
@@ -46,10 +48,6 @@ namespace Server.Mobiles
             m_Timer.Start();
         }
 
-        public ShadowFiend(Serial serial) : base(serial)
-        {
-        }
-
         public override bool DeleteCorpseOnDeath => true;
 
         public override string DefaultName => "a shadow fiend";
@@ -74,17 +72,9 @@ namespace Server.Mobiles
             return true;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
             m_Timer = new UnhideTimer(this);
             m_Timer.Start();
         }

@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.Sheep",
+  "properties": [
+    {
+      "name": "NextWoolTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

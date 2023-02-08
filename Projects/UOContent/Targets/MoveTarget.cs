@@ -32,11 +32,7 @@ namespace Server.Targets
 
             CommandLogging.WriteLine(
                 from,
-                "{0} {1} moving {2} to {3}",
-                from.AccessLevel,
-                CommandLogging.Format(from),
-                CommandLogging.Format(m_Object),
-                p
+                $"{from.AccessLevel} {CommandLogging.Format(from)} moving {CommandLogging.Format(m_Object)} to {p}"
             );
 
             if (m_Object is Item item)

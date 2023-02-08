@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Skeleton : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Skeleton : BaseCreature
     {
         [Constructible]
         public Skeleton() : base(AIType.AI_Melee)
@@ -38,25 +40,31 @@ namespace Server.Mobiles
             switch (Utility.Random(5))
             {
                 case 0:
-                    PackItem(new BoneArms());
-                    break;
+                    {
+                        PackItem(new BoneArms());
+                        break;
+                    }
                 case 1:
-                    PackItem(new BoneChest());
-                    break;
+                    {
+                        PackItem(new BoneChest());
+                        break;
+                    }
                 case 2:
-                    PackItem(new BoneGloves());
-                    break;
+                    {
+                        PackItem(new BoneGloves());
+                        break;
+                    }
                 case 3:
-                    PackItem(new BoneLegs());
-                    break;
+                    {
+                        PackItem(new BoneLegs());
+                        break;
+                    }
                 case 4:
-                    PackItem(new BoneHelm());
-                    break;
+                    {
+                        PackItem(new BoneHelm());
+                        break;
+                    }
             }
-        }
-
-        public Skeleton(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a skeletal corpse";
@@ -70,18 +78,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Poor);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

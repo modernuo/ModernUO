@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class Satyr : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Satyr : BaseCreature
     {
         private static readonly Dictionary<Mobile, Timer> m_Suppressed = new();
 
@@ -48,10 +50,6 @@ namespace Server.Mobiles
             PackArcanceScroll(0.05);
         }
 
-        public Satyr(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a satyr's corpse";
         public override string DefaultName => "a satyr";
 
@@ -74,23 +72,9 @@ namespace Server.Mobiles
             Provoke(Combatant);
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
         public void Peace(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() > 0.1)
+            if (target == null || Deleted || !Alive || m_NextPeace > Core.Now || Utility.RandomDouble() < 0.9)
             {
                 return;
             }
@@ -111,7 +95,7 @@ namespace Server.Mobiles
         public void Suppress(Mobile target)
         {
             if (target == null || m_Suppressed.ContainsKey(target) || Deleted || !Alive ||
-                m_NextSuppress > Core.Now || Utility.RandomDouble() > 0.1)
+                m_NextSuppress > Core.Now || Utility.RandomDouble() < 0.9)
             {
                 return;
             }
@@ -126,7 +110,7 @@ namespace Server.Mobiles
                 {
                     var s = target.Skills[i];
 
-                    target.AddSkillMod(new TimedSkillMod(s.SkillName, true, s.Base * -0.28, delay));
+                    target.AddSkillMod(new TimedSkillMod(s.SkillName, $"{s.Name}Satyr", true, s.Base * -0.28, delay));
                 }
 
                 var count = (int)Math.Round(delay.TotalSeconds / 1.25);
@@ -160,7 +144,7 @@ namespace Server.Mobiles
 
         public void Undress(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() > 0.005)
+            if (target == null || Deleted || !Alive || m_NextUndress > Core.Now || Utility.RandomDouble() >= 0.005)
             {
                 return;
             }
@@ -193,7 +177,7 @@ namespace Server.Mobiles
 
         public void Provoke(Mobile target)
         {
-            if (target == null || Deleted || !Alive || m_NextProvoke > Core.Now || Utility.RandomDouble() > 0.05)
+            if (target == null || Deleted || !Alive || m_NextProvoke > Core.Now || Utility.RandomDouble() < 0.95)
             {
                 return;
             }

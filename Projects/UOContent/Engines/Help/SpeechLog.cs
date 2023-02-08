@@ -96,23 +96,31 @@ namespace Server.Engines.Help
                 }
                 else if (from != targeted && from.AccessLevel <= pm.AccessLevel && from.AccessLevel != AccessLevel.Owner)
                 {
-                    from.SendMessage(
-                        "You don't have the required access level to view {0} speech log.",
-                        pm.Female ? "her" : "his"
-                    );
+                    if (pm.Female)
+                    {
+                        from.SendMessage($"You don't have the required access level to view her speech log.");
+                    }
+                    else
+                    {
+                        from.SendMessage($"You don't have the required access level to view his speech log.");
+                    }
                 }
                 else if (pm.SpeechLog == null)
                 {
-                    from.SendMessage("{0} has no speech log.", pm.Female ? "She" : "He");
+                    if (pm.Female)
+                    {
+                        from.SendMessage($"She has no speech log.");
+                    }
+                    else
+                    {
+                        from.SendMessage($"He has no speech log.");
+                    }
                 }
                 else
                 {
                     CommandLogging.WriteLine(
                         from,
-                        "{0} {1} viewing speech log of {2}",
-                        from.AccessLevel,
-                        CommandLogging.Format(from),
-                        CommandLogging.Format(targeted)
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} viewing speech log of {CommandLogging.Format(targeted)}"
                     );
 
                     Gump gump = new SpeechLogGump(pm, pm.SpeechLog);

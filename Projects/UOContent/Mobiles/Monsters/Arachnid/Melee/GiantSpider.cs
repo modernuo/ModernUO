@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class GiantSpider : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GiantSpider : BaseCreature
     {
         [Constructible]
         public GiantSpider() : base(AIType.AI_Melee)
@@ -41,10 +43,6 @@ namespace Server.Mobiles
             PackItem(new SpidersSilk(5));
         }
 
-        public GiantSpider(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a giant spider corpse";
         public override string DefaultName => "a giant spider";
 
@@ -56,18 +54,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Poor);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

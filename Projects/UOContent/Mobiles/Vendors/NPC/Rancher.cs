@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class Rancher : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Rancher : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -15,29 +17,11 @@ namespace Server.Mobiles
             SetSkill(SkillName.Veterinary, 60.0, 83.0);
         }
 
-        public Rancher(Serial serial) : base(serial)
-        {
-        }
-
         protected override List<SBInfo> SBInfos => m_SBInfos;
 
         public override void InitSBInfo()
         {
             m_SBInfos.Add(new SBRancher());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

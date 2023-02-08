@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Irk : Changeling
+    [SerializationGenerator(0, false)]
+    public partial class Irk : Changeling
     {
         [Constructible]
         public Irk()
@@ -50,11 +53,6 @@ namespace Server.Mobiles
         }
         */
 
-        public Irk(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "an Irk corpse";
         public override string DefaultName => "Irk";
         public override int DefaultHue => 0x489;
@@ -66,20 +64,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

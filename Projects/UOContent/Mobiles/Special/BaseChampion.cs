@@ -41,26 +41,14 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
         }
 
-        public Item GetArtifact()
-        {
-            var random = Utility.RandomDouble();
-            if (random <= 0.05)
+        public Item GetArtifact() =>
+            Utility.RandomDouble() switch
             {
-                return CreateArtifact(UniqueList);
-            }
-
-            if (random <= 0.15)
-            {
-                return CreateArtifact(SharedList);
-            }
-
-            if (random <= 0.30)
-            {
-                return CreateArtifact(DecorativeList);
-            }
-
-            return null;
-        }
+                < 0.05 => CreateArtifact(UniqueList),
+                < 0.15 => CreateArtifact(SharedList),
+                < 0.30 => CreateArtifact(DecorativeList),
+                _      => null
+            };
 
         public Item CreateArtifact(Type[] list)
         {
@@ -82,23 +70,14 @@ namespace Server.Mobiles
             return artifact;
         }
 
-        private PowerScroll CreateRandomPowerScroll()
+        private static PowerScroll CreateRandomPowerScroll()
         {
-            int level;
-            var random = Utility.RandomDouble();
-
-            if (random <= 0.05)
+            var level = Utility.RandomDouble() switch
             {
-                level = 20;
-            }
-            else if (random <= 0.4)
-            {
-                level = 15;
-            }
-            else
-            {
-                level = 10;
-            }
+                < 0.05 => 20,
+                < 0.4  => 15,
+                _       => 10
+            };
 
             return PowerScroll.CreateRandomNoCraft(level, level);
         }
@@ -226,16 +205,13 @@ namespace Server.Mobiles
                     {
                         prot.AddToBackpack(powerScroll);
                     }
+                    else if (prot.Corpse?.Deleted == false)
+                    {
+                        prot.Corpse.DropItem(powerScroll);
+                    }
                     else
                     {
-                        if (prot.Corpse?.Deleted == false)
-                        {
-                            prot.Corpse.DropItem(powerScroll);
-                        }
-                        else
-                        {
-                            prot.AddToBackpack(powerScroll);
-                        }
+                        prot.AddToBackpack(powerScroll);
                     }
                 }
             }
@@ -342,49 +318,51 @@ namespace Server.Mobiles
 
                 g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
-                if (Utility.RandomDouble() <= 0.5)
+                if (Utility.RandomDouble() < 0.05)
                 {
-                    switch (Utility.Random(3))
-                    {
-                        case 0: // Fire column
-                            {
-                                Effects.SendLocationParticles(
-                                    EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                                    0x3709,
-                                    10,
-                                    30,
-                                    5052
-                                );
-                                Effects.PlaySound(g, 0x208);
+                    return;
+                }
 
-                                break;
-                            }
-                        case 1: // Explosion
-                            {
-                                Effects.SendLocationParticles(
-                                    EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                                    0x36BD,
-                                    20,
-                                    10,
-                                    5044
-                                );
-                                Effects.PlaySound(g, 0x307);
+                switch (Utility.Random(3))
+                {
+                    case 0: // Fire column
+                        {
+                            Effects.SendLocationParticles(
+                                EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                                0x3709,
+                                10,
+                                30,
+                                5052
+                            );
+                            Effects.PlaySound(g, 0x208);
 
-                                break;
-                            }
-                        case 2: // Ball of fire
-                            {
-                                Effects.SendLocationParticles(
-                                    EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                                    0x36FE,
-                                    10,
-                                    10,
-                                    5052
-                                );
+                            break;
+                        }
+                    case 1: // Explosion
+                        {
+                            Effects.SendLocationParticles(
+                                EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                                0x36BD,
+                                20,
+                                10,
+                                5044
+                            );
+                            Effects.PlaySound(g, 0x307);
 
-                                break;
-                            }
-                    }
+                            break;
+                        }
+                    case 2: // Ball of fire
+                        {
+                            Effects.SendLocationParticles(
+                                EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                                0x36FE,
+                                10,
+                                10,
+                                5052
+                            );
+
+                            break;
+                        }
                 }
             }
         }

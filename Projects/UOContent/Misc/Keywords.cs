@@ -31,16 +31,14 @@ namespace Server.Misc
                         {
                             if (!Core.SE)
                             {
-                                from.SendMessage("Short Term Murders : {0}", from.ShortTermMurders);
-                                from.SendMessage("Long Term Murders : {0}", from.Kills);
+                                from.SendMessage($"Short Term Murders : {from.ShortTermMurders}");
+                                from.SendMessage($"Long Term Murders : {from.Kills}");
                             }
                             else
                             {
                                 from.SendMessage(
                                     0x3B2,
-                                    "Short Term Murders: {0} Long Term Murders: {1}",
-                                    from.ShortTermMurders,
-                                    from.Kills
+                                    $"Short Term Murders: {from.ShortTermMurders} Long Term Murders: {from.Kills}"
                                 );
                             }
 

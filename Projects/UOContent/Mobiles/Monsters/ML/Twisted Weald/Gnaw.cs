@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Gnaw : DireWolf
+    [SerializationGenerator(0, false)]
+    public partial class Gnaw : DireWolf
     {
         [Constructible]
         public Gnaw()
@@ -46,14 +49,8 @@ namespace Server.Mobiles
         }
         */
 
-        public Gnaw(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Gnaw corpse";
         public override string DefaultName => "Gnaw";
-
         public override bool GivesMLMinorArtifact => true;
         public override int Hides => 28;
         public override int Meat => 4;
@@ -61,20 +58,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
