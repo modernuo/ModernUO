@@ -166,16 +166,14 @@ namespace Server.Misc
 
         private static string GetFormattedInfo(string code)
         {
-            if (code?.Length != 3)
+            if (code?.Length == 3)
             {
-                return $"Unknown code {code}";
-            }
-
-            for (var i = 0; i < InternationalCodes.Length; i++)
-            {
-                if (code == InternationalCodes[i].Code)
+                for (var i = 0; i < InternationalCodes.Length; i++)
                 {
-                    return $"{InternationalCodes[i].GetName()}";
+                    if (code == InternationalCodes[i].Code)
+                    {
+                        return InternationalCodes[i].GetName();
+                    }
                 }
             }
 

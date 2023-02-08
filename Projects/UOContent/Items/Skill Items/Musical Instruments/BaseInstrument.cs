@@ -260,7 +260,10 @@ namespace Server.Items
               - Summoning Undead
             */
 
-            var val = targ.HitsMax * 1.6 + targ.StamMax + targ.ManaMax;
+            // Before LBR, the success rate is actually your skill rate.
+            // We are going to fudge the numbers so it feels right without having two separate provocation calculations
+            // To do this, we should *undo* the 1.6x multiplier on HitsMaxSeed
+            var val = targ.HitsMax * (Core.LBR ? 1.6 : 0.625) + targ.StamMax + targ.ManaMax;
 
             val += targ.SkillsTotal / 10.0;
 

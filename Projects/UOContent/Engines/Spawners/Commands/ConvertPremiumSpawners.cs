@@ -79,7 +79,7 @@ namespace Server.Engines.Spawners
                     var fullOutputDir = Path.Combine(outputDir, stemDir);
                     PathUtility.EnsureDirectory(fullOutputDir);
 
-                    var outputFileName = $"{file.Name[..^file.Extension.Length]}.json";
+                    var outputFileName = $"{file.Name.AsSpan(0, file.Name.Length - file.Extension.Length)}.json";
                     ParsePremiumSpawnerFile(file.FullName, Path.Combine(fullOutputDir, outputFileName), options);
                 }
                 catch (Exception e)
@@ -231,13 +231,11 @@ namespace Server.Engines.Spawners
                 return TimeSpan.MinValue;
             }
 
-            time = time.ToLowerInvariant();
-
-            return time[^1] switch
+            return char.ToLowerInvariant(time[^1]) switch
             {
-                'h' => TimeSpan.FromHours(double.Parse(time[..^1])),
-                'm' => TimeSpan.FromMinutes(double.Parse(time[..^1])),
-                's' => TimeSpan.FromSeconds(double.Parse(time[..^1])),
+                'h' => TimeSpan.FromHours(double.Parse(time.AsSpan(0, time.Length - 1))),
+                'm' => TimeSpan.FromMinutes(double.Parse(time.AsSpan(0, time.Length - 1))),
+                's' => TimeSpan.FromSeconds(double.Parse(time.AsSpan(0, time.Length - 1))),
                 _   => TimeSpan.FromMinutes(double.Parse(time))
             };
         }

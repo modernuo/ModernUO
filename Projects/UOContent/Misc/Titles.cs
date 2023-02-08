@@ -380,7 +380,7 @@ namespace Server.Misc
 
                 if (mob.Female && skillTitle.EndsWithOrdinal("man"))
                 {
-                    skillTitle = $"{skillTitle[..^3]}woman";
+                    return $"{skillLevel} {skillTitle.AsSpan(0, skillTitle.Length - 3)}woman";
                 }
 
                 return $"{skillLevel} {skillTitle}";
